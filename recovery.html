@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Recovery - Narrin AI</title>
+    <meta name="description" content="Recover your Narrin AI account to access your AI companions and chat history. Reset your password securely.">
+    
+    <!-- Favicon -->
+    
+    <!-- Import Modern Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* ===== CSS CUSTOM PROPERTIES ===== */
+        :root {
+            /* Primary Colors */
+            --color-white: #ffffff;
+            --color-off-white: #fafafa;
+            --color-light-gray: #f5f5f5;
+            
+            /* Accent Colors */
+            --color-teal: #14b8a6;
+            --color-teal-light: #5eead4;
+            --color-teal-dark: #0f766e;
+            --color-teal-alt: #10a394;
+            --color-coral: #f97316;
+            --color-coral-light: #fb923c;
+            --color-coral-dark: #ea580c;
+            
+            /* Supporting Colors */
+            --color-navy: #1e293b;
+            --color-navy-light: #334155;
+            --color-gray: #64748b;
+            --color-gray-light: #94a3b8;
+            --color-gray-dark: #475569;
+            
+            /* Gradients */
+            --gradient-primary: linear-gradient(135deg, var(--color-teal) 0%, var(--color-coral) 100%);
+            --gradient-subtle: linear-gradient(135deg, var(--color-teal-light) 0%, var(--color-coral-light) 100%);
+            
+            /* Shadows */
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --shadow-colored: 0 10px 25px -5px rgba(20, 184, 166, 0.2);
+            
+            /* Spacing */
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 0.75rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            --spacing-2xl: 3rem;
+            --spacing-3xl: 4rem;
+            
+            /* Typography */
+            --font-primary: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-secondary: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+            
+            /* Font Sizes */
+            --font-size-xs: 0.75rem;
+            --font-size-sm: 0.875rem;
+            --font-size-base: 1rem;
+            --font-size-lg: 1.125rem;
+            --font-size-xl: 1.25rem;
+            --font-size-2xl: 1.5rem;
+            --font-size-3xl: 1.875rem;
+            --font-size-4xl: 2.25rem;
+            
+            /* Border Radius */
+            --radius-sm: 6px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --radius-full: 9999px;
+            
+            /* Transitions */
+            --transition-fast: 150ms ease-out;
+            --transition-base: 300ms ease-out;
+            --transition-slow: 500ms ease-out;
+            
+            /* Touch Target Size */
+            --touch-target: 44px;
+        }
+
+        /* ===== RESET & BASE STYLES ===== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: var(--font-primary);
+            background: var(--color-off-white);
+            color: var(--color-navy);
+            line-height: 1.6;
+            font-size: var(--font-size-base);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-lg);
+        }
+
+        /* ===== ACCESSIBILITY ===== */
+        :focus {
+            outline: 2px solid var(--color-teal);
+            outline-offset: 2px;
+        }
+
+        :focus:not(:focus-visible) {
+            outline: none;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            padding: var(--spacing-md) var(--spacing-lg);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-family: var(--font-secondary);
+            font-size: var(--font-size-xl);
+            font-weight: 800;
+            text-decoration: none;
+            letter-spacing: -0.02em;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            transition: transform var(--transition-base);
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .header-back {
+            color: var(--color-gray);
+            text-decoration: none;
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            transition: color var(--transition-base);
+        }
+
+        .header-back:hover {
+            color: var(--color-teal);
+        }
+
+        /* ===== MAIN CONTAINER ===== */
+        .container {
+            background: var(--color-white);
+            padding: var(--spacing-3xl);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-xl);
+            border: 2px solid var(--color-light-gray);
+            transition: all var(--transition-base);
+            text-align: center;
+            max-width: 700px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            margin-top: 80px;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+
+        .container:hover {
+            border-color: var(--color-teal);
+            transform: translateY(-4px);
+        }
+
+        /* ===== LOGO AND HEADER ===== */
+        .recovery-header {
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .recovery-logo {
+            font-family: var(--font-secondary);
+            font-size: var(--font-size-3xl);
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: var(--spacing-lg);
+            letter-spacing: -0.02em;
+        }
+
+        .recovery-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--spacing-lg);
+            box-shadow: var(--shadow-colored);
+            font-size: var(--font-size-2xl);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        h1 {
+            font-family: var(--font-secondary);
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            color: var(--color-navy);
+            margin-bottom: var(--spacing-md);
+            letter-spacing: -0.01em;
+        }
+
+        .subtitle {
+            color: var(--color-gray);
+            font-size: var(--font-size-base);
+            margin-bottom: var(--spacing-2xl);
+            line-height: 1.6;
+        }
+
+        /* ===== FORM STYLES ===== */
+        .form-group {
+            margin-bottom: var(--spacing-lg);
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            color: var(--color-navy);
+            margin-bottom: var(--spacing-xs);
+            font-weight: 600;
+            font-size: var(--font-size-sm);
+        }
+
+        input[type="password"] {
+            width: 100%;
+            padding: var(--spacing-md) var(--spacing-lg);
+            border: 2px solid var(--color-light-gray);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-base);
+            font-family: var(--font-primary);
+            transition: all var(--transition-base);
+            background: var(--color-white);
+            color: var(--color-navy);
+            min-height: var(--touch-target);
+        }
+
+        input[type="password"]:hover {
+            border-color: var(--color-gray-light);
+        }
+
+        input[type="password"]:focus {
+            outline: none;
+            border-color: var(--color-teal);
+            box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+            transform: translateY(-2px);
+        }
+
+        input[type="password"]::placeholder {
+            color: var(--color-gray-light);
+        }
+
+        /* ===== BUTTON STYLES ===== */
+        .btn {
+            width: 100%;
+            padding: var(--spacing-md) var(--spacing-xl);
+            background: var(--gradient-primary);
+            color: var(--color-white);
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            font-family: var(--font-primary);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            box-shadow: var(--shadow-colored);
+            min-height: var(--touch-target);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn:disabled:hover {
+            transform: none;
+            box-shadow: var(--shadow-colored);
+        }
+
+        /* ===== MESSAGE STYLES ===== */
+        .message {
+            margin-top: var(--spacing-lg);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* ===== BACK LINK ===== */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            margin-top: var(--spacing-xl);
+            color: var(--color-gray);
+            text-decoration: none;
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            transition: color var(--transition-base);
+        }
+
+        .back-link:hover {
+            color: var(--color-teal);
+        }
+
+        /* ===== MOBILE RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            body {
+                padding: var(--spacing-md);
+            }
+
+            .container {
+                padding: var(--spacing-2xl);
+                max-width: none;
+                margin-top: 60px;
+            }
+
+            .recovery-logo {
+                font-size: var(--font-size-2xl);
+            }
+
+            .recovery-icon {
+                width: 56px;
+                height: 56px;
+            }
+
+            h1 {
+                font-size: var(--font-size-xl);
+            }
+
+            .header {
+                padding: var(--spacing-sm) var(--spacing-md);
+            }
+
+            .logo {
+                font-size: var(--font-size-lg);
+            }
+        }
+
+        /* ===== ACCESSIBILITY IMPROVEMENTS ===== */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* ===== LOADING STATE ===== */
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .loading .btn {
+            background: var(--color-gray-light);
+            cursor: not-allowed;
+        }
+
+        /* ===== SECURITY INDICATOR ===== */
+        .security-info {
+            margin-top: var(--spacing-lg);
+            padding: var(--spacing-md);
+            background: var(--color-light-gray);
+            border-radius: var(--radius-md);
+            border-left: 4px solid var(--color-teal);
+            font-size: var(--font-size-sm);
+            color: var(--color-gray-dark);
+            text-align: left;
+        }
+
+        .security-info-icon {
+            color: var(--color-teal);
+            margin-right: var(--spacing-xs);
+        }
+
+        /* Hide the name field in Netlify Identity widget */
+        .netlify-identity-widget input[name="name"],
+        .netlify-identity-widget input[placeholder="Optional"],
+        .netlify-identity-widget .formGroup:first-child {
+            display: none !important;
+        }
+
+    /* ===== NETLIFY IDENTITY MODAL Z-INDEX FIX ===== */
+    
+    /* EXTREME Z-INDEX FIX - Force ALL Netlify elements to highest possible z-index */
+    .netlify-identity-widget,
+    .netlify-identity-widget *,
+    [data-netlify-identity-widget],
+    [data-netlify-identity-widget] *,
+    .netlify-identity-widget iframe,
+    .netlify-identity-widget > div,
+    .netlify-identity-widget .netlify-identity-modal,
+    .netlify-identity-widget .netlify-identity-modal *,
+    .netlify-identity-widget .netlify-identity-modal > *,
+    .netlify-identity-widget .netlify-identity-modal div,
+    .netlify-identity-modal,
+    .netlify-identity-modal *,
+    div[data-netlify-identity-modal],
+    div[data-netlify-identity-modal] * {
+      z-index: 999999999 !important;
+      position: relative !important;
+    }
+
+    /* Lower z-index for navigation when modal is open */
+    body:has(.netlify-identity-widget) .header,
+    body:has(.netlify-identity-widget) .mobile-menu-overlay,
+    body:has(.netlify-identity-widget) .mobile-search-overlay,
+    body:has(.netlify-identity-widget) nav,
+    body:has(.netlify-identity-widget) header {
+      z-index: 1 !important;
+      position: relative !important;
+    }
+    </style>
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-D6T01M6XTJ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-D6T01M6XTJ');
+  </script>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="logo">Narrin AI</a>
+            <a href="/" class="header-back">← Back to homepage</a>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <div class="recovery-header">
+            <div class="recovery-icon">🔐</div>
+            <div class="recovery-logo">Narrin AI</div>
+        </div>
+        
+        <h1>Set New Password</h1>
+        <p class="subtitle">Enter your new password to secure your account.</p>
+        
+        <form id="recovery-form">
+            <div class="form-group">
+                <label for="password">New password:</label>
+                <input type="password" id="password" name="password" required minlength="6" placeholder="Minimum 6 characters">
+            </div>
+            
+            <div class="form-group">
+                <label for="confirm-password">Confirm password:</label>
+                <input type="password" id="confirm-password" name="confirm-password" required minlength="6" placeholder="Repeat your password">
+            </div>
+            
+            <button type="submit" class="btn" id="submit-btn">
+                <span>🔒</span>
+                <span>Update Password</span>
+            </button>
+        </form>
+        
+        <div class="security-info">
+            <span class="security-info-icon">🛡️</span>
+            <strong>Secure:</strong> This is a secure connection. Your password will be encrypted and stored safely.
+        </div>
+        
+        <div id="message" class="message"></div>
+        
+        <a href="/" class="back-link">← Back to homepage</a>
+    </div>
+
+    <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <script>
+        const form = document.getElementById('recovery-form');
+        const submitBtn = document.getElementById('submit-btn');
+        const messageDiv = document.getElementById('message');
+        
+        function showMessage(text, type) {
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.display = 'block';
+            
+            // Auto-hide error messages after 5 seconds
+            if (type === 'error') {
+                setTimeout(() => {
+                    messageDiv.style.display = 'none';
+                }, 5000);
+            }
+        }
+        
+        function hideMessage() {
+            messageDiv.style.display = 'none';
+        }
+        
+        function setLoading(isLoading) {
+            if (isLoading) {
+                document.body.classList.add('loading');
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span>⏳</span><span>Updating...</span>';
+            } else {
+                document.body.classList.remove('loading');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span>🔒</span><span>Update Password</span>';
+            }
+        }
+        
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            hideMessage();
+            
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            
+            // Validation
+            if (password !== confirmPassword) {
+                showMessage('Passwords do not match', 'error');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showMessage('Password must be at least 6 characters long', 'error');
+                return;
+            }
+            
+            // Strength check
+            const hasUpperCase = /[A-Z]/.test(password);
+            const hasLowerCase = /[a-z]/.test(password);
+            const hasNumbers = /\d/.test(password);
+            const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+            
+            if (!hasUpperCase || !hasLowerCase || !hasNumbers) {
+                showMessage('Password must contain at least 1 uppercase letter, 1 lowercase letter, and 1 number', 'error');
+                return;
+            }
+            
+            setLoading(true);
+            
+            const user = netlifyIdentity.currentUser();
+            if (user && user.token) {
+                user.update({ password: password })
+                    .then(() => {
+                        showMessage('✅ Password updated successfully! You will be redirected to the homepage in 5 seconds.', 'success');
+                        
+                        // Countdown timer
+                        let countdown = 5;
+                        const countdownInterval = setInterval(() => {
+                            countdown--;
+                            if (countdown > 0) {
+                                showMessage(`✅ Password updated successfully! Redirecting to homepage in ${countdown} seconds.`, 'success');
+                            } else {
+                                clearInterval(countdownInterval);
+                                showMessage('✅ Redirecting now...', 'success');
+                                setTimeout(() => {
+                                    window.location.href = '/';
+                                }, 500);
+                            }
+                        }, 1000);
+                    })
+                    .catch((error) => {
+                        console.error('Error updating password:', error);
+                        showMessage('An error occurred. Please try again or contact our support.', 'error');
+                    })
+                    .finally(() => {
+                        setLoading(false);
+                    });
+            } else {
+                showMessage('No valid user found. The link may have expired. Please request a new password reset.', 'error');
+                setLoading(false);
+                
+                // Redirect after 5 seconds
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 5000);
+            }
+        });
+        
+        // Initialize Netlify Identity
+        netlifyIdentity.init({
+          namePlaceholder: 'Optional'
+        });
+        
+        // Check if there's a valid recovery token
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token') || urlParams.get('recovery_token');
+            
+            if (!token) {
+                showMessage('No valid recovery token found. Please request a new password reset.', 'error');
+                
+                // Redirect after 5 seconds
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 5000);
+            }
+        });
+        
+        // Prevent form submission with Enter key in input fields
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
+                e.preventDefault();
+                form.dispatchEvent(new Event('submit'));
+            }
+        });
+        
+        // Auto-focus on first input
+        document.addEventListener('DOMContentLoaded', () => {
+            const firstInput = document.getElementById('password');
+            if (firstInput) {
+                firstInput.focus();
+            }
+        });
+    </script>
+</body>
+</html>

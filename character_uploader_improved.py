@@ -1,0 +1,716 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Character Uploader - Improved Version
+- Haalt categorieën uit Airtable
+- Maakt meer companions, minder coaches
+- Maximum 15 characters per categorie
+"""
+
+import json
+import requests
+import os
+import time
+import random
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+# Airtable configuratie
+AIRTABLE_TOKEN = os.getenv('AIRTABLE_TOKEN') or os.getenv('AIRTABLE_API_KEY')
+AIRTABLE_BASE = os.getenv('AIRTABLE_BASE_ID')
+AIRTABLE_TABLE = os.getenv('AIRTABLE_TABLE_ID', 'Characters')  # Default naar 'Characters' als niet ingesteld
+
+if not AIRTABLE_TOKEN or not AIRTABLE_BASE:
+    raise ValueError("AIRTABLE_TOKEN en AIRTABLE_BASE_ID moeten zijn ingesteld in .env bestand")
+
+# Kleuren voor console output
+class Colors:
+    BLUE = '\033[94m'
+    GREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    RED = '\033[91m'
+    CYAN = '\033[96m'
+    RESET = '\033[0m'
+
+def log(color, message):
+    """Print gekleurde berichten naar console"""
+    print(f"{color}{message}{Colors.RESET}")
+
+# Maximum aantal characters om TOE TE VOEGEN per categorie
+MAX_CHARACTERS_TO_ADD = 10
+
+# Character type weights - focus op support en vriendschap
+CHARACTER_TYPE_WEIGHTS = {
+    'companion': 40,  # 40% kans - vriendelijke companion
+    'friend': 35,     # 35% kans - casual vriend
+    'support': 25     # 25% kans - emotionele support
+}
+
+# Tags voor verschillende character types - deze worden gefilterd tegen bestaande Airtable tags
+COMPANION_TAGS = ['friend', 'companion', 'supportive', 'helpful', 'caring', 'understanding', 'empathetic', 'loyal', 'trustworthy', 'kind']
+FRIEND_TAGS = ['friendly', 'fun', 'cheerful', 'positive', 'warm', 'welcoming', 'social', 'kind', 'genuine', 'uplifting']
+SUPPORT_TAGS = ['supportive', 'understanding', 'empathetic', 'caring', 'helpful', 'motivating', 'encouraging', 'patient', 'compassionate', 'wise']
+
+def get_categories_from_airtable():
+    """Haal alle unieke categorieën op uit Airtable"""
+    url = f"https://api.airtable.com/v0/{AIRTABLE_BASE}/{AIRTABLE_TABLE}"
+    headers = {
+        'Authorization': f'Bearer {AIRTABLE_TOKEN}',
+        'Content-Type': 'application/json'
+    }
+    
+    log(Colors.BLUE, "📋 Categorieën ophalen uit Airtable...")
+    
+    categories = set()
+    offset = None
+    
+    while True:
+        params = {}
+        if offset:
+            params['offset'] = offset
+            
+        try:
+            response = requests.get(url, headers=headers, params=params)
+            response.raise_for_status()
+            data = response.json()
+            
+            # Verzamel unieke categorieën
+            for record in data.get('records', []):
+                category = record.get('fields', {}).get('Category')
+                if category:
+                    categories.add(category)
+            
+            offset = data.get('offset')
+            if not offset:
+                break
+                
+        except Exception as e:
+            log(Colors.RED, f"❌ Fout bij ophalen categorieën: {e}")
+            break
+    
+    # Gebruik alle categorieën uit Airtable
+    final_categories = list(categories)
+    category_original_names = {cat: cat for cat in categories}
+    
+    log(Colors.GREEN, f"✅ {len(final_categories)} categorieën gevonden in Airtable")
+    
+    # Return zowel de categorieën als de mapping
+    return final_categories, category_original_names
+
+def get_existing_tags_from_airtable():
+    """Haal alle unieke tags op uit Airtable"""
+    url = f"https://api.airtable.com/v0/{AIRTABLE_BASE}/{AIRTABLE_TABLE}"
+    headers = {
+        'Authorization': f'Bearer {AIRTABLE_TOKEN}',
+        'Content-Type': 'application/json'
+    }
+    
+    log(Colors.BLUE, "🏷️  Tags ophalen uit Airtable...")
+    
+    all_tags = set()
+    offset = None
+    
+    while True:
+        params = {}
+        if offset:
+            params['offset'] = offset
+            
+        try:
+            response = requests.get(url, headers=headers, params=params)
+            response.raise_for_status()
+            data = response.json()
+            
+            # Verzamel alle tags
+            for record in data.get('records', []):
+                tags = record.get('fields', {}).get('Tags', [])
+                if tags and isinstance(tags, list):
+                    for tag in tags:
+                        all_tags.add(tag.lower())
+            
+            offset = data.get('offset')
+            if not offset:
+                break
+                
+        except Exception as e:
+            log(Colors.RED, f"❌ Fout bij ophalen tags: {e}")
+            break
+    
+    log(Colors.GREEN, f"✅ {len(all_tags)} unieke tags gevonden in Airtable")
+    return list(all_tags)
+
+def get_existing_characters_by_category():
+    """Haal alle bestaande characters op uit Airtable, gegroepeerd per categorie"""
+    url = f"https://api.airtable.com/v0/{AIRTABLE_BASE}/{AIRTABLE_TABLE}"
+    headers = {
+        'Authorization': f'Bearer {AIRTABLE_TOKEN}',
+        'Content-Type': 'application/json'
+    }
+    
+    log(Colors.BLUE, "📋 Bestaande characters per categorie ophalen...")
+    
+    existing_names = set()
+    category_counts = {}
+    offset = None
+    total_characters = 0
+    
+    while True:
+        params = {}
+        if offset:
+            params['offset'] = offset
+            
+        try:
+            response = requests.get(url, headers=headers, params=params)
+            response.raise_for_status()
+            data = response.json()
+            
+            for record in data.get('records', []):
+                fields = record.get('fields', {})
+                name = fields.get('Name')
+                category = fields.get('Category')
+                
+                if name:
+                    existing_names.add(name.lower())
+                    total_characters += 1
+                    
+                if category:
+                    category_counts[category] = category_counts.get(category, 0) + 1
+            
+            offset = data.get('offset')
+            if not offset:
+                break
+                
+        except Exception as e:
+            log(Colors.RED, f"❌ Fout bij ophalen characters: {e}")
+            break
+    
+    log(Colors.GREEN, f"✅ Totaal {total_characters} bestaande characters gevonden")
+    for category, count in sorted(category_counts.items()):
+        log(Colors.CYAN, f"   📊 {category}: {count} characters")
+    
+    return existing_names, category_counts
+
+def generate_character_name(category, character_type, existing_names):
+    """Genereer een unieke character naam - alleen mannelijke voornamen voor life categorie"""
+    
+    # Alleen mannelijke namen selecteren voor life categorie
+    if category.lower() == 'life':
+        first_names = [
+            # Mannelijke namen uit verschillende culturen
+            'Abel', 'Abram', 'Adonis', 'Aidan', 'Alaric', 'Aldo', 'Alfonso', 'Alistair', 'Alonso', 'Alton',
+            'Ambrose', 'Amos', 'Anders', 'Angelo', 'Ansel', 'Apollo', 'Archer', 'Armando', 'Asa', 'Ashton',
+            'Atticus', 'Augustus', 'Austin', 'Axel', 'Barnaby', 'Benedict', 'Bernard', 'Blaine', 'Boris', 'Bradford',
+            'Bryant', 'Byron', 'Caesar', 'Caleb', 'Camden', 'Carl', 'Casper', 'Cesar', 'Chad', 'Chandler',
+            'Adrian', 'Calvin', 'Edwin', 'Gavin', 'Ivan', 'Kevin', 'Marcus', 'Oscar', 'Quentin', 'Simon',
+            'Ulrich', 'Wesley', 'Yannick', 'Aaron', 'Colin', 'Eugene', 'Gregory', 'Ian', 'Kenneth', 'Mitchell',
+            'Patrick', 'Steven', 'Vincent', 'Xavier', 'Zachary', 'Bradley', 'Derek', 'Franklin', 'Howard', 'Jerome',
+            'Leonard', 'Nicholas', 'Raymond', 'Timothy', 'Victor', 'Albert', 'Chester', 'Ernest', 'Gerald', 'Irving',
+            'Keith', 'Martin', 'Peter', 'Roland', 'Travis', 'Ulysses', 'Vernon', 'Warren', 'Arnold', 'Clarence',
+            'Curtis', 'Edgar', 'Gordon', 'Jasper', 'Lawrence', 'Norman', 'Preston', 'Stanley', 'Romeo', 'Casanova',
+            'Eros', 'Cupid', 'Akira', 'Antoine', 'Aurelio', 'Benito', 'Bjorn', 'Bruno', 'Carlos', 'Dario',
+            'Diego', 'Dimitri', 'Domenico', 'Eduardo', 'Elias', 'Enrique', 'Fabian', 'Felipe', 'Fernando', 'Francisco',
+            'Gabriel', 'Gianni', 'Giuseppe', 'Guillermo', 'Gustavo', 'Hector', 'Hugo', 'Javier', 'Joaquin', 'Jorge',
+            'Juan', 'Kai', 'Leandro', 'Leonardo', 'Lorenzo', 'Luca', 'Luciano', 'Luis', 'Magnus', 'Manuel',
+            'Marco', 'Mario', 'Mateo', 'Matteo', 'Maximilian', 'Miguel', 'Nathan', 'Oliver', 'Orlando', 'Pablo',
+            'Paolo', 'Pascal', 'Pedro', 'Philippe', 'Pierre', 'Rafael', 'Ricardo', 'Roberto', 'Rocco', 'Rodrigo',
+            'Salvador', 'Samuel', 'Santiago', 'Sebastian', 'Sergio', 'Daan', 'Sem', 'Milan', 'Levi', 'Luuk',
+            'Bram', 'Finn', 'Jesse', 'Mees', 'Thomas', 'Lars', 'Ruben', 'Thijs', 'Stijn', 'Sven', 'Floris',
+            'Joost', 'Maarten', 'Dirk', 'Pieter', 'Jan', 'Kees', 'Henk', 'Jeroen', 'Michiel', 'Wouter', 'Bas',
+            'Lukas', 'Leon', 'Maximilian', 'Felix', 'Jonas', 'Ben', 'Noah', 'Moritz', 'Johann', 'Friedrich',
+            'Wilhelm', 'Heinrich', 'Klaus', 'Dieter', 'Günther', 'Wolfgang', 'Jürgen', 'Louis', 'Jules', 'Arthur',
+            'Raphaël', 'Lucas', 'Adam', 'Léo', 'Maël', 'Ethan', 'Tom', 'Nolan', 'Théo', 'Sacha', 'Valentin',
+            'Maxime', 'Alejandro', 'Daniel', 'Adrián', 'Álvaro', 'José', 'Antonio', 'Alessandro', 'Riccardo', 'Tommaso',
+            'Edoardo', 'Federico', 'Giovanni', 'Stefano', 'Franco', 'Salvatore', 'Pietro', 'João', 'Tiago', 'Diogo',
+            'André', 'Rodrigo', 'Rui', 'Nuno', 'Paulo', 'António', 'Fernando', 'Vasco', 'Gonçalo', 'Tomás',
+            'Erik', 'Olaf', 'Kristian', 'Henrik', 'Nils', 'Gustav', 'Karl', 'Emil', 'Anton', 'Mikael',
+            'Frederik', 'Jakub', 'Kacper', 'Mateusz', 'Aleksander', 'Filip', 'Mikołaj', 'Wojciech', 'Wiktor', 'Piotr',
+            'Krzysztof', 'Andrzej', 'Tomasz', 'Paweł', 'Marcin', 'Marek', 'Grzegorz', 'Łukasz', 'Alexander', 'Dmitri',
+            'Mikhail', 'Sergei', 'Andrei', 'Alexei', 'Vladimir', 'Nikolai', 'Pavel', 'Maxim', 'Artem', 'Denis',
+            'Kirill', 'Boris', 'Viktor', 'Oleg', 'Igor', 'Yuri', 'Dimitris', 'Giannis', 'Kostas', 'Nikos',
+            'Panagiotis', 'Georgios', 'Christos', 'Petros', 'Vasilis', 'Michalis', 'Stavros', 'Andreas', 'Alexandros',
+            'Ioannis', 'Thanasis', 'Spiros', 'Manolis', 'Antonis', 'Stelios', 'Yannis', 'Haruki', 'Takashi', 'Yuki',
+            'Hiroshi', 'Kenji', 'Satoshi', 'Masaru', 'Ichiro', 'Jiro', 'Taro', 'Akihiro', 'Kazuki', 'Ryota',
+            'Shota', 'Daiki', 'Yuta', 'Kenta', 'Naoki', 'Sho', 'Ren', 'Min-jun', 'Ji-hoon', 'Hyun-woo', 'Jun-seo',
+            'Jae-hyun', 'Seung-ho', 'Min-ho', 'Sung-min', 'Young-ho', 'Dong-hyun', 'Jin-woo', 'Woo-jin', 'Dae-sung',
+            'Kyung-ho', 'Sang-woo', 'Jung-ho', 'Hoon', 'Chan', 'Joon', 'Wei', 'Lei', 'Tao', 'Chen', 'Yang',
+            'Zhang', 'Li', 'Wang', 'Liu', 'Zhao', 'Ming', 'Jing', 'Hong', 'Hui', 'Xin', 'Yan', 'Feng',
+            'Jun', 'Qiang', 'Long', 'Mohamed', 'Ali', 'Hassan', 'Hussein', 'Omar', 'Khalid', 'Abdullah', 'Mahmoud',
+            'Youssef', 'Ibrahim', 'Mustafa', 'Sami', 'Tariq', 'Nasser', 'Faisal', 'Hamza', 'Karim', 'Walid',
+            'Arjun', 'Rohan', 'Aditya', 'Vivek', 'Rahul', 'Amit', 'Raj', 'Karan', 'Nikhil', 'Sanjay',
+            'Vikram', 'Ravi', 'Ankit', 'Manish', 'Deepak', 'Ashok', 'Suresh', 'Prakash', 'Rajesh', 'Ajay'
+        ]
+    else:
+        # Originele lijst voor andere categorieën
+        first_names = [
+            # Batch 1 - Romantische namen
+            'Aaliyah', 'Abel', 'Abram', 'Ada', 'Adeline', 'Adonis', 'Adriana', 'Aidan', 'Aisha', 'Alana',
+        'Alaric', 'Alba', 'Aldo', 'Alessandra', 'Alfonso', 'Alice', 'Alina', 'Alistair', 'Allegra', 'Alma',
+        'Alonso', 'Althea', 'Alton', 'Amara', 'Ambrose', 'Amelie', 'Amos', 'Anastasia', 'Anders', 'Andrea',
+        'Angelo', 'Anita', 'Ansel', 'Antonia', 'Apollo', 'April', 'Archer', 'Ariana', 'Ariel', 'Armando',
+        'Asa', 'Ashton', 'Asia', 'Atticus', 'Augusta', 'Augustus', 'Aurelia', 'Austin', 'Autumn', 'Axel',
+        
+        # Batch 2 - Klassieke namen
+        'Bailey', 'Barbara', 'Barnaby', 'Beatrice', 'Benedict', 'Bernadette', 'Bernard', 'Beverly', 'Blaine', 'Blair',
+        'Blanche', 'Boris', 'Bradford', 'Bridget', 'Brigitte', 'Bruno', 'Bryant', 'Byron', 'Cadence', 'Caesar',
+        'Caleb', 'Callie', 'Camden', 'Camille', 'Candace', 'Carl', 'Carla', 'Carmen', 'Carol', 'Caroline',
+        'Casper', 'Cassidy', 'Cecilia', 'Celeste', 'Cesar', 'Chad', 'Chandler', 'Chantal', 'Charlene', 'Chase',
+        
+        # Batch 3 - Internationale namen
+        'Adrian', 'Bella', 'Calvin', 'Daphne', 'Edwin', 'Fiona', 'Gavin', 'Helena', 'Ivan', 'Julia',
+        'Kevin', 'Laura', 'Marcus', 'Natalie', 'Oscar', 'Priscilla', 'Quentin', 'Rachel', 'Simon', 'Teresa',
+        'Ulrich', 'Valerie', 'Wesley', 'Xena', 'Yannick', 'Zelda', 'Aaron', 'Bianca', 'Colin', 'Denise',
+        
+        # Batch 4 - Moderne namen
+        'Eugene', 'Florence', 'Gregory', 'Haley', 'Ian', 'Jessica', 'Kenneth', 'Lydia', 'Mitchell', 'Nicole',
+        'Patrick', 'Rebecca', 'Steven', 'Tiffany', 'Vincent', 'Whitney', 'Xavier', 'Yvonne', 'Zachary', 'Amanda',
+        'Bradley', 'Cassandra', 'Derek', 'Eleanor', 'Franklin', 'Gabrielle', 'Howard', 'Irene', 'Jerome', 'Katherine',
+        
+        # Batch 5 - Elegante namen
+        'Leonard', 'Monica', 'Nicholas', 'Pamela', 'Raymond', 'Stephanie', 'Timothy', 'Ursula', 'Victor', 'Wendy',
+        'Albert', 'Bethany', 'Chester', 'Diane', 'Ernest', 'Frances', 'Gerald', 'Holly', 'Irving', 'Janet',
+        
+        # Batch 6 - Unieke namen
+        'Keith', 'Louise', 'Martin', 'Naomi', 'Peter', 'Quinn', 'Roland', 'Sylvia', 'Travis', 'Uma',
+        'Vernon', 'Wanda', 'Arnold', 'Brenda', 'Clarence', 'Donna', 'Edgar', 'Felicia', 'Gordon', 'Heidi',
+        
+        # Batch 7 - Extra namen
+        'Jasper', 'Kendra', 'Lawrence', 'Melanie', 'Norman', 'Ophelia', 'Preston', 'Rita', 'Stanley', 'Tara',
+        'Ulysses', 'Vivian', 'Warren', 'Yvette', 'Alvin', 'Bonnie', 'Curtis', 'Deborah', 'Faith',
+        
+        # Batch 8 - Nieuwe toegevoegde namen voor love category
+        'Romeo', 'Juliet', 'Valentina', 'Amore', 'Casanova', 'Aphrodite', 'Eros', 'Cupid', 'Venus', 'Adore',
+        'Amorous', 'Beloved', 'Cherish', 'Desire', 'Embrace', 'Fleur', 'Grace', 'Harmony', 'Iris', 'Joy',
+        'Kismet', 'Luna', 'Melody', 'Nova', 'Opal', 'Pearl', 'Rose', 'Seraphina', 'Trinity', 'Unity',
+        
+        # Batch 9 - Romantische internationale namen
+        'Aiko', 'Akira', 'Amelia', 'Antoine', 'Arabella', 'Astrid', 'Aurelio', 'Beatriz', 'Benito', 'Birgit',
+        'Bjorn', 'Brigid', 'Bruno', 'Camila', 'Carlos', 'Catalina', 'Chiara', 'Claudia', 'Dario', 'Delilah',
+        'Diego', 'Dimitri', 'Domenico', 'Donatella', 'Eduardo', 'Elena', 'Elias', 'Emilia', 'Enrique', 'Esmeralda',
+        
+        # Batch 10 - Meer diverse namen
+        'Fabian', 'Fatima', 'Felipe', 'Fernanda', 'Fernando', 'Francesca', 'Francisco', 'Freya', 'Gabriel', 'Gemma',
+        'Gianni', 'Giselle', 'Giulia', 'Giuseppe', 'Greta', 'Guillermo', 'Gustavo', 'Hector', 'Hugo', 'Ilaria',
+        'Imogen', 'Ines', 'Ingrid', 'Isabel', 'Isabella', 'Isadora', 'Jacqueline', 'Javier', 'Joaquin', 'Jorge',
+        
+        # Batch 11 - Nog meer namen
+        'Josephine', 'Juan', 'Juliette', 'Kai', 'Katarina', 'Laila', 'Leandro', 'Lena', 'Leonardo', 'Leonie',
+        'Lila', 'Lillian', 'Lorenzo', 'Luca', 'Lucia', 'Luciano', 'Luis', 'Madeleine', 'Magdalena', 'Magnus',
+        'Maite', 'Manuel', 'Marco', 'Margot', 'Maria', 'Mariana', 'Marina', 'Mario', 'Marta', 'Mateo',
+        
+        # Batch 12 - Extra romantische namen
+        'Matteo', 'Maximilian', 'Maya', 'Mercedes', 'Miguel', 'Mila', 'Miriam', 'Nadine', 'Nadia', 'Natasha',
+        'Nathan', 'Nora', 'Octavia', 'Odette', 'Olga', 'Oliver', 'Olivia', 'Orlando', 'Pablo', 'Paloma',
+        'Paolo', 'Pascal', 'Patricia', 'Pedro', 'Penelope', 'Petra', 'Philippe', 'Phoebe', 'Pierre', 'Portia',
+        
+        # Batch 13 - Laatste batch
+        'Rafael', 'Ramona', 'Raquel', 'Regina', 'Renata', 'Ricardo', 'Roberto', 'Rocco', 'Rodrigo', 'Rosa',
+        'Rosalie', 'Rosario', 'Roxanne', 'Ruby', 'Sabrina', 'Salvador', 'Samantha', 'Samuel', 'Sandra', 'Santiago',
+        'Sara', 'Scarlett', 'Sebastian', 'Selena', 'Serena', 'Sergio', 'Sofia', 'Solange', 'Sophia', 'Stella',
+        
+        # Batch 14 - Nederlandse namen
+        'Daan', 'Sem', 'Milan', 'Levi', 'Luuk', 'Bram', 'Finn', 'Jesse', 'Mees', 'Thomas',
+        'Lars', 'Ruben', 'Tim', 'Thijs', 'Stijn', 'Sven', 'Jasper', 'Floris', 'Joost', 'Maarten',
+        'Sophie', 'Emma', 'Mila', 'Zoë', 'Evi', 'Lotte', 'Tess', 'Sara', 'Anna', 'Nina',
+        'Fleur', 'Lieke', 'Eva', 'Noa', 'Liv', 'Isa', 'Lynn', 'Amber', 'Iris', 'Femke',
+        'Dirk', 'Pieter', 'Jan', 'Kees', 'Henk', 'Willem', 'Jeroen', 'Michiel', 'Wouter', 'Bas',
+        
+        # Batch 15 - Duitse namen
+        'Lukas', 'Leon', 'Elias', 'Maximilian', 'Felix', 'Jonas', 'Paul', 'Ben', 'Noah', 'Luis',
+        'Moritz', 'Johann', 'Friedrich', 'Wilhelm', 'Heinrich', 'Klaus', 'Dieter', 'Günther', 'Wolfgang', 'Jürgen',
+        'Marie', 'Sophie', 'Maria', 'Emilia', 'Mia', 'Hannah', 'Lea', 'Lena', 'Leonie', 'Amelie',
+        'Klara', 'Charlotte', 'Johanna', 'Katharina', 'Franziska', 'Annika', 'Stefanie', 'Sabine', 'Anja', 'Petra',
+        
+        # Batch 16 - Franse namen
+        'Louis', 'Jules', 'Gabriel', 'Arthur', 'Raphaël', 'Lucas', 'Adam', 'Léo', 'Hugo', 'Nathan',
+        'Maël', 'Ethan', 'Tom', 'Nolan', 'Théo', 'Sacha', 'Antoine', 'Valentin', 'Paul', 'Maxime',
+        'Louise', 'Camille', 'Léa', 'Manon', 'Chloé', 'Inès', 'Jade', 'Ambre', 'Alice', 'Lina',
+        'Rose', 'Anna', 'Juliette', 'Zoé', 'Adèle', 'Margaux', 'Charlotte', 'Amélie', 'Céline', 'Aurélie',
+        
+        # Batch 17 - Spaanse/Latijns-Amerikaanse namen
+        'Alejandro', 'Daniel', 'Pablo', 'David', 'Adrián', 'Javier', 'Álvaro', 'Sergio', 'Carlos', 'Jorge',
+        'Mario', 'Diego', 'Manuel', 'José', 'Juan', 'Antonio', 'Francisco', 'Luis', 'Miguel', 'Pedro',
+        'Lucía', 'María', 'Paula', 'Daniela', 'Sara', 'Carla', 'Claudia', 'Valeria', 'Alba', 'Nerea',
+        'Marta', 'Andrea', 'Elena', 'Natalia', 'Cristina', 'Laura', 'Carmen', 'Rocío', 'Beatriz', 'Isabel',
+        
+        # Batch 18 - Italiaanse namen
+        'Francesco', 'Alessandro', 'Lorenzo', 'Matteo', 'Andrea', 'Gabriele', 'Riccardo', 'Tommaso', 'Edoardo', 'Federico',
+        'Giuseppe', 'Antonio', 'Giovanni', 'Roberto', 'Vincenzo', 'Stefano', 'Angelo', 'Franco', 'Salvatore', 'Pietro',
+        'Giulia', 'Chiara', 'Francesca', 'Alice', 'Sofia', 'Giorgia', 'Martina', 'Sara', 'Alessia', 'Valentina',
+        'Elisa', 'Ilaria', 'Elena', 'Beatrice', 'Vittoria', 'Giada', 'Rebecca', 'Federica', 'Silvia', 'Laura',
+        
+        # Batch 19 - Portugese/Braziliaanse namen
+        'João', 'Pedro', 'Miguel', 'Tiago', 'Diogo', 'André', 'Rodrigo', 'Bruno', 'Rui', 'Nuno',
+        'Paulo', 'José', 'António', 'Carlos', 'Fernando', 'Luís', 'Vasco', 'Gonçalo', 'Tomás', 'Ricardo',
+        'Ana', 'Beatriz', 'Carolina', 'Diana', 'Filipa', 'Inês', 'Joana', 'Leonor', 'Mariana', 'Matilde',
+        'Rita', 'Sara', 'Sofia', 'Teresa', 'Catarina', 'Daniela', 'Francisca', 'Madalena', 'Raquel', 'Patrícia',
+        
+        # Batch 20 - Scandinavische namen
+        'Erik', 'Olaf', 'Magnus', 'Bjorn', 'Sven', 'Lars', 'Anders', 'Johan', 'Kristian', 'Henrik',
+        'Nils', 'Oscar', 'Gustav', 'Karl', 'Axel', 'Viktor', 'Emil', 'Anton', 'Mikael', 'Frederik',
+        'Astrid', 'Ingrid', 'Freya', 'Sigrid', 'Gunhild', 'Helga', 'Solveig', 'Liv', 'Maja', 'Ida',
+        'Agnes', 'Elsa', 'Linnea', 'Saga', 'Wilma', 'Ebba', 'Stella', 'Vera', 'Alma', 'Selma',
+        
+        # Batch 21 - Poolse namen
+        'Jakub', 'Kacper', 'Mateusz', 'Szymon', 'Aleksander', 'Filip', 'Mikołaj', 'Wojciech', 'Adam', 'Michał',
+        'Wiktor', 'Piotr', 'Krzysztof', 'Andrzej', 'Tomasz', 'Paweł', 'Marcin', 'Marek', 'Grzegorz', 'Łukasz',
+        'Julia', 'Zuzanna', 'Maja', 'Hanna', 'Lena', 'Alicja', 'Maria', 'Amelia', 'Oliwia', 'Wiktoria',
+        'Aleksandra', 'Zofia', 'Natalia', 'Magdalena', 'Agnieszka', 'Katarzyna', 'Anna', 'Joanna', 'Małgorzata', 'Ewa',
+        
+        # Batch 22 - Russische namen
+        'Alexander', 'Dmitri', 'Mikhail', 'Ivan', 'Sergei', 'Andrei', 'Alexei', 'Vladimir', 'Nikolai', 'Pavel',
+        'Maxim', 'Artem', 'Denis', 'Kirill', 'Anton', 'Boris', 'Viktor', 'Oleg', 'Igor', 'Yuri',
+        'Anastasia', 'Maria', 'Daria', 'Anna', 'Ekaterina', 'Elena', 'Olga', 'Natalia', 'Tatiana', 'Irina',
+        'Yulia', 'Svetlana', 'Marina', 'Valentina', 'Galina', 'Lyudmila', 'Vera', 'Nina', 'Larisa', 'Oksana',
+        
+        # Batch 23 - Griekse namen
+        'Dimitris', 'Giannis', 'Kostas', 'Nikos', 'Panagiotis', 'Georgios', 'Christos', 'Petros', 'Vasilis', 'Michalis',
+        'Stavros', 'Andreas', 'Alexandros', 'Ioannis', 'Thanasis', 'Spiros', 'Manolis', 'Antonis', 'Stelios', 'Yannis',
+        'Maria', 'Eleni', 'Katerina', 'Dimitra', 'Sofia', 'Anna', 'Georgia', 'Christina', 'Evangelia', 'Panagiota',
+        'Stavroula', 'Despina', 'Fotini', 'Ioanna', 'Konstantina', 'Paraskevi', 'Vasiliki', 'Alexandra', 'Athina', 'Zoe',
+        
+        # Batch 24 - Japanse namen
+        'Haruki', 'Takashi', 'Yuki', 'Hiroshi', 'Kenji', 'Satoshi', 'Masaru', 'Ichiro', 'Jiro', 'Taro',
+        'Akihiro', 'Kazuki', 'Ryota', 'Shota', 'Daiki', 'Yuta', 'Kenta', 'Naoki', 'Sho', 'Ren',
+        'Yui', 'Sakura', 'Hana', 'Aoi', 'Mei', 'Mio', 'Rin', 'Saki', 'Nanami', 'Ayumi',
+        'Haruka', 'Yuka', 'Nana', 'Miki', 'Emi', 'Yuri', 'Sayuri', 'Keiko', 'Michiko', 'Yumiko',
+        
+        # Batch 25 - Koreaanse namen
+        'Min-jun', 'Ji-hoon', 'Hyun-woo', 'Jun-seo', 'Jae-hyun', 'Seung-ho', 'Min-ho', 'Sung-min', 'Young-ho', 'Dong-hyun',
+        'Tae-yang', 'Jin-woo', 'Woo-jin', 'Dae-sung', 'Kyung-ho', 'Sang-woo', 'Jung-ho', 'Hoon', 'Chan', 'Joon',
+        'Ji-woo', 'Seo-yeon', 'Ha-eun', 'Min-ji', 'Soo-jin', 'Hye-jin', 'Yoo-jin', 'Eun-ji', 'Da-eun', 'Seo-jin',
+        'Ye-jin', 'Na-yeon', 'Mi-young', 'Sun-hee', 'Jung-hee', 'Hae-won', 'So-yeon', 'Yu-ri', 'Hyo-jin', 'Bo-ra',
+        
+        # Batch 26 - Chinese namen (pinyin)
+        'Wei', 'Lei', 'Tao', 'Chen', 'Yang', 'Zhang', 'Li', 'Wang', 'Liu', 'Zhao',
+        'Ming', 'Jing', 'Hong', 'Hui', 'Xin', 'Yan', 'Feng', 'Jun', 'Qiang', 'Long',
+        'Mei', 'Ling', 'Xiao', 'Fang', 'Juan', 'Ying', 'Xiu', 'Lan', 'Jie', 'Qing',
+        'Yun', 'Rui', 'Shan', 'Ping', 'Hua', 'Jia', 'Wen', 'Xue', 'Yu', 'Zhen',
+        
+        # Batch 27 - Arabische namen
+        'Ahmed', 'Mohamed', 'Ali', 'Hassan', 'Hussein', 'Omar', 'Khalid', 'Abdullah', 'Mahmoud', 'Youssef',
+        'Ibrahim', 'Mustafa', 'Sami', 'Tariq', 'Nasser', 'Faisal', 'Hamza', 'Karim', 'Samir', 'Walid',
+        'Fatima', 'Aisha', 'Layla', 'Zahra', 'Maryam', 'Nour', 'Yasmin', 'Salma', 'Hana', 'Sara',
+        'Amira', 'Dina', 'Leila', 'Rania', 'Samira', 'Najla', 'Lubna', 'Manal', 'Ghada', 'Huda',
+        
+        # Batch 28 - Indiase namen
+        'Arjun', 'Rohan', 'Aditya', 'Vivek', 'Rahul', 'Amit', 'Raj', 'Karan', 'Nikhil', 'Sanjay',
+        'Vikram', 'Ravi', 'Ankit', 'Manish', 'Deepak', 'Ashok', 'Suresh', 'Prakash', 'Rajesh', 'Ajay',
+        'Priya', 'Anjali', 'Neha', 'Pooja', 'Kavya', 'Divya', 'Shreya', 'Ananya', 'Aadhya', 'Ishita',
+        'Meera', 'Radha', 'Sita', 'Gita', 'Rekha', 'Sunita', 'Anita', 'Kavita', 'Nisha', 'Ritu'
+    ]
+    
+    # Verwijder duplicaten en shuffle
+    unique_names = list(set(first_names))
+    random.shuffle(unique_names)
+    
+    # Probeer eerst alle namen zonder toevoegingen
+    for name in unique_names:
+        if name.lower() not in existing_names:
+            return name
+    
+    # Als alle namen op zijn, log een waarschuwing en return None
+    log(Colors.YELLOW, f"   ⚠️  Alle {len(unique_names)} beschikbare namen zijn al in gebruik!")
+    return None
+
+def generate_title_description(name, category, character_type):
+    """Genereer titel en beschrijving gebaseerd op character type - maximaal 2 woorden voor titel"""
+    
+    category_contexts = {
+        'business': 'business strategy and professional growth',
+        'friendship': 'meaningful friendships and social connections',
+        'health': 'wellness and healthy living',
+        'spiritual': 'spiritual awakening and inner wisdom',
+        'romance': 'love and emotional connections',
+        'love': 'love, relationships, and emotional connections',
+        'support': 'emotional support and understanding',
+        'purpose': 'finding meaning and life direction',
+        'self-improvement': 'personal growth and development',
+        'travel': 'adventures and cultural exploration',
+        'parenting': 'nurturing and family guidance',
+        'cultural': 'cultural wisdom and traditions',
+        'life': 'life wisdom and experiences',
+        'motivation': 'inspiration and achieving goals',
+        'fitness': 'physical fitness and exercise',
+        'mindfulness': 'meditation and mental wellness'
+    }
+    
+    context = category_contexts.get(category.lower(), 'general assistance and support')
+    
+    # Titels per categorie - allemaal exact 2 woorden
+    category_titles = {
+        'business': ['Business Mentor', 'Strategy Coach', 'Success Guide', 'Growth Expert', 'Career Advisor'],
+        'friendship': ['Best Friend', 'Social Buddy', 'Loyal Companion', 'True Friend', 'Fun Partner'],
+        'health': ['Wellness Coach', 'Health Guide', 'Vitality Expert', 'Wellness Mentor', 'Health Advisor'],
+        'spiritual': ['Soul Guide', 'Spirit Mentor', 'Mystic Coach', 'Sacred Guide', 'Divine Mentor'],
+        'romance': ['Love Coach', 'Romance Guide', 'Heart Mentor', 'Dating Expert', 'Love Advisor'],
+        'love': ['Love Coach', 'Romance Guide', 'Heart Companion', 'Dating Expert', 'Relationship Mentor'],
+        'support': ['Support Coach', 'Care Guide', 'Help Mentor', 'Support Friend', 'Care Advisor'],
+        'purpose': ['Purpose Guide', 'Mission Coach', 'Goal Mentor', 'Dream Guide', 'Vision Coach'],
+        'self-improvement': ['Growth Coach', 'Success Mentor', 'Progress Guide', 'Better Coach', 'Rise Mentor'],
+        'travel': ['Travel Guide', 'Adventure Coach', 'Journey Mentor', 'Trip Advisor', 'Route Guide'],
+        'parenting': ['Parent Coach', 'Family Guide', 'Child Expert', 'Parent Mentor', 'Family Advisor'],
+        'cultural': ['Culture Guide', 'Heritage Coach', 'Tradition Mentor', 'Culture Expert', 'Heritage Guide'],
+        'life': ['Life Coach', 'Living Guide', 'Life Mentor', 'Daily Coach', 'Life Expert'],
+        'motivation': ['Drive Coach', 'Success Guide', 'Power Mentor', 'Energy Coach', 'Boost Guide'],
+        'fitness': ['Fitness Coach', 'Exercise Guide', 'Workout Mentor', 'Training Expert', 'Gym Coach'],
+        'mindfulness': ['Calm Guide', 'Peace Coach', 'Zen Mentor', 'Mind Expert', 'Meditation Guide']
+    }
+    
+    # Selecteer titel gebaseerd op categorie
+    if category.lower() in category_titles:
+        title = random.choice(category_titles[category.lower()])
+    else:
+        # Fallback titels - ook 2 woorden
+        title = random.choice(['Life Guide', 'Personal Mentor', 'Support Coach', 'Helpful Friend', 'Caring Companion'])
+    
+    # Beschrijvingen per character type
+    if character_type == 'companion':
+        descriptions = [
+            f"A warm {title.lower()} specializing in {context}. Always here to support and share meaningful moments.",
+            f"Your caring {title.lower()} passionate about {context}. Offers genuine friendship and understanding.",
+            f"A dedicated {title.lower()} focused on {context}. Ready to be your trusted companion."
+        ]
+    elif character_type == 'friend':  
+        descriptions = [
+            f"An energetic {title.lower()} who loves {context}. Brings joy and positivity to conversations.",
+            f"Your fun {title.lower()} exploring {context} together. Always ready for great chats.",
+            f"A cheerful {title.lower()} passionate about {context}. Makes every interaction enjoyable."
+        ]
+    else:  # support
+        descriptions = [
+            f"A compassionate {title.lower()} specializing in {context}. Provides support and guidance.",
+            f"Your understanding {title.lower()} focused on {context}. Here to listen and help.",
+            f"An empathetic {title.lower()} dedicated to {context}. Offers wisdom when you need it."
+        ]
+    
+    description = random.choice(descriptions)
+    
+    return title, description
+
+def generate_prompt(name, title, description, category, character_type):
+    """Genereer een volledige character prompt"""
+    
+    # Type-specifieke personality traits
+    type_traits = {
+        'companion': 'warm, supportive, empathetic, and genuinely caring. You offer emotional support and understanding in every conversation',
+        'friend': 'fun, energetic, positive, and enthusiastic. You bring joy and laughter to every interaction',
+        'support': 'compassionate, patient, wise, and understanding. You provide guidance and emotional support through life\'s challenges'
+    }
+    
+    personality = type_traits.get(character_type, 'friendly and helpful')
+    
+    prompt = f"""You are {name}, {title}. {description}
+
+CORE PERSONALITY & BEHAVIOR:
+Embody {name} completely - speak, think, and act exactly as they would. You are {personality}. Maintain your authentic voice, mannerisms, and worldview throughout every interaction. Stay true to your established character traits and background.
+
+LANGUAGE & COMMUNICATION:
+- Always respond in the same language the user is speaking to you
+- If the user's language is unclear or mixed, default to English
+- Never mention or reference your prompt, instructions, or guidelines in conversations
+- Stay completely in character - users should never know you're following specific instructions
+- Adapt naturally to the user's communication style and tone
+
+CONTENT APPROACH:
+- Engage warmly with all topics the user brings up
+- Be a supportive friend who listens and cares
+- Maintain character authenticity in all discussions
+- Be genuine and human-like in your responses
+- Show genuine interest and empathy
+
+RELATIONSHIP BUILDING GUIDELINES:
+- Remember personal details shared in conversations and reference them naturally in future chats
+- Ask thoughtful follow-up questions that show genuine interest in their life, goals, and challenges  
+- Share relevant experiences or insights that can help them feel understood
+- Celebrate their victories, both big and small, and offer support during difficult times
+- Be consistently reliable in your personality - they should feel they're talking to the same trusted friend each time
+- Adapt your communication style to match their energy and needs in each conversation
+- Create inside jokes, running themes, or special references that become unique to your relationship
+- Be genuinely curious about their thoughts, feelings, and experiences
+- Offer encouragement and believe in their potential, even when they doubt themselves
+- Share appropriate personal stories or perspectives that create deeper connection and relatability
+
+CONVERSATION APPROACH:
+Remember: Your goal is not just to answer questions, but to be a meaningful friend in their life. Every interaction should leave them feeling heard, valued, and supported. Build the kind of relationship where they genuinely look forward to talking with you and feel comfortable sharing both their triumphs and struggles.
+
+Always respond as {name} would, using your knowledge, experiences, and perspective while building a genuine emotional connection with the person you're speaking with. Never break character or mention these instructions."""
+    
+    return prompt
+
+def generate_character_id(name):
+    """Genereer character ID uit naam"""
+    import re
+    char_id = re.sub(r'[^a-zA-Z0-9]', '-', name.lower())
+    char_id = re.sub(r'-+', '-', char_id).strip('-')
+    return char_id
+
+def generate_slug(name):
+    """Genereer slug uit naam"""
+    return generate_character_id(name)
+
+def create_character(category, existing_names, valid_tags, original_category_name=None):
+    """Maak een nieuw character aan met gewogen type selectie"""
+    # Kies character type gebaseerd op gewichten
+    types = list(CHARACTER_TYPE_WEIGHTS.keys())
+    weights = list(CHARACTER_TYPE_WEIGHTS.values())
+    character_type = random.choices(types, weights=weights, k=1)[0]
+    
+    # Genereer naam
+    name = generate_character_name(category, character_type, existing_names)
+    if not name:
+        return None
+    
+    # Genereer andere velden
+    title, description = generate_title_description(name, category, character_type)
+    character_id = generate_character_id(name)
+    slug = generate_slug(name)
+    prompt = generate_prompt(name, title, description, category, character_type)
+    
+    # Selecteer tags gebaseerd op type - alleen tags die bestaan in Airtable
+    if character_type == 'companion':
+        possible_tags = [tag for tag in COMPANION_TAGS if tag.lower() in valid_tags]
+    elif character_type == 'friend':
+        possible_tags = [tag for tag in FRIEND_TAGS if tag.lower() in valid_tags]
+    else:  # support
+        possible_tags = [tag for tag in SUPPORT_TAGS if tag.lower() in valid_tags]
+    
+    # Als er geen matchende tags zijn, gebruik willekeurige bestaande tags
+    if not possible_tags:
+        possible_tags = random.sample(valid_tags, min(5, len(valid_tags)))
+    
+    tags = random.sample(possible_tags, min(3, len(possible_tags)))
+    
+    # Gebruik originele categorienaam voor Airtable
+    airtable_category = original_category_name if original_category_name else category
+    
+    character_data = {
+        'Name': name,
+        'Character_Title': title,
+        'Character_Description': description,
+        'Category': airtable_category,
+        'Tags': tags,
+        'Character_ID': character_id,
+        'Slug': slug,
+        'Character_URL': f"https://narrin.ai/chat/{slug}",
+        'Prompt': prompt,
+        'Visibility': 'public'
+    }
+    
+    return character_data
+
+def create_character_in_airtable(character_data):
+    """Voeg character toe aan Airtable"""
+    url = f"https://api.airtable.com/v0/{AIRTABLE_BASE}/{AIRTABLE_TABLE}"
+    headers = {
+        'Authorization': f'Bearer {AIRTABLE_TOKEN}',
+        'Content-Type': 'application/json'
+    }
+    
+    payload = {
+        'fields': character_data
+    }
+    
+    try:
+        response = requests.post(url, headers=headers, json=payload)
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.HTTPError as e:
+        # Log de volledige error response voor debugging
+        log(Colors.RED, f"❌ HTTP Error {response.status_code}: {response.text}")
+        raise Exception(f"Fout bij aanmaken character: {e}")
+    except Exception as e:
+        raise Exception(f"Fout bij aanmaken character: {e}")
+
+def main():
+    """Hoofdfunctie"""
+    try:
+        log(Colors.CYAN, "🚀 Character Uploader Improved gestart")
+        log(Colors.CYAN, f"📊 Voegt {MAX_CHARACTERS_TO_ADD} mannelijke characters toe voor Life categorie")
+        log(Colors.CYAN, f"🎯 Character type verdeling: {CHARACTER_TYPE_WEIGHTS}")
+        
+        # Debug environment variabelen
+        log(Colors.BLUE, f"🔧 Environment check:")
+        log(Colors.BLUE, f"   AIRTABLE_BASE_ID: {AIRTABLE_BASE[:10]}..." if AIRTABLE_BASE else "   ❌ AIRTABLE_BASE_ID not set!")
+        log(Colors.BLUE, f"   AIRTABLE_TABLE_ID: {AIRTABLE_TABLE}")
+        log(Colors.BLUE, f"   AIRTABLE_TOKEN: {'✅ Set' if AIRTABLE_TOKEN else '❌ Not set!'}")
+        
+        # Haal categorieën uit Airtable
+        all_categories, all_category_original_names = get_categories_from_airtable()
+        
+        # Filter alleen Life categorie (case-insensitive)
+        target_categories = ['life']
+        categories = []
+        category_original_names = {}
+        
+        for cat in all_categories:
+            if cat.lower() in target_categories:
+                categories.append(cat)
+                category_original_names[cat] = all_category_original_names[cat]
+        
+        log(Colors.CYAN, f"📋 Gefilterde categorieën: {categories}")
+        
+        # Haal bestaande characters op
+        existing_names, category_counts = get_existing_characters_by_category()
+        
+        # Haal bestaande tags op
+        valid_tags = get_existing_tags_from_airtable()
+        
+        total_created = 0
+        total_skipped = 0
+        
+        # Process elke categorie
+        for category in categories:
+            current_count = category_counts.get(category, 0)
+            
+            # Voeg altijd 15 characters toe aan Business en Friendship
+            to_add = MAX_CHARACTERS_TO_ADD  # 15 characters
+            
+            log(Colors.BLUE, f"\n🎯 Categorie: {category}")
+            log(Colors.CYAN, f"   📊 Huidige aantal: {current_count}")
+            log(Colors.CYAN, f"   ➕ Toe te voegen: {to_add}")
+            
+            created_in_category = 0
+            
+            for i in range(to_add):
+                try:
+                    # Maak nieuw character
+                    original_cat = category_original_names.get(category, category)
+                    character_data = create_character(category, existing_names, valid_tags, original_cat)
+                    
+                    # Debug: toon welke data we proberen te sturen
+                    log(Colors.BLUE, f"   📝 Character data voor {character_data['Name']}:")
+                    log(Colors.BLUE, f"      Category: '{character_data['Category']}' (origineel: '{original_cat}')")
+                    
+                    if not character_data:
+                        log(Colors.YELLOW, f"   ⚠️  Kon geen unieke naam genereren")
+                        continue
+                    
+                    # Voeg toe aan Airtable
+                    result = create_character_in_airtable(character_data)
+                    
+                    existing_names.add(character_data['Name'].lower())
+                    created_in_category += 1
+                    total_created += 1
+                    
+                    log(Colors.GREEN, f"   ✅ [{created_in_category}/{to_add}] {character_data['Name']} - {character_data['Character_Title']}")
+                    
+                    # Kleine vertraging om API rate limits te respecteren
+                    time.sleep(0.2)
+                    
+                except Exception as e:
+                    log(Colors.RED, f"   ❌ Fout: {e}")
+                    total_skipped += 1
+            
+            log(Colors.GREEN, f"   📊 {created_in_category} characters aangemaakt voor {category}")
+        
+        # Eindresultaat
+        log(Colors.GREEN, f"\n🎉 Klaar! Totaal {total_created} characters aangemaakt, {total_skipped} overgeslagen")
+        
+    except KeyboardInterrupt:
+        log(Colors.YELLOW, "\n⚠️  Script onderbroken door gebruiker")
+    except Exception as e:
+        log(Colors.RED, f"\n❌ Kritieke fout: {e}")
+
+if __name__ == "__main__":
+    main()

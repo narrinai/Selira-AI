@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chat Visualization Test - Narrin AI</title>
+  <meta name="robots" content="noindex, nofollow" />
+  
+  <!-- Import Modern Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ===== CSS CUSTOM PROPERTIES (Narrin AI Styling) ===== */
+    :root {
+      /* Primary Colors */
+      --color-white: #ffffff;
+      --color-off-white: #fafafa;
+      --color-light-gray: #f5f5f5;
+      
+      /* Accent Colors */
+      --color-teal: #14b8a6;
+      --color-teal-light: #5eead4;
+      --color-teal-dark: #0f766e;
+      --color-coral: #f97316;
+      --color-coral-light: #fb923c;
+      
+      /* Supporting Colors */
+      --color-navy: #1e293b;
+      --color-navy-light: #334155;
+      --color-gray: #64748b;
+      --color-gray-light: #94a3b8;
+      --color-gray-dark: #475569;
+      
+      /* Gradients */
+      --gradient-primary: linear-gradient(135deg, var(--color-teal) 0%, var(--color-coral) 100%);
+      --gradient-subtle: linear-gradient(135deg, var(--color-teal-light) 0%, var(--color-coral-light) 100%);
+      
+      /* Shadows */
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      
+      /* Spacing */
+      --spacing-xs: 0.5rem;
+      --spacing-sm: 0.75rem;
+      --spacing-md: 1rem;
+      --spacing-lg: 1.5rem;
+      --spacing-xl: 2rem;
+      --spacing-2xl: 3rem;
+      --spacing-3xl: 4rem;
+      
+      /* Typography */
+      --font-primary: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-secondary: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      
+      /* Font Sizes */
+      --font-size-xs: 0.75rem;
+      --font-size-sm: 0.875rem;
+      --font-size-base: 1rem;
+      --font-size-lg: 1.125rem;
+      --font-size-xl: 1.25rem;
+      --font-size-2xl: 1.5rem;
+      --font-size-3xl: 1.875rem;
+      --font-size-4xl: 2.25rem;
+      
+      /* Border Radius */
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --radius-full: 9999px;
+      
+      /* Transitions */
+      --transition-fast: 150ms ease-out;
+      --transition-base: 300ms ease-out;
+      --transition-slow: 500ms ease-out;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-primary);
+      background: var(--color-off-white);
+      color: var(--color-navy);
+      line-height: 1.6;
+      font-size: var(--font-size-base);
+      min-height: 100vh;
+      padding: var(--spacing-2xl) var(--spacing-lg);
+    }
+
+    .chat-visualization {
+      max-width: 400px;
+      margin: 0 auto;
+      background: var(--color-light-gray);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      position: relative;
+    }
+
+    .step-number {
+      width: 60px;
+      height: 60px;
+      background: var(--gradient-primary);
+      color: var(--color-white);
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--font-size-xl);
+      font-weight: 700;
+      margin: 0 auto var(--spacing-lg);
+      box-shadow: var(--shadow-md);
+    }
+
+    .chat-messages {
+      background: var(--color-off-white);
+      padding: var(--spacing-md);
+      border-radius: var(--radius-md);
+      font-size: var(--font-size-sm);
+      border: 2px solid var(--color-light-gray);
+      box-shadow: var(--shadow-sm);
+      max-width: 300px;
+      margin: 0 auto;
+    }
+
+    .chat-messages p {
+      margin: 0 0 var(--spacing-xs) 0;
+      line-height: 1.4;
+      padding: var(--spacing-xs) var(--spacing-sm);
+      border-radius: var(--radius-sm);
+      background: var(--color-white);
+      box-shadow: var(--shadow-sm);
+      font-size: var(--font-size-xs);
+    }
+
+    .chat-messages p:has(img.avatar) {
+      background: var(--color-light-gray);
+    }
+
+    .chat-messages p:last-child {
+      margin-bottom: 0;
+    }
+
+    .avatar {
+      width: 20px;
+      height: 20px;
+      border-radius: var(--radius-full);
+      object-fit: cover;
+      margin-right: 4px;
+      vertical-align: middle;
+      display: inline-block;
+    }
+
+
+    @media (max-width: 768px) {
+      .chat-visualization {
+        max-width: 100%;
+        margin: 0;
+        padding: var(--spacing-md);
+      }
+      
+      .chat-messages {
+        padding: var(--spacing-sm);
+        gap: var(--spacing-xs);
+      }
+      
+      .message-bubble {
+        padding: var(--spacing-xs);
+      }
+    }
+  </style>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+</head>
+<body>
+  <div class="chat-visualization">
+    <div class="step-number">3</div>
+    
+    <div class="chat-messages">
+      <p><strong>You:</strong> I can't focus on anything today. My brain feels like chaos</p>
+      <p><strong><img class="avatar" src="https://narrin.ai/avatars/emerald-1754253047878.webp" alt="Emerald">Emerald:</strong> Let's break this down together. What three things are competing for your attention right now?</p>
+      <p><strong>You:</strong> Actually its this work project. That's what's making everything feel overwhelming</p>
+    </div>
+  </div>
+</body>
+</html>

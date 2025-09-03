@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Narrin AI - Social Media Templates</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Outfit:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: #f8fafc;
+      padding: 40px;
+      color: #1e293b;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 36px;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #14b8a6 0%, #f97316 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .subtitle {
+      color: #64748b;
+      margin-bottom: 40px;
+    }
+
+    .template-section {
+      margin-bottom: 50px;
+    }
+
+    h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: #1e293b;
+    }
+
+    .template-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 30px;
+    }
+
+    .template-card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .template-preview {
+      position: relative;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #f1f5f9;
+    }
+
+    .template-title {
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: #1e293b;
+    }
+
+    .template-dimensions {
+      color: #64748b;
+      font-size: 14px;
+      margin-bottom: 15px;
+      font-family: monospace;
+    }
+
+    .download-btn {
+      background: linear-gradient(135deg, #14b8a6 0%, #f97316 100%);
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      width: 100%;
+    }
+
+    .download-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(20, 184, 166, 0.3);
+    }
+
+    /* Template Designs */
+    .linkedin-banner {
+      width: 100%;
+      height: 191px;
+      background: linear-gradient(135deg, #14b8a6 0%, #f97316 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .twitter-header {
+      width: 100%;
+      height: 167px;
+      background: linear-gradient(135deg, #1e293b 0%, #14b8a6 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .facebook-cover {
+      width: 100%;
+      height: 183px;
+      background: linear-gradient(135deg, #14b8a6 0%, #f97316 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .youtube-banner {
+      width: 100%;
+      height: 180px;
+      background: linear-gradient(135deg, #f97316 0%, #14b8a6 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .instagram-post {
+      width: 100%;
+      aspect-ratio: 1;
+      background: linear-gradient(135deg, #14b8a6 0%, #f97316 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .instagram-story {
+      width: 100%;
+      height: 400px;
+      background: linear-gradient(180deg, #14b8a6 0%, #f97316 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .profile-pic {
+      width: 200px;
+      height: 200px;
+      background: linear-gradient(135deg, #14b8a6 0%, #f97316 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+    }
+
+    .email-signature {
+      width: 100%;
+      height: 150px;
+      background: white;
+      border: 2px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      padding: 20px;
+      gap: 20px;
+    }
+
+    .banner-logo {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      color: white;
+      font-size: 32px;
+      letter-spacing: -1px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .banner-tagline {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 14px;
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .pattern-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      opacity: 0.1;
+      background-image: repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,.1) 35px, rgba(255,255,255,.1) 70px);
+    }
+
+    .icon-circle {
+      width: 50px;
+      height: 50px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 24px;
+      color: #14b8a6;
+    }
+
+    .specs-table {
+      width: 100%;
+      margin-top: 40px;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .specs-table table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .specs-table th {
+      background: linear-gradient(135deg, #14b8a6 0%, #f97316 100%);
+      color: white;
+      padding: 15px;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    .specs-table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .specs-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .specs-table tr:hover {
+      background: #f8fafc;
+    }
+
+    .platform-name {
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    .dimension-code {
+      font-family: monospace;
+      color: #14b8a6;
+      font-size: 14px;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 20px;
+      }
+
+      .template-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+</head>
+<body>
+  <div class="container">
+    <h1>Narrin AI Social Media Templates</h1>
+    <p class="subtitle">Ready-to-use templates for all social media platforms</p>
+
+    <!-- Profile Pictures -->
+    <div class="template-section">
+      <h2>Profile Pictures</h2>
+      <div class="template-grid">
+        <div class="template-card">
+          <div class="template-preview">
+            <div class="profile-pic">
+              <svg width="100" height="100" viewBox="0 0 32 32" style="width: 100px; height: 100px;">
+                <defs>
+                  <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#14b8a6;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#f97316;stop-opacity:1" />
+                  </linearGradient>
+                </defs>
+                <circle cx="16" cy="16" r="15" fill="url(#gradient1)" stroke="none"/>
+                <path d="M 8 24 L 8 8 L 12 8 L 20 20 L 20 8 L 24 8 L 24 24 L 20 24 L 12 12 L 12 24 L 8 24 Z" fill="white" stroke="none"/>
+              </svg>
+            </div>
+          </div>
+          <div class="template-title">Universal Profile Picture</div>
+          <div class="template-dimensions">400x400px (Circle crop)</div>
+          <button class="download-btn" onclick="downloadTemplate('profile-universal')">Download PNG</button>
+        </div>
+
+        <div class="template-card">
+          <div class="template-preview">
+            <div class="profile-pic" style="background: #22c55e;">
+              <svg width="100" height="100" viewBox="0 0 32 32" style="width: 100px; height: 100px;">
+                <circle cx="16" cy="16" r="15" fill="white" stroke="none"/>
+                <path d="M 8 24 L 8 8 L 12 8 L 20 20 L 20 8 L 24 8 L 24 24 L 20 24 L 12 12 L 12 24 L 8 24 Z" fill="#22c55e" stroke="none"/>
+              </svg>
+            </div>
+          </div>
+          <div class="template-title">Green Profile Picture</div>
+          <div class="template-dimensions">400x400px (Circle crop)</div>
+          <button class="download-btn" onclick="downloadTemplate('profile-green')">Download PNG</button>
+        </div>
+
+        <div class="template-card">
+          <div class="template-preview">
+            <div style="width: 100%; height: 120px; background: linear-gradient(135deg, #14b8a6 0%, #f97316 100%); display: flex; align-items: center; justify-content: center; border-radius: 8px;">
+              <div style="color: white; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 24px; letter-spacing: -1px;">
+                Narrin AI
+              </div>
+            </div>
+          </div>
+          <div class="template-title">Logo Only (No Tagline)</div>
+          <div class="template-dimensions">Various sizes</div>
+          <button class="download-btn" onclick="downloadTemplate('logo-only')">Download PNG</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- LinkedIn -->
+    <div class="template-section">
+      <h2>LinkedIn</h2>
+      <div class="template-grid">
+        <div class="template-card">
+          <div class="template-preview">
+            <div class="linkedin-banner">
+              <div class="pattern-overlay"></div>
+              <div style="text-align: center; z-index: 1;">
+                <div class="banner-logo" style="font-size: 48px; margin-bottom: 10px;">
+                  Narrin AI
+                </div>
+                <div class="banner-tagline">Your Daily Thought Organizer</div>
+              </div>
+            </div>
+          </div>
+          <div class="template-title">LinkedIn Company Banner</div>
+          <div class="template-dimensions">1128x191px</div>
+          <button class="download-btn" onclick="downloadTemplate('linkedin-company')">Download PNG</button>
+        </div>
+
+        <div class="template-card">
+          <div class="template-preview">
+            <div class="linkedin-banner" style="background: #22c55e;">
+              <div class="pattern-overlay"></div>
+              <div style="text-align: center; z-index: 1;">
+                <div class="banner-logo">
+                  <div class="icon-circle" style="background: white; color: #22c55e;">N</div>
+                  <span>Narrin AI</span>
+                </div>
+                <div class="banner-tagline">Your Daily Thought Organizer</div>
+              </div>
+            </div>
+          </div>
+          <div class="template-title">LinkedIn Green Banner</div>
+          <div class="template-dimensions">1128x191px</div>
+          <button class="download-btn" onclick="downloadTemplate('linkedin-green')">Download PNG</button>
+        </div>
+
+        <div class="template-card">
+          <div class="template-preview">
+            <div class="linkedin-banner" style="height: 99px; background: linear-gradient(135deg, #1e293b 0%, #14b8a6 100%);">
+              <div class="pattern-overlay"></div>
+              <div class="banner-logo" style="font-size: 24px; z-index: 1;">
+                <div class="icon-circle" style="width: 40px; height: 40px; font-size: 20px;">N</div>
+                <span>Narrin AI</span>
+              </div>
+            </div>
+          </div>
+          <div class="template-title">LinkedIn Personal Banner</div>
+          <div class="template-dimensions">1584x396px</div>
+          <button class="download-btn" onclick="downloadTemplate('linkedin-personal')">Download PNG</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Twitter/X -->
+    <div class="template-section">
+      <h2>Twitter/X</h2>
+      <div class="template-grid">
+        <div class="template-card">
+          <div class="template-preview">
+            <div class="twitter-header">
+              <div class="pattern-overlay"></div>
+              <div style="text-align: center; z-index: 1;">
+                <div class="banner-logo" style="font-size: 48px; margin-bottom: 10px;">
+                  Narrin AI
+                </div>
+                <div class="banner-tagline">Your Daily Thought Organizer</div>
+              </div>
+            </div>
+          </div>
+          <div class="template-title">Twitter/X Header</div>
+          <div class="template-dimensions">1500x500px</div>
+          <button class="download-btn" onclick="downloadTemplate('twitter-header')">Download PNG</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Facebook -->
+    <div class="template-section">
+      <h2>Facebook</h2>
+      <div class="template-grid">
+        <div class="template-card">
+          <div class="template-preview">
+            <div class="facebook-cover">
+              <div class="pattern-overlay"></div>
+              <div style="text-align: center; z-index: 1;">
+                <div class="banner-logo" style="font-size: 48px; margin-bottom: 10px;">
+                  Narrin AI
+                </div>
+                <div class="banner-tagline">Your Daily Thought Organizer</div>
+              </div>
+            </div>
+          </div>
+          <div class="template-title">Facebook Page Cover</div>
+          <div class="template-dimensions">1200x630px</div>
+          <button class="download-btn" onclick="downloadTemplate('facebook-cover')">Download PNG</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- YouTube -->
+    <div class="template-section">
+      <h2>YouTube</h2>
+      <div class="template-grid">
+        <div class="template-card">
+          <div class="template-preview">
+            <div class="youtube-banner">
+              <div class="pattern-overlay"></div>
+              <div style="text-align: center; z-index: 1;">
+                <div class="banner-logo" style="font-size: 48px; margin-bottom: 10px;">
+                  Narrin AI
+                </div>
+                <div class="banner-tagline">Your Daily Thought Organizer</div>
+              </div>
+            </div>
+          </div>
+          <div class="template-title">YouTube Channel Banner</div>
+          <div class="template-dimensions">2560x1440px</div>
+          <button class="download-btn" onclick="downloadTemplate('youtube-banner')">Download PNG</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Instagram -->
+    <div class="template-section">
+      <h2>Instagram</h2>
+      <div class="template-grid">
+        <div class="template-card">
+          <div class="template-preview">
+            <div class="instagram-post">
+              <div class="pattern-overlay"></div>
+              <div style="text-align: center; z-index: 1;">
+                <div class="icon-circle" style="width: 80px; height: 80px; font-size: 40px; margin: 0 auto 20px;">N</div>
+                <div class="banner-logo">Narrin AI</div>
+                <div class="banner-tagline">Your Daily Thought Organizer</div>
+              </div>
+            </div>
+          </div>
+          <div class="template-title">Instagram Post Square</div>
+          <div class="template-dimensions">1080x1080px</div>
+          <button class="download-btn" onclick="downloadTemplate('instagram-post')">Download PNG</button>
+        </div>
+
+        <div class="template-card">
+          <div class="template-preview">
+            <div class="instagram-story">
+              <div class="pattern-overlay"></div>
+              <div style="text-align: center; z-index: 1;">
+                <div class="icon-circle" style="width: 80px; height: 80px; font-size: 40px; margin: 0 auto 20px;">N</div>
+                <div class="banner-logo">Narrin AI</div>
+                <div class="banner-tagline">Your Daily Thought Organizer</div>
+              </div>
+            </div>
+          </div>
+          <div class="template-title">Instagram Story</div>
+          <div class="template-dimensions">1080x1920px</div>
+          <button class="download-btn" onclick="downloadTemplate('instagram-story')">Download PNG</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Email Signature -->
+    <div class="template-section">
+      <h2>Email Signature</h2>
+      <div class="template-grid">
+        <div class="template-card">
+          <div class="template-preview">
+            <div class="email-signature">
+              <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #14b8a6 0%, #f97316 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                <span style="color: white; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 28px;">N</span>
+              </div>
+              <div style="flex: 1;">
+                <div style="font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 20px; color: #1e293b; margin-bottom: 5px;">Narrin AI</div>
+                <div style="color: #64748b; font-size: 14px;">AI Companions for Life</div>
+                <div style="color: #14b8a6; font-size: 14px; margin-top: 5px;">narrin.ai</div>
+              </div>
+            </div>
+          </div>
+          <div class="template-title">Email Signature</div>
+          <div class="template-dimensions">600x150px</div>
+          <button class="download-btn" onclick="downloadTemplate('email-signature')">Download PNG</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Specifications Table -->
+    <div class="specs-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Platform</th>
+            <th>Asset Type</th>
+            <th>Dimensions</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="platform-name">Universal</td>
+            <td>Profile Picture</td>
+            <td class="dimension-code">400x400px</td>
+            <td>Will be cropped to circle on most platforms</td>
+          </tr>
+          <tr>
+            <td class="platform-name">LinkedIn</td>
+            <td>Company Banner</td>
+            <td class="dimension-code">1128x191px</td>
+            <td>Desktop optimized</td>
+          </tr>
+          <tr>
+            <td class="platform-name">LinkedIn</td>
+            <td>Personal Banner</td>
+            <td class="dimension-code">1584x396px</td>
+            <td>Desktop optimized</td>
+          </tr>
+          <tr>
+            <td class="platform-name">Twitter/X</td>
+            <td>Header</td>
+            <td class="dimension-code">1500x500px</td>
+            <td>Safe zone: 1420x420px</td>
+          </tr>
+          <tr>
+            <td class="platform-name">Facebook</td>
+            <td>Page Cover</td>
+            <td class="dimension-code">1200x630px</td>
+            <td>16:9 ratio</td>
+          </tr>
+          <tr>
+            <td class="platform-name">Facebook</td>
+            <td>Profile Cover</td>
+            <td class="dimension-code">820x312px</td>
+            <td>Desktop: 820x312px, Mobile: 640x360px</td>
+          </tr>
+          <tr>
+            <td class="platform-name">YouTube</td>
+            <td>Channel Banner</td>
+            <td class="dimension-code">2560x1440px</td>
+            <td>Safe area: 1546x423px</td>
+          </tr>
+          <tr>
+            <td class="platform-name">Instagram</td>
+            <td>Post Square</td>
+            <td class="dimension-code">1080x1080px</td>
+            <td>1:1 ratio</td>
+          </tr>
+          <tr>
+            <td class="platform-name">Instagram</td>
+            <td>Post Portrait</td>
+            <td class="dimension-code">1080x1350px</td>
+            <td>4:5 ratio</td>
+          </tr>
+          <tr>
+            <td class="platform-name">Instagram</td>
+            <td>Story/Reel</td>
+            <td class="dimension-code">1080x1920px</td>
+            <td>9:16 ratio</td>
+          </tr>
+          <tr>
+            <td class="platform-name">TikTok</td>
+            <td>Video</td>
+            <td class="dimension-code">1080x1920px</td>
+            <td>9:16 ratio</td>
+          </tr>
+          <tr>
+            <td class="platform-name">Email</td>
+            <td>Signature</td>
+            <td class="dimension-code">600x150px</td>
+            <td>Max width for compatibility</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    function downloadTemplate(type) {
+      console.log('🎨 Generating template:', type);
+      
+      // Template configurations
+      const templates = {
+        'profile-universal': { width: 400, height: 400, isCircle: true },
+        'profile-green': { width: 400, height: 400, isCircle: true, bgColor: '#22c55e' },
+        'logo-only': { width: 800, height: 300, logoOnly: true },
+        'linkedin-company': { width: 1128, height: 191 },
+        'linkedin-personal': { width: 1584, height: 396 },
+        'twitter-header': { width: 1500, height: 500 },
+        'facebook-cover': { width: 1200, height: 630 },
+        'facebook-profile': { width: 820, height: 312 },
+        'youtube-banner': { width: 2560, height: 1440 },
+        'instagram-post': { width: 1080, height: 1080 },
+        'instagram-portrait': { width: 1080, height: 1350 },
+        'instagram-story': { width: 1080, height: 1920 },
+        'tiktok-video': { width: 1080, height: 1920 },
+        'email-signature': { width: 600, height: 150 }
+      };
+      
+      const config = templates[type];
+      if (!config) {
+        alert('Template configuration not found');
+        return;
+      }
+      
+      // Create canvas
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = config.width;
+      canvas.height = config.height;
+      
+      // Create gradient background
+      const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+      gradient.addColorStop(0, '#14b8a6');
+      gradient.addColorStop(1, '#f97316');
+      
+      // Fill background
+      if (config.isCircle) {
+        // For profile pictures, fill entire canvas with gradient
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Draw logo in center
+        drawNarrinLogo(ctx, canvas.width / 2 - 60, canvas.height / 2 - 60, 120, config.bgColor);
+      } else if (config.logoOnly) {
+        // For logo-only template, fill with gradient
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Add only "Narrin AI" text (no tagline)
+        const mainFontSize = Math.min(canvas.width / 12, canvas.height / 3, 100);
+        ctx.fillStyle = 'white';
+        ctx.font = `bold ${mainFontSize}px Outfit, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.fillText('Narrin AI', canvas.width / 2, canvas.height / 2 + mainFontSize / 4);
+      } else {
+        // For banners, fill with gradient
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Calculate font sizes based on canvas dimensions
+        const mainFontSize = Math.min(canvas.width / 20, canvas.height / 4, 80);
+        const taglineFontSize = Math.min(canvas.width / 35, canvas.height / 8, 32);
+        
+        // Add main text (centered vertically)
+        ctx.fillStyle = 'white';
+        ctx.font = `bold ${mainFontSize}px Outfit, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.fillText('Narrin AI', canvas.width / 2, canvas.height / 2 - taglineFontSize / 2);
+        
+        // Add tagline
+        ctx.font = `${taglineFontSize}px Plus Jakarta Sans, sans-serif`;
+        ctx.fillStyle = 'rgba(255,255,255,0.9)';
+        ctx.fillText('Your Daily Thought Organizer', canvas.width / 2, canvas.height / 2 + mainFontSize / 2);
+      }
+      
+      // Download the canvas as PNG
+      canvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `narrin-ai-${type}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        console.log('✅ Template downloaded:', type);
+      }, 'image/png');
+    }
+    
+    function drawNarrinLogo(ctx, x, y, size, backgroundColor = null) {
+      // Draw background circle if needed
+      if (backgroundColor) {
+        ctx.fillStyle = backgroundColor;
+        ctx.beginPath();
+        ctx.arc(x + size/2, y + size/2, size/2, 0, 2 * Math.PI);
+        ctx.fill();
+      } else {
+        // Draw gradient circle
+        const gradient = ctx.createLinearGradient(x, y, x + size, y + size);
+        gradient.addColorStop(0, '#14b8a6');
+        gradient.addColorStop(1, '#f97316');
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(x + size/2, y + size/2, size/2, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+      
+      // Draw white "N" letter
+      ctx.fillStyle = backgroundColor ? '#22c55e' : 'white';
+      ctx.beginPath();
+      
+      // Scale the N path to the logo size
+      const scale = size / 32;
+      const path = [
+        [8, 24], [8, 8], [12, 8], [20, 20], [20, 8], [24, 8], 
+        [24, 24], [20, 24], [12, 12], [12, 24], [8, 24]
+      ];
+      
+      ctx.moveTo(x + path[0][0] * scale, y + path[0][1] * scale);
+      for (let i = 1; i < path.length; i++) {
+        ctx.lineTo(x + path[i][0] * scale, y + path[i][1] * scale);
+      }
+      ctx.fill();
+    }
+  </script>
+</body>
+</html>
