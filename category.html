@@ -3,21 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title id="page-title">Browse AI Companions by Category | Narrin AI</title>
+  <title id="page-title">Browse AI Companions by Category | Selira AI</title>
   <meta name="description" content="Explore AI companions by category: Life Coaches, Career Mentors, Mindfulness Guides, Love Experts & more. Find your perfect AI companion for personalized support.">
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://selira.ai/category">
-  <meta property="og:title" content="Explore AI Companion Categories - Narrin AI">
+  <meta property="og:title" content="Explore AI Companion Categories - Selira AI">
   <meta property="og:description" content="Explore AI companions by category: Life Coaches, Career Mentors, Mindfulness Guides & more. Find your perfect AI companion for personalized support.">
   <meta property="og:image" content="https://selira.ai/og-image.jpg">
   
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:url" content="https://selira.ai/category">
-  <meta property="twitter:title" content="Browse AI Companions by Category | Narrin AI">
-  <meta property="twitter:description" content="Explore AI companions by category on Narrin AI. Browse life coaches, career mentors, mindfulness guides & more. Start chatting with personalized AI companions today.">
+  <meta property="twitter:title" content="Browse AI Companions by Category | Selira AI">
+  <meta property="twitter:description" content="Explore AI companions by category on Selira AI. Browse life coaches, career mentors, mindfulness guides & more. Start chatting with personalized AI companions today.">
   <meta property="twitter:image" content="https://selira.ai/og-image.jpg">
   
   <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
@@ -42,7 +42,7 @@
   <!-- Import Modern Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
   <style>
     /* ===== CSS CUSTOM PROPERTIES ===== */
@@ -53,13 +53,21 @@
       --color-light-gray: #f5f5f5;
       
       /* Accent Colors */
-      --color-teal: #14b8a6;
-      --color-teal-light: #5eead4;
-      --color-teal-dark: #0f766e;
-      --color-teal-alt: #10a394; /* Slightly different green for tags */
-      --color-coral: #f97316;
-      --color-coral-light: #fb923c;
-      --color-coral-dark: #ea580c;
+      --color-accent: #d4a574;
+      --color-accent-light: #e4b989;
+      --color-accent-dark: #c19456;
+      --color-accent-alt: #c19456; /* Slightly different gold for tags */
+      --color-coral: #d4a574;
+      --color-coral-light: #e4b989;
+      --color-coral-dark: #c19456;
+      
+      /* Dark theme colors */
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #1a1a1a;
+      --bg-tertiary: #2a2a2a;
+      --text-primary: #ffffff;
+      --text-secondary: #b3b3b3;
+      --border: #333333;
       
       /* Supporting Colors */
       --color-navy: #1e293b;
@@ -69,16 +77,16 @@
       --color-gray-dark: #475569;
       
       /* Gradients */
-      --gradient-primary: linear-gradient(135deg, var(--color-teal) 0%, var(--color-coral) 100%);
-      --gradient-subtle: linear-gradient(135deg, var(--color-teal-light) 0%, var(--color-coral-light) 100%);
-      --gradient-tags: linear-gradient(135deg, var(--color-teal-alt) 0%, var(--color-coral) 100%);
+      --gradient-primary: linear-gradient(135deg, var(--color-accent) 0%, var(--color-coral) 100%);
+      --gradient-subtle: linear-gradient(135deg, var(--color-accent-light) 0%, var(--color-coral-light) 100%);
+      --gradient-tags: linear-gradient(135deg, var(--color-accent-alt) 0%, var(--color-coral) 100%);
       
       /* Shadows */
       --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
       --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
       --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
       --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-      --shadow-colored: 0 10px 25px -5px rgba(20, 184, 166, 0.2);
+      --shadow-colored: 0 10px 25px -5px rgba(212, 165, 116, 0.2);
       
       /* Spacing */
       --spacing-xs: 0.5rem;
@@ -90,8 +98,8 @@
       --spacing-3xl: 4rem;
       
       /* Typography */
-      --font-primary: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-      --font-secondary: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-primary: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-secondary: 'Playfair Display', serif;
       
       /* Font Sizes */
       --font-size-xs: 0.75rem;
@@ -139,8 +147,8 @@
 
     body {
       font-family: var(--font-primary);
-      background: var(--color-off-white);
-      color: var(--color-navy);
+      background: #0a0a0a;
+      color: #ffffff;
       line-height: 1.6;
       font-size: var(--font-size-base);
       -webkit-font-smoothing: antialiased;
@@ -149,11 +157,12 @@
       overflow-x: hidden;
       position: relative;
       width: 100%;
+      padding-top: 80px; /* Account for fixed header */
     }
 
     /* ===== ACCESSIBILITY ===== */
     :focus {
-      outline: 2px solid var(--color-teal);
+      outline: 2px solid var(--color-accent);
       outline-offset: 2px;
     }
 
@@ -163,22 +172,25 @@
 
     /* ===== HEADER NAVIGATION ===== */
     .header {
-      position: sticky;
+      position: fixed;
       top: 0;
-      z-index: var(--z-sticky);
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(10, 10, 10, 0.95);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid #333333;
       transition: all var(--transition-base);
+      padding: 16px 32px;
     }
 
-    .header-container {
-      max-width: 1400px;
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 0 var(--spacing-lg);
-      width: 100%;
-      overflow: hidden;
     }
 
     .header-content {
@@ -193,20 +205,101 @@
     /* Logo */
     .logo {
       font-family: var(--font-secondary);
-      font-size: var(--font-size-xl);
-      font-weight: 800;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--color-accent);
+      letter-spacing: -0.5px;
       text-decoration: none;
-      letter-spacing: -0.02em;
-      background: var(--gradient-primary);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
       transition: transform var(--transition-base);
       flex-shrink: 0;
     }
 
     .logo:hover {
       transform: scale(1.05);
+    }
+
+    .nav-menu {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-link:hover {
+      color: var(--text-primary);
+    }
+
+    .cta-btn {
+      background: var(--color-accent);
+      color: white;
+      padding: 10px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    .cta-btn:hover {
+      background: var(--color-accent-dark);
+    }
+
+    .hamburger {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    /* Mobile Menu */
+    .mobile-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 20px;
+    }
+
+    .mobile-menu.open {
+      display: block;
+    }
+
+    .mobile-menu a {
+      display: block;
+      padding: 12px 0;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .mobile-menu a:last-child {
+      border-bottom: none;
+    }
+
+    .mobile-menu a:hover {
+      color: var(--color-accent);
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .nav-menu {
+        display: none;
+      }
+
+      .hamburger {
+        display: block;
+      }
     }
 
     /* Desktop Navigation Center */
@@ -241,7 +334,7 @@
 
     .usp-icon {
       font-size: var(--font-size-lg);
-      color: var(--color-teal);
+      color: var(--color-accent);
     }
 
     .nav-search {
@@ -269,8 +362,8 @@
     }
 
     .nav-search-input:focus {
-      border-color: var(--color-teal);
-      box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+      border-color: var(--color-accent);
+      box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.1);
     }
 
     .nav-search-input::placeholder {
@@ -333,7 +426,7 @@
     }
 
     .nav-link:hover {
-      color: var(--color-teal);
+      color: var(--color-accent);
     }
 
     .nav-link:hover::after {
@@ -561,7 +654,7 @@
 
     .mobile-menu-link:hover {
       background: var(--color-light-gray);
-      color: var(--color-teal);
+      color: var(--color-accent);
       transform: translateX(4px);
     }
 
@@ -624,8 +717,8 @@
     }
 
     .mobile-search-input:focus {
-      border-color: var(--color-teal);
-      box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+      border-color: var(--color-accent);
+      box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.1);
     }
 
     /* Desktop Styles */
@@ -1020,7 +1113,7 @@
     }
 
     .tag-btn.active {
-      background: var(--color-teal-dark);
+      background: var(--color-accent-dark);
       color: var(--color-white);
     }
 
@@ -1063,8 +1156,8 @@
     }
 
     .search-input:focus {
-      border-color: var(--color-teal);
-      box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+      border-color: var(--color-accent);
+      box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.1);
     }
 
     /* Content */
@@ -1110,7 +1203,7 @@
     }
 
     .character-card:hover {
-      border-color: var(--color-teal);
+      border-color: var(--color-accent);
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
@@ -1269,7 +1362,7 @@
     }
 
     .pagination-btn:hover:not(:disabled) {
-      border-color: var(--color-teal);
+      border-color: var(--color-accent);
     }
 
     .pagination-btn:disabled {
@@ -1278,9 +1371,9 @@
     }
 
     .pagination-btn.active {
-      background: var(--color-teal);
+      background: var(--color-accent);
       color: white;
-      border-color: var(--color-teal);
+      border-color: var(--color-accent);
     }
 
     /* Empty State */
@@ -1332,7 +1425,7 @@
     }
 
     .retry-btn {
-      background: var(--color-teal);
+      background: var(--color-accent);
       color: white;
       border: none;
       padding: 10px 20px;
@@ -1343,7 +1436,7 @@
     }
 
     .retry-btn:hover {
-      background: var(--color-teal-dark);
+      background: var(--color-accent-dark);
     }
 
     /* Mobile Optimizations */
@@ -1441,7 +1534,7 @@
     }
 
     .footer-link:hover {
-      color: var(--color-teal);
+      color: var(--color-accent);
     }
 
     .footer-separator {
@@ -1529,116 +1622,25 @@
 </head>
 <body>
   <!-- Header Navigation -->
-  <header class="header" role="banner">
-    <div class="header-container">
-      <div class="header-content">
-        <!-- Logo -->
-        <a href="/" class="logo" aria-label="Narrin AI Home">Narrin AI</a>
-
-        <!-- Desktop Navigation Center -->
-        <nav class="nav-center" role="navigation" aria-label="Main navigation">
-          <!-- USPs - Single random USP shown on page load -->
-          <div class="nav-usps" aria-label="Key features">
-            <div class="usp-item" style="display: none;">
-              <span class="usp-icon" aria-hidden="true">🗣️</span>
-              <span>Voice Chat</span>
-            </div>
-            <div class="usp-item" style="display: none;">
-              <span class="usp-icon" aria-hidden="true">🧠</span>
-              <span>Character Memory</span>
-            </div>
-            <div class="usp-item" style="display: none;">
-              <span class="usp-icon" aria-hidden="true">🔐</span>
-              <span>Private Data</span>
-            </div>
-          </div>
-
-        </nav>
-
-        <!-- Desktop Navigation Links -->
-        <nav class="nav-links" role="navigation" aria-label="Secondary navigation">
-          <a href="/pricing" class="nav-link">Plans</a>
-          <a href="/chat-overview" class="nav-link">My Companions</a>
-          <a href="/memory-import" class="nav-link">Import Memory</a>
-          <a href="/profile" class="nav-link" id="loginBtn">Login/Register</a>
-          <a href="/create-character" class="btn btn-primary">✨ Create Companion</a>
-        </nav>
-
-        <!-- Mobile Navigation Container -->
-        <div class="mobile-nav-container">
-          <!-- Mobile Chat Button -->
-          <a 
-            href="/chat-overview" 
-            class="mobile-chat-btn"
-            aria-label="Go to chats"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-            </svg>
-          </a>
-
-          <button 
-            class="mobile-search-btn" 
-            id="mobileSearchBtn"
-            aria-label="Open search"
-            aria-expanded="false"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="11" cy="11" r="8"></circle>
-              <path d="m21 21-4.35-4.35"></path>
-            </svg>
-          </button>
-
-          <!-- Mobile Hamburger Menu -->
-          <button
-            class="mobile-menu-btn"
-            id="mobileMenuBtn"
-            aria-label="Open navigation menu"
-            aria-expanded="false"
-          >
-            <div class="hamburger">
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
-          </button>
-        </div>
+  <header class="header">
+    <nav class="nav">
+      <div class="logo">Selira AI</div>
+      <div class="nav-menu">
+        <a href="/category.html" class="nav-link">Discover</a>
+        <a href="/create-character.html" class="nav-link">Create</a>
+        <a href="/pricing.html" class="nav-link">Pricing</a>
+        <a href="/chat.html" class="cta-btn">Start Chatting</a>
       </div>
+      <button class="hamburger" onclick="toggleMobileMenu()">☰</button>
+    </nav>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="/category.html">Discover</a>
+      <a href="/create-character.html">Create</a>
+      <a href="/pricing.html">Pricing</a>
+      <a href="/chat.html" class="cta-btn">Start Chatting</a>
     </div>
-
   </header>
 
-  <!-- Mobile Menu Overlay -->
-  <div class="mobile-menu-overlay" id="mobileMenuOverlay">
-    <div class="mobile-menu-content">
-      <div class="mobile-menu-header">
-        <div class="mobile-menu-logo">Narrin AI</div>
-        <div class="mobile-menu-subtitle">AI Companion Platform</div>
-      </div>
-      <nav class="mobile-menu-nav" role="navigation" aria-label="Mobile navigation">
-        <a href="/chat-overview" class="mobile-menu-link">
-          <span class="mobile-menu-link-icon">💬</span>
-          My Companions
-        </a>
-        <a href="/pricing" class="mobile-menu-link">
-          <span class="mobile-menu-link-icon">💎</span>
-          Plans
-        </a>
-        <a href="/memory-import" class="mobile-menu-link">
-          <span class="mobile-menu-link-icon">🧠</span>
-          Import Memory
-        </a>
-        <a href="/profile" class="mobile-menu-link" id="mobileLoginBtn">
-          <span class="mobile-menu-link-icon">👤</span>
-          Login/Register
-        </a>
-        <a href="/create-character" class="mobile-menu-link btn-primary">
-          <span class="mobile-menu-link-icon">✨</span>
-          Create Companion
-        </a>
-      </nav>
-    </div>
-  </div>
 
   <!-- Breadcrumbs -->
   <div class="breadcrumbs">
@@ -1708,6 +1710,22 @@
   </div>
 
   <script>
+    // Mobile menu toggle
+    function toggleMobileMenu() {
+      const mobileMenu = document.getElementById('mobileMenu');
+      mobileMenu.classList.toggle('open');
+    }
+
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', function(event) {
+      const mobileMenu = document.getElementById('mobileMenu');
+      const hamburger = document.querySelector('.hamburger');
+      
+      if (!mobileMenu.contains(event.target) && !hamburger.contains(event.target)) {
+        mobileMenu.classList.remove('open');
+      }
+    });
+
     // ===== CONFIGURATION =====
     const CONFIG = {
       // Netlify Function endpoint
@@ -1952,7 +1970,7 @@
       console.log('📋 Category config:', config);
 
       // Update page elements
-      document.getElementById('page-title').textContent = `${config.title} - Narrin AI`;
+      document.getElementById('page-title').textContent = `${config.title} - Selira AI`;
       document.getElementById('breadcrumb-category').textContent = config.title;
       document.getElementById('category-icon').textContent = config.icon;
       document.getElementById('category-title').textContent = config.title;
@@ -2545,7 +2563,7 @@
         <span class="footer-separator">•</span>
         <a href="/terms-and-conditions" class="footer-link">Terms and Conditions</a>
       </div>
-      <p class="footer-copyright">© 2025 Narrin AI. All rights reserved.</p>
+      <p class="footer-copyright">© 2025 Selira AI. All rights reserved.</p>
     </div>
   </footer>
 </body>

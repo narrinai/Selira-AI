@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chat with AI Companion | Organize Your Thoughts & Find Mental Clarity - Narrin AI</title>
+  <title>Chat with AI Companion | Organize Your Thoughts & Find Mental Clarity - Selira AI</title>
   <meta name="description" content="Transform scattered thoughts into clear insights through personalized AI conversations. Chat with your companion to organize your mind and end each day feeling clearer.">
   
   <!-- Open Graph / Facebook -->
@@ -16,7 +16,7 @@
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:url" content="https://selira.ai/chat">
-  <meta property="twitter:title" content="AI Chat for Mental Clarity | Organize Your Thoughts - Narrin AI">
+  <meta property="twitter:title" content="AI Chat for Mental Clarity | Organize Your Thoughts - Selira AI">
   <meta property="twitter:description" content="Transform mental chaos into clear thinking through personalized AI conversations. Organize your thoughts and find clarity.">
   <meta property="twitter:image" content="https://selira.ai/og-image.jpg">
   
@@ -31,8 +31,8 @@
   <link rel="dns-prefetch" href="https://replicate.delivery">
   
   <!-- Preload Critical Fonts -->
-  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap"></noscript>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap"></noscript>
 
   <style>
     /* ===== CSS CUSTOM PROPERTIES ===== */
@@ -43,13 +43,21 @@
       --color-light-gray: #f5f5f5;
       
       /* Accent Colors */
-      --color-teal: #14b8a6;
-      --color-teal-light: #5eead4;
-      --color-teal-dark: #0f766e;
-      --color-teal-alt: #10a394;
-      --color-coral: #f97316;
-      --color-coral-light: #fb923c;
-      --color-coral-dark: #ea580c;
+      --color-accent: #d4a574;
+      --color-accent-light: #e4b989;
+      --color-accent-dark: #c19456;
+      --color-accent-alt: #c19456;
+      --color-coral: #d4a574;
+      --color-coral-light: #e4b989;
+      --color-coral-dark: #c19456;
+      
+      /* Dark theme colors */
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #1a1a1a;
+      --bg-tertiary: #2a2a2a;
+      --text-primary: #ffffff;
+      --text-secondary: #b3b3b3;
+      --border: #333333;
       
       /* Supporting Colors */
       --color-navy: #1e293b;
@@ -59,16 +67,16 @@
       --color-gray-dark: #475569;
       
       /* Gradients */
-      --gradient-primary: linear-gradient(135deg, var(--color-teal) 0%, var(--color-coral) 100%);
-      --gradient-subtle: linear-gradient(135deg, var(--color-teal-light) 0%, var(--color-coral-light) 100%);
-      --gradient-tags: linear-gradient(135deg, var(--color-teal-alt) 0%, var(--color-coral) 100%);
+      --gradient-primary: linear-gradient(135deg, var(--color-accent) 0%, var(--color-coral) 100%);
+      --gradient-subtle: linear-gradient(135deg, var(--color-accent-light) 0%, var(--color-coral-light) 100%);
+      --gradient-tags: linear-gradient(135deg, var(--color-accent-alt) 0%, var(--color-coral) 100%);
       
       /* Shadows */
       --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
       --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
       --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
       --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-      --shadow-colored: 0 10px 25px -5px rgba(20, 184, 166, 0.2);
+      --shadow-colored: 0 10px 25px -5px rgba(212, 165, 116, 0.2);
       
       /* Spacing */
       --spacing-xs: 0.5rem;
@@ -80,8 +88,8 @@
       --spacing-3xl: 4rem;
       
       /* Typography */
-      --font-primary: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-      --font-secondary: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-primary: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-secondary: 'Playfair Display', serif;
       
       /* Font Sizes */
       --font-size-xs: 0.75rem;
@@ -155,7 +163,7 @@
 
     /* ===== ACCESSIBILITY ===== */
     :focus {
-      outline: 2px solid var(--color-teal);
+      outline: 2px solid var(--color-accent);
       outline-offset: 2px;
     }
 
@@ -263,8 +271,8 @@
     }
 
     .nav-search-input:focus {
-      border-color: var(--color-teal);
-      box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+      border-color: var(--color-accent);
+      box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.1);
     }
 
     .nav-search-input::placeholder {
@@ -327,7 +335,7 @@
     }
 
     .nav-link:hover {
-      color: var(--color-teal);
+      color: var(--color-accent);
     }
 
     .nav-link:hover::after {
@@ -364,7 +372,7 @@
 
     .btn-cta {
       background: rgba(255, 255, 255, 0.9);
-      color: var(--color-teal);
+      color: var(--color-accent);
       font-weight: 700;
       padding: var(--spacing-md) var(--spacing-2xl);
       font-size: var(--font-size-base);
@@ -568,7 +576,7 @@
 
     .mobile-menu-link:hover {
       background: var(--color-light-gray);
-      color: var(--color-teal);
+      color: var(--color-accent);
       transform: translateX(4px);
     }
 
@@ -631,8 +639,8 @@
     }
 
     .mobile-search-input:focus {
-      border-color: var(--color-teal);
-      box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+      border-color: var(--color-accent);
+      box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.1);
     }
 
     /* Desktop Styles */
@@ -773,7 +781,7 @@
       }
       
       .mobile-input .plus-button:hover {
-        background: var(--color-teal) !important;
+        background: var(--color-accent) !important;
         color: white !important;
       }
       
@@ -841,7 +849,7 @@
       .mobile-input #micButtonMobile {
         background: white !important;
         border: none !important;
-        color: var(--color-teal) !important;
+        color: var(--color-accent) !important;
         padding: 0 !important;
         border-radius: 50% !important;
         width: 44px !important;
@@ -859,7 +867,7 @@
         width: 24px !important;
         height: 24px !important;
         stroke-width: 2.5 !important;
-        stroke: var(--color-teal) !important;
+        stroke: var(--color-accent) !important;
       }
       
       /* Mobile send button styling - compact to stay within bounds */
@@ -1136,7 +1144,7 @@
     }
 
     .character-section:hover {
-      border-color: var(--color-teal);
+      border-color: var(--color-accent);
       transform: translateY(-4px);
       box-shadow: var(--shadow-xl);
     }
@@ -1192,7 +1200,7 @@
       width: 30px;
       height: 30px;
       border: 3px solid var(--color-light-gray);
-      border-top-color: var(--color-teal);
+      border-top-color: var(--color-accent);
       border-radius: 50%;
       animation: spin 1s linear infinite;
     }
@@ -1500,7 +1508,7 @@
     }
 
     .chat-section:hover {
-      border-color: var(--color-teal);
+      border-color: var(--color-accent);
       transform: translateY(-4px);
       box-shadow: var(--shadow-xl);
     }
@@ -1585,7 +1593,7 @@
     }
 
     .conversation-topics:hover {
-      border-color: var(--color-teal);
+      border-color: var(--color-accent);
       transform: translateY(-4px);
       box-shadow: var(--shadow-xl);
     }
@@ -1628,7 +1636,7 @@
     
     .topics-toggle.expanded:hover {
       background: var(--color-light-gray);
-      color: var(--color-teal);
+      color: var(--color-accent);
     }
     
     .topics-arrow {
@@ -1709,7 +1717,7 @@
     }
     
     .topic-btn.subtopic:hover {
-      border-color: var(--color-teal);
+      border-color: var(--color-accent);
       background: var(--color-off-white);
       color: var(--color-navy);
       transform: translateY(-2px);
@@ -1747,7 +1755,7 @@
     /* Support Escalation Styles */
     .support-escalation {
       background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
-      border: 2px solid var(--color-teal);
+      border: 2px solid var(--color-accent);
       border-radius: var(--radius-lg);
       padding: var(--spacing-lg);
       margin: var(--spacing-md) 0;
@@ -1799,13 +1807,13 @@
     }
 
     .resource-contact {
-      color: var(--color-teal);
+      color: var(--color-accent);
       margin: var(--spacing-xs) 0;
       font-weight: 500;
     }
 
     .resource-contact a {
-      color: var(--color-teal);
+      color: var(--color-accent);
       text-decoration: none;
     }
 
@@ -1860,7 +1868,7 @@
     }
 
     .checkin-dismiss {
-      background: var(--color-teal);
+      background: var(--color-accent);
       color: var(--color-white);
       border: none;
       padding: var(--spacing-xs) var(--spacing-md);
@@ -1964,15 +1972,15 @@
     }
     
     .voice-select:hover {
-      border-color: var(--color-teal);
+      border-color: var(--color-accent);
       background-color: var(--color-off-white);
       box-shadow: var(--shadow-sm);
     }
     
     .voice-select:focus {
       outline: none;
-      border-color: var(--color-teal);
-      box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+      border-color: var(--color-accent);
+      box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.1);
     }
     
     .preview-voice-btn {
@@ -1981,8 +1989,8 @@
       gap: var(--spacing-sm);
       padding: var(--spacing-md) var(--spacing-xl);
       background-color: var(--color-white);
-      color: var(--color-teal);
-      border: 2px solid var(--color-teal);
+      color: var(--color-accent);
+      border: 2px solid var(--color-accent);
       border-radius: 50px;
       font-size: var(--font-size-md);
       font-weight: 600;
@@ -1991,7 +1999,7 @@
     }
     
     .preview-voice-btn:hover:not(:disabled) {
-      background-color: var(--color-teal);
+      background-color: var(--color-accent);
       color: var(--color-white);
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(45, 183, 181, 0.3);
@@ -2026,13 +2034,13 @@
     }
 
     .response-length-option:hover {
-      border-color: var(--color-teal);
+      border-color: var(--color-accent);
       transform: translateY(-2px);
       box-shadow: var(--shadow-md);
     }
 
     .response-length-option.selected {
-      border-color: var(--color-teal);
+      border-color: var(--color-accent);
       background: var(--color-off-white);
       box-shadow: 0 4px 12px rgba(45, 183, 181, 0.2);
     }
@@ -2071,7 +2079,7 @@
     }
 
     .form-section:hover {
-      border-color: var(--color-teal);
+      border-color: var(--color-accent);
       box-shadow: var(--shadow-lg);
     }
 
@@ -2315,7 +2323,7 @@
     .form-group input:focus,
     .form-group textarea:focus {
       outline: none;
-      border-color: var(--color-teal);
+      border-color: var(--color-accent);
       box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.1);
       background: var(--color-off-white);
     }
@@ -2414,7 +2422,7 @@
     }
 
     .error-state a {
-      color: var(--color-teal);
+      color: var(--color-accent);
       text-decoration: none;
       font-weight: 600;
       transition: all var(--transition-base);
@@ -2424,7 +2432,7 @@
 
     .error-state a:hover {
       color: var(--color-white);
-      background: var(--color-teal);
+      background: var(--color-accent);
       transform: translateY(-1px);
     }
 
@@ -2442,7 +2450,7 @@
     }
 
     #chatlog:hover {
-      border-color: var(--color-teal);
+      border-color: var(--color-accent);
     }
 
     #chatlog p {
@@ -2483,7 +2491,7 @@
 
     #userInput:focus {
       outline: none;
-      border-color: var(--color-teal);
+      border-color: var(--color-accent);
       box-shadow: var(--shadow-md);
       transform: translateY(-2px);
     }
@@ -2527,8 +2535,8 @@
     .mic-button, #micButton {
       padding: 0 !important;
       background: white !important;
-      color: var(--color-teal) !important;
-      border: 1px solid var(--color-teal) !important;
+      color: var(--color-accent) !important;
+      border: 1px solid var(--color-accent) !important;
       border-radius: 50% !important;
       cursor: pointer;
       transition: all var(--transition-base);
@@ -2550,7 +2558,7 @@
     }
 
     .mic-button:hover {
-      border-color: var(--color-teal);
+      border-color: var(--color-accent);
       transform: translateY(-2px);
       box-shadow: var(--shadow-md);
     }
@@ -2596,7 +2604,7 @@
     }
 
     .disclaimer-icon {
-      color: var(--color-teal);
+      color: var(--color-accent);
       flex-shrink: 0;
     }
 
@@ -2623,7 +2631,7 @@
 
     .disclaimer-toggle:hover {
       background: var(--color-light-gray);
-      color: var(--color-teal);
+      color: var(--color-accent);
     }
 
     .disclaimer-toggle.expanded {
@@ -2639,14 +2647,14 @@
     }
 
     .disclaimer-link {
-      color: var(--color-teal);
+      color: var(--color-accent);
       text-decoration: none;
       font-weight: 500;
       transition: color var(--transition-base);
     }
 
     .disclaimer-link:hover {
-      color: var(--color-teal-dark);
+      color: var(--color-accent-dark);
       text-decoration: underline;
     }
 
@@ -2788,7 +2796,7 @@
         flex-shrink: 0 !important;
         margin-right: 4px !important;
         background: white !important;
-        color: var(--color-teal) !important;
+        color: var(--color-accent) !important;
         border-radius: 50% !important;
         display: flex !important;
         align-items: center !important;
@@ -2862,7 +2870,7 @@
         padding: 0 !important;
         margin-right: 3px !important;
         background: white !important;
-        color: var(--color-teal) !important;
+        color: var(--color-accent) !important;
         border-radius: 50% !important;
         display: flex !important;
         align-items: center !important;
@@ -2988,7 +2996,7 @@
     }
 
     .footer-link:hover {
-      color: var(--color-teal);
+      color: var(--color-accent);
     }
 
     .footer-separator {
@@ -3078,7 +3086,7 @@
     }
 
     .notification-icon.success {
-      color: var(--color-teal);
+      color: var(--color-accent);
     }
 
     .notification-icon.error {
@@ -3144,8 +3152,8 @@
     }
 
     .notification-btn.secondary:hover {
-      border-color: var(--color-teal);
-      color: var(--color-teal);
+      border-color: var(--color-accent);
+      color: var(--color-accent);
     }
 
     /* Mobile adjustments */
@@ -3357,8 +3365,8 @@
 }
 
 .upgrade-btn.secondary:hover {
-  border-color: var(--color-teal);
-  color: var(--color-teal);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
   transform: translateY(-1px);
 }
 
@@ -3372,11 +3380,11 @@
       border-radius: 50%;
       transition: background-color 0.2s;
       font-size: 16px;
-      color: var(--color-teal);
+      color: var(--color-accent);
     }
 
     .voice-play-btn:hover {
-      background-color: rgba(20, 184, 166, 0.1);
+      background-color: rgba(212, 165, 116, 0.1);
       transform: scale(1.1);
     }
 
@@ -3539,7 +3547,7 @@
     .btn-secondary-form {
       background: var(--color-white);
       color: var(--color-navy);
-      border: 2px solid var(--color-teal);
+      border: 2px solid var(--color-accent);
       min-width: 120px;
       box-shadow: var(--shadow-sm);
       padding: var(--spacing-md) var(--spacing-xl);
@@ -3556,7 +3564,7 @@
     }
 
     .btn-secondary-form:hover {
-      background: var(--color-teal);
+      background: var(--color-accent);
       color: var(--color-white);
       transform: translateY(-2px);
     }
@@ -3594,7 +3602,7 @@
     
     .prompt-preview:focus {
       outline: none;
-      border-color: var(--color-teal);
+      border-color: var(--color-accent);
       box-shadow: var(--shadow-md);
     }
     
@@ -3612,7 +3620,7 @@
     }
     
     .checkbox-label:hover {
-      border-color: var(--color-teal);
+      border-color: var(--color-accent);
       background: var(--color-off-white);
     }
     
@@ -3622,11 +3630,11 @@
       cursor: pointer;
       margin-top: 2px;
       flex-shrink: 0;
-      accent-color: var(--color-teal);
+      accent-color: var(--color-accent);
     }
     
     .checkbox-label:has(input:checked) {
-      border-color: var(--color-teal);
+      border-color: var(--color-accent);
       background: rgba(20, 184, 166, 0.05);
     }
 
@@ -3869,13 +3877,13 @@
 
     .quirk-input:focus {
       outline: none;
-      border-color: var(--color-teal);
+      border-color: var(--color-accent);
       box-shadow: 0 0 0 3px rgba(38, 166, 154, 0.1);
     }
 
     .add-quirk-btn {
       padding: var(--spacing-sm) var(--spacing-lg);
-      background: var(--color-teal);
+      background: var(--color-accent);
       color: var(--color-white);
       border: none;
       border-radius: var(--radius-md);
@@ -3936,13 +3944,13 @@
     }
     
     .voice-option:hover {
-      border-color: var(--color-teal);
+      border-color: var(--color-accent);
       transform: translateY(-2px);
       box-shadow: var(--shadow-md);
     }
     
     .voice-option.selected {
-      border-color: var(--color-teal);
+      border-color: var(--color-accent);
       background: var(--color-off-white);
       box-shadow: var(--shadow-colored);
     }
@@ -4023,7 +4031,7 @@
     }
 
     .desktop-action-buttons:hover {
-      border-color: var(--color-teal);
+      border-color: var(--color-accent);
       transform: translateY(-4px);
       box-shadow: var(--shadow-xl);
     }
@@ -4157,7 +4165,7 @@
     }
 
     .memory-item:hover {
-      border-color: var(--color-teal);
+      border-color: var(--color-accent);
       box-shadow: var(--shadow-md);
     }
 
@@ -4644,15 +4652,15 @@
     }
     
     .option-button:hover {
-      border-color: var(--color-teal);
+      border-color: var(--color-accent);
       background: var(--color-off-white);
       transform: translateY(-2px);
       box-shadow: var(--shadow-md);
     }
     
     .option-button.selected {
-      border-color: var(--color-teal);
-      background: linear-gradient(135deg, rgba(20, 184, 166, 0.1) 0%, rgba(249, 115, 22, 0.1) 100%);
+      border-color: var(--color-accent);
+      background: linear-gradient(135deg, rgba(212, 165, 116, 0.1) 0%, rgba(249, 115, 22, 0.1) 100%);
       box-shadow: var(--shadow-colored);
     }
     
@@ -4696,7 +4704,7 @@
     
     .open-text-input:focus {
       outline: none;
-      border-color: var(--color-teal);
+      border-color: var(--color-accent);
       box-shadow: var(--shadow-md);
     }
     
@@ -5218,7 +5226,7 @@
     <div class="header-container">
       <div class="header-content">
         <!-- Logo -->
-        <a href="/" class="logo" aria-label="Narrin AI Home">Narrin AI</a>
+        <a href="/" class="logo" aria-label="Selira AI Home">Selira AI</a>
 
         <!-- REMOVED: Desktop navigation center with USPs -->
 
@@ -5270,7 +5278,7 @@
   <div class="mobile-menu-overlay" id="mobileMenuOverlay">
     <div class="mobile-menu-content">
       <div class="mobile-menu-header">
-        <div class="mobile-menu-logo">Narrin AI</div>
+        <div class="mobile-menu-logo">Selira AI</div>
         <div class="mobile-menu-subtitle">AI Companion Platform</div>
       </div>
       <nav class="mobile-menu-nav" role="navigation" aria-label="Mobile navigation">
@@ -5708,7 +5716,7 @@
           <div class="customization-actions">
             <button type="button" class="btn-delete" onclick="deleteCustomization()" style="display: none;" id="deleteCustomBtn">Delete Customization</button>
             <div style="flex: 1;"></div>
-            <div class="auto-save-indicator" style="color: var(--color-teal); font-size: var(--font-size-sm); display: flex; align-items: center; gap: var(--spacing-xs);">
+            <div class="auto-save-indicator" style="color: var(--color-accent); font-size: var(--font-size-sm); display: flex; align-items: center; gap: var(--spacing-xs);">
               <span>💾</span>
               <span>Changes saved automatically</span>
             </div>
@@ -7071,9 +7079,9 @@ document.addEventListener('DOMContentLoaded', () => {
         
         return `${baseMessage}To get the most personalized experience:
 
-• <a href="#" onclick="lazyLoadMemoryHub(); return false;" style="color: var(--color-teal); text-decoration: none;">Take the personal quiz in Memory Hub 🧠</a>
-• <a href="#" onclick="lazyLoadCustomize(); return false;" style="color: var(--color-teal); text-decoration: none;">Customize my personality ⚙️</a>
-• <a href="/memory-import" style="color: var(--color-teal); text-decoration: none;">Import your ChatGPT memories 📥</a>
+• <a href="#" onclick="lazyLoadMemoryHub(); return false;" style="color: var(--color-accent); text-decoration: none;">Take the personal quiz in Memory Hub 🧠</a>
+• <a href="#" onclick="lazyLoadCustomize(); return false;" style="color: var(--color-accent); text-decoration: none;">Customize my personality ⚙️</a>
+• <a href="/memory-import" style="color: var(--color-accent); text-decoration: none;">Import your ChatGPT memories 📥</a>
 
 Ready to start chatting, or would you like to explore these personalization options first?`;
       }
@@ -7752,7 +7760,7 @@ Ready to start chatting, or would you like to explore these personalization opti
           "It's wonderful to meet you! What brings joy to your life these days?",
           "I love connecting with people! What's your story?",
           "Every person is fascinating in their own way. What makes you unique?",
-          "Hey! I'm here to chat and get to know you better. To get the most personalized experience:\n• Take the <a href=\"#\" onclick=\"lazyLoadMemoryHub(); return false;\" style=\"color: var(--color-teal); text-decoration: none;\">personal quiz in Memory Hub 🧠</a>\n• <a href=\"#\" onclick=\"lazyLoadCustomize(); return false;\" style=\"color: var(--color-teal); text-decoration: none;\">Customize my personality ⚙️</a>\n• <a href=\"/memory-import\" style=\"color: var(--color-teal); text-decoration: none;\">Import your ChatGPT memories 📥</a>\n\nWhat would you like to start with?",
+          "Hey! I'm here to chat and get to know you better. To get the most personalized experience:\n• Take the <a href=\"#\" onclick=\"lazyLoadMemoryHub(); return false;\" style=\"color: var(--color-accent); text-decoration: none;\">personal quiz in Memory Hub 🧠</a>\n• <a href=\"#\" onclick=\"lazyLoadCustomize(); return false;\" style=\"color: var(--color-accent); text-decoration: none;\">Customize my personality ⚙️</a>\n• <a href=\"/memory-import\" style=\"color: var(--color-accent); text-decoration: none;\">Import your ChatGPT memories 📥</a>\n\nWhat would you like to start with?",
           "I believe in the power of conversation. What shall we explore together?"
         ],
         professional: [
@@ -7868,9 +7876,9 @@ Ready to start chatting, or would you like to explore these personalization opti
         
         return `${baseMessage}To get the most personalized experience:
 
-• <a href="#" onclick="lazyLoadMemoryHub(); return false;" style="color: var(--color-teal); text-decoration: none;">Take the personal quiz in Memory Hub 🧠</a>
-• <a href="#" onclick="lazyLoadCustomize(); return false;" style="color: var(--color-teal); text-decoration: none;">Customize my personality ⚙️</a>
-• <a href="/memory-import" style="color: var(--color-teal); text-decoration: none;">Import your ChatGPT memories 📥</a>
+• <a href="#" onclick="lazyLoadMemoryHub(); return false;" style="color: var(--color-accent); text-decoration: none;">Take the personal quiz in Memory Hub 🧠</a>
+• <a href="#" onclick="lazyLoadCustomize(); return false;" style="color: var(--color-accent); text-decoration: none;">Customize my personality ⚙️</a>
+• <a href="/memory-import" style="color: var(--color-accent); text-decoration: none;">Import your ChatGPT memories 📥</a>
 
 Ready to start chatting, or would you like to explore these personalization options first?`;
       }
@@ -7928,9 +7936,9 @@ Ready to start chatting, or would you like to explore these personalization opti
           
           return `${baseMessage}To get the most personalized experience:
 
-• <a href="#" onclick="lazyLoadMemoryHub(); return false;" style="color: var(--color-teal); text-decoration: none;">Take the personal quiz in Memory Hub 🧠</a>
-• <a href="#" onclick="lazyLoadCustomize(); return false;" style="color: var(--color-teal); text-decoration: none;">Customize my personality ⚙️</a>
-• <a href="/memory-import" style="color: var(--color-teal); text-decoration: none;">Import your ChatGPT memories 📥</a>
+• <a href="#" onclick="lazyLoadMemoryHub(); return false;" style="color: var(--color-accent); text-decoration: none;">Take the personal quiz in Memory Hub 🧠</a>
+• <a href="#" onclick="lazyLoadCustomize(); return false;" style="color: var(--color-accent); text-decoration: none;">Customize my personality ⚙️</a>
+• <a href="/memory-import" style="color: var(--color-accent); text-decoration: none;">Import your ChatGPT memories 📥</a>
 
 Ready to start chatting, or would you like to explore these personalization options first?`;
         }
@@ -8521,19 +8529,19 @@ Ready to start chatting, or would you like to explore these personalization opti
         .checkmark {
           width: 20px;
           height: 20px;
-          background: rgba(20, 184, 166, 0.1);
+          background: rgba(212, 165, 116, 0.1);
           border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
           margin-right: 12px;
           flex-shrink: 0;
-          border: 2px solid var(--color-teal);
+          border: 2px solid var(--color-accent);
         }
         
         .checkmark::after {
           content: '✓';
-          color: var(--color-teal);
+          color: var(--color-accent);
           font-weight: 800;
           font-size: 12px;
         }
@@ -12386,7 +12394,7 @@ async function openMemoryHub() {
           <button class="start-onboarding-btn" onclick="closeMemoryHub(); window.location.href='/pricing';">
             <span>💎</span> View Plans
           </button>
-          <button class="start-onboarding-btn" onclick="closeMemoryHub(); window.location.href='/profile';" style="background: var(--color-white); color: var(--color-teal); border: 2px solid var(--color-teal);">
+          <button class="start-onboarding-btn" onclick="closeMemoryHub(); window.location.href='/profile';" style="background: var(--color-white); color: var(--color-accent); border: 2px solid var(--color-accent);">
             <span>🚀</span> Start Free Trial
           </button>
         </div>
@@ -13295,7 +13303,7 @@ async function autoSaveCustomization() {
   // Show saved indicator
   if (indicator) {
     indicator.innerHTML = '<span>✅</span><span>Changes saved automatically</span>';
-    indicator.style.color = 'var(--color-teal)';
+    indicator.style.color = 'var(--color-accent)';
   }
 }
 
@@ -16703,7 +16711,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <a href="/terms-and-conditions" class="footer-link">Terms and Conditions</a>
       </div>
       <div class="footer-copyright">
-        © 2025 Narrin AI. All rights reserved.
+        © 2025 Selira AI. All rights reserved.
       </div>
     </div>
   </footer>

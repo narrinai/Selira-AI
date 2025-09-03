@@ -3,21 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Profile | Manage AI Companions & Subscription - Narrin AI</title>
+  <title>My Profile | Manage AI Companions & Subscription - Selira AI</title>
   <meta name="description" content="Manage your AI companions, track conversations, and upgrade your subscription. Access unlimited AI companions with personalized coaching and support.">
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://selira.ai/profile">
-  <meta property="og:title" content="My Profile | Manage AI Companions - Narrin AI">
-  <meta property="og:description" content="Manage your Narrin AI profile, subscription, and chat history. Create custom AI companions and track your conversations.">
+  <meta property="og:title" content="My Profile | Manage AI Companions - Selira AI">
+  <meta property="og:description" content="Manage your Selira AI profile, subscription, and chat history. Create custom AI companions and track your conversations.">
   <meta property="og:image" content="https://selira.ai/og-image.jpg">
   
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:url" content="https://selira.ai/profile">
-  <meta property="twitter:title" content="My Profile - Manage AI Chat History | Narrin AI">
-  <meta property="twitter:description" content="Manage your Narrin AI profile, view chat history, upgrade to Pro for unlimited AI character conversations. Personalize your AI chat experience today.">
+  <meta property="twitter:title" content="My Profile - Manage AI Chat History | Selira AI">
+  <meta property="twitter:description" content="Manage your Selira AI profile, view chat history, upgrade to Pro for unlimited AI character conversations. Personalize your AI chat experience today.">
   <meta property="twitter:image" content="https://selira.ai/og-image.jpg">
   
   <!-- CRITICAL: Hide page IMMEDIATELY if verification token present -->
@@ -191,7 +191,7 @@
   <!-- Import Modern Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
     /* Smooth scrolling */
@@ -226,13 +226,21 @@
       --color-light-gray: #f5f5f5;
       
       /* Accent Colors */
-      --color-teal: #14b8a6;
-      --color-teal-light: #5eead4;
-      --color-teal-dark: #0f766e;
-      --color-teal-alt: #10a394;
-      --color-coral: #f97316;
-      --color-coral-light: #fb923c;
-      --color-coral-dark: #ea580c;
+      --color-accent: #d4a574;
+      --color-accent-light: #e4b989;
+      --color-accent-dark: #c19456;
+      --color-accent-alt: #c19456;
+      --color-coral: #d4a574;
+      --color-coral-light: #e4b989;
+      --color-coral-dark: #c19456;
+      
+      /* Dark theme colors */
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #1a1a1a;
+      --bg-tertiary: #2a2a2a;
+      --text-primary: #ffffff;
+      --text-secondary: #b3b3b3;
+      --border: #333333;
       
       /* Supporting Colors */
       --color-navy: #1e293b;
@@ -242,7 +250,7 @@
       --color-gray-dark: #475569;
       
       /* Gradients */
-      --gradient-primary: linear-gradient(135deg, var(--color-teal) 0%, var(--color-coral) 100%);
+      --gradient-primary: linear-gradient(135deg, var(--color-accent) 0%, var(--color-coral) 100%);
       --gradient-subtle: linear-gradient(135deg, var(--color-teal-light) 0%, var(--color-coral-light) 100%);
       --gradient-tags: linear-gradient(135deg, var(--color-teal-alt) 0%, var(--color-coral) 100%);
       
@@ -263,8 +271,8 @@
       --spacing-3xl: 4rem;
       
       /* Typography */
-      --font-primary: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-      --font-secondary: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-primary: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-secondary: 'Playfair Display', serif;
       
       /* Font Sizes */
       --font-size-xs: 0.75rem;
@@ -327,7 +335,7 @@
 
     /* ===== ACCESSIBILITY ===== */
     :focus {
-      outline: 2px solid var(--color-teal);
+      outline: 2px solid var(--color-accent);
       outline-offset: 2px;
     }
 
@@ -413,7 +421,7 @@
 
     .usp-icon {
       font-size: var(--font-size-lg);
-      color: var(--color-teal);
+      color: var(--color-accent);
     }
     /* Mobile USP Carousel adjustments */
     @media (max-width: 768px) {
@@ -454,7 +462,7 @@
     }
 
     .nav-search-input:focus {
-      border-color: var(--color-teal);
+      border-color: var(--color-accent);
       box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
     }
 
@@ -524,7 +532,7 @@
     }
 
     .nav-link:hover {
-      color: var(--color-teal);
+      color: var(--color-accent);
     }
 
     .nav-link:hover::after {
@@ -754,7 +762,7 @@
 
     .mobile-menu-link:hover {
       background: var(--color-light-gray);
-      color: var(--color-teal);
+      color: var(--color-accent);
       transform: translateX(4px);
     }
 
@@ -817,7 +825,7 @@
     }
 
     .mobile-search-input:focus {
-      border-color: var(--color-teal);
+      border-color: var(--color-accent);
       box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
     }
 
@@ -1111,7 +1119,7 @@
     }
 
     .nav-button:hover {
-      border-color: var(--color-teal);
+      border-color: var(--color-accent);
       background: var(--color-teal-light);
       transform: translateY(-2px);
       box-shadow: var(--shadow-md);
@@ -1319,7 +1327,7 @@
     }
 
     .pricing-card.featured {
-      border-color: var(--color-teal);
+      border-color: var(--color-accent);
       box-shadow: 0 0 0 2px rgba(20, 184, 166, 0.1);
     }
 
@@ -1376,7 +1384,7 @@
     }
     
     .checkmark {
-      color: var(--color-teal);
+      color: var(--color-accent);
       font-weight: bold;
       font-size: var(--font-size-sm);
     }
@@ -1513,7 +1521,7 @@
     }
 
     .feature-text strong {
-      color: var(--color-teal);
+      color: var(--color-accent);
       font-weight: 700;
     }
 
@@ -1691,7 +1699,7 @@
 
     .invite-input:focus {
       outline: none;
-      border-color: var(--color-teal);
+      border-color: var(--color-accent);
     }
 
     .invite-button {
@@ -1728,8 +1736,8 @@
     .invite-feedback.success {
       display: block;
       background: rgba(20, 184, 166, 0.1);
-      color: var(--color-teal);
-      border: 1px solid var(--color-teal);
+      color: var(--color-accent);
+      border: 1px solid var(--color-accent);
     }
 
     .invite-feedback.info {
@@ -1777,7 +1785,7 @@
     }
 
     .invite-action-btn:hover {
-      border-color: var(--color-teal);
+      border-color: var(--color-accent);
       background: rgba(20, 184, 166, 0.05);
       transform: translateY(-2px);
       box-shadow: var(--shadow-md);
@@ -1840,7 +1848,7 @@
     }
     
     .form-section:hover {
-      border-color: var(--color-teal);
+      border-color: var(--color-accent);
       box-shadow: var(--shadow-lg);
     }
     
@@ -1904,12 +1912,12 @@
     .edit-btn {
       background: var(--color-white);
       color: var(--color-navy);
-      border: 2px solid var(--color-teal);
+      border: 2px solid var(--color-accent);
       box-shadow: var(--shadow-sm);
     }
     
     .edit-btn:hover {
-      background: var(--color-teal);
+      background: var(--color-accent);
       color: var(--color-white);
       transform: translateY(-2px);
     }
@@ -1952,7 +1960,7 @@
     
     input.edit-input:focus {
       outline: none;
-      border-color: var(--color-teal);
+      border-color: var(--color-accent);
       box-shadow: var(--shadow-md);
       transform: translateY(-2px);
     }
@@ -2016,7 +2024,7 @@
     }
     
     #logout-btn:hover {
-      color: var(--color-teal);
+      color: var(--color-accent);
     }
     
     #debug-toggle {
@@ -2227,7 +2235,7 @@
     }
 
     .footer-link:hover {
-      color: var(--color-teal);
+      color: var(--color-accent);
     }
 
     .footer-separator {
@@ -2296,7 +2304,7 @@
     }
 
     .login-form-section:hover {
-      border-color: var(--color-teal);
+      border-color: var(--color-accent);
       transform: translateY(-4px);
       box-shadow: var(--shadow-xl);
     }
@@ -2465,7 +2473,7 @@
     }
 
     .notification-icon.success {
-      color: var(--color-teal);
+      color: var(--color-accent);
     }
 
     .notification-icon.error {
@@ -2539,8 +2547,8 @@
     }
 
     .notification-btn.secondary:hover {
-      border-color: var(--color-teal);
-      color: var(--color-teal);
+      border-color: var(--color-accent);
+      color: var(--color-accent);
     }
 
     /* Mobile adjustments */
@@ -2707,7 +2715,7 @@ body .netlify-identity-widget > div[data-netlify-identity-modal] {
 
 .netlify-identity-widget input:focus {
   outline: none !important;
-  border-color: var(--color-teal) !important;
+  border-color: var(--color-accent) !important;
   box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1) !important;
   transform: translateY(-2px) !important;
 }
@@ -2760,14 +2768,14 @@ body .netlify-identity-widget > div[data-netlify-identity-modal] {
 }
 
 .netlify-identity-widget button:not([type="submit"]):hover {
-  border-color: var(--color-teal) !important;
-  color: var(--color-teal) !important;
+  border-color: var(--color-accent) !important;
+  color: var(--color-accent) !important;
   transform: translateY(-1px) !important;
 }
 
 /* Links in modal */
 .netlify-identity-widget a {
-  color: var(--color-teal) !important;
+  color: var(--color-accent) !important;
   text-decoration: none !important;
   font-weight: 500 !important;
   font-family: var(--font-primary) !important;
@@ -2860,8 +2868,8 @@ body .netlify-identity-widget > div[data-netlify-identity-modal] {
 
 .netlify-identity-widget .tab.active,
 .netlify-identity-widget .tab:hover {
-  color: var(--color-teal) !important;
-  border-bottom-color: var(--color-teal) !important;
+  color: var(--color-accent) !important;
+  border-bottom-color: var(--color-accent) !important;
 }
 
 /* Mobile responsive adjustments */
@@ -2901,7 +2909,7 @@ body .netlify-identity-widget > div[data-netlify-identity-modal] {
 }
 
 .netlify-identity-widget .btn-social:hover {
-  border-color: var(--color-teal) !important;
+  border-color: var(--color-accent) !important;
   background: var(--color-off-white) !important;
 }
 
@@ -2992,7 +3000,7 @@ body .netlify-identity-widget > div[data-netlify-identity-modal] {
     }
     
     .share-email {
-      background: var(--color-teal);
+      background: var(--color-accent);
       color: white;
     }
     
@@ -3066,7 +3074,7 @@ body .netlify-identity-widget > div[data-netlify-identity-modal] {
     <div class="header-container">
       <div class="header-content">
         <!-- Logo -->
-        <a href="/" class="logo" aria-label="Narrin AI Home">Narrin AI</a>
+        <a href="/" class="logo" aria-label="Selira AI Home">Selira AI</a>
 
         <!-- Desktop Navigation Center -->
         <nav class="nav-center" role="navigation" aria-label="Main navigation">
@@ -3130,7 +3138,7 @@ body .netlify-identity-widget > div[data-netlify-identity-modal] {
   <div class="mobile-menu-overlay" id="mobileMenuOverlay">
     <div class="mobile-menu-content">
       <div class="mobile-menu-header">
-        <div class="mobile-menu-logo">Narrin AI</div>
+        <div class="mobile-menu-logo">Selira AI</div>
         <div class="mobile-menu-subtitle">AI Companion Platform</div>
       </div>
       <nav class="mobile-menu-nav" role="navigation" aria-label="Mobile navigation">
@@ -3467,7 +3475,7 @@ body .netlify-identity-widget > div[data-netlify-identity-modal] {
             <h3 class="invite-title">Invite Friends</h3>
           </div>
           <p class="invite-description">
-            Share Narrin AI with your friends! Choose how you'd like to share:
+            Share Selira AI with your friends! Choose how you'd like to share:
           </p>
           <div class="invite-actions">
             <button class="invite-action-btn" onclick="shareViaEmail()">
@@ -3963,10 +3971,10 @@ body .netlify-identity-widget > div[data-netlify-identity-modal] {
       const currentUser = window.netlifyIdentity?.currentUser();
       const inviterName = currentUser?.email?.split('@')[0] || 'A friend';
       
-      const subject = "You're invited to join Narrin AI!";
+      const subject = "You're invited to join Selira AI!";
       const body = `Hi!
 
-${inviterName} thinks you'll love Narrin AI, where you can chat with over 1000+ unique AI characters. Each character has their own personality and can help with everything from creative writing to learning new skills.
+${inviterName} thinks you'll love Selira AI, where you can chat with over 1000+ unique AI characters. Each character has their own personality and can help with everything from creative writing to learning new skills.
 
 Join me here: ${inviteLink}
 
@@ -3984,7 +3992,7 @@ See you there!`;
     
     function shareViaWhatsApp() {
       const inviteLink = getInviteLink();
-      const message = `Check out Narrin AI! Chat with 1000+ unique AI characters 🤖✨
+      const message = `Check out Selira AI! Chat with 1000+ unique AI characters 🤖✨
 
 Each character has their own personality and expertise. It's like having a team of experts and friends at your fingertips!
 
@@ -4014,7 +4022,7 @@ Join here: ${inviteLink}`;
     
     function shareViaWhatsApp() {
       const inviteLink = getInviteLink();
-      const message = `Check out Narrin AI! Chat with 1000+ unique AI characters 🤖✨\n\nJoin here: ${inviteLink}`;
+      const message = `Check out Selira AI! Chat with 1000+ unique AI characters 🤖✨\n\nJoin here: ${inviteLink}`;
       
       // Detect if mobile or desktop
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
@@ -4637,7 +4645,7 @@ function handleLoginSuccess(user, eventType = 'unknown') {
         console.log('✅ Webhook response:', responseText);
         
         if (isNewUser) {
-          showSuccess('Account created successfully! Welcome to Narrin AI!');
+          showSuccess('Account created successfully! Welcome to Selira AI!');
           showProfileUI();
           
           // Voor nieuwe users: wacht en laad dan profile
@@ -5860,7 +5868,7 @@ function handleLoginSuccess(user, eventType = 'unknown') {
           successBanner.style.cssText = 'background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 20px; border-radius: 12px; margin: 0 0 24px; text-align: center; animation: slideIn 0.5s ease-out;';
           successBanner.innerHTML = `
             <h3 style="margin: 0 0 8px 0; font-size: 20px;">✅ Email Verified Successfully!</h3>
-            <p style="margin: 0; opacity: 0.95;">Your account is now fully activated. Welcome to Narrin AI!</p>
+            <p style="margin: 0; opacity: 0.95;">Your account is now fully activated. Welcome to Selira AI!</p>
           `;
           
           // Add animation
@@ -7409,7 +7417,7 @@ function updateTrialStatus() {
         <a href="/terms-and-conditions" class="footer-link">Terms and Conditions</a>
       </div>
       <div class="footer-copyright">
-        © 2025 Narrin AI. All rights reserved.
+        © 2025 Selira AI. All rights reserved.
       </div>
     </div>
   </footer>
