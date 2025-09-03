@@ -547,11 +547,11 @@
     </div>
   </section>
 
-  <!-- Discover Section -->
+  <!-- Fantasy Section -->
   <section class="section" id="discover">
     <div class="section-header">
       <h2 class="section-title">
-        <span class="section-icon">🌟</span>
+        <span class="section-icon">🏰</span>
         Discover Your Dream Fantasy
       </h2>
       <a href="/category.html?filter=Fantasy" class="see-more">See More →</a>
@@ -561,17 +561,31 @@
     </div>
   </section>
 
-  <!-- Popular Section -->
+  <!-- Anime-Manga Section -->
   <section class="section">
     <div class="section-header">
       <h2 class="section-title">
-        <span class="section-icon">🔥</span>
-        Chat with Immersive AI Companions
+        <span class="section-icon">🎌</span>
+        Anime & Manga Companions
       </h2>
-      <a href="/category.html" class="see-more">See More →</a>
+      <a href="/category.html?filter=Anime-Manga" class="see-more">See More →</a>
     </div>
-    <div class="characters-grid" id="popularGrid">
-      <!-- Popular characters will be loaded here -->
+    <div class="characters-grid" id="animeGrid">
+      <!-- Anime-Manga characters will be loaded here -->
+    </div>
+  </section>
+
+  <!-- Historical Section -->
+  <section class="section">
+    <div class="section-header">
+      <h2 class="section-title">
+        <span class="section-icon">📜</span>
+        Historical Figures & Legends
+      </h2>
+      <a href="/category.html?filter=Historical" class="see-more">See More →</a>
+    </div>
+    <div class="characters-grid" id="historicalGrid">
+      <!-- Historical characters will be loaded here -->
     </div>
   </section>
 
@@ -710,7 +724,8 @@
         console.error('❌ Error loading characters:', error);
         // Show fallback content or hide sections
         document.getElementById('fantasyGrid').innerHTML = '<p style="text-align: center; color: var(--text-secondary);">Loading characters...</p>';
-        document.getElementById('popularGrid').innerHTML = '<p style="text-align: center; color: var(--text-secondary);">Loading characters...</p>';
+        document.getElementById('animeGrid').innerHTML = '<p style="text-align: center; color: var(--text-secondary);">Loading characters...</p>';
+        document.getElementById('historicalGrid').innerHTML = '<p style="text-align: center; color: var(--text-secondary);">Loading characters...</p>';
       }
     }
 
@@ -720,15 +735,21 @@
 
       // Fantasy Section
       const fantasyCharacters = allCharacters
-        .filter(char => char.category && char.category.toLowerCase().includes('fantasy'))
+        .filter(char => char.category && char.category.toLowerCase() === 'fantasy')
         .slice(0, 4);
-      renderCharacterGrid('fantasyGrid', fantasyCharacters.length > 0 ? fantasyCharacters : allCharacters.slice(0, 4));
+      renderCharacterGrid('fantasyGrid', fantasyCharacters);
 
-      // Popular Section  
-      const popularCharacters = allCharacters
-        .sort(() => Math.random() - 0.5) // Random for now, could be based on actual popularity
-        .slice(0, 8);
-      renderCharacterGrid('popularGrid', popularCharacters);
+      // Anime-Manga Section  
+      const animeCharacters = allCharacters
+        .filter(char => char.category && char.category.toLowerCase() === 'anime-manga')
+        .slice(0, 4);
+      renderCharacterGrid('animeGrid', animeCharacters);
+
+      // Historical Section
+      const historicalCharacters = allCharacters
+        .filter(char => char.category && char.category.toLowerCase() === 'historical')
+        .slice(0, 4);
+      renderCharacterGrid('historicalGrid', historicalCharacters);
     }
 
     // Render character grid for a specific section
