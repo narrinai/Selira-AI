@@ -32,14 +32,16 @@ NETLIFY_WIDGET_BACKGROUND = "#ffffff"
 NETLIFY_WIDGET_BORDER_RADIUS = "24px"
 NETLIFY_WIDGET_FONT_FAMILY = "Plus Jakarta Sans"
 
-# Identity templates configuratie
+# Note: Auth0 will replace Netlify Identity
+# This configuration is kept for reference during migration
+
 [identity]
 [identity.settings]
-enable_signup = true
+enable_signup = false  # Disabled - will use Auth0
 
 [identity.templates]
 [identity.templates.login]
-title = "Narrin AI - Inloggen"
+title = "Selira AI - Login"
 css = """
   :root {
     --primary: #14b8a6;
@@ -67,7 +69,7 @@ css = """
 """
 
 [identity.templates.signup]
-title = "Narrin AI - Registreren"
+title = "Selira AI - Register"
 css = """
   :root {
     --primary: #14b8a6;
