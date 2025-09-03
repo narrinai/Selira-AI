@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Narrin AI - Social Media Templates</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Outfit:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <title>Selira AI - Social Media Templates</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -13,10 +13,11 @@
     }
 
     body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      background: #f8fafc;
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(135deg, #faf9f7 0%, #f5f2ed 100%);
       padding: 40px;
-      color: #1e293b;
+      color: #2d2620;
+      line-height: 1.6;
     }
 
     .container {
@@ -25,29 +26,48 @@
     }
 
     h1 {
-      font-family: 'Outfit', sans-serif;
-      font-size: 36px;
-      margin-bottom: 10px;
-      background: linear-gradient(135deg, #14b8a6 0%, #f97316 100%);
+      font-family: 'Playfair Display', serif;
+      font-size: 48px;
+      font-weight: 700;
+      margin-bottom: 15px;
+      background: linear-gradient(135deg, #d4a574 0%, #c19456 50%, #e4b989 100%);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
+      text-align: center;
     }
 
     .subtitle {
-      color: #64748b;
-      margin-bottom: 40px;
+      color: #8b7355;
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 50px;
+      text-align: center;
     }
 
     .template-section {
-      margin-bottom: 50px;
+      margin-bottom: 60px;
     }
 
     h2 {
-      font-family: 'Outfit', sans-serif;
-      font-size: 24px;
-      margin-bottom: 20px;
-      color: #1e293b;
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      font-weight: 600;
+      margin-bottom: 25px;
+      color: #2d2620;
+      position: relative;
+      padding-bottom: 10px;
+    }
+
+    h2::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(135deg, #d4a574 0%, #c19456 100%);
+      border-radius: 2px;
     }
 
     .template-grid {
@@ -58,182 +78,257 @@
 
     .template-card {
       background: white;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      border-radius: 16px;
+      padding: 25px;
+      box-shadow: 0 8px 32px rgba(212, 165, 116, 0.1);
+      transition: all 0.3s ease;
+      border: 1px solid rgba(212, 165, 116, 0.1);
+    }
+
+    .template-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(212, 165, 116, 0.15);
     }
 
     .template-preview {
       position: relative;
-      margin-bottom: 15px;
-      border-radius: 8px;
+      margin-bottom: 20px;
+      border-radius: 12px;
       overflow: hidden;
-      background: #f1f5f9;
+      background: #f9f8f6;
+      border: 2px solid rgba(212, 165, 116, 0.1);
     }
 
     .template-title {
+      font-family: 'Playfair Display', serif;
       font-weight: 600;
-      margin-bottom: 5px;
-      color: #1e293b;
+      font-size: 18px;
+      margin-bottom: 8px;
+      color: #2d2620;
     }
 
     .template-dimensions {
-      color: #64748b;
+      color: #8b7355;
       font-size: 14px;
-      margin-bottom: 15px;
-      font-family: monospace;
+      margin-bottom: 20px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 500;
+      background: rgba(212, 165, 116, 0.1);
+      padding: 5px 10px;
+      border-radius: 6px;
+      display: inline-block;
     }
 
     .download-btn {
-      background: linear-gradient(135deg, #14b8a6 0%, #f97316 100%);
+      background: linear-gradient(135deg, #d4a574 0%, #c19456 100%);
       color: white;
       border: none;
-      padding: 10px 24px;
-      border-radius: 8px;
+      padding: 12px 28px;
+      border-radius: 10px;
       font-weight: 600;
+      font-family: 'Nunito', sans-serif;
       cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
+      transition: all 0.3s ease;
       width: 100%;
+      font-size: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .download-btn:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .download-btn:hover:before {
+      left: 100%;
     }
 
     .download-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(20, 184, 166, 0.3);
+      box-shadow: 0 10px 25px rgba(212, 165, 116, 0.4);
     }
 
-    /* Template Designs */
-    .linkedin-banner {
+    .download-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Template Design Previews */
+    .logo-template {
       width: 100%;
-      height: 191px;
-      background: linear-gradient(135deg, #14b8a6 0%, #f97316 100%);
+      height: 120px;
+      background: linear-gradient(135deg, #d4a574 0%, #c19456 50%, #e4b989 100%);
       display: flex;
       align-items: center;
       justify-content: center;
+      border-radius: 8px;
       position: relative;
       overflow: hidden;
     }
 
-    .twitter-header {
-      width: 100%;
-      height: 167px;
-      background: linear-gradient(135deg, #1e293b 0%, #14b8a6 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
-
-    .facebook-cover {
-      width: 100%;
-      height: 183px;
-      background: linear-gradient(135deg, #14b8a6 0%, #f97316 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
-
-    .youtube-banner {
-      width: 100%;
-      height: 180px;
-      background: linear-gradient(135deg, #f97316 0%, #14b8a6 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
-
-    .instagram-post {
-      width: 100%;
-      aspect-ratio: 1;
-      background: linear-gradient(135deg, #14b8a6 0%, #f97316 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
-
-    .instagram-story {
-      width: 100%;
-      height: 400px;
-      background: linear-gradient(180deg, #14b8a6 0%, #f97316 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
-
-    .profile-pic {
-      width: 200px;
-      height: 200px;
-      background: linear-gradient(135deg, #14b8a6 0%, #f97316 100%);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto;
-    }
-
-    .email-signature {
-      width: 100%;
-      height: 150px;
-      background: white;
-      border: 2px solid #e2e8f0;
-      display: flex;
-      align-items: center;
-      padding: 20px;
-      gap: 20px;
-    }
-
-    .banner-logo {
-      font-family: 'Outfit', sans-serif;
-      font-weight: 700;
-      color: white;
-      font-size: 32px;
-      letter-spacing: -1px;
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .banner-tagline {
-      color: rgba(255, 255, 255, 0.9);
-      font-size: 14px;
-      margin-top: 10px;
-      text-align: center;
-    }
-
-    .pattern-overlay {
+    .logo-template::before {
+      content: '';
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      opacity: 0.1;
-      background-image: repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,.1) 35px, rgba(255,255,255,.1) 70px);
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.05"/><circle cx="75" cy="25" r="1" fill="white" opacity="0.05"/><circle cx="50" cy="50" r="1" fill="white" opacity="0.05"/><circle cx="25" cy="75" r="1" fill="white" opacity="0.05"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.05"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>') repeat;
+    }
+
+    .profile-pic {
+      width: 180px;
+      height: 180px;
+      background: linear-gradient(135deg, #d4a574 0%, #c19456 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 20px auto;
+      box-shadow: 0 8px 32px rgba(212, 165, 116, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .banner-template {
+      width: 100%;
+      height: 180px;
+      background: linear-gradient(135deg, #d4a574 0%, #c19456 50%, #e4b989 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .banner-template::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 20px,
+        rgba(255,255,255,0.05) 20px,
+        rgba(255,255,255,0.05) 40px
+      );
+    }
+
+    .square-template {
+      width: 100%;
+      aspect-ratio: 1;
+      background: linear-gradient(135deg, #d4a574 0%, #c19456 50%, #e4b989 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .story-template {
+      width: 100%;
+      height: 400px;
+      background: linear-gradient(180deg, #d4a574 0%, #c19456 50%, #e4b989 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .banner-logo {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      color: white;
+      font-size: 28px;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 2;
+      position: relative;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .banner-tagline {
+      color: rgba(255, 255, 255, 0.95);
+      font-size: 14px;
+      margin-top: 8px;
+      text-align: center;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 500;
+      z-index: 2;
+      position: relative;
     }
 
     .icon-circle {
-      width: 50px;
-      height: 50px;
+      width: 45px;
+      height: 45px;
       background: white;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'Outfit', sans-serif;
+      font-family: 'Playfair Display', serif;
       font-weight: 700;
-      font-size: 24px;
-      color: #14b8a6;
+      font-size: 22px;
+      color: #c19456;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+
+    .favicon-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .favicon-item {
+      text-align: center;
+      padding: 15px;
+      background: rgba(212, 165, 116, 0.05);
+      border-radius: 8px;
+      border: 1px solid rgba(212, 165, 116, 0.1);
+    }
+
+    .favicon-preview {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #d4a574 0%, #c19456 100%);
+      border-radius: 8px;
+      margin: 0 auto 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 20px;
+    }
+
+    .favicon-label {
+      font-size: 12px;
+      color: #8b7355;
+      font-weight: 600;
     }
 
     .specs-table {
       width: 100%;
-      margin-top: 40px;
+      margin-top: 50px;
       background: white;
-      border-radius: 12px;
+      border-radius: 16px;
       overflow: hidden;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      box-shadow: 0 8px 32px rgba(212, 165, 116, 0.1);
+      border: 1px solid rgba(212, 165, 116, 0.1);
     }
 
     .specs-table table {
@@ -242,16 +337,19 @@
     }
 
     .specs-table th {
-      background: linear-gradient(135deg, #14b8a6 0%, #f97316 100%);
+      background: linear-gradient(135deg, #d4a574 0%, #c19456 100%);
       color: white;
-      padding: 15px;
+      padding: 20px;
       text-align: left;
-      font-weight: 600;
+      font-weight: 700;
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
     }
 
     .specs-table td {
-      padding: 12px 15px;
-      border-bottom: 1px solid #e2e8f0;
+      padding: 15px 20px;
+      border-bottom: 1px solid rgba(212, 165, 116, 0.1);
+      font-family: 'Nunito', sans-serif;
     }
 
     .specs-table tr:last-child td {
@@ -259,18 +357,51 @@
     }
 
     .specs-table tr:hover {
-      background: #f8fafc;
+      background: rgba(212, 165, 116, 0.05);
     }
 
     .platform-name {
-      font-weight: 600;
-      color: #1e293b;
+      font-weight: 700;
+      color: #2d2620;
+      font-family: 'Playfair Display', serif;
     }
 
     .dimension-code {
-      font-family: monospace;
-      color: #14b8a6;
+      font-family: 'Monaco', 'Menlo', monospace;
+      color: #c19456;
       font-size: 14px;
+      font-weight: 600;
+      background: rgba(212, 165, 116, 0.1);
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(212, 165, 116, 0.1);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .loading-spinner {
+      width: 60px;
+      height: 60px;
+      border: 4px solid rgba(212, 165, 116, 0.2);
+      border-top: 4px solid #c19456;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
 
     @media (max-width: 768px) {
@@ -278,8 +409,25 @@
         padding: 20px;
       }
 
+      h1 {
+        font-size: 36px;
+      }
+
+      h2 {
+        font-size: 24px;
+      }
+
       .template-grid {
         grid-template-columns: 1fr;
+      }
+
+      .template-card {
+        padding: 20px;
+      }
+
+      .specs-table th,
+      .specs-table td {
+        padding: 12px 15px;
       }
     }
   </style>
@@ -292,9 +440,62 @@
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 </head>
 <body>
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+  </div>
+
   <div class="container">
-    <h1>Narrin AI Social Media Templates</h1>
-    <p class="subtitle">Ready-to-use templates for all social media platforms</p>
+    <h1>Selira AI Social Media Templates</h1>
+    <p class="subtitle">Professional branding templates for all social media platforms - ready to download and use</p>
+
+    <!-- Logo Templates -->
+    <div class="template-section">
+      <h2>Logo Templates</h2>
+      <div class="template-grid">
+        <div class="template-card">
+          <div class="template-preview">
+            <div class="logo-template">
+              <div style="text-align: center; z-index: 2; position: relative;">
+                <div class="banner-logo" style="font-size: 32px; margin-bottom: 8px;">
+                  Selira AI
+                </div>
+                <div class="banner-tagline">Your Perfect AI Companion</div>
+              </div>
+            </div>
+          </div>
+          <div class="template-title">Main Logo with Tagline</div>
+          <div class="template-dimensions">1200x400px</div>
+          <button class="download-btn" onclick="downloadTemplate('logo-main')">Download PNG</button>
+        </div>
+
+        <div class="template-card">
+          <div class="template-preview">
+            <div class="logo-template">
+              <div class="banner-logo" style="font-size: 36px; z-index: 2; position: relative;">
+                Selira AI
+              </div>
+            </div>
+          </div>
+          <div class="template-title">Logo Only (No Tagline)</div>
+          <div class="template-dimensions">800x300px</div>
+          <button class="download-btn" onclick="downloadTemplate('logo-only')">Download PNG</button>
+        </div>
+
+        <div class="template-card">
+          <div class="template-preview">
+            <div class="logo-template" style="height: 80px;">
+              <div class="banner-logo" style="font-size: 28px; z-index: 2; position: relative;">
+                <div class="icon-circle" style="width: 35px; height: 35px; font-size: 18px;">S</div>
+                <span>Selira AI</span>
+              </div>
+            </div>
+          </div>
+          <div class="template-title">Horizontal Logo</div>
+          <div class="template-dimensions">600x150px</div>
+          <button class="download-btn" onclick="downloadTemplate('logo-horizontal')">Download PNG</button>
+        </div>
+      </div>
+    </div>
 
     <!-- Profile Pictures -->
     <div class="template-section">
@@ -303,65 +504,62 @@
         <div class="template-card">
           <div class="template-preview">
             <div class="profile-pic">
-              <svg width="100" height="100" viewBox="0 0 32 32" style="width: 100px; height: 100px;">
-                <defs>
-                  <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" style="stop-color:#14b8a6;stop-opacity:1" />
-                    <stop offset="100%" style="stop-color:#f97316;stop-opacity:1" />
-                  </linearGradient>
-                </defs>
-                <circle cx="16" cy="16" r="15" fill="url(#gradient1)" stroke="none"/>
-                <path d="M 8 24 L 8 8 L 12 8 L 20 20 L 20 8 L 24 8 L 24 24 L 20 24 L 12 12 L 12 24 L 8 24 Z" fill="white" stroke="none"/>
-              </svg>
+              <div class="icon-circle" style="width: 80px; height: 80px; font-size: 40px;">S</div>
             </div>
           </div>
-          <div class="template-title">Universal Profile Picture</div>
-          <div class="template-dimensions">400x400px (Circle crop)</div>
-          <button class="download-btn" onclick="downloadTemplate('profile-universal')">Download PNG</button>
+          <div class="template-title">Circular Profile Picture</div>
+          <div class="template-dimensions">400x400px</div>
+          <button class="download-btn" onclick="downloadTemplate('profile-circle')">Download PNG</button>
         </div>
 
         <div class="template-card">
           <div class="template-preview">
-            <div class="profile-pic" style="background: #22c55e;">
-              <svg width="100" height="100" viewBox="0 0 32 32" style="width: 100px; height: 100px;">
-                <circle cx="16" cy="16" r="15" fill="white" stroke="none"/>
-                <path d="M 8 24 L 8 8 L 12 8 L 20 20 L 20 8 L 24 8 L 24 24 L 20 24 L 12 12 L 12 24 L 8 24 Z" fill="#22c55e" stroke="none"/>
-              </svg>
+            <div style="width: 180px; height: 180px; background: linear-gradient(135deg, #d4a574 0%, #c19456 100%); margin: 20px auto; display: flex; align-items: center; justify-content: center; border-radius: 12px; box-shadow: 0 8px 32px rgba(212, 165, 116, 0.3);">
+              <div class="icon-circle" style="width: 80px; height: 80px; font-size: 40px;">S</div>
             </div>
           </div>
-          <div class="template-title">Green Profile Picture</div>
-          <div class="template-dimensions">400x400px (Circle crop)</div>
-          <button class="download-btn" onclick="downloadTemplate('profile-green')">Download PNG</button>
-        </div>
-
-        <div class="template-card">
-          <div class="template-preview">
-            <div style="width: 100%; height: 120px; background: linear-gradient(135deg, #14b8a6 0%, #f97316 100%); display: flex; align-items: center; justify-content: center; border-radius: 8px;">
-              <div style="color: white; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 24px; letter-spacing: -1px;">
-                Narrin AI
-              </div>
-            </div>
-          </div>
-          <div class="template-title">Logo Only (No Tagline)</div>
-          <div class="template-dimensions">Various sizes</div>
-          <button class="download-btn" onclick="downloadTemplate('logo-only')">Download PNG</button>
+          <div class="template-title">Square Profile Picture</div>
+          <div class="template-dimensions">400x400px</div>
+          <button class="download-btn" onclick="downloadTemplate('profile-square')">Download PNG</button>
         </div>
       </div>
     </div>
 
-    <!-- LinkedIn -->
+    <!-- Social Media Banners -->
     <div class="template-section">
-      <h2>LinkedIn</h2>
+      <h2>Social Media Banners</h2>
+      
+      <!-- Twitter/X -->
+      <h3 style="font-family: 'Playfair Display', serif; font-size: 20px; margin: 30px 0 15px 0; color: #8b7355;">Twitter/X</h3>
       <div class="template-grid">
         <div class="template-card">
           <div class="template-preview">
-            <div class="linkedin-banner">
-              <div class="pattern-overlay"></div>
-              <div style="text-align: center; z-index: 1;">
-                <div class="banner-logo" style="font-size: 48px; margin-bottom: 10px;">
-                  Narrin AI
+            <div class="banner-template" style="height: 160px;">
+              <div style="text-align: center; z-index: 2; position: relative;">
+                <div class="banner-logo" style="font-size: 36px; margin-bottom: 8px;">
+                  Selira AI
                 </div>
-                <div class="banner-tagline">Your Daily Thought Organizer</div>
+                <div class="banner-tagline">Your Perfect AI Companion</div>
+              </div>
+            </div>
+          </div>
+          <div class="template-title">Twitter/X Header</div>
+          <div class="template-dimensions">1500x500px</div>
+          <button class="download-btn" onclick="downloadTemplate('twitter-header')">Download PNG</button>
+        </div>
+      </div>
+
+      <!-- LinkedIn -->
+      <h3 style="font-family: 'Playfair Display', serif; font-size: 20px; margin: 30px 0 15px 0; color: #8b7355;">LinkedIn</h3>
+      <div class="template-grid">
+        <div class="template-card">
+          <div class="template-preview">
+            <div class="banner-template" style="height: 140px;">
+              <div style="text-align: center; z-index: 2; position: relative;">
+                <div class="banner-logo" style="font-size: 32px; margin-bottom: 6px;">
+                  Selira AI
+                </div>
+                <div class="banner-tagline">Your Perfect AI Companion</div>
               </div>
             </div>
           </div>
@@ -372,29 +570,10 @@
 
         <div class="template-card">
           <div class="template-preview">
-            <div class="linkedin-banner" style="background: #22c55e;">
-              <div class="pattern-overlay"></div>
-              <div style="text-align: center; z-index: 1;">
-                <div class="banner-logo">
-                  <div class="icon-circle" style="background: white; color: #22c55e;">N</div>
-                  <span>Narrin AI</span>
-                </div>
-                <div class="banner-tagline">Your Daily Thought Organizer</div>
-              </div>
-            </div>
-          </div>
-          <div class="template-title">LinkedIn Green Banner</div>
-          <div class="template-dimensions">1128x191px</div>
-          <button class="download-btn" onclick="downloadTemplate('linkedin-green')">Download PNG</button>
-        </div>
-
-        <div class="template-card">
-          <div class="template-preview">
-            <div class="linkedin-banner" style="height: 99px; background: linear-gradient(135deg, #1e293b 0%, #14b8a6 100%);">
-              <div class="pattern-overlay"></div>
-              <div class="banner-logo" style="font-size: 24px; z-index: 1;">
-                <div class="icon-circle" style="width: 40px; height: 40px; font-size: 20px;">N</div>
-                <span>Narrin AI</span>
+            <div class="banner-template" style="height: 100px;">
+              <div class="banner-logo" style="font-size: 24px; z-index: 2; position: relative;">
+                <div class="icon-circle" style="width: 35px; height: 35px; font-size: 18px;">S</div>
+                <span>Selira AI</span>
               </div>
             </div>
           </div>
@@ -403,44 +582,18 @@
           <button class="download-btn" onclick="downloadTemplate('linkedin-personal')">Download PNG</button>
         </div>
       </div>
-    </div>
 
-    <!-- Twitter/X -->
-    <div class="template-section">
-      <h2>Twitter/X</h2>
+      <!-- Facebook -->
+      <h3 style="font-family: 'Playfair Display', serif; font-size: 20px; margin: 30px 0 15px 0; color: #8b7355;">Facebook</h3>
       <div class="template-grid">
         <div class="template-card">
           <div class="template-preview">
-            <div class="twitter-header">
-              <div class="pattern-overlay"></div>
-              <div style="text-align: center; z-index: 1;">
-                <div class="banner-logo" style="font-size: 48px; margin-bottom: 10px;">
-                  Narrin AI
+            <div class="banner-template" style="height: 150px;">
+              <div style="text-align: center; z-index: 2; position: relative;">
+                <div class="banner-logo" style="font-size: 32px; margin-bottom: 6px;">
+                  Selira AI
                 </div>
-                <div class="banner-tagline">Your Daily Thought Organizer</div>
-              </div>
-            </div>
-          </div>
-          <div class="template-title">Twitter/X Header</div>
-          <div class="template-dimensions">1500x500px</div>
-          <button class="download-btn" onclick="downloadTemplate('twitter-header')">Download PNG</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Facebook -->
-    <div class="template-section">
-      <h2>Facebook</h2>
-      <div class="template-grid">
-        <div class="template-card">
-          <div class="template-preview">
-            <div class="facebook-cover">
-              <div class="pattern-overlay"></div>
-              <div style="text-align: center; z-index: 1;">
-                <div class="banner-logo" style="font-size: 48px; margin-bottom: 10px;">
-                  Narrin AI
-                </div>
-                <div class="banner-tagline">Your Daily Thought Organizer</div>
+                <div class="banner-tagline">Your Perfect AI Companion</div>
               </div>
             </div>
           </div>
@@ -449,21 +602,18 @@
           <button class="download-btn" onclick="downloadTemplate('facebook-cover')">Download PNG</button>
         </div>
       </div>
-    </div>
 
-    <!-- YouTube -->
-    <div class="template-section">
-      <h2>YouTube</h2>
+      <!-- YouTube -->
+      <h3 style="font-family: 'Playfair Display', serif; font-size: 20px; margin: 30px 0 15px 0; color: #8b7355;">YouTube</h3>
       <div class="template-grid">
         <div class="template-card">
           <div class="template-preview">
-            <div class="youtube-banner">
-              <div class="pattern-overlay"></div>
-              <div style="text-align: center; z-index: 1;">
-                <div class="banner-logo" style="font-size: 48px; margin-bottom: 10px;">
-                  Narrin AI
+            <div class="banner-template" style="height: 120px;">
+              <div style="text-align: center; z-index: 2; position: relative;">
+                <div class="banner-logo" style="font-size: 28px; margin-bottom: 5px;">
+                  Selira AI
                 </div>
-                <div class="banner-tagline">Your Daily Thought Organizer</div>
+                <div class="banner-tagline">Your Perfect AI Companion</div>
               </div>
             </div>
           </div>
@@ -474,18 +624,17 @@
       </div>
     </div>
 
-    <!-- Instagram -->
+    <!-- Instagram Templates -->
     <div class="template-section">
-      <h2>Instagram</h2>
+      <h2>Instagram Templates</h2>
       <div class="template-grid">
         <div class="template-card">
           <div class="template-preview">
-            <div class="instagram-post">
-              <div class="pattern-overlay"></div>
-              <div style="text-align: center; z-index: 1;">
-                <div class="icon-circle" style="width: 80px; height: 80px; font-size: 40px; margin: 0 auto 20px;">N</div>
-                <div class="banner-logo">Narrin AI</div>
-                <div class="banner-tagline">Your Daily Thought Organizer</div>
+            <div class="square-template">
+              <div style="text-align: center; z-index: 2; position: relative;">
+                <div class="icon-circle" style="width: 70px; height: 70px; font-size: 35px; margin: 0 auto 15px;">S</div>
+                <div class="banner-logo" style="font-size: 28px;">Selira AI</div>
+                <div class="banner-tagline">Your Perfect AI Companion</div>
               </div>
             </div>
           </div>
@@ -496,12 +645,11 @@
 
         <div class="template-card">
           <div class="template-preview">
-            <div class="instagram-story">
-              <div class="pattern-overlay"></div>
-              <div style="text-align: center; z-index: 1;">
-                <div class="icon-circle" style="width: 80px; height: 80px; font-size: 40px; margin: 0 auto 20px;">N</div>
-                <div class="banner-logo">Narrin AI</div>
-                <div class="banner-tagline">Your Daily Thought Organizer</div>
+            <div class="story-template">
+              <div style="text-align: center; z-index: 2; position: relative;">
+                <div class="icon-circle" style="width: 70px; height: 70px; font-size: 35px; margin: 0 auto 15px;">S</div>
+                <div class="banner-logo" style="font-size: 32px;">Selira AI</div>
+                <div class="banner-tagline">Your Perfect AI Companion</div>
               </div>
             </div>
           </div>
@@ -512,27 +660,31 @@
       </div>
     </div>
 
-    <!-- Email Signature -->
+    <!-- Favicon Pack -->
     <div class="template-section">
-      <h2>Email Signature</h2>
-      <div class="template-grid">
-        <div class="template-card">
-          <div class="template-preview">
-            <div class="email-signature">
-              <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #14b8a6 0%, #f97316 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                <span style="color: white; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 28px;">N</span>
-              </div>
-              <div style="flex: 1;">
-                <div style="font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 20px; color: #1e293b; margin-bottom: 5px;">Narrin AI</div>
-                <div style="color: #64748b; font-size: 14px;">AI Companions for Life</div>
-                <div style="color: #14b8a6; font-size: 14px; margin-top: 5px;">narrin.ai</div>
-              </div>
-            </div>
+      <h2>Favicon Pack</h2>
+      <div class="template-card">
+        <div class="template-title">Complete Favicon Set</div>
+        <div class="template-dimensions">Multiple sizes: 16x16, 32x32, 180x180, 192x192, 512x512</div>
+        <div class="favicon-grid">
+          <div class="favicon-item">
+            <div class="favicon-preview" style="width: 16px; height: 16px; font-size: 8px;">S</div>
+            <div class="favicon-label">16x16</div>
           </div>
-          <div class="template-title">Email Signature</div>
-          <div class="template-dimensions">600x150px</div>
-          <button class="download-btn" onclick="downloadTemplate('email-signature')">Download PNG</button>
+          <div class="favicon-item">
+            <div class="favicon-preview" style="width: 32px; height: 32px; font-size: 16px;">S</div>
+            <div class="favicon-label">32x32</div>
+          </div>
+          <div class="favicon-item">
+            <div class="favicon-preview">S</div>
+            <div class="favicon-label">48x48</div>
+          </div>
+          <div class="favicon-item">
+            <div class="favicon-preview" style="width: 64px; height: 64px; font-size: 32px;">S</div>
+            <div class="favicon-label">180x180</div>
+          </div>
         </div>
+        <button class="download-btn" onclick="downloadFaviconPack()">Download Complete Favicon Pack</button>
       </div>
     </div>
 
@@ -544,81 +696,69 @@
             <th>Platform</th>
             <th>Asset Type</th>
             <th>Dimensions</th>
-            <th>Notes</th>
+            <th>Usage Notes</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td class="platform-name">Universal</td>
-            <td>Profile Picture</td>
+            <td>Profile Picture (Circle)</td>
             <td class="dimension-code">400x400px</td>
-            <td>Will be cropped to circle on most platforms</td>
+            <td>Automatically cropped to circle on most platforms</td>
+          </tr>
+          <tr>
+            <td class="platform-name">Universal</td>
+            <td>Profile Picture (Square)</td>
+            <td class="dimension-code">400x400px</td>
+            <td>For platforms that support square profiles</td>
+          </tr>
+          <tr>
+            <td class="platform-name">Twitter/X</td>
+            <td>Header Banner</td>
+            <td class="dimension-code">1500x500px</td>
+            <td>Safe zone: 1420x420px (center area)</td>
           </tr>
           <tr>
             <td class="platform-name">LinkedIn</td>
             <td>Company Banner</td>
             <td class="dimension-code">1128x191px</td>
-            <td>Desktop optimized</td>
+            <td>Optimized for desktop viewing</td>
           </tr>
           <tr>
             <td class="platform-name">LinkedIn</td>
             <td>Personal Banner</td>
             <td class="dimension-code">1584x396px</td>
-            <td>Desktop optimized</td>
-          </tr>
-          <tr>
-            <td class="platform-name">Twitter/X</td>
-            <td>Header</td>
-            <td class="dimension-code">1500x500px</td>
-            <td>Safe zone: 1420x420px</td>
+            <td>Desktop and mobile optimized</td>
           </tr>
           <tr>
             <td class="platform-name">Facebook</td>
             <td>Page Cover</td>
             <td class="dimension-code">1200x630px</td>
-            <td>16:9 ratio</td>
-          </tr>
-          <tr>
-            <td class="platform-name">Facebook</td>
-            <td>Profile Cover</td>
-            <td class="dimension-code">820x312px</td>
-            <td>Desktop: 820x312px, Mobile: 640x360px</td>
+            <td>16:9 aspect ratio, displays on all devices</td>
           </tr>
           <tr>
             <td class="platform-name">YouTube</td>
             <td>Channel Banner</td>
             <td class="dimension-code">2560x1440px</td>
-            <td>Safe area: 1546x423px</td>
+            <td>Safe area: 1546x423px (visible on all devices)</td>
           </tr>
           <tr>
             <td class="platform-name">Instagram</td>
             <td>Post Square</td>
             <td class="dimension-code">1080x1080px</td>
-            <td>1:1 ratio</td>
-          </tr>
-          <tr>
-            <td class="platform-name">Instagram</td>
-            <td>Post Portrait</td>
-            <td class="dimension-code">1080x1350px</td>
-            <td>4:5 ratio</td>
+            <td>Perfect 1:1 ratio for feed posts</td>
           </tr>
           <tr>
             <td class="platform-name">Instagram</td>
             <td>Story/Reel</td>
             <td class="dimension-code">1080x1920px</td>
-            <td>9:16 ratio</td>
+            <td>9:16 vertical ratio for stories and reels</td>
           </tr>
           <tr>
-            <td class="platform-name">TikTok</td>
-            <td>Video</td>
-            <td class="dimension-code">1080x1920px</td>
-            <td>9:16 ratio</td>
-          </tr>
-          <tr>
-            <td class="platform-name">Email</td>
-            <td>Signature</td>
-            <td class="dimension-code">600x150px</td>
-            <td>Max width for compatibility</td>
+            <td class="platform-name">Favicon</td>
+            <td>Website Icon</td>
+            <td class="dimension-code">16x16 to 512x512px</td>
+            <td>Multiple sizes for all devices and contexts</td>
           </tr>
         </tbody>
       </table>
@@ -626,30 +766,38 @@
   </div>
 
   <script>
-    function downloadTemplate(type) {
-      console.log('🎨 Generating template:', type);
+    // Template configurations with exact dimensions
+    const templates = {
+      'logo-main': { width: 1200, height: 400, type: 'logo', withTagline: true },
+      'logo-only': { width: 800, height: 300, type: 'logo', withTagline: false },
+      'logo-horizontal': { width: 600, height: 150, type: 'horizontal' },
+      'profile-circle': { width: 400, height: 400, type: 'profile', shape: 'circle' },
+      'profile-square': { width: 400, height: 400, type: 'profile', shape: 'square' },
+      'twitter-header': { width: 1500, height: 500, type: 'banner' },
+      'linkedin-company': { width: 1128, height: 191, type: 'banner' },
+      'linkedin-personal': { width: 1584, height: 396, type: 'horizontal' },
+      'facebook-cover': { width: 1200, height: 630, type: 'banner' },
+      'youtube-banner': { width: 2560, height: 1440, type: 'banner' },
+      'instagram-post': { width: 1080, height: 1080, type: 'square' },
+      'instagram-story': { width: 1080, height: 1920, type: 'story' }
+    };
+
+    function showLoading() {
+      document.getElementById('loadingOverlay').style.display = 'flex';
+    }
+
+    function hideLoading() {
+      document.getElementById('loadingOverlay').style.display = 'none';
+    }
+
+    function downloadTemplate(templateType) {
+      console.log('🎨 Generating Selira AI template:', templateType);
+      showLoading();
       
-      // Template configurations
-      const templates = {
-        'profile-universal': { width: 400, height: 400, isCircle: true },
-        'profile-green': { width: 400, height: 400, isCircle: true, bgColor: '#22c55e' },
-        'logo-only': { width: 800, height: 300, logoOnly: true },
-        'linkedin-company': { width: 1128, height: 191 },
-        'linkedin-personal': { width: 1584, height: 396 },
-        'twitter-header': { width: 1500, height: 500 },
-        'facebook-cover': { width: 1200, height: 630 },
-        'facebook-profile': { width: 820, height: 312 },
-        'youtube-banner': { width: 2560, height: 1440 },
-        'instagram-post': { width: 1080, height: 1080 },
-        'instagram-portrait': { width: 1080, height: 1350 },
-        'instagram-story': { width: 1080, height: 1920 },
-        'tiktok-video': { width: 1080, height: 1920 },
-        'email-signature': { width: 600, height: 150 }
-      };
-      
-      const config = templates[type];
+      const config = templates[templateType];
       if (!config) {
         alert('Template configuration not found');
+        hideLoading();
         return;
       }
       
@@ -659,99 +807,327 @@
       canvas.width = config.width;
       canvas.height = config.height;
       
-      // Create gradient background
+      // Create gold gradient background
       const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-      gradient.addColorStop(0, '#14b8a6');
-      gradient.addColorStop(1, '#f97316');
+      gradient.addColorStop(0, '#d4a574');
+      gradient.addColorStop(0.5, '#c19456');
+      gradient.addColorStop(1, '#e4b989');
       
       // Fill background
-      if (config.isCircle) {
-        // For profile pictures, fill entire canvas with gradient
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        // Draw logo in center
-        drawNarrinLogo(ctx, canvas.width / 2 - 60, canvas.height / 2 - 60, 120, config.bgColor);
-      } else if (config.logoOnly) {
-        // For logo-only template, fill with gradient
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        // Add only "Narrin AI" text (no tagline)
-        const mainFontSize = Math.min(canvas.width / 12, canvas.height / 3, 100);
-        ctx.fillStyle = 'white';
-        ctx.font = `bold ${mainFontSize}px Outfit, sans-serif`;
-        ctx.textAlign = 'center';
-        ctx.fillText('Narrin AI', canvas.width / 2, canvas.height / 2 + mainFontSize / 4);
-      } else {
-        // For banners, fill with gradient
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        // Calculate font sizes based on canvas dimensions
-        const mainFontSize = Math.min(canvas.width / 20, canvas.height / 4, 80);
-        const taglineFontSize = Math.min(canvas.width / 35, canvas.height / 8, 32);
-        
-        // Add main text (centered vertically)
-        ctx.fillStyle = 'white';
-        ctx.font = `bold ${mainFontSize}px Outfit, sans-serif`;
-        ctx.textAlign = 'center';
-        ctx.fillText('Narrin AI', canvas.width / 2, canvas.height / 2 - taglineFontSize / 2);
-        
-        // Add tagline
-        ctx.font = `${taglineFontSize}px Plus Jakarta Sans, sans-serif`;
-        ctx.fillStyle = 'rgba(255,255,255,0.9)';
-        ctx.fillText('Your Daily Thought Organizer', canvas.width / 2, canvas.height / 2 + mainFontSize / 2);
-      }
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Add subtle texture pattern
+      addTexturePattern(ctx, canvas.width, canvas.height);
+      
+      // Generate content based on template type
+      generateTemplateContent(ctx, canvas.width, canvas.height, config);
       
       // Download the canvas as PNG
       canvas.toBlob((blob) => {
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = `narrin-ai-${type}.png`;
+        link.download = `selira-ai-${templateType}.png`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
-        console.log('✅ Template downloaded:', type);
+        console.log('✅ Template downloaded:', templateType);
+        hideLoading();
       }, 'image/png');
     }
-    
-    function drawNarrinLogo(ctx, x, y, size, backgroundColor = null) {
-      // Draw background circle if needed
-      if (backgroundColor) {
-        ctx.fillStyle = backgroundColor;
-        ctx.beginPath();
-        ctx.arc(x + size/2, y + size/2, size/2, 0, 2 * Math.PI);
-        ctx.fill();
-      } else {
-        // Draw gradient circle
-        const gradient = ctx.createLinearGradient(x, y, x + size, y + size);
-        gradient.addColorStop(0, '#14b8a6');
-        gradient.addColorStop(1, '#f97316');
-        ctx.fillStyle = gradient;
-        ctx.beginPath();
-        ctx.arc(x + size/2, y + size/2, size/2, 0, 2 * Math.PI);
-        ctx.fill();
-      }
+
+    function generateTemplateContent(ctx, width, height, config) {
+      const centerX = width / 2;
+      const centerY = height / 2;
       
-      // Draw white "N" letter
-      ctx.fillStyle = backgroundColor ? '#22c55e' : 'white';
+      switch (config.type) {
+        case 'logo':
+          drawMainLogo(ctx, centerX, centerY, width, height, config.withTagline);
+          break;
+        case 'horizontal':
+          drawHorizontalLogo(ctx, centerX, centerY, width, height);
+          break;
+        case 'profile':
+          drawProfileContent(ctx, centerX, centerY, width, height, config.shape);
+          break;
+        case 'banner':
+          drawBannerContent(ctx, centerX, centerY, width, height);
+          break;
+        case 'square':
+          drawSquareContent(ctx, centerX, centerY, width, height);
+          break;
+        case 'story':
+          drawStoryContent(ctx, centerX, centerY, width, height);
+          break;
+      }
+    }
+
+    function drawMainLogo(ctx, centerX, centerY, width, height, withTagline) {
+      // Calculate font sizes based on dimensions
+      const mainFontSize = Math.min(width / 12, height / 3, 120);
+      const taglineFontSize = Math.min(width / 35, height / 8, 36);
+      
+      // Draw main text
+      ctx.fillStyle = 'white';
+      ctx.font = `700 ${mainFontSize}px 'Playfair Display', serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      
+      // Add text shadow
+      ctx.shadowColor = 'rgba(0,0,0,0.3)';
+      ctx.shadowBlur = 8;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 4;
+      
+      const yOffset = withTagline ? -taglineFontSize / 2 : 0;
+      ctx.fillText('Selira AI', centerX, centerY + yOffset);
+      
+      if (withTagline) {
+        // Reset shadow
+        ctx.shadowColor = 'transparent';
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 0;
+        
+        // Add tagline
+        ctx.font = `600 ${taglineFontSize}px 'Nunito', sans-serif`;
+        ctx.fillStyle = 'rgba(255,255,255,0.95)';
+        ctx.fillText('Your Perfect AI Companion', centerX, centerY + mainFontSize / 2 + 10);
+      }
+    }
+
+    function drawHorizontalLogo(ctx, centerX, centerY, width, height) {
+      const fontSize = Math.min(width / 20, height / 3, 48);
+      const iconSize = fontSize * 1.2;
+      
+      // Draw icon circle
+      const iconX = centerX - 120;
+      const iconY = centerY;
+      
+      ctx.fillStyle = 'white';
       ctx.beginPath();
-      
-      // Scale the N path to the logo size
-      const scale = size / 32;
-      const path = [
-        [8, 24], [8, 8], [12, 8], [20, 20], [20, 8], [24, 8], 
-        [24, 24], [20, 24], [12, 12], [12, 24], [8, 24]
-      ];
-      
-      ctx.moveTo(x + path[0][0] * scale, y + path[0][1] * scale);
-      for (let i = 1; i < path.length; i++) {
-        ctx.lineTo(x + path[i][0] * scale, y + path[i][1] * scale);
-      }
+      ctx.arc(iconX, iconY, iconSize / 2, 0, 2 * Math.PI);
       ctx.fill();
+      
+      // Draw "S" in icon
+      ctx.fillStyle = '#c19456';
+      ctx.font = `700 ${fontSize * 0.8}px 'Playfair Display', serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('S', iconX, iconY);
+      
+      // Draw text
+      ctx.fillStyle = 'white';
+      ctx.font = `700 ${fontSize}px 'Playfair Display', serif`;
+      ctx.textAlign = 'left';
+      ctx.fillText('Selira AI', iconX + iconSize / 2 + 20, centerY);
+    }
+
+    function drawProfileContent(ctx, centerX, centerY, width, height, shape) {
+      const iconSize = Math.min(width, height) * 0.4;
+      
+      if (shape === 'circle') {
+        // The background gradient is already applied, so we just need the icon
+        drawIcon(ctx, centerX, centerY, iconSize);
+      } else {
+        // For square profile, add rounded corners effect
+        ctx.save();
+        roundRect(ctx, width * 0.05, height * 0.05, width * 0.9, height * 0.9, 20);
+        ctx.clip();
+        
+        // Redraw gradient within the rounded rectangle
+        const gradient = ctx.createLinearGradient(0, 0, width, height);
+        gradient.addColorStop(0, '#d4a574');
+        gradient.addColorStop(0.5, '#c19456');
+        gradient.addColorStop(1, '#e4b989');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, width, height);
+        
+        drawIcon(ctx, centerX, centerY, iconSize);
+        ctx.restore();
+      }
+    }
+
+    function drawBannerContent(ctx, centerX, centerY, width, height) {
+      const mainFontSize = Math.min(width / 25, height / 4, 80);
+      const taglineFontSize = Math.min(width / 45, height / 8, 28);
+      
+      // Draw main text with shadow
+      ctx.shadowColor = 'rgba(0,0,0,0.3)';
+      ctx.shadowBlur = 6;
+      ctx.shadowOffsetY = 3;
+      
+      ctx.fillStyle = 'white';
+      ctx.font = `700 ${mainFontSize}px 'Playfair Display', serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('Selira AI', centerX, centerY - taglineFontSize / 2);
+      
+      // Reset shadow
+      ctx.shadowColor = 'transparent';
+      ctx.shadowBlur = 0;
+      ctx.shadowOffsetY = 0;
+      
+      // Add tagline
+      ctx.font = `600 ${taglineFontSize}px 'Nunito', sans-serif`;
+      ctx.fillStyle = 'rgba(255,255,255,0.95)';
+      ctx.fillText('Your Perfect AI Companion', centerX, centerY + mainFontSize / 2 + 8);
+    }
+
+    function drawSquareContent(ctx, centerX, centerY, width, height) {
+      const iconSize = width * 0.15;
+      const mainFontSize = width * 0.08;
+      const taglineFontSize = width * 0.035;
+      
+      // Draw icon at top
+      drawIcon(ctx, centerX, centerY - height * 0.1, iconSize);
+      
+      // Draw main text
+      ctx.fillStyle = 'white';
+      ctx.font = `700 ${mainFontSize}px 'Playfair Display', serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('Selira AI', centerX, centerY + height * 0.05);
+      
+      // Add tagline
+      ctx.font = `600 ${taglineFontSize}px 'Nunito', sans-serif`;
+      ctx.fillStyle = 'rgba(255,255,255,0.95)';
+      ctx.fillText('Your Perfect AI Companion', centerX, centerY + height * 0.12);
+    }
+
+    function drawStoryContent(ctx, centerX, centerY, width, height) {
+      const iconSize = width * 0.12;
+      const mainFontSize = width * 0.09;
+      const taglineFontSize = width * 0.04;
+      
+      // Draw icon
+      drawIcon(ctx, centerX, centerY - height * 0.08, iconSize);
+      
+      // Draw main text
+      ctx.fillStyle = 'white';
+      ctx.font = `700 ${mainFontSize}px 'Playfair Display', serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('Selira AI', centerX, centerY + height * 0.02);
+      
+      // Add tagline
+      ctx.font = `600 ${taglineFontSize}px 'Nunito', sans-serif`;
+      ctx.fillStyle = 'rgba(255,255,255,0.95)';
+      ctx.fillText('Your Perfect AI Companion', centerX, centerY + height * 0.08);
+    }
+
+    function drawIcon(ctx, x, y, size) {
+      // Draw white circle background
+      ctx.fillStyle = 'white';
+      ctx.beginPath();
+      ctx.arc(x, y, size / 2, 0, 2 * Math.PI);
+      ctx.fill();
+      
+      // Add subtle shadow to icon
+      ctx.shadowColor = 'rgba(0,0,0,0.2)';
+      ctx.shadowBlur = 8;
+      ctx.shadowOffsetY = 4;
+      
+      // Draw "S" letter
+      ctx.fillStyle = '#c19456';
+      ctx.font = `700 ${size * 0.5}px 'Playfair Display', serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('S', x, y);
+      
+      // Reset shadow
+      ctx.shadowColor = 'transparent';
+      ctx.shadowBlur = 0;
+      ctx.shadowOffsetY = 0;
+    }
+
+    function addTexturePattern(ctx, width, height) {
+      // Add subtle dot pattern for texture
+      ctx.fillStyle = 'rgba(255,255,255,0.05)';
+      const dotSize = 2;
+      const spacing = 40;
+      
+      for (let x = spacing / 2; x < width; x += spacing) {
+        for (let y = spacing / 2; y < height; y += spacing) {
+          ctx.beginPath();
+          ctx.arc(x + (Math.random() - 0.5) * 10, y + (Math.random() - 0.5) * 10, dotSize, 0, 2 * Math.PI);
+          ctx.fill();
+        }
+      }
+    }
+
+    function roundRect(ctx, x, y, width, height, radius) {
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.lineTo(x + width - radius, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+      ctx.lineTo(x + width, y + height - radius);
+      ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+      ctx.lineTo(x + radius, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+      ctx.lineTo(x, y + radius);
+      ctx.quadraticCurveTo(x, y, x + radius, y);
+      ctx.closePath();
+    }
+
+    function downloadFaviconPack() {
+      console.log('🎨 Generating Selira AI favicon pack');
+      showLoading();
+      
+      const sizes = [16, 32, 48, 180, 192, 512];
+      const downloads = [];
+      
+      sizes.forEach((size, index) => {
+        setTimeout(() => {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          canvas.width = size;
+          canvas.height = size;
+          
+          // Create gradient background
+          const gradient = ctx.createLinearGradient(0, 0, size, size);
+          gradient.addColorStop(0, '#d4a574');
+          gradient.addColorStop(0.5, '#c19456');
+          gradient.addColorStop(1, '#e4b989');
+          
+          // Fill background with rounded rectangle for modern look
+          ctx.fillStyle = gradient;
+          if (size >= 32) {
+            roundRect(ctx, 0, 0, size, size, size * 0.15);
+            ctx.fill();
+          } else {
+            ctx.fillRect(0, 0, size, size);
+          }
+          
+          // Draw "S" letter
+          ctx.fillStyle = 'white';
+          const fontSize = size * 0.6;
+          ctx.font = `700 ${fontSize}px 'Playfair Display', serif`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('S', size / 2, size / 2);
+          
+          // Download
+          canvas.toBlob((blob) => {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `selira-ai-favicon-${size}x${size}.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            downloads.push(size);
+            if (downloads.length === sizes.length) {
+              console.log('✅ All favicons downloaded');
+              hideLoading();
+            }
+          }, 'image/png');
+        }, index * 200); // Stagger downloads
+      });
     }
   </script>
 </body>
