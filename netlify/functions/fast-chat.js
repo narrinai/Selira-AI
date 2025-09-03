@@ -31,7 +31,7 @@ exports.handler = async (event, context) => {
       message, 
       character_slug, 
       auth0_id,
-      model = 'mistralai/mistral-nemo'
+      model = 'mistralai/mistral-small'
     } = JSON.parse(event.body);
 
     console.log('⚡ Fast chat started:', { character_slug, auth0_id });
