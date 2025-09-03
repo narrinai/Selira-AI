@@ -880,11 +880,58 @@
         renderSectionCharacters();
       } catch (error) {
         console.error('❌ Error loading characters:', error);
-        // Show fallback content or hide sections
-        document.getElementById('fantasyGrid').innerHTML = '<p style="text-align: center; color: var(--text-secondary);">Loading characters...</p>';
-        document.getElementById('animeGrid').innerHTML = '<p style="text-align: center; color: var(--text-secondary);">Loading characters...</p>';
-        document.getElementById('historicalGrid').innerHTML = '<p style="text-align: center; color: var(--text-secondary);">Loading characters...</p>';
+        // Use mock data as fallback until environment variables are set
+        allCharacters = getMockCharacters();
+        renderSectionCharacters();
       }
+    }
+
+    // Mock characters for demo purposes
+    function getMockCharacters() {
+      return [
+        {
+          Name: 'Aria the Sorceress',
+          Character_Title: 'Mystical Mage',
+          Character_Description: 'A powerful sorceress from the enchanted realm, master of ancient magic.',
+          Category: 'Fantasy',
+          Slug: 'aria-sorceress'
+        },
+        {
+          Name: 'Sir Galahad',
+          Character_Title: 'Knight of the Round Table',
+          Character_Description: 'Noble knight seeking the Holy Grail with unwavering courage.',
+          Category: 'Fantasy',
+          Slug: 'sir-galahad'
+        },
+        {
+          Name: 'Sakura',
+          Character_Title: 'Anime Princess',
+          Character_Description: 'A cheerful anime character with magical powers and a kind heart.',
+          Category: 'Anime-Manga',
+          Slug: 'sakura'
+        },
+        {
+          Name: 'Naruto',
+          Character_Title: 'Ninja Hero',
+          Character_Description: 'Energetic ninja with dreams of becoming the strongest leader.',
+          Category: 'Anime-Manga',
+          Slug: 'naruto'
+        },
+        {
+          Name: 'Cleopatra',
+          Character_Title: 'Queen of Egypt',
+          Character_Description: 'The legendary pharaoh known for her intelligence and charisma.',
+          Category: 'Historical',
+          Slug: 'cleopatra'
+        },
+        {
+          Name: 'Leonardo da Vinci',
+          Character_Title: 'Renaissance Master',
+          Character_Description: 'Brilliant inventor, artist, and philosopher of the Renaissance.',
+          Category: 'Historical',
+          Slug: 'leonardo'
+        }
+      ];
     }
 
     // Render characters in different sections
