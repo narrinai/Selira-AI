@@ -1208,7 +1208,8 @@
         avatar: 'https://selira.ai/avatars/aragorn-1750067445.webp?v=1750067445',
         slug: 'aragorn',
         description: 'Noble ranger and rightful king. Join him on epic adventures through Middle-earth.',
-        stats: '127K'
+        chats: '127K',
+        rating: '4.8'
       },
       {
         name: 'Albert Einstein',
@@ -1216,7 +1217,8 @@
         avatar: 'https://selira.ai/avatars/albert-einstein-1750067386.webp?v=1750067386',
         slug: 'albert-einstein',
         description: 'Brilliant physicist who revolutionized our understanding of space and time.',
-        stats: '89K'
+        chats: '89K',
+        rating: '4.9'
       },
       {
         name: 'Naruto Uzumaki',
@@ -1224,7 +1226,8 @@
         avatar: 'https://selira.ai/avatars/naruto-uzumaki-1750068388.webp?v=1750068388',
         slug: 'naruto-uzumaki',
         description: 'Energetic ninja with dreams of becoming Hokage. Believe it!',
-        stats: '234K'
+        chats: '234K',
+        rating: '4.7'
       },
       {
         name: 'Harry Potter',
@@ -1232,7 +1235,8 @@
         avatar: 'https://selira.ai/avatars/harry-potter-1750067058.webp?v=1750067058',
         slug: 'harry-potter',
         description: 'Young wizard who survived the killing curse. Ready for magical adventures.',
-        stats: '178K'
+        chats: '178K',
+        rating: '4.6'
       },
       {
         name: 'Nelson Mandela',
@@ -1240,7 +1244,8 @@
         avatar: 'https://selira.ai/avatars/mandela-1752237226.webp?v=1752237226',
         slug: 'nelson-mandela',
         description: 'Inspiring leader who fought against apartheid and promoted reconciliation.',
-        stats: '67K'
+        chats: '67K',
+        rating: '4.9'
       },
       {
         name: 'Luffy',
@@ -1248,7 +1253,8 @@
         avatar: 'https://selira.ai/avatars/luffy-1750067585.webp?v=1750067585',
         slug: 'monkey-d-luffy',
         description: 'Rubber-powered pirate captain on a quest to find the One Piece treasure.',
-        stats: '156K'
+        chats: '156K',
+        rating: '4.5'
       },
       {
         name: 'Darius Flameheart',
@@ -1256,7 +1262,8 @@
         avatar: 'https://selira.ai/avatars/darius-flameheart.webp',
         slug: 'darius-flameheart',
         description: 'A brave warrior who has faced countless dangers in defense of the innocent.',
-        stats: '139'
+        chats: '139',
+        rating: '3.9'
       }
     ];
 
@@ -1281,8 +1288,8 @@
             <p class="carousel-title">${character.role}</p>
             <p class="carousel-description">${character.description}</p>
             <div class="carousel-stats">
-              <span>👥 ${character.stats} chats</span>
-              <span>⭐ ${(Math.random() * 2 + 3).toFixed(1)}</span>
+              <span>👥 ${character.chats} chats</span>
+              <span>⭐ ${character.rating}</span>
             </div>
             <div class="carousel-actions">
               <a href="/chat?char=${character.slug}" class="carousel-chat-btn">
