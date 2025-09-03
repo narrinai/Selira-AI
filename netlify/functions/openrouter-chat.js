@@ -41,7 +41,7 @@ exports.handler = async (event, context) => {
       message, 
       character_slug, 
       auth0_id,
-      model = 'mistralai/mistral-large' // Default to Mistral Large
+      model = 'mistralai/mistral-nemo' // Default to Mistral Nemo - perfect for character chat
     } = JSON.parse(event.body);
 
     console.log('🚀 OpenRouter chat request:', { character_slug, auth0_id, model });
