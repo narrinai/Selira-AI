@@ -491,25 +491,73 @@
       color: var(--text-secondary);
     }
 
+    /* Mobile Menu */
+    .mobile-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 20px;
+    }
+
+    .mobile-menu.open {
+      display: block;
+    }
+
+    .mobile-menu a {
+      display: block;
+      padding: 12px 0;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .mobile-menu a:last-child {
+      border-bottom: none;
+    }
+
+    .mobile-menu a:hover {
+      color: var(--accent);
+    }
+
+    .hamburger {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 24px;
+      cursor: pointer;
+    }
+
     /* Mobile Responsive */
     @media (max-width: 768px) {
       .header {
         padding: 16px 20px;
+        position: relative;
       }
 
       .nav-menu {
         display: none;
       }
 
+      .hamburger {
+        display: block;
+      }
+
       .hero {
         grid-template-columns: 1fr;
-        padding: 100px 20px 60px;
-        gap: 40px;
+        padding: 80px 20px 60px;
+        gap: 30px;
         text-align: center;
       }
 
       .hero-content h1 {
-        font-size: 36px;
+        font-size: 32px;
+        line-height: 1.2;
       }
 
       .hero-character {
@@ -517,17 +565,28 @@
       }
 
       .hero-character img {
-        height: 400px;
+        height: 300px;
+      }
+
+      .hero-actions {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .primary-btn, .secondary-btn {
+        width: 100%;
+        max-width: 280px;
+        text-align: center;
       }
 
       .section {
-        padding: 60px 20px;
+        padding: 40px 20px;
       }
 
       .section-header {
         flex-direction: column;
         align-items: flex-start;
-        gap: 16px;
+        gap: 12px;
       }
 
       .section-title {
@@ -535,7 +594,8 @@
       }
 
       .characters-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 16px;
       }
 
       .testimonials {
@@ -544,6 +604,30 @@
       }
 
       .testimonials-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .footer-content {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-content h1 {
+        font-size: 28px;
+      }
+
+      .hero-character img {
+        height: 250px;
+      }
+
+      .characters-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-content {
         grid-template-columns: 1fr;
       }
     }
@@ -560,7 +644,14 @@
         <a href="/pricing.html" class="nav-link">Pricing</a>
         <a href="/chat.html" class="cta-btn">Start Chatting</a>
       </div>
+      <button class="hamburger" onclick="toggleMobileMenu()">☰</button>
     </nav>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="/category.html">Discover</a>
+      <a href="/create-character.html">Create</a>
+      <a href="/pricing.html">Pricing</a>
+      <a href="/chat.html" class="cta-btn">Start Chatting</a>
+    </div>
   </header>
 
   <!-- Hero Section -->
@@ -809,10 +900,10 @@
         grid.innerHTML = characters.map(character => `
         <div class="character-card" onclick="startChat('${character.Slug || character.Name}')">
           <img 
-            src="${character.Avatar_URL || '/avatars/default.jpg'}" 
+            src="${character.Avatar_URL || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDMwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjMmEyYTJhIi8+Cjx0ZXh0IHg9IjE1MCIgeT0iMTYwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjYjNiM2IzIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiPk5vIEltYWdlPC90ZXh0Pgo8L3N2Zz4K'}" 
             alt="${character.Name}"
             class="character-image"
-            onerror="this.src='/avatars/default.jpg'"
+            onerror="this.style.display='none'; this.parentElement.querySelector('.character-info').style.paddingTop='20px';"
           >
           <div class="character-overlay">${character.Category || 'New'}</div>
           <div class="character-info">
@@ -860,6 +951,22 @@
       // You can implement this later with user preferences
     }
 
+    // Mobile menu toggle
+    function toggleMobileMenu() {
+      const mobileMenu = document.getElementById('mobileMenu');
+      mobileMenu.classList.toggle('open');
+    }
+
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', function(event) {
+      const mobileMenu = document.getElementById('mobileMenu');
+      const hamburger = document.querySelector('.hamburger');
+      
+      if (!mobileMenu.contains(event.target) && !hamburger.contains(event.target)) {
+        mobileMenu.classList.remove('open');
+      }
+    });
+
     // Smooth scrolling for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function (e) {
@@ -873,6 +980,32 @@
         }
       });
     });
+
+    // Debug character loading
+    async function debugCharacterLoading() {
+      try {
+        console.log('🔍 Testing character API...');
+        const response = await fetch('/netlify/functions/characters');
+        console.log('📊 API Response status:', response.status);
+        
+        if (response.ok) {
+          const data = await response.json();
+          console.log('📦 API Data:', data);
+          console.log('👥 Total characters loaded:', data.characters?.length || 0);
+          
+          // Log categories
+          const categories = [...new Set(data.characters?.map(char => char.Category).filter(Boolean))];
+          console.log('🏷️ Available categories:', categories);
+        } else {
+          console.error('❌ API Error:', await response.text());
+        }
+      } catch (error) {
+        console.error('💥 Debug error:', error);
+      }
+    }
+
+    // Auto-run debug on load (remove later)
+    document.addEventListener('DOMContentLoaded', debugCharacterLoading);
   </script>
 </body>
 </html>
