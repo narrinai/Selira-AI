@@ -871,11 +871,13 @@
     // Load characters from Airtable
     async function loadCharacters() {
       try {
-        const response = await fetch('/netlify/functions/characters');
+        const response = await fetch('/.netlify/functions/characters');
         if (!response.ok) throw new Error('Failed to load characters');
         
         const data = await response.json();
         allCharacters = data.characters || [];
+        console.log('✅ Loaded characters:', allCharacters.length);
+        console.log('📂 Available categories:', [...new Set(allCharacters.map(c => c.Category))]);
         
         renderSectionCharacters();
       } catch (error) {
@@ -1063,12 +1065,12 @@
     async function debugCharacterLoading() {
       try {
         console.log('🔍 Testing character API...');
-        const response = await fetch('/netlify/functions/characters');
+        const response = await fetch('/.netlify/functions/characters');
         console.log('📊 API Response status:', response.status);
         
         if (response.ok) {
           const data = await response.json();
-          console.log('📦 API Data:', data);
+          console.log('📦 API Data summary:', { total: data.total, returned: data.returned });
           console.log('👥 Total characters loaded:', data.characters?.length || 0);
           
           // Log categories
