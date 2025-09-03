@@ -34,7 +34,7 @@
       --bg-primary: #ffffff;
       --bg-secondary: #f8f9fa;
       --bg-tertiary: #e9ecef;
-      --bg-sidebar: #ffffff;
+      --bg-sidebar: #8b5cf6;
       --text-primary: #2c3e50;
       --text-secondary: #6c757d;
       --text-muted: #9ca3af;
@@ -75,7 +75,7 @@
     .sidebar {
       width: 280px;
       background: var(--bg-sidebar);
-      border-right: 1px solid var(--border-color);
+      border-right: none;
       padding: 20px;
       display: flex;
       flex-direction: column;
@@ -93,13 +93,13 @@
       gap: 12px;
       margin-bottom: 30px;
       padding-bottom: 20px;
-      border-bottom: 1px solid var(--border-light);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     }
 
     .sidebar-logo-icon {
       width: 40px;
       height: 40px;
-      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      background: linear-gradient(135deg, #d4a574, #ec4899);
       border-radius: var(--radius-md);
       display: flex;
       align-items: center;
@@ -113,7 +113,7 @@
       font-family: 'Playfair Display', serif;
       font-size: 24px;
       font-weight: 700;
-      color: var(--accent-primary);
+      color: white;
     }
 
     .sidebar-nav {
@@ -126,7 +126,7 @@
       gap: 12px;
       padding: 12px 16px;
       margin-bottom: 4px;
-      color: var(--text-secondary);
+      color: rgba(255, 255, 255, 0.8);
       text-decoration: none;
       border-radius: var(--radius-sm);
       transition: all 0.2s ease;
@@ -134,8 +134,8 @@
     }
 
     .nav-item:hover, .nav-item.active {
-      background: var(--accent-light);
-      color: var(--accent-primary);
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
     }
 
     .nav-item-icon {
@@ -147,7 +147,7 @@
     .nav-section-title {
       font-size: 12px;
       font-weight: 700;
-      color: var(--text-muted);
+      color: rgba(255, 255, 255, 0.6);
       text-transform: uppercase;
       letter-spacing: 0.5px;
       margin: 20px 0 8px;
@@ -667,7 +667,7 @@
     <aside class="sidebar" id="sidebar">
       <!-- Logo -->
       <div class="sidebar-logo">
-        <div class="sidebar-logo-icon">S</div>
+        <div class="sidebar-logo-icon">💖</div>
         <div class="sidebar-logo-text">Selira</div>
       </div>
 
