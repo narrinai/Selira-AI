@@ -365,33 +365,40 @@
     }
 
     .tag-pill {
-      padding: 6px 14px;
+      padding: 8px 16px;
       background: white;
-      border: 1px solid var(--border-color);
-      border-radius: 20px;
-      font-size: 13px;
+      border: none;
+      border-radius: 25px;
+      font-size: 14px;
       font-weight: 500;
-      color: var(--text-secondary);
+      color: #666;
       cursor: pointer;
       transition: all 0.2s ease;
       text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .tag-pill:hover {
-      border-color: var(--accent);
-      color: var(--accent);
+      background: #f0f0f0;
+      color: #333;
     }
 
     .tag-pill.active {
-      background: var(--accent);
+      background: #333;
       color: white;
-      border-color: var(--accent);
     }
 
     .tag-pill.special {
-      background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+      background: #ec4899;
       color: white;
-      border: none;
+    }
+
+    .tag-pill.category {
+      background: var(--accent);
+      color: white;
+      font-weight: 600;
     }
 
     .more-tags-btn {
@@ -751,9 +758,9 @@
 
         <!-- Tab Navigation -->
         <nav class="tab-nav">
-          <a href="#" class="tab-item active">Characters</a>
+          <a href="#" class="tab-item active">Discover</a>
           <a href="#" class="tab-item">Memories</a>
-          <a href="#" class="tab-item">Creators</a>
+          <a href="#" class="tab-item">My Companions</a>
         </nav>
       </header>
 
@@ -791,24 +798,20 @@
         <!-- Tag Pills Row -->
         <div class="tag-filters">
           <a href="#" class="tag-pill active">All</a>
-          <a href="#" class="tag-pill">❄️ CrushOn 70s</a>
-          <a href="#" class="tag-pill">🎯 Target</a>
+          <a href="#" class="tag-pill category">🏰 Fantasy</a>
+          <a href="#" class="tag-pill category">🎌 Anime-Manga</a>
+          <a href="#" class="tag-pill category">🏛️ Historical</a>
+          <a href="#" class="tag-pill">Magic</a>
+          <a href="#" class="tag-pill">Warrior</a>
+          <a href="#" class="tag-pill">Wizard</a>
+          <a href="#" class="tag-pill">Hero</a>
+          <a href="#" class="tag-pill">Ninja</a>
+          <a href="#" class="tag-pill">Samurai</a>
+          <a href="#" class="tag-pill">Adventure</a>
+          <a href="#" class="tag-pill">Romance</a>
+          <a href="#" class="tag-pill">Mystery</a>
           <a href="#" class="tag-pill">Action</a>
-          <a href="#" class="tag-pill">Alien</a>
-          <a href="#" class="tag-pill">Angel</a>
-          <a href="#" class="tag-pill special">Animal</a>
-          <a href="#" class="tag-pill special">Anime</a>
-          <a href="#" class="tag-pill">Anthro</a>
-          <a href="#" class="tag-pill">Any Pov</a>
-          <a href="#" class="tag-pill">Assistant</a>
-          <a href="#" class="tag-pill">BDSM</a>
           <a href="#" class="tag-pill special">Unfiltered</a>
-          <a href="#" class="tag-pill">Bisexual</a>
-          <a href="#" class="tag-pill special">Unfiltered</a>
-          <a href="#" class="tag-pill">Bondage</a>
-          <a href="#" class="tag-pill special">Unfiltered</a>
-          <a href="#" class="tag-pill">Books</a>
-          <a href="#" class="tag-pill">Bully</a>
           <button class="more-tags-btn">All tags</button>
         </div>
       </section>
@@ -838,11 +841,19 @@
       unfiltered: true
     };
 
+    // Global state
+    let currentTab = 'discover';
+    let currentPage = 1;
+    let isLoading = false;
+    const charactersPerPage = 12;
+
     // Initialize page
     document.addEventListener('DOMContentLoaded', function() {
       console.log('🚀 Selira AI Category page loading...');
       loadCharacters();
       initializeFilters();
+      setupTabNavigation();
+      setupInfiniteScroll();
     });
 
     // ===== CHARACTER LOADING =====
@@ -888,80 +899,127 @@
     }
 
     function getDemoCharacters() {
-      return [
+      // Fantasy Characters
+      const fantasyCharacters = [
         {
-          id: 'aiko',
-          name: 'Aiko',
-          title: 'Anime Princess',
-          description: "Your mom's friends Claire is having her house remodeled...",
-          avatar: 'https://selira.ai/avatars/aiko.webp',
-          category: 'Anime',
-          creator: 'Hawkins',
-          tags: ['Girlfriend', 'Anime', 'Wholesome'],
-          chats: '51.3K',
+          id: 'aragorn',
+          name: 'Aragorn',
+          title: 'Ranger King',
+          description: 'Noble ranger and rightful king of Gondor. A skilled warrior and natural leader.',
+          avatar: 'https://selira.ai/avatars/aragorn-1750067445.webp?v=1750067445',
+          category: 'Fantasy',
+          creator: 'Selira',
+          tags: ['Fantasy', 'Warrior', 'Leader', 'Adventure', 'Hero'],
+          chats: '127K',
           rating: '4.8'
         },
         {
-          id: 'emily',
-          name: 'Emily',
-          title: 'Your Best Friend',
-          description: 'Your best friend found out that you\'re finally single.',
-          avatar: 'https://selira.ai/avatars/emily.webp',
-          category: 'Romance',
-          creator: 'Hawkins',
-          tags: ['Girlfriend', 'Anime', 'Wholesome'],
-          chats: '22.6K',
-          rating: '4.7'
-        },
-        {
-          id: 'gabby',
-          name: 'Gabby',
-          title: 'Furry Friend',
-          description: 'You catch her rummaging through your trash.',
-          avatar: 'https://selira.ai/avatars/gabby.webp',
-          category: 'Furry',
-          creator: 'Hawkins',
-          tags: ['Unfiltered', 'Action', 'Wholesome'],
-          chats: '12.8K',
-          rating: '4.5'
-        },
-        {
-          id: 'special-week',
-          name: 'Special Week',
-          title: 'Horse Girl',
-          description: 'Special week racing champion...',
-          avatar: 'https://selira.ai/avatars/special-week.webp',
-          category: 'Anime',
-          creator: 'Tusupermegaultrahy...',
-          tags: ['Unfiltered', 'Animal', 'Anime', 'Caring', 'Cute'],
-          chats: '11.6K',
+          id: 'harry-potter',
+          name: 'Harry Potter',
+          title: 'The Boy Who Lived',
+          description: 'Young wizard who survived the killing curse. Ready for magical adventures.',
+          avatar: 'https://selira.ai/avatars/harry-potter-1750067058.webp?v=1750067058',
+          category: 'Fantasy',
+          creator: 'Selira',
+          tags: ['Fantasy', 'Wizard', 'Magic', 'Adventure', 'Hero'],
+          chats: '178K',
           rating: '4.6'
         },
         {
-          id: 'snake-vore',
-          name: 'Snake Vore',
-          title: 'Dangerous Beauty',
-          description: 'You were live streaming, and then your chat dared you to...',
-          avatar: 'https://selira.ai/avatars/snake-vore.webp',
+          id: 'edward-elric',
+          name: 'Edward Elric',
+          title: 'Fullmetal Alchemist',
+          description: 'Brilliant young alchemist searching for the Philosopher\'s Stone.',
+          avatar: 'https://selira.ai/avatars/edward-elric-1750067232.webp?v=1750067232',
           category: 'Fantasy',
-          creator: 'akanexo',
-          tags: ['Unfiltered', 'Vore', 'Anime', 'Animal', 'Bondage'],
-          chats: '8.1K',
-          rating: '4.3'
+          creator: 'Selira',
+          tags: ['Fantasy', 'Magic', 'Adventure', 'Hero', 'Mystery'],
+          chats: '95K',
+          rating: '4.7'
+        }
+      ];
+
+      // Anime-Manga Characters
+      const animeCharacters = [
+        {
+          id: 'naruto-uzumaki',
+          name: 'Naruto Uzumaki',
+          title: 'Hokage Ninja',
+          description: 'Energetic ninja with dreams of becoming Hokage. Never gives up!',
+          avatar: 'https://selira.ai/avatars/naruto-uzumaki-1750068388.webp?v=1750068388',
+          category: 'Anime-Manga',
+          creator: 'Selira',
+          tags: ['Anime-Manga', 'Ninja', 'Hero', 'Adventure', 'Action'],
+          chats: '234K',
+          rating: '4.7'
         },
         {
-          id: 'maya',
-          name: 'Maya',
-          title: 'Your Sister\'s Friend',
-          description: 'Your parents\' friends brought their daughter, Maya, over for...',
-          avatar: 'https://selira.ai/avatars/maya.webp',
-          category: 'Romance',
-          creator: 'Hawkins',
-          tags: ['Unfiltered', 'VTuber', 'Action', 'Animal', 'MILF'],
-          chats: '7.8K',
+          id: 'monkey-d-luffy',
+          name: 'Luffy',
+          title: 'Pirate King',
+          description: 'Rubber-powered pirate captain on a quest to find the One Piece.',
+          avatar: 'https://selira.ai/avatars/luffy-1750067585.webp?v=1750067585',
+          category: 'Anime-Manga',
+          creator: 'Selira',
+          tags: ['Anime-Manga', 'Adventure', 'Hero', 'Action', 'Romance'],
+          chats: '156K',
+          rating: '4.5'
+        },
+        {
+          id: 'sasuke-uchiha',
+          name: 'Sasuke Uchiha',
+          title: 'Avenger Ninja',
+          description: 'Skilled ninja seeking power and revenge. Complex and mysterious.',
+          avatar: 'https://selira.ai/avatars/sasuke-uchiha-1750068162.webp?v=1750068162',
+          category: 'Anime-Manga',
+          creator: 'Selira',
+          tags: ['Anime-Manga', 'Ninja', 'Mystery', 'Action', 'Romance'],
+          chats: '89K',
           rating: '4.4'
         }
       ];
+
+      // Historical Characters
+      const historicalCharacters = [
+        {
+          id: 'albert-einstein',
+          name: 'Albert Einstein',
+          title: 'Physicist',
+          description: 'Brilliant physicist who revolutionized our understanding of space and time.',
+          avatar: 'https://selira.ai/avatars/albert-einstein-1750067386.webp?v=1750067386',
+          category: 'Historical',
+          creator: 'Selira',
+          tags: ['Historical', 'Wise', 'Leader', 'Mystery', 'Adventure'],
+          chats: '89K',
+          rating: '4.9'
+        },
+        {
+          id: 'nelson-mandela',
+          name: 'Nelson Mandela',
+          title: 'Former President',
+          description: 'Inspiring leader who fought against apartheid and promoted reconciliation.',
+          avatar: 'https://selira.ai/avatars/mandela-1752237226.webp?v=1752237226',
+          category: 'Historical',
+          creator: 'Selira',
+          tags: ['Historical', 'Leader', 'Wise', 'Adventure', 'Hero'],
+          chats: '67K',
+          rating: '4.9'
+        },
+        {
+          id: 'beethoven',
+          name: 'Beethoven',
+          title: 'Classical Composer',
+          description: 'Legendary composer who created beautiful music despite his hearing loss.',
+          avatar: 'https://selira.ai/avatars/beethoven-1752440687.webp?v=1752440687',
+          category: 'Historical',
+          creator: 'Selira',
+          tags: ['Historical', 'Wise', 'Romance', 'Mystery', 'Adventure'],
+          chats: '45K',
+          rating: '4.6'
+        }
+      ];
+
+      return [...fantasyCharacters, ...animeCharacters, ...historicalCharacters];
     }
 
     // ===== CHARACTER RENDERING =====
@@ -977,7 +1035,13 @@
         return;
       }
 
-      grid.innerHTML = filteredCharacters.map(character => `
+      // Reset pagination for new search/filter
+      currentPage = 1;
+      
+      // Show first batch of characters
+      const initialCharacters = filteredCharacters.slice(0, charactersPerPage);
+      
+      grid.innerHTML = initialCharacters.map(character => `
         <div class="character-card" onclick="openCharacter('${character.slug}')">
           ${character.avatar ? 
             `<img src="${character.avatar}" alt="${character.name}" class="character-image" loading="lazy">` :
@@ -1018,6 +1082,16 @@
           </div>
         </div>
       `).join('');
+      
+      // Add loading indicator if more characters available
+      if (filteredCharacters.length > charactersPerPage) {
+        grid.insertAdjacentHTML('beforeend', `
+          <div class="loading-more" id="loadingMore" style="grid-column: 1 / -1; text-align: center; padding: 20px;">
+            <div class="spinner"></div>
+            <p style="color: var(--text-secondary); margin-top: 10px;">Scroll down to load more...</p>
+          </div>
+        `);
+      }
     }
 
     // ===== FILTER FUNCTIONALITY =====
@@ -1151,6 +1225,242 @@
         applyFilters();
       }
     });
+
+    // ===== TAB NAVIGATION =====
+    function setupTabNavigation() {
+      const tabItems = document.querySelectorAll('.tab-item');
+      
+      tabItems.forEach(tab => {
+        tab.addEventListener('click', function(e) {
+          e.preventDefault();
+          
+          // Remove active from all tabs
+          tabItems.forEach(t => t.classList.remove('active'));
+          
+          // Add active to clicked tab
+          this.classList.add('active');
+          
+          const tabText = this.textContent.trim();
+          
+          if (tabText === 'Discover') {
+            currentTab = 'discover';
+            renderCharacters();
+          } else if (tabText === 'My Companions') {
+            currentTab = 'companions';
+            renderMyCompanions();
+          } else if (tabText === 'Memories') {
+            currentTab = 'memories';
+            renderMemories();
+          }
+        });
+      });
+    }
+
+    function renderMyCompanions() {
+      const grid = document.getElementById('charactersGrid');
+      
+      // Get user's companions from localStorage or API
+      const userCompanions = getUserCompanions();
+      
+      if (userCompanions.length === 0) {
+        grid.innerHTML = `
+          <div class="loading-grid">
+            <div style="text-align: center; padding: 40px;">
+              <div style="font-size: 48px; margin-bottom: 16px;">💬</div>
+              <h3 style="color: var(--text-primary); margin-bottom: 8px;">No companions yet</h3>
+              <p style="color: var(--text-secondary); margin-bottom: 20px;">Start chatting with characters to add them to your companions!</p>
+              <button class="user-btn" onclick="switchToDiscoverTab()">Discover Characters</button>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = userCompanions.map(character => `
+        <div class="character-card" onclick="openCharacter('${character.slug}')">
+          ${character.avatar ? 
+            `<img src="${character.avatar}" alt="${character.name}" class="character-image" loading="lazy">` :
+            `<div class="character-image-placeholder">${character.name.charAt(0)}</div>`
+          }
+          
+          <button class="character-favorite active" onclick="event.stopPropagation(); removeFavorite('${character.id}')">
+            ❤️
+          </button>
+          
+          <div class="character-stats-overlay">
+            <div class="stat-badge">
+              <span>💬</span>
+              <span>${character.chats}</span>
+            </div>
+            <div class="stat-badge">
+              <span>⭐</span>
+              <span>${character.rating}</span>
+            </div>
+          </div>
+          
+          <div class="character-info">
+            <h3 class="character-name">${character.name}</h3>
+            <div class="character-creator">
+              <span>@${character.creator}</span>
+            </div>
+            <p class="character-description">${character.description}</p>
+            
+            <div class="character-tags">
+              ${character.tags.slice(0, 3).map(tag => `
+                <span class="character-tag">${tag}</span>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderMemories() {
+      const grid = document.getElementById('charactersGrid');
+      grid.innerHTML = `
+        <div class="loading-grid">
+          <div style="text-align: center; padding: 40px;">
+            <div style="font-size: 48px; margin-bottom: 16px;">🧠</div>
+            <h3 style="color: var(--text-primary); margin-bottom: 8px;">Memories</h3>
+            <p style="color: var(--text-secondary);">Your conversation memories and important moments will appear here.</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function getUserCompanions() {
+      // Get from localStorage or return sample companions
+      const savedCompanions = localStorage.getItem('userCompanions');
+      if (savedCompanions) {
+        return JSON.parse(savedCompanions);
+      }
+      
+      // Return some sample companions for demo
+      return [
+        {
+          id: 'aragorn',
+          name: 'Aragorn',
+          title: 'Ranger King',
+          description: 'Your trusted companion on many adventures.',
+          avatar: 'https://selira.ai/avatars/aragorn-1750067445.webp?v=1750067445',
+          category: 'Fantasy',
+          creator: 'Selira',
+          tags: ['Fantasy', 'Warrior', 'Leader'],
+          chats: '127K',
+          rating: '4.8'
+        },
+        {
+          id: 'naruto-uzumaki',
+          name: 'Naruto Uzumaki',
+          title: 'Hokage Ninja',
+          description: 'Your ninja friend who never gives up!',
+          avatar: 'https://selira.ai/avatars/naruto-uzumaki-1750068388.webp?v=1750068388',
+          category: 'Anime-Manga',
+          creator: 'Selira',
+          tags: ['Anime-Manga', 'Ninja', 'Hero'],
+          chats: '234K',
+          rating: '4.7'
+        }
+      ];
+    }
+
+    function switchToDiscoverTab() {
+      currentTab = 'discover';
+      document.querySelectorAll('.tab-item').forEach(tab => {
+        tab.classList.remove('active');
+        if (tab.textContent.trim() === 'Discover') {
+          tab.classList.add('active');
+        }
+      });
+      renderCharacters();
+    }
+
+    function removeFavorite(characterId) {
+      // Remove from user companions
+      const companions = getUserCompanions();
+      const updated = companions.filter(c => c.id !== characterId);
+      localStorage.setItem('userCompanions', JSON.stringify(updated));
+      
+      if (currentTab === 'companions') {
+        renderMyCompanions();
+      }
+    }
+
+    // ===== INFINITE SCROLL =====
+    function setupInfiniteScroll() {
+      const contentArea = document.querySelector('.content-area');
+      
+      contentArea.addEventListener('scroll', function() {
+        if (this.scrollTop + this.clientHeight >= this.scrollHeight - 100) {
+          loadMoreCharacters();
+        }
+      });
+    }
+
+    function loadMoreCharacters() {
+      if (isLoading || currentTab !== 'discover') return;
+      
+      isLoading = true;
+      currentPage++;
+      
+      console.log('📄 Loading page:', currentPage);
+      
+      // Simulate API call delay
+      setTimeout(() => {
+        const startIndex = (currentPage - 1) * charactersPerPage;
+        const endIndex = startIndex + charactersPerPage;
+        const pageCharacters = allCharacters.slice(startIndex, endIndex);
+        
+        if (pageCharacters.length > 0) {
+          appendCharacters(pageCharacters);
+        }
+        
+        isLoading = false;
+      }, 500);
+    }
+
+    function appendCharacters(characters) {
+      const grid = document.getElementById('charactersGrid');
+      const newCharactersHTML = characters.map(character => `
+        <div class="character-card" onclick="openCharacter('${character.slug}')">
+          ${character.avatar ? 
+            `<img src="${character.avatar}" alt="${character.name}" class="character-image" loading="lazy">` :
+            `<div class="character-image-placeholder">${character.name.charAt(0)}</div>`
+          }
+          
+          <button class="character-favorite" onclick="event.stopPropagation(); toggleFavorite('${character.id}')">
+            ⭐
+          </button>
+          
+          <div class="character-stats-overlay">
+            <div class="stat-badge">
+              <span>💬</span>
+              <span>${character.chats}</span>
+            </div>
+            <div class="stat-badge">
+              <span>⭐</span>
+              <span>${character.rating}</span>
+            </div>
+          </div>
+          
+          <div class="character-info">
+            <h3 class="character-name">${character.name}</h3>
+            <div class="character-creator">
+              <span>@${character.creator}</span>
+            </div>
+            <p class="character-description">${character.description}</p>
+            
+            <div class="character-tags">
+              ${character.tags.slice(0, 3).map(tag => `
+                <span class="character-tag">${tag}</span>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `).join('');
+      
+      grid.insertAdjacentHTML('beforeend', newCharactersHTML);
+    }
 
     console.log('✅ Selira Category page initialized with Character.AI style design');
   </script>
