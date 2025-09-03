@@ -242,24 +242,31 @@
       font-weight: 600;
     }
 
-    .carousel-info {
-      padding: 20px;
+    .carousel-content {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+      padding: 40px 20px 20px;
+      color: white;
     }
 
     .carousel-name {
-      font-size: 18px;
-      font-weight: 600;
+      font-size: 28px;
+      font-weight: 700;
       margin-bottom: 4px;
+      color: white;
     }
 
     .carousel-title {
-      color: var(--text-secondary);
-      font-size: 14px;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 16px;
       margin-bottom: 12px;
     }
 
     .carousel-description {
-      color: var(--text-secondary);
+      color: rgba(255, 255, 255, 0.9);
       font-size: 14px;
       line-height: 1.4;
       margin-bottom: 16px;
@@ -272,8 +279,8 @@
     .carousel-stats {
       display: flex;
       gap: 16px;
-      font-size: 12px;
-      color: var(--text-secondary);
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.8);
       margin-bottom: 16px;
     }
 
@@ -1283,7 +1290,7 @@
             loading="lazy"
           >
           <div class="carousel-overlay">${character.role}</div>
-          <div class="carousel-info">
+          <div class="carousel-content">
             <h3 class="carousel-name">${character.name}</h3>
             <p class="carousel-title">${character.role}</p>
             <p class="carousel-description">${character.description}</p>
