@@ -137,8 +137,8 @@
 
     body {
       font-family: var(--font-primary);
-      background: var(--color-off-white);
-      color: var(--color-navy);
+      background: var(--bg-primary);
+      color: var(--text-primary);
       line-height: 1.6;
       font-size: var(--font-size-base);
       -webkit-font-smoothing: antialiased;
@@ -171,57 +171,208 @@
       outline: none;
     }
 
-    /* ===== HEADER NAVIGATION ===== */
-    .header {
-      position: sticky;
-      top: 0;
-      z-index: var(--z-sticky);
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-      transition: all var(--transition-base);
-    }
-
-    .header.scrolled {
-      box-shadow: var(--shadow-md);
-      background: rgba(255, 255, 255, 0.98);
-    }
-
-    .header-container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 var(--spacing-lg);
+    /* ===== MODERN CHAT LAYOUT ===== */
+    .modern-chat-container {
+      display: flex;
+      height: 100vh;
       width: 100%;
       overflow: hidden;
     }
 
-    .header-content {
+    /* Left Sidebar */
+    .chat-sidebar {
+      width: 280px;
+      background: var(--bg-secondary);
+      border-right: 1px solid var(--border);
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      min-height: 72px;
-      gap: var(--spacing-lg);
-      width: 100%;
+      flex-direction: column;
+      overflow-y: auto;
+      flex-shrink: 0;
     }
 
-    /* Logo */
-    .logo {
+    .sidebar-logo {
+      padding: var(--spacing-lg);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar-logo .logo {
       font-family: var(--font-secondary);
       font-size: var(--font-size-xl);
-      font-weight: 800;
+      font-weight: 700;
       text-decoration: none;
-      letter-spacing: -0.02em;
       background: var(--gradient-primary);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      transition: transform var(--transition-base);
+    }
+
+    .sidebar-content {
+      flex: 1;
+      padding: var(--spacing-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-lg);
+    }
+
+    .create-character-btn {
+      background: var(--gradient-primary);
+      border: none;
+      border-radius: var(--radius-md);
+      padding: var(--spacing-sm) var(--spacing-md);
+      font-weight: 600;
+      color: white;
+      cursor: pointer;
+      transition: all var(--transition-base);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      font-size: var(--font-size-sm);
+    }
+
+    .create-character-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .discover-section {
+      flex: 1;
+    }
+
+    .section-title {
+      color: var(--text-secondary);
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      margin-bottom: var(--spacing-sm);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .featured-characters {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-sm);
+    }
+
+    .featured-character {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-sm);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all var(--transition-base);
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+
+    .featured-character:hover {
+      background: var(--bg-tertiary);
+    }
+
+    .featured-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-full);
       flex-shrink: 0;
     }
 
-    .logo:hover {
-      transform: scale(1.05);
+    .featured-name {
+      font-weight: 500;
+      font-size: var(--font-size-sm);
+    }
+
+    .get-premium-btn {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-sm) var(--spacing-md);
+      font-weight: 500;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: all var(--transition-base);
+      text-align: center;
+    }
+
+    .get-premium-btn:hover {
+      background: var(--bg-primary);
+      border-color: var(--color-accent);
+    }
+
+    /* Main Chat Area */
+    .main-chat-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .chat-header {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: var(--spacing-md) var(--spacing-lg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .chat-header-left {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+
+    .back-button {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: var(--spacing-sm);
+      border-radius: var(--radius-sm);
+      transition: all var(--transition-base);
+    }
+
+    .back-button:hover {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .chat-character-name {
+      font-family: var(--font-secondary);
+      font-size: var(--font-size-lg);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0;
+    }
+
+    .chat-header-right {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+
+    .settings-button, .user-avatar-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: var(--spacing-sm);
+      border-radius: var(--radius-sm);
+      transition: all var(--transition-base);
+    }
+
+    .settings-button:hover, .user-avatar-btn:hover {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .user-avatar-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--font-size-lg);
     }
 
     /* Desktop Navigation Center */
@@ -294,6 +445,370 @@
       justify-content: center;
       cursor: pointer;
       transition: all var(--transition-base);
+    }
+
+    /* ===== MODERN CHAT STYLES ===== */
+    
+    /* Chat Content Area */
+    .chat-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .chat-welcome {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: var(--spacing-2xl);
+    }
+
+    .character-avatar-large {
+      width: 400px;
+      height: 400px;
+      border-radius: var(--radius-full);
+      object-fit: cover;
+      border: 4px solid var(--color-accent);
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .character-greeting {
+      max-width: 600px;
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .character-greeting h2 {
+      font-family: var(--font-secondary);
+      font-size: var(--font-size-3xl);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .character-greeting p {
+      font-size: var(--font-size-lg);
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .reaction-buttons {
+      display: flex;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .reaction-btn {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all var(--transition-base);
+      font-size: var(--font-size-xl);
+    }
+
+    .reaction-btn:hover {
+      background: var(--bg-tertiary);
+      border-color: var(--color-accent);
+      transform: scale(1.1);
+    }
+
+    .reaction-btn.liked {
+      background: var(--color-accent);
+      border-color: var(--color-accent);
+      color: white;
+    }
+
+    .reaction-btn.disliked {
+      background: #dc3545;
+      border-color: #dc3545;
+      color: white;
+    }
+
+    /* Chat Messages Area */
+    #chatlog {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: var(--spacing-lg);
+      background: transparent;
+      scroll-behavior: smooth;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(212, 165, 116, 0.3) transparent;
+      -webkit-overflow-scrolling: touch;
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-md);
+    }
+
+    #chatlog::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    #chatlog::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    #chatlog::-webkit-scrollbar-thumb {
+      background: var(--color-accent);
+      border-radius: 3px;
+    }
+
+    .message {
+      display: flex;
+      gap: var(--spacing-md);
+      max-width: 100%;
+      animation: fadeInUp 0.3s ease-out;
+    }
+
+    .message.user {
+      justify-content: flex-end;
+    }
+
+    .message.assistant {
+      justify-content: flex-start;
+    }
+
+    .message-content {
+      max-width: 70%;
+      padding: var(--spacing-md) var(--spacing-lg);
+      border-radius: var(--radius-lg);
+      font-size: var(--font-size-base);
+      line-height: 1.6;
+    }
+
+    .message.user .message-content {
+      background: var(--gradient-primary);
+      color: white;
+      border-bottom-right-radius: var(--radius-sm);
+    }
+
+    .message.assistant .message-content {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      border-bottom-left-radius: var(--radius-sm);
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Message Input Area */
+    .message-input-area {
+      padding: var(--spacing-lg);
+      border-top: 1px solid var(--border);
+      background: var(--bg-secondary);
+    }
+
+    .input-container {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: var(--spacing-sm);
+      transition: all var(--transition-base);
+    }
+
+    .input-container:focus-within {
+      border-color: var(--color-accent);
+      box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.1);
+    }
+
+    .message-input {
+      flex: 1;
+      background: none;
+      border: none;
+      outline: none;
+      padding: var(--spacing-sm) var(--spacing-md);
+      font-size: var(--font-size-base);
+      color: var(--text-primary);
+      font-family: inherit;
+    }
+
+    .message-input::placeholder {
+      color: var(--text-secondary);
+    }
+
+    .input-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .input-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: var(--spacing-sm);
+      border-radius: var(--radius-sm);
+      transition: all var(--transition-base);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .input-btn:hover {
+      color: var(--text-primary);
+      background: var(--bg-tertiary);
+    }
+
+    .send-btn {
+      background: var(--gradient-primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius-full);
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all var(--transition-base);
+    }
+
+    .send-btn:hover {
+      transform: scale(1.05);
+      box-shadow: var(--shadow-md);
+    }
+
+    .send-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Typing Indicator */
+    .typing-indicator {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      padding: var(--spacing-md) var(--spacing-lg);
+    }
+
+    .typing-dots {
+      display: flex;
+      gap: 4px;
+    }
+
+    .typing-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--color-accent);
+      animation: typingPulse 1.4s infinite ease-in-out;
+    }
+
+    .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+    .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+    .typing-dot:nth-child(3) { animation-delay: 0s; }
+
+    @keyframes typingPulse {
+      0%, 80%, 100% {
+        opacity: 0.3;
+        transform: scale(0.8);
+      }
+      40% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+      .modern-chat-container {
+        flex-direction: column;
+      }
+
+      .chat-sidebar {
+        width: 100%;
+        height: auto;
+        order: 2;
+        max-height: 50vh;
+        border-right: none;
+        border-top: 1px solid var(--border);
+      }
+
+      .main-chat-area {
+        order: 1;
+        height: 50vh;
+      }
+
+      .character-avatar-large {
+        width: 200px;
+        height: 200px;
+      }
+
+      .character-greeting h2 {
+        font-size: var(--font-size-2xl);
+      }
+
+      .character-greeting p {
+        font-size: var(--font-size-base);
+      }
+
+      .message-content {
+        max-width: 85%;
+        padding: var(--spacing-sm) var(--spacing-md);
+      }
+    }
+
+    /* Hide Legacy Elements */
+    .header, .nav-center, .nav-usps, .nav-search, .nav-search-input,
+    .character-section, .chat-layout-wrapper, .chat-main-content,
+    .desktop-input, .mobile-bottom-section, .mobile-input {
+      display: none !important;
+    }
+
+    /* Legacy compatibility - ensure chat log works */
+    .legacy-hidden {
+      display: none;
+    }
+
+    .modern-visible {
+      display: flex;
+    }
+
+    /* Additional Modern Styling */
+    .loading-state, .error-state {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--bg-secondary);
+      padding: var(--spacing-2xl);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      text-align: center;
+      z-index: var(--z-modal);
+    }
+
+    .loading-state h3, .error-state h3 {
+      color: var(--text-primary);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .loading-state p, .error-state p {
+      color: var(--text-secondary);
     }
 
     .search-submit:hover {
@@ -5354,36 +5869,110 @@
     </div>
 
     <div id="chatInterface" style="display: none;">
-
-      <!-- USP Badges - Desktop Sidebar -->
-      <div class="chat-layout-wrapper">
-
-        <div class="chat-main-content">
-      <div class="character-section">
-        <div class="character-header" id="characterHeader">
-          <div class="character-header-left">
-            <div class="character-avatar" id="characterAvatar">👤</div>
-            <div class="character-info">
-              <h2 id="characterName">Connecting...</h2>
-              <p id="characterTitle"></p>
-            </div>
+      <!-- Modern Chat Container -->
+      <div class="modern-chat-container">
+        
+        <!-- Left Sidebar -->
+        <div class="chat-sidebar">
+          <div class="sidebar-logo">
+            <a href="/" class="logo">Selira AI</a>
           </div>
-          <div class="character-header-buttons">
-            <button class="btn-memory" onclick="lazyLoadMemoryHub()" id="memoryBtn" style="display: none;" title="View memories">
-              <span class="desktop-text">Memory</span>
-              <span class="mobile-icon">🧠</span>
-              <span class="memory-notification-badge" id="memoryBadge" style="display: none;">1</span>
+          
+          <div class="sidebar-content">
+            <button class="create-character-btn" onclick="window.location.href='/create-character'">
+              <span>✨</span> Create AI Character
             </button>
-            <button class="btn-customize" onclick="lazyLoadCustomize()" id="customizeBtn" style="display: none;" title="Customize companion">
-              <span class="desktop-text">Customize</span>
-              <span class="mobile-icon">✨</span>
+            
+            <div class="discover-section">
+              <div class="section-title">Discover bots</div>
+              <div class="featured-characters" id="featuredCharacters">
+                <!-- Featured characters will be populated here -->
+              </div>
+            </div>
+            
+            <button class="get-premium-btn" onclick="window.location.href='/pricing'">
+              Get Premium
             </button>
           </div>
         </div>
+        
+        <!-- Main Chat Area -->
+        <div class="main-chat-area">
+          <!-- Chat Header -->
+          <div class="chat-header">
+            <div class="chat-header-left">
+              <button class="back-button" onclick="window.location.href='/chat-overview'">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+              <h1 class="chat-character-name" id="characterName">Connecting...</h1>
+            </div>
+            
+            <div class="chat-header-right">
+              <button class="settings-button" onclick="lazyLoadMemoryHub()" id="memoryBtn" style="display: none;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" stroke="currentColor" stroke-width="2"/>
+                  <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </button>
+              <button class="user-avatar-btn" onclick="window.location.href='/profile'">
+                👤
+              </button>
+            </div>
+          </div>
+          
+          <!-- Chat Content -->
+          <div class="chat-content">
+            <!-- Welcome Screen -->
+            <div class="chat-welcome" id="chatWelcome">
+              <img class="character-avatar-large" id="characterAvatarLarge" src="" alt="Character Avatar" style="display: none;">
+              <div class="character-greeting" id="characterGreeting">
+                <h2 id="characterTitle"></h2>
+                <p>Start a conversation to begin chatting with your AI companion.</p>
+              </div>
+              <div class="reaction-buttons" id="reactionButtons" style="display: none;">
+                <button class="reaction-btn" onclick="reactToMessage('like')">👍</button>
+                <button class="reaction-btn" onclick="reactToMessage('dislike')">👎</button>
+              </div>
+            </div>
+            
+            <!-- Chat Messages -->
+            <div id="chatlog" style="display: none;"></div>
+          </div>
+          
+          <!-- Message Input -->
+          <div class="message-input-area">
+            <div class="input-container">
+              <input 
+                class="message-input" 
+                id="userInput" 
+                type="text" 
+                placeholder="Type a message" 
+                onkeypress="if(event.key==='Enter') handleSendClick(event)"
+              />
+              <div class="input-actions">
+                <button class="input-btn" onclick="toggleSpeechToText()" id="micButton" aria-label="Use microphone">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 1C10.34 1 9 2.34 9 4V12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12 V4C15 2.34 13.66 1 12 1Z" stroke="currentColor" stroke-width="2"/>
+                    <path d="M19 10V12C19 15.866 15.866 19 12 19C8.13401 19 5 15.866 5 12V10" stroke="currentColor" stroke-width="2"/>
+                    <path d="M12 19V23" stroke="currentColor" stroke-width="2"/>
+                    <path d="M8 23H16" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </button>
+                <button class="send-btn" onclick="handleSendClick(event)" id="sendButton">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M2 12L22 2L13 21L11 13L2 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
       </div>
-
-      <div class="chat-section">
-        <div id="chatlog"></div>
+      
+      <!-- Legacy elements for compatibility -->
         <!-- Desktop input (hidden on mobile) -->
         <div class="input-group desktop-input">
           <input id="userInput" type="text" placeholder="Share what's on your mind..." />
@@ -18993,15 +19582,185 @@ async function generateCompanionImage() {
     }
   }
 
+  // ===== MODERN CHAT INTERFACE FUNCTIONS =====
+  
+  // Initialize modern chat interface
+  function initModernChatInterface() {
+    console.log('🎨 Initializing modern chat interface...');
+    
+    // Populate featured characters
+    populateFeaturedCharacters();
+    
+    // Update character information display
+    updateModernCharacterDisplay();
+    
+    // Setup reaction functionality
+    setupReactionButtons();
+    
+    // Handle chat state changes
+    observeChatState();
+  }
+
+  // Populate featured characters in sidebar
+  async function populateFeaturedCharacters() {
+    const featuredContainer = document.getElementById('featuredCharacters');
+    if (!featuredContainer) return;
+
+    try {
+      // Fetch characters from the existing API
+      const response = await fetch('/.netlify/functions/characters');
+      const data = await response.json();
+      
+      if (data.success && data.characters) {
+        // Show first 5 characters as featured
+        const featured = data.characters.slice(0, 5);
+        
+        featuredContainer.innerHTML = featured.map(char => `
+          <a href="/chat?char=${char.slug}" class="featured-character">
+            <img class="featured-avatar" src="${char.avatar || '/avatars/default.jpg'}" alt="${char.name}" onerror="this.src='/avatars/default.jpg'">
+            <span class="featured-name">${char.name}</span>
+          </a>
+        `).join('');
+      }
+    } catch (error) {
+      console.error('❌ Failed to load featured characters:', error);
+      // Fallback with default characters
+      featuredContainer.innerHTML = `
+        <a href="/create-character" class="featured-character">
+          <img class="featured-avatar" src="/avatars/default.jpg" alt="Create Character">
+          <span class="featured-name">Create New Character</span>
+        </a>
+      `;
+    }
+  }
+
+  // Update character display in modern interface
+  function updateModernCharacterDisplay() {
+    const characterName = document.querySelector('.chat-character-name');
+    const characterTitle = document.getElementById('characterTitle');
+    const characterAvatarLarge = document.getElementById('characterAvatarLarge');
+    const characterGreeting = document.getElementById('characterGreeting');
+    
+    // Use existing character data from global variables
+    if (window.currentCharacter && characterName) {
+      characterName.textContent = window.currentCharacter.name || 'AI Companion';
+      
+      if (characterTitle) {
+        characterTitle.textContent = window.currentCharacter.name || 'Your AI Companion';
+      }
+      
+      if (characterAvatarLarge && window.currentCharacter.avatar) {
+        characterAvatarLarge.src = window.currentCharacter.avatar;
+        characterAvatarLarge.style.display = 'block';
+      }
+      
+      if (characterGreeting) {
+        const greetingText = window.currentCharacter.description || 'Start a conversation to begin chatting with your AI companion.';
+        characterGreeting.querySelector('p').textContent = greetingText;
+      }
+    }
+  }
+
+  // Setup reaction buttons functionality
+  function setupReactionButtons() {
+    window.reactToMessage = function(reaction) {
+      console.log(`👍 User reacted: ${reaction}`);
+      
+      const reactionButtons = document.getElementById('reactionButtons');
+      if (reactionButtons) {
+        const buttons = reactionButtons.querySelectorAll('.reaction-btn');
+        buttons.forEach(btn => btn.classList.remove('liked', 'disliked'));
+        
+        const activeBtn = reactionButtons.querySelector(`[onclick="reactToMessage('${reaction}')"]`);
+        if (activeBtn) {
+          activeBtn.classList.add(reaction === 'like' ? 'liked' : 'disliked');
+        }
+        
+        // Hide reaction buttons after use
+        setTimeout(() => {
+          reactionButtons.style.display = 'none';
+        }, 1000);
+      }
+    };
+  }
+
+  // Observe chat state and update UI accordingly
+  function observeChatState() {
+    const chatlog = document.getElementById('chatlog');
+    const chatWelcome = document.getElementById('chatWelcome');
+    
+    if (!chatlog || !chatWelcome) return;
+    
+    // Create a mutation observer to watch for changes in chatlog
+    const observer = new MutationObserver(() => {
+      const hasMessages = chatlog.children.length > 0 && chatlog.style.display !== 'none';
+      
+      if (hasMessages) {
+        // Hide welcome screen, show chat
+        chatWelcome.style.display = 'none';
+        chatlog.style.display = 'flex';
+      } else {
+        // Show welcome screen, hide empty chat
+        chatWelcome.style.display = 'flex';
+        chatlog.style.display = 'none';
+      }
+    });
+    
+    observer.observe(chatlog, {
+      childList: true,
+      attributes: true,
+      attributeFilter: ['style']
+    });
+  }
+
+  // Override existing message display to use modern styling
+  function enhanceMessageDisplay() {
+    // Store original appendChild method
+    const originalAppendChild = Element.prototype.appendChild;
+    
+    // Override appendChild for chatlog to add modern styling
+    const chatlog = document.getElementById('chatlog');
+    if (chatlog) {
+      const originalChatlogAppendChild = chatlog.appendChild;
+      chatlog.appendChild = function(element) {
+        // Apply modern message styling
+        if (element.tagName === 'P' && element.textContent) {
+          const isUser = element.textContent.includes('You:') || element.classList.contains('user-message');
+          const isAssistant = !isUser;
+          
+          // Create modern message container
+          const messageContainer = document.createElement('div');
+          messageContainer.className = `message ${isUser ? 'user' : 'assistant'}`;
+          
+          const messageContent = document.createElement('div');
+          messageContent.className = 'message-content';
+          messageContent.innerHTML = element.innerHTML;
+          
+          messageContainer.appendChild(messageContent);
+          
+          return originalChatlogAppendChild.call(this, messageContainer);
+        }
+        
+        return originalChatlogAppendChild.call(this, element);
+      };
+    }
+  }
+
   // ===== NON-CRITICAL FEATURES LOADING =====
   // Load heavy features after page is fully loaded to improve initial performance
   window.addEventListener('load', () => {
     console.log('🚀 Loading non-critical features...');
     
+    // Initialize modern chat interface
+    initModernChatInterface();
+    
     // Initialize mobile functionality
     syncInputs();
     showMobileOrganizeThoughts();
     setupMobileDisclaimer();
+    
+    // Enhance message display with modern styling
+    enhanceMessageDisplay();
     
     // Memory Hub and Customize features are now lazy loaded on demand
     // This section can be used for other heavy features in the future
