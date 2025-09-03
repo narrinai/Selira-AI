@@ -25,10 +25,9 @@ exports.handler = async (event, context) => {
       Slug: "emerald", 
       Character_Title: "Mindful Companion",
       Character_Description: "A supportive AI companion for meaningful conversations",
-      Category: "Friendship",
-      Tags: ["Popular", "Supportive"],
-      Prompt: "You are Emerald, a warm and supportive companion who helps with daily thoughts and conversations. Be understanding, caring, and help people find clarity in their thinking.",
-      Visibility: "public"
+      Prompt: "You are Emerald, a warm and supportive companion who helps with daily thoughts and conversations. Be understanding, caring, and help people find clarity in their thinking."
+      // Removed Category and Tags to avoid select field issues
+      // These can be added later via Airtable interface
     }
   };
 

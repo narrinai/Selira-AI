@@ -12,8 +12,8 @@ async function migrateCharacters() {
   console.log('🚀 Starting character migration from Narrin to Selira...');
   
   try {
-    // 1. Fetch all characters from Narrin
-    const narrinUrl = `https://api.airtable.com/v0/${NARRIN_BASE_ID}/Characters`;
+    // 1. Fetch limited characters from Narrin (first 10 for testing)
+    const narrinUrl = `https://api.airtable.com/v0/${NARRIN_BASE_ID}/Characters?maxRecords=10`;
     const narrinResponse = await fetch(narrinUrl, {
       headers: {
         'Authorization': `Bearer ${NARRIN_TOKEN}`,
@@ -65,7 +65,9 @@ async function migrateCharacters() {
           console.log(`✅ Migrated: ${record.fields.Name}`);
         } else {
           errorCount++;
-          console.log(`❌ Failed: ${record.fields.Name}`);
+          const errorText = await seliraResponse.text();
+          console.log(`❌ Failed: ${record.fields.Name} - Status: ${seliraResponse.status}`);
+          console.log(`   Error: ${errorText}`);
         }
         
         // Rate limiting - Airtable allows 5 requests/second
