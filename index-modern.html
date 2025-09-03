@@ -709,7 +709,6 @@
       <div class="character-skeleton"></div>
       <div class="character-skeleton"></div>
       <div class="character-skeleton"></div>
-      <div class="character-skeleton"></div>
     </div>
   </section>
 
@@ -726,7 +725,6 @@
       <div class="character-skeleton"></div>
       <div class="character-skeleton"></div>
       <div class="character-skeleton"></div>
-      <div class="character-skeleton"></div>
     </div>
   </section>
 
@@ -740,7 +738,6 @@
       <a href="/category.html?filter=Historical" class="see-more">See More →</a>
     </div>
     <div class="characters-grid" id="historicalGrid">
-      <div class="character-skeleton"></div>
       <div class="character-skeleton"></div>
       <div class="character-skeleton"></div>
       <div class="character-skeleton"></div>
@@ -943,19 +940,19 @@
       // Fantasy Section
       const fantasyCharacters = allCharacters
         .filter(char => char.Category && char.Category.toLowerCase() === 'fantasy')
-        .slice(0, 4);
+        .slice(0, 3);
       renderCharacterGrid('fantasyGrid', fantasyCharacters);
 
       // Anime-Manga Section  
       const animeCharacters = allCharacters
         .filter(char => char.Category && char.Category.toLowerCase() === 'anime-manga')
-        .slice(0, 4);
+        .slice(0, 3);
       renderCharacterGrid('animeGrid', animeCharacters);
 
       // Historical Section
       const historicalCharacters = allCharacters
         .filter(char => char.Category && char.Category.toLowerCase() === 'historical')
-        .slice(0, 4);
+        .slice(0, 3);
       renderCharacterGrid('historicalGrid', historicalCharacters);
     }
 
