@@ -358,6 +358,38 @@
       border-color: var(--error);
     }
 
+    /* Skeleton Loading */
+    .character-skeleton {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .character-skeleton::after {
+      content: '';
+      display: block;
+      height: 350px;
+      background: linear-gradient(90deg, 
+        var(--bg-secondary) 0%, 
+        var(--bg-tertiary) 50%, 
+        var(--bg-secondary) 100%
+      );
+      background-size: 200% 100%;
+      animation: shimmer 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.8; }
+      50% { opacity: 0.6; }
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
     /* Testimonials */
     .testimonials {
       background: var(--bg-secondary);
@@ -557,7 +589,10 @@
       <a href="/category.html?filter=Fantasy" class="see-more">See More →</a>
     </div>
     <div class="characters-grid" id="fantasyGrid">
-      <!-- Fantasy characters will be loaded here -->
+      <div class="character-skeleton"></div>
+      <div class="character-skeleton"></div>
+      <div class="character-skeleton"></div>
+      <div class="character-skeleton"></div>
     </div>
   </section>
 
@@ -571,7 +606,10 @@
       <a href="/category.html?filter=Anime-Manga" class="see-more">See More →</a>
     </div>
     <div class="characters-grid" id="animeGrid">
-      <!-- Anime-Manga characters will be loaded here -->
+      <div class="character-skeleton"></div>
+      <div class="character-skeleton"></div>
+      <div class="character-skeleton"></div>
+      <div class="character-skeleton"></div>
     </div>
   </section>
 
@@ -585,7 +623,10 @@
       <a href="/category.html?filter=Historical" class="see-more">See More →</a>
     </div>
     <div class="characters-grid" id="historicalGrid">
-      <!-- Historical characters will be loaded here -->
+      <div class="character-skeleton"></div>
+      <div class="character-skeleton"></div>
+      <div class="character-skeleton"></div>
+      <div class="character-skeleton"></div>
     </div>
   </section>
 
@@ -735,19 +776,19 @@
 
       // Fantasy Section
       const fantasyCharacters = allCharacters
-        .filter(char => char.category && char.category.toLowerCase() === 'fantasy')
+        .filter(char => char.Category && char.Category.toLowerCase() === 'fantasy')
         .slice(0, 4);
       renderCharacterGrid('fantasyGrid', fantasyCharacters);
 
       // Anime-Manga Section  
       const animeCharacters = allCharacters
-        .filter(char => char.category && char.category.toLowerCase() === 'anime-manga')
+        .filter(char => char.Category && char.Category.toLowerCase() === 'anime-manga')
         .slice(0, 4);
       renderCharacterGrid('animeGrid', animeCharacters);
 
       // Historical Section
       const historicalCharacters = allCharacters
-        .filter(char => char.category && char.category.toLowerCase() === 'historical')
+        .filter(char => char.Category && char.Category.toLowerCase() === 'historical')
         .slice(0, 4);
       renderCharacterGrid('historicalGrid', historicalCharacters);
     }
@@ -755,36 +796,45 @@
     // Render character grid for a specific section
     function renderCharacterGrid(gridId, characters) {
       const grid = document.getElementById(gridId);
-      if (!grid || characters.length === 0) return;
+      if (!grid) return;
+      
+      // If no characters, show empty state
+      if (characters.length === 0) {
+        grid.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 40px;">No characters available in this category</p>';
+        return;
+      }
 
-      grid.innerHTML = characters.map(character => `
-        <div class="character-card" onclick="startChat('${character.slug || character.name}')">
+      // Use requestAnimationFrame to prevent flickering
+      requestAnimationFrame(() => {
+        grid.innerHTML = characters.map(character => `
+        <div class="character-card" onclick="startChat('${character.Slug || character.Name}')">
           <img 
-            src="${character.avatar || '/avatars/default.jpg'}" 
-            alt="${character.name}"
+            src="${character.Avatar_URL || '/avatars/default.jpg'}" 
+            alt="${character.Name}"
             class="character-image"
             onerror="this.src='/avatars/default.jpg'"
           >
-          <div class="character-overlay">${character.category || 'New'}</div>
+          <div class="character-overlay">${character.Category || 'New'}</div>
           <div class="character-info">
-            <h3 class="character-name">${character.name || 'Unknown'}</h3>
-            <p class="character-title">${character.title || ''}</p>
-            <p class="character-description">${character.description || 'No description available'}</p>
+            <h3 class="character-name">${character.Name || 'Unknown'}</h3>
+            <p class="character-title">${character.Character_Title || ''}</p>
+            <p class="character-description">${character.Character_Description || 'No description available'}</p>
             <div class="character-stats">
               <span>👥 ${Math.floor(Math.random() * 1000) + 100} chats</span>
               <span>⭐ ${(Math.random() * 2 + 3).toFixed(1)}</span>
             </div>
             <div class="character-actions">
-              <button class="chat-btn" onclick="event.stopPropagation(); startChat('${character.slug || character.name}')">
+              <button class="chat-btn" onclick="event.stopPropagation(); startChat('${character.Slug || character.Name}')">
                 💬 Chat
               </button>
-              <button class="heart-btn" onclick="event.stopPropagation(); toggleFavorite('${character.slug || character.name}')">
+              <button class="heart-btn" onclick="event.stopPropagation(); toggleFavorite('${character.Slug || character.Name}')">
                 ❤️
               </button>
             </div>
           </div>
         </div>
       `).join('');
+      });
     }
 
     // Start chat with character
