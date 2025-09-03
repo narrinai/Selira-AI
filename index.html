@@ -654,6 +654,109 @@
       .footer-content {
         grid-template-columns: 1fr;
       }
+      
+      .rotating-companion {
+        margin: 40px 0;
+      }
+    }
+
+    /* Rotating Companion */
+    .rotating-companion {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 30px;
+      padding: 40px 20px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+      border-radius: 20px;
+      margin: 40px auto;
+      max-width: 600px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .rotating-companion::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      animation: shimmer 3s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+
+    .companion-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 3px solid rgba(255, 255, 255, 0.8);
+      transition: all 0.5s ease;
+    }
+
+    .companion-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: all 0.5s ease;
+    }
+
+    .companion-info {
+      flex: 1;
+      text-align: center;
+    }
+
+    .companion-info h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: white;
+      margin: 0 0 8px;
+      transition: all 0.5s ease;
+    }
+
+    .companion-info p {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 14px;
+      margin: 0;
+      transition: all 0.5s ease;
+    }
+
+    .rotating-companion .primary-btn {
+      background: rgba(255, 255, 255, 0.9);
+      color: var(--accent);
+      border: 2px solid white;
+      transition: all 0.5s ease;
+    }
+
+    .rotating-companion .primary-btn:hover {
+      background: white;
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 768px) {
+      .rotating-companion {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+        margin: 30px 20px;
+        padding: 30px 20px;
+      }
+
+      .companion-avatar {
+        width: 60px;
+        height: 60px;
+      }
+
+      .companion-info h3 {
+        font-size: 20px;
+      }
     }
   </style>
 </head>
@@ -661,7 +764,7 @@
   <!-- Header -->
   <header class="header">
     <nav class="nav">
-      <div class="logo">Selira AI</div>
+      <a href="/" class="logo" aria-label="Selira AI Home">Selira AI</a>
       <div class="nav-menu">
         <a href="/category.html" class="nav-link">Discover</a>
         <a href="/create-character.html" class="nav-link">Create</a>
@@ -695,6 +798,18 @@
       <div class="character-badge">✨ Featured</div>
     </div>
   </section>
+
+  <!-- Rotating Featured Companion -->
+  <div class="rotating-companion">
+    <div class="companion-avatar" id="rotatingAvatar">
+      <img src="https://selira.ai/avatars/aragorn-1750067445.webp?v=1750067445" alt="Aragorn" loading="lazy">
+    </div>
+    <div class="companion-info" id="rotatingInfo">
+      <h3 id="rotatingName">Aragorn</h3>
+      <p id="rotatingRole">Ranger King</p>
+    </div>
+    <a href="/chat?char=aragorn" class="primary-btn" id="rotatingChatBtn">Chat Now</a>
+  </div>
 
   <!-- Fantasy Section -->
   <section class="section" id="discover">
@@ -1083,6 +1198,107 @@
 
     // Auto-run debug on load (remove later)
     document.addEventListener('DOMContentLoaded', debugCharacterLoading);
+
+    // Rotating companion feature with Fantasy, Historical, and Anime-Manga characters
+    const companions = [
+      {
+        name: 'Aragorn',
+        role: 'Ranger King',
+        avatar: 'https://selira.ai/avatars/aragorn-1750067445.webp?v=1750067445',
+        slug: 'aragorn'
+      },
+      {
+        name: 'Albert Einstein',
+        role: 'Physicist', 
+        avatar: 'https://selira.ai/avatars/albert-einstein-1750067386.webp?v=1750067386',
+        slug: 'albert-einstein'
+      },
+      {
+        name: 'Naruto Uzumaki',
+        role: 'Hokage Ninja',
+        avatar: 'https://selira.ai/avatars/naruto-uzumaki-1750068388.webp?v=1750068388',
+        slug: 'naruto-uzumaki'
+      },
+      {
+        name: 'Harry Potter',
+        role: 'The Boy Who Lived',
+        avatar: 'https://selira.ai/avatars/harry-potter-1750067058.webp?v=1750067058',
+        slug: 'harry-potter'
+      },
+      {
+        name: 'Nelson Mandela',
+        role: 'Former President',
+        avatar: 'https://selira.ai/avatars/mandela-1752237226.webp?v=1752237226',
+        slug: 'nelson-mandela'
+      },
+      {
+        name: 'Luffy',
+        role: 'Pirate King',
+        avatar: 'https://selira.ai/avatars/luffy-1750067585.webp?v=1750067585',
+        slug: 'monkey-d-luffy'
+      },
+      {
+        name: 'Beethoven',
+        role: 'Classical Composer',
+        avatar: 'https://selira.ai/avatars/beethoven-1752440687.webp?v=1752440687',
+        slug: 'beethoven'
+      },
+      {
+        name: 'Edward Elric',
+        role: 'Fullmetal Alchemist',
+        avatar: 'https://selira.ai/avatars/edward-elric-1750067232.webp?v=1750067232',
+        slug: 'edward-elric'
+      }
+    ];
+
+    let usedIndices = [];
+    
+    function updateRotatingCompanion() {
+      console.log('🔄 Updating rotating companion...');
+      
+      // Reset used indices when all companions have been shown
+      if (usedIndices.length >= companions.length) {
+        usedIndices = [];
+      }
+      
+      // Get a random companion that hasn't been shown recently
+      let randomIndex;
+      do {
+        randomIndex = Math.floor(Math.random() * companions.length);
+      } while (usedIndices.includes(randomIndex));
+      
+      usedIndices.push(randomIndex);
+      
+      const companion = companions[randomIndex];
+      console.log('👤 Selected companion:', companion.name);
+      
+      const avatarImg = document.querySelector('#rotatingAvatar img');
+      const nameEl = document.getElementById('rotatingName');
+      const roleEl = document.getElementById('rotatingRole');
+      const chatBtn = document.getElementById('rotatingChatBtn');
+      
+      console.log('🎯 Found elements:', { avatarImg: !!avatarImg, nameEl: !!nameEl, roleEl: !!roleEl, chatBtn: !!chatBtn });
+      
+      if (avatarImg && nameEl && roleEl && chatBtn) {
+        avatarImg.src = companion.avatar;
+        avatarImg.alt = companion.name;
+        nameEl.textContent = companion.name;
+        roleEl.textContent = companion.role;
+        chatBtn.href = `/chat?char=${companion.slug}`;
+        console.log('✅ Updated companion to:', companion.name);
+      } else {
+        console.error('❌ Missing rotating companion elements');
+      }
+    }
+    
+    // Initialize rotating companion when DOM is ready
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize with first companion
+      setTimeout(updateRotatingCompanion, 1000);
+      
+      // Rotate every 4 seconds
+      setInterval(updateRotatingCompanion, 4000);
+    });
   </script>
 </body>
 </html>
