@@ -190,18 +190,104 @@
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
     }
 
-    .hero-placeholder {
-      width: 100%;
+    .character-carousel {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
       height: 500px;
+      position: relative;
+    }
+
+    .carousel-card {
       background: var(--bg-secondary);
-      border-radius: 20px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-size: 120px;
+      gap: 16px;
+      min-height: 120px;
+      transition: all 0.5s ease;
+      opacity: 0;
+      transform: translateY(20px);
+      position: absolute;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    .carousel-card.active {
+      opacity: 1;
+      transform: translateY(0);
+      position: relative;
+    }
+
+    .carousel-card:hover {
+      border-color: var(--accent);
+      transform: scale(1.02);
+    }
+
+    .carousel-avatar {
+      width: 70px;
+      height: 70px;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 2px solid var(--accent);
+      flex-shrink: 0;
+    }
+
+    .carousel-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .carousel-info {
+      flex: 1;
+    }
+
+    .carousel-name {
+      font-size: 18px;
       font-weight: 700;
-      color: var(--accent);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .carousel-description {
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.4;
+      margin-bottom: 12px;
+    }
+
+    .carousel-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .carousel-chat-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      text-decoration: none;
+    }
+
+    .carousel-chat-btn:hover {
+      background: var(--accent-hover);
+    }
+
+    .carousel-stats {
+      color: var(--text-secondary);
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
 
     .character-badge {
@@ -654,110 +740,6 @@
       .footer-content {
         grid-template-columns: 1fr;
       }
-      
-      .rotating-companion {
-        margin: 40px 0;
-      }
-    }
-
-    /* Rotating Companion */
-    .rotating-companion {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 30px;
-      padding: 40px 20px;
-      background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
-      border-radius: 20px;
-      margin: 40px auto;
-      max-width: 600px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .rotating-companion::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-      animation: shimmer 3s infinite;
-    }
-
-    @keyframes shimmer {
-      0% { left: -100%; }
-      100% { left: 100%; }
-    }
-
-    .companion-avatar {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      overflow: hidden;
-      border: 3px solid rgba(255, 255, 255, 0.8);
-      transition: all 0.5s ease;
-    }
-
-    .companion-avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: all 0.5s ease;
-    }
-
-    .companion-info {
-      flex: 1;
-      text-align: center;
-    }
-
-    .companion-info h3 {
-      font-family: 'Playfair Display', serif;
-      font-size: 24px;
-      font-weight: 700;
-      color: white;
-      margin: 0 0 8px;
-      transition: all 0.5s ease;
-    }
-
-    .companion-info p {
-      color: rgba(255, 255, 255, 0.9);
-      font-size: 14px;
-      margin: 0;
-      transition: all 0.5s ease;
-    }
-
-    .rotating-companion .primary-btn {
-      background: rgba(255, 255, 255, 0.9);
-      color: var(--accent);
-      border: 2px solid white;
-      transition: all 0.5s ease;
-    }
-
-    .rotating-companion .primary-btn:hover {
-      background: white;
-      transform: scale(1.05);
-    }
-
-    @media (max-width: 768px) {
-      .rotating-companion {
-        flex-direction: column;
-        text-align: center;
-        gap: 20px;
-        margin: 30px 20px;
-        padding: 30px 20px;
-      }
-
-      .companion-avatar {
-        width: 60px;
-        height: 60px;
-      }
-
-      .companion-info h3 {
-        font-size: 20px;
-      }
-    }
   </style>
   
   <!-- Auth0 Authentication System -->
@@ -799,24 +781,11 @@
       </div>
     </div>
     <div class="hero-character">
-      <div class="hero-placeholder">
-        <span>S</span>
+      <div class="character-carousel" id="characterCarousel">
+        <!-- Characters will be loaded here -->
       </div>
-      <div class="character-badge">✨ Featured</div>
     </div>
   </section>
-
-  <!-- Rotating Featured Companion -->
-  <div class="rotating-companion">
-    <div class="companion-avatar" id="rotatingAvatar">
-      <img src="https://selira.ai/avatars/aragorn-1750067445.webp?v=1750067445" alt="Aragorn" loading="lazy">
-    </div>
-    <div class="companion-info" id="rotatingInfo">
-      <h3 id="rotatingName">Aragorn</h3>
-      <p id="rotatingRole">Ranger King</p>
-    </div>
-    <a href="/chat?char=aragorn" class="primary-btn" id="rotatingChatBtn">Chat Now</a>
-  </div>
 
   <!-- Fantasy Section -->
   <section class="section" id="discover">
@@ -1206,105 +1175,106 @@
     // Auto-run debug on load (remove later)
     document.addEventListener('DOMContentLoaded', debugCharacterLoading);
 
-    // Rotating companion feature with Fantasy, Historical, and Anime-Manga characters
-    const companions = [
+    // Featured characters carousel with Fantasy, Historical, and Anime-Manga characters
+    const featuredCharacters = [
       {
         name: 'Aragorn',
         role: 'Ranger King',
         avatar: 'https://selira.ai/avatars/aragorn-1750067445.webp?v=1750067445',
-        slug: 'aragorn'
+        slug: 'aragorn',
+        description: 'Noble ranger and rightful king. Join him on epic adventures through Middle-earth.',
+        stats: '127K'
       },
       {
         name: 'Albert Einstein',
         role: 'Physicist', 
         avatar: 'https://selira.ai/avatars/albert-einstein-1750067386.webp?v=1750067386',
-        slug: 'albert-einstein'
+        slug: 'albert-einstein',
+        description: 'Brilliant physicist who revolutionized our understanding of space and time.',
+        stats: '89K'
       },
       {
         name: 'Naruto Uzumaki',
         role: 'Hokage Ninja',
         avatar: 'https://selira.ai/avatars/naruto-uzumaki-1750068388.webp?v=1750068388',
-        slug: 'naruto-uzumaki'
+        slug: 'naruto-uzumaki',
+        description: 'Energetic ninja with dreams of becoming Hokage. Believe it!',
+        stats: '234K'
       },
       {
         name: 'Harry Potter',
         role: 'The Boy Who Lived',
         avatar: 'https://selira.ai/avatars/harry-potter-1750067058.webp?v=1750067058',
-        slug: 'harry-potter'
+        slug: 'harry-potter',
+        description: 'Young wizard who survived the killing curse. Ready for magical adventures.',
+        stats: '178K'
       },
       {
         name: 'Nelson Mandela',
         role: 'Former President',
         avatar: 'https://selira.ai/avatars/mandela-1752237226.webp?v=1752237226',
-        slug: 'nelson-mandela'
+        slug: 'nelson-mandela',
+        description: 'Inspiring leader who fought against apartheid and promoted reconciliation.',
+        stats: '67K'
       },
       {
         name: 'Luffy',
         role: 'Pirate King',
         avatar: 'https://selira.ai/avatars/luffy-1750067585.webp?v=1750067585',
-        slug: 'monkey-d-luffy'
-      },
-      {
-        name: 'Beethoven',
-        role: 'Classical Composer',
-        avatar: 'https://selira.ai/avatars/beethoven-1752440687.webp?v=1752440687',
-        slug: 'beethoven'
-      },
-      {
-        name: 'Edward Elric',
-        role: 'Fullmetal Alchemist',
-        avatar: 'https://selira.ai/avatars/edward-elric-1750067232.webp?v=1750067232',
-        slug: 'edward-elric'
+        slug: 'monkey-d-luffy',
+        description: 'Rubber-powered pirate captain on a quest to find the One Piece treasure.',
+        stats: '156K'
       }
     ];
 
-    let usedIndices = [];
+    let currentCharacterIndex = 0;
     
-    function updateRotatingCompanion() {
-      console.log('🔄 Updating rotating companion...');
+    function initializeCharacterCarousel() {
+      const carousel = document.getElementById('characterCarousel');
+      if (!carousel) return;
       
-      // Reset used indices when all companions have been shown
-      if (usedIndices.length >= companions.length) {
-        usedIndices = [];
-      }
-      
-      // Get a random companion that hasn't been shown recently
-      let randomIndex;
-      do {
-        randomIndex = Math.floor(Math.random() * companions.length);
-      } while (usedIndices.includes(randomIndex));
-      
-      usedIndices.push(randomIndex);
-      
-      const companion = companions[randomIndex];
-      console.log('👤 Selected companion:', companion.name);
-      
-      const avatarImg = document.querySelector('#rotatingAvatar img');
-      const nameEl = document.getElementById('rotatingName');
-      const roleEl = document.getElementById('rotatingRole');
-      const chatBtn = document.getElementById('rotatingChatBtn');
-      
-      console.log('🎯 Found elements:', { avatarImg: !!avatarImg, nameEl: !!nameEl, roleEl: !!roleEl, chatBtn: !!chatBtn });
-      
-      if (avatarImg && nameEl && roleEl && chatBtn) {
-        avatarImg.src = companion.avatar;
-        avatarImg.alt = companion.name;
-        nameEl.textContent = companion.name;
-        roleEl.textContent = companion.role;
-        chatBtn.href = `/chat?char=${companion.slug}`;
-        console.log('✅ Updated companion to:', companion.name);
-      } else {
-        console.error('❌ Missing rotating companion elements');
-      }
+      // Create character cards
+      carousel.innerHTML = featuredCharacters.map((character, index) => `
+        <div class="carousel-card ${index === 0 ? 'active' : ''}" data-index="${index}">
+          <div class="carousel-avatar">
+            <img src="${character.avatar}" alt="${character.name}" loading="lazy">
+          </div>
+          <div class="carousel-info">
+            <div class="carousel-name">${character.name}</div>
+            <div class="carousel-description">${character.description}</div>
+            <div class="carousel-actions">
+              <a href="/chat?char=${character.slug}" class="carousel-chat-btn">Chat</a>
+              <div class="carousel-stats">👥 ${character.stats}</div>
+            </div>
+          </div>
+        </div>
+      `).join('');
     }
     
-    // Initialize rotating companion when DOM is ready
-    document.addEventListener('DOMContentLoaded', function() {
-      // Initialize with first companion
-      setTimeout(updateRotatingCompanion, 1000);
+    function rotateCharacterCarousel() {
+      const cards = document.querySelectorAll('.carousel-card');
+      if (cards.length === 0) return;
       
-      // Rotate every 4 seconds
-      setInterval(updateRotatingCompanion, 4000);
+      // Hide current card
+      cards[currentCharacterIndex].classList.remove('active');
+      
+      // Move to next character
+      currentCharacterIndex = (currentCharacterIndex + 1) % featuredCharacters.length;
+      
+      // Show next card
+      cards[currentCharacterIndex].classList.add('active');
+      
+      console.log('🔄 Rotated to character:', featuredCharacters[currentCharacterIndex].name);
+    }
+    
+    // Initialize character carousel when DOM is ready
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeCharacterCarousel();
+      
+      // Start rotating after 2 seconds
+      setTimeout(() => {
+        setInterval(rotateCharacterCarousel, 4000);
+      }, 2000);
     });
   </script>
 </body>
