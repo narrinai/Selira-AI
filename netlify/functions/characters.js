@@ -37,7 +37,7 @@ exports.handler = async (event, context) => {
     if (!process.env.AIRTABLE_TOKEN_SELIRA) {
       throw new Error('AIRTABLE_TOKEN_SELIRA not found');
     }
-    if (!process.env.AIRTABLE_BASE_ID_SELIRA_SELIRA) {
+    if (!process.env.AIRTABLE_BASE_ID_SELIRA) {
       throw new Error('AIRTABLE_BASE_ID_SELIRA not found');
     }
 
