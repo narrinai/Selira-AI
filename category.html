@@ -1796,9 +1796,9 @@
             <p style="color: var(--text-secondary); font-size: 18px;">Manage your account, subscription, and AI companion preferences</p>
           </div>
           
-          <!-- User Info Section -->
-          <div class="profile-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 40px;">
-            <div class="profile-card" style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px;">
+          <!-- User Info Section - Horizontal Two Column Layout -->
+          <div class="profile-grid" style="display: flex; gap: 30px; margin-bottom: 40px; flex-wrap: wrap;">
+            <div class="profile-card" style="flex: 1; min-width: 350px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px;">
               <h3 style="color: var(--text-primary); margin-bottom: 20px; font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 12px;">
                 <span>👤</span> Account Information
               </h3>
@@ -1821,23 +1821,23 @@
               </div>
             </div>
             
-            <div class="profile-card" style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px;">
+            <div class="profile-card" style="flex: 1; min-width: 350px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px;">
               <h3 style="color: var(--text-primary); margin-bottom: 20px; font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 12px;">
                 <span>💎</span> Current Plan
               </h3>
               <div class="plan-info" id="planInfo">
-                <div class="current-plan" style="background: linear-gradient(135deg, var(--accent), var(--accent-secondary)); color: white; padding: 16px; border-radius: var(--radius-md); margin-bottom: 16px; text-align: center;">
-                  <div style="font-size: 18px; font-weight: 700; margin-bottom: 4px;" id="currentPlanName">Loading...</div>
-                  <div style="font-size: 14px; opacity: 0.9;" id="currentPlanPrice">Checking subscription...</div>
+                <div class="current-plan" style="background: linear-gradient(135deg, #ef4444, #f97316); color: white; padding: 16px; border-radius: var(--radius-md); margin-bottom: 16px; text-align: center;">
+                  <div style="font-size: 18px; font-weight: 700; margin-bottom: 4px;" id="currentPlanName">Free Trial</div>
+                  <div style="font-size: 14px; opacity: 0.9;" id="currentPlanPrice">$0/month</div>
                 </div>
                 <div style="margin-bottom: 16px;">
-                  <label style="display: block; color: var(--text-secondary); font-size: 14px; margin-bottom: 4px;">Usage This Month</label>
-                  <div class="usage-bar" style="background: var(--bg-tertiary); border-radius: 10px; height: 8px; position: relative; margin-bottom: 8px;">
-                    <div id="usageBarFill" style="background: var(--accent); height: 100%; border-radius: 10px; width: 45%; transition: width 0.3s ease;"></div>
+                  <label style="display: block; color: var(--text-secondary); font-size: 14px; margin-bottom: 8px;">Usage This Month</label>
+                  <div class="usage-bar" style="background: rgba(255, 255, 255, 0.1); border-radius: 10px; height: 10px; position: relative; margin-bottom: 8px; overflow: hidden;">
+                    <div id="usageBarFill" style="background: linear-gradient(90deg, #ef4444, #f97316); height: 100%; border-radius: 10px; width: 59%; transition: width 0.3s ease;"></div>
                   </div>
                   <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-secondary);">
-                    <span id="currentUsage">Loading...</span>
-                    <span id="planLimit">Loading...</span>
+                    <span id="currentUsage">59</span>
+                    <span id="planLimit">5 messages per day</span>
                   </div>
                 </div>
                 <button onclick="upgradePlan()" style="width: 100%; background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer;">
@@ -1852,7 +1852,7 @@
             <h3 style="color: var(--text-primary); margin-bottom: 24px; font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 12px;">
               <span>📊</span> Chat Statistics
             </h3>
-            <div class="stats-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
+            <div class="stats-grid" style="display: flex; gap: 20px; flex-wrap: wrap;">
               <div class="stat-item" style="text-align: center; padding: 20px; background: var(--bg-tertiary); border-radius: var(--radius-md);">
                 <div style="font-size: 24px; font-weight: 700; color: var(--accent); margin-bottom: 4px;" id="totalMessages">0</div>
                 <div style="font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Total Messages</div>
@@ -2358,7 +2358,7 @@ Please be thorough and include important details from our conversations.`;
       try {
         // Get user info from Auth0 or localStorage
         const userEmail = localStorage.getItem('user_email') || 'user@example.com';
-        const userJoined = localStorage.getItem('user_joined') || new Date().toLocaleDateString();
+        const userJoined = localStorage.getItem('user_joined') || '04/09/2025';
         
         // Update UI with user info
         document.getElementById('userEmail').textContent = userEmail;
