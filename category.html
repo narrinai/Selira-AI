@@ -1645,10 +1645,10 @@
     function renderMemories() {
       const grid = document.getElementById('charactersGrid');
       grid.innerHTML = `
-        <div class="memory-import-section" style="width: 100%; max-width: none; padding: 40px;">
-          <div class="memory-header" style="text-align: center; margin-bottom: 50px;">
-            <h2 style="font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 700; color: var(--text-primary); margin-bottom: 16px;">Import ChatGPT Memories</h2>
-            <p style="color: var(--text-secondary); font-size: 18px; max-width: 800px; margin: 0 auto; line-height: 1.6;">Transfer your ChatGPT conversations to give your AI companions deeper understanding of your thoughts, goals, and personal context. 100% private and secure data transfer.</p>
+        <div class="memory-import-section" style="width: 100%; max-width: none; padding: 20px 40px; height: calc(100vh - 140px); overflow-y: auto; display: flex; flex-direction: column;">
+          <div class="memory-header" style="text-align: center; margin-bottom: 30px; flex-shrink: 0;">
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 700; color: var(--text-primary); margin-bottom: 12px;">Import ChatGPT Memories</h2>
+            <p style="color: var(--text-secondary); font-size: 16px; max-width: 700px; margin: 0 auto; line-height: 1.5;">Transfer your ChatGPT conversations to give your AI companions deeper understanding. 100% private and secure.</p>
           </div>
           
           <!-- Security Badge -->
@@ -1790,10 +1790,10 @@
       filterSection.style.display = 'none';
       
       grid.innerHTML = `
-        <div class="profile-section" style="width: 100%; max-width: 1400px; margin: 0 auto; padding: 60px 40px;">
-          <div class="profile-header" style="text-align: center; margin-bottom: 60px;">
-            <h2 style="font-family: 'Playfair Display', serif; font-size: 48px; font-weight: 700; color: var(--text-primary); margin-bottom: 16px;">My Profile</h2>
-            <p style="color: var(--text-secondary); font-size: 20px;">Manage your account, subscription, and AI companion preferences</p>
+        <div class="profile-section" style="width: 100%; max-width: none; padding: 20px 40px; height: calc(100vh - 140px); overflow-y: auto; display: flex; flex-direction: column;">
+          <div class="profile-header" style="text-align: center; margin-bottom: 30px; flex-shrink: 0;">
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 700; color: var(--text-primary); margin-bottom: 12px;">My Profile</h2>
+            <p style="color: var(--text-secondary); font-size: 16px;">Manage your account, subscription, and AI companion preferences</p>
           </div>
           
           <!-- User Info Section - Full Width Horizontal Layout -->
