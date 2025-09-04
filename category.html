@@ -1921,15 +1921,15 @@
       filterSection.style.display = 'none';
       
       grid.innerHTML = `
-        <div class="pricing-section">
-          <div class="pricing-header">
-            <h2 class="pricing-title">Choose Your Plan</h2>
-            <p class="pricing-subtitle">Transform daily mental chaos into clear thinking with AI companions</p>
+        <div class="pricing-section" style="width: 100%; max-width: 1400px; margin: 0 auto; padding: 60px 40px;">
+          <div class="pricing-header" style="text-align: center; margin-bottom: 60px;">
+            <h2 class="pricing-title" style="font-size: 48px; font-weight: 700; margin-bottom: 16px;">Choose Your Plan</h2>
+            <p class="pricing-subtitle" style="font-size: 20px; color: var(--text-secondary);">Transform daily mental chaos into clear thinking with AI companions</p>
           </div>
           
-          <div class="pricing-cards">
+          <div class="pricing-cards" style="display: flex; gap: 30px; justify-content: center; align-items: stretch; flex-wrap: wrap;">
             <!-- Free Trial -->
-            <div class="pricing-card">
+            <div class="pricing-card" style="flex: 1; min-width: 300px; max-width: 400px;">
               <div class="plan-name">Free Trial</div>
               <div class="plan-price">
                 <span class="price-currency">$</span>
@@ -1957,7 +1957,7 @@
             </div>
 
             <!-- Engage Plan -->
-            <div class="pricing-card featured">
+            <div class="pricing-card featured" style="flex: 1; min-width: 300px; max-width: 400px;">
               <div class="card-badge">Most Popular</div>
               <div class="plan-name">Engage</div>
               <div class="price-wrapper">
@@ -1998,7 +1998,7 @@
             </div>
 
             <!-- Immerse Plan -->
-            <div class="pricing-card">
+            <div class="pricing-card" style="flex: 1; min-width: 300px; max-width: 400px;">
               <div class="card-badge" style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);">Ultimate Experience</div>
               <div class="plan-name">Immerse</div>
               <div class="price-wrapper">
@@ -2398,14 +2398,14 @@ Please be thorough and include important details from our conversations.`;
       filterSection.style.display = 'none';
       
       grid.innerHTML = `
-        <div class="create-character-section" style="width: 100%; max-width: none; padding: 40px;">
-          <div class="create-header" style="text-align: center; margin-bottom: 40px;">
+        <div class="create-character-section" style="width: 100vw; max-width: none; padding: 0; min-height: calc(100vh - 120px); margin-left: -40px; margin-right: -40px;">
+          <div class="create-header" style="text-align: center; margin-bottom: 30px; padding: 40px 40px 0;">
             <h2 style="font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 700; color: var(--text-primary); margin-bottom: 16px;">Create Your AI Companion</h2>
             <p style="color: var(--text-secondary); font-size: 18px;">Design a unique AI companion with custom appearance and personality</p>
           </div>
           
           <!-- Progress Bar -->
-          <div class="creation-progress" style="margin-bottom: 40px; max-width: 800px; margin-left: auto; margin-right: auto;">
+          <div class="creation-progress" style="margin-bottom: 20px; padding: 0 80px;">
             <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px; color: var(--text-secondary); text-transform: uppercase; font-weight: 600;">
               <span id="stepIndicator">Step 1 of 4</span>
               <span id="stepTitle">Choose Style</span>
@@ -2416,21 +2416,21 @@ Please be thorough and include important details from our conversations.`;
           </div>
 
           <!-- Step Content -->
-          <div class="step-container" style="width: 100%; max-width: none; padding: 0 20px;">
+          <div class="step-container" style="width: 100%; max-width: none; padding: 0 80px; flex: 1;">
             
             <!-- Step 1: Style Selection -->
             <div class="creation-step active" id="step1">
               <h3 style="color: var(--text-primary); margin-bottom: 40px; font-size: 28px; font-weight: 700; text-align: center;">Choose Art Style</h3>
-              <div class="style-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 80px; max-width: 1200px; margin: 0 auto 30px auto;">
+              <div class="style-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 150px; max-width: none; margin: 0 auto 30px auto; padding: 0 100px;">
                 <div class="style-option" data-style="realistic" onclick="selectStyleStep('realistic')" style="background: var(--bg-secondary); border: 2px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
-                  <div style="height: 300px; background: url('https://images.unsplash.com/photo-1494790108755-2616b2e4c5d0?w=400') center/cover;"></div>
+                  <div style="height: 400px; background: url('https://images.unsplash.com/photo-1494790108755-2616b2e4c5d0?w=800') center/cover;"></div>
                   <div style="padding: 20px; text-align: center;">
                     <h4 style="color: var(--text-primary); font-size: 18px; font-weight: 700; margin-bottom: 8px;">Realistic</h4>
                     <p style="color: var(--text-secondary); font-size: 14px;">Photo-realistic AI companions</p>
                   </div>
                 </div>
                 <div class="style-option" data-style="anime" onclick="selectStyleStep('anime')" style="background: var(--bg-secondary); border: 2px solid var(--accent); border-radius: var(--radius-lg); overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
-                  <div style="height: 300px; background: url('https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400') center/cover;"></div>
+                  <div style="height: 400px; background: url('https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800') center/cover;"></div>
                   <div style="padding: 20px; text-align: center;">
                     <h4 style="color: var(--text-primary); font-size: 18px; font-weight: 700; margin-bottom: 8px;">Anime</h4>
                     <p style="color: var(--text-secondary); font-size: 14px;">Anime-style illustrations</p>
@@ -2442,7 +2442,7 @@ Please be thorough and include important details from our conversations.`;
             <!-- Step 2: Ethnicity Selection -->
             <div class="creation-step" id="step2" style="display: none;">
               <h3 style="color: var(--text-primary); margin-bottom: 40px; font-size: 28px; font-weight: 700; text-align: center;">Choose Ethnicity</h3>
-              <div class="ethnicity-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; max-width: 1200px; margin: 0 auto 30px auto;">
+              <div class="ethnicity-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 60px; max-width: none; padding: 0 100px; margin-bottom: 30px;">
                 <div class="ethnicity-option" data-ethnicity="white" onclick="selectEthnicityStep('white')" style="background: var(--bg-secondary); border: 2px solid var(--accent); border-radius: var(--radius-lg); overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
                   <div style="height: 160px; background: url('https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=300') center/cover;"></div>
                   <div style="padding: 12px; text-align: center;">
@@ -2503,7 +2503,7 @@ Please be thorough and include important details from our conversations.`;
             <!-- Step 3: Hair Style -->
             <div class="creation-step" id="step3" style="display: none;">
               <h3 style="color: var(--text-primary); margin-bottom: 40px; font-size: 28px; font-weight: 700; text-align: center;">Choose Hair Style</h3>
-              <div class="hair-grid" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 20px; max-width: 1400px; margin: 0 auto 30px auto;">
+              <div class="hair-grid" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 40px; max-width: none; padding: 0 80px; margin-bottom: 30px;">
                 <div class="hair-option" data-hair="pixie" onclick="selectHairStep('pixie')" style="background: var(--bg-secondary); border: 2px solid var(--accent); border-radius: var(--radius-lg); overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
                   <div style="height: 140px; background: url('https://images.unsplash.com/photo-1494790108755-2616b2e4c5d0?w=250') center/cover;"></div>
                   <div style="padding: 12px; text-align: center;">
