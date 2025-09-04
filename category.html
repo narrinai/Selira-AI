@@ -1029,6 +1029,7 @@
       initializeFilters();
       setupTabNavigation();
       setupInfiniteScroll();
+      handleInitialURL();
     });
 
     // ===== CHARACTER LOADING =====
@@ -1382,32 +1383,152 @@
     window.addEventListener('resize', handleResize);
     document.addEventListener('DOMContentLoaded', handleResize);
 
-    // ===== TAG FILTERING =====
+    // ===== TAG FILTERING WITH URLS =====
     document.addEventListener('click', function(e) {
       if (e.target.classList.contains('tag-pill')) {
         e.preventDefault();
         
-        // Remove active from all tags
-        document.querySelectorAll('.tag-pill').forEach(pill => {
-          pill.classList.remove('active');
-        });
-        
-        // Add active to clicked tag
-        e.target.classList.add('active');
-        
         const tagText = e.target.textContent.trim();
         console.log('Selected tag:', tagText);
         
-        // Apply tag filter
+        // Update URL based on tag selection
         if (tagText === 'All') {
+          // Go back to /category
+          history.pushState({section: 'category', filter: null}, 'Discover Characters - Selira AI', '/category');
           currentFilters.tags = [];
         } else {
+          // Create SEO-friendly URL
+          const tagSlug = tagText.toLowerCase()
+            .replace('🏰 ', '')
+            .replace('🎌 ', '')
+            .replace('🏛️ ', '')
+            .replace(/[^\w\s-]/g, '') // Remove special chars
+            .replace(/\s+/g, '-') // Replace spaces with hyphens
+            .replace(/-+/g, '-'); // Remove duplicate hyphens
+          
+          // For categories, use /category?filter=, for tags use /tags/
+          if (['fantasy', 'anime-manga', 'historical'].includes(tagSlug)) {
+            history.pushState({section: 'category', filter: tagSlug}, `${tagText} Characters - Selira AI`, `/category?filter=${tagSlug}`);
+          } else {
+            history.pushState({section: 'tag', tag: tagText}, `${tagText} Characters - Selira AI`, `/tags/${tagSlug}`);
+          }
+          
           currentFilters.tags = [tagText];
         }
         
+        // Update UI
+        updateActiveTag(tagText);
+        applyFilters();
+        
+        // Ensure filter section is visible
+        document.querySelector('.filter-section').style.display = 'block';
+      }
+    });
+
+    function updateActiveTag(selectedTag) {
+      // Remove active from all tags
+      document.querySelectorAll('.tag-pill').forEach(pill => {
+        pill.classList.remove('active');
+      });
+      
+      // Add active to selected tag
+      document.querySelectorAll('.tag-pill').forEach(pill => {
+        if (pill.textContent.trim() === selectedTag) {
+          pill.classList.add('active');
+        }
+      });
+    }
+
+    // ===== BROWSER NAVIGATION HANDLING =====
+    window.addEventListener('popstate', function(e) {
+      console.log('🔙 Browser navigation:', e.state);
+      
+      if (e.state) {
+        if (e.state.section === 'category') {
+          // Show characters with optional filter
+          document.querySelector('.filter-section').style.display = 'block';
+          
+          if (e.state.filter) {
+            const filterMap = {
+              'fantasy': '🏰 Fantasy',
+              'anime-manga': '🎌 Anime-Manga', 
+              'historical': '🏛️ Historical'
+            };
+            const tagText = filterMap[e.state.filter] || e.state.filter;
+            currentFilters.tags = [tagText];
+            updateActiveTag(tagText);
+          } else {
+            currentFilters.tags = [];
+            updateActiveTag('All');
+          }
+          
+          currentTab = 'discover';
+          applyFilters();
+        } else if (e.state.section === 'tag') {
+          // Show characters filtered by tag
+          document.querySelector('.filter-section').style.display = 'block';
+          currentFilters.tags = [e.state.tag];
+          updateActiveTag(e.state.tag);
+          currentTab = 'discover';
+          applyFilters();
+        }
+      } else {
+        // Default to category view
+        document.querySelector('.filter-section').style.display = 'block';
+        currentFilters.tags = [];
+        updateActiveTag('All');
+        currentTab = 'discover';
         applyFilters();
       }
     });
+
+    // ===== INITIAL URL HANDLING =====
+    function handleInitialURL() {
+      const currentURL = window.location.pathname + window.location.search;
+      
+      if (currentURL.includes('/tags/')) {
+        // Extract tag from URL
+        const tagSlug = currentURL.split('/tags/')[1];
+        const tagMap = {
+          'fantasy': '🏰 Fantasy',
+          'anime-manga': '🎌 Anime-Manga',
+          'historical': '🏛️ Historical',
+          'magic': 'Magic',
+          'warrior': 'Warrior',
+          'wizard': 'Wizard',
+          'hero': 'Hero',
+          'ninja': 'Ninja',
+          'samurai': 'Samurai',
+          'adventure': 'Adventure',
+          'romance': 'Romance',
+          'mystery': 'Mystery',
+          'action': 'Action',
+          'unfiltered': 'Unfiltered'
+        };
+        
+        const tagText = tagMap[tagSlug] || tagSlug.charAt(0).toUpperCase() + tagSlug.slice(1);
+        currentFilters.tags = [tagText];
+        updateActiveTag(tagText);
+        applyFilters();
+      } else if (currentURL.includes('?filter=')) {
+        // Extract category filter from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const filter = urlParams.get('filter');
+        
+        if (filter) {
+          const filterMap = {
+            'fantasy': '🏰 Fantasy',
+            'anime-manga': '🎌 Anime-Manga',
+            'historical': '🏛️ Historical'
+          };
+          
+          const tagText = filterMap[filter] || filter;
+          currentFilters.tags = [tagText];
+          updateActiveTag(tagText);
+          applyFilters();
+        }
+      }
+    }
 
     // ===== TAB NAVIGATION =====
     function setupTabNavigation() {
