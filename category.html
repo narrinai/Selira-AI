@@ -667,6 +667,161 @@
     .sidebar-overlay.open {
       display: block;
     }
+
+    /* Pricing Section */
+    .pricing-section {
+      padding: 40px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .pricing-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .pricing-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+
+    .pricing-subtitle {
+      color: var(--text-secondary);
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .pricing-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+
+    .pricing-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px 24px;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .pricing-card.featured {
+      border-color: var(--accent);
+      transform: scale(1.02);
+    }
+
+    .pricing-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-badge {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: white;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .plan-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+
+    .price-wrapper {
+      margin-bottom: 8px;
+    }
+
+    .original-price {
+      color: var(--text-muted);
+      text-decoration: line-through;
+      font-size: 16px;
+      margin-right: 8px;
+    }
+
+    .plan-price {
+      color: var(--accent);
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+
+    .price-currency {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .price-amount {
+      font-size: 36px;
+      font-weight: 700;
+    }
+
+    .price-period {
+      font-size: 16px;
+      color: var(--text-secondary);
+    }
+
+    .price-daily {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    .plan-description {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+
+    .plan-features {
+      list-style: none;
+      margin-bottom: 32px;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+    }
+
+    .feature-icon {
+      color: var(--success);
+      font-weight: 700;
+    }
+
+    .plan-button {
+      width: 100%;
+      padding: 12px 24px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      text-align: center;
+      display: block;
+    }
+
+    .plan-button:hover {
+      background: var(--accent-hover);
+    }
   </style>
 </head>
 <body>
@@ -704,7 +859,7 @@
           <span class="nav-item-icon">👤</span>
           <span>Profile</span>
         </a>
-        <a href="/pricing.html" class="nav-item">
+        <a href="#" class="nav-item" onclick="showPricing(); return false;">
           <span class="nav-item-icon">💎</span>
           <span>Pricing</span>
         </a>
@@ -1384,6 +1539,147 @@
       if (currentTab === 'companions') {
         renderMyCompanions();
       }
+    }
+
+    function showPricing() {
+      const grid = document.getElementById('charactersGrid');
+      
+      grid.innerHTML = `
+        <div class="pricing-section">
+          <div class="pricing-header">
+            <h2 class="pricing-title">Choose Your Plan</h2>
+            <p class="pricing-subtitle">Transform daily mental chaos into clear thinking with AI companions</p>
+          </div>
+          
+          <div class="pricing-cards">
+            <!-- Free Trial -->
+            <div class="pricing-card">
+              <div class="plan-name">Free Trial</div>
+              <div class="plan-price">
+                <span class="price-currency">$</span>
+                <span class="price-amount">0</span>
+                <span class="price-period">/month</span>
+              </div>
+              <p class="plan-description">Try our AI companions with limited features</p>
+              
+              <ul class="plan-features">
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span class="feature-text">5 messages per day</span>
+                </li>
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span class="feature-text">Access to 3 companions</span>
+                </li>
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span class="feature-text">Basic memory</span>
+                </li>
+              </ul>
+              
+              <a href="/chat.html" class="plan-button">Start Free Trial</a>
+            </div>
+
+            <!-- Engage Plan -->
+            <div class="pricing-card featured">
+              <div class="card-badge">Most Popular</div>
+              <div class="plan-name">Engage</div>
+              <div class="price-wrapper">
+                <span class="original-price">$8.99</span>
+                <div class="plan-price">
+                  <span class="price-currency">$</span>
+                  <span class="price-amount">4.99</span>
+                  <span class="price-period">/month</span>
+                </div>
+              </div>
+              <div class="price-daily">Only $0.17/day</div>
+              <p class="plan-description">Unlimited conversations with your AI companion</p>
+              
+              <ul class="plan-features">
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span class="feature-text"><strong>Unlimited</strong> AI companions</span>
+                </li>
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span class="feature-text"><strong>Unlimited</strong> messages</span>
+                </li>
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span class="feature-text">15 voice chats per month</span>
+                </li>
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span class="feature-text">Extensive memory</span>
+                </li>
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span class="feature-text">Companion customization</span>
+                </li>
+              </ul>
+              
+              <a href="/profile.html" class="plan-button">Choose Engage</a>
+            </div>
+
+            <!-- Immerse Plan -->
+            <div class="pricing-card">
+              <div class="card-badge" style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);">Ultimate Experience</div>
+              <div class="plan-name">Immerse</div>
+              <div class="price-wrapper">
+                <span class="original-price">$14.99</span>
+                <div class="plan-price">
+                  <span class="price-currency">$</span>
+                  <span class="price-amount">11.99</span>
+                  <span class="price-period">/month</span>
+                </div>
+              </div>
+              <div class="price-daily">Only $0.40/day</div>
+              <p class="plan-description">The ultimate AI companion experience</p>
+              
+              <ul class="plan-features">
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span class="feature-text"><strong>Unlimited</strong> AI companions</span>
+                </li>
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span class="feature-text"><strong>Unlimited</strong> messages</span>
+                </li>
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span class="feature-text"><strong>Unlimited</strong> voice chats</span>
+                </li>
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span class="feature-text"><strong>Unlimited</strong> voice notes</span>
+                </li>
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span class="feature-text">Extensive memory</span>
+                </li>
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span class="feature-text">Early access to new AI models</span>
+                </li>
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span class="feature-text">Priority support</span>
+                </li>
+              </ul>
+              
+              <a href="/profile.html" class="plan-button">Choose Immerse</a>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      // Update active nav item
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.textContent.includes('Pricing')) {
+          item.classList.add('active');
+        }
+      });
     }
 
     // ===== INFINITE SCROLL =====
