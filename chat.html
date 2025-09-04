@@ -1054,7 +1054,7 @@
             name: char.Name || 'Unknown',
             title: char.Character_Title || '',
             description: char.Character_Description || '',
-            avatar: char.Avatar_URL,
+            avatar: char.Avatar_URL ? char.Avatar_URL.replace('narrin.ai', 'selira.ai') : null,
             category: char.Category || 'Other',
             slug: char.Slug || char.Name?.toLowerCase().replace(/\s+/g, '-'),
             creator: char.Nickname || 'Selira',
