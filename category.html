@@ -1790,15 +1790,15 @@
       filterSection.style.display = 'none';
       
       grid.innerHTML = `
-        <div class="profile-section" style="width: 100%; max-width: none; padding: 40px;">
-          <div class="profile-header" style="text-align: center; margin-bottom: 40px;">
-            <h2 style="font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 700; color: var(--text-primary); margin-bottom: 16px;">My Profile</h2>
-            <p style="color: var(--text-secondary); font-size: 18px;">Manage your account, subscription, and AI companion preferences</p>
+        <div class="profile-section" style="width: 100%; max-width: 1400px; margin: 0 auto; padding: 60px 40px;">
+          <div class="profile-header" style="text-align: center; margin-bottom: 60px;">
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 48px; font-weight: 700; color: var(--text-primary); margin-bottom: 16px;">My Profile</h2>
+            <p style="color: var(--text-secondary); font-size: 20px;">Manage your account, subscription, and AI companion preferences</p>
           </div>
           
-          <!-- User Info Section - Horizontal Two Column Layout -->
-          <div class="profile-grid" style="display: flex; gap: 30px; margin-bottom: 40px; flex-wrap: wrap;">
-            <div class="profile-card" style="flex: 1; min-width: 350px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px;">
+          <!-- User Info Section - Full Width Horizontal Layout -->
+          <div class="profile-grid" style="display: flex; gap: 30px; margin-bottom: 40px; flex-wrap: wrap; justify-content: center;">
+            <div class="profile-card" style="flex: 1; min-width: 350px; max-width: 500px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px;">
               <h3 style="color: var(--text-primary); margin-bottom: 20px; font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 12px;">
                 <span>👤</span> Account Information
               </h3>
@@ -1821,7 +1821,7 @@
               </div>
             </div>
             
-            <div class="profile-card" style="flex: 1; min-width: 350px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px;">
+            <div class="profile-card" style="flex: 1; min-width: 350px; max-width: 500px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px;">
               <h3 style="color: var(--text-primary); margin-bottom: 20px; font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 12px;">
                 <span>💎</span> Current Plan
               </h3>
@@ -1848,11 +1848,11 @@
           </div>
           
           <!-- Chat Statistics -->
-          <div class="profile-stats" style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px; margin-bottom: 40px;">
-            <h3 style="color: var(--text-primary); margin-bottom: 24px; font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 12px;">
+          <div class="profile-stats" style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px; margin-bottom: 40px; max-width: 1200px; margin-left: auto; margin-right: auto;">
+            <h3 style="color: var(--text-primary); margin-bottom: 24px; font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 12px; justify-content: center;">
               <span>📊</span> Chat Statistics
             </h3>
-            <div class="stats-grid" style="display: flex; gap: 20px; flex-wrap: wrap;">
+            <div class="stats-grid" style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
               <div class="stat-item" style="text-align: center; padding: 20px; background: var(--bg-tertiary); border-radius: var(--radius-md);">
                 <div style="font-size: 24px; font-weight: 700; color: var(--accent); margin-bottom: 4px;" id="totalMessages">0</div>
                 <div style="font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Total Messages</div>
@@ -1873,8 +1873,8 @@
           </div>
           
           <!-- Account Settings -->
-          <div class="profile-settings" style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px;">
-            <h3 style="color: var(--text-primary); margin-bottom: 24px; font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 12px;">
+          <div class="profile-settings" style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px; max-width: 1200px; margin-left: auto; margin-right: auto;">
+            <h3 style="color: var(--text-primary); margin-bottom: 24px; font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 12px; justify-content: center;">
               <span>⚙️</span> Account Settings
             </h3>
             <div class="settings-grid" style="display: grid; gap: 20px;">
