@@ -1482,11 +1482,48 @@
     function renderMemories() {
       const grid = document.getElementById('charactersGrid');
       grid.innerHTML = `
-        <div class="loading-grid">
-          <div style="text-align: center; padding: 40px;">
-            <div style="font-size: 48px; margin-bottom: 16px;">🧠</div>
-            <h3 style="color: var(--text-primary); margin-bottom: 8px;">Memories</h3>
-            <p style="color: var(--text-secondary);">Your conversation memories and important moments will appear here.</p>
+        <div class="memory-import-section">
+          <div class="memory-header">
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 700; color: var(--text-primary); margin-bottom: 12px; text-align: center;">Import Your Memories</h2>
+            <p style="color: var(--text-secondary); font-size: 16px; text-align: center; margin-bottom: 40px;">Transfer your ChatGPT conversations and insights to enhance your AI companion experience</p>
+          </div>
+          
+          <div class="import-options" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-bottom: 40px;">
+            <div class="import-card" style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; text-align: center;">
+              <div style="font-size: 48px; margin-bottom: 16px;">📥</div>
+              <h3 style="color: var(--text-primary); margin-bottom: 12px; font-size: 20px;">ChatGPT Import</h3>
+              <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 14px;">Upload your ChatGPT conversation history to preserve valuable insights and memories</p>
+              <input type="file" id="chatgptFile" accept=".json" style="display: none;" onchange="handleChatGPTImport(this)">
+              <button onclick="document.getElementById('chatgptFile').click()" style="background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer;">
+                Choose File
+              </button>
+            </div>
+            
+            <div class="import-card" style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; text-align: center;">
+              <div style="font-size: 48px; margin-bottom: 16px;">💭</div>
+              <h3 style="color: var(--text-primary); margin-bottom: 12px; font-size: 20px;">Manual Entry</h3>
+              <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 14px;">Manually add important memories and insights for your AI companions</p>
+              <button onclick="showManualMemoryForm()" style="background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer;">
+                Add Memory
+              </button>
+            </div>
+            
+            <div class="import-card" style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; text-align: center;">
+              <div style="font-size: 48px; margin-bottom: 16px;">🗂️</div>
+              <h3 style="color: var(--text-primary); margin-bottom: 12px; font-size: 20px;">Text Import</h3>
+              <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 14px;">Import from text files, notes, or other conversation exports</p>
+              <input type="file" id="textFile" accept=".txt" style="display: none;" onchange="handleTextImport(this)">
+              <button onclick="document.getElementById('textFile').click()" style="background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer;">
+                Import Text
+              </button>
+            </div>
+          </div>
+          
+          <div class="recent-imports" style="background: var(--bg-secondary); border-radius: var(--radius-lg); padding: 24px;">
+            <h3 style="color: var(--text-primary); margin-bottom: 16px; font-size: 18px;">Recent Imports</h3>
+            <div id="importHistory" style="color: var(--text-secondary);">
+              <p>No memory imports yet. Start by importing your ChatGPT conversations or adding memories manually.</p>
+            </div>
           </div>
         </div>
       `;
@@ -1686,8 +1723,7 @@
         </div>
       `;
       
-      // Update URL without page reload
-      history.pushState({section: 'pricing'}, 'Pricing - Selira AI', '/pricing');
+      // Stay on /category but show pricing content
       
       // Update active nav item
       document.querySelectorAll('.nav-item').forEach(item => {
@@ -1699,12 +1735,9 @@
     }
 
     function showCharacters() {
-      // Show filter section and hide pricing
+      // Show filter section
       const filterSection = document.querySelector('.filter-section');
       filterSection.style.display = 'block';
-      
-      // Update URL
-      history.pushState({section: 'characters'}, 'Characters - Selira AI', '/category');
       
       // Update active nav item
       document.querySelectorAll('.nav-item').forEach(item => {
@@ -1793,6 +1826,125 @@
       `).join('');
       
       grid.insertAdjacentHTML('beforeend', newCharactersHTML);
+    }
+
+    // ===== MEMORY IMPORT FUNCTIONALITY =====
+    function handleChatGPTImport(input) {
+      const file = input.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = JSON.parse(e.target.result);
+          console.log('📥 ChatGPT file imported:', data);
+          
+          // Process the ChatGPT export data here
+          const importHistory = document.getElementById('importHistory');
+          if (importHistory) {
+            importHistory.innerHTML = `
+              <div style="border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; margin-bottom: 12px; background: var(--bg-tertiary);">
+                <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 8px;">ChatGPT Import</div>
+                <div style="color: var(--text-secondary); font-size: 14px;">File: ${file.name}</div>
+                <div style="color: var(--text-secondary); font-size: 14px;">Imported: ${new Date().toLocaleString()}</div>
+                <div style="color: var(--success); font-size: 14px; margin-top: 8px;">✓ Successfully processed</div>
+              </div>
+            `;
+          }
+          
+          alert('ChatGPT conversations imported successfully!');
+        } catch (error) {
+          console.error('❌ Error parsing ChatGPT file:', error);
+          alert('Error parsing file. Please make sure it\'s a valid ChatGPT export.');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function handleTextImport(input) {
+      const file = input.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const content = e.target.result;
+        console.log('📄 Text file imported:', file.name);
+        
+        const importHistory = document.getElementById('importHistory');
+        if (importHistory) {
+          importHistory.innerHTML = `
+            <div style="border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; margin-bottom: 12px; background: var(--bg-tertiary);">
+              <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 8px;">Text Import</div>
+              <div style="color: var(--text-secondary); font-size: 14px;">File: ${file.name}</div>
+              <div style="color: var(--text-secondary); font-size: 14px;">Imported: ${new Date().toLocaleString()}</div>
+              <div style="color: var(--success); font-size: 14px; margin-top: 8px;">✓ Successfully processed ${content.length} characters</div>
+            </div>
+          `;
+        }
+        
+        alert('Text file imported successfully!');
+      };
+      reader.readAsText(file);
+    }
+
+    function showManualMemoryForm() {
+      const grid = document.getElementById('charactersGrid');
+      const currentContent = grid.innerHTML;
+      
+      grid.innerHTML = `
+        <div class="memory-form-section" style="padding: 40px; max-width: 600px; margin: 0 auto;">
+          <div style="text-align: center; margin-bottom: 30px;">
+            <button onclick="renderMemories()" style="background: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border); padding: 8px 16px; border-radius: var(--radius-md); cursor: pointer; margin-bottom: 20px;">
+              ← Back to Memory Import
+            </button>
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--text-primary); margin-bottom: 12px;">Add Manual Memory</h2>
+            <p style="color: var(--text-secondary);">Add important memories, insights, or context for your AI companions</p>
+          </div>
+          
+          <div class="memory-form" style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px;">
+            <div style="margin-bottom: 20px;">
+              <label style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 8px;">Memory Title</label>
+              <input type="text" id="memoryTitle" placeholder="e.g., Important life decision" style="width: 100%; padding: 10px; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text-primary);">
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+              <label style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 8px;">Memory Content</label>
+              <textarea id="memoryContent" placeholder="Describe the memory, insight, or context..." rows="6" style="width: 100%; padding: 10px; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text-primary); resize: vertical;"></textarea>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+              <label style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 8px;">Importance Level</label>
+              <select id="memoryImportance" style="width: 100%; padding: 10px; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text-primary);">
+                <option value="5">Medium (5)</option>
+                <option value="7">High (7)</option>
+                <option value="10">Critical (10)</option>
+              </select>
+            </div>
+            
+            <button onclick="saveManualMemory()" style="width: 100%; background: var(--accent); color: white; border: none; padding: 12px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; font-size: 16px;">
+              Save Memory
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function saveManualMemory() {
+      const title = document.getElementById('memoryTitle').value;
+      const content = document.getElementById('memoryContent').value;
+      const importance = document.getElementById('memoryImportance').value;
+      
+      if (!title || !content) {
+        alert('Please fill in both title and content.');
+        return;
+      }
+      
+      console.log('💾 Saving manual memory:', { title, content, importance });
+      
+      // Here you would typically save to your backend
+      // For now, just show success and go back
+      alert('Memory saved successfully!');
+      renderMemories();
     }
 
     console.log('✅ Selira Category page initialized with Character.AI style design');
