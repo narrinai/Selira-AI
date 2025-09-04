@@ -167,13 +167,15 @@
 
     /* ===== HEADER NAVIGATION ===== */
     .header {
-      position: sticky;
+      position: fixed;
       top: 0;
-      z-index: var(--z-sticky);
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(10, 10, 10, 0.95);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
       transition: all var(--transition-base);
     }
 
@@ -197,14 +199,11 @@
     /* Logo */
     .logo {
       font-family: var(--font-secondary);
-      font-size: var(--font-size-xl);
-      font-weight: 800;
+      font-size: 28px;
+      font-weight: 700;
       text-decoration: none;
-      letter-spacing: -0.02em;
-      background: var(--gradient-primary);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      letter-spacing: -0.5px;
+      color: var(--accent);
       transition: transform var(--transition-base);
       flex-shrink: 0;
     }
@@ -653,8 +652,8 @@
     .container {
       max-width: 1200px;
       margin: 0 auto;
-      padding: var(--spacing-3xl) var(--spacing-xl);
-      min-height: calc(100vh - 72px);
+      padding: 120px var(--spacing-xl) var(--spacing-3xl);
+      min-height: 100vh;
     }
 
     .page-header {
@@ -664,18 +663,19 @@
 
     .page-header h1 {
       font-family: var(--font-secondary);
-      font-size: var(--font-size-4xl);
-      font-weight: 800;
-      color: var(--color-navy);
+      font-size: 52px;
+      font-weight: 700;
+      color: var(--text-primary);
       margin-bottom: var(--spacing-md);
-      letter-spacing: -0.02em;
+      letter-spacing: -1px;
     }
 
     .page-header p {
-      font-size: var(--font-size-lg);
-      color: var(--color-gray);
+      font-size: 18px;
+      color: var(--text-secondary);
       max-width: 600px;
       margin: 0 auto;
+      line-height: 1.6;
     }
 
     /* ===== PRICING SECTION ===== */
@@ -715,13 +715,13 @@
 
     .pricing-card:hover {
       transform: translateY(-8px);
-      border-color: var(--color-accent);
-      box-shadow: var(--shadow-xl);
+      border-color: var(--accent);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
     }
 
     .pricing-card.featured {
-      border-color: var(--color-accent);
-      box-shadow: var(--shadow-lg);
+      border-color: var(--accent);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
     }
 
     .card-badge {
@@ -729,8 +729,8 @@
       top: -12px;
       left: 50%;
       transform: translateX(-50%);
-      background: var(--gradient-primary);
-      color: var(--color-white);
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-secondary) 100%);
+      color: white;
       padding: var(--spacing-xs) var(--spacing-lg);
       border-radius: var(--radius-full);
       font-size: var(--font-size-xs);
