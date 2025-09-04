@@ -54,7 +54,7 @@
 
     /* Left Sidebar with Character List */
     .sidebar {
-      width: 280px;
+      width: 220px;
       background: var(--bg-secondary);
       border-right: 1px solid var(--border);
       display: flex;
@@ -63,32 +63,34 @@
     }
 
     .sidebar-header {
-      padding: 20px;
+      padding: 16px;
       border-bottom: 1px solid var(--border);
     }
 
     .sidebar-logo {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
       text-decoration: none;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
 
     .logo-icon {
-      width: 40px;
-      height: 40px;
+      width: 28px;
+      height: 28px;
       background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
-      border-radius: var(--radius-md);
+      border-radius: var(--radius-sm);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 20px;
+      font-size: 14px;
+      font-weight: 700;
+      color: white;
     }
 
     .logo-text {
       font-family: 'Playfair Display', serif;
-      font-size: 24px;
+      font-size: 18px;
       font-weight: 700;
       color: var(--text-primary);
     }
@@ -119,8 +121,8 @@
     }
 
     .section-header {
-      padding: 20px 20px 10px;
-      font-size: 12px;
+      padding: 16px 16px 8px;
+      font-size: 10px;
       font-weight: 700;
       color: var(--text-muted);
       text-transform: uppercase;
@@ -128,15 +130,15 @@
     }
 
     .chat-list {
-      padding: 0 10px;
+      padding: 0 8px;
     }
 
     .chat-item {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 12px 10px;
-      margin-bottom: 4px;
+      gap: 8px;
+      padding: 8px 8px;
+      margin-bottom: 2px;
       border-radius: var(--radius-sm);
       cursor: pointer;
       transition: all 0.2s ease;
@@ -147,8 +149,8 @@
     }
 
     .chat-avatar {
-      width: 40px;
-      height: 40px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       overflow: hidden;
       flex-shrink: 0;
@@ -169,12 +171,12 @@
       font-weight: 600;
       color: var(--text-primary);
       margin-bottom: 2px;
-      font-size: 14px;
+      font-size: 12px;
     }
 
     .chat-preview {
       color: var(--text-secondary);
-      font-size: 12px;
+      font-size: 10px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -627,7 +629,7 @@
     @media (max-width: 768px) {
       .sidebar {
         position: fixed;
-        left: -280px;
+        left: -220px;
         z-index: 100;
         transition: left 0.3s ease;
       }
@@ -676,7 +678,7 @@
       <!-- Sidebar Header -->
       <div class="sidebar-header">
         <a href="/" class="sidebar-logo">
-          <div class="logo-icon">💖</div>
+          <div class="logo-icon">S</div>
           <span class="logo-text">Selira</span>
         </a>
         <button class="new-chat-btn" onclick="showCharacterSearch()">
@@ -862,10 +864,12 @@
     };
 
     let chatHistory = [];
+    let loadedCharacters = [];
 
     // Initialize chat interface
     document.addEventListener('DOMContentLoaded', function() {
       console.log('🚀 Selira AI Chat interface loading...');
+      loadCharactersFromDatabase();
       initializeChatInterface();
       setupEventListeners();
     });
@@ -1032,6 +1036,126 @@
 
     window.addEventListener('resize', handleResize);
     document.addEventListener('DOMContentLoaded', handleResize);
+
+    // ===== DATABASE INTEGRATION =====
+    async function loadCharactersFromDatabase() {
+      try {
+        console.log('📡 Loading characters from database...');
+        const response = await fetch('/.netlify/functions/characters');
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.success && data.characters) {
+          const characters = data.characters.slice(0, 10).map(char => ({
+            id: char.Character_ID || char.Name,
+            name: char.Name || 'Unknown',
+            title: char.Character_Title || '',
+            description: char.Character_Description || '',
+            avatar: char.Avatar_URL,
+            category: char.Category || 'Other',
+            slug: char.Slug || char.Name?.toLowerCase().replace(/\s+/g, '-'),
+            creator: char.Nickname || 'Selira',
+            tags: (char.Tags || '').split(',').filter(Boolean).slice(0, 11) // Get real tags
+          }));
+          
+          // Store characters globally
+          loadedCharacters = characters;
+          
+          // Update character search modal with real characters
+          updateCharacterSearchModal(characters);
+          
+          // Update recent chats sidebar with some characters
+          updateRecentChatsSidebar(characters.slice(0, 5));
+          
+          console.log('✅ Loaded characters from database:', characters.length);
+        }
+      } catch (error) {
+        console.error('❌ Error loading characters:', error);
+        // Keep demo data as fallback
+      }
+    }
+
+    function updateCharacterSearchModal(characters) {
+      const characterGrid = document.getElementById('characterGrid');
+      if (!characterGrid) return;
+      
+      characterGrid.innerHTML = characters.map(character => `
+        <div class="character-option" onclick="selectCharacter('${character.slug}', '${character.name}', '${character.avatar}', '${character.title}')">
+          <div class="character-option-avatar">
+            <img src="${character.avatar}" alt="${character.name}" onerror="this.style.display='none'">
+          </div>
+          <div class="character-option-name">${character.name}</div>
+          <div class="character-option-role">${character.title}</div>
+        </div>
+      `).join('');
+    }
+
+    function updateRecentChatsSidebar(characters) {
+      const chatList = document.getElementById('chatList');
+      if (!chatList) return;
+      
+      chatList.innerHTML = characters.map((character, index) => `
+        <div class="chat-item ${index === 0 ? 'active' : ''}" onclick="selectCharacterFromSidebar('${character.slug}', '${character.name}', '${character.avatar}', '${character.title}')">
+          <div class="chat-avatar">
+            <img src="${character.avatar}" alt="${character.name}" onerror="this.style.display='none'">
+          </div>
+          <div class="chat-info">
+            <div class="chat-name">${character.name}</div>
+            <div class="chat-preview">${character.description.substring(0, 30)}...</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function selectCharacterFromSidebar(slug, name, avatar, title) {
+      // Find character in loaded data for real tags and creator
+      const character = loadedCharacters.find(c => c.slug === slug) || {};
+      
+      // Update current character
+      currentCharacter = {
+        name: name,
+        slug: slug,
+        avatar: avatar,
+        creator: '@' + (character.creator || 'Selira'),
+        description: character.description || 'Start a conversation with ' + name,
+        chats: Math.floor(Math.random() * 100) + 'K',
+        rating: (Math.random() * 2 + 3).toFixed(1),
+        tags: character.tags || ['Fantasy', 'Adventure', 'Hero']
+      };
+      
+      updateCharacterDisplay();
+      
+      // Update active chat item
+      document.querySelectorAll('.chat-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      event.currentTarget.classList.add('active');
+      
+      // Clear chat and start fresh
+      clearChat();
+    }
+
+    function selectCharacter(slug, name, avatar, title) {
+      // Update character and close modal
+      currentCharacter = {
+        name: name,
+        slug: slug,
+        avatar: avatar,
+        creator: '@Selira',
+        description: 'Start a conversation with ' + name,
+        chats: Math.floor(Math.random() * 100) + 'K',
+        rating: (Math.random() * 2 + 3).toFixed(1),
+        tags: ['Fantasy', 'Adventure', 'Hero']
+      };
+      
+      updateCharacterDisplay();
+      closeCharacterSearch();
+      clearChat();
+    }
 
     console.log('✅ Selira AI Chat interface initialized with modern design');
   </script>
