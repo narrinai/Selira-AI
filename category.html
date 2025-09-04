@@ -2398,12 +2398,12 @@ Please be thorough and include important details from our conversations.`;
           </div>
 
           <!-- Step Content -->
-          <div class="step-container" style="max-width: 1000px; margin: 0 auto;">
+          <div class="step-container" style="width: 100%; max-width: none; padding: 0 20px;">
             
             <!-- Step 1: Style Selection -->
             <div class="creation-step active" id="step1">
-              <h3 style="color: var(--text-primary); margin-bottom: 30px; font-size: 24px; font-weight: 700; text-align: center;">Choose Art Style</h3>
-              <div class="style-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 40px;">
+              <h3 style="color: var(--text-primary); margin-bottom: 40px; font-size: 28px; font-weight: 700; text-align: center;">Choose Art Style</h3>
+              <div class="style-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 80px; max-width: 1200px; margin: 0 auto 30px auto;">
                 <div class="style-option" data-style="realistic" onclick="selectStyleStep('realistic')" style="background: var(--bg-secondary); border: 2px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
                   <div style="height: 300px; background: url('https://images.unsplash.com/photo-1494790108755-2616b2e4c5d0?w=400') center/cover;"></div>
                   <div style="padding: 20px; text-align: center;">
@@ -2423,60 +2423,60 @@ Please be thorough and include important details from our conversations.`;
 
             <!-- Step 2: Ethnicity Selection -->
             <div class="creation-step" id="step2" style="display: none;">
-              <h3 style="color: var(--text-primary); margin-bottom: 30px; font-size: 24px; font-weight: 700; text-align: center;">Choose Ethnicity</h3>
-              <div class="ethnicity-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 40px;">
+              <h3 style="color: var(--text-primary); margin-bottom: 40px; font-size: 28px; font-weight: 700; text-align: center;">Choose Ethnicity</h3>
+              <div class="ethnicity-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; max-width: 1200px; margin: 0 auto 30px auto;">
                 <div class="ethnicity-option" data-ethnicity="white" onclick="selectEthnicityStep('white')" style="background: var(--bg-secondary); border: 2px solid var(--accent); border-radius: var(--radius-lg); overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
-                  <div style="height: 200px; background: url('https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=300') center/cover;"></div>
-                  <div style="padding: 16px; text-align: center;">
-                    <h4 style="color: var(--text-primary); font-size: 16px; font-weight: 600;">White/Caucasian</h4>
+                  <div style="height: 160px; background: url('https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=300') center/cover;"></div>
+                  <div style="padding: 12px; text-align: center;">
+                    <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">White/Caucasian</h4>
                   </div>
                 </div>
                 <div class="ethnicity-option" data-ethnicity="black" onclick="selectEthnicityStep('black')" style="background: var(--bg-secondary); border: 2px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
-                  <div style="height: 200px; background: url('https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=300') center/cover;"></div>
-                  <div style="padding: 16px; text-align: center;">
-                    <h4 style="color: var(--text-primary); font-size: 16px; font-weight: 600;">Black/African</h4>
+                  <div style="height: 160px; background: url('https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=300') center/cover;"></div>
+                  <div style="padding: 12px; text-align: center;">
+                    <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Black/African</h4>
                   </div>
                 </div>
                 <div class="ethnicity-option" data-ethnicity="indian" onclick="selectEthnicityStep('indian')" style="background: var(--bg-secondary); border: 2px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
-                  <div style="height: 200px; background: url('https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=300') center/cover;"></div>
-                  <div style="padding: 16px; text-align: center;">
-                    <h4 style="color: var(--text-primary); font-size: 16px; font-weight: 600;">Indian/South Asian</h4>
+                  <div style="height: 160px; background: url('https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=300') center/cover;"></div>
+                  <div style="padding: 12px; text-align: center;">
+                    <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Indian/South Asian</h4>
                   </div>
                 </div>
                 <div class="ethnicity-option" data-ethnicity="middle-east" onclick="selectEthnicityStep('middle-east')" style="background: var(--bg-secondary); border: 2px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
-                  <div style="height: 200px; background: url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300') center/cover;"></div>
-                  <div style="padding: 16px; text-align: center;">
-                    <h4 style="color: var(--text-primary); font-size: 16px; font-weight: 600;">Middle Eastern</h4>
+                  <div style="height: 160px; background: url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300') center/cover;"></div>
+                  <div style="padding: 12px; text-align: center;">
+                    <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Middle Eastern</h4>
                   </div>
                 </div>
                 <div class="ethnicity-option" data-ethnicity="hispanic" onclick="selectEthnicityStep('hispanic')" style="background: var(--bg-secondary); border: 2px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
-                  <div style="height: 200px; background: url('https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=300') center/cover;"></div>
-                  <div style="padding: 16px; text-align: center;">
-                    <h4 style="color: var(--text-primary); font-size: 16px; font-weight: 600;">Hispanic/Latino</h4>
+                  <div style="height: 160px; background: url('https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=300') center/cover;"></div>
+                  <div style="padding: 12px; text-align: center;">
+                    <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Hispanic/Latino</h4>
                   </div>
                 </div>
                 <div class="ethnicity-option" data-ethnicity="korean" onclick="selectEthnicityStep('korean')" style="background: var(--bg-secondary); border: 2px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
-                  <div style="height: 200px; background: url('https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=300') center/cover;"></div>
-                  <div style="padding: 16px; text-align: center;">
-                    <h4 style="color: var(--text-primary); font-size: 16px; font-weight: 600;">Korean</h4>
+                  <div style="height: 160px; background: url('https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=300') center/cover;"></div>
+                  <div style="padding: 12px; text-align: center;">
+                    <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Korean</h4>
                   </div>
                 </div>
                 <div class="ethnicity-option" data-ethnicity="chinese" onclick="selectEthnicityStep('chinese')" style="background: var(--bg-secondary); border: 2px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
-                  <div style="height: 200px; background: url('https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=300') center/cover;"></div>
-                  <div style="padding: 16px; text-align: center;">
-                    <h4 style="color: var(--text-primary); font-size: 16px; font-weight: 600;">Chinese</h4>
+                  <div style="height: 160px; background: url('https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=300') center/cover;"></div>
+                  <div style="padding: 12px; text-align: center;">
+                    <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Chinese</h4>
                   </div>
                 </div>
                 <div class="ethnicity-option" data-ethnicity="japanese" onclick="selectEthnicityStep('japanese')" style="background: var(--bg-secondary); border: 2px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
-                  <div style="height: 200px; background: url('https://images.unsplash.com/photo-1569913486515-b74bf7751574?w=300') center/cover;"></div>
-                  <div style="padding: 16px; text-align: center;">
-                    <h4 style="color: var(--text-primary); font-size: 16px; font-weight: 600;">Japanese</h4>
+                  <div style="height: 160px; background: url('https://images.unsplash.com/photo-1569913486515-b74bf7751574?w=300') center/cover;"></div>
+                  <div style="padding: 12px; text-align: center;">
+                    <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Japanese</h4>
                   </div>
                 </div>
                 <div class="ethnicity-option" data-ethnicity="vietnamese" onclick="selectEthnicityStep('vietnamese')" style="background: var(--bg-secondary); border: 2px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
-                  <div style="height: 200px; background: url('https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=300') center/cover;"></div>
-                  <div style="padding: 16px; text-align: center;">
-                    <h4 style="color: var(--text-primary); font-size: 16px; font-weight: 600;">Vietnamese</h4>
+                  <div style="height: 160px; background: url('https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=300') center/cover;"></div>
+                  <div style="padding: 12px; text-align: center;">
+                    <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Vietnamese</h4>
                   </div>
                 </div>
               </div>
@@ -2484,42 +2484,42 @@ Please be thorough and include important details from our conversations.`;
 
             <!-- Step 3: Hair Style -->
             <div class="creation-step" id="step3" style="display: none;">
-              <h3 style="color: var(--text-primary); margin-bottom: 30px; font-size: 24px; font-weight: 700; text-align: center;">Choose Hair Style</h3>
-              <div class="hair-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 40px;">
+              <h3 style="color: var(--text-primary); margin-bottom: 40px; font-size: 28px; font-weight: 700; text-align: center;">Choose Hair Style</h3>
+              <div class="hair-grid" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 20px; max-width: 1400px; margin: 0 auto 30px auto;">
                 <div class="hair-option" data-hair="pixie" onclick="selectHairStep('pixie')" style="background: var(--bg-secondary); border: 2px solid var(--accent); border-radius: var(--radius-lg); overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
-                  <div style="height: 200px; background: url('https://images.unsplash.com/photo-1494790108755-2616b2e4c5d0?w=300') center/cover;"></div>
-                  <div style="padding: 16px; text-align: center;">
-                    <h4 style="color: var(--text-primary); font-size: 16px; font-weight: 600;">Pixie</h4>
+                  <div style="height: 140px; background: url('https://images.unsplash.com/photo-1494790108755-2616b2e4c5d0?w=250') center/cover;"></div>
+                  <div style="padding: 12px; text-align: center;">
+                    <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Pixie</h4>
                   </div>
                 </div>
                 <div class="hair-option" data-hair="short" onclick="selectHairStep('short')" style="background: var(--bg-secondary); border: 2px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
-                  <div style="height: 200px; background: url('https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=300') center/cover;"></div>
-                  <div style="padding: 16px; text-align: center;">
-                    <h4 style="color: var(--text-primary); font-size: 16px; font-weight: 600;">Short</h4>
+                  <div style="height: 140px; background: url('https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=250') center/cover;"></div>
+                  <div style="padding: 12px; text-align: center;">
+                    <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Short</h4>
                   </div>
                 </div>
                 <div class="hair-option" data-hair="long" onclick="selectHairStep('long')" style="background: var(--bg-secondary); border: 2px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
-                  <div style="height: 200px; background: url('https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=300') center/cover;"></div>
-                  <div style="padding: 16px; text-align: center;">
-                    <h4 style="color: var(--text-primary); font-size: 16px; font-weight: 600;">Long</h4>
+                  <div style="height: 140px; background: url('https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=250') center/cover;"></div>
+                  <div style="padding: 12px; text-align: center;">
+                    <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Long</h4>
                   </div>
                 </div>
                 <div class="hair-option" data-hair="wavy" onclick="selectHairStep('wavy')" style="background: var(--bg-secondary); border: 2px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
-                  <div style="height: 200px; background: url('https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?w=300') center/cover;"></div>
-                  <div style="padding: 16px; text-align: center;">
-                    <h4 style="color: var(--text-primary); font-size: 16px; font-weight: 600;">Wavy</h4>
+                  <div style="height: 140px; background: url('https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?w=250') center/cover;"></div>
+                  <div style="padding: 12px; text-align: center;">
+                    <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Wavy</h4>
                   </div>
                 </div>
                 <div class="hair-option" data-hair="curly" onclick="selectHairStep('curly')" style="background: var(--bg-secondary); border: 2px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
-                  <div style="height: 200px; background: url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300') center/cover;"></div>
-                  <div style="padding: 16px; text-align: center;">
-                    <h4 style="color: var(--text-primary); font-size: 16px; font-weight: 600;">Curly</h4>
+                  <div style="height: 140px; background: url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=250') center/cover;"></div>
+                  <div style="padding: 12px; text-align: center;">
+                    <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Curly</h4>
                   </div>
                 </div>
                 <div class="hair-option" data-hair="braided" onclick="selectHairStep('braided')" style="background: var(--bg-secondary); border: 2px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
-                  <div style="height: 200px; background: url('https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?w=300') center/cover;"></div>
-                  <div style="padding: 16px; text-align: center;">
-                    <h4 style="color: var(--text-primary); font-size: 16px; font-weight: 600;">Braided</h4>
+                  <div style="height: 140px; background: url('https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?w=250') center/cover;"></div>
+                  <div style="padding: 12px; text-align: center;">
+                    <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Braided</h4>
                   </div>
                 </div>
               </div>
@@ -2560,18 +2560,16 @@ Please be thorough and include important details from our conversations.`;
             </div>
 
             <!-- Navigation -->
-            <div class="step-navigation" style="display: flex; justify-content: space-between; margin-top: 40px;">
+            <div class="step-navigation" style="display: flex; justify-content: center; margin-top: 30px; gap: 20px;">
               <button id="backBtn" onclick="previousStep()" style="background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border); padding: 12px 24px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; display: none;">
                 ← Back
               </button>
-              <div style="margin-left: auto;">
-                <button id="continueBtn" onclick="nextStep()" style="background: var(--accent); color: white; border: none; padding: 12px 32px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; font-size: 16px; min-width: 120px;">
-                  Continue
-                </button>
-                <button id="createFinalBtn" onclick="createCharacter()" style="background: var(--success); color: white; border: none; padding: 12px 32px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; font-size: 16px; display: none;">
-                  🎭 Create Companion
-                </button>
-              </div>
+              <button id="continueBtn" onclick="nextStep()" style="background: var(--accent); color: white; border: none; padding: 12px 40px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; font-size: 16px; min-width: 140px;">
+                Continue
+              </button>
+              <button id="createFinalBtn" onclick="createCharacter()" style="background: var(--success); color: white; border: none; padding: 12px 40px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; font-size: 16px; display: none;">
+                🎭 Create Companion
+              </button>
             </div>
           </div>
         </div>
