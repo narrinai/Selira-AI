@@ -841,7 +841,7 @@
           <span class="nav-item-icon">🏠</span>
           <span>Home</span>
         </a>
-        <a href="/category.html" class="nav-item active">
+        <a href="#" class="nav-item active" onclick="showCharacters(); return false;">
           <span class="nav-item-icon">👥</span>
           <span>Characters</span>
         </a>
@@ -1036,7 +1036,8 @@
             creator: char.Created_by || 'Selira',
             tags: (char.Tags || '').split(',').filter(Boolean),
             chats: Math.floor(Math.random() * 100) + 'K',
-            rating: (Math.random() * 2 + 3).toFixed(1)
+            rating: (Math.random() * 2 + 3).toFixed(1),
+            character_url: char.Character_URL || `/chat?char=${char.Slug || char.Name?.toLowerCase().replace(/\s+/g, '-')}`
           }));
           
           console.log('✅ Loaded characters:', allCharacters.length);
@@ -1319,7 +1320,14 @@
 
     function openCharacter(slug) {
       console.log('Opening character:', slug);
-      window.location.href = `/chat.html?char=${slug}`;
+      
+      // Find character to get the correct URL
+      const character = allCharacters.find(c => c.slug === slug);
+      if (character && character.character_url) {
+        window.location.href = character.character_url;
+      } else {
+        window.location.href = `/chat?char=${slug}`;
+      }
     }
 
     function toggleFavorite(characterId) {
@@ -1543,7 +1551,11 @@
     }
 
     function showPricing() {
+      // Hide filter section and show pricing
+      const filterSection = document.querySelector('.filter-section');
       const grid = document.getElementById('charactersGrid');
+      
+      filterSection.style.display = 'none';
       
       grid.innerHTML = `
         <div class="pricing-section">
@@ -1578,7 +1590,7 @@
                 </li>
               </ul>
               
-              <a href="/chat.html" class="plan-button">Start Free Trial</a>
+              <a href="/chat" class="plan-button">Start Free Trial</a>
             </div>
 
             <!-- Engage Plan -->
@@ -1619,7 +1631,7 @@
                 </li>
               </ul>
               
-              <a href="/profile.html" class="plan-button">Choose Engage</a>
+              <a href="/profile" class="plan-button">Choose Engage</a>
             </div>
 
             <!-- Immerse Plan -->
@@ -1668,11 +1680,14 @@
                 </li>
               </ul>
               
-              <a href="/profile.html" class="plan-button">Choose Immerse</a>
+              <a href="/profile" class="plan-button">Choose Immerse</a>
             </div>
           </div>
         </div>
       `;
+      
+      // Update URL without page reload
+      history.pushState({section: 'pricing'}, 'Pricing - Selira AI', '/pricing');
       
       // Update active nav item
       document.querySelectorAll('.nav-item').forEach(item => {
@@ -1681,6 +1696,27 @@
           item.classList.add('active');
         }
       });
+    }
+
+    function showCharacters() {
+      // Show filter section and hide pricing
+      const filterSection = document.querySelector('.filter-section');
+      filterSection.style.display = 'block';
+      
+      // Update URL
+      history.pushState({section: 'characters'}, 'Characters - Selira AI', '/category');
+      
+      // Update active nav item
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.textContent.includes('Characters')) {
+          item.classList.add('active');
+        }
+      });
+      
+      // Show characters
+      currentTab = 'discover';
+      renderCharacters();
     }
 
     // ===== INFINITE SCROLL =====
