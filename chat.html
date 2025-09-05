@@ -1058,7 +1058,8 @@
             category: char.Category || 'Other',
             slug: char.Slug || (char.Name ? char.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'unknown'),
             creator: char.Nickname || 'Selira',
-            tags: Array.isArray(char.Tags) ? char.Tags.slice(0, 11) : (char.Tags || '').toString().split(',').filter(Boolean).slice(0, 11) // Get real tags
+            tags: Array.isArray(char.Tags) ? char.Tags.slice(0, 11) : (char.Tags || '').toString().split(',').filter(Boolean).slice(0, 11), // Get real tags
+            character_url: char.Character_URL ? char.Character_URL.replace('narrin.ai', 'selira.ai') : null
           }));
           
           // Store characters globally
@@ -1194,10 +1195,46 @@
         // Find the character and switch to it without updating URL again
         const character = loadedCharacters.find(c => c.slug === event.state.character);
         if (character) {
-          selectCharacterFromSidebar(character.slug, character.name, character.avatar, character.title);
+          // Switch character but skip URL update to avoid loop
+          selectCharacterFromSidebarSilent(character.slug, character.name, character.avatar, character.title);
         }
       }
     });
+
+    // Switch character without updating URL (for browser navigation)
+    function selectCharacterFromSidebarSilent(slug, name, avatar, title) {
+      // Find character in loaded data for real tags and creator
+      const character = loadedCharacters.find(c => c.slug === slug) || {};
+      
+      // Update current character
+      currentCharacter = {
+        name: name,
+        slug: slug,
+        avatar: avatar,
+        creator: '@' + (character.creator || 'Selira'),
+        description: character.description || 'Start a conversation with ' + name,
+        chats: Math.floor(Math.random() * 100) + 'K',
+        rating: (Math.random() * 2 + 3).toFixed(1),
+        tags: character.tags || ['Fantasy', 'Adventure', 'Hero']
+      };
+      
+      updateCharacterDisplay();
+      
+      // Update active chat item
+      document.querySelectorAll('.chat-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      // Find and highlight the correct chat item
+      const chatItems = document.querySelectorAll('.chat-item');
+      chatItems.forEach(item => {
+        if (item.onclick && item.onclick.toString().includes(slug)) {
+          item.classList.add('active');
+        }
+      });
+      
+      // Clear chat and start fresh (but don't update URL)
+      clearChat();
+    }
 
     console.log('✅ Selira AI Chat interface initialized with modern design');
   </script>
