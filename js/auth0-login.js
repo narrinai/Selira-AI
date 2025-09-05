@@ -86,12 +86,51 @@ class Auth0LoginModal {
       this.user = await this.auth0Client.getUser();
       this.updateAuthState(true);
       
-      // Clean URL
-      window.history.replaceState({}, document.title, window.location.pathname);
+      // Sync user to Airtable
+      await this.syncUserToAirtable(this.user);
+      
+      // Get return URL or default to category page
+      const returnUrl = localStorage.getItem('auth_return_url') || '/category';
+      localStorage.removeItem('auth_return_url');
       
       console.log('✅ Authentication callback handled:', this.user.email);
+      console.log('🔄 Redirecting to:', returnUrl);
+      
+      // Redirect to original page or category
+      window.location.href = returnUrl;
+      
     } catch (error) {
       console.error('❌ Callback handling failed:', error);
+      // Fallback redirect on error
+      window.location.href = '/category';
+    }
+  }
+
+  async syncUserToAirtable(user) {
+    try {
+      console.log('🔄 Syncing user to Airtable:', user.email);
+      
+      const response = await fetch('/.netlify/functions/auth0-user-sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          auth0_id: user.sub,
+          email: user.email,
+          name: user.name || user.nickname || user.email.split('@')[0],
+          picture: user.picture
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error(`User sync failed: ${response.status}`);
+      }
+      
+      const result = await response.json();
+      console.log('✅ User synced to Airtable successfully:', result);
+      
+    } catch (error) {
+      console.error('❌ User sync to Airtable failed:', error);
+      // Don't block login flow even if sync fails
     }
   }
 
@@ -225,6 +264,10 @@ class Auth0LoginModal {
     try {
       console.log(`🔄 Logging in with ${provider}...`);
       
+      // Store current page URL for redirect after login
+      const returnUrl = window.location.pathname + window.location.search;
+      localStorage.setItem('auth_return_url', returnUrl);
+      
       // Map provider names to Auth0 connection names
       const connectionMap = {
         'google': 'google-oauth2',
@@ -258,6 +301,10 @@ class Auth0LoginModal {
         submitBtn.querySelector('.btn-text').textContent = 'Sign In';
         this.setLoading(false);
       } else {
+        // Store current page URL for redirect after login
+        const returnUrl = window.location.pathname + window.location.search;
+        localStorage.setItem('auth_return_url', returnUrl);
+        
         // Second step - authenticate
         await this.auth0Client.loginWithRedirect({
           authorizationParams: {
