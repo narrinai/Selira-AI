@@ -216,7 +216,7 @@ exports.handler = async (event, context) => {
         Tags: fields.Tags || [],
         Slug: fields.Slug || '',
         Avatar_URL: avatarUrl,
-        Character_URL: fields.Character_URL ? fields.Character_URL.replace('narrin.ai', 'selira.ai') : `https://selira.ai/chat.html?char=${fields.Slug || 'unknown'}`,
+        Character_URL: fields.Character_URL ? fields.Character_URL.replace('narrin.ai', 'selira.ai') : `https://selira.ai/chat.html?char=${fields.Slug || (fields.Name ? fields.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'unknown')}`,
         Character_ID: fields.Character_ID || record.id,
         voice_id: fields.voice_id || null,
         voice_type: fields.voice_type || 'none',

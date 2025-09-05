@@ -1056,9 +1056,9 @@
             description: char.Character_Description || '',
             avatar: char.Avatar_URL ? char.Avatar_URL.replace('narrin.ai', 'selira.ai') : null,
             category: char.Category || 'Other',
-            slug: char.Slug || char.Name?.toLowerCase().replace(/\s+/g, '-'),
+            slug: char.Slug || (char.Name ? char.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'unknown'),
             creator: char.Nickname || 'Selira',
-            tags: (char.Tags || '').split(',').filter(Boolean).slice(0, 11) // Get real tags
+            tags: Array.isArray(char.Tags) ? char.Tags.slice(0, 11) : (char.Tags || '').toString().split(',').filter(Boolean).slice(0, 11) // Get real tags
           }));
           
           // Store characters globally
