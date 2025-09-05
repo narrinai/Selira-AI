@@ -872,6 +872,26 @@
     let chatHistory = [];
     let loadedCharacters = [];
 
+    // Avatar URL correction function
+    function fixAvatarUrl(avatarUrl) {
+      if (!avatarUrl || avatarUrl === '/avatars/placeholder.webp') {
+        return '/avatars/placeholder.webp';
+      }
+      
+      // Fix common naming mismatches
+      const avatarMappings = {
+        '/avatars/emily.webp': '/avatars/emily-1754251534076.webp',
+        '/avatars/aiko.webp': '/avatars/aiko-1754252402847.webp'
+      };
+      
+      if (avatarMappings[avatarUrl]) {
+        console.log(`🔧 Fixed avatar URL: ${avatarUrl} -> ${avatarMappings[avatarUrl]}`);
+        return avatarMappings[avatarUrl];
+      }
+      
+      return avatarUrl;
+    }
+
     // Initialize chat interface
     document.addEventListener('DOMContentLoaded', function() {
       console.log('🚀 Selira AI Chat interface loading...');
@@ -925,8 +945,9 @@
       document.getElementById('currentCharacterStatus').textContent = currentCharacter.creator;
       const headerImage = document.getElementById('characterImage');
       if (currentCharacter.avatar && currentCharacter.avatar !== '/avatars/placeholder.webp') {
-        headerImage.src = currentCharacter.avatar;
+        headerImage.src = fixAvatarUrl(currentCharacter.avatar);
         headerImage.style.display = 'block';
+        headerImage.onerror = function() { this.style.display = 'none'; };
       } else {
         headerImage.style.display = 'none';
       }
@@ -937,8 +958,9 @@
       document.getElementById('sidebarCharacterDescription').textContent = currentCharacter.description;
       const sidebarImage = document.getElementById('sidebarCharacterImage');
       if (currentCharacter.avatar && currentCharacter.avatar !== '/avatars/placeholder.webp') {
-        sidebarImage.src = currentCharacter.avatar;
+        sidebarImage.src = fixAvatarUrl(currentCharacter.avatar);
         sidebarImage.style.display = 'block';
+        sidebarImage.onerror = function() { this.style.display = 'none'; };
       } else {
         sidebarImage.style.display = 'none';
       }
@@ -1001,7 +1023,7 @@
       if (sender === 'ai') {
         messageDiv.innerHTML = `
           <div class="message-avatar">
-            <img src="${currentCharacter.avatar}" alt="${currentCharacter.name}">
+            <img src="${fixAvatarUrl(currentCharacter.avatar)}" alt="${currentCharacter.name}" onerror="this.style.display='none'">
           </div>
           <div class="message-content">${content}</div>
         `;
@@ -1107,7 +1129,7 @@
       characterGrid.innerHTML = characters.map(character => `
         <div class="character-option" onclick="selectCharacter('${character.slug}', '${character.name}', '${character.avatar}', '${character.title}')">
           <div class="character-option-avatar">
-            <img src="${character.avatar}" alt="${character.name}" onerror="this.style.display='none'">
+            <img src="${fixAvatarUrl(character.avatar)}" alt="${character.name}" onerror="this.style.display='none'">
           </div>
           <div class="character-option-name">${character.name}</div>
           <div class="character-option-role">${character.title}</div>
@@ -1122,7 +1144,7 @@
       chatList.innerHTML = characters.map((character, index) => `
         <div class="chat-item ${index === 0 ? 'active' : ''}" onclick="selectCharacterFromSidebar('${character.slug}', '${character.name}', '${character.avatar}', '${character.title}')">
           <div class="chat-avatar">
-            <img src="${character.avatar}" alt="${character.name}" onerror="this.style.display='none'">
+            <img src="${fixAvatarUrl(character.avatar)}" alt="${character.name}" onerror="this.style.display='none'">
           </div>
           <div class="chat-info">
             <div class="chat-name">${character.name}</div>
