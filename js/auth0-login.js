@@ -233,7 +233,7 @@ class Auth0LoginModal {
 
           <!-- Terms Notice -->
           <div class="auth0-terms">
-            By continuing, you agree to our 
+            By ${isSignup ? 'signing up' : 'continuing'}, you agree to our 
             <a href="/terms-and-conditions.html" target="_blank">Terms of Service</a> 
             and 
             <a href="/privacy-policy.html" target="_blank">Privacy Policy</a>
@@ -623,9 +623,11 @@ const AUTH0_STYLES = `
   background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
   border: 1px solid #d4a574;
   border-radius: 20px;
-  padding: 40px;
+  padding: 24px;
   width: 90%;
-  max-width: 400px;
+  max-width: 380px;
+  max-height: 90vh;
+  overflow-y: auto;
   position: relative;
   transform: scale(0.9) translateY(20px);
   transition: all 0.3s ease;
@@ -661,25 +663,25 @@ const AUTH0_STYLES = `
 
 .auth0-modal-header {
   text-align: center;
-  margin-bottom: 32px;
+  margin-bottom: 20px;
 }
 
 .auth0-logo {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 8px;
+  margin-bottom: 12px;
 }
 
 .logo-icon {
-  font-size: 48px;
+  font-size: 36px;
   color: #d4a574;
 }
 
 .auth0-logo h2 {
   color: #ffffff;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
   margin: 0;
   font-family: 'Playfair Display', serif;
@@ -695,21 +697,21 @@ const AUTH0_STYLES = `
 .auth0-social-buttons {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 24px;
+  gap: 8px;
+  margin-bottom: 16px;
 }
 
 .auth0-social-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  padding: 14px 20px;
+  gap: 10px;
+  padding: 10px 16px;
   border: 1px solid #333333;
-  border-radius: 12px;
+  border-radius: 10px;
   background: rgba(255, 255, 255, 0.05);
   color: #ffffff;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -756,9 +758,9 @@ const AUTH0_STYLES = `
 .auth0-divider {
   display: flex;
   align-items: center;
-  margin: 24px 0;
+  margin: 16px 0;
   color: #64748b;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .auth0-divider::before,
@@ -776,7 +778,7 @@ const AUTH0_STYLES = `
 .auth0-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
 }
 
 .auth0-input-group {
@@ -785,10 +787,10 @@ const AUTH0_STYLES = `
 
 .auth0-input {
   width: 100%;
-  padding: 14px 16px;
+  padding: 12px 14px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid #333333;
-  border-radius: 12px;
+  border-radius: 10px;
   color: #ffffff;
   font-size: 14px;
   transition: all 0.2s ease;
@@ -808,8 +810,8 @@ const AUTH0_STYLES = `
 .auth0-submit-btn {
   background: #d4a574;
   border: none;
-  border-radius: 12px;
-  padding: 14px;
+  border-radius: 10px;
+  padding: 12px;
   color: white;
   font-size: 14px;
   font-weight: 600;
@@ -818,7 +820,7 @@ const AUTH0_STYLES = `
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 48px;
+  min-height: 44px;
 }
 
 .auth0-submit-btn:hover:not(:disabled) {
@@ -853,11 +855,11 @@ const AUTH0_STYLES = `
 }
 
 .auth0-terms {
-  font-size: 12px;
+  font-size: 11px;
   color: #b3b3b3;
   text-align: center;
-  line-height: 1.5;
-  margin-top: 20px;
+  line-height: 1.4;
+  margin-top: 12px;
 }
 
 .auth0-terms a {
@@ -883,19 +885,60 @@ const AUTH0_STYLES = `
 /* Mobile responsive */
 @media (max-width: 480px) {
   .auth0-modal-content {
-    padding: 24px;
-    margin: 20px;
-    width: calc(100% - 40px);
+    padding: 20px;
+    margin: 16px;
+    width: calc(100% - 32px);
+    max-height: 95vh;
+  }
+  
+  .auth0-logo h2 {
+    font-size: 18px;
+  }
+  
+  .logo-icon {
+    font-size: 32px;
   }
   
   .auth0-social-btn {
-    padding: 12px 16px;
-    font-size: 13px;
+    padding: 10px 14px;
+    font-size: 12px;
+    gap: 8px;
   }
   
   .social-icon {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
+  }
+  
+  .auth0-input {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+  
+  .auth0-submit-btn {
+    padding: 10px;
+    font-size: 13px;
+    min-height: 40px;
+  }
+}
+
+@media (max-height: 700px) {
+  .auth0-modal-content {
+    padding: 16px;
+    max-height: 95vh;
+  }
+  
+  .auth0-modal-header {
+    margin-bottom: 16px;
+  }
+  
+  .auth0-social-buttons {
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  
+  .auth0-divider {
+    margin: 12px 0;
   }
 }
 </style>

@@ -1793,7 +1793,7 @@
     function showProfile() {
       // Hide filter section and tabs, show profile using full content area
       const filterSection = document.querySelector('.filter-section');
-      const tabsSection = document.querySelector('.tabs-nav');
+      const tabsSection = document.querySelector('.tab-nav');
       const grid = document.getElementById('charactersGrid');
       
       filterSection.style.display = 'none';
@@ -1802,46 +1802,49 @@
       grid.innerHTML = `
         <div class="profile-section" style="
           width: 100%; 
-          padding: 40px; 
-          min-height: calc(100vh - 120px);
+          padding: 15px; 
+          height: calc(100vh - 80px);
           background: var(--bg-primary);
+          display: flex;
+          flex-direction: column;
         ">
-          <!-- Header -->
-          <div class="profile-header" style="text-align: center; margin-bottom: 40px;">
-            <h2 style="font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 700; color: var(--text-primary); margin-bottom: 12px;">My Profile</h2>
-            <p style="color: var(--text-secondary); font-size: 16px;">Manage your account, subscription, and preferences</p>
+          <!-- Compact Header -->
+          <div class="profile-header" style="text-align: center; margin-bottom: 15px; flex-shrink: 0;">
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">My Profile</h2>
+            <p style="color: var(--text-secondary); font-size: 13px;">Manage your account and preferences</p>
           </div>
 
-          <!-- Main Content Grid -->
+          <!-- Compact 3-Column Grid -->
           <div class="profile-grid" style="
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 40px;
+            gap: 15px;
+            flex: 1;
+            align-items: start;
           ">
             <!-- Profile Information -->
             <div class="profile-info-card" style="
               background: var(--bg-secondary);
               border: 1px solid var(--border);
-              border-radius: 16px;
-              padding: 32px;
+              border-radius: 12px;
+              padding: 16px;
             ">
-              <h3 style="color: var(--text-primary); margin-bottom: 24px; font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 12px;">
-                <span style="font-size: 24px;">👤</span> Profile Information
+              <h3 style="color: var(--text-primary); margin-bottom: 12px; font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 16px;">👤</span> Profile Information
               </h3>
-              <div style="display: flex; flex-direction: column; gap: 20px;">
+              <div style="display: flex; flex-direction: column; gap: 12px;">
                 <div>
-                  <label style="display: block; color: var(--text-secondary); font-size: 14px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Email Address</label>
-                  <div id="userEmail" style="color: var(--text-primary); font-weight: 600; font-size: 16px; padding: 16px; background: var(--bg-tertiary); border-radius: 8px; border: 1px solid var(--border);">user@example.com</div>
+                  <label style="display: block; color: var(--text-secondary); font-size: 11px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Email Address</label>
+                  <div id="userEmail" style="color: var(--text-primary); font-weight: 600; font-size: 13px; padding: 10px; background: var(--bg-tertiary); border-radius: 6px; border: 1px solid var(--border);">user@example.com</div>
                 </div>
                 <div>
-                  <label style="display: block; color: var(--text-secondary); font-size: 14px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Member Since</label>
-                  <div id="memberSince" style="color: var(--text-primary); font-weight: 600; font-size: 16px; padding: 16px; background: var(--bg-tertiary); border-radius: 8px; border: 1px solid var(--border);">September 4, 2025</div>
+                  <label style="display: block; color: var(--text-secondary); font-size: 11px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Member Since</label>
+                  <div id="memberSince" style="color: var(--text-primary); font-weight: 600; font-size: 13px; padding: 10px; background: var(--bg-tertiary); border-radius: 6px; border: 1px solid var(--border);">September 4, 2025</div>
                 </div>
                 <div>
-                  <label style="display: block; color: var(--text-secondary); font-size: 14px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Account Status</label>
-                  <div id="accountStatus" style="color: var(--success); font-weight: 600; font-size: 16px; padding: 16px; background: var(--bg-tertiary); border-radius: 8px; border: 1px solid var(--border); display: flex; align-items: center; gap: 10px;">
-                    <span style="width: 12px; height: 12px; background: var(--success); border-radius: 50%; display: inline-block;"></span>
+                  <label style="display: block; color: var(--text-secondary); font-size: 11px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Account Status</label>
+                  <div id="accountStatus" style="color: var(--success); font-weight: 600; font-size: 13px; padding: 10px; background: var(--bg-tertiary); border-radius: 6px; border: 1px solid var(--border); display: flex; align-items: center; gap: 6px;">
+                    <span style="width: 8px; height: 8px; background: var(--success); border-radius: 50%; display: inline-block;"></span>
                     Active
                   </div>
                 </div>
@@ -1852,41 +1855,41 @@
             <div class="plan-card" style="
               background: linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(139, 92, 246, 0.1));
               border: 1px solid rgba(236, 72, 153, 0.3);
-              border-radius: 16px;
-              padding: 32px;
+              border-radius: 12px;
+              padding: 16px;
               position: relative;
             ">
-              <h3 style="color: var(--text-primary); margin-bottom: 24px; font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 12px;">
-                <span style="font-size: 24px;">💎</span> Current Plan
+              <h3 style="color: var(--text-primary); margin-bottom: 12px; font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 16px;">💎</span> Current Plan
               </h3>
               <div style="
                 background: linear-gradient(135deg, #ec4899, #8b5cf6);
                 color: white;
-                padding: 32px;
-                border-radius: 12px;
+                padding: 16px;
+                border-radius: 8px;
                 text-align: center;
-                margin-bottom: 24px;
+                margin-bottom: 12px;
               ">
-                <div style="font-size: 24px; font-weight: 700; margin-bottom: 8px;" id="currentPlanName">Free Trial</div>
-                <div style="font-size: 18px; opacity: 0.9;" id="currentPlanPrice">$0/month</div>
+                <div style="font-size: 16px; font-weight: 700; margin-bottom: 4px;" id="currentPlanName">Free Trial</div>
+                <div style="font-size: 13px; opacity: 0.9;" id="currentPlanPrice">$0/month</div>
               </div>
               
-              <div style="margin-bottom: 32px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                  <span style="color: var(--text-secondary); font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Daily Usage</span>
-                  <span style="color: var(--text-primary); font-size: 16px; font-weight: 600;" id="currentUsage">3/5 messages</span>
+              <div style="margin-bottom: 16px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                  <span style="color: var(--text-secondary); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Daily Usage</span>
+                  <span style="color: var(--text-primary); font-size: 12px; font-weight: 600;" id="currentUsage">3/5 messages</span>
                 </div>
                 <div class="usage-bar" style="
                   background: rgba(236, 72, 153, 0.2);
-                  border-radius: 10px;
-                  height: 12px;
+                  border-radius: 6px;
+                  height: 8px;
                   position: relative;
                   overflow: hidden;
                 ">
                   <div id="usageBarFill" style="
                     background: linear-gradient(90deg, #ec4899, #8b5cf6);
                     height: 100%;
-                    border-radius: 10px;
+                    border-radius: 6px;
                     width: 60%;
                     transition: width 0.3s ease;
                   "></div>
@@ -1898,11 +1901,11 @@
                 background: linear-gradient(135deg, #ec4899, #8b5cf6);
                 color: white;
                 border: none;
-                padding: 18px 24px;
-                border-radius: 12px;
+                padding: 12px 16px;
+                border-radius: 8px;
                 font-weight: 700;
                 cursor: pointer;
-                font-size: 16px;
+                font-size: 13px;
                 transition: all 0.2s ease;
               " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(236, 72, 153, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
                 Upgrade Plan
@@ -1912,23 +1915,23 @@
             <div class="email-settings-card" style="
               background: var(--bg-secondary);
               border: 1px solid var(--border);
-              border-radius: 16px;
-              padding: 32px;
+              border-radius: 12px;
+              padding: 16px;
             ">
-              <h3 style="color: var(--text-primary); margin-bottom: 24px; font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 12px;">
-                <span style="font-size: 24px;">📧</span> Email Settings
+              <h3 style="color: var(--text-primary); margin-bottom: 12px; font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 16px;">📧</span> Email Settings
               </h3>
-              <div style="display: flex; flex-direction: column; gap: 16px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px; background: var(--bg-tertiary); border-radius: 12px; border: 1px solid var(--border);">
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: var(--bg-tertiary); border-radius: 8px; border: 1px solid var(--border);">
                   <div>
-                    <div style="color: var(--text-primary); font-weight: 600; font-size: 14px; margin-bottom: 2px;">Notifications</div>
-                    <div style="color: var(--text-secondary); font-size: 12px;">Feature updates</div>
+                    <div style="color: var(--text-primary); font-weight: 600; font-size: 12px; margin-bottom: 1px;">Notifications</div>
+                    <div style="color: var(--text-secondary); font-size: 10px;">Feature updates</div>
                   </div>
                   <div class="toggle-switch" onclick="toggleSetting('notifications')" style="
-                    width: 40px;
-                    height: 22px;
+                    width: 32px;
+                    height: 18px;
                     background: var(--accent);
-                    border-radius: 11px;
+                    border-radius: 9px;
                     position: relative;
                     cursor: pointer;
                   ">
@@ -1936,8 +1939,8 @@
                       position: absolute;
                       top: 1px;
                       right: 1px;
-                      width: 20px;
-                      height: 20px;
+                      width: 16px;
+                      height: 16px;
                       background: white;
                       border-radius: 50%;
                       transition: all 0.2s ease;
@@ -1945,16 +1948,16 @@
                   </div>
                 </div>
                 
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px; background: var(--bg-tertiary); border-radius: 12px; border: 1px solid var(--border);">
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: var(--bg-tertiary); border-radius: 8px; border: 1px solid var(--border);">
                   <div>
-                    <div style="color: var(--text-primary); font-weight: 600; font-size: 14px; margin-bottom: 2px;">Marketing</div>
-                    <div style="color: var(--text-secondary); font-size: 12px;">Promotions</div>
+                    <div style="color: var(--text-primary); font-weight: 600; font-size: 12px; margin-bottom: 1px;">Marketing</div>
+                    <div style="color: var(--text-secondary); font-size: 10px;">Promotions</div>
                   </div>
                   <div class="toggle-switch off" onclick="toggleSetting('marketing')" style="
-                    width: 40px;
-                    height: 22px;
+                    width: 32px;
+                    height: 18px;
                     background: var(--border);
-                    border-radius: 11px;
+                    border-radius: 9px;
                     position: relative;
                     cursor: pointer;
                   ">
@@ -1962,8 +1965,8 @@
                       position: absolute;
                       top: 1px;
                       left: 1px;
-                      width: 20px;
-                      height: 20px;
+                      width: 16px;
+                      height: 16px;
                       background: white;
                       border-radius: 50%;
                       transition: all 0.2s ease;
@@ -1971,16 +1974,16 @@
                   </div>
                 </div>
 
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px; background: var(--bg-tertiary); border-radius: 12px; border: 1px solid var(--border);">
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: var(--bg-tertiary); border-radius: 8px; border: 1px solid var(--border);">
                   <div>
-                    <div style="color: var(--text-primary); font-weight: 600; font-size: 14px; margin-bottom: 2px;">Weekly Reports</div>
-                    <div style="color: var(--text-secondary); font-size: 12px;">Usage summary</div>
+                    <div style="color: var(--text-primary); font-weight: 600; font-size: 12px; margin-bottom: 1px;">Weekly Reports</div>
+                    <div style="color: var(--text-secondary); font-size: 10px;">Usage summary</div>
                   </div>
                   <div class="toggle-switch" onclick="toggleSetting('weekly')" style="
-                    width: 40px;
-                    height: 22px;
+                    width: 32px;
+                    height: 18px;
                     background: var(--accent);
-                    border-radius: 11px;
+                    border-radius: 9px;
                     position: relative;
                     cursor: pointer;
                   ">
@@ -1988,8 +1991,8 @@
                       position: absolute;
                       top: 1px;
                       right: 1px;
-                      width: 20px;
-                      height: 20px;
+                      width: 16px;
+                      height: 16px;
                       background: white;
                       border-radius: 50%;
                       transition: all 0.2s ease;
@@ -2009,11 +2012,11 @@
             }
             @media (max-width: 768px) {
               .profile-section {
-                padding: 20px !important;
+                padding: 15px !important;
               }
               .profile-grid {
                 grid-template-columns: 1fr !important;
-                gap: 20px !important;
+                gap: 15px !important;
               }
             }
           </style>
@@ -2035,7 +2038,7 @@
     function showPricing() {
       // Hide filter section and tabs, show pricing using full content area
       const filterSection = document.querySelector('.filter-section');
-      const tabsSection = document.querySelector('.tabs-nav');
+      const tabsSection = document.querySelector('.tab-nav');
       const grid = document.getElementById('charactersGrid');
       
       filterSection.style.display = 'none';
@@ -2184,7 +2187,7 @@
     function showCharacters() {
       // Show filter section and tabs
       const filterSection = document.querySelector('.filter-section');
-      const tabsSection = document.querySelector('.tabs-nav');
+      const tabsSection = document.querySelector('.tab-nav');
       filterSection.style.display = 'block';
       if (tabsSection) tabsSection.style.display = 'block';
       
