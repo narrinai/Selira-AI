@@ -1086,10 +1086,38 @@
           typingIndicator.remove();
         }
         
-        // Add error message
-        addMessage("I'm having trouble connecting right now. Please try again in a moment!", 'ai');
+        // Add error message with more detail
+        addMessage(`I'm having trouble connecting right now (${error.message}). Please try again in a moment!`, 'ai');
       }
     }
+
+    // Debug function to test OpenRouter API
+    async function testOpenRouterAPI() {
+      try {
+        const response = await fetch('/.netlify/functions/openrouter-chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            message: 'Hello, how are you?',
+            character_slug: 'test',
+            auth0_id: 'test-user',
+            model: 'mistralai/mistral-small'
+          })
+        });
+        
+        console.log('🧪 Test API Response Status:', response.status);
+        const data = await response.text();
+        console.log('🧪 Test API Response:', data);
+        
+      } catch (error) {
+        console.error('🧪 Test API Error:', error);
+      }
+    }
+
+    // Auto-test API on load (remove later)
+    setTimeout(testOpenRouterAPI, 2000);
 
     function addMessage(content, sender) {
       const messagesContainer = document.getElementById('chatMessages');
@@ -1414,13 +1442,15 @@
       const characterSlug = urlParams.get('char');
       
       console.log('🔍 Checking URL for character:', characterSlug);
+      console.log('📦 Available characters:', loadedCharacters.map(c => ({ name: c.name, slug: c.slug })));
       
       if (characterSlug && loadedCharacters.length > 0) {
-        // Find the character in our loaded data
+        // Find the character in our loaded data with better matching
         const character = loadedCharacters.find(c => 
           c.slug === characterSlug || 
           c.slug === characterSlug.toLowerCase() ||
-          c.name.toLowerCase() === characterSlug.toLowerCase()
+          c.name.toLowerCase().replace(/[^a-z0-9]/g, '-') === characterSlug.toLowerCase() ||
+          c.name.toLowerCase() === characterSlug.replace(/-/g, ' ').toLowerCase()
         );
         
         if (character) {
@@ -1428,10 +1458,14 @@
           // Load this character without updating URL (we're already on the right URL)
           selectCharacterFromSidebarSilent(character.slug, character.name, fixAvatarUrl(character.avatar), character.title);
         } else {
-          console.log('❌ Character not found in loaded data:', characterSlug);
+          console.log('❌ Character not found in loaded data, searching API for:', characterSlug);
+          console.log('🔍 Available slugs:', loadedCharacters.map(c => c.slug));
           // Try to find by fetching specific character from API
           loadSpecificCharacterFromAPI(characterSlug);
         }
+      } else if (characterSlug && loadedCharacters.length === 0) {
+        console.log('⏳ Characters not loaded yet, retrying in 1 second...');
+        setTimeout(loadCharacterFromURL, 1000);
       }
     }
 
@@ -1461,11 +1495,22 @@
             console.log('✅ Loaded specific character:', processedChar.name);
             selectCharacterFromSidebarSilent(processedChar.slug, processedChar.name, fixAvatarUrl(processedChar.avatar), processedChar.title);
           } else {
-            console.log('❌ Character not found in API:', characterSlug);
+            console.log('❌ Character not found in API, using fallback character');
+            loadFallbackCharacter();
           }
         }
       } catch (error) {
         console.error('❌ Error loading specific character:', error);
+        loadFallbackCharacter();
+      }
+    }
+
+    // Load fallback character if specific one not found
+    function loadFallbackCharacter() {
+      if (loadedCharacters.length > 0) {
+        const fallbackChar = loadedCharacters[0];
+        console.log('🔄 Loading fallback character:', fallbackChar.name);
+        selectCharacterFromSidebarSilent(fallbackChar.slug, fallbackChar.name, fixAvatarUrl(fallbackChar.avatar), fallbackChar.title);
       }
     }
 
