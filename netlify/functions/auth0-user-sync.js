@@ -27,16 +27,55 @@ exports.handler = async (event, context) => {
   const SELIRA_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA || process.env.AIRTABLE_BASE_ID;
   const SELIRA_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA || process.env.AIRTABLE_TOKEN;
 
+  console.log('🔍 Environment check:', {
+    hasBaseId: !!SELIRA_BASE_ID,
+    hasToken: !!SELIRA_TOKEN,
+    baseId: SELIRA_BASE_ID ? SELIRA_BASE_ID.substring(0, 8) + '...' : 'missing'
+  });
+
   if (!SELIRA_BASE_ID || !SELIRA_TOKEN) {
+    console.error('❌ Missing Airtable configuration:', {
+      SELIRA_BASE_ID: !!SELIRA_BASE_ID,
+      SELIRA_TOKEN: !!SELIRA_TOKEN
+    });
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ error: 'Missing Airtable configuration' })
+      body: JSON.stringify({ 
+        error: 'Missing Airtable configuration',
+        details: {
+          baseId: !!SELIRA_BASE_ID,
+          token: !!SELIRA_TOKEN
+        }
+      })
     };
   }
 
   try {
-    const { auth0_id, email, name, picture } = JSON.parse(event.body);
+    console.log('📥 Received sync request:', { body: event.body });
+    
+    let userData;
+    try {
+      userData = JSON.parse(event.body);
+    } catch (parseError) {
+      console.error('❌ JSON parse error:', parseError);
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({ error: 'Invalid JSON in request body' })
+      };
+    }
+    
+    const { auth0_id, email, name, picture } = userData;
+    
+    if (!auth0_id || !email) {
+      console.error('❌ Missing required fields:', { auth0_id: !!auth0_id, email: !!email });
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({ error: 'Missing required fields: auth0_id or email' })
+      };
+    }
     
     console.log('🔄 Auth0 user sync:', { auth0_id, email, name });
 
@@ -51,7 +90,13 @@ exports.handler = async (event, context) => {
     });
 
     if (!existingResponse.ok) {
-      throw new Error(`Failed to check existing user: ${existingResponse.status}`);
+      const errorText = await existingResponse.text();
+      console.error('❌ Airtable check user error:', {
+        status: existingResponse.status,
+        statusText: existingResponse.statusText,
+        error: errorText
+      });
+      throw new Error(`Failed to check existing user: ${existingResponse.status} - ${errorText}`);
     }
 
     const existingData = await existingResponse.json();
@@ -110,7 +155,13 @@ exports.handler = async (event, context) => {
       });
 
       if (!createResponse.ok) {
-        throw new Error(`Failed to create user: ${createResponse.status}`);
+        const errorText = await createResponse.text();
+        console.error('❌ Airtable create user error:', {
+          status: createResponse.status,
+          statusText: createResponse.statusText,
+          error: errorText
+        });
+        throw new Error(`Failed to create user: ${createResponse.status} - ${errorText}`);
       }
 
       const newUser = await createResponse.json();
