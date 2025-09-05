@@ -1137,12 +1137,12 @@
       const user = JSON.parse(localStorage.getItem('user') || '{}');
       if (!user.email) {
         // Redirect to login
-        window.location.href = '/profile.html?redirect=' + encodeURIComponent('/chat.html?character=' + characterSlug);
+        window.location.href = '/profile.html?redirect=' + encodeURIComponent('https://selira.ai/chat.html?char=' + characterSlug);
         return;
       }
 
-      // Navigate to chat
-      window.location.href = `/chat.html?character=${encodeURIComponent(characterSlug)}`;
+      // Navigate to chat with correct URL format
+      window.location.href = `https://selira.ai/chat.html?char=${encodeURIComponent(characterSlug)}`;
     }
 
     // Toggle favorite
@@ -1300,7 +1300,7 @@
               <span>⭐ ${character.rating}</span>
             </div>
             <div class="carousel-actions">
-              <a href="/chat?char=${character.slug}" class="carousel-chat-btn">
+              <a href="https://selira.ai/chat.html?char=${character.slug}" class="carousel-chat-btn">
                 💬 Chat
               </a>
               <button class="carousel-heart-btn">
