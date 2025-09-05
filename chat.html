@@ -933,8 +933,7 @@
       loadCharactersFromDatabase();
       initializeChatInterface();
       setupEventListeners();
-      // Load character from URL parameter after characters are loaded
-      setTimeout(loadCharacterFromURL, 500);
+      // Character from URL will be loaded after characters are fetched in loadCharactersFromDatabase
     });
 
     function initializeChatInterface() {
@@ -1225,6 +1224,12 @@
           updateRecentChatsSidebar(characters.slice(0, 5));
           
           console.log('✅ Loaded characters from database:', characters.length);
+          
+          // Now load character from URL parameter
+          loadCharacterFromURL();
+          
+          // Also try to load a specific character directly from URL if available
+          loadCharacterDirectly();
         }
       } catch (error) {
         console.error('❌ Error loading characters:', error);
@@ -1512,6 +1517,66 @@
         console.log('🔄 Loading fallback character:', fallbackChar.name);
         selectCharacterFromSidebarSilent(fallbackChar.slug, fallbackChar.name, fixAvatarUrl(fallbackChar.avatar), fallbackChar.title);
       }
+    }
+
+    // Direct character loading from URL - simpler approach
+    function loadCharacterDirectly() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const characterSlug = urlParams.get('char');
+      
+      if (!characterSlug || loadedCharacters.length === 0) return;
+      
+      console.log('🎯 Direct loading character:', characterSlug);
+      
+      // Try exact match first
+      let character = loadedCharacters.find(c => c.slug === characterSlug);
+      
+      // If not found, try case insensitive
+      if (!character) {
+        character = loadedCharacters.find(c => c.slug && c.slug.toLowerCase() === characterSlug.toLowerCase());
+      }
+      
+      // If still not found, try name-based matching
+      if (!character) {
+        character = loadedCharacters.find(c => 
+          c.name && c.name.toLowerCase().replace(/[^a-z0-9]/g, '-') === characterSlug.toLowerCase()
+        );
+      }
+      
+      if (character) {
+        console.log('✅ Direct match found:', character.name);
+        // Force update the character
+        currentCharacter = {
+          name: character.name,
+          slug: character.slug,
+          avatar: fixAvatarUrl(character.avatar),
+          creator: '@' + (character.creator || 'Selira'),
+          description: character.description || 'An amazing character ready for conversation.',
+          chats: character.chats || Math.floor(Math.random() * 100) + 'K',
+          rating: character.rating || (Math.random() * 2 + 3).toFixed(1),
+          tags: character.tags || ['Character']
+        };
+        
+        updateCharacterDisplay();
+        highlightCorrectChatItem(character.slug);
+        clearChat();
+      } else {
+        console.log('❌ No direct match, using first character');
+        loadFallbackCharacter();
+      }
+    }
+    
+    // Highlight correct chat item in sidebar
+    function highlightCorrectChatItem(targetSlug) {
+      document.querySelectorAll('.chat-item').forEach(item => {
+        item.classList.remove('active');
+        // Check if this item matches the target character
+        const onclick = item.getAttribute('onclick') || '';
+        if (onclick.includes(targetSlug) || onclick.includes(`'${targetSlug}'`)) {
+          item.classList.add('active');
+          console.log('✅ Highlighted chat item for:', targetSlug);
+        }
+      });
     }
 
     console.log('✅ Selira AI Chat interface initialized with modern design');
