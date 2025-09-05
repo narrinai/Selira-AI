@@ -1001,11 +1001,13 @@
         console.log('📂 Available categories:', [...new Set(allCharacters.map(c => c.Category))]);
         
         renderSectionCharacters();
+        updateFeaturedCharacters();
       } catch (error) {
         console.error('❌ Error loading characters:', error);
         // Use mock data as fallback until environment variables are set
         allCharacters = getMockCharacters();
         renderSectionCharacters();
+        updateFeaturedCharacters();
       }
     }
 
@@ -1094,7 +1096,7 @@
       // Use requestAnimationFrame to prevent flickering
       requestAnimationFrame(() => {
         grid.innerHTML = characters.map(character => `
-        <div class="character-card" onclick="startChat('${character.Slug || character.Name}')">
+        <div class="character-card" onclick="startChatWithCharacter('${character.Slug || character.Name}', '${character.Character_URL || ''}')">
           ${character.Avatar_URL ? 
             `<img 
               src="${character.Avatar_URL}" 
@@ -1116,7 +1118,7 @@
               <span>⭐ ${(Math.random() * 2 + 3).toFixed(1)}</span>
             </div>
             <div class="character-actions">
-              <button class="chat-btn" onclick="event.stopPropagation(); startChat('${character.Slug || character.Name}')">
+              <button class="chat-btn" onclick="event.stopPropagation(); startChatWithCharacter('${character.Slug || character.Name}', '${character.Character_URL || ''}')">
                 💬 Chat
               </button>
               <button class="heart-btn" onclick="event.stopPropagation(); toggleFavorite('${character.Slug || character.Name}')">
@@ -1129,20 +1131,28 @@
       });
     }
 
-    // Start chat with character
-    function startChat(characterSlug) {
-      if (!characterSlug) return;
+    // Start chat with character using proper URL
+    function startChatWithCharacter(characterSlug, characterUrl) {
+      if (!characterSlug && !characterUrl) return;
+      
+      // Use the character URL if available, otherwise fallback to slug
+      const chatUrl = characterUrl || `https://selira.ai/chat.html?char=${encodeURIComponent(characterSlug)}`;
       
       // Check authentication
       const user = JSON.parse(localStorage.getItem('user') || '{}');
       if (!user.email) {
         // Redirect to login
-        window.location.href = '/profile.html?redirect=' + encodeURIComponent('https://selira.ai/chat.html?char=' + characterSlug);
+        window.location.href = '/profile.html?redirect=' + encodeURIComponent(chatUrl);
         return;
       }
 
-      // Navigate to chat with correct URL format
-      window.location.href = `https://selira.ai/chat.html?char=${encodeURIComponent(characterSlug)}`;
+      // Navigate to chat
+      window.location.href = chatUrl;
+    }
+
+    // Legacy function for backward compatibility
+    function startChat(characterSlug) {
+      startChatWithCharacter(characterSlug, '');
     }
 
     // Toggle favorite
@@ -1208,87 +1218,64 @@
     // Auto-run debug on load (remove later)
     document.addEventListener('DOMContentLoaded', debugCharacterLoading);
 
-    // Featured characters carousel with Fantasy, Historical, and Anime-Manga characters
-    const featuredCharacters = [
-      {
-        name: 'Aragorn',
-        role: 'Ranger King',
-        avatar: 'https://selira.ai/avatars/aragorn-1750067445.webp?v=1750067445',
-        slug: 'aragorn',
-        description: 'Noble ranger and rightful king. Join him on epic adventures through Middle-earth.',
-        chats: '127K',
-        rating: '4.8'
-      },
-      {
-        name: 'Albert Einstein',
-        role: 'Physicist', 
-        avatar: 'https://selira.ai/avatars/albert-einstein-1750067386.webp?v=1750067386',
-        slug: 'albert-einstein',
-        description: 'Brilliant physicist who revolutionized our understanding of space and time.',
-        chats: '89K',
-        rating: '4.9'
-      },
-      {
-        name: 'Naruto Uzumaki',
-        role: 'Hokage Ninja',
-        avatar: 'https://selira.ai/avatars/naruto-uzumaki-1750068388.webp?v=1750068388',
-        slug: 'naruto-uzumaki',
-        description: 'Energetic ninja with dreams of becoming Hokage. Believe it!',
-        chats: '234K',
-        rating: '4.7'
-      },
-      {
-        name: 'Harry Potter',
-        role: 'The Boy Who Lived',
-        avatar: 'https://selira.ai/avatars/harry-potter-1750067058.webp?v=1750067058',
-        slug: 'harry-potter',
-        description: 'Young wizard who survived the killing curse. Ready for magical adventures.',
-        chats: '178K',
-        rating: '4.6'
-      },
-      {
-        name: 'Nelson Mandela',
-        role: 'Former President',
-        avatar: 'https://selira.ai/avatars/mandela-1752237226.webp?v=1752237226',
-        slug: 'nelson-mandela',
-        description: 'Inspiring leader who fought against apartheid and promoted reconciliation.',
-        chats: '67K',
-        rating: '4.9'
-      },
-      {
-        name: 'Luffy',
-        role: 'Pirate King',
-        avatar: 'https://selira.ai/avatars/luffy-1750067585.webp?v=1750067585',
-        slug: 'monkey-d-luffy',
-        description: 'Rubber-powered pirate captain on a quest to find the One Piece treasure.',
-        chats: '156K',
-        rating: '4.5'
-      },
-      {
-        name: 'Darius Flameheart',
-        role: 'Shadow Assassin',
-        avatar: 'https://selira.ai/avatars/darius-flameheart.webp',
-        slug: 'darius-flameheart',
-        description: 'A brave warrior who has faced countless dangers in defense of the innocent.',
-        chats: '139',
-        rating: '3.9'
-      }
-    ];
+    // Featured characters - will be populated from Airtable
+    let featuredCharacters = [];
 
     let currentCharacterIndex = 0;
     
+    // Update featured characters from Airtable data
+    function updateFeaturedCharacters() {
+      if (allCharacters.length === 0) return;
+      
+      // Select diverse featured characters from different categories
+      const categories = ['Fantasy', 'Historical', 'Anime-Manga'];
+      featuredCharacters = [];
+      
+      categories.forEach(category => {
+        const categoryChars = allCharacters.filter(char => 
+          char.Category && char.Category.toLowerCase() === category.toLowerCase()
+        );
+        if (categoryChars.length > 0) {
+          // Get up to 2 characters from each category
+          featuredCharacters.push(...categoryChars.slice(0, 2));
+        }
+      });
+      
+      // If we don't have enough, fill with any available characters
+      if (featuredCharacters.length < 6) {
+        const remaining = allCharacters.filter(char => !featuredCharacters.includes(char));
+        featuredCharacters.push(...remaining.slice(0, 6 - featuredCharacters.length));
+      }
+      
+      // Transform to carousel format
+      featuredCharacters = featuredCharacters.slice(0, 7).map(char => ({
+        name: char.Name,
+        role: char.Character_Title || char.Category || 'Character',
+        avatar: char.Avatar_URL,
+        slug: char.Slug || (char.Name ? char.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'unknown'),
+        description: char.Character_Description || 'An amazing character ready for conversation.',
+        chats: Math.floor(Math.random() * 200) + 50 + 'K',
+        rating: (Math.random() * 2 + 3).toFixed(1),
+        character_url: char.Character_URL
+      }));
+      
+      console.log('✅ Updated featured characters:', featuredCharacters.length);
+      initializeCharacterCarousel();
+    }
+    
     function initializeCharacterCarousel() {
       const carousel = document.getElementById('characterCarousel');
-      if (!carousel) return;
+      if (!carousel || featuredCharacters.length === 0) return;
       
       // Create character cards
       carousel.innerHTML = featuredCharacters.map((character, index) => `
-        <div class="carousel-card ${index === 0 ? 'active' : ''}" data-index="${index}">
+        <div class="carousel-card ${index === 0 ? 'active' : ''}" data-index="${index}" onclick="startChatWithCharacter('${character.slug}', '${character.character_url || ''}')">
           <img 
             src="${character.avatar}" 
             alt="${character.name}"
             class="carousel-image"
             loading="lazy"
+            onerror="this.style.display='none';"
           >
           <div class="carousel-overlay">${character.role}</div>
           <div class="carousel-content">
@@ -1300,10 +1287,10 @@
               <span>⭐ ${character.rating}</span>
             </div>
             <div class="carousel-actions">
-              <a href="https://selira.ai/chat.html?char=${character.slug}" class="carousel-chat-btn">
+              <a href="${character.character_url || `https://selira.ai/chat.html?char=${character.slug}`}" class="carousel-chat-btn" onclick="event.stopPropagation();">
                 💬 Chat
               </a>
-              <button class="carousel-heart-btn">
+              <button class="carousel-heart-btn" onclick="event.stopPropagation(); toggleFavorite('${character.slug}')">
                 ❤️
               </button>
             </div>
@@ -1330,12 +1317,12 @@
     
     // Initialize character carousel when DOM is ready
     document.addEventListener('DOMContentLoaded', function() {
-      initializeCharacterCarousel();
+      // Carousel will be initialized by updateFeaturedCharacters() after loading characters
       
-      // Start rotating after 2 seconds
+      // Start rotating after 3 seconds to give time for character loading
       setTimeout(() => {
         setInterval(rotateCharacterCarousel, 4000);
-      }, 2000);
+      }, 3000);
     });
   </script>
 </body>
