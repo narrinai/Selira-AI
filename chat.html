@@ -1127,7 +1127,7 @@
       if (!characterGrid) return;
       
       characterGrid.innerHTML = characters.map(character => `
-        <div class="character-option" onclick="selectCharacter('${character.slug}', '${character.name}', '${character.avatar}', '${character.title}')">
+        <div class="character-option" onclick="selectCharacter('${character.slug}', '${character.name}', '${fixAvatarUrl(character.avatar)}', '${character.title}')">
           <div class="character-option-avatar">
             <img src="${fixAvatarUrl(character.avatar)}" alt="${character.name}" onerror="this.style.display='none'">
           </div>
@@ -1142,7 +1142,7 @@
       if (!chatList) return;
       
       chatList.innerHTML = characters.map((character, index) => `
-        <div class="chat-item ${index === 0 ? 'active' : ''}" onclick="selectCharacterFromSidebar('${character.slug}', '${character.name}', '${character.avatar}', '${character.title}')">
+        <div class="chat-item ${index === 0 ? 'active' : ''}" onclick="selectCharacterFromSidebar('${character.slug}', '${character.name}', '${fixAvatarUrl(character.avatar)}', '${character.title}')">
           <div class="chat-avatar">
             <img src="${fixAvatarUrl(character.avatar)}" alt="${character.name}" onerror="this.style.display='none'">
           </div>
@@ -1162,7 +1162,7 @@
       currentCharacter = {
         name: name,
         slug: slug,
-        avatar: avatar,
+        avatar: fixAvatarUrl(avatar),
         creator: '@' + (character.creator || 'Selira'),
         description: character.description || 'Start a conversation with ' + name,
         chats: Math.floor(Math.random() * 100) + 'K',
@@ -1190,7 +1190,7 @@
       currentCharacter = {
         name: name,
         slug: slug,
-        avatar: avatar,
+        avatar: fixAvatarUrl(avatar),
         creator: '@Selira',
         description: 'Start a conversation with ' + name,
         chats: Math.floor(Math.random() * 100) + 'K',
@@ -1239,7 +1239,7 @@
         const character = loadedCharacters.find(c => c.slug === event.state.character);
         if (character) {
           // Switch character but skip URL update to avoid loop
-          selectCharacterFromSidebarSilent(character.slug, character.name, character.avatar, character.title);
+          selectCharacterFromSidebarSilent(character.slug, character.name, fixAvatarUrl(character.avatar), character.title);
         }
       }
     });
@@ -1253,7 +1253,7 @@
       currentCharacter = {
         name: name,
         slug: slug,
-        avatar: avatar,
+        avatar: fixAvatarUrl(avatar),
         creator: '@' + (character.creator || 'Selira'),
         description: character.description || 'Start a conversation with ' + name,
         chats: Math.floor(Math.random() * 100) + 'K',
@@ -1297,7 +1297,7 @@
         if (character) {
           console.log('✅ Found character from URL:', character.name);
           // Load this character without updating URL (we're already on the right URL)
-          selectCharacterFromSidebarSilent(character.slug, character.name, character.avatar, character.title);
+          selectCharacterFromSidebarSilent(character.slug, character.name, fixAvatarUrl(character.avatar), character.title);
         } else {
           console.log('❌ Character not found in loaded data:', characterSlug);
           // Try to find by fetching specific character from API
@@ -1330,7 +1330,7 @@
             };
             
             console.log('✅ Loaded specific character:', processedChar.name);
-            selectCharacterFromSidebarSilent(processedChar.slug, processedChar.name, processedChar.avatar, processedChar.title);
+            selectCharacterFromSidebarSilent(processedChar.slug, processedChar.name, fixAvatarUrl(processedChar.avatar), processedChar.title);
           } else {
             console.log('❌ Character not found in API:', characterSlug);
           }
