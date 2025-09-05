@@ -487,10 +487,16 @@
       cursor: pointer;
       font-weight: 600;
       transition: background 0.2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .chat-btn:hover {
       background: var(--accent-hover);
+      color: white;
+      text-decoration: none;
     }
 
     .heart-btn {
@@ -1101,7 +1107,7 @@
       // Use requestAnimationFrame to prevent flickering
       requestAnimationFrame(() => {
         grid.innerHTML = characters.map(character => `
-        <div class="character-card" onclick="startChatWithCharacter('${character.Slug || character.Name}', '${character.Character_URL || ''}')">
+        <div class="character-card">
           ${character.Avatar_URL ? 
             `<img 
               src="${character.Avatar_URL}" 
@@ -1123,9 +1129,9 @@
               <span>⭐ ${(Math.random() * 2 + 3).toFixed(1)}</span>
             </div>
             <div class="character-actions">
-              <button class="chat-btn" onclick="event.stopPropagation(); startChatWithCharacter('${character.Slug || character.Name}', '${character.Character_URL || ''}')">
+              <a href="${character.Character_URL || `/chat.html?char=${character.Slug || character.Name}`}" class="chat-btn">
                 💬 Chat
-              </button>
+              </a>
               <button class="heart-btn" onclick="event.stopPropagation(); toggleFavorite('${character.Slug || character.Name}')">
                 ❤️
               </button>
@@ -1136,28 +1142,9 @@
       });
     }
 
-    // Start chat with character using proper URL
-    function startChatWithCharacter(characterSlug, characterUrl) {
-      if (!characterSlug && !characterUrl) return;
-      
-      // Use the character URL if available, otherwise fallback to slug
-      const chatUrl = characterUrl || `https://selira.ai/chat.html?char=${encodeURIComponent(characterSlug)}`;
-      
-      // Check authentication
-      const user = JSON.parse(localStorage.getItem('user') || '{}');
-      if (!user.email) {
-        // Redirect to login
-        window.location.href = '/profile.html?redirect=' + encodeURIComponent(chatUrl);
-        return;
-      }
-
-      // Navigate to chat
-      window.location.href = chatUrl;
-    }
-
-    // Legacy function for backward compatibility
+    // Legacy function for backward compatibility (if needed)
     function startChat(characterSlug) {
-      startChatWithCharacter(characterSlug, '');
+      window.location.href = `/chat.html?char=${encodeURIComponent(characterSlug)}`;
     }
 
     // Toggle favorite
@@ -1274,7 +1261,7 @@
       
       // Create character cards
       carousel.innerHTML = featuredCharacters.map((character, index) => `
-        <div class="carousel-card ${index === 0 ? 'active' : ''}" data-index="${index}" onclick="startChatWithCharacter('${character.slug}', '${character.character_url || ''}')">
+        <div class="carousel-card ${index === 0 ? 'active' : ''}" data-index="${index}">
           <img 
             src="${character.avatar}" 
             alt="${character.name}"

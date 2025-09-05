@@ -6,7 +6,7 @@ class Auth0LoginModal {
     this.config = {
       domain: config.domain || 'YOUR_AUTH0_DOMAIN.auth0.com',
       clientId: config.clientId || 'YOUR_AUTH0_CLIENT_ID',
-      redirectUri: config.redirectUri || window.location.origin + '/profile',
+      redirectUri: config.redirectUri || window.location.origin + '/category.html',
       ...config
     };
     
@@ -90,7 +90,7 @@ class Auth0LoginModal {
       await this.syncUserToAirtable(this.user);
       
       // Get return URL or default to category page
-      const returnUrl = localStorage.getItem('auth_return_url') || '/category';
+      const returnUrl = localStorage.getItem('auth_return_url') || '/category.html';
       localStorage.removeItem('auth_return_url');
       
       console.log('✅ Authentication callback handled:', this.user.email);
@@ -102,34 +102,47 @@ class Auth0LoginModal {
     } catch (error) {
       console.error('❌ Callback handling failed:', error);
       // Fallback redirect on error
-      window.location.href = '/category';
+      window.location.href = '/category.html';
     }
   }
 
   async syncUserToAirtable(user) {
     try {
-      console.log('🔄 Syncing user to Airtable:', user.email);
+      console.log('🔄 Syncing user to Airtable:', {
+        email: user.email,
+        auth0_id: user.sub,
+        name: user.name || user.nickname || user.email.split('@')[0]
+      });
+      
+      const syncData = {
+        auth0_id: user.sub,
+        email: user.email,
+        name: user.name || user.nickname || user.email.split('@')[0],
+        picture: user.picture
+      };
+      
+      console.log('📤 Sending sync data:', syncData);
       
       const response = await fetch('/.netlify/functions/auth0-user-sync', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          auth0_id: user.sub,
-          email: user.email,
-          name: user.name || user.nickname || user.email.split('@')[0],
-          picture: user.picture
-        })
+        body: JSON.stringify(syncData)
       });
       
-      if (!response.ok) {
-        throw new Error(`User sync failed: ${response.status}`);
-      }
+      console.log('📥 Sync response status:', response.status);
       
       const result = await response.json();
+      console.log('📥 Sync response data:', result);
+      
+      if (!response.ok) {
+        throw new Error(`User sync failed: ${response.status} - ${result.error || 'Unknown error'}`);
+      }
+      
       console.log('✅ User synced to Airtable successfully:', result);
       
     } catch (error) {
       console.error('❌ User sync to Airtable failed:', error);
+      console.error('❌ Error details:', error.message);
       // Don't block login flow even if sync fails
     }
   }
@@ -971,7 +984,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     seliraAuth = new Auth0LoginModal({
       domain: data.config.domain,
       clientId: data.config.clientId,
-      redirectUri: window.location.origin + '/profile.html'
+      redirectUri: window.location.origin + '/category.html'
     });
     
     console.log('🔐 Selira Auth0 system initialized');
