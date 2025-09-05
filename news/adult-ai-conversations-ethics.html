@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ethics and Safety in Adult AI Conversations | Selira AI</title>
+  <meta name="description" content="Exploring the responsible development of adult AI chat features while maintaining user safety and privacy.">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://selira.ai/news/adult-ai-conversations-ethics">
+  <meta property="og:title" content="Ethics and Safety in Adult AI Conversations">
+  <meta property="og:description" content="Exploring the responsible development of adult AI chat features while maintaining user safety and privacy.">
+  <meta property="og:image" content="https://selira.ai/og-image.jpg">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+  
+  <!-- Import Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ===== CSS CUSTOM PROPERTIES ===== */
+    :root {
+      --color-accent: #d4a574;
+      --color-accent-dark: #c19456;
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #1a1a1a;
+      --bg-tertiary: #2a2a2a;
+      --text-primary: #ffffff;
+      --text-secondary: #b3b3b3;
+      --border: #333333;
+      --gradient-primary: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-dark) 100%);
+      --spacing-xs: 0.5rem;
+      --spacing-sm: 0.75rem;
+      --spacing-md: 1rem;
+      --spacing-lg: 1.5rem;
+      --spacing-xl: 2rem;
+      --spacing-2xl: 3rem;
+      --spacing-3xl: 4rem;
+      --font-primary: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-secondary: 'Playfair Display', serif;
+      --font-size-sm: 0.875rem;
+      --font-size-base: 1rem;
+      --font-size-lg: 1.125rem;
+      --font-size-xl: 1.25rem;
+      --font-size-2xl: 1.5rem;
+      --font-size-4xl: 2.25rem;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --radius-full: 9999px;
+      --transition-base: 300ms ease-out;
+      --touch-target: 44px;
+      --z-sticky: 200;
+      --z-overlay: 300;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-primary);
+      line-height: 1.6;
+      color: var(--text-primary);
+      background: var(--bg-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: var(--z-sticky);
+      background: rgba(10, 10, 10, 0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 var(--spacing-lg);
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 72px;
+      gap: var(--spacing-lg);
+    }
+
+    .logo {
+      font-family: var(--font-secondary);
+      font-size: var(--font-size-xl);
+      font-weight: 700;
+      text-decoration: none;
+      color: var(--color-accent);
+      transition: transform var(--transition-base);
+    }
+
+    .nav-links {
+      display: none;
+      align-items: center;
+      gap: var(--spacing-xl);
+    }
+
+    .nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: var(--font-size-sm);
+      transition: color var(--transition-base);
+    }
+
+    .nav-link:hover, .nav-link.active {
+      color: var(--color-accent);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      padding: var(--spacing-sm) var(--spacing-lg);
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      text-decoration: none;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      min-height: var(--touch-target);
+    }
+
+    .btn-primary {
+      background: var(--gradient-primary);
+      color: white;
+    }
+
+    .mobile-nav-container {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: var(--touch-target);
+      height: var(--touch-target);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: var(--text-secondary);
+      border-radius: var(--radius-md);
+    }
+
+    @media (min-width: 769px) {
+      .nav-links { display: flex; }
+      .mobile-nav-container { display: none; }
+    }
+
+    .main-content {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: var(--spacing-3xl) var(--spacing-lg);
+    }
+
+    .article-header {
+      text-align: center;
+      margin-bottom: var(--spacing-3xl);
+    }
+
+    .article-category {
+      display: inline-block;
+      background: var(--gradient-primary);
+      color: white;
+      padding: var(--spacing-xs) var(--spacing-md);
+      border-radius: var(--radius-full);
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .article-title {
+      font-family: var(--font-secondary);
+      font-size: clamp(var(--font-size-2xl), 5vw, var(--font-size-4xl));
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: var(--spacing-lg);
+      line-height: 1.2;
+    }
+
+    .article-meta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-md);
+      color: var(--text-secondary);
+      font-size: var(--font-size-sm);
+      margin-bottom: var(--spacing-2xl);
+    }
+
+    .featured-image {
+      width: 100%;
+      height: 400px;
+      object-fit: cover;
+      border-radius: var(--radius-lg);
+      margin-bottom: var(--spacing-3xl);
+    }
+
+    .article-content {
+      font-size: var(--font-size-lg);
+      line-height: 1.8;
+      color: var(--text-primary);
+    }
+
+    .article-content h2 {
+      font-family: var(--font-secondary);
+      font-size: var(--font-size-2xl);
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: var(--spacing-3xl) 0 var(--spacing-lg);
+    }
+
+    .article-content p {
+      margin-bottom: var(--spacing-lg);
+      color: var(--text-secondary);
+    }
+
+    .back-to-news {
+      text-align: center;
+      margin-bottom: var(--spacing-2xl);
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      color: var(--color-accent);
+      text-decoration: none;
+      font-weight: 500;
+      padding: var(--spacing-sm) var(--spacing-lg);
+      border-radius: var(--radius-md);
+      border: 2px solid var(--border);
+      transition: all var(--transition-base);
+    }
+
+    .back-link:hover {
+      border-color: var(--color-accent);
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+      .mobile-menu-btn { display: flex; }
+      .nav-links { display: none !important; }
+      .main-content { padding: var(--spacing-xl) var(--spacing-md); }
+      .featured-image { height: 250px; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header Navigation -->
+  <header class="header">
+    <div class="header-container">
+      <div class="header-content">
+        <a href="/" class="logo">Selira AI</a>
+        <nav class="nav-links">
+          <a href="/news" class="nav-link active">News</a>
+          <a href="/pricing" class="nav-link">Pricing</a>
+          <a href="#" class="nav-link">Login</a>
+          <a href="#" class="nav-link">Sign Up</a>
+          <a href="/chat.html" class="btn btn-primary">Start Chatting</a>
+        </nav>
+        <div class="mobile-nav-container">
+          <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="back-to-news">
+      <a href="/news" class="back-link">
+        <span>←</span>
+        <span>Back to News</span>
+      </a>
+    </div>
+
+    <header class="article-header">
+      <div class="article-category">Adult AI</div>
+      <h1 class="article-title">Ethics and Safety in Adult AI Conversations</h1>
+      <div class="article-meta">
+        <span>August 25, 2025</span>
+        <span>•</span>
+        <span>📖 7 min read</span>
+      </div>
+    </header>
+
+    <img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&h=400&fit=crop&crop=center" 
+         alt="AI ethics and safety" 
+         class="featured-image">
+
+    <article class="article-content">
+      <p>The development of adult-oriented AI conversation features raises important questions about ethics, safety, and responsible technology design. As AI companions become more sophisticated, platforms must balance user freedom with safety considerations.</p>
+
+      <p>Selira AI approaches adult conversation features with careful attention to consent, safety measures, and ethical boundaries while respecting user autonomy and privacy.</p>
+
+      <h2>Consent and User Agency</h2>
+
+      <p>All adult conversation features must be explicitly opt-in, with clear communication about what users can expect. This includes age verification, consent mechanisms, and transparent policies about data handling and privacy protection.</p>
+
+      <p>Users should have complete control over their interactions, including the ability to set boundaries, block content, and modify their experience at any time. The technology should empower user choice rather than override it.</p>
+
+      <h2>Privacy and Data Protection</h2>
+
+      <p>Adult conversations require the highest levels of privacy protection and data security. This includes end-to-end encryption, minimal data retention, and strict policies about who can access conversation data.</p>
+
+      <p>Platforms must be transparent about their data practices and give users control over their information, including the ability to delete conversations and personal data completely.</p>
+
+      <h2>Responsible AI Design</h2>
+
+      <p>The AI systems powering adult conversations must be designed with safety guardrails that prevent harmful content while preserving user agency. This requires sophisticated content filtering, context awareness, and ongoing monitoring.</p>
+
+      <p>Responsible development means creating AI that can engage with adult topics in a mature, respectful way while maintaining appropriate boundaries and avoiding potentially harmful scenarios.</p>
+
+      <h2>Building Trust Through Transparency</h2>
+
+      <p>Trust is essential for adult AI conversation platforms. This requires clear policies, transparent AI behavior, and open communication about how the technology works and what safeguards are in place.</p>
+
+      <p>Users should understand exactly what they're engaging with, how their privacy is protected, and what recourse they have if issues arise. Building this trust requires ongoing commitment to ethical practices and user safety.</p>
+
+      <p>The future of adult AI conversations depends on the industry's commitment to responsible development that prioritizes user safety, consent, and privacy while delivering meaningful and satisfying experiences.</p>
+    </article>
+  </main>
+</body>
+</html>

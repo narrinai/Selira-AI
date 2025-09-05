@@ -59,18 +59,27 @@ class Auth0LoginModal {
 
   async checkAuth() {
     try {
+      console.log('🔍 Checking authentication state...', {
+        currentUrl: window.location.href,
+        search: window.location.search,
+        pathname: window.location.pathname
+      });
+      
       const isAuthenticated = await this.auth0Client.isAuthenticated();
+      console.log('🔍 Auth0 isAuthenticated result:', isAuthenticated);
       
       if (isAuthenticated) {
         this.user = await this.auth0Client.getUser();
+        console.log('✅ User is authenticated:', this.user);
         this.updateAuthState(true);
-        console.log('✅ User is authenticated:', this.user.email);
       } else {
         // Check for callback after redirect
         const query = window.location.search;
         if (query.includes('code=') && query.includes('state=')) {
+          console.log('🔄 Processing Auth0 callback...');
           await this.handleCallback();
         } else {
+          console.log('👤 User not authenticated');
           this.updateAuthState(false);
         }
       }
@@ -433,9 +442,13 @@ class Auth0LoginModal {
   }
 
   updateAuthState(isAuthenticated) {
-    // Update nav links
-    const navMenu = document.querySelector('.nav-menu');
+    console.log('🔄 Updating auth state:', { isAuthenticated, user: this.user });
+    
+    // Update nav links - check for different navigation structures
+    const navMenu = document.querySelector('.nav-menu') || document.querySelector('.user-actions');
     const mobileMenu = document.querySelector('.mobile-menu');
+    
+    console.log('🔍 Found navigation elements:', { navMenu: !!navMenu, mobileMenu: !!mobileMenu });
     
     if (isAuthenticated && this.user) {
       // Update desktop nav
@@ -477,7 +490,12 @@ class Auth0LoginModal {
   }
 
   updateDesktopNav(navMenu, isAuthenticated) {
-    if (!navMenu) return;
+    if (!navMenu) {
+      console.log('⚠️ No navMenu found to update');
+      return;
+    }
+    
+    console.log('🔄 Updating desktop nav:', { isAuthenticated, element: navMenu.className });
     
     // Find existing auth buttons or create them
     let loginBtn = navMenu.querySelector('.login-btn');
@@ -485,53 +503,44 @@ class Auth0LoginModal {
     let profileBtn = navMenu.querySelector('.profile-btn');
     
     if (isAuthenticated) {
-      // Remove login/signup, add profile
-      loginBtn?.remove();
-      signupBtn?.remove();
+      console.log('✅ User authenticated - showing profile button');
+      // Update existing login button to profile
+      if (loginBtn) {
+        loginBtn.href = '/profile.html';
+        loginBtn.textContent = this.user.name || 'Profile';
+        loginBtn.className = loginBtn.className.replace('login-btn', 'profile-btn');
+        loginBtn.onclick = null; // Remove modal trigger
+      }
       
-      if (!profileBtn) {
-        profileBtn = document.createElement('a');
-        profileBtn.href = '/profile.html';
-        profileBtn.className = 'nav-link profile-btn';
-        profileBtn.textContent = this.user.name || 'Profile';
-        
-        // Insert before the CTA button
-        const ctaBtn = navMenu.querySelector('.cta-btn');
-        navMenu.insertBefore(profileBtn, ctaBtn);
+      // Hide/remove signup button
+      if (signupBtn) {
+        signupBtn.style.display = 'none';
       }
       
     } else {
-      // Remove profile, add login/signup
-      profileBtn?.remove();
-      
-      if (!loginBtn) {
-        loginBtn = document.createElement('a');
+      console.log('👤 User not authenticated - showing login/signup buttons');
+      // Ensure login button is visible and functional
+      if (loginBtn) {
         loginBtn.href = '#';
-        loginBtn.className = 'nav-link login-btn';
-        loginBtn.textContent = 'Login';
-        loginBtn.addEventListener('click', (e) => {
+        loginBtn.textContent = 'Sign In';
+        loginBtn.className = loginBtn.className.replace('profile-btn', 'login-btn');
+        loginBtn.onclick = (e) => {
           e.preventDefault();
           this.openModal('login');
-        });
-        
-        // Insert before CTA button
-        const ctaBtn = navMenu.querySelector('.cta-btn');
-        navMenu.insertBefore(loginBtn, ctaBtn);
+          return false;
+        };
       }
       
-      if (!signupBtn) {
-        signupBtn = document.createElement('a');
+      // Show signup button
+      if (signupBtn) {
+        signupBtn.style.display = '';
         signupBtn.href = '#';
-        signupBtn.className = 'nav-link signup-btn';
-        signupBtn.textContent = 'Sign Up';
-        signupBtn.addEventListener('click', (e) => {
+        signupBtn.textContent = 'Register';
+        signupBtn.onclick = (e) => {
           e.preventDefault();
           this.openModal('signup');
-        });
-        
-        // Insert before CTA button
-        const ctaBtn = navMenu.querySelector('.cta-btn');
-        navMenu.insertBefore(signupBtn, ctaBtn);
+          return false;
+        };
       }
     }
   }
