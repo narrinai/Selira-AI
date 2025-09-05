@@ -1798,110 +1798,66 @@
       filterSection.style.display = 'none';
       
       grid.innerHTML = `
-        <div class="profile-dashboard" style="
-          width: 100vw; 
-          height: calc(100vh - 80px); 
-          position: fixed;
-          top: 80px;
-          left: 0;
-          background: var(--bg-primary);
-          display: grid;
-          grid-template-columns: 1fr;
-          grid-template-rows: auto 1fr;
-          overflow: hidden;
-          z-index: 50;
+        <div class="profile-section" style="
+          width: 100%; 
+          max-width: none; 
+          padding: 40px; 
+          min-height: calc(100vh - 140px);
+          display: flex;
+          flex-direction: column;
+          gap: 40px;
+          max-width: 1200px;
+          margin: 0 auto;
         ">
-          <!-- Top Header -->
-          <div class="dashboard-header" style="
-            background: var(--bg-secondary);
-            border-bottom: 1px solid var(--border);
-            padding: 20px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            min-height: 80px;
-          ">
-            <div>
-              <h1 style="font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--text-primary); margin: 0 0 4px 0;">My Profile</h1>
-              <p style="color: var(--text-secondary); font-size: 14px; margin: 0;">Manage your account and preferences</p>
-            </div>
-            <div style="display: flex; gap: 12px;">
-              <button onclick="manageAccount()" style="
-                background: var(--accent); 
-                color: white; 
-                border: none; 
-                padding: 10px 20px; 
-                border-radius: 8px; 
-                font-weight: 600; 
-                cursor: pointer;
-                font-size: 14px;
-              ">Account Settings</button>
-              <button onclick="upgradePlan()" style="
-                background: linear-gradient(135deg, #ec4899, #8b5cf6); 
-                color: white; 
-                border: none; 
-                padding: 10px 20px; 
-                border-radius: 8px; 
-                font-weight: 600; 
-                cursor: pointer;
-                font-size: 14px;
-              ">Upgrade Pro</button>
-            </div>
+          <!-- Header -->
+          <div class="profile-header" style="text-align: center;">
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 700; color: var(--text-primary); margin-bottom: 12px;">My Profile</h2>
+            <p style="color: var(--text-secondary); font-size: 16px;">Manage your account, subscription, and preferences</p>
           </div>
 
-          <!-- Simplified Profile Content -->
-          <div class="profile-content" style="
-            padding: 40px;
-            display: flex;
-            justify-content: center;
+          <!-- Main Content Grid -->
+          <div class="profile-grid" style="
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 40px;
-            flex-wrap: wrap;
-            max-width: 1200px;
-            margin: 0 auto;
-            height: 100%;
-            overflow-y: auto;
+            margin-bottom: 40px;
           ">
-            <!-- Profile Information Card -->
+            <!-- Profile Information -->
             <div class="profile-info-card" style="
-              flex: 1;
-              min-width: 350px;
-              max-width: 500px;
               background: var(--bg-secondary);
               border: 1px solid var(--border);
               border-radius: 16px;
               padding: 32px;
-              height: fit-content;
             ">
               <h3 style="color: var(--text-primary); margin-bottom: 24px; font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 12px;">
                 <span style="font-size: 24px;">👤</span> Profile Information
               </h3>
-              <div style="margin-bottom: 20px;">
-                <label style="display: block; color: var(--text-secondary); font-size: 14px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Email Address</label>
-                <div id="userEmail" style="color: var(--text-primary); font-weight: 600; font-size: 16px; padding: 12px; background: var(--bg-tertiary); border-radius: 8px;">user@example.com</div>
-              </div>
-              <div style="margin-bottom: 20px;">
-                <label style="display: block; color: var(--text-secondary); font-size: 14px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Member Since</label>
-                <div id="memberSince" style="color: var(--text-primary); font-weight: 600; font-size: 16px; padding: 12px; background: var(--bg-tertiary); border-radius: 8px;">September 4, 2025</div>
-              </div>
-              <div>
-                <label style="display: block; color: var(--text-secondary); font-size: 14px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Account Status</label>
-                <div id="accountStatus" style="color: var(--success); font-weight: 600; font-size: 16px; padding: 12px; background: var(--bg-tertiary); border-radius: 8px; display: flex; align-items: center; gap: 8px;">
-                  <span style="width: 10px; height: 10px; background: var(--success); border-radius: 50%; display: inline-block;"></span>
-                  Active
+              <div style="display: flex; flex-direction: column; gap: 20px;">
+                <div>
+                  <label style="display: block; color: var(--text-secondary); font-size: 14px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Email Address</label>
+                  <div id="userEmail" style="color: var(--text-primary); font-weight: 600; font-size: 16px; padding: 16px; background: var(--bg-tertiary); border-radius: 8px; border: 1px solid var(--border);">user@example.com</div>
+                </div>
+                <div>
+                  <label style="display: block; color: var(--text-secondary); font-size: 14px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Member Since</label>
+                  <div id="memberSince" style="color: var(--text-primary); font-weight: 600; font-size: 16px; padding: 16px; background: var(--bg-tertiary); border-radius: 8px; border: 1px solid var(--border);">September 4, 2025</div>
+                </div>
+                <div>
+                  <label style="display: block; color: var(--text-secondary); font-size: 14px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Account Status</label>
+                  <div id="accountStatus" style="color: var(--success); font-weight: 600; font-size: 16px; padding: 16px; background: var(--bg-tertiary); border-radius: 8px; border: 1px solid var(--border); display: flex; align-items: center; gap: 10px;">
+                    <span style="width: 12px; height: 12px; background: var(--success); border-radius: 50%; display: inline-block;"></span>
+                    Active
+                  </div>
                 </div>
               </div>
             </div>
 
-            <!-- Current Plan Card -->
+            <!-- Current Plan -->
             <div class="plan-card" style="
-              flex: 1;
-              min-width: 350px;
-              max-width: 500px;
               background: linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(139, 92, 246, 0.1));
               border: 1px solid rgba(236, 72, 153, 0.3);
               border-radius: 16px;
               padding: 32px;
-              height: fit-content;
+              position: relative;
             ">
               <h3 style="color: var(--text-primary); margin-bottom: 24px; font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 12px;">
                 <span style="font-size: 24px;">💎</span> Current Plan
@@ -1909,24 +1865,24 @@
               <div style="
                 background: linear-gradient(135deg, #ec4899, #8b5cf6);
                 color: white;
-                padding: 24px;
+                padding: 32px;
                 border-radius: 12px;
                 text-align: center;
-                margin-bottom: 20px;
+                margin-bottom: 24px;
               ">
-                <div style="font-size: 20px; font-weight: 700; margin-bottom: 4px;" id="currentPlanName">Free Trial</div>
-                <div style="font-size: 16px; opacity: 0.9;" id="currentPlanPrice">$0/month</div>
+                <div style="font-size: 24px; font-weight: 700; margin-bottom: 8px;" id="currentPlanName">Free Trial</div>
+                <div style="font-size: 18px; opacity: 0.9;" id="currentPlanPrice">$0/month</div>
               </div>
               
-              <div style="margin-bottom: 24px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <div style="margin-bottom: 32px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                   <span style="color: var(--text-secondary); font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Daily Usage</span>
-                  <span style="color: var(--text-primary); font-size: 14px; font-weight: 600;" id="currentUsage">3/5 messages</span>
+                  <span style="color: var(--text-primary); font-size: 16px; font-weight: 600;" id="currentUsage">3/5 messages</span>
                 </div>
                 <div class="usage-bar" style="
                   background: rgba(236, 72, 153, 0.2);
                   border-radius: 10px;
-                  height: 10px;
+                  height: 12px;
                   position: relative;
                   overflow: hidden;
                 ">
@@ -1945,148 +1901,132 @@
                 background: linear-gradient(135deg, #ec4899, #8b5cf6);
                 color: white;
                 border: none;
-                padding: 16px 24px;
+                padding: 18px 24px;
                 border-radius: 12px;
                 font-weight: 700;
                 cursor: pointer;
                 font-size: 16px;
-                transition: transform 0.2s ease;
-              " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                transition: all 0.2s ease;
+              " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(236, 72, 153, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
                 Upgrade Plan
               </button>
             </div>
           </div>
 
-          <!-- Email Settings Section -->
-          <div class="email-settings" style="
-            padding: 0 40px 40px;
-            max-width: 1200px;
-            margin: 0 auto;
+          <!-- Email Settings -->
+          <div class="email-settings-card" style="
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
           ">
-            <div class="settings-card" style="
-              background: var(--bg-secondary);
-              border: 1px solid var(--border);
-              border-radius: 16px;
-              padding: 32px;
-            ">
-              <h3 style="color: var(--text-primary); margin-bottom: 24px; font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 12px;">
-                <span style="font-size: 24px;">📧</span> Email Settings
-              </h3>
-              <div style="display: grid; gap: 20px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px; background: var(--bg-tertiary); border-radius: 12px;">
-                  <div>
-                    <div style="color: var(--text-primary); font-weight: 600; font-size: 16px; margin-bottom: 4px;">Email Notifications</div>
-                    <div style="color: var(--text-secondary); font-size: 14px;">Receive updates about new features and companions</div>
-                  </div>
-                  <div class="toggle-switch" onclick="toggleSetting('notifications')" style="
-                    width: 50px;
-                    height: 28px;
-                    background: var(--accent);
-                    border-radius: 14px;
-                    position: relative;
-                    cursor: pointer;
-                    transition: background-color 0.3s ease;
-                  ">
-                    <div style="
-                      position: absolute;
-                      top: 2px;
-                      right: 2px;
-                      width: 24px;
-                      height: 24px;
-                      background: white;
-                      border-radius: 50%;
-                      transition: all 0.2s ease;
-                      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-                    "></div>
-                  </div>
+            <h3 style="color: var(--text-primary); margin-bottom: 24px; font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 12px;">
+              <span style="font-size: 24px;">📧</span> Email Settings
+            </h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px; background: var(--bg-tertiary); border-radius: 12px; border: 1px solid var(--border);">
+                <div>
+                  <div style="color: var(--text-primary); font-weight: 600; font-size: 16px; margin-bottom: 4px;">Email Notifications</div>
+                  <div style="color: var(--text-secondary); font-size: 14px;">Receive updates about new features and companions</div>
                 </div>
-                
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px; background: var(--bg-tertiary); border-radius: 12px;">
-                  <div>
-                    <div style="color: var(--text-primary); font-weight: 600; font-size: 16px; margin-bottom: 4px;">Marketing Emails</div>
-                    <div style="color: var(--text-secondary); font-size: 14px;">Promotional offers and product updates</div>
-                  </div>
-                  <div class="toggle-switch off" onclick="toggleSetting('marketing')" style="
-                    width: 50px;
-                    height: 28px;
-                    background: var(--border);
-                    border-radius: 14px;
-                    position: relative;
-                    cursor: pointer;
-                    transition: background-color 0.3s ease;
-                  ">
-                    <div style="
-                      position: absolute;
-                      top: 2px;
-                      left: 2px;
-                      width: 24px;
-                      height: 24px;
-                      background: white;
-                      border-radius: 50%;
-                      transition: all 0.2s ease;
-                      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-                    "></div>
-                  </div>
+                <div class="toggle-switch" onclick="toggleSetting('notifications')" style="
+                  width: 50px;
+                  height: 28px;
+                  background: var(--accent);
+                  border-radius: 14px;
+                  position: relative;
+                  cursor: pointer;
+                  transition: background-color 0.3s ease;
+                ">
+                  <div style="
+                    position: absolute;
+                    top: 2px;
+                    right: 2px;
+                    width: 24px;
+                    height: 24px;
+                    background: white;
+                    border-radius: 50%;
+                    transition: all 0.2s ease;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                  "></div>
                 </div>
+              </div>
+              
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px; background: var(--bg-tertiary); border-radius: 12px; border: 1px solid var(--border);">
+                <div>
+                  <div style="color: var(--text-primary); font-weight: 600; font-size: 16px; margin-bottom: 4px;">Marketing Emails</div>
+                  <div style="color: var(--text-secondary); font-size: 14px;">Promotional offers and product updates</div>
+                </div>
+                <div class="toggle-switch off" onclick="toggleSetting('marketing')" style="
+                  width: 50px;
+                  height: 28px;
+                  background: var(--border);
+                  border-radius: 14px;
+                  position: relative;
+                  cursor: pointer;
+                  transition: background-color 0.3s ease;
+                ">
+                  <div style="
+                    position: absolute;
+                    top: 2px;
+                    left: 2px;
+                    width: 24px;
+                    height: 24px;
+                    background: white;
+                    border-radius: 50%;
+                    transition: all 0.2s ease;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                  "></div>
+                </div>
+              </div>
 
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px; background: var(--bg-tertiary); border-radius: 12px;">
-                  <div>
-                    <div style="color: var(--text-primary); font-weight: 600; font-size: 16px; margin-bottom: 4px;">Weekly Summary</div>
-                    <div style="color: var(--text-secondary); font-size: 14px;">Weekly chat activity and usage reports</div>
-                  </div>
-                  <div class="toggle-switch" onclick="toggleSetting('weekly')" style="
-                    width: 50px;
-                    height: 28px;
-                    background: var(--accent);
-                    border-radius: 14px;
-                    position: relative;
-                    cursor: pointer;
-                    transition: background-color 0.3s ease;
-                  ">
-                    <div style="
-                      position: absolute;
-                      top: 2px;
-                      right: 2px;
-                      width: 24px;
-                      height: 24px;
-                      background: white;
-                      border-radius: 50%;
-                      transition: all 0.2s ease;
-                      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-                    "></div>
-                  </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px; background: var(--bg-tertiary); border-radius: 12px; border: 1px solid var(--border);">
+                <div>
+                  <div style="color: var(--text-primary); font-weight: 600; font-size: 16px; margin-bottom: 4px;">Weekly Summary</div>
+                  <div style="color: var(--text-secondary); font-size: 14px;">Weekly chat activity and usage reports</div>
+                </div>
+                <div class="toggle-switch" onclick="toggleSetting('weekly')" style="
+                  width: 50px;
+                  height: 28px;
+                  background: var(--accent);
+                  border-radius: 14px;
+                  position: relative;
+                  cursor: pointer;
+                  transition: background-color 0.3s ease;
+                ">
+                  <div style="
+                    position: absolute;
+                    top: 2px;
+                    right: 2px;
+                    width: 24px;
+                    height: 24px;
+                    background: white;
+                    border-radius: 50%;
+                    transition: all 0.2s ease;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                  "></div>
                 </div>
               </div>
             </div>
           </div>
 
+          <!-- Responsive Styling -->
           <style>
             @media (max-width: 768px) {
-              .profile-dashboard {
-                height: calc(100vh - 60px) !important;
-                top: 60px !important;
-              }
-              .dashboard-header {
-                padding: 16px 20px !important;
-                flex-direction: column !important;
-                align-items: flex-start !important;
-                gap: 12px !important;
-                min-height: auto !important;
-              }
-              .dashboard-header h1 {
-                font-size: 24px !important;
-              }
-              .profile-content {
+              .profile-section {
                 padding: 20px !important;
-                flex-direction: column !important;
-                gap: 20px !important;
+                gap: 24px !important;
               }
-              .email-settings {
-                padding: 0 20px 20px !important;
+              .profile-grid {
+                grid-template-columns: 1fr !important;
+                gap: 24px !important;
+                margin-bottom: 24px !important;
               }
-              .profile-info-card, .plan-card {
-                min-width: auto !important;
-                max-width: none !important;
+              .email-settings-card {
+                padding: 24px !important;
+              }
+              .email-settings-card > div:last-child {
+                grid-template-columns: 1fr !important;
               }
             }
           </style>
