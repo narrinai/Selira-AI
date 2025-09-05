@@ -1791,26 +1791,23 @@
     }
 
     function showProfile() {
-      // Hide filter section and show profile
+      // Hide filter section and tabs, show profile using full content area
       const filterSection = document.querySelector('.filter-section');
+      const tabsSection = document.querySelector('.tabs-nav');
       const grid = document.getElementById('charactersGrid');
       
       filterSection.style.display = 'none';
+      if (tabsSection) tabsSection.style.display = 'none';
       
       grid.innerHTML = `
         <div class="profile-section" style="
           width: 100%; 
-          max-width: none; 
           padding: 40px; 
-          min-height: calc(100vh - 140px);
-          display: flex;
-          flex-direction: column;
-          gap: 40px;
-          max-width: 1200px;
-          margin: 0 auto;
+          min-height: calc(100vh - 120px);
+          background: var(--bg-primary);
         ">
           <!-- Header -->
-          <div class="profile-header" style="text-align: center;">
+          <div class="profile-header" style="text-align: center; margin-bottom: 40px;">
             <h2 style="font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 700; color: var(--text-primary); margin-bottom: 12px;">My Profile</h2>
             <p style="color: var(--text-secondary); font-size: 16px;">Manage your account, subscription, and preferences</p>
           </div>
@@ -1818,8 +1815,8 @@
           <!-- Main Content Grid -->
           <div class="profile-grid" style="
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 30px;
             margin-bottom: 40px;
           ">
             <!-- Profile Information -->
@@ -1911,100 +1908,93 @@
                 Upgrade Plan
               </button>
             </div>
-          </div>
+            <!-- Email Settings -->
+            <div class="email-settings-card" style="
+              background: var(--bg-secondary);
+              border: 1px solid var(--border);
+              border-radius: 16px;
+              padding: 32px;
+            ">
+              <h3 style="color: var(--text-primary); margin-bottom: 24px; font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 12px;">
+                <span style="font-size: 24px;">📧</span> Email Settings
+              </h3>
+              <div style="display: flex; flex-direction: column; gap: 16px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px; background: var(--bg-tertiary); border-radius: 12px; border: 1px solid var(--border);">
+                  <div>
+                    <div style="color: var(--text-primary); font-weight: 600; font-size: 14px; margin-bottom: 2px;">Notifications</div>
+                    <div style="color: var(--text-secondary); font-size: 12px;">Feature updates</div>
+                  </div>
+                  <div class="toggle-switch" onclick="toggleSetting('notifications')" style="
+                    width: 40px;
+                    height: 22px;
+                    background: var(--accent);
+                    border-radius: 11px;
+                    position: relative;
+                    cursor: pointer;
+                  ">
+                    <div style="
+                      position: absolute;
+                      top: 1px;
+                      right: 1px;
+                      width: 20px;
+                      height: 20px;
+                      background: white;
+                      border-radius: 50%;
+                      transition: all 0.2s ease;
+                    "></div>
+                  </div>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px; background: var(--bg-tertiary); border-radius: 12px; border: 1px solid var(--border);">
+                  <div>
+                    <div style="color: var(--text-primary); font-weight: 600; font-size: 14px; margin-bottom: 2px;">Marketing</div>
+                    <div style="color: var(--text-secondary); font-size: 12px;">Promotions</div>
+                  </div>
+                  <div class="toggle-switch off" onclick="toggleSetting('marketing')" style="
+                    width: 40px;
+                    height: 22px;
+                    background: var(--border);
+                    border-radius: 11px;
+                    position: relative;
+                    cursor: pointer;
+                  ">
+                    <div style="
+                      position: absolute;
+                      top: 1px;
+                      left: 1px;
+                      width: 20px;
+                      height: 20px;
+                      background: white;
+                      border-radius: 50%;
+                      transition: all 0.2s ease;
+                    "></div>
+                  </div>
+                </div>
 
-          <!-- Email Settings -->
-          <div class="email-settings-card" style="
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 32px;
-          ">
-            <h3 style="color: var(--text-primary); margin-bottom: 24px; font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 12px;">
-              <span style="font-size: 24px;">📧</span> Email Settings
-            </h3>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px;">
-              <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px; background: var(--bg-tertiary); border-radius: 12px; border: 1px solid var(--border);">
-                <div>
-                  <div style="color: var(--text-primary); font-weight: 600; font-size: 16px; margin-bottom: 4px;">Email Notifications</div>
-                  <div style="color: var(--text-secondary); font-size: 14px;">Receive updates about new features and companions</div>
-                </div>
-                <div class="toggle-switch" onclick="toggleSetting('notifications')" style="
-                  width: 50px;
-                  height: 28px;
-                  background: var(--accent);
-                  border-radius: 14px;
-                  position: relative;
-                  cursor: pointer;
-                  transition: background-color 0.3s ease;
-                ">
-                  <div style="
-                    position: absolute;
-                    top: 2px;
-                    right: 2px;
-                    width: 24px;
-                    height: 24px;
-                    background: white;
-                    border-radius: 50%;
-                    transition: all 0.2s ease;
-                    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-                  "></div>
-                </div>
-              </div>
-              
-              <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px; background: var(--bg-tertiary); border-radius: 12px; border: 1px solid var(--border);">
-                <div>
-                  <div style="color: var(--text-primary); font-weight: 600; font-size: 16px; margin-bottom: 4px;">Marketing Emails</div>
-                  <div style="color: var(--text-secondary); font-size: 14px;">Promotional offers and product updates</div>
-                </div>
-                <div class="toggle-switch off" onclick="toggleSetting('marketing')" style="
-                  width: 50px;
-                  height: 28px;
-                  background: var(--border);
-                  border-radius: 14px;
-                  position: relative;
-                  cursor: pointer;
-                  transition: background-color 0.3s ease;
-                ">
-                  <div style="
-                    position: absolute;
-                    top: 2px;
-                    left: 2px;
-                    width: 24px;
-                    height: 24px;
-                    background: white;
-                    border-radius: 50%;
-                    transition: all 0.2s ease;
-                    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-                  "></div>
-                </div>
-              </div>
-
-              <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px; background: var(--bg-tertiary); border-radius: 12px; border: 1px solid var(--border);">
-                <div>
-                  <div style="color: var(--text-primary); font-weight: 600; font-size: 16px; margin-bottom: 4px;">Weekly Summary</div>
-                  <div style="color: var(--text-secondary); font-size: 14px;">Weekly chat activity and usage reports</div>
-                </div>
-                <div class="toggle-switch" onclick="toggleSetting('weekly')" style="
-                  width: 50px;
-                  height: 28px;
-                  background: var(--accent);
-                  border-radius: 14px;
-                  position: relative;
-                  cursor: pointer;
-                  transition: background-color 0.3s ease;
-                ">
-                  <div style="
-                    position: absolute;
-                    top: 2px;
-                    right: 2px;
-                    width: 24px;
-                    height: 24px;
-                    background: white;
-                    border-radius: 50%;
-                    transition: all 0.2s ease;
-                    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-                  "></div>
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px; background: var(--bg-tertiary); border-radius: 12px; border: 1px solid var(--border);">
+                  <div>
+                    <div style="color: var(--text-primary); font-weight: 600; font-size: 14px; margin-bottom: 2px;">Weekly Reports</div>
+                    <div style="color: var(--text-secondary); font-size: 12px;">Usage summary</div>
+                  </div>
+                  <div class="toggle-switch" onclick="toggleSetting('weekly')" style="
+                    width: 40px;
+                    height: 22px;
+                    background: var(--accent);
+                    border-radius: 11px;
+                    position: relative;
+                    cursor: pointer;
+                  ">
+                    <div style="
+                      position: absolute;
+                      top: 1px;
+                      right: 1px;
+                      width: 20px;
+                      height: 20px;
+                      background: white;
+                      border-radius: 50%;
+                      transition: all 0.2s ease;
+                    "></div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -2012,21 +2002,18 @@
 
           <!-- Responsive Styling -->
           <style>
+            @media (max-width: 1200px) {
+              .profile-grid {
+                grid-template-columns: 1fr 1fr !important;
+              }
+            }
             @media (max-width: 768px) {
               .profile-section {
                 padding: 20px !important;
-                gap: 24px !important;
               }
               .profile-grid {
                 grid-template-columns: 1fr !important;
-                gap: 24px !important;
-                margin-bottom: 24px !important;
-              }
-              .email-settings-card {
-                padding: 24px !important;
-              }
-              .email-settings-card > div:last-child {
-                grid-template-columns: 1fr !important;
+                gap: 20px !important;
               }
             }
           </style>
@@ -2046,14 +2033,16 @@
     }
 
     function showPricing() {
-      // Hide filter section and show pricing
+      // Hide filter section and tabs, show pricing using full content area
       const filterSection = document.querySelector('.filter-section');
+      const tabsSection = document.querySelector('.tabs-nav');
       const grid = document.getElementById('charactersGrid');
       
       filterSection.style.display = 'none';
+      if (tabsSection) tabsSection.style.display = 'none';
       
       grid.innerHTML = `
-        <div class="pricing-section" style="width: 100%; max-width: 1400px; margin: 0 auto; padding: 60px 40px;">
+        <div class="pricing-section" style="width: 100%; padding: 40px; min-height: calc(100vh - 120px); background: var(--bg-primary);">
           <div class="pricing-header" style="text-align: center; margin-bottom: 60px;">
             <h2 class="pricing-title" style="font-size: 48px; font-weight: 700; margin-bottom: 16px;">Choose Your Plan</h2>
             <p class="pricing-subtitle" style="font-size: 20px; color: var(--text-secondary);">Transform daily mental chaos into clear thinking with AI companions</p>
@@ -2193,9 +2182,11 @@
     }
 
     function showCharacters() {
-      // Show filter section
+      // Show filter section and tabs
       const filterSection = document.querySelector('.filter-section');
+      const tabsSection = document.querySelector('.tabs-nav');
       filterSection.style.display = 'block';
+      if (tabsSection) tabsSection.style.display = 'block';
       
       // Update active nav item
       document.querySelectorAll('.nav-item').forEach(item => {
