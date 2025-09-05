@@ -39,6 +39,7 @@
   
 <!-- Netlify Identity Widget met configuratie -->
 <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<script src="/js/auth0-login.js"></script>
 
 <!-- Microsoft Clarity Analytics -->
 <script type="text/javascript">
@@ -3524,6 +3525,24 @@ body .netlify-identity-widget > div[data-netlify-identity-modal] {
         } else {
           console.log('⚠️ Stored authentication expired, clearing...');
           clearAuthData();
+        }
+      }
+      
+      // Check Auth0 authentication using global functions
+      if (typeof window.isUserAuthenticated === 'function' && window.isUserAuthenticated()) {
+        console.log('✅ Valid Auth0 user found');
+        const auth0User = window.getCurrentUser && window.getCurrentUser();
+        if (auth0User) {
+          // Store Auth0 user data in localStorage for compatibility
+          localStorage.setItem('user_email', auth0User.email);
+          localStorage.setItem('user_uid', auth0User.sub);
+          localStorage.setItem('user_name', auth0User.name || auth0User.email.split('@')[0]);
+          localStorage.setItem('user_auth_timestamp', Date.now().toString());
+          
+          // Check trial status for Auth0 users
+          checkTrialStatus(auth0User.email, auth0User.sub);
+          
+          return true;
         }
       }
       

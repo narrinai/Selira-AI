@@ -143,8 +143,8 @@
 
     body {
       font-family: var(--font-primary);
-      background: var(--color-off-white);
-      color: var(--color-navy);
+      background: var(--bg-primary);
+      color: var(--text-primary);
       line-height: 1.6;
       font-size: var(--font-size-base);
       -webkit-font-smoothing: antialiased;
@@ -203,7 +203,7 @@
       font-weight: 700;
       text-decoration: none;
       letter-spacing: -0.5px;
-      color: var(--accent);
+      color: var(--color-accent);
       transition: transform var(--transition-base);
       flex-shrink: 0;
     }
@@ -234,15 +234,15 @@
       padding-right: calc(var(--spacing-lg) * 2.5);
       font-size: var(--font-size-sm);
       font-family: inherit;
-      border: 2px solid var(--color-light-gray);
+      border: 2px solid var(--border);
       border-radius: var(--radius-full);
-      background: var(--color-white);
-      color: var(--color-navy);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
       transition: all var(--transition-base);
     }
 
     .nav-search-input:hover {
-      border-color: var(--color-gray-light);
+      border-color: var(--color-accent);
     }
 
     .nav-search-input:focus {
@@ -251,7 +251,7 @@
     }
 
     .nav-search-input::placeholder {
-      color: var(--color-gray-light);
+      color: var(--text-secondary);
     }
 
     .search-submit {
@@ -289,7 +289,7 @@
     }
 
     .nav-link {
-      color: var(--color-navy);
+      color: var(--text-secondary);
       text-decoration: none;
       font-weight: 500;
       font-size: var(--font-size-sm);
@@ -363,7 +363,7 @@
       background: transparent;
       border: none;
       cursor: pointer;
-      color: var(--color-navy);
+      color: var(--text-secondary);
       transition: all var(--transition-base);
       border-radius: var(--radius-md);
       flex-shrink: 0;
@@ -371,7 +371,7 @@
     }
 
     .mobile-chat-btn:hover {
-      background: var(--color-light-gray);
+      background: var(--bg-tertiary);
     }
 
     /* Mobile Hamburger Menu */
@@ -384,7 +384,7 @@
       background: transparent;
       border: none;
       cursor: pointer;
-      color: var(--color-navy);
+      color: var(--text-secondary);
       transition: all var(--transition-base);
       border-radius: var(--radius-md);
       position: relative;
@@ -393,7 +393,7 @@
     }
 
     .mobile-menu-btn:hover {
-      background: var(--color-light-gray);
+      background: var(--bg-tertiary);
     }
 
     .mobile-chat-btn svg {
@@ -415,7 +415,7 @@
       display: block;
       height: 2px;
       width: 100%;
-      background: var(--color-navy);
+      background: var(--text-secondary);
       border-radius: 1px;
       transition: all var(--transition-base);
     }
@@ -459,7 +459,7 @@
     }
 
     .mobile-menu-content {
-      background: var(--color-white);
+      background: var(--bg-secondary);
       border-radius: var(--radius-xl);
       padding: var(--spacing-3xl) var(--spacing-xl);
       box-shadow: var(--shadow-xl);
@@ -491,7 +491,7 @@
     }
 
     .mobile-menu-subtitle {
-      color: var(--color-gray);
+      color: var(--text-secondary);
       font-size: var(--font-size-sm);
     }
 
@@ -505,17 +505,17 @@
       display: flex;
       align-items: center;
       padding: var(--spacing-md) var(--spacing-lg);
-      color: var(--color-navy);
+      color: var(--text-primary);
       text-decoration: none;
       font-weight: 500;
       font-size: var(--font-size-base);
       transition: all var(--transition-base);
       border-radius: var(--radius-md);
-      background: var(--color-off-white);
+      background: var(--bg-tertiary);
     }
 
     .mobile-menu-link:hover {
-      background: var(--color-light-gray);
+      background: var(--border);
       color: var(--color-accent);
       transform: translateX(4px);
     }
@@ -689,7 +689,7 @@
       font-size: var(--font-size-3xl);
       font-weight: 800;
       text-align: center;
-      color: var(--color-navy);
+      color: var(--text-primary);
       margin-bottom: var(--spacing-3xl);
       letter-spacing: -0.02em;
     }
@@ -702,11 +702,11 @@
     }
 
     .pricing-card {
-      background: var(--color-white);
+      background: var(--bg-secondary);
       border-radius: var(--radius-xl);
       padding: var(--spacing-2xl);
       position: relative;
-      border: 2px solid var(--color-light-gray);
+      border: 2px solid var(--border);
       transition: all var(--transition-base);
       display: flex;
       flex-direction: column;
@@ -715,13 +715,13 @@
 
     .pricing-card:hover {
       transform: translateY(-8px);
-      border-color: var(--accent);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      border-color: var(--color-accent);
+      box-shadow: 0 20px 40px rgba(212, 165, 116, 0.2);
     }
 
     .pricing-card.featured {
-      border-color: var(--accent);
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+      border-color: var(--color-accent);
+      box-shadow: 0 15px 30px rgba(212, 165, 116, 0.15);
     }
 
     .card-badge {
@@ -729,7 +729,7 @@
       top: -12px;
       left: 50%;
       transform: translateX(-50%);
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-secondary) 100%);
+      background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-dark) 100%);
       color: white;
       padding: var(--spacing-xs) var(--spacing-lg);
       border-radius: var(--radius-full);
@@ -742,7 +742,7 @@
     .card-header {
       text-align: center;
       padding-bottom: var(--spacing-xl);
-      border-bottom: 1px solid var(--color-light-gray);
+      border-bottom: 1px solid var(--border);
       margin-bottom: var(--spacing-xl);
     }
 
@@ -750,7 +750,7 @@
       font-family: var(--font-secondary);
       font-size: var(--font-size-2xl);
       font-weight: 700;
-      color: var(--color-navy);
+      color: var(--text-primary);
       margin-bottom: var(--spacing-md);
     }
 
@@ -763,21 +763,21 @@
 
     .price-currency {
       font-size: var(--font-size-xl);
-      color: var(--color-gray);
+      color: var(--text-secondary);
       margin-right: var(--spacing-xs);
     }
 
     .price-amount {
       font-size: var(--font-size-4xl);
       font-weight: 800;
-      color: var(--color-navy);
+      color: var(--text-primary);
       font-family: var(--font-secondary);
       letter-spacing: -0.02em;
     }
 
     .price-period {
       font-size: var(--font-size-base);
-      color: var(--color-gray);
+      color: var(--text-secondary);
       margin-left: var(--spacing-xs);
     }
 
@@ -793,7 +793,7 @@
 
     .plan-description {
       font-size: var(--font-size-sm);
-      color: var(--color-gray);
+      color: var(--text-secondary);
       margin: 0;
       text-align: center;
     }
@@ -814,7 +814,7 @@
       gap: var(--spacing-sm);
       padding: var(--spacing-sm) 0;
       font-size: var(--font-size-sm);
-      color: var(--color-navy);
+      color: var(--text-primary);
     }
 
     .feature-icon {
@@ -865,7 +865,7 @@
 
     .original-price {
       text-decoration: line-through;
-      color: var(--color-gray-light);
+      color: var(--text-secondary);
       font-size: var(--font-size-lg);
       font-weight: 500;
     }
@@ -896,8 +896,8 @@
     }
 
     .plan-button.current-plan {
-      background: var(--color-light-gray);
-      color: var(--color-gray);
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
       cursor: default;
     }
 
@@ -939,7 +939,7 @@
       align-items: center;
       gap: var(--spacing-xs);
       font-size: var(--font-size-sm);
-      color: var(--color-gray-dark);
+      color: var(--text-secondary);
       font-weight: 500;
       justify-content: center;
     }
@@ -957,8 +957,8 @@
 
     /* Footer */
     .footer {
-      background: var(--color-white);
-      border-top: 1px solid var(--color-light-gray);
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
       padding: var(--spacing-2xl) 0;
       margin-top: var(--spacing-3xl);
     }
@@ -978,7 +978,7 @@
     }
 
     .footer-link {
-      color: var(--color-gray);
+      color: var(--text-secondary);
       text-decoration: none;
       font-size: var(--font-size-sm);
       transition: color var(--transition-base);
@@ -989,7 +989,7 @@
     }
 
     .footer-copyright {
-      color: var(--color-gray-light);
+      color: var(--text-secondary);
       font-size: var(--font-size-xs);
     }
 
