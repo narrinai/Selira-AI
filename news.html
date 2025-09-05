@@ -3,21 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>News & Insights | Narrin AI</title>
-  <meta name="description" content="Latest insights, updates, and research from Narrin AI on thought organization, mental clarity, and AI companion technology.">
+  <title>News & Insights | Selira AI</title>
+  <meta name="description" content="Latest insights, updates, and research from Selira AI on AI companions, AI chatbots, AI character chat, and adult AI conversations.">
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://selira.ai/news">
-  <meta property="og:title" content="News & Insights | Narrin AI">
-  <meta property="og:description" content="Latest insights and updates from Narrin AI on thought organization and mental clarity.">
+  <meta property="og:title" content="News & Insights | Selira AI">
+  <meta property="og:description" content="Latest insights and updates from Selira AI on AI companions, chatbots, and character interactions.">
   <meta property="og:image" content="https://selira.ai/og-image.jpg">
   
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:url" content="https://selira.ai/news">
-  <meta property="twitter:title" content="News & Insights | Narrin AI">
-  <meta property="twitter:description" content="Latest insights and updates on thought organization and mental clarity.">
+  <meta property="twitter:title" content="News & Insights | Selira AI">
+  <meta property="twitter:description" content="Latest insights and updates on AI companions, chatbots, and character interactions.">
   <meta property="twitter:image" content="https://selira.ai/og-image.jpg">
   
   <!-- Favicon -->
@@ -30,7 +30,7 @@
   <!-- Import Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
   <style>
     /* ===== CSS CUSTOM PROPERTIES ===== */
@@ -40,14 +40,22 @@
       --color-off-white: #fafafa;
       --color-light-gray: #f5f5f5;
       
-      /* Accent Colors */
-      --color-teal: #14b8a6;
-      --color-teal-light: #5eead4;
-      --color-teal-dark: #0f766e;
-      --color-teal-alt: #10a394; /* Slightly different green for tags */
-      --color-coral: #f97316;
-      --color-coral-light: #fb923c;
-      --color-coral-dark: #ea580c;
+      /* Accent Colors - Selira Brand */
+      --color-accent: #d4a574;
+      --color-accent-light: #e4b989;
+      --color-accent-dark: #c19456;
+      --color-accent-alt: #c19456;
+      --color-coral: #d4a574;
+      --color-coral-light: #e4b989;
+      --color-coral-dark: #c19456;
+      
+      /* Dark theme colors */
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #1a1a1a;
+      --bg-tertiary: #2a2a2a;
+      --text-primary: #ffffff;
+      --text-secondary: #b3b3b3;
+      --border: #333333;
       
       /* Supporting Colors */
       --color-navy: #1e293b;
@@ -57,9 +65,9 @@
       --color-gray-dark: #475569;
       
       /* Gradients */
-      --gradient-primary: linear-gradient(135deg, var(--color-teal) 0%, var(--color-coral) 100%);
-      --gradient-subtle: linear-gradient(135deg, var(--color-teal-light) 0%, var(--color-coral-light) 100%);
-      --gradient-tags: linear-gradient(135deg, var(--color-teal-alt) 0%, var(--color-coral) 100%);
+      --gradient-primary: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-dark) 100%);
+      --gradient-subtle: linear-gradient(135deg, var(--color-accent-light) 0%, var(--color-coral-light) 100%);
+      --gradient-tags: linear-gradient(135deg, var(--color-accent-alt) 0%, var(--color-coral) 100%);
       
       /* Shadows */
       --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
@@ -78,8 +86,8 @@
       --spacing-3xl: 4rem;
       
       /* Typography */
-      --font-primary: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-      --font-secondary: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-primary: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-secondary: 'Playfair Display', serif;
       
       /* Font Sizes */
       --font-size-xs: 0.75rem;
@@ -128,8 +136,8 @@
     body {
       font-family: var(--font-primary);
       line-height: 1.6;
-      color: var(--color-navy);
-      background: var(--color-off-white);
+      color: var(--text-primary);
+      background: var(--bg-primary);
       -webkit-font-smoothing: antialiased;
     }
 
@@ -138,10 +146,10 @@
       position: sticky;
       top: 0;
       z-index: var(--z-sticky);
-      background: rgba(255, 255, 255, 0.95);
+      background: rgba(10, 10, 10, 0.95);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      border-bottom: 1px solid var(--border);
       transition: all var(--transition-base);
     }
 
@@ -166,13 +174,10 @@
     .logo {
       font-family: var(--font-secondary);
       font-size: var(--font-size-xl);
-      font-weight: 800;
+      font-weight: 700;
       text-decoration: none;
       letter-spacing: -0.02em;
-      background: var(--gradient-primary);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: var(--color-accent);
       transition: transform var(--transition-base);
       flex-shrink: 0;
     }
@@ -189,7 +194,7 @@
     }
 
     .nav-link {
-      color: var(--color-navy);
+      color: var(--text-secondary);
       text-decoration: none;
       font-weight: 500;
       font-size: var(--font-size-sm);
@@ -210,7 +215,7 @@
     }
 
     .nav-link:hover {
-      color: var(--color-teal);
+      color: var(--color-accent);
     }
 
     .nav-link:hover::after {
@@ -218,7 +223,7 @@
     }
 
     .nav-link.active {
-      color: var(--color-teal);
+      color: var(--color-accent);
     }
 
     .nav-link.active::after {
@@ -272,7 +277,7 @@
       background: transparent;
       border: none;
       cursor: pointer;
-      color: var(--color-navy);
+      color: var(--text-secondary);
       transition: all var(--transition-base);
       border-radius: var(--radius-md);
       flex-shrink: 0;
@@ -280,7 +285,7 @@
     }
 
     .mobile-chat-btn:hover {
-      background: var(--color-light-gray);
+      background: var(--bg-tertiary);
     }
 
     .mobile-chat-btn svg {
@@ -298,7 +303,7 @@
       background: transparent;
       border: none;
       cursor: pointer;
-      color: var(--color-navy);
+      color: var(--text-secondary);
       transition: all var(--transition-base);
       border-radius: var(--radius-md);
       position: relative;
@@ -307,7 +312,7 @@
     }
 
     .mobile-menu-btn:hover {
-      background: var(--color-light-gray);
+      background: var(--bg-tertiary);
     }
 
     .hamburger {
@@ -323,7 +328,7 @@
       display: block;
       height: 2px;
       width: 100%;
-      background: var(--color-navy);
+      background: var(--text-secondary);
       border-radius: 1px;
       transition: all var(--transition-base);
     }
@@ -365,7 +370,7 @@
     }
 
     .mobile-menu-content {
-      background: var(--color-white);
+      background: var(--bg-secondary);
       border-radius: var(--radius-xl);
       padding: var(--spacing-3xl) var(--spacing-xl);
       box-shadow: var(--shadow-xl);
@@ -397,7 +402,7 @@
     }
 
     .mobile-menu-subtitle {
-      color: var(--color-gray);
+      color: var(--text-secondary);
       font-size: var(--font-size-sm);
     }
 
@@ -411,24 +416,24 @@
       display: flex;
       align-items: center;
       padding: var(--spacing-md) var(--spacing-lg);
-      color: var(--color-navy);
+      color: var(--text-primary);
       text-decoration: none;
       font-weight: 500;
       font-size: var(--font-size-base);
       transition: all var(--transition-base);
       border-radius: var(--radius-md);
-      background: var(--color-off-white);
+      background: var(--bg-tertiary);
     }
 
     .mobile-menu-link:hover {
-      background: var(--color-light-gray);
-      color: var(--color-teal);
+      background: var(--border);
+      color: var(--color-accent);
       transform: translateX(4px);
     }
 
     .mobile-menu-link.active {
-      background: var(--color-light-gray);
-      color: var(--color-teal);
+      background: var(--border);
+      color: var(--color-accent);
     }
 
     .mobile-menu-link.btn-primary {
@@ -489,15 +494,15 @@
     .hero h1 {
       font-family: var(--font-secondary);
       font-size: clamp(var(--font-size-3xl), 5vw, var(--font-size-4xl));
-      font-weight: 800;
-      color: var(--color-navy);
+      font-weight: 700;
+      color: var(--text-primary);
       margin-bottom: var(--spacing-lg);
       letter-spacing: -0.02em;
     }
 
     .hero p {
       font-size: var(--font-size-lg);
-      color: var(--color-gray);
+      color: var(--text-secondary);
       max-width: 600px;
       margin: 0 auto;
     }
@@ -545,11 +550,11 @@
     }
 
     .news-card {
-      background: var(--color-white);
+      background: var(--bg-secondary);
       border-radius: var(--radius-lg);
       overflow: hidden;
       box-shadow: var(--shadow-sm);
-      border: 2px solid var(--color-light-gray);
+      border: 2px solid var(--border);
       transition: all var(--transition-base);
       text-decoration: none;
       color: inherit;
@@ -558,7 +563,7 @@
     .news-card:hover {
       transform: translateY(-4px);
       box-shadow: var(--shadow-lg);
-      border-color: var(--color-teal);
+      border-color: var(--color-accent);
     }
 
     .news-image {
@@ -588,14 +593,14 @@
       font-family: var(--font-secondary);
       font-size: var(--font-size-xl);
       font-weight: 700;
-      color: var(--color-navy);
+      color: var(--text-primary);
       margin-bottom: var(--spacing-md);
       line-height: 1.3;
       letter-spacing: -0.01em;
     }
 
     .news-excerpt {
-      color: var(--color-gray-dark);
+      color: var(--text-secondary);
       margin-bottom: var(--spacing-lg);
       line-height: 1.6;
     }
@@ -604,7 +609,7 @@
       display: flex;
       align-items: center;
       gap: var(--spacing-md);
-      color: var(--color-gray);
+      color: var(--text-secondary);
       font-size: var(--font-size-sm);
     }
 
@@ -620,11 +625,11 @@
     }
 
     .featured-article {
-      background: var(--color-white);
+      background: var(--bg-secondary);
       border-radius: var(--radius-xl);
       overflow: hidden;
       box-shadow: var(--shadow-lg);
-      border: 2px solid var(--color-light-gray);
+      border: 2px solid var(--border);
     }
 
     .featured-content {
@@ -638,15 +643,15 @@
     .featured-text h2 {
       font-family: var(--font-secondary);
       font-size: var(--font-size-3xl);
-      font-weight: 800;
-      color: var(--color-navy);
+      font-weight: 700;
+      color: var(--text-primary);
       margin-bottom: var(--spacing-lg);
       letter-spacing: -0.02em;
     }
 
     .featured-text p {
       font-size: var(--font-size-lg);
-      color: var(--color-gray-dark);
+      color: var(--text-secondary);
       margin-bottom: var(--spacing-xl);
       line-height: 1.7;
     }
@@ -734,11 +739,12 @@
 
     /* ===== FOOTER ===== */
     .footer {
-      background: var(--color-navy);
-      color: var(--color-white);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
       text-align: center;
       padding: var(--spacing-3xl) var(--spacing-lg);
       margin-top: var(--spacing-3xl);
+      border-top: 1px solid var(--border);
     }
 
     .footer-content {
@@ -755,21 +761,21 @@
     }
 
     .footer-link {
-      color: var(--color-gray-light);
+      color: var(--text-secondary);
       text-decoration: none;
       transition: color var(--transition-base);
     }
 
     .footer-link:hover {
-      color: var(--color-white);
+      color: var(--color-accent);
     }
 
     .footer-separator {
-      color: var(--color-gray);
+      color: var(--text-secondary);
     }
 
     .footer-copyright {
-      color: var(--color-gray-light);
+      color: var(--text-secondary);
       font-size: var(--font-size-sm);
     }
 
@@ -866,7 +872,7 @@
     <div class="header-container">
       <div class="header-content">
         <!-- Logo -->
-        <a href="/" class="logo" aria-label="Narrin AI Home">Narrin AI</a>
+        <a href="/" class="logo" aria-label="Selira AI Home">Selira AI</a>
 
         <!-- Desktop Navigation Links -->
         <nav class="nav-links" role="navigation" aria-label="Secondary navigation">
@@ -913,7 +919,7 @@
   <div class="mobile-menu-overlay" id="mobileMenuOverlay">
     <div class="mobile-menu-content">
       <div class="mobile-menu-header">
-        <div class="mobile-menu-logo">Narrin AI</div>
+        <div class="mobile-menu-logo">Selira AI</div>
         <div class="mobile-menu-subtitle">AI Companion Platform</div>
       </div>
       <nav class="mobile-menu-nav" role="navigation" aria-label="Mobile navigation">
@@ -950,17 +956,17 @@
     <!-- Hero Section -->
     <section class="hero">
       <h1>News & Insights</h1>
-      <p>Stay updated with the latest insights on thought organization, mental clarity, and AI companion technology</p>
+      <p>Stay updated with the latest insights on AI companions, AI chatbots, character interactions, and adult AI conversations</p>
     </section>
 
     <!-- Categories Filter -->
     <section class="categories-filter">
       <button class="category-btn active" data-category="all">All Articles</button>
-      <button class="category-btn" data-category="thought-organization">Thought Organization</button>
-      <button class="category-btn" data-category="mental-clarity">Mental Clarity</button>
-      <button class="category-btn" data-category="ai-technology">AI Technology</button>
+      <button class="category-btn" data-category="ai-companions">AI Companions</button>
+      <button class="category-btn" data-category="chatbots">AI Chatbots</button>
+      <button class="category-btn" data-category="character-chat">Character Chat</button>
+      <button class="category-btn" data-category="nsfw-ai">Adult AI</button>
       <button class="category-btn" data-category="user-stories">User Stories</button>
-      <button class="category-btn" data-category="research">Research</button>
     </section>
 
     <!-- Featured Article -->
@@ -968,16 +974,16 @@
       <div class="featured-article">
         <div class="featured-content">
           <div class="featured-text">
-            <h2>CompanionGuide.ai: Your Gateway to the World of AI Companions</h2>
-            <p>Discover how CompanionGuide.ai helps navigate the expanding world of AI companions and find the perfect platform for your mental wellness journey, including specialized tools like Narrin AI.</p>
-            <a href="/news/companionguide-ai-platform-review" class="featured-btn">
+            <h2>The Rise of AI Companions: How Selira AI is Redefining Digital Relationships</h2>
+            <p>Explore how AI companions are revolutionizing digital relationships, offering personalized interactions that blur the line between artificial and authentic connections. Discover what makes Selira AI stand out in this evolving landscape.</p>
+            <a href="/news/rise-of-ai-companions-selira" class="featured-btn">
               <span>Read Full Article</span>
               <span>→</span>
             </a>
           </div>
           <div class="featured-visual">
             <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&h=300&fit=crop&crop=center" 
-                 alt="CompanionGuide.ai Platform Overview" 
+                 alt="AI Companions and Digital Relationships" 
                  class="featured-image">
           </div>
         </div>
@@ -986,15 +992,15 @@
 
     <!-- News Grid -->
     <section class="news-grid">
-      <!-- Article 1 - Previous Featured Article -->
-      <a href="/news/ai-companions-mental-clarity" class="news-card" data-category="thought-organization">
+      <!-- Article 1 - AI Companions -->
+      <a href="/news/ai-companions-emotional-intelligence" class="news-card" data-category="ai-companions">
         <img src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=200&fit=crop&crop=center" 
-             alt="How AI Companions Help Transform Mental Chaos Into Daily Clarity" 
+             alt="AI Companions with Emotional Intelligence" 
              class="news-image">
         <div class="news-content">
-          <div class="news-category">Thought Organization</div>
-          <h3 class="news-title">How AI Companions Help Transform Mental Chaos Into Daily Clarity</h3>
-          <p class="news-excerpt">Discover how personalized AI conversations are revolutionizing the way people organize their thoughts and achieve mental clarity...</p>
+          <div class="news-category">AI Companions</div>
+          <h3 class="news-title">How AI Companions Develop Emotional Intelligence</h3>
+          <p class="news-excerpt">Explore the advanced algorithms that enable AI companions to understand emotions, provide empathy, and create meaningful connections with users...</p>
           <div class="news-meta">
             <span class="news-date">September 2, 2025</span>
             <span>•</span>
@@ -1007,14 +1013,14 @@
       </a>
 
       <!-- Article 2 -->
-      <a href="/news/science-behind-thought-organization" class="news-card" data-category="thought-organization">
+      <a href="/news/chatbot-revolution-2025" class="news-card" data-category="chatbots">
         <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=200&fit=crop&crop=center" 
-             alt="The Science Behind Thought Organization" 
+             alt="The Chatbot Revolution of 2025" 
              class="news-image">
         <div class="news-content">
-          <div class="news-category">Thought Organization</div>
-          <h3 class="news-title">The Science Behind Thought Organization</h3>
-          <p class="news-excerpt">Research shows that structured conversation can significantly improve mental clarity and emotional well-being...</p>
+          <div class="news-category">AI Chatbots</div>
+          <h3 class="news-title">The Chatbot Revolution of 2025</h3>
+          <p class="news-excerpt">How advanced AI chatbots are transforming digital interactions with natural language processing and personalized responses...</p>
           <div class="news-meta">
             <span class="news-date">August 30, 2025</span>
             <span>•</span>
@@ -1026,15 +1032,15 @@
         </div>
       </a>
 
-      <!-- Article 2 -->
-      <a href="/news/daily-habits-mental-clarity" class="news-card" data-category="mental-clarity">
+      <!-- Article 3 -->
+      <a href="/news/character-chat-psychology" class="news-card" data-category="character-chat">
         <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=200&fit=crop&crop=center" 
-             alt="5 Daily Habits for Better Mental Clarity" 
+             alt="The Psychology Behind Character Chat" 
              class="news-image">
         <div class="news-content">
-          <div class="news-category">Mental Clarity</div>
-          <h3 class="news-title">5 Daily Habits for Better Mental Clarity</h3>
-          <p class="news-excerpt">Simple, science-backed practices that can help organize your thoughts and reduce mental overwhelm...</p>
+          <div class="news-category">Character Chat</div>
+          <h3 class="news-title">The Psychology Behind Character Chat</h3>
+          <p class="news-excerpt">Understanding why people form connections with AI characters and how these interactions fulfill psychological needs...</p>
           <div class="news-meta">
             <span class="news-date">August 28, 2025</span>
             <span>•</span>
@@ -1046,15 +1052,15 @@
         </div>
       </a>
 
-      <!-- Article 3 -->
-      <a href="/news/future-ai-companions-mental-wellness" class="news-card" data-category="ai-technology">
+      <!-- Article 4 -->
+      <a href="/news/adult-ai-conversations-ethics" class="news-card" data-category="nsfw-ai">
         <img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400&h=200&fit=crop&crop=center" 
-             alt="The Future of AI Companions" 
+             alt="Ethics of Adult AI Conversations" 
              class="news-image">
         <div class="news-content">
-          <div class="news-category">AI Technology</div>
-          <h3 class="news-title">The Future of AI Companions in Mental Wellness</h3>
-          <p class="news-excerpt">Exploring how artificial intelligence is creating new possibilities for personalized mental health support...</p>
+          <div class="news-category">Adult AI</div>
+          <h3 class="news-title">Ethics and Safety in Adult AI Conversations</h3>
+          <p class="news-excerpt">Exploring the responsible development of adult AI chat features while maintaining user safety and privacy...</p>
           <div class="news-meta">
             <span class="news-date">August 25, 2025</span>
             <span>•</span>
@@ -1066,15 +1072,15 @@
         </div>
       </a>
 
-      <!-- Article 4 -->
-      <a href="/news/from-anxiety-to-clarity-user-journey" class="news-card" data-category="user-stories">
+      <!-- Article 5 -->
+      <a href="/news/my-ai-companion-journey" class="news-card" data-category="user-stories">
         <img src="https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=400&h=200&fit=crop&crop=center" 
-             alt="From Anxiety to Clarity - User Success Story" 
+             alt="My AI Companion Journey - User Story" 
              class="news-image">
         <div class="news-content">
           <div class="news-category">User Stories</div>
-          <h3 class="news-title">"From Anxiety to Clarity: My Journey with Narrin AI"</h3>
-          <p class="news-excerpt">A user shares how daily conversations with their AI companion transformed their approach to mental wellness...</p>
+          <h3 class="news-title">"My AI Companion Journey: Finding Connection with Selira AI"</h3>
+          <p class="news-excerpt">A user shares their experience building meaningful relationships with AI companions and how it changed their perspective on digital interaction...</p>
           <div class="news-meta">
             <span class="news-date">August 22, 2025</span>
             <span>•</span>
@@ -1086,15 +1092,15 @@
         </div>
       </a>
 
-      <!-- Article 5 -->
-      <a href="/news/research-ai-conversations-emotional-processing" class="news-card" data-category="research">
+      <!-- Article 6 -->
+      <a href="/news/ai-chatbot-personalization" class="news-card" data-category="chatbots">
         <img src="https://images.unsplash.com/photo-1532619187608-e5375cab36aa?w=400&h=200&fit=crop&crop=center" 
-             alt="Research on AI and Mental Health" 
+             alt="AI Chatbot Personalization Technology" 
              class="news-image">
         <div class="news-content">
-          <div class="news-category">Research</div>
-          <h3 class="news-title">New Research: AI Conversations and Emotional Processing</h3>
-          <p class="news-excerpt">Recent studies reveal how AI-guided conversations can improve emotional regulation and thought clarity...</p>
+          <div class="news-category">AI Chatbots</div>
+          <h3 class="news-title">Advanced Personalization in AI Chatbots</h3>
+          <p class="news-excerpt">How machine learning enables chatbots to adapt to individual users, creating unique and personalized conversation experiences...</p>
           <div class="news-meta">
             <span class="news-date">August 20, 2025</span>
             <span>•</span>
@@ -1106,15 +1112,15 @@
         </div>
       </a>
 
-      <!-- Article 6 -->
-      <a href="/news/digital-minimalism-mental-clarity" class="news-card" data-category="thought-organization">
+      <!-- Article 7 -->
+      <a href="/news/ai-companion-design-principles" class="news-card" data-category="ai-companions">
         <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=200&fit=crop&crop=center" 
-             alt="Digital Minimalism for Mental Clarity" 
+             alt="AI Companion Design Principles" 
              class="news-image">
         <div class="news-content">
-          <div class="news-category">Thought Organization</div>
-          <h3 class="news-title">Digital Minimalism for Mental Clarity</h3>
-          <p class="news-excerpt">How reducing digital noise and focusing on meaningful conversations can improve your mental organization...</p>
+          <div class="news-category">AI Companions</div>
+          <h3 class="news-title">Design Principles for Engaging AI Companions</h3>
+          <p class="news-excerpt">The key elements that make AI companions feel authentic, engaging, and emotionally satisfying for users...</p>
           <div class="news-meta">
             <span class="news-date">August 18, 2025</span>
             <span>•</span>
@@ -1126,15 +1132,15 @@
         </div>
       </a>
 
-      <!-- Article 7 - New CompanionGuide.ai Article -->
-      <a href="/news/companionguide-ai-platform-review" class="news-card" data-category="ai-technology">
+      <!-- Article 8 -->
+      <a href="/news/character-chat-community-building" class="news-card" data-category="character-chat">
         <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=200&fit=crop&crop=center" 
-             alt="CompanionGuide.ai Platform Review" 
+             alt="Character Chat Community Building" 
              class="news-image">
         <div class="news-content">
-          <div class="news-category">Platform Review</div>
-          <h3 class="news-title">CompanionGuide.ai: Your Gateway to AI Companions</h3>
-          <p class="news-excerpt">Discover how CompanionGuide.ai helps navigate the expanding world of AI companions and find the perfect match for your needs...</p>
+          <div class="news-category">Character Chat</div>
+          <h3 class="news-title">Building Communities Around Character Chat</h3>
+          <p class="news-excerpt">How character-based conversations are fostering new forms of online communities and shared experiences...</p>
           <div class="news-meta">
             <span class="news-date">September 2, 2025</span>
             <span>•</span>
@@ -1163,7 +1169,7 @@
         <span class="footer-separator">•</span>
         <a href="/contact" class="footer-link">Contact</a>
       </div>
-      <p class="footer-copyright">© 2025 Narrin AI. All rights reserved.</p>
+      <p class="footer-copyright">© 2025 Selira AI. All rights reserved.</p>
     </div>
   </footer>
 
