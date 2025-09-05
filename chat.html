@@ -724,11 +724,11 @@
       <header class="chat-header" id="chatHeader">
         <div class="character-info-header">
           <div class="character-avatar-header" id="currentCharacterAvatar">
-            <img src="https://selira.ai/avatars/aiko.webp" alt="Character" id="characterImage">
+            <img src="/avatars/placeholder.webp" alt="Character" id="characterImage" onerror="this.style.display='none';">
           </div>
           <div class="character-details">
-            <h2 class="character-name-header" id="currentCharacterName">Aiko</h2>
-            <p class="character-status" id="currentCharacterStatus">@Hawkins</p>
+            <h2 class="character-name-header" id="currentCharacterName">Loading...</h2>
+            <p class="character-status" id="currentCharacterStatus">@Selira</p>
           </div>
         </div>
         <div class="chat-actions">
@@ -783,12 +783,12 @@
     <aside class="character-sidebar" id="characterSidebar">
       <div class="character-profile">
         <div class="character-avatar-large">
-          <img src="https://selira.ai/avatars/aiko.webp" alt="Aiko" id="sidebarCharacterImage">
+          <img src="/avatars/placeholder.webp" alt="Character" id="sidebarCharacterImage" onerror="this.style.display='none';">
         </div>
-        <h3 class="character-name-large" id="sidebarCharacterName">Aiko</h3>
-        <p class="character-creator" id="sidebarCharacterCreator">@Hawkins</p>
+        <h3 class="character-name-large" id="sidebarCharacterName">Loading...</h3>
+        <p class="character-creator" id="sidebarCharacterCreator">@Selira</p>
         <p class="character-description" id="sidebarCharacterDescription">
-          Your mom's friends Claire is having her house remodeled, so she asked if she could stay with you all for a while. Claire also brought her daughter, Aiko.
+          Loading character information...
         </p>
         
         <div class="character-stats">
@@ -850,16 +850,16 @@
   </div>
 
   <script>
-    // Global variables
+    // Global variables - current character will be loaded from URL
     let currentCharacter = {
-      name: 'Aiko',
-      slug: 'aiko',
-      avatar: 'https://selira.ai/avatars/aiko.webp',
-      creator: '@Hawkins',
-      description: "Your mom's friends Claire is having her house remodeled, so she asked if she could stay with you all for a while. Claire also brought her daughter, Aiko.",
-      chats: '51.4K',
-      rating: '4.7',
-      tags: ['Unfiltered', 'Anime', 'Wholesome', 'Animal', 'Femboy', 'MILF', 'Action', 'Sci-Fi', 'VTuber', 'Fantasy', 'Female']
+      name: 'Loading...',
+      slug: 'loading',
+      avatar: '/avatars/placeholder.webp',
+      creator: '@Selira',
+      description: 'Loading character information...',
+      chats: '0',
+      rating: '0.0',
+      tags: ['Loading']
     };
 
     let chatHistory = [];
@@ -871,6 +871,8 @@
       loadCharactersFromDatabase();
       initializeChatInterface();
       setupEventListeners();
+      // Load character from URL parameter after characters are loaded
+      setTimeout(loadCharacterFromURL, 500);
     });
 
     function initializeChatInterface() {
@@ -914,13 +916,25 @@
       // Update header
       document.getElementById('currentCharacterName').textContent = currentCharacter.name;
       document.getElementById('currentCharacterStatus').textContent = currentCharacter.creator;
-      document.getElementById('characterImage').src = currentCharacter.avatar;
+      const headerImage = document.getElementById('characterImage');
+      if (currentCharacter.avatar && currentCharacter.avatar !== '/avatars/placeholder.webp') {
+        headerImage.src = currentCharacter.avatar;
+        headerImage.style.display = 'block';
+      } else {
+        headerImage.style.display = 'none';
+      }
       
       // Update sidebar
       document.getElementById('sidebarCharacterName').textContent = currentCharacter.name;
       document.getElementById('sidebarCharacterCreator').textContent = currentCharacter.creator;
       document.getElementById('sidebarCharacterDescription').textContent = currentCharacter.description;
-      document.getElementById('sidebarCharacterImage').src = currentCharacter.avatar;
+      const sidebarImage = document.getElementById('sidebarCharacterImage');
+      if (currentCharacter.avatar && currentCharacter.avatar !== '/avatars/placeholder.webp') {
+        sidebarImage.src = currentCharacter.avatar;
+        sidebarImage.style.display = 'block';
+      } else {
+        sidebarImage.style.display = 'none';
+      }
       document.getElementById('sidebarCharacterChats').textContent = currentCharacter.chats;
       document.getElementById('sidebarCharacterRating').textContent = currentCharacter.rating;
       
@@ -1234,6 +1248,67 @@
       
       // Clear chat and start fresh (but don't update URL)
       clearChat();
+    }
+
+    // Load character from URL parameter on page load
+    function loadCharacterFromURL() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const characterSlug = urlParams.get('char');
+      
+      console.log('🔍 Checking URL for character:', characterSlug);
+      
+      if (characterSlug && loadedCharacters.length > 0) {
+        // Find the character in our loaded data
+        const character = loadedCharacters.find(c => 
+          c.slug === characterSlug || 
+          c.slug === characterSlug.toLowerCase() ||
+          c.name.toLowerCase() === characterSlug.toLowerCase()
+        );
+        
+        if (character) {
+          console.log('✅ Found character from URL:', character.name);
+          // Load this character without updating URL (we're already on the right URL)
+          selectCharacterFromSidebarSilent(character.slug, character.name, character.avatar, character.title);
+        } else {
+          console.log('❌ Character not found in loaded data:', characterSlug);
+          // Try to find by fetching specific character from API
+          loadSpecificCharacterFromAPI(characterSlug);
+        }
+      }
+    }
+
+    // Load specific character from API if not found in initial data
+    async function loadSpecificCharacterFromAPI(characterSlug) {
+      try {
+        console.log('🔄 Fetching specific character from API:', characterSlug);
+        const response = await fetch(`/.netlify/functions/characters?slug=${encodeURIComponent(characterSlug)}`);
+        
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success && data.characters && data.characters.length > 0) {
+            const character = data.characters[0];
+            const processedChar = {
+              id: character.Character_ID || character.Name,
+              name: character.Name || 'Unknown',
+              title: character.Character_Title || '',
+              description: character.Character_Description || '',
+              avatar: character.Avatar_URL ? character.Avatar_URL.replace('narrin.ai', 'selira.ai') : null,
+              category: character.Category || 'Other',
+              slug: character.Slug || characterSlug,
+              creator: character.Created_by || 'Selira',
+              tags: Array.isArray(character.Tags) ? character.Tags.slice(0, 11) : (character.Tags || '').toString().split(',').filter(Boolean).slice(0, 11),
+              character_url: character.Character_URL ? character.Character_URL.replace('narrin.ai', 'selira.ai') : null
+            };
+            
+            console.log('✅ Loaded specific character:', processedChar.name);
+            selectCharacterFromSidebarSilent(processedChar.slug, processedChar.name, processedChar.avatar, processedChar.title);
+          } else {
+            console.log('❌ Character not found in API:', characterSlug);
+          }
+        }
+      } catch (error) {
+        console.error('❌ Error loading specific character:', error);
+      }
     }
 
     console.log('✅ Selira AI Chat interface initialized with modern design');
