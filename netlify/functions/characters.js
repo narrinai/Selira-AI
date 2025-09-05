@@ -33,12 +33,15 @@ exports.handler = async (event, context) => {
       hasSeliraBaseId: !!process.env.AIRTABLE_BASE_ID_SELIRA
     });
 
-    // Check environment variables (updated for Selira)
-    if (!process.env.AIRTABLE_TOKEN_SELIRA) {
-      throw new Error('AIRTABLE_TOKEN_SELIRA not found');
+    // Check environment variables (updated for Selira with fallbacks)
+    const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA || process.env.AIRTABLE_TOKEN;
+    const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA || process.env.AIRTABLE_BASE_ID;
+    
+    if (!AIRTABLE_TOKEN) {
+      throw new Error('AIRTABLE_TOKEN_SELIRA or AIRTABLE_TOKEN not found');
     }
-    if (!process.env.AIRTABLE_BASE_ID_SELIRA) {
-      throw new Error('AIRTABLE_BASE_ID_SELIRA not found');
+    if (!AIRTABLE_BASE_ID) {
+      throw new Error('AIRTABLE_BASE_ID_SELIRA or AIRTABLE_BASE_ID not found');
     }
 
     // Get query parameters
@@ -57,7 +60,7 @@ exports.handler = async (event, context) => {
       console.log(`📡 Making request ${requestCount} to Airtable...`);
       
       // Build Airtable URL for this request
-      let url = `https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID_SELIRA}/Characters`;
+      let url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters`;
       const params = new URLSearchParams();
       
       // Build filter formula
@@ -105,7 +108,7 @@ exports.handler = async (event, context) => {
       // Make Airtable API call
       const response = await fetch(url, {
         headers: {
-          'Authorization': `Bearer ${process.env.AIRTABLE_TOKEN_SELIRA}`,
+          'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
           'Content-Type': 'application/json'
         }
       });
@@ -156,8 +159,27 @@ exports.handler = async (event, context) => {
       
       // First check for local avatar path
       if (fields.Local_Avatar_Path && typeof fields.Local_Avatar_Path === 'string') {
-        // Use local path if available
-        avatarUrl = fields.Local_Avatar_Path;
+        // Use local path if available, but fix common naming issues
+        let localPath = fields.Local_Avatar_Path;
+        
+        // Fix for cases where avatar name doesn't match actual file
+        // For example: /avatars/emily.webp -> /avatars/emily-1754251534076.webp
+        if (localPath.includes('/avatars/') && !localPath.includes('-175')) {
+          const baseName = localPath.split('/avatars/')[1].replace('.webp', '');
+          
+          // Common mappings for known characters
+          const avatarMappings = {
+            'emily': 'emily-1754251534076.webp',
+            'aiko': 'aiko-1754252402847.webp'
+          };
+          
+          if (avatarMappings[baseName]) {
+            localPath = '/avatars/' + avatarMappings[baseName];
+            console.log(`🔧 Fixed avatar path for ${fields.Name}: ${fields.Local_Avatar_Path} -> ${localPath}`);
+          }
+        }
+        
+        avatarUrl = localPath;
       } 
       // Check for Airtable attachment field Avatar_URL
       else if (fields.Avatar_URL && Array.isArray(fields.Avatar_URL) && fields.Avatar_URL.length > 0) {
@@ -246,11 +268,11 @@ exports.handler = async (event, context) => {
           const batch = recordIdsToFetch.slice(i, i + 10);
           const filterFormula = `OR(${batch.map(id => `RECORD_ID()='${id}'`).join(',')})`;
           
-          const userUrl = `https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID_SELIRA}/Users?filterByFormula=${encodeURIComponent(filterFormula)}`;
+          const userUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula=${encodeURIComponent(filterFormula)}`;
           
           const userResponse = await fetch(userUrl, {
             headers: {
-              'Authorization': `Bearer ${process.env.AIRTABLE_TOKEN_SELIRA}`,
+              'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
               'Content-Type': 'application/json'
             }
           });
