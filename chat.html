@@ -1134,6 +1134,9 @@
       });
       event.currentTarget.classList.add('active');
       
+      // Update URL to reflect new character
+      updateUrlForCharacter(slug);
+      
       // Clear chat and start fresh
       clearChat();
     }
@@ -1152,9 +1155,49 @@
       };
       
       updateCharacterDisplay();
+      
+      // Update URL to reflect new character
+      updateUrlForCharacter(slug);
+      
       closeCharacterSearch();
       clearChat();
     }
+
+    // Update URL when switching characters
+    function updateUrlForCharacter(characterSlug) {
+      if (!characterSlug) return;
+      
+      // Find the character data to get the proper URL
+      const character = loadedCharacters.find(c => c.slug === characterSlug);
+      let newUrl;
+      
+      if (character && character.character_url) {
+        // Use the character's specific URL from Airtable
+        newUrl = character.character_url;
+      } else {
+        // Fallback to standard format
+        newUrl = `https://selira.ai/chat.html?char=${encodeURIComponent(characterSlug)}`;
+      }
+      
+      // Update the URL without reloading the page
+      const currentUrl = window.location.href;
+      if (currentUrl !== newUrl) {
+        console.log('🔄 Updating URL for character:', characterSlug, '→', newUrl);
+        window.history.pushState({character: characterSlug}, '', newUrl);
+      }
+    }
+
+    // Handle browser back/forward buttons
+    window.addEventListener('popstate', function(event) {
+      if (event.state && event.state.character) {
+        console.log('↩️ Browser navigation to character:', event.state.character);
+        // Find the character and switch to it without updating URL again
+        const character = loadedCharacters.find(c => c.slug === event.state.character);
+        if (character) {
+          selectCharacterFromSidebar(character.slug, character.name, character.avatar, character.title);
+        }
+      }
+    });
 
     console.log('✅ Selira AI Chat interface initialized with modern design');
   </script>
