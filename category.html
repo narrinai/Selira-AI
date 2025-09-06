@@ -118,7 +118,7 @@
       font-family: 'Playfair Display', serif;
       font-size: 18px;
       font-weight: 700;
-      color: white;
+      color: var(--accent);
     }
 
     .sidebar-nav {
@@ -889,9 +889,9 @@
         </a>
         <a href="#" class="nav-item active" onclick="showCharacters(); return false;">
           <span class="nav-item-icon">👥</span>
-          <span>Characters</span>
+          <span>Discover</span>
         </a>
-        <a href="/category#my-companions" class="nav-item">
+        <a href="#" class="nav-item" onclick="showMyCompanions(); return false;">
           <span class="nav-item-icon">💬</span>
           <span>My Companions</span>
         </a>
@@ -962,8 +962,8 @@
         <!-- Tab Navigation -->
         <nav class="tab-nav">
           <a href="#" class="tab-item active">Discover</a>
-          <a href="#" class="tab-item">Memories</a>
           <a href="#" class="tab-item">My Companions</a>
+          <a href="#" class="tab-item">Memories</a>
         </nav>
       </header>
 
@@ -1840,11 +1840,17 @@
                 </div>
                 <div>
                   <label style="display: block; color: var(--text-secondary); font-size: 11px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Username</label>
-                  <input id="userUsername" style="color: var(--text-primary); font-weight: 600; font-size: 13px; padding: 10px; background: var(--bg-tertiary); border-radius: 6px; border: 1px solid var(--border); width: 100%; box-sizing: border-box;" placeholder="Generating...">
+                  <div style="display: flex; gap: 8px; align-items: center;">
+                    <input id="userUsername" style="color: var(--text-primary); font-weight: 600; font-size: 13px; padding: 10px; background: var(--bg-tertiary); border-radius: 6px; border: 1px solid var(--border); flex: 1; box-sizing: border-box;" placeholder="Generating...">
+                    <button id="saveUsername" onclick="saveUsername()" style="background: var(--accent); color: white; border: none; padding: 8px 12px; border-radius: 6px; font-size: 11px; cursor: pointer; white-space: nowrap;">Save</button>
+                  </div>
                 </div>
                 <div>
                   <label style="display: block; color: var(--text-secondary); font-size: 11px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Display Name</label>
-                  <input id="userDisplayName" style="color: var(--text-primary); font-weight: 600; font-size: 13px; padding: 10px; background: var(--bg-tertiary); border-radius: 6px; border: 1px solid var(--border); width: 100%; box-sizing: border-box;" placeholder="Generating...">
+                  <div style="display: flex; gap: 8px; align-items: center;">
+                    <input id="userDisplayName" style="color: var(--text-primary); font-weight: 600; font-size: 13px; padding: 10px; background: var(--bg-tertiary); border-radius: 6px; border: 1px solid var(--border); flex: 1; box-sizing: border-box;" placeholder="Generating...">
+                    <button id="saveDisplayName" onclick="saveDisplayName()" style="background: var(--accent); color: white; border: none; padding: 8px 12px; border-radius: 6px; font-size: 11px; cursor: pointer; white-space: nowrap;">Save</button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -2054,8 +2060,8 @@
         ">
           <!-- Compact Header -->
           <div class="pricing-header" style="text-align: center; margin-bottom: 15px; flex-shrink: 0;">
-            <h2 style="font-size: 24px; font-weight: 700; margin-bottom: 6px; color: var(--text-primary);">Choose Your Plan</h2>
-            <p style="font-size: 13px; color: var(--text-secondary);">Unlock unlimited AI companion experiences</p>
+            <h2 style="font-size: 16px; font-weight: 700; margin-bottom: 6px; color: var(--text-primary);">Choose Your Plan</h2>
+            <p style="font-size: 11px; color: var(--text-secondary);">Unlock unlimited AI companion experiences</p>
           </div>
           
           <!-- Compact 3-Card Layout -->
@@ -2210,7 +2216,7 @@
       // Update active nav item
       document.querySelectorAll('.nav-item').forEach(item => {
         item.classList.remove('active');
-        if (item.textContent.includes('Characters')) {
+        if (item.textContent.includes('Discover')) {
           item.classList.add('active');
         }
       });
@@ -2218,6 +2224,34 @@
       // Show characters
       currentTab = 'discover';
       renderCharacters();
+    }
+
+    function showMyCompanions() {
+      // Show filter section and tabs
+      const filterSection = document.querySelector('.filter-section');
+      const tabsSection = document.querySelector('.tab-nav');
+      filterSection.style.display = 'block';
+      if (tabsSection) tabsSection.style.display = 'block';
+      
+      // Update active nav item
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.textContent.includes('My Companions')) {
+          item.classList.add('active');
+        }
+      });
+      
+      // Switch to My Companions tab
+      document.querySelectorAll('.tab-item').forEach(tab => {
+        tab.classList.remove('active');
+        if (tab.textContent.trim() === 'My Companions') {
+          tab.classList.add('active');
+        }
+      });
+      
+      // Show My Companions content
+      currentTab = 'companions';
+      renderMyCompanions();
     }
 
     // ===== INFINITE SCROLL =====
