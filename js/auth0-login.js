@@ -95,17 +95,26 @@ class Auth0LoginModal {
       this.user = await this.auth0Client.getUser();
       this.updateAuthState(true);
       
-      // Sync user to Airtable
-      await this.syncUserToAirtable(this.user);
+      // Sync user to Airtable (don't block login flow if it fails)
+      this.syncUserToAirtable(this.user).catch(error => {
+        console.error('⚠️ User sync failed but continuing login:', error);
+      });
       
-      // Get return URL or default to category page
+      // Get return URL or default - stay on current page if on category
+      const currentPath = window.location.pathname;
+      if (currentPath.includes('/category')) {
+        console.log('✅ Authentication callback handled - staying on category page');
+        // Don't redirect, just update the UI
+        return;
+      }
+      
       const returnUrl = localStorage.getItem('auth_return_url') || '/category.html';
       localStorage.removeItem('auth_return_url');
       
       console.log('✅ Authentication callback handled:', this.user.email);
       console.log('🔄 Redirecting to:', returnUrl);
       
-      // Redirect to original page or category
+      // Only redirect if not already on category page
       window.location.href = returnUrl;
       
     } catch (error) {
