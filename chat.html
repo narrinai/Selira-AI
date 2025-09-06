@@ -1017,8 +1017,7 @@
       messageInput.value = '';
       autoResizeTextarea();
       
-      // Save user message to localStorage immediately
-      saveChatToStorage(currentCharacter.slug, message, null);
+      // User message will be saved together with AI response
       
       // Show typing indicator
       const typingIndicator = addTypingIndicator();
@@ -1071,15 +1070,12 @@
         // Remove typing indicator
         typingIndicator.remove();
         
-        // Add AI response with model info for debugging
-        let responseText = data.response || "I'm having trouble responding right now. Please try again!";
-        if (data.model_used) {
-          responseText += `\n\n[Debug: Using ${data.model_used} via OpenRouter]`;
-        }
+        // Add AI response (clean, without debug info)
+        const responseText = data.response || "I'm having trouble responding right now. Please try again!";
         addMessage(responseText, 'ai');
         
-        // Save to localStorage for persistence
-        saveChatToStorage(currentCharacter.slug, message, data.response);
+        // Save both user and AI message to localStorage
+        saveBothMessagesToStorage(currentCharacter.slug, message, data.response);
         
         // Save conversation to Airtable (async)
         saveChatMessage(auth0_id, currentCharacter.slug, message, data.response);
@@ -1186,47 +1182,51 @@
       }, 100);
     }
 
-    // Save chat to localStorage for persistence
-    function saveChatToStorage(characterSlug, userMessage, aiResponse) {
+    // Save both messages to localStorage (prevents duplicates)
+    function saveBothMessagesToStorage(characterSlug, userMessage, aiResponse) {
       try {
         const storageKey = `chat_${characterSlug}`;
         let chatHistory = JSON.parse(localStorage.getItem(storageKey) || '[]');
         
-        if (userMessage) {
-          chatHistory.push({
-            type: 'user',
-            content: userMessage,
-            timestamp: Date.now()
-          });
-        }
+        // Add user message
+        chatHistory.push({
+          type: 'user',
+          content: userMessage,
+          timestamp: Date.now()
+        });
         
-        if (aiResponse) {
-          chatHistory.push({
-            type: 'ai', 
-            content: aiResponse,
-            timestamp: Date.now()
-          });
-        }
+        // Add AI response 
+        chatHistory.push({
+          type: 'ai', 
+          content: aiResponse,
+          timestamp: Date.now() + 1 // Slightly after user message
+        });
         
         // Keep only last 50 messages
         chatHistory = chatHistory.slice(-50);
         
         localStorage.setItem(storageKey, JSON.stringify(chatHistory));
-        console.log('💾 Saved to localStorage:', characterSlug, chatHistory.length, 'messages');
+        console.log('💾 Saved conversation to localStorage:', characterSlug, chatHistory.length, 'messages');
         
       } catch (error) {
         console.error('❌ Error saving to localStorage:', error);
       }
     }
 
+    // Save chat to localStorage for persistence (legacy function - use saveBothMessagesToStorage)
+    function saveChatToStorage(characterSlug, userMessage, aiResponse) {
+      // This function is kept for compatibility but shouldn't create duplicates
+      console.log('⚠️ Legacy save function called - use saveBothMessagesToStorage instead');
+    }
+
     // Load chat history from localStorage
     function loadChatHistoryFromStorage(characterSlug) {
       try {
-        const storageKey = `chat_${characterSlug}`;
-        const chatHistory = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        // Clean up duplicates first
+        const chatHistory = cleanupChatHistory(characterSlug);
         
         if (chatHistory.length > 0) {
-          console.log('📚 Loading', chatHistory.length, 'messages from localStorage');
+          console.log('📚 Loading', chatHistory.length, 'clean messages from localStorage');
           
           const messagesContainer = document.getElementById('chatMessages');
           messagesContainer.innerHTML = '';
@@ -1251,8 +1251,8 @@
     // Get chat history for AI context (last 10 messages)
     function getChatHistoryForContext(characterSlug) {
       try {
-        const storageKey = `chat_${characterSlug}`;
-        const fullHistory = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        // Get cleaned history
+        const fullHistory = cleanupChatHistory(characterSlug);
         
         // Get last 10 messages for context (exclude current message being sent)
         const contextHistory = fullHistory.slice(-10).map(msg => ({
@@ -1316,6 +1316,38 @@
         const storageKey = `chat_${currentCharacter.slug}`;
         localStorage.removeItem(storageKey);
         console.log('🗑️ Cleared chat history for:', currentCharacter.slug);
+      }
+    }
+
+    // Clean up duplicate messages in localStorage
+    function cleanupChatHistory(characterSlug) {
+      try {
+        const storageKey = `chat_${characterSlug}`;
+        const rawHistory = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        
+        // Remove consecutive duplicates
+        const cleanHistory = [];
+        let lastMessage = null;
+        
+        rawHistory.forEach(msg => {
+          if (!lastMessage || 
+              lastMessage.content !== msg.content || 
+              lastMessage.type !== msg.type) {
+            cleanHistory.push(msg);
+            lastMessage = msg;
+          }
+        });
+        
+        if (cleanHistory.length !== rawHistory.length) {
+          localStorage.setItem(storageKey, JSON.stringify(cleanHistory));
+          console.log('🧹 Cleaned chat history:', rawHistory.length, '→', cleanHistory.length);
+        }
+        
+        return cleanHistory;
+        
+      } catch (error) {
+        console.error('❌ Error cleaning chat history:', error);
+        return [];
       }
     }
 
