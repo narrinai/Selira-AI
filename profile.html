@@ -5955,10 +5955,12 @@ async function loadProfile() {
     
     console.log('📤 Request payload:', payload);
     
-    // TODO: Replace with direct Airtable API call via Netlify function
-    // For now, disabling Make.com webhook call
-    console.log('⚠️ User management webhook disabled - needs replacement with Netlify function');
-    const resp = { ok: true }; // Temporary mock response
+    // Use new user management Netlify function
+    const resp = await fetch('/.netlify/functions/user-management', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
     
     console.log('📡 Response status:', resp.status);
     
@@ -6471,9 +6473,15 @@ async function loadProfile() {
         
         console.log('📤 Sending payload:', payload);
         
-        // TODO: Replace with direct Airtable API call via Netlify function
-        console.log('⚠️ Subscription webhook disabled - needs replacement with Netlify function');
-        const resp = { ok: true }; // Mock response
+        // Use new subscription management Netlify function
+        const resp = await fetch('/.netlify/functions/subscription-management', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
         
         console.log('📡 Response status:', resp.status);
         
@@ -7076,9 +7084,12 @@ function updatePricingCard(plan) {
         
         console.log('📡 Sending downgrade request with payload:', JSON.stringify(payload, null, 2));
         
-        // TODO: Replace with direct Stripe webhook + Netlify function
-        console.log('⚠️ Downgrade webhook disabled - needs replacement with Stripe integration');
-        const resp = { ok: true }; // Mock response
+        // Use new subscription management Netlify function for downgrade
+        const resp = await fetch('/.netlify/functions/subscription-management', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
         
         if (!resp.ok) {
           throw new Error(`HTTP ${resp.status}: ${resp.statusText}`);

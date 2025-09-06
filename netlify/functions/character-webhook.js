@@ -119,17 +119,21 @@ exports.handler = async (event, context) => {
       
       console.log('📤 Forwarding valid character creation to Make.com');
       
-      // TODO: Replace with direct Airtable API call
-      console.log('⚠️ Character creation Make.com webhook disabled');
-      console.log('📤 Would create character:', requestBody);
-      const makeResponse = { ok: true, status: 200, text: () => JSON.stringify({ success: true }) }; // Mock response
-
-      const responseText = await makeResponse.text();
+      // Create character directly in Airtable
+      const airtableResult = await createCharacterInAirtable(requestBody);
+      
+      if (!airtableResult.success) {
+        return {
+          statusCode: 500,
+          headers,
+          body: JSON.stringify(airtableResult)
+        };
+      }
       
       return {
-        statusCode: makeResponse.status,
+        statusCode: 200,
         headers,
-        body: responseText
+        body: JSON.stringify(airtableResult)
       };
     } 
     // Handle get_tags action locally
@@ -180,3 +184,101 @@ exports.handler = async (event, context) => {
     };
   }
 };
+
+// Create character directly in Airtable
+async function createCharacterInAirtable(requestBody) {
+  const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA || process.env.AIRTABLE_BASE_ID;
+  const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA || process.env.AIRTABLE_TOKEN;
+
+  if (!AIRTABLE_BASE_ID || !AIRTABLE_TOKEN) {
+    return {
+      success: false,
+      error: 'Missing Airtable configuration'
+    };
+  }
+
+  try {
+    console.log('📝 Creating character in Airtable:', requestBody.character_data?.name);
+
+    const characterData = requestBody.character_data || requestBody;
+    
+    // Prepare Airtable fields
+    const fields = {
+      Name: characterData.name || 'Unnamed Character',
+      Character_Description: characterData.description || '',
+      Character_Title: characterData.title || characterData.tagline || '',
+      Category: characterData.category || 'General',
+      Slug: characterData.slug || generateSlug(characterData.name),
+      User_UID: requestBody.user_uid,
+      Created_At: new Date().toISOString(),
+      Status: 'Active',
+      Is_Public: characterData.visibility === 'public' || false,
+      Avatar_URL: characterData.avatar_url || '',
+      Prompt: characterData.prompt || characterData.system_prompt || ''
+    };
+
+    // Add optional fields if they exist
+    if (characterData.personality) fields.Personality = characterData.personality;
+    if (characterData.voice_id) fields.Voice_ID = characterData.voice_id;
+    if (characterData.tags && Array.isArray(characterData.tags)) {
+      fields.Tags = characterData.tags.join(', ');
+    }
+
+    console.log('📤 Airtable fields:', fields);
+
+    const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters`;
+    
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        fields: fields
+      })
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('❌ Airtable API error:', response.status, errorText);
+      throw new Error(`Airtable API error: ${response.status} - ${errorText}`);
+    }
+
+    const result = await response.json();
+    console.log('✅ Character created in Airtable:', result.id);
+
+    return {
+      success: true,
+      message: 'Character created successfully',
+      character_id: result.id,
+      character: {
+        id: result.id,
+        name: fields.Name,
+        slug: fields.Slug,
+        category: fields.Category,
+        created_at: fields.Created_At
+      }
+    };
+
+  } catch (error) {
+    console.error('❌ Character creation error:', error);
+    return {
+      success: false,
+      error: 'Failed to create character',
+      details: error.message
+    };
+  }
+}
+
+// Generate URL-friendly slug from character name
+function generateSlug(name) {
+  if (!name) return 'unnamed-character';
+  
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
+    .replace(/\s+/g, '-')         // Replace spaces with hyphens
+    .replace(/-+/g, '-')          // Replace multiple hyphens with single
+    .replace(/^-+|-+$/g, '');     // Remove leading/trailing hyphens
+}
