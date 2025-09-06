@@ -141,93 +141,127 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ===== HEADER NAVIGATION ===== */
+    /* Header - Exact match with index.html */
     .header {
-      position: sticky;
+      position: fixed;
       top: 0;
-      z-index: var(--z-sticky);
+      left: 0;
+      right: 0;
       background: rgba(10, 10, 10, 0.95);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--border);
-      transition: all var(--transition-base);
+      z-index: 1000;
+      padding: 16px 32px;
     }
 
-    .header-container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 var(--spacing-lg);
-      width: 100%;
-      overflow: hidden;
-    }
-
-    .header-content {
+    .nav {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      min-height: 72px;
-      gap: var(--spacing-lg);
-      width: 100%;
-    }
-
-    /* Logo */
-    .logo {
-      font-family: var(--font-secondary);
-      font-size: var(--font-size-xl);
-      font-weight: 700;
-      text-decoration: none;
-      letter-spacing: -0.02em;
-      color: var(--color-accent);
-      transition: transform var(--transition-base);
-      flex-shrink: 0;
-    }
-
-    .logo:hover {
-      transform: scale(1.05);
-    }
-
-    /* Navigation Links - Desktop */
-    .nav-links {
-      display: none;
       align-items: center;
-      gap: var(--spacing-xl);
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--color-accent);
+      letter-spacing: -0.5px;
+      text-decoration: none;
+    }
+
+    .nav-menu {
+      display: flex;
+      gap: 32px;
+      align-items: center;
     }
 
     .nav-link {
       color: var(--text-secondary);
       text-decoration: none;
       font-weight: 500;
-      font-size: var(--font-size-sm);
-      transition: color var(--transition-base);
-      position: relative;
-      padding: var(--spacing-xs) 0;
-    }
-
-    .nav-link::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: var(--gradient-primary);
-      transition: width var(--transition-base);
+      transition: color 0.2s;
     }
 
     .nav-link:hover {
+      color: var(--text-primary);
+    }
+
+    .cta-btn {
+      background: var(--color-accent);
+      color: white;
+      padding: 10px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    .cta-btn:hover {
+      background: var(--color-accent-dark);
+    }
+
+    /* Mobile Menu - Exact match with index.html */
+    .mobile-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 20px;
+    }
+
+    .mobile-menu.open {
+      display: block;
+    }
+
+    .mobile-menu a {
+      display: block;
+      padding: 12px 0;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .mobile-menu a:last-child {
+      border-bottom: none;
+    }
+
+    .mobile-menu a:hover {
       color: var(--color-accent);
     }
 
-    .nav-link:hover::after {
-      width: 100%;
+    .hamburger {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 24px;
+      cursor: pointer;
     }
 
-    .nav-link.active {
-      color: var(--color-accent);
-    }
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .header {
+        padding: 16px 20px;
+        position: relative;
+      }
 
-    .nav-link.active::after {
-      width: 100%;
+      .nav-menu {
+        display: none;
+      }
+
+      .hamburger {
+        display: block;
+      }
+
+      .main-content {
+        padding: var(--spacing-xl) var(--spacing-md);
+      }
     }
 
     /* Buttons */
@@ -864,83 +898,34 @@
       }
     }
   </style>
+  
+  <!-- Auth0 Authentication System -->
+  <script src="/js/auth0-login.js"></script>
 </head>
 
 <body>
-  <!-- Header Navigation -->
-  <header class="header" role="banner">
-    <div class="header-container">
-      <div class="header-content">
-        <!-- Logo -->
-        <a href="/" class="logo" aria-label="Selira AI Home">Selira AI</a>
-
-        <!-- Desktop Navigation Links -->
-        <nav class="nav-links" role="navigation" aria-label="Secondary navigation">
-          <a href="/news" class="nav-link active">News</a>
-          <a href="/pricing" class="nav-link">Pricing</a>
-          <a href="#" class="nav-link" id="loginBtn">Login</a>
-          <a href="#" class="nav-link" id="signupBtn">Sign Up</a>
-          <a href="/chat.html" class="btn btn-primary">Start Chatting</a>
-        </nav>
-
-        <!-- Mobile Navigation Container -->
-        <div class="mobile-nav-container">
-          <!-- Mobile Chat Button -->
-          <a
-            href="/chat-overview"
-            class="mobile-chat-btn"
-            aria-label="Go to chats"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-            </svg>
-          </a>
-
-          <!-- Mobile Hamburger Menu -->
-          <button
-            class="mobile-menu-btn"
-            id="mobileMenuBtn"
-            aria-label="Open navigation menu"
-            aria-expanded="false"
-          >
-            <div class="hamburger">
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
-          </button>
-        </div>
+  <!-- Header -->
+  <header class="header">
+    <nav class="nav">
+      <a href="/" class="logo" aria-label="Selira AI Home">Selira AI</a>
+      <div class="nav-menu">
+        <a href="/news.html" class="nav-link">News</a>
+        <a href="/pricing.html" class="nav-link">Pricing</a>
+        <a href="#" class="nav-link login-btn" onclick="openLoginModal('login'); return false;">Login</a>
+        <a href="#" class="nav-link signup-btn" onclick="openLoginModal('signup'); return false;">Sign Up</a>
+        <a href="/chat.html" class="cta-btn">Start Chatting</a>
       </div>
+      <button class="hamburger" onclick="toggleMobileMenu()">☰</button>
+    </nav>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="/news.html">News</a>
+      <a href="/pricing.html">Pricing</a>
+      <a href="#" class="mobile-login-link" onclick="openLoginModal('login'); return false;">🔑 Login</a>
+      <a href="#" class="mobile-signup-link" onclick="openLoginModal('signup'); return false;">✨ Sign Up</a>
+      <a href="/chat.html" class="cta-btn">Start Chatting</a>
     </div>
   </header>
 
-  <!-- Mobile Menu Overlay -->
-  <div class="mobile-menu-overlay" id="mobileMenuOverlay">
-    <div class="mobile-menu-content">
-      <div class="mobile-menu-header">
-        <div class="mobile-menu-logo">Selira AI</div>
-        <div class="mobile-menu-subtitle">AI Companion Platform</div>
-      </div>
-      <nav class="mobile-menu-nav" role="navigation" aria-label="Mobile navigation">
-        <a href="/news" class="mobile-menu-link active">
-          <span class="mobile-menu-link-icon">📰</span>
-          News
-        </a>
-        <a href="/pricing" class="mobile-menu-link">
-          <span class="mobile-menu-link-icon">💎</span>
-          Pricing
-        </a>
-        <a href="#" class="mobile-menu-link" id="mobileLoginBtn">
-          <span class="mobile-menu-link-icon">🔑</span>
-          Login
-        </a>
-        <a href="#" class="mobile-menu-link" id="mobileSignupBtn">
-          <span class="mobile-menu-link-icon">✨</span>
-          Sign Up
-        </a>
-      </nav>
-    </div>
-  </div>
 
   <!-- Main Content -->
   <main class="main-content">
@@ -1173,70 +1158,21 @@
     const loginBtn = document.getElementById('loginBtn');
     const mobileLoginBtn = document.getElementById('mobileLoginBtn');
 
-    // ===== MOBILE MENU FUNCTIONALITY =====
+    // Mobile menu toggle - exact match with index.html
     function toggleMobileMenu() {
-      if (!mobileMenuOverlay) return;
+      const mobileMenu = document.getElementById('mobileMenu');
+      mobileMenu.classList.toggle('open');
+    }
+
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', function(event) {
+      const mobileMenu = document.getElementById('mobileMenu');
+      const hamburger = document.querySelector('.hamburger');
       
-      const isActive = mobileMenuOverlay.classList.contains('active');
-      
-      if (isActive) {
-        closeMobileMenu();
-      } else {
-        openMobileMenu();
-      }
-    }
-
-    function openMobileMenu() {
-      if (mobileMenuOverlay) {
-        mobileMenuOverlay.classList.add('active');
-      }
-      if (mobileMenuBtn) {
-        mobileMenuBtn.classList.add('active');
-        mobileMenuBtn.setAttribute('aria-expanded', 'true');
-      }
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closeMobileMenu() {
-      if (mobileMenuOverlay) {
-        mobileMenuOverlay.classList.remove('active');
-      }
-      if (mobileMenuBtn) {
-        mobileMenuBtn.classList.remove('active');
-        mobileMenuBtn.setAttribute('aria-expanded', 'false');
-      }
-      document.body.style.overflow = '';
-    }
-
-    mobileMenuBtn?.addEventListener('click', toggleMobileMenu);
-
-    mobileMenuOverlay?.addEventListener('click', (e) => {
-      if (e.target === mobileMenuOverlay) {
-        closeMobileMenu();
+      if (!mobileMenu.contains(event.target) && !hamburger.contains(event.target)) {
+        mobileMenu.classList.remove('open');
       }
     });
-
-    document.querySelectorAll('.mobile-menu-link').forEach(link => {
-      link.addEventListener('click', closeMobileMenu);
-    });
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        if (mobileMenuOverlay?.classList.contains('active')) {
-          closeMobileMenu();
-        }
-      }
-    });
-
-    function handleResize() {
-      if (window.innerWidth > 768) {
-        if (mobileMenuOverlay?.classList.contains('active')) {
-          closeMobileMenu();
-        }
-      }
-    }
-
-    window.addEventListener('resize', handleResize);
 
     // Category filtering
     document.addEventListener('DOMContentLoaded', () => {
