@@ -1298,18 +1298,28 @@
       }
       
       // Transform to carousel format
-      featuredCharacters = featuredCharacters.slice(0, 7).map(char => ({
-        name: char.Name,
-        role: char.Character_Title || char.Category || 'Character',
-        avatar: char.Avatar_URL,
-        slug: char.Slug || (char.Name ? char.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'unknown'),
-        description: char.Character_Description || 'An amazing character ready for conversation.',
-        chats: Math.floor(Math.random() * 200) + 50 + 'K',
-        rating: (Math.random() * 2 + 3).toFixed(1),
-        character_url: char.Character_URL
-      }));
+      featuredCharacters = featuredCharacters.slice(0, 7).map(char => {
+        const slug = char.Slug || (char.Name ? char.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'unknown');
+        return {
+          name: char.Name,
+          role: char.Character_Title || char.Category || 'Character',
+          avatar: char.Avatar_URL,
+          slug: slug,
+          description: char.Character_Description || 'An amazing character ready for conversation.',
+          chats: Math.floor(Math.random() * 200) + 50 + 'K',
+          rating: (Math.random() * 2 + 3).toFixed(1),
+          character_url: char.Character_URL && char.Character_URL.trim() !== '' 
+            ? char.Character_URL.replace('narrin.ai', 'selira.ai')
+            : `/chat.html?char=${encodeURIComponent(slug)}`
+        };
+      });
       
       console.log('✅ Updated featured characters:', featuredCharacters.length);
+      console.log('🔍 Featured characters URLs:', featuredCharacters.map(char => ({
+        name: char.name,
+        character_url: char.character_url,
+        slug: char.slug
+      })));
       initializeCharacterCarousel();
     }
     
