@@ -98,14 +98,22 @@ exports.handler = async (event, context) => {
 
     console.log('🤖 AI Response generated:', aiResponse.substring(0, 100) + '...');
 
-    // Parallel save operations
-    await Promise.all([
-      saveMessage(auth0_id, character_slug, message, 'user'),
-      saveMessage(auth0_id, character_slug, aiResponse, 'assistant'),
-      updateMemoryIfNeeded(auth0_id, character_slug, message, aiResponse)
-    ]);
-
-    console.log('💾 Messages saved to database');
+    // Try to save messages but don't fail chat if saving fails
+    try {
+      if (auth0_id !== 'anonymous') {
+        await Promise.all([
+          saveMessage(auth0_id, character_slug, message, 'user'),
+          saveMessage(auth0_id, character_slug, aiResponse, 'assistant'),
+          updateMemoryIfNeeded(auth0_id, character_slug, message, aiResponse)
+        ]);
+        console.log('💾 Messages saved to database');
+      } else {
+        console.log('👤 Anonymous user - skipping message save');
+      }
+    } catch (saveError) {
+      console.error('⚠️ Message saving failed but continuing with chat:', saveError);
+      // Don't fail the entire request if saving fails
+    }
 
     return {
       statusCode: 200,
@@ -115,7 +123,8 @@ exports.handler = async (event, context) => {
         response: aiResponse,
         model_used: model,
         tokens_used: openrouterData.usage?.total_tokens,
-        timestamp: Date.now()
+        timestamp: Date.now(),
+        saved_to_db: auth0_id !== 'anonymous'
       })
     };
 

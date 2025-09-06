@@ -734,24 +734,10 @@
           <span>Today</span>
         </div>
         <div class="chat-list" id="chatList">
-          <!-- Sample chat items -->
-          <div class="chat-item active">
-            <div class="chat-avatar">
-              <img src="https://selira.ai/avatars/aiko.webp" alt="Aiko">
-            </div>
-            <div class="chat-info">
-              <div class="chat-name">Aiko</div>
-              <div class="chat-preview">Your mom's friends Claire is...</div>
-            </div>
-          </div>
-          <div class="chat-item">
-            <div class="chat-avatar">
-              <img src="https://selira.ai/avatars/emily.webp" alt="Emily">
-            </div>
-            <div class="chat-info">
-              <div class="chat-name">Emily</div>
-              <div class="chat-preview">Your best friend found out...</div>
-            </div>
+          <!-- Chat items will be populated dynamically from Airtable -->
+          <div class="loading-chats" style="text-align: center; padding: 20px; color: var(--text-secondary); font-size: 14px;">
+            <div style="margin-bottom: 8px;">🔄</div>
+            Loading characters...
           </div>
         </div>
       </div>
@@ -785,19 +771,10 @@
 
       <!-- Chat Messages Area -->
       <div class="chat-messages" id="chatMessages">
-        <div class="message-group">
-          <div class="message">
-            <div class="message-avatar">
-              <img src="https://selira.ai/avatars/aiko.webp" alt="Aiko">
-            </div>
-            <div class="message-content">
-              <em>It was early in the morning, the sun barely rising and user was woken up by sounds of heavy boxes coming into your house. You went downstairs to see what was going on. You saw your mom and Claire helping carry boxes while Aiko just stood there, yawning since it was so early in the morning.</em>
-              <br><br>
-              <strong>Aiko:</strong> Mom I really didnt have to come, I could have stayed at my friends place.<br>
-              <strong>Claire:</strong> Oh come on Aiko, youll be here for 6 months, plus look over there, youll have company.<br>
-              <em>Claire points at user, still half-asleep.</em>
-            </div>
-          </div>
+        <div class="welcome-message" style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
+          <div style="font-size: 48px; margin-bottom: 16px;">💭</div>
+          <h3 style="color: var(--text-primary); margin-bottom: 8px;">Chat Cleared</h3>
+          <p>Start a new conversation!</p>
         </div>
       </div>
 
@@ -1041,12 +1018,22 @@
       const typingIndicator = addTypingIndicator();
       
       try {
-        // Get user data for API call
-        const user = JSON.parse(localStorage.getItem('user') || '{}');
-        const auth0_id = user.sub || user.auth0_id || 'anonymous';
+        // Get user data for API call - handle both authenticated and anonymous users
+        let auth0_id = 'anonymous';
+        try {
+          const user = JSON.parse(localStorage.getItem('user') || '{}');
+          auth0_id = user.sub || user.auth0_id || user.email || 'anonymous';
+        } catch (e) {
+          // If no user data, use anonymous
+          auth0_id = 'anonymous';
+        }
         
         // Call OpenRouter chat API
-        console.log('🤖 Sending message to AI:', { character: currentCharacter.slug, message: message.substring(0, 50) + '...' });
+        console.log('🤖 Sending message to AI:', { 
+          character: currentCharacter.slug, 
+          auth0_id: auth0_id,
+          message: message.substring(0, 50) + '...' 
+        });
         
         const response = await fetch('/.netlify/functions/openrouter-chat', {
           method: 'POST',
