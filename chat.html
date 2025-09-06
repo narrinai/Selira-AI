@@ -102,24 +102,27 @@
       color: var(--text-primary);
     }
 
-    .new-chat-btn {
+    .back-btn {
       width: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
       padding: 12px;
-      background: var(--accent);
-      color: white;
-      border: none;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
       border-radius: var(--radius-md);
       font-weight: 600;
-      cursor: pointer;
+      text-decoration: none;
       transition: all 0.2s ease;
     }
 
-    .new-chat-btn:hover {
-      background: var(--accent-hover);
+    .back-btn:hover {
+      background: var(--bg-secondary);
+      border-color: var(--accent);
+      color: var(--accent);
+      text-decoration: none;
     }
 
     .sidebar-section {
@@ -722,10 +725,10 @@
         <a href="/" class="sidebar-logo">
           <span class="logo-text">Selira</span>
         </a>
-        <button class="new-chat-btn" onclick="showCharacterSearch()">
-          <span class="btn-icon">+</span>
-          <span>New Chat</span>
-        </button>
+        <a href="/category" class="back-btn" title="Back to Characters">
+          <span class="btn-icon">←</span>
+          <span>Back</span>
+        </a>
       </div>
 
       <!-- Recent Chats -->
