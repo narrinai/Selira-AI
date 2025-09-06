@@ -3957,7 +3957,7 @@ body .netlify-identity-widget > div[data-netlify-identity-modal] {
       const downgradeStatus = urlParams.get('downgrade');
       
       if (upgradeStatus === 'success') {
-        showSuccess('🎉 Upgrade successful! Welcome to your new plan!');
+        console.log('✅ Upgrade successful');
         
         // BELANGRIJKE TOEVOEGING: Automatisch profile data refreshen
         setTimeout(() => {
@@ -4557,7 +4557,7 @@ function handleLoginSuccess(user, eventType = 'unknown') {
           }, 100);
         } else {
           // No specific redirect, stay on profile page but show success
-          showSuccess('Welcome to your profile!');
+          console.log('✅ User on profile page');
         }
       }
     }
@@ -4664,7 +4664,7 @@ function handleLoginSuccess(user, eventType = 'unknown') {
         console.log('✅ Webhook response:', responseText);
         
         if (isNewUser) {
-          showSuccess('Account created successfully! Welcome to Selira AI!');
+          console.log('✅ Account created successfully');
           showProfileUI();
           
           // Voor nieuwe users: wacht en laad dan profile
@@ -4993,14 +4993,14 @@ function handleLoginSuccess(user, eventType = 'unknown') {
             localStorage.setItem('subscription_status', 'trial');
             localStorage.setItem('trial_end_date', trialData['grace_period_end']);
             
-            showSuccess('🎉 Welcome! You have 3 days of Engage plan access with unlimited messaging!');
+            console.log('✅ Trial setup successful - 3 days Engage plan access');
           } else {
             console.error('❌ Failed to setup trial');
-            showSuccess('Welcome! Your account has been created successfully.');
+            console.log('✅ Account created successfully');
           }
         } catch (error) {
           console.error('❌ Error setting up trial:', error);
-          showSuccess('Welcome! Your account has been created successfully.');
+          console.log('✅ Account created successfully');
         }
         
         // Update the UI to show logged-in state
@@ -7316,8 +7316,8 @@ async function checkTrialStatus(email, uid) {
         localStorage.setItem('subscription_status', 'expired_trial');
         localStorage.removeItem('trial_end_date');
         
-        // Show notification about trial expiration
-        showNotification('⏰ Your 3-day Engage trial has ended. Upgrade to continue with unlimited messaging!');
+        // Log trial expiration (notification removed)
+        console.log('⏰ Trial ended - user downgraded to Free plan');
       } else if (data.current_plan === 'Engage' && data.subscription_status === 'trial') {
         // Update localStorage with current trial info
         localStorage.setItem('user_plan', 'Engage');
