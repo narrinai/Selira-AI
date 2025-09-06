@@ -145,8 +145,16 @@ exports.handler = async (event, context) => {
             Auth0ID: auth0_id,
             Email: email,
             Name: name,
-            Username: generateUsername(),
-            Display_Name: generateUsername(),
+            Username: (() => {
+              const username = generateUsername();
+              console.log('📝 Generated username:', username);
+              return username;
+            })(),
+            Display_Name: (() => {
+              const displayName = generateUsername();
+              console.log('📝 Generated display name:', displayName);
+              return displayName;
+            })(),
             Plan: 'Free', // Default plan
             CreatedAt: new Date().toISOString(),
             LastActive: new Date().toISOString(),
