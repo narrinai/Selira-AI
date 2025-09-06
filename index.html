@@ -218,6 +218,9 @@
       width: 100%;
       height: 100%;
       cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      display: block;
     }
 
     .carousel-card.active {
@@ -230,6 +233,18 @@
       transform: translateY(-8px);
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
       border-color: var(--accent);
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .carousel-link {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .carousel-link:hover {
+      text-decoration: none;
+      color: inherit;
     }
 
     .carousel-image {
@@ -399,12 +414,27 @@
       transition: all 0.3s ease;
       cursor: pointer;
       position: relative;
+      text-decoration: none;
+      color: inherit;
+      display: block;
     }
 
     .character-card:hover {
       transform: translateY(-8px);
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
       border-color: var(--accent);
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .character-link {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .character-link:hover {
+      text-decoration: none;
+      color: inherit;
     }
 
     .character-image {
@@ -497,6 +527,36 @@
       background: var(--accent-hover);
       color: white;
       text-decoration: none;
+    }
+
+    .chat-btn-inline {
+      flex: 1;
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none; /* Prevent double click handling since parent is clickable */
+    }
+
+    .carousel-chat-btn-inline {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none; /* Prevent double click handling since parent is clickable */
     }
 
     .heart-btn {
@@ -1107,7 +1167,7 @@
       // Use requestAnimationFrame to prevent flickering
       requestAnimationFrame(() => {
         grid.innerHTML = characters.map(character => `
-        <div class="character-card">
+        <a href="${character.Character_URL || `/chat.html?char=${character.Slug || character.Name}`}" class="character-card character-link">
           ${character.Avatar_URL ? 
             `<img 
               src="${character.Avatar_URL}" 
@@ -1129,15 +1189,13 @@
               <span>⭐ ${(Math.random() * 2 + 3).toFixed(1)}</span>
             </div>
             <div class="character-actions">
-              <a href="${character.Character_URL || `/chat.html?char=${character.Slug || character.Name}`}" class="chat-btn">
-                💬 Chat
-              </a>
-              <button class="heart-btn" onclick="event.stopPropagation(); toggleFavorite('${character.Slug || character.Name}')">
+              <span class="chat-btn-inline">💬 Chat</span>
+              <button class="heart-btn" onclick="event.stopPropagation(); toggleFavorite('${character.Slug || character.Name}'); return false;">
                 ❤️
               </button>
             </div>
           </div>
-        </div>
+        </a>
       `).join('');
       });
     }
@@ -1261,7 +1319,7 @@
       
       // Create character cards
       carousel.innerHTML = featuredCharacters.map((character, index) => `
-        <div class="carousel-card ${index === 0 ? 'active' : ''}" data-index="${index}">
+        <a href="${character.character_url || `/chat.html?char=${character.slug}`}" class="carousel-card carousel-link ${index === 0 ? 'active' : ''}" data-index="${index}">
           <img 
             src="${character.avatar}" 
             alt="${character.name}"
@@ -1279,15 +1337,13 @@
               <span>⭐ ${character.rating}</span>
             </div>
             <div class="carousel-actions">
-              <a href="${character.character_url || `https://selira.ai/chat.html?char=${character.slug}`}" class="carousel-chat-btn" onclick="event.stopPropagation();">
-                💬 Chat
-              </a>
-              <button class="carousel-heart-btn" onclick="event.stopPropagation(); toggleFavorite('${character.slug}')">
+              <span class="carousel-chat-btn-inline">💬 Chat</span>
+              <button class="carousel-heart-btn" onclick="event.stopPropagation(); toggleFavorite('${character.slug}'); return false;">
                 ❤️
               </button>
             </div>
           </div>
-        </div>
+        </a>
       `).join('');
     }
     
