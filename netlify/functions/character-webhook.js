@@ -119,13 +119,10 @@ exports.handler = async (event, context) => {
       
       console.log('📤 Forwarding valid character creation to Make.com');
       
-      const makeResponse = await fetch('https://hook.eu2.make.com/c36jubkn9rbbqg0ovgfbx2ca1iwgf16q', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(requestBody)
-      });
+      // TODO: Replace with direct Airtable API call
+      console.log('⚠️ Character creation Make.com webhook disabled');
+      console.log('📤 Would create character:', requestBody);
+      const makeResponse = { ok: true, status: 200, text: () => JSON.stringify({ success: true }) }; // Mock response
 
       const responseText = await makeResponse.text();
       

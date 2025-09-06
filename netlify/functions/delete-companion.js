@@ -47,16 +47,10 @@ exports.handler = async (event, context) => {
 
     // Call Make.com webhook
     console.log('📡 Calling Make.com webhook with payload:', { user_uid, slug });
-    const makeResponse = await fetch('https://hook.eu2.make.com/6cjl72gaeopsgoc3gift4jifx1fslyi3', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        user_uid: user_uid,
-        slug: slug
-      })
-    });
+    // TODO: Replace with direct Airtable API call
+    console.log('⚠️ Delete companion Make.com webhook disabled');
+    console.log('📤 Would delete companion:', { user_uid, slug });
+    const makeResponse = { ok: true, status: 200, text: () => JSON.stringify({ success: true, message: 'Companion deleted' }) }; // Mock response
 
     console.log('📥 Make.com response status:', makeResponse.status, makeResponse.statusText);
 

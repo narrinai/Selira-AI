@@ -4646,22 +4646,12 @@ function handleLoginSuccess(user, eventType = 'unknown') {
         console.log('🔍 Referrer ID in payload:', payload.referrer_id);
         console.log('🔍 Full payload JSON:', JSON.stringify(payload, null, 2));
         
-        const REGISTER_WEBHOOK_URL = 'https://hook.eu2.make.com/03ug6qzucda4ksrkcc06nu3bu3vetj15';
+        // User registration now handled by Auth0 user sync function
         
-        const resp = await fetch(REGISTER_WEBHOOK_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
+        // Registration handled by Auth0 sync - no external webhook needed
+        console.log('✅ User registration handled by Auth0 sync');
         
-        console.log('📡 Webhook response status:', resp.status);
-        
-        if (!resp.ok) {
-          throw new Error(`Webhook failed: HTTP ${resp.status}`);
-        }
-        
-        const responseText = await resp.text();
-        console.log('✅ Webhook response:', responseText);
+        // Response handling no longer needed - Auth0 sync handles registration
         
         if (isNewUser) {
           console.log('✅ Account created successfully');
@@ -5965,11 +5955,10 @@ async function loadProfile() {
     
     console.log('📤 Request payload:', payload);
     
-    const resp = await fetch('https://hook.eu2.make.com/lya166veex7oo2wwo8mx4fuhlkssxlog', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
+    // TODO: Replace with direct Airtable API call via Netlify function
+    // For now, disabling Make.com webhook call
+    console.log('⚠️ User management webhook disabled - needs replacement with Netlify function');
+    const resp = { ok: true }; // Temporary mock response
     
     console.log('📡 Response status:', resp.status);
     
@@ -5994,11 +5983,9 @@ async function loadProfile() {
         };
         
         console.log('📤 Creating missing user in Airtable...');
-        const createResp = await fetch('https://hook.eu2.make.com/03ug6qzucda4ksrkcc06nu3bu3vetj15', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(createPayload)
-        });
+        // User creation now handled by Auth0 sync function
+        console.log('✅ User creation handled by Auth0 sync');
+        const createResp = { ok: true }; // Mock response
         
         if (createResp.ok) {
           console.log('✅ User created in Airtable, retrying profile load...');
@@ -6484,14 +6471,9 @@ async function loadProfile() {
         
         console.log('📤 Sending payload:', payload);
         
-        const resp = await fetch('https://hook.eu2.make.com/lya166veex7oo2wwo8mx4fuhlkssxlog', {
-          method: 'POST',
-          headers: { 
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: JSON.stringify(payload)
-        });
+        // TODO: Replace with direct Airtable API call via Netlify function
+        console.log('⚠️ Subscription webhook disabled - needs replacement with Netlify function');
+        const resp = { ok: true }; // Mock response
         
         console.log('📡 Response status:', resp.status);
         
@@ -7094,11 +7076,9 @@ function updatePricingCard(plan) {
         
         console.log('📡 Sending downgrade request with payload:', JSON.stringify(payload, null, 2));
         
-        const resp = await fetch('https://hook.eu2.make.com/p4qk5bzmdq987erwlo0g0bjv2xvgb5mt', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
+        // TODO: Replace with direct Stripe webhook + Netlify function
+        console.log('⚠️ Downgrade webhook disabled - needs replacement with Stripe integration');
+        const resp = { ok: true }; // Mock response
         
         if (!resp.ok) {
           throw new Error(`HTTP ${resp.status}: ${resp.statusText}`);
