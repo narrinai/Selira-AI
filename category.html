@@ -101,6 +101,15 @@
       margin-bottom: 24px;
       padding-bottom: 16px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      text-decoration: none;
+      color: inherit;
+      transition: opacity 0.2s ease;
+    }
+
+    .sidebar-logo:hover {
+      opacity: 0.8;
+      text-decoration: none;
+      color: inherit;
     }
 
     .sidebar-logo-icon {
@@ -879,13 +888,13 @@
     <!-- Left Sidebar Navigation (Character.AI style) -->
     <aside class="sidebar" id="sidebar">
       <!-- Logo -->
-      <div class="sidebar-logo">
+      <a href="/category" class="sidebar-logo">
         <div class="sidebar-logo-text">Selira</div>
-      </div>
+      </a>
 
       <!-- Navigation -->
       <nav class="sidebar-nav">
-        <a href="/" class="nav-item">
+        <a href="/category" class="nav-item">
           <span class="nav-item-icon">🏠</span>
           <span>Home</span>
         </a>
