@@ -1411,13 +1411,20 @@
     // Save chat message to Airtable
     async function saveChatMessage(auth0_id, character_slug, userMessage, aiResponse) {
       try {
+        // Skip saving for anonymous users
+        if (auth0_id === 'anonymous') {
+          console.log('👤 Anonymous user - skipping chat save');
+          return;
+        }
+        
         const response = await fetch('/.netlify/functions/save-chat-message', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            auth0_id: auth0_id,
+            user_email: auth0_id, // Use auth0_id as email for now
+            user_uid: auth0_id,
             char: character_slug,
             user_message: userMessage,
             ai_response: aiResponse
