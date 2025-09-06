@@ -1054,6 +1054,8 @@
         
         const data = await response.json();
         console.log('✅ Received AI response:', data.response?.substring(0, 100) + '...');
+        console.log('🤖 Model used:', data.model_used);
+        console.log('💾 Saved to DB:', data.saved_to_db);
         
         // Remove typing indicator
         typingIndicator.remove();

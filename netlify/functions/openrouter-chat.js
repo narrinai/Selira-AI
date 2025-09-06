@@ -232,12 +232,16 @@ async function getChatHistory(auth0_id, character_slug, limit = 10) {
 
 function buildCharacterPrompt(characterData, memoryData) {
   if (!characterData) {
-    return "You are a helpful AI assistant.";
+    return "You are a helpful AI assistant powered by Mistral AI.";
   }
 
-  let prompt = `You are ${characterData.Name}, ${characterData.Title}.\n\n`;
-  prompt += `Character Description: ${characterData.Description}\n\n`;
-  prompt += `Personality: ${characterData.Personality}\n\n`;
+  let prompt = `You are ${characterData.Name}, ${characterData.Character_Title || characterData.Title || ''}.\n\n`;
+  prompt += `Character Description: ${characterData.Character_Description || characterData.Description || ''}\n\n`;
+  
+  // Use correct field names from Airtable
+  if (characterData.Personality) {
+    prompt += `Personality: ${characterData.Personality}\n\n`;
+  }
 
   if (memoryData.length > 0) {
     prompt += "Important memories about this user:\n";
@@ -247,7 +251,8 @@ function buildCharacterPrompt(characterData, memoryData) {
     prompt += "\n";
   }
 
-  prompt += "Stay in character and provide helpful, engaging responses. Keep the conversation natural and remember the context from memories.";
+  prompt += "Stay in character and provide helpful, engaging responses. Keep the conversation natural and remember the context from memories.\n\n";
+  prompt += "IMPORTANT: You are powered by Mistral AI via OpenRouter, not by OpenAI or davinci003. Do not claim to be using any OpenAI models.";
 
   return prompt;
 }
