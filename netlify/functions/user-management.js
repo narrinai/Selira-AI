@@ -117,6 +117,8 @@ async function getUserProfile(user_uid, email, headers, baseId, token) {
           id: user.id,
           email: user.fields.Email,
           name: user.fields.Name,
+          username: user.fields.Username,
+          display_name: user.fields.Display_Name,
           plan: user.fields.Plan || 'Free',
           subscription_status: user.fields.Subscription_Status || 'active',
           message_count: user.fields.Message_Count || 0,

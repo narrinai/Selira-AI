@@ -145,6 +145,8 @@ exports.handler = async (event, context) => {
             Auth0ID: auth0_id,
             Email: email,
             Name: name,
+            Username: generateUsername(),
+            Display_Name: generateUsername(),
             Plan: 'Free', // Default plan
             CreatedAt: new Date().toISOString(),
             LastActive: new Date().toISOString(),
@@ -190,3 +192,26 @@ exports.handler = async (event, context) => {
     };
   }
 };
+
+// Generate username in format: GrumpyReindeer5428
+function generateUsername() {
+  const adjectives = [
+    'Brave', 'Swift', 'Clever', 'Mighty', 'Cosmic', 'Golden', 'Silver', 'Bright',
+    'Stormy', 'Gentle', 'Fierce', 'Noble', 'Wild', 'Zen', 'Bold', 'Quiet',
+    'Grumpy', 'Happy', 'Sneaky', 'Lucky', 'Witty', 'Daring', 'Calm', 'Fiery',
+    'Mystic', 'Royal', 'Ancient', 'Shadow', 'Crystal', 'Thunder', 'Frost', 'Blazing'
+  ];
+  
+  const nouns = [
+    'Tiger', 'Eagle', 'Wolf', 'Dragon', 'Phoenix', 'Lion', 'Falcon', 'Bear',
+    'Fox', 'Raven', 'Panther', 'Shark', 'Hawk', 'Leopard', 'Stallion', 'Viper',
+    'Reindeer', 'Dolphin', 'Penguin', 'Koala', 'Panda', 'Lynx', 'Otter', 'Seal',
+    'Octopus', 'Whale', 'Sparrow', 'Turtle', 'Rabbit', 'Monkey', 'Elephant', 'Giraffe'
+  ];
+  
+  const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
+  const noun = nouns[Math.floor(Math.random() * nouns.length)];
+  const number = Math.floor(Math.random() * 9000) + 1000; // 1000-9999
+  
+  return `${adjective}${noun}${number}`;
+}
