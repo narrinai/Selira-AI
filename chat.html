@@ -1034,11 +1034,15 @@
           auth0_id = 'anonymous';
         }
         
+        // Get chat history for context
+        const chatHistory = getChatHistoryForContext(currentCharacter.slug);
+        
         // Call OpenRouter chat API
         console.log('🤖 Sending message to AI:', { 
           character: currentCharacter.slug, 
           auth0_id: auth0_id,
-          message: message.substring(0, 50) + '...' 
+          message: message.substring(0, 50) + '...',
+          history_length: chatHistory.length
         });
         
         const response = await fetch('/.netlify/functions/openrouter-chat', {
@@ -1050,7 +1054,8 @@
             message: message,
             character_slug: currentCharacter.slug,
             auth0_id: auth0_id,
-            model: 'mistralai/mistral-nemo'
+            model: 'mistralai/mistral-nemo',
+            local_history: chatHistory // Send localStorage history for context
           })
         });
         
@@ -1243,6 +1248,27 @@
       }
     }
 
+    // Get chat history for AI context (last 10 messages)
+    function getChatHistoryForContext(characterSlug) {
+      try {
+        const storageKey = `chat_${characterSlug}`;
+        const fullHistory = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        
+        // Get last 10 messages for context (exclude current message being sent)
+        const contextHistory = fullHistory.slice(-10).map(msg => ({
+          role: msg.type === 'user' ? 'user' : 'assistant',
+          content: msg.content
+        }));
+        
+        console.log('🧠 Sending context history:', contextHistory.length, 'messages');
+        return contextHistory;
+        
+      } catch (error) {
+        console.error('❌ Error getting context history:', error);
+        return [];
+      }
+    }
+
     function addMessage(content, sender, autoScroll = true) {
       const messagesContainer = document.getElementById('chatMessages');
       const welcomeMessage = messagesContainer.querySelector('.welcome-message');
@@ -1275,14 +1301,22 @@
     }
 
     function clearChat() {
+      // Clear chat from UI
       const messagesContainer = document.getElementById('chatMessages');
       messagesContainer.innerHTML = `
-        <div class="welcome-message">
-          <div class="welcome-icon">💬</div>
-          <h3>Chat Cleared</h3>
+        <div class="welcome-message" style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
+          <div style="font-size: 48px; margin-bottom: 16px;">💭</div>
+          <h3 style="color: var(--text-primary); margin-bottom: 8px;">Chat Cleared</h3>
           <p>Start a new conversation with ${currentCharacter.name}!</p>
         </div>
       `;
+      
+      // Clear chat history from localStorage
+      if (currentCharacter.slug) {
+        const storageKey = `chat_${currentCharacter.slug}`;
+        localStorage.removeItem(storageKey);
+        console.log('🗑️ Cleared chat history for:', currentCharacter.slug);
+      }
     }
 
     function toggleSidebar() {

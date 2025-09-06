@@ -41,7 +41,8 @@ exports.handler = async (event, context) => {
       message, 
       character_slug, 
       auth0_id,
-      model = 'mistralai/mistral-nemo' // Default to Mistral Nemo - better memory and context
+      model = 'mistralai/mistral-nemo', // Default to Mistral Nemo - better memory and context
+      local_history = [] // Chat history from localStorage for anonymous users
     } = JSON.parse(event.body);
 
     console.log('🚀 OpenRouter chat request:', { character_slug, auth0_id, model });
@@ -61,10 +62,18 @@ exports.handler = async (event, context) => {
 
     // Build conversation context
     const systemPrompt = buildCharacterPrompt(characterData, memoryData);
-    const conversationHistory = historyData.map(msg => ({
-      role: msg.MessageType === 'user' ? 'user' : 'assistant',
-      content: msg.Content
-    }));
+    
+    // Use local_history for anonymous users, database history for authenticated users
+    let conversationHistory = [];
+    if (auth0_id === 'anonymous' && local_history.length > 0) {
+      console.log('🧠 Using localStorage history for anonymous user:', local_history.length, 'messages');
+      conversationHistory = local_history;
+    } else {
+      conversationHistory = historyData.map(msg => ({
+        role: msg.MessageType === 'user' ? 'user' : 'assistant',
+        content: msg.Content
+      }));
+    }
 
     // OpenRouter API call
     const openrouterResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
