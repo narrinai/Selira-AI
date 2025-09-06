@@ -112,18 +112,7 @@
       color: inherit;
     }
 
-    .sidebar-logo-icon {
-      width: 28px;
-      height: 28px;
-      background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
-      border-radius: var(--radius-sm);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 14px;
-      font-weight: 700;
-    }
+    /* Removed sidebar-logo-icon - using text only */
 
     .sidebar-logo-text {
       font-family: 'Playfair Display', serif;
@@ -1846,15 +1835,16 @@
                   <div id="userEmail" style="color: var(--text-primary); font-weight: 600; font-size: 13px; padding: 10px; background: var(--bg-tertiary); border-radius: 6px; border: 1px solid var(--border);">user@example.com</div>
                 </div>
                 <div>
-                  <label style="display: block; color: var(--text-secondary); font-size: 11px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Member Since</label>
-                  <div id="memberSince" style="color: var(--text-primary); font-weight: 600; font-size: 13px; padding: 10px; background: var(--bg-tertiary); border-radius: 6px; border: 1px solid var(--border);">September 4, 2025</div>
+                  <label style="display: block; color: var(--text-secondary); font-size: 11px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Current Plan</label>
+                  <div id="userPlan" style="color: var(--text-primary); font-weight: 600; font-size: 13px; padding: 10px; background: var(--bg-tertiary); border-radius: 6px; border: 1px solid var(--border);">Free</div>
                 </div>
                 <div>
-                  <label style="display: block; color: var(--text-secondary); font-size: 11px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Account Status</label>
-                  <div id="accountStatus" style="color: var(--success); font-weight: 600; font-size: 13px; padding: 10px; background: var(--bg-tertiary); border-radius: 6px; border: 1px solid var(--border); display: flex; align-items: center; gap: 6px;">
-                    <span style="width: 8px; height: 8px; background: var(--success); border-radius: 50%; display: inline-block;"></span>
-                    Active
-                  </div>
+                  <label style="display: block; color: var(--text-secondary); font-size: 11px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Username</label>
+                  <input id="userUsername" style="color: var(--text-primary); font-weight: 600; font-size: 13px; padding: 10px; background: var(--bg-tertiary); border-radius: 6px; border: 1px solid var(--border); width: 100%; box-sizing: border-box;" placeholder="Generating...">
+                </div>
+                <div>
+                  <label style="display: block; color: var(--text-secondary); font-size: 11px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Display Name</label>
+                  <input id="userDisplayName" style="color: var(--text-primary); font-weight: 600; font-size: 13px; padding: 10px; background: var(--bg-tertiary); border-radius: 6px; border: 1px solid var(--border); width: 100%; box-sizing: border-box;" placeholder="Generating...">
                 </div>
               </div>
             </div>
@@ -2487,21 +2477,64 @@ Please be thorough and include important details from our conversations.`;
       }
     }
 
+    // ===== USERNAME GENERATOR =====
+    function generateUsername() {
+      const adjectives = [
+        'Brave', 'Swift', 'Clever', 'Mighty', 'Cosmic', 'Golden', 'Silver', 'Bright',
+        'Stormy', 'Gentle', 'Fierce', 'Noble', 'Wild', 'Zen', 'Bold', 'Quiet',
+        'Grumpy', 'Happy', 'Sneaky', 'Lucky', 'Witty', 'Daring', 'Calm', 'Fiery'
+      ];
+      
+      const nouns = [
+        'Tiger', 'Eagle', 'Wolf', 'Dragon', 'Phoenix', 'Lion', 'Falcon', 'Bear',
+        'Fox', 'Raven', 'Panther', 'Shark', 'Hawk', 'Leopard', 'Stallion', 'Viper',
+        'Reindeer', 'Dolphin', 'Penguin', 'Koala', 'Panda', 'Lynx', 'Otter', 'Seal'
+      ];
+      
+      const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
+      const noun = nouns[Math.floor(Math.random() * nouns.length)];
+      const number = Math.floor(Math.random() * 9000) + 1000; // 1000-9999
+      
+      return `${adjective}${noun}${number}`;
+    }
+
     // ===== PROFILE FUNCTIONALITY =====
     async function loadUserProfile() {
       try {
         // Get user info from Auth0 or localStorage
         const userEmail = localStorage.getItem('user_email') || 'user@example.com';
-        const userJoined = localStorage.getItem('user_joined') || '04/09/2025';
+        const userUid = localStorage.getItem('user_uid');
         
-        // Update UI with user info
+        // Update email
         document.getElementById('userEmail').textContent = userEmail;
-        document.getElementById('memberSince').textContent = userJoined;
         
-        // Get plan info (you can connect this to your subscription system)
-        const currentPlan = localStorage.getItem('user_plan') || 'Free Trial';
-        const planPrice = currentPlan === 'Free Trial' ? '$0/month' : '$4.99/month';
+        // Get or generate username and display name
+        let username = localStorage.getItem('user_username');
+        let displayName = localStorage.getItem('user_display_name');
         
+        if (!username) {
+          username = generateUsername();
+          localStorage.setItem('user_username', username);
+          // Save to Airtable
+          if (userUid) {
+            saveUsernameToAirtable(userUid, username, username);
+          }
+        }
+        
+        if (!displayName) {
+          displayName = username; // Initially same as username
+          localStorage.setItem('user_display_name', displayName);
+        }
+        
+        document.getElementById('userUsername').value = username;
+        document.getElementById('userDisplayName').value = displayName;
+        
+        // Get plan info from localStorage or fetch from Airtable
+        const currentPlan = localStorage.getItem('user_plan') || 'Free';
+        document.getElementById('userPlan').textContent = currentPlan;
+        
+        // Update plan display in subscription section
+        const planPrice = getPlanPrice(currentPlan);
         document.getElementById('currentPlanName').textContent = currentPlan;
         document.getElementById('currentPlanPrice').textContent = planPrice;
         
@@ -2518,9 +2551,83 @@ Please be thorough and include important details from our conversations.`;
         document.getElementById('daysActive').textContent = Math.floor(Math.random() * 30) + 5;
         document.getElementById('avgDaily').textContent = Math.floor(Math.random() * 20) + 5;
         
+        // Add event listeners for username/display name changes
+        setupProfileEditListeners();
+        
         console.log('✅ User profile loaded');
       } catch (error) {
         console.error('❌ Error loading user profile:', error);
+      }
+    }
+
+    // Get plan price
+    function getPlanPrice(plan) {
+      switch(plan) {
+        case 'Free': return '$0/month';
+        case 'Engage': return '$4.99/month';
+        case 'Immerse': return '$19.99/month';
+        default: return '$0/month';
+      }
+    }
+
+    // Setup event listeners for profile editing
+    function setupProfileEditListeners() {
+      const usernameInput = document.getElementById('userUsername');
+      const displayNameInput = document.getElementById('userDisplayName');
+      
+      if (usernameInput) {
+        usernameInput.addEventListener('blur', async () => {
+          const newUsername = usernameInput.value.trim();
+          if (newUsername && newUsername !== localStorage.getItem('user_username')) {
+            await saveUsernameToAirtable(localStorage.getItem('user_uid'), newUsername, null);
+            localStorage.setItem('user_username', newUsername);
+          }
+        });
+      }
+      
+      if (displayNameInput) {
+        displayNameInput.addEventListener('blur', async () => {
+          const newDisplayName = displayNameInput.value.trim();
+          if (newDisplayName && newDisplayName !== localStorage.getItem('user_display_name')) {
+            await saveUsernameToAirtable(localStorage.getItem('user_uid'), null, newDisplayName);
+            localStorage.setItem('user_display_name', newDisplayName);
+          }
+        });
+      }
+    }
+
+    // Save username/display name to Airtable
+    async function saveUsernameToAirtable(userUid, username, displayName) {
+      try {
+        if (!userUid) {
+          console.warn('⚠️ No user UID - cannot save to Airtable');
+          return;
+        }
+
+        const updateData = {};
+        if (username) updateData.Username = username;
+        if (displayName) updateData.Display_Name = displayName;
+
+        console.log('💾 Saving user data to Airtable:', updateData);
+
+        const response = await fetch('/.netlify/functions/user-management', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'update_profile',
+            user_uid: userUid,
+            updates: updateData
+          })
+        });
+
+        if (response.ok) {
+          console.log('✅ User data saved to Airtable');
+        } else {
+          console.error('❌ Failed to save user data');
+        }
+
+      } catch (error) {
+        console.error('❌ Error saving to Airtable:', error);
       }
     }
 
