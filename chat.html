@@ -1060,8 +1060,12 @@
         // Remove typing indicator
         typingIndicator.remove();
         
-        // Add AI response
-        addMessage(data.response || "I'm having trouble responding right now. Please try again!", 'ai');
+        // Add AI response with model info for debugging
+        let responseText = data.response || "I'm having trouble responding right now. Please try again!";
+        if (data.model_used) {
+          responseText += `\n\n[Debug: Using ${data.model_used} via OpenRouter]`;
+        }
+        addMessage(responseText, 'ai');
         
         // Save conversation to Airtable (async)
         saveChatMessage(auth0_id, currentCharacter.slug, message, data.response);
