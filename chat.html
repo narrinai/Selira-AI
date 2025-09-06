@@ -1014,6 +1014,9 @@
       messageInput.value = '';
       autoResizeTextarea();
       
+      // Save user message to localStorage immediately
+      saveChatToStorage(currentCharacter.slug, message, null);
+      
       // Show typing indicator
       const typingIndicator = addTypingIndicator();
       
@@ -1044,7 +1047,7 @@
             message: message,
             character_slug: currentCharacter.slug,
             auth0_id: auth0_id,
-            model: 'mistralai/mistral-small'
+            model: 'mistralai/mistral-nemo'
           })
         });
         
@@ -1066,6 +1069,9 @@
           responseText += `\n\n[Debug: Using ${data.model_used} via OpenRouter]`;
         }
         addMessage(responseText, 'ai');
+        
+        // Save to localStorage for persistence
+        saveChatToStorage(currentCharacter.slug, message, data.response);
         
         // Save conversation to Airtable (async)
         saveChatMessage(auth0_id, currentCharacter.slug, message, data.response);
@@ -1095,7 +1101,7 @@
             message: 'Hello, how are you?',
             character_slug: 'test',
             auth0_id: 'test-user',
-            model: 'mistralai/mistral-small'
+            model: 'mistralai/mistral-nemo'
           })
         });
         
@@ -1111,7 +1117,130 @@
     // Auto-test API on load (remove later)
     setTimeout(testOpenRouterAPI, 2000);
 
-    function addMessage(content, sender) {
+    // Load chat history for current character
+    async function loadChatHistory(characterSlug) {
+      try {
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        const auth0_id = user.sub || user.auth0_id || user.email || 'anonymous';
+        
+        // Skip for anonymous users
+        if (auth0_id === 'anonymous') {
+          console.log('👤 Anonymous user - no chat history to load');
+          return;
+        }
+        
+        console.log('📚 Loading chat history for:', characterSlug);
+        
+        const response = await fetch('/.netlify/functions/get-chat-history-selira', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            auth0_id: auth0_id,
+            character_slug: characterSlug,
+            limit: 20
+          })
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success && data.messages && data.messages.length > 0) {
+            console.log('✅ Loaded', data.messages.length, 'previous messages');
+            displayChatHistory(data.messages);
+          } else {
+            console.log('💭 No previous chat history found');
+          }
+        } else {
+          console.log('⚠️ Failed to load chat history:', response.status);
+        }
+        
+      } catch (error) {
+        console.error('❌ Error loading chat history:', error);
+      }
+    }
+
+    // Display loaded chat history
+    function displayChatHistory(messages) {
+      const messagesContainer = document.getElementById('chatMessages');
+      
+      // Clear existing messages
+      messagesContainer.innerHTML = '';
+      
+      messages.forEach(msg => {
+        const sender = msg.MessageType === 'user' ? 'user' : 'ai';
+        addMessage(msg.Content, sender, false); // false = don't scroll to bottom yet
+      });
+      
+      // Scroll to bottom after all messages loaded
+      setTimeout(() => {
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }, 100);
+    }
+
+    // Save chat to localStorage for persistence
+    function saveChatToStorage(characterSlug, userMessage, aiResponse) {
+      try {
+        const storageKey = `chat_${characterSlug}`;
+        let chatHistory = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        
+        if (userMessage) {
+          chatHistory.push({
+            type: 'user',
+            content: userMessage,
+            timestamp: Date.now()
+          });
+        }
+        
+        if (aiResponse) {
+          chatHistory.push({
+            type: 'ai', 
+            content: aiResponse,
+            timestamp: Date.now()
+          });
+        }
+        
+        // Keep only last 50 messages
+        chatHistory = chatHistory.slice(-50);
+        
+        localStorage.setItem(storageKey, JSON.stringify(chatHistory));
+        console.log('💾 Saved to localStorage:', characterSlug, chatHistory.length, 'messages');
+        
+      } catch (error) {
+        console.error('❌ Error saving to localStorage:', error);
+      }
+    }
+
+    // Load chat history from localStorage
+    function loadChatHistoryFromStorage(characterSlug) {
+      try {
+        const storageKey = `chat_${characterSlug}`;
+        const chatHistory = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        
+        if (chatHistory.length > 0) {
+          console.log('📚 Loading', chatHistory.length, 'messages from localStorage');
+          
+          const messagesContainer = document.getElementById('chatMessages');
+          messagesContainer.innerHTML = '';
+          
+          chatHistory.forEach(msg => {
+            addMessage(msg.content, msg.type, false);
+          });
+          
+          setTimeout(() => {
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+          }, 100);
+          
+        } else {
+          console.log('💭 No chat history in localStorage for:', characterSlug);
+        }
+        
+      } catch (error) {
+        console.error('❌ Error loading from localStorage:', error);
+      }
+    }
+
+    function addMessage(content, sender, autoScroll = true) {
       const messagesContainer = document.getElementById('chatMessages');
       const welcomeMessage = messagesContainer.querySelector('.welcome-message');
       
@@ -1136,7 +1265,10 @@
       }
       
       messagesContainer.appendChild(messageDiv);
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      
+      if (autoScroll) {
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }
     }
 
     function clearChat() {
@@ -1289,8 +1421,16 @@
       // Update URL to reflect new character
       updateUrlForCharacter(slug);
       
-      // Clear chat and start fresh
-      clearChat();
+      // Load chat history for this character
+      loadChatHistoryFromStorage(slug);
+      
+      // Only clear if no history was loaded
+      setTimeout(() => {
+        const hasMessages = document.querySelectorAll('.message:not(.welcome-message)').length > 0;
+        if (!hasMessages) {
+          clearChat();
+        }
+      }, 100);
     }
 
     function selectCharacter(slug, name, avatar, title) {
@@ -1312,7 +1452,17 @@
       updateUrlForCharacter(slug);
       
       closeCharacterSearch();
-      clearChat();
+      
+      // Load chat history for this character
+      loadChatHistoryFromStorage(slug);
+      
+      // Only clear if no history was loaded
+      setTimeout(() => {
+        const hasMessages = document.querySelectorAll('.message:not(.welcome-message)').length > 0;
+        if (!hasMessages) {
+          clearChat();
+        }
+      }, 100);
     }
 
     // Update URL when switching characters
@@ -1559,7 +1709,17 @@
         
         updateCharacterDisplay();
         highlightCorrectChatItem(character.slug);
-        clearChat();
+        
+        // Load chat history for this character
+        loadChatHistoryFromStorage(character.slug);
+        
+        // Clear only if no history loaded
+        setTimeout(() => {
+          const hasMessages = document.querySelectorAll('.message:not(.welcome-message)').length > 0;
+          if (!hasMessages) {
+            clearChat();
+          }
+        }, 500);
       } else {
         console.log('❌ No direct match, using first character');
         loadFallbackCharacter();

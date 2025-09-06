@@ -41,7 +41,7 @@ exports.handler = async (event, context) => {
       message, 
       character_slug, 
       auth0_id,
-      model = 'mistralai/mistral-small' // Default to Mistral Small - fastest response times
+      model = 'mistralai/mistral-nemo' // Default to Mistral Nemo - better memory and context
     } = JSON.parse(event.body);
 
     console.log('🚀 OpenRouter chat request:', { character_slug, auth0_id, model });
@@ -82,8 +82,8 @@ exports.handler = async (event, context) => {
           ...conversationHistory,
           { role: 'user', content: message }
         ],
-        max_tokens: 1000,
-        temperature: 0.8,
+        max_tokens: 2000,
+        temperature: 0.7,
         top_p: 0.9
       })
     });
