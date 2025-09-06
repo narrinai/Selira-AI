@@ -1226,7 +1226,8 @@
         const chatHistory = cleanupChatHistory(characterSlug);
         
         if (chatHistory.length > 0) {
-          console.log('📚 Loading', chatHistory.length, 'clean messages from localStorage');
+          console.log('📚 Loading', chatHistory.length, 'clean messages from localStorage for:', characterSlug);
+          console.log('📦 First message preview:', chatHistory[0]);
           
           const messagesContainer = document.getElementById('chatMessages');
           messagesContainer.innerHTML = '';
@@ -1241,6 +1242,7 @@
           
         } else {
           console.log('💭 No chat history in localStorage for:', characterSlug);
+          console.log('🔍 Checking localStorage keys:', Object.keys(localStorage).filter(k => k.startsWith('chat_')));
         }
         
       } catch (error) {
@@ -1602,8 +1604,28 @@
         }
       });
       
-      // Clear chat and start fresh (but don't update URL)
-      clearChat();
+      // Load chat history for this character instead of clearing
+      loadChatHistoryFromStorage(slug);
+      
+      // Only show welcome message if no history exists
+      setTimeout(() => {
+        const hasMessages = document.querySelectorAll('.message:not(.welcome-message)').length > 0;
+        if (!hasMessages) {
+          showWelcomeMessage();
+        }
+      }, 100);
+    }
+
+    // Show welcome message without clearing localStorage
+    function showWelcomeMessage() {
+      const messagesContainer = document.getElementById('chatMessages');
+      messagesContainer.innerHTML = `
+        <div class="welcome-message" style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
+          <div style="font-size: 48px; margin-bottom: 16px;">💭</div>
+          <h3 style="color: var(--text-primary); margin-bottom: 8px;">Start Conversation</h3>
+          <p>Begin chatting with ${currentCharacter.name}!</p>
+        </div>
+      `;
     }
 
     // Add typing indicator
