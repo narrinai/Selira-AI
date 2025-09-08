@@ -42,10 +42,10 @@
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
   
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
     
     :root {
       /* Selira dark theme - matching index.html */
@@ -74,7 +74,7 @@
     }
 
     body {
-      font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-family: 'Crimson Text', Georgia, serif;
       background-color: var(--bg-primary);
       color: var(--text-primary);
       line-height: 1.6;
@@ -3698,20 +3698,35 @@ Please be thorough and include important details from our conversations.`;
     ];
 
     function initializeCreateTags() {
+      console.log('🏷️ Initializing create tags system...');
+      
       const tagSearchInput = document.getElementById('createTagSearchInput');
       const popularTagsContainer = document.querySelector('.create-popular-tags');
+      
+      console.log('🔍 Elements found:', {
+        tagSearchInput: !!tagSearchInput,
+        popularTagsContainer: !!popularTagsContainer,
+        availableTags: createAvailableTags.length
+      });
       
       if (tagSearchInput) {
         tagSearchInput.addEventListener('input', handleCreateTagSearch);
         tagSearchInput.addEventListener('blur', () => {
           setTimeout(() => {
-            document.getElementById('createTagSearchResults').style.display = 'none';
+            const results = document.getElementById('createTagSearchResults');
+            if (results) results.style.display = 'none';
           }, 200);
         });
+        console.log('✅ Tag search input initialized');
+      } else {
+        console.warn('⚠️ Tag search input not found');
       }
 
       if (popularTagsContainer) {
         popularTagsContainer.addEventListener('click', handleCreatePopularTagClick);
+        console.log('✅ Popular tags container initialized');
+      } else {
+        console.warn('⚠️ Popular tags container not found');
       }
     }
 
@@ -3719,8 +3734,14 @@ Please be thorough and include important details from our conversations.`;
       const searchTerm = event.target.value.toLowerCase();
       const resultsContainer = document.getElementById('createTagSearchResults');
       
+      console.log('🔍 Tag search:', {
+        searchTerm,
+        hasResultsContainer: !!resultsContainer,
+        selectedTags: createSelectedTags.length
+      });
+      
       if (searchTerm.length < 2) {
-        resultsContainer.style.display = 'none';
+        if (resultsContainer) resultsContainer.style.display = 'none';
         return;
       }
       
@@ -3728,13 +3749,17 @@ Please be thorough and include important details from our conversations.`;
         tag.toLowerCase().includes(searchTerm) && !createSelectedTags.includes(tag)
       ).slice(0, 5);
       
-      if (matchingTags.length > 0) {
+      console.log('📋 Matching tags found:', matchingTags);
+      
+      if (matchingTags.length > 0 && resultsContainer) {
         resultsContainer.innerHTML = matchingTags.map(tag => 
           `<div class="tag-search-result" onclick="addCreateTag('${tag}')" style="padding: 12px; cursor: pointer; border-bottom: 1px solid var(--border); color: var(--text-primary);">${tag}</div>`
         ).join('');
         resultsContainer.style.display = 'block';
+        console.log('✅ Search results displayed');
       } else {
-        resultsContainer.style.display = 'none';
+        if (resultsContainer) resultsContainer.style.display = 'none';
+        console.log('❌ No results or container not found');
       }
     }
 
@@ -3750,7 +3775,12 @@ Please be thorough and include important details from our conversations.`;
     }
 
     function addCreateTag(tag) {
-      if (createSelectedTags.includes(tag)) return;
+      console.log('➕ Adding tag:', tag);
+      
+      if (createSelectedTags.includes(tag)) {
+        console.log('⚠️ Tag already selected');
+        return;
+      }
       
       if (createSelectedTags.length >= createMaxTags) {
         alert(`Je kunt maximaal ${createMaxTags} tags selecteren.`);
@@ -3758,6 +3788,7 @@ Please be thorough and include important details from our conversations.`;
       }
       
       createSelectedTags.push(tag);
+      console.log('✅ Tag added. Selected tags:', createSelectedTags);
       updateCreateTagsDisplay();
       
       // Clear search input
@@ -3765,7 +3796,8 @@ Please be thorough and include important details from our conversations.`;
       if (searchInput) {
         searchInput.value = '';
       }
-      document.getElementById('createTagSearchResults').style.display = 'none';
+      const results = document.getElementById('createTagSearchResults');
+      if (results) results.style.display = 'none';
     }
 
     function removeCreateTag(tag) {
