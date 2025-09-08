@@ -854,6 +854,54 @@
         min-height: 50px !important;
       }
 
+      /* Create Tags Mobile */
+      .create-popular-tags {
+        gap: 6px !important;
+      }
+
+      .create-tag-button {
+        font-size: 12px !important;
+        padding: 6px 12px !important;
+      }
+
+      .create-tag-button.selected {
+        background: var(--accent) !important;
+        border-color: var(--accent) !important;
+        color: white !important;
+      }
+
+      .create-selected-tag {
+        font-size: 12px !important;
+        padding: 6px 8px !important;
+        background: var(--accent) !important;
+        color: white !important;
+        border-radius: 6px !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 4px !important;
+      }
+
+      .create-selected-tag .remove-tag {
+        background: none !important;
+        border: none !important;
+        color: white !important;
+        cursor: pointer !important;
+        font-size: 14px !important;
+        padding: 0 !important;
+        opacity: 0.8 !important;
+      }
+
+      #createTagSearchResults .tag-search-result {
+        padding: 8px 12px !important;
+        border-bottom: 1px solid var(--border) !important;
+        cursor: pointer !important;
+        font-size: 14px !important;
+      }
+
+      #createTagSearchResults .tag-search-result:hover {
+        background: var(--bg-secondary) !important;
+      }
+
       /* Filter section adjustments */
       .filter-section {
         padding: 12px 16px;
@@ -3408,14 +3456,35 @@ Please be thorough and include important details from our conversations.`;
                   <input type="text" id="characterName" placeholder="e.g., Luna, Aria, Kai..." style="width: 100%; padding: 12px 16px; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text-primary);">
                 </div>
                 
-                <div style="margin-bottom: 20px;">
-                  <label style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 8px;">Category</label>
-                  <select id="characterCategory" style="width: 100%; padding: 12px 16px; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text-primary);">
-                    <option value="fantasy">🏰 Fantasy</option>
-                    <option value="anime-manga">🎌 Anime-Manga</option>
-                    <option value="historical">🏛️ Historical</option>
-                    <option value="romance">💕 Romance</option>
-                  </select>
+                <div style="margin-bottom: 24px;">
+                  <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-primary);">Search Tags</label>
+                  <div style="position: relative;">
+                    <input type="text" id="createTagSearchInput" placeholder="Search for tags..." style="width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: var(--radius-md); background: var(--bg-primary); color: var(--text-primary); font-size: 16px;">
+                    <div id="createTagSearchResults" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-primary); border: 1px solid var(--border); border-radius: var(--radius-md); margin-top: 4px; max-height: 200px; overflow-y: auto; z-index: 100;"></div>
+                  </div>
+                </div>
+                
+                <div style="margin-bottom: 24px;">
+                  <label style="display: block; margin-bottom: 12px; font-weight: 600; color: var(--text-primary);">Popular Tags</label>
+                  <div class="create-popular-tags" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <button type="button" class="create-tag-button" data-tag="Fantasy" style="background: var(--bg-primary); border: 2px solid var(--border); border-radius: var(--radius-md); padding: 8px 16px; cursor: pointer; color: var(--text-primary); font-size: 14px; transition: all 0.2s;">Fantasy</button>
+                    <button type="button" class="create-tag-button" data-tag="Romance" style="background: var(--bg-primary); border: 2px solid var(--border); border-radius: var(--radius-md); padding: 8px 16px; cursor: pointer; color: var(--text-primary); font-size: 14px; transition: all 0.2s;">Romance</button>
+                    <button type="button" class="create-tag-button" data-tag="Adventure" style="background: var(--bg-primary); border: 2px solid var(--border); border-radius: var(--radius-md); padding: 8px 16px; cursor: pointer; color: var(--text-primary); font-size: 14px; transition: all 0.2s;">Adventure</button>
+                    <button type="button" class="create-tag-button" data-tag="Hero" style="background: var(--bg-primary); border: 2px solid var(--border); border-radius: var(--radius-md); padding: 8px 16px; cursor: pointer; color: var(--text-primary); font-size: 14px; transition: all 0.2s;">Hero</button>
+                    <button type="button" class="create-tag-button" data-tag="Mystery" style="background: var(--bg-primary); border: 2px solid var(--border); border-radius: var(--radius-md); padding: 8px 16px; cursor: pointer; color: var(--text-primary); font-size: 14px; transition: all 0.2s;">Mystery</button>
+                    <button type="button" class="create-tag-button" data-tag="Action" style="background: var(--bg-primary); border: 2px solid var(--border); border-radius: var(--radius-md); padding: 8px 16px; cursor: pointer; color: var(--text-primary); font-size: 14px; transition: all 0.2s;">Action</button>
+                    <button type="button" class="create-tag-button" data-tag="Magic" style="background: var(--bg-primary); border: 2px solid var(--border); border-radius: var(--radius-md); padding: 8px 16px; cursor: pointer; color: var(--text-primary); font-size: 14px; transition: all 0.2s;">Magic</button>
+                    <button type="button" class="create-tag-button" data-tag="Wise" style="background: var(--bg-primary); border: 2px solid var(--border); border-radius: var(--radius-md); padding: 8px 16px; cursor: pointer; color: var(--text-primary); font-size: 14px; transition: all 0.2s;">Wise</button>
+                    <button type="button" class="create-tag-button" data-tag="Historical" style="background: var(--bg-primary); border: 2px solid var(--border); border-radius: var(--radius-md); padding: 8px 16px; cursor: pointer; color: var(--text-primary); font-size: 14px; transition: all 0.2s;">Historical</button>
+                    <button type="button" class="create-tag-button" data-tag="Anime-Manga" style="background: var(--bg-primary); border: 2px solid var(--border); border-radius: var(--radius-md); padding: 8px 16px; cursor: pointer; color: var(--text-primary); font-size: 14px; transition: all 0.2s;">Anime-Manga</button>
+                  </div>
+                </div>
+                
+                <div style="margin-bottom: 24px;">
+                  <label style="display: block; margin-bottom: 12px; font-weight: 600; color: var(--text-primary);">Selected Tags (<span id="createTagCount">0</span>/10)</label>
+                  <div id="createSelectedTags" style="min-height: 50px; padding: 12px; border: 2px dashed var(--border); border-radius: var(--radius-md); background: var(--bg-tertiary); display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+                    <span style="color: var(--text-secondary); font-style: italic;">No tags selected</span>
+                  </div>
                 </div>
                 
                 <div style="margin-bottom: 30px;">
@@ -3448,6 +3517,11 @@ Please be thorough and include important details from our conversations.`;
           item.classList.add('active');
         }
       });
+      
+      // Initialize tags system after DOM is updated
+      setTimeout(() => {
+        initializeCreateTags();
+      }, 100);
     }
 
     // ===== CHARACTER CREATION STATE =====
@@ -3610,6 +3684,143 @@ Please be thorough and include important details from our conversations.`;
     function toggleSetting(settingType) {
       console.log('⚙️ Toggle setting:', settingType);
       // Implement setting toggle logic here
+    }
+
+    // ===== CREATE FLOW TAGS SYSTEM =====
+    let createSelectedTags = [];
+    const createMaxTags = 10;
+    const createAvailableTags = [
+      'Fantasy', 'Romance', 'Adventure', 'Hero', 'Mystery', 'Action', 'Magic', 'Wise', 
+      'Historical', 'Anime-Manga', 'Warrior', 'Leader', 'Ninja', 'Wizard', 'Cute',
+      'Funny', 'Caring', 'Helpful', 'Creative', 'Confident', 'Energetic', 'Calm',
+      'Mysterious', 'Loyal', 'Brave', 'Kind', 'Smart', 'Strong', 'Gentle', 'Playful',
+      'Serious', 'Romantic', 'Friendly', 'Bold', 'Shy', 'Outgoing', 'Patient'
+    ];
+
+    function initializeCreateTags() {
+      const tagSearchInput = document.getElementById('createTagSearchInput');
+      const popularTagsContainer = document.querySelector('.create-popular-tags');
+      
+      if (tagSearchInput) {
+        tagSearchInput.addEventListener('input', handleCreateTagSearch);
+        tagSearchInput.addEventListener('blur', () => {
+          setTimeout(() => {
+            document.getElementById('createTagSearchResults').style.display = 'none';
+          }, 200);
+        });
+      }
+
+      if (popularTagsContainer) {
+        popularTagsContainer.addEventListener('click', handleCreatePopularTagClick);
+      }
+    }
+
+    function handleCreateTagSearch(event) {
+      const searchTerm = event.target.value.toLowerCase();
+      const resultsContainer = document.getElementById('createTagSearchResults');
+      
+      if (searchTerm.length < 2) {
+        resultsContainer.style.display = 'none';
+        return;
+      }
+      
+      const matchingTags = createAvailableTags.filter(tag => 
+        tag.toLowerCase().includes(searchTerm) && !createSelectedTags.includes(tag)
+      ).slice(0, 5);
+      
+      if (matchingTags.length > 0) {
+        resultsContainer.innerHTML = matchingTags.map(tag => 
+          `<div class="tag-search-result" onclick="addCreateTag('${tag}')" style="padding: 12px; cursor: pointer; border-bottom: 1px solid var(--border); color: var(--text-primary);">${tag}</div>`
+        ).join('');
+        resultsContainer.style.display = 'block';
+      } else {
+        resultsContainer.style.display = 'none';
+      }
+    }
+
+    function handleCreatePopularTagClick(event) {
+      if (event.target.classList.contains('create-tag-button')) {
+        const tag = event.target.dataset.tag;
+        if (event.target.classList.contains('selected')) {
+          removeCreateTag(tag);
+        } else {
+          addCreateTag(tag);
+        }
+      }
+    }
+
+    function addCreateTag(tag) {
+      if (createSelectedTags.includes(tag)) return;
+      
+      if (createSelectedTags.length >= createMaxTags) {
+        alert(`Je kunt maximaal ${createMaxTags} tags selecteren.`);
+        return;
+      }
+      
+      createSelectedTags.push(tag);
+      updateCreateTagsDisplay();
+      
+      // Clear search input
+      const searchInput = document.getElementById('createTagSearchInput');
+      if (searchInput) {
+        searchInput.value = '';
+      }
+      document.getElementById('createTagSearchResults').style.display = 'none';
+    }
+
+    function removeCreateTag(tag) {
+      createSelectedTags = createSelectedTags.filter(t => t !== tag);
+      updateCreateTagsDisplay();
+    }
+
+    function updateCreateTagsDisplay() {
+      const selectedTagsContainer = document.getElementById('createSelectedTags');
+      const tagCount = document.getElementById('createTagCount');
+      
+      if (tagCount) {
+        tagCount.textContent = createSelectedTags.length;
+      }
+      
+      if (createSelectedTags.length === 0) {
+        selectedTagsContainer.innerHTML = '<span style="color: var(--text-secondary); font-style: italic;">No tags selected</span>';
+      } else {
+        selectedTagsContainer.innerHTML = createSelectedTags.map(tag => 
+          `<span class="create-selected-tag" style="background: var(--accent); color: white; padding: 8px 12px; border-radius: 6px; font-size: 14px; display: flex; align-items: center; gap: 6px;">
+            ${tag}
+            <button type="button" class="remove-tag" onclick="removeCreateTag('${tag}')" style="background: none; border: none; color: white; cursor: pointer; font-size: 16px; padding: 0; opacity: 0.8;">×</button>
+          </span>`
+        ).join('');
+      }
+      
+      // Update popular tag buttons
+      document.querySelectorAll('.create-tag-button').forEach(button => {
+        const tag = button.dataset.tag;
+        if (createSelectedTags.includes(tag)) {
+          button.style.background = 'var(--accent)';
+          button.style.borderColor = 'var(--accent)';
+          button.style.color = 'white';
+          button.classList.add('selected');
+        } else {
+          button.style.background = 'var(--bg-primary)';
+          button.style.borderColor = 'var(--border)';
+          button.style.color = 'var(--text-primary)';
+          button.classList.remove('selected');
+        }
+      });
+    }
+
+    // Initialize create tags when create section is shown
+    function showCreateCharacterOriginal() {
+      // Store original function
+      const originalShow = showCreateCharacter;
+      
+      // Call original function
+      originalShow();
+      
+      // Initialize tags after DOM is updated
+      setTimeout(() => {
+        initializeCreateTags();
+      }, 100);
     }
 
     console.log('✅ Selira Category page initialized with Character.AI style design');
