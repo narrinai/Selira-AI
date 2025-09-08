@@ -780,60 +780,78 @@
       }
 
       .create-header h2 {
-        font-size: 24px !important;
-        margin-bottom: 12px !important;
+        font-size: 28px !important;
+        margin-bottom: 16px !important;
+        line-height: 1.2 !important;
       }
 
       .create-header p {
-        font-size: 14px !important;
+        font-size: 16px !important;
+        margin-bottom: 24px !important;
+        color: var(--text-secondary) !important;
       }
 
       .creation-progress {
-        padding: 0 !important;
-        margin-bottom: 20px !important;
+        padding: 0 20px !important;
+        margin-bottom: 32px !important;
       }
 
       .step-container {
-        padding: 0 !important;
+        padding: 0 20px !important;
         max-width: 100% !important;
         overflow: visible !important;
       }
 
       .creation-step h3 {
-        font-size: 18px !important;
-        margin-bottom: 16px !important;
+        font-size: 22px !important;
+        margin-bottom: 24px !important;
+        font-weight: 700 !important;
+        color: var(--text-primary) !important;
       }
 
       .style-grid {
         grid-template-columns: repeat(2, 1fr) !important;
-        gap: 12px !important;
+        gap: 20px !important;
       }
 
       .style-option {
-        aspect-ratio: 1.2 !important;
-        padding: 12px !important;
+        aspect-ratio: 1 !important;
+        padding: 20px !important;
+        min-height: 140px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
       }
 
       .style-option img {
-        height: 60px !important;
-        width: 60px !important;
+        height: 80px !important;
+        width: 80px !important;
+        border-radius: 50% !important;
+        margin-bottom: 12px !important;
       }
 
       .style-option span {
-        font-size: 12px !important;
-        margin-top: 8px !important;
+        font-size: 14px !important;
+        font-weight: 600 !important;
+        text-align: center !important;
+        margin-top: 0 !important;
       }
 
       .step-buttons {
         flex-direction: column !important;
-        gap: 12px !important;
-        margin-top: 24px !important;
+        gap: 16px !important;
+        margin-top: 32px !important;
+        padding: 0 20px !important;
       }
 
       .step-btn {
         width: 100% !important;
-        padding: 12px !important;
-        font-size: 14px !important;
+        padding: 16px 24px !important;
+        font-size: 16px !important;
+        font-weight: 600 !important;
+        border-radius: 12px !important;
+        min-height: 50px !important;
       }
 
       /* Filter section adjustments */
@@ -1648,6 +1666,16 @@
       overlay.classList.toggle('open');
     }
 
+    function closeSidebarOnMobile() {
+      if (window.innerWidth <= 768) {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        
+        sidebar.classList.remove('open');
+        overlay.classList.remove('open');
+      }
+    }
+
     // Close sidebar when clicking overlay
     document.getElementById('sidebarOverlay')?.addEventListener('click', function() {
       toggleSidebar();
@@ -2051,6 +2079,9 @@
     }
 
     function showProfile() {
+      // Close sidebar on mobile
+      closeSidebarOnMobile();
+      
       // Hide filter section and tabs, show profile using full content area
       const filterSection = document.querySelector('.filter-section');
       const tabsSection = document.querySelector('.tab-nav');
@@ -2303,6 +2334,9 @@
     }
 
     function showPricing() {
+      // Close sidebar on mobile
+      closeSidebarOnMobile();
+      
       // Hide filter section and tabs, show pricing using full content area
       const filterSection = document.querySelector('.filter-section');
       const tabsSection = document.querySelector('.tab-nav');
@@ -2641,6 +2675,9 @@
     }
 
     function showCharacters() {
+      // Close sidebar on mobile
+      closeSidebarOnMobile();
+      
       // Show filter section and tabs
       const filterSection = document.querySelector('.filter-section');
       const tabsSection = document.querySelector('.tab-nav');
@@ -2661,6 +2698,9 @@
     }
 
     function showMyCompanions() {
+      // Close sidebar on mobile
+      closeSidebarOnMobile();
+      
       // Show filter section and tabs
       const filterSection = document.querySelector('.filter-section');
       const tabsSection = document.querySelector('.tab-nav');
@@ -3196,6 +3236,9 @@ Please be thorough and include important details from our conversations.`;
     }
 
     function showCreateCharacter() {
+      // Close sidebar on mobile
+      closeSidebarOnMobile();
+      
       // Hide filter section and show create character
       const filterSection = document.querySelector('.filter-section');
       const grid = document.getElementById('charactersGrid');
