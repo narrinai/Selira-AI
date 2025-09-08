@@ -1237,6 +1237,19 @@
       }
     });
 
+    // Close mobile menu when clicking on any link inside it
+    document.addEventListener('DOMContentLoaded', function() {
+      const mobileMenu = document.getElementById('mobileMenu');
+      if (mobileMenu) {
+        mobileMenu.addEventListener('click', function(event) {
+          // If clicked element is a link, close the menu
+          if (event.target.tagName === 'A') {
+            mobileMenu.classList.remove('open');
+          }
+        });
+      }
+    });
+
     // Smooth scrolling for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function (e) {

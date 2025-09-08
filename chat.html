@@ -1383,6 +1383,19 @@
       }
     });
 
+    // Close sidebar when clicking on any link inside it
+    document.addEventListener('DOMContentLoaded', function() {
+      const sidebar = document.getElementById('sidebar');
+      if (sidebar) {
+        sidebar.addEventListener('click', function(event) {
+          // If clicked element is a link, close the sidebar on mobile
+          if (event.target.tagName === 'A' && window.innerWidth <= 768) {
+            sidebar.classList.remove('open');
+          }
+        });
+      }
+    });
+
     // Handle responsive design
     function handleResize() {
       const isMobile = window.innerWidth <= 768;
