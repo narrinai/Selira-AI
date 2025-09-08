@@ -1,142 +1,108 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
   <!-- Homepage -->
   <url>
-    <loc>https://narrin.ai/</loc>
-    <lastmod>2025-09-02T15:00:00+00:00</lastmod>
-    <changefreq>weekly</changefreq>
+    <loc>https://selira.ai/</loc>
+    <lastmod>2025-01-08T12:00:00+00:00</lastmod>
+    <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
 
   <!-- Main Pages -->
   <url>
-    <loc>https://narrin.ai/chat</loc>
-    <lastmod>2025-09-02T15:00:00+00:00</lastmod>
+    <loc>https://selira.ai/chat.html</loc>
+    <lastmod>2025-01-08T12:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://narrin.ai/create-character</loc>
-    <lastmod>2025-09-02T15:00:00+00:00</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://selira.ai/category.html</loc>
+    <lastmod>2025-01-08T12:00:00+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/create-character.html</loc>
+    <lastmod>2025-01-08T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://narrin.ai/chat-overview</loc>
-    <lastmod>2025-09-02T15:00:00+00:00</lastmod>
+    <loc>https://selira.ai/search-results.html</loc>
+    <lastmod>2025-01-08T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags.html</loc>
+    <lastmod>2025-01-08T12:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://narrin.ai/pricing</loc>
-    <lastmod>2025-09-02T15:00:00+00:00</lastmod>
+    <loc>https://selira.ai/pricing.html</loc>
+    <lastmod>2025-01-08T12:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://narrin.ai/profile</loc>
-    <lastmod>2025-09-02T15:00:00+00:00</lastmod>
+    <loc>https://selira.ai/profile.html</loc>
+    <lastmod>2025-01-08T12:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
 
-  <!-- News Section -->
+  <!-- Content Pages -->
   <url>
-    <loc>https://narrin.ai/news</loc>
-    <lastmod>2025-09-02T15:00:00+00:00</lastmod>
+    <loc>https://selira.ai/news.html</loc>
+    <lastmod>2025-01-08T12:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-  </url>
-
-  <!-- News Articles -->
-  <url>
-    <loc>https://narrin.ai/news/companionguide-ai-platform-review</loc>
-    <lastmod>2025-09-02T15:00:00+00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <url>
-    <loc>https://narrin.ai/news/ai-companions-mental-clarity</loc>
-    <lastmod>2025-09-02T15:00:00+00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <url>
-    <loc>https://narrin.ai/news/science-behind-thought-organization</loc>
-    <lastmod>2025-09-02T15:00:00+00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
-  <url>
-    <loc>https://narrin.ai/news/daily-habits-mental-clarity</loc>
-    <lastmod>2025-09-02T15:00:00+00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
-  <url>
-    <loc>https://narrin.ai/news/future-ai-companions-mental-wellness</loc>
-    <lastmod>2025-09-02T15:00:00+00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
-  <url>
-    <loc>https://narrin.ai/news/from-anxiety-to-clarity-user-journey</loc>
-    <lastmod>2025-09-02T15:00:00+00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
-  <url>
-    <loc>https://narrin.ai/news/research-ai-conversations-emotional-processing</loc>
-    <lastmod>2025-09-02T15:00:00+00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
-  <url>
-    <loc>https://narrin.ai/news/digital-minimalism-mental-clarity</loc>
-    <lastmod>2025-09-02T15:00:00+00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
   </url>
 
   <!-- Support Pages -->
   <url>
-    <loc>https://narrin.ai/contact</loc>
-    <lastmod>2025-09-02T15:00:00+00:00</lastmod>
+    <loc>https://selira.ai/contact.html</loc>
+    <lastmod>2025-01-08T12:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.6</priority>
   </url>
 
+  <!-- Legal Pages -->
   <url>
-    <loc>https://narrin.ai/memory-import</loc>
-    <lastmod>2025-09-02T15:00:00+00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.4</priority>
-  </url>
-
-  <url>
-    <loc>https://narrin.ai/privacy-policy</loc>
-    <lastmod>2025-09-02T15:00:00+00:00</lastmod>
+    <loc>https://selira.ai/privacy-policy.html</loc>
+    <lastmod>2025-01-08T12:00:00+00:00</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
 
   <url>
-    <loc>https://narrin.ai/terms-and-conditions</loc>
-    <lastmod>2025-09-02T15:00:00+00:00</lastmod>
+    <loc>https://selira.ai/terms-and-conditions.html</loc>
+    <lastmod>2025-01-08T12:00:00+00:00</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
+  </url>
+
+  <!-- Utility Pages -->
+  <url>
+    <loc>https://selira.ai/recovery.html</loc>
+    <lastmod>2025-01-08T12:00:00+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/confirm.html</loc>
+    <lastmod>2025-01-08T12:00:00+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
   </url>
 
 </urlset>

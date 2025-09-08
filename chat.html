@@ -705,15 +705,18 @@
       }
 
       .mobile-menu-btn {
-        position: absolute;
-        left: 20px;
-        top: 50%;
-        transform: translateY(-50%);
-        background: none;
-        border: none;
+        position: fixed;
+        left: 16px;
+        top: 16px;
+        z-index: 1001;
+        background: rgba(26, 26, 26, 0.9);
+        border: 1px solid var(--border);
+        border-radius: 8px;
         color: var(--text-primary);
-        font-size: 20px;
+        font-size: 18px;
+        padding: 8px;
         cursor: pointer;
+        backdrop-filter: blur(10px);
       }
     }
 
