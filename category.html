@@ -902,101 +902,149 @@
         background: var(--bg-secondary) !important;
       }
 
+      /* Profile Section Desktop */
+      @media (min-width: 1200px) {
+        .profile-section {
+          padding: 60px 40px;
+          max-width: 1400px;
+          margin: 0 auto;
+        }
+        
+        .profile-grid {
+          grid-template-columns: 2fr 1fr 1fr !important;
+          gap: 32px !important;
+          max-width: 1400px !important;
+        }
+        
+        .profile-info-card {
+          padding: 32px !important;
+        }
+        
+        .plan-card {
+          padding: 32px !important;
+        }
+        
+        .email-settings-card {
+          padding: 32px !important;
+        }
+      }
+
+      @media (min-width: 769px) and (max-width: 1199px) {
+        .profile-section {
+          padding: 40px 20px;
+          max-width: 1000px;
+          margin: 0 auto;
+        }
+        
+        .profile-grid {
+          grid-template-columns: 1fr 1fr !important;
+          gap: 24px !important;
+        }
+        
+        .email-settings-card {
+          grid-column: 1 / -1;
+        }
+      }
+
       /* Profile Section Mobile */
-      .profile-section {
-        position: static !important;
-        top: auto !important;
-        left: auto !important;
-        right: auto !important;
-        bottom: auto !important;
-        padding: 20px !important;
-        height: auto !important;
-        overflow: visible !important;
-        max-width: 500px !important;
-        margin: 0 auto !important;
-        width: 100% !important;
-        box-sizing: border-box !important;
+      @media (max-width: 768px) {
+        .profile-section {
+          position: static !important;
+          top: auto !important;
+          left: auto !important;
+          right: auto !important;
+          bottom: auto !important;
+          padding: 20px !important;
+          height: auto !important;
+          overflow: visible !important;
+          max-width: 500px !important;
+          margin: 0 auto !important;
+          width: 100% !important;
+          box-sizing: border-box !important;
+        }
       }
 
-      .profile-header h2 {
-        font-size: 28px !important;
-        margin-bottom: 12px !important;
-      }
+      @media (max-width: 768px) {
+        .profile-header h2 {
+          font-size: 28px !important;
+          margin-bottom: 12px !important;
+        }
 
-      .profile-header p {
-        font-size: 16px !important;
-        margin-bottom: 24px !important;
-      }
+        .profile-header p {
+          font-size: 16px !important;
+          margin-bottom: 24px !important;
+        }
 
-      .profile-grid {
-        grid-template-columns: 1fr !important;
-        gap: 16px !important;
-      }
+        .profile-grid {
+          grid-template-columns: 1fr !important;
+          gap: 16px !important;
+        }
 
-      .profile-info-card,
-      .plan-card,
-      .email-settings-card {
-        padding: 20px !important;
-        border-radius: 12px !important;
-      }
+        .profile-info-card,
+        .plan-card,
+        .email-settings-card {
+          padding: 20px !important;
+          border-radius: 12px !important;
+        }
 
-      .profile-info-card h3,
-      .plan-card h3,
-      .email-settings-card h3 {
-        font-size: 18px !important;
-        margin-bottom: 16px !important;
-      }
+        .profile-info-card h3,
+        .plan-card h3,
+        .email-settings-card h3 {
+          font-size: 18px !important;
+          margin-bottom: 16px !important;
+        }
 
-      .profile-info-card h3 span,
-      .plan-card h3 span,
-      .email-settings-card h3 span {
-        font-size: 18px !important;
-      }
+        .profile-info-card h3 span,
+        .plan-card h3 span,
+        .email-settings-card h3 span {
+          font-size: 18px !important;
+        }
 
-      .usage-stat-item {
-        padding: 12px !important;
-        border-radius: 8px !important;
-      }
+        .usage-stat-item {
+          padding: 12px !important;
+          border-radius: 8px !important;
+        }
 
-      .usage-stat-item .stat-value {
-        font-size: 20px !important;
-      }
+        .usage-stat-item .stat-value {
+          font-size: 20px !important;
+        }
 
-      .usage-stat-item .stat-label {
-        font-size: 12px !important;
-      }
+        .usage-stat-item .stat-label {
+          font-size: 12px !important;
+        }
 
-      .subscription-features li {
-        font-size: 13px !important;
-        padding: 6px 0 !important;
-      }
+        .subscription-features li {
+          font-size: 13px !important;
+          padding: 6px 0 !important;
+        }
 
-      .upgrade-btn,
-      .manage-btn {
-        padding: 14px 20px !important;
-        font-size: 16px !important;
-        border-radius: 10px !important;
-        font-weight: 600 !important;
-      }
+        .upgrade-btn,
+        .manage-btn {
+          padding: 14px 20px !important;
+          font-size: 16px !important;
+          border-radius: 10px !important;
+          font-weight: 600 !important;
+        }
 
-      #userEmail,
-      #userPlan,
-      #userUsername,
-      #userDisplayName {
-        font-size: 14px !important;
-        padding: 12px !important;
-        border-radius: 8px !important;
-      }
+        #userEmail,
+        #userPlan,
+        #userUsername,
+        #userDisplayName {
+          font-size: 14px !important;
+          padding: 12px !important;
+          border-radius: 8px !important;
+        }
 
-      #saveUsername,
-      #saveDisplayName {
-        padding: 10px 16px !important;
-        font-size: 12px !important;
-        border-radius: 8px !important;
-      }
+        #saveUsername,
+        #saveDisplayName {
+          padding: 10px 16px !important;
+          font-size: 12px !important;
+          border-radius: 8px !important;
+        }
 
-      .toggle-switch {
-        transform: scale(1.2) !important;
+        .toggle-switch {
+          transform: scale(1.2) !important;
+        }
       }
 
       /* Filter section adjustments */
@@ -1101,32 +1149,55 @@
 
     .pricing-header {
       text-align: center;
-      margin-bottom: 40px;
+      margin-bottom: 50px;
     }
 
     .pricing-title {
       font-family: 'Playfair Display', serif;
-      font-size: 32px;
+      font-size: 42px;
       font-weight: 700;
       color: var(--text-primary);
-      margin-bottom: 12px;
+      margin-bottom: 16px;
     }
 
     .pricing-subtitle {
       color: var(--text-secondary);
-      font-size: 16px;
-      line-height: 1.5;
+      font-size: 18px;
+      line-height: 1.6;
+      max-width: 600px;
+      margin: 0 auto;
     }
 
-    .pricing-cards {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(300px, 1fr));
-      gap: 32px;
-      margin-bottom: 40px;
-      max-width: 1400px;
-      margin-left: auto;
-      margin-right: auto;
-      padding: 0 20px;
+    /* Desktop: Better spacing and card layout */
+    @media (min-width: 1200px) {
+      .pricing-cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 40px;
+        margin-bottom: 50px;
+        max-width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 0;
+      }
+      
+      .pricing-section {
+        padding: 80px 40px;
+      }
+    }
+
+    /* Medium Desktop: Adjust for better spacing */
+    @media (min-width: 769px) and (max-width: 1199px) {
+      .pricing-cards {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(280px, 1fr));
+        gap: 24px;
+        margin-bottom: 40px;
+        max-width: 1000px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 0 20px;
+      }
     }
 
     .pricing-card {
@@ -1136,9 +1207,29 @@
       padding: 40px 32px;
       position: relative;
       transition: all 0.3s ease;
-      min-height: 550px;
+      min-height: 600px;
       display: flex;
       flex-direction: column;
+    }
+    
+    /* Desktop: Enhanced pricing cards */
+    @media (min-width: 1200px) {
+      .pricing-card {
+        padding: 48px 40px;
+        min-height: 650px;
+      }
+      
+      .pricing-card.featured {
+        transform: scale(1.02);
+      }
+      
+      .pricing-card:hover {
+        transform: translateY(-8px);
+      }
+      
+      .pricing-card.featured:hover {
+        transform: scale(1.02) translateY(-8px);
+      }
     }
 
     .pricing-card.featured {
@@ -1256,13 +1347,22 @@
       background: var(--accent-hover);
     }
 
-    @media (max-width: 1200px) {
+    /* Tablet: 2 columns layout */
+    @media (min-width: 769px) and (max-width: 1199px) {
       .pricing-cards {
-        grid-template-columns: repeat(2, minmax(280px, 1fr));
-        max-width: 900px;
+        grid-template-columns: repeat(2, 1fr) !important;
+        max-width: 800px !important;
+        gap: 32px !important;
+      }
+      
+      .pricing-card:nth-child(3) {
+        grid-column: 1 / -1;
+        max-width: 400px;
+        margin: 0 auto;
       }
     }
 
+    /* Mobile: Single column layout */
     @media (max-width: 768px) {
       .pricing-cards {
         grid-template-columns: 1fr;
@@ -1274,6 +1374,14 @@
         padding: 40px 20px;
       }
       
+      .pricing-title {
+        font-size: 32px;
+      }
+      
+      .pricing-subtitle {
+        font-size: 16px;
+      }
+      
       .pricing-card {
         min-height: auto;
         padding: 32px 24px;
@@ -1281,6 +1389,10 @@
       
       .pricing-card.featured {
         transform: scale(1);
+      }
+      
+      .pricing-card:hover {
+        transform: translateY(-2px);
       }
     }
 
