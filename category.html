@@ -902,6 +902,99 @@
         background: var(--bg-secondary) !important;
       }
 
+      /* Profile Section Mobile */
+      .profile-section {
+        position: static !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        padding: 16px !important;
+        height: auto !important;
+        overflow: visible !important;
+      }
+
+      .profile-header h2 {
+        font-size: 28px !important;
+        margin-bottom: 12px !important;
+      }
+
+      .profile-header p {
+        font-size: 16px !important;
+        margin-bottom: 24px !important;
+      }
+
+      .profile-grid {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+      }
+
+      .profile-info-card,
+      .plan-card,
+      .email-settings-card {
+        padding: 20px !important;
+        border-radius: 12px !important;
+      }
+
+      .profile-info-card h3,
+      .plan-card h3,
+      .email-settings-card h3 {
+        font-size: 18px !important;
+        margin-bottom: 16px !important;
+      }
+
+      .profile-info-card h3 span,
+      .plan-card h3 span,
+      .email-settings-card h3 span {
+        font-size: 18px !important;
+      }
+
+      .usage-stat-item {
+        padding: 12px !important;
+        border-radius: 8px !important;
+      }
+
+      .usage-stat-item .stat-value {
+        font-size: 20px !important;
+      }
+
+      .usage-stat-item .stat-label {
+        font-size: 12px !important;
+      }
+
+      .subscription-features li {
+        font-size: 13px !important;
+        padding: 6px 0 !important;
+      }
+
+      .upgrade-btn,
+      .manage-btn {
+        padding: 14px 20px !important;
+        font-size: 16px !important;
+        border-radius: 10px !important;
+        font-weight: 600 !important;
+      }
+
+      #userEmail,
+      #userPlan,
+      #userUsername,
+      #userDisplayName {
+        font-size: 14px !important;
+        padding: 12px !important;
+        border-radius: 8px !important;
+      }
+
+      #saveUsername,
+      #saveDisplayName {
+        padding: 10px 16px !important;
+        font-size: 12px !important;
+        border-radius: 8px !important;
+      }
+
+      .toggle-switch {
+        transform: scale(1.2) !important;
+      }
+
       /* Filter section adjustments */
       .filter-section {
         padding: 12px 16px;
@@ -2140,36 +2233,42 @@
       
       grid.innerHTML = `
         <div class="profile-section" style="
-          width: 100%; 
-          padding: 15px; 
-          height: calc(100vh - 80px);
+          position: absolute;
+          top: 60px;
+          left: 250px;
+          right: 0;
+          bottom: 0;
+          padding: 20px 40px;
           background: var(--bg-primary);
           display: flex;
           flex-direction: column;
+          overflow-y: auto;
         ">
-          <!-- Compact Header -->
-          <div class="profile-header" style="text-align: center; margin-bottom: 15px; flex-shrink: 0;">
-            <h2 style="font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">My Profile</h2>
-            <p style="color: var(--text-secondary); font-size: 13px;">Manage your account and preferences</p>
+          <!-- Profile Header -->
+          <div class="profile-header" style="text-align: center; margin-bottom: 32px; flex-shrink: 0;">
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 700; color: var(--text-primary); margin-bottom: 12px;">My Profile</h2>
+            <p style="color: var(--text-secondary); font-size: 18px;">Manage your account and preferences</p>
           </div>
 
-          <!-- Compact 3-Column Grid -->
+          <!-- Profile Grid -->
           <div class="profile-grid" style="
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            gap: 15px;
-            flex: 1;
+            gap: 24px;
+            max-width: 1200px;
+            margin: 0 auto;
             align-items: start;
           ">
             <!-- Profile Information -->
             <div class="profile-info-card" style="
               background: var(--bg-secondary);
               border: 1px solid var(--border);
-              border-radius: 12px;
-              padding: 16px;
+              border-radius: 16px;
+              padding: 24px;
+              height: fit-content;
             ">
-              <h3 style="color: var(--text-primary); margin-bottom: 12px; font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
-                <span style="font-size: 16px;">👤</span> Profile Information
+              <h3 style="color: var(--text-primary); margin-bottom: 16px; font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 20px;">👤</span> Profile Information
               </h3>
               <div style="display: flex; flex-direction: column; gap: 12px;">
                 <div>
@@ -2201,12 +2300,13 @@
             <div class="plan-card" style="
               background: linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(139, 92, 246, 0.1));
               border: 1px solid rgba(236, 72, 153, 0.3);
-              border-radius: 12px;
-              padding: 16px;
+              border-radius: 16px;
+              padding: 24px;
               position: relative;
+              height: fit-content;
             ">
-              <h3 style="color: var(--text-primary); margin-bottom: 12px; font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
-                <span style="font-size: 16px;">💎</span> Current Plan
+              <h3 style="color: var(--text-primary); margin-bottom: 16px; font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 20px;">💎</span> Current Plan
               </h3>
               <div style="
                 background: linear-gradient(135deg, #ec4899, #8b5cf6);
@@ -2261,11 +2361,12 @@
             <div class="email-settings-card" style="
               background: var(--bg-secondary);
               border: 1px solid var(--border);
-              border-radius: 12px;
-              padding: 16px;
+              border-radius: 16px;
+              padding: 24px;
+              height: fit-content;
             ">
-              <h3 style="color: var(--text-primary); margin-bottom: 12px; font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
-                <span style="font-size: 16px;">📧</span> Email Settings
+              <h3 style="color: var(--text-primary); margin-bottom: 16px; font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 20px;">📧</span> Email Settings
               </h3>
               <div style="display: flex; flex-direction: column; gap: 10px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: var(--bg-tertiary); border-radius: 8px; border: 1px solid var(--border);">
