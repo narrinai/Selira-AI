@@ -904,7 +904,7 @@
 
       /* Profile Section Default */
       .profile-grid {
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr !important;
       }
 
       /* Profile Section Desktop */
@@ -948,6 +948,8 @@
         
         .email-settings-card {
           grid-column: 1 / -1;
+          max-width: 600px;
+          margin: 0 auto;
         }
       }
 
@@ -1171,6 +1173,18 @@
       line-height: 1.6;
       max-width: 600px;
       margin: 0 auto;
+    }
+
+    /* Default Pricing Cards Layout */
+    .pricing-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 40px;
+      max-width: 1000px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 0 20px;
     }
 
     /* Desktop: Better spacing and card layout */
@@ -2625,29 +2639,9 @@
           </div>
           
           <!-- Compact 3-Card Layout -->
-          <div class="pricing-cards" style="
-            display: flex; 
-            gap: 15px; 
-            justify-content: center; 
-            align-items: stretch; 
-            flex: 1;
-            max-width: 900px;
-            margin: 0 auto;
-          ">
+          <div class="pricing-cards">
             <!-- Free Trial -->
-            <div class="pricing-card" style="
-              flex: 1; 
-              max-width: 280px;
-              background: var(--bg-secondary);
-              border: 1px solid var(--border);
-              border-radius: var(--radius-lg);
-              padding: 15px;
-              position: relative;
-              transition: all 0.3s ease;
-              min-height: auto;
-              display: flex;
-              flex-direction: column;
-            ">
+            <div class="pricing-card">
               <div class="plan-name" style="
                 font-family: 'Playfair Display', serif;
                 font-size: 16px;
@@ -2731,21 +2725,7 @@
             </div>
 
             <!-- Engage Plan -->
-            <div class="pricing-card featured" style="
-              flex: 1; 
-              max-width: 280px;
-              background: var(--bg-secondary);
-              border: 1px solid var(--accent);
-              border-radius: var(--radius-lg);
-              padding: 15px;
-              position: relative;
-              transition: all 0.3s ease;
-              min-height: auto;
-              display: flex;
-              flex-direction: column;
-              transform: scale(1.02);
-              box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-            ">
+            <div class="pricing-card featured">
               <div class="card-badge" style="
                 position: absolute;
                 top: -8px;
@@ -2875,7 +2855,7 @@
             </div>
 
             <!-- Immerse Plan -->
-            <div class="pricing-card" style="flex: 1; max-width: 280px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 15px; position: relative; transition: all 0.3s ease; min-height: auto; display: flex; flex-direction: column;">
+            <div class="pricing-card">
               <div class="card-badge" style="position: absolute; top: -8px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); color: white; padding: 4px 12px; border-radius: 12px; font-size: 10px; font-weight: 600;">Ultimate Experience</div>
               <div class="plan-name" style="font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">Immerse</div>
               <div class="price-wrapper" style="margin-bottom: 6px;">
