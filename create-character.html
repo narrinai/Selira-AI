@@ -2287,6 +2287,120 @@
       text-align: center;
       line-height: 1.4;
     }
+
+    /* Tags System CSS */
+    .tag-search-container {
+      position: relative;
+    }
+
+    .tag-search-results {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .tag-search-result {
+      padding: var(--spacing-sm) var(--spacing-md);
+      cursor: pointer;
+      border-bottom: 1px solid var(--color-light-gray);
+      transition: background-color 0.2s;
+    }
+
+    .tag-search-result:hover {
+      background: var(--color-off-white);
+    }
+
+    .tag-search-result:last-child {
+      border-bottom: none;
+    }
+
+    .popular-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacing-sm);
+    }
+
+    .tag-button {
+      background: white;
+      border: 2px solid var(--color-light-gray);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-sm) var(--spacing-md);
+      cursor: pointer;
+      transition: all var(--transition-base);
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      color: var(--color-gray-dark);
+    }
+
+    .tag-button:hover {
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+      transform: translateY(-1px);
+    }
+
+    .tag-button.selected {
+      background: var(--color-accent);
+      border-color: var(--color-accent);
+      color: white;
+    }
+
+    .selected-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacing-xs);
+      align-items: center;
+    }
+
+    .selected-tag {
+      background: var(--color-accent);
+      color: white;
+      padding: var(--spacing-xs) var(--spacing-sm);
+      border-radius: var(--radius-sm);
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+    }
+
+    .selected-tag .remove-tag {
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
+      padding: 0;
+      margin-left: 4px;
+      opacity: 0.8;
+    }
+
+    .selected-tag .remove-tag:hover {
+      opacity: 1;
+    }
+
+    /* Mobile responsive for tags */
+    @media (max-width: 768px) {
+      .popular-tags {
+        gap: var(--spacing-xs);
+      }
+
+      .tag-button {
+        font-size: var(--font-size-xs);
+        padding: var(--spacing-xs) var(--spacing-sm);
+      }
+
+      .selected-tags {
+        gap: 6px;
+      }
+
+      .selected-tag {
+        font-size: var(--font-size-xs);
+        padding: 6px var(--spacing-xs);
+      }
+    }
   </style>
 
   <!-- Google Analytics -->
@@ -2670,9 +2784,52 @@
        </div>
      </div>
 
-     <!-- REMOVED: Category selection - using types only -->
-     <input type="hidden" name="characterCategory" value="made-by-you">
+     <!-- Character Tags -->
+     <div class="form-section">
+       <h2>🏷️ Tags <span style="font-size: var(--font-size-sm); color: var(--color-gray); font-weight: normal;">(Optional - Max 10)</span></h2>
+       
+       <div class="form-group">
+         <label>Search and add tags to help others discover your companion</label>
+         
+         <!-- Tag Search Input -->
+         <div class="tag-search-container" style="margin-bottom: var(--spacing-lg);">
+           <input type="text" id="tagSearchInput" placeholder="Search for tags..." 
+                  style="width: 100%; padding: var(--spacing-md); border: 2px solid var(--color-light-gray); border-radius: var(--radius-md); font-size: var(--font-size-base);">
+           <div class="tag-search-results" id="tagSearchResults" style="display: none; max-height: 200px; overflow-y: auto; border: 1px solid var(--color-light-gray); border-radius: var(--radius-md); margin-top: 8px; background: white;"></div>
+         </div>
+         
+         <!-- Popular Tags -->
+         <div class="popular-tags-section" style="margin-bottom: var(--spacing-lg);">
+           <label style="display: block; margin-bottom: var(--spacing-sm); font-weight: 600;">Popular tags:</label>
+           <div class="popular-tags" id="popularTags">
+             <button type="button" class="tag-button" data-tag="Fantasy">Fantasy</button>
+             <button type="button" class="tag-button" data-tag="Romance">Romance</button>
+             <button type="button" class="tag-button" data-tag="Adventure">Adventure</button>
+             <button type="button" class="tag-button" data-tag="Hero">Hero</button>
+             <button type="button" class="tag-button" data-tag="Mystery">Mystery</button>
+             <button type="button" class="tag-button" data-tag="Action">Action</button>
+             <button type="button" class="tag-button" data-tag="Magic">Magic</button>
+             <button type="button" class="tag-button" data-tag="Wise">Wise</button>
+             <button type="button" class="tag-button" data-tag="Historical">Historical</button>
+             <button type="button" class="tag-button" data-tag="Anime-Manga">Anime-Manga</button>
+           </div>
+         </div>
+         
+         <!-- Selected Tags -->
+         <div class="selected-tags-section">
+           <label style="display: block; margin-bottom: var(--spacing-sm); font-weight: 600;">Selected tags (<span id="tagCount">0</span>/10):</label>
+           <div class="selected-tags" id="selectedTags" style="min-height: 40px; padding: var(--spacing-sm); border: 2px dashed var(--color-light-gray); border-radius: var(--radius-md); background: var(--color-off-white);">
+             <span style="color: var(--color-gray); font-style: italic;">No tags selected</span>
+           </div>
+         </div>
+         
+         <!-- Hidden input to store selected tags -->
+         <input type="hidden" id="characterTags" name="characterTags" value="">
+       </div>
+     </div>
 
+     <!-- HIDDEN: Category is determined from tags -->
+     <input type="hidden" name="characterCategory" value="made-by-you">
 
      <!-- HIDDEN: Characters are automatically private -->
      <input type="hidden" name="visibility" value="private">
@@ -4996,7 +5153,8 @@ document.getElementById('characterForm').addEventListener('submit', async (e) =>
     category: categoryEl.value,
     character_type: typeEl.value,
     visibility: visibilityEl.value,
-    avatarUrl: currentAvatarUrl
+    avatarUrl: currentAvatarUrl,
+    tags: selectedTags
   };
   
   // Store character data before showing login
@@ -5041,6 +5199,7 @@ document.getElementById('characterForm').addEventListener('submit', async (e) =>
     character_type: typeEl.value,
     visibility: visibilityEl.value,
     avatarUrl: currentAvatarUrl,
+    tags: selectedTags,
     
     // NIEUWE VELDEN TOEVOEGEN:
     character_data: {
@@ -5051,7 +5210,8 @@ document.getElementById('characterForm').addEventListener('submit', async (e) =>
       category: categoryEl.value,
       character_type: typeEl.value,
       visibility: visibilityEl.value,
-      avatar_url: currentAvatarUrl || ''
+      avatar_url: currentAvatarUrl || '',
+      tags: selectedTags
     }
   };
   
@@ -5467,6 +5627,135 @@ async function checkTrialStatus(email, uid) {
 }
 
 // REMOVED: Companion limit check - Users can now create unlimited companions
+
+// ===== TAGS SYSTEM FUNCTIONALITY =====
+let selectedTags = [];
+const maxTags = 10;
+
+// All available tags based on Airtable data
+const availableTags = [
+  'Fantasy', 'Romance', 'Adventure', 'Hero', 'Mystery', 'Action', 'Magic', 'Wise', 
+  'Historical', 'Anime-Manga', 'Warrior', 'Leader', 'Ninja', 'Wizard', 'Cute',
+  'Funny', 'Caring', 'Helpful', 'Creative', 'Confident', 'Energetic', 'Calm',
+  'Mysterious', 'Loyal', 'Brave', 'Kind', 'Smart', 'Strong', 'Gentle', 'Playful',
+  'Serious', 'Romantic', 'Friendly', 'Bold', 'Shy', 'Outgoing', 'Patient'
+];
+
+function initializeTags() {
+  const tagSearchInput = document.getElementById('tagSearchInput');
+  const popularTagsContainer = document.getElementById('popularTags');
+  
+  if (tagSearchInput) {
+    tagSearchInput.addEventListener('input', handleTagSearch);
+    tagSearchInput.addEventListener('blur', () => {
+      setTimeout(() => {
+        document.getElementById('tagSearchResults').style.display = 'none';
+      }, 200);
+    });
+  }
+
+  if (popularTagsContainer) {
+    popularTagsContainer.addEventListener('click', handlePopularTagClick);
+  }
+}
+
+function handleTagSearch(event) {
+  const searchTerm = event.target.value.toLowerCase();
+  const resultsContainer = document.getElementById('tagSearchResults');
+  
+  if (searchTerm.length < 2) {
+    resultsContainer.style.display = 'none';
+    return;
+  }
+  
+  const matchingTags = availableTags.filter(tag => 
+    tag.toLowerCase().includes(searchTerm) && !selectedTags.includes(tag)
+  ).slice(0, 5);
+  
+  if (matchingTags.length > 0) {
+    resultsContainer.innerHTML = matchingTags.map(tag => 
+      `<div class="tag-search-result" onclick="addTag('${tag}')">${tag}</div>`
+    ).join('');
+    resultsContainer.style.display = 'block';
+  } else {
+    resultsContainer.style.display = 'none';
+  }
+}
+
+function handlePopularTagClick(event) {
+  if (event.target.classList.contains('tag-button')) {
+    const tag = event.target.dataset.tag;
+    if (event.target.classList.contains('selected')) {
+      removeTag(tag);
+    } else {
+      addTag(tag);
+    }
+  }
+}
+
+function addTag(tag) {
+  if (selectedTags.includes(tag)) return;
+  
+  if (selectedTags.length >= maxTags) {
+    alert(`Je kunt maximaal ${maxTags} tags selecteren.`);
+    return;
+  }
+  
+  selectedTags.push(tag);
+  updateTagsDisplay();
+  updateHiddenTagsInput();
+  
+  // Clear search input
+  const searchInput = document.getElementById('tagSearchInput');
+  if (searchInput) {
+    searchInput.value = '';
+  }
+  document.getElementById('tagSearchResults').style.display = 'none';
+}
+
+function removeTag(tag) {
+  selectedTags = selectedTags.filter(t => t !== tag);
+  updateTagsDisplay();
+  updateHiddenTagsInput();
+}
+
+function updateTagsDisplay() {
+  const selectedTagsContainer = document.getElementById('selectedTags');
+  const tagCount = document.getElementById('tagCount');
+  
+  if (tagCount) {
+    tagCount.textContent = selectedTags.length;
+  }
+  
+  if (selectedTags.length === 0) {
+    selectedTagsContainer.innerHTML = '<span style="color: var(--color-gray); font-style: italic;">No tags selected</span>';
+  } else {
+    selectedTagsContainer.innerHTML = selectedTags.map(tag => 
+      `<span class="selected-tag">
+        ${tag}
+        <button type="button" class="remove-tag" onclick="removeTag('${tag}')">×</button>
+      </span>`
+    ).join('');
+  }
+  
+  // Update popular tag buttons
+  document.querySelectorAll('.tag-button').forEach(button => {
+    const tag = button.dataset.tag;
+    button.classList.toggle('selected', selectedTags.includes(tag));
+  });
+}
+
+function updateHiddenTagsInput() {
+  const hiddenInput = document.getElementById('characterTags');
+  if (hiddenInput) {
+    hiddenInput.value = selectedTags.join(',');
+  }
+}
+
+// Initialize tags system on DOM load
+document.addEventListener('DOMContentLoaded', () => {
+  initializeTags();
+});
 
 </script>
 
