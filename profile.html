@@ -88,71 +88,79 @@
       width: 220px;
       background: var(--bg-secondary);
       border-right: 1px solid var(--border);
-      padding: 24px 0;
+      padding: 24px 16px;
       position: fixed;
       height: 100vh;
       left: 0;
       top: 0;
       z-index: 100;
       overflow-y: auto;
+      display: flex;
+      flex-direction: column;
     }
     
     .sidebar-logo {
       display: flex;
       align-items: center;
-      padding: 0 24px 32px;
-      text-decoration: none;
-      border-bottom: 1px solid var(--border);
+      gap: 8px;
       margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      text-decoration: none;
+      color: inherit;
+      transition: opacity 0.2s ease;
     }
-    
+
+    .sidebar-logo:hover {
+      opacity: 0.8;
+      text-decoration: none;
+      color: inherit;
+    }
+
     .sidebar-logo-text {
       font-family: 'Playfair Display', serif;
-      font-size: 24px;
+      font-size: 18px;
       font-weight: 700;
       color: var(--accent);
     }
-    
+
     .sidebar-nav {
-      padding: 0 16px;
+      flex: 1;
     }
-    
-    .nav-section-title {
-      color: var(--text-muted);
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin: 24px 8px 12px;
-      font-weight: 600;
-    }
-    
+
     .nav-item {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 12px 8px;
-      color: var(--text-secondary);
+      gap: 8px;
+      padding: 8px 12px;
+      margin-bottom: 2px;
+      color: rgba(255, 255, 255, 0.8);
       text-decoration: none;
       border-radius: var(--radius-sm);
-      margin-bottom: 4px;
       transition: all 0.2s ease;
       font-weight: 500;
+      font-size: 14px;
     }
-    
-    .nav-item:hover {
-      background: var(--bg-tertiary);
-      color: var(--text-primary);
+
+    .nav-item:hover, .nav-item.active {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
     }
-    
-    .nav-item.active {
-      background: var(--bg-tertiary);
-      color: var(--text-primary);
-    }
-    
+
     .nav-item-icon {
-      font-size: 18px;
-      width: 20px;
+      font-size: 16px;
+      width: 16px;
       text-align: center;
+    }
+
+    .nav-section-title {
+      font-size: 10px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.6);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 16px 0 6px;
+      padding: 0 12px;
     }
     
     /* Main Content */
@@ -683,11 +691,11 @@
           <span class="nav-item-icon">👥</span>
           <span>Discover</span>
         </a>
-        <a href="/category" class="nav-item">
+        <a href="#" class="nav-item" onclick="showMyCompanions(); return false;">
           <span class="nav-item-icon">💬</span>
           <span>My Companions</span>
         </a>
-        <a href="/category" class="nav-item">
+        <a href="#" class="nav-item" onclick="showCreateCharacter(); return false;">
           <span class="nav-item-icon">➕</span>
           <span>Create</span>
         </a>
@@ -892,6 +900,15 @@
       console.log('Opening plan management');
       // TODO: Implement plan management
       alert('Plan management will be implemented soon!');
+    }
+    
+    // Navigation functions for consistency with /category
+    function showMyCompanions() {
+      window.location.href = '/category';
+    }
+    
+    function showCreateCharacter() {
+      window.location.href = '/category';
     }
     
     // TODO: Add authentication integration
