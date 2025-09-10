@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Age Verification Test - Selira AI</title>
+  
+  <!-- Age Verification System -->
+  <script src="/js/age-verification.js"></script>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #1a1a1a;
+      --bg-tertiary: #2a2a2a;
+      --text-primary: #ffffff;
+      --text-secondary: #b3b3b3;
+      --text-muted: #888888;
+      --accent: #d4a574;
+      --accent-hover: #c19456;
+      --border: #333333;
+      --radius-md: 12px;
+    }
+    
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 20px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      font-family: 'Playfair Display', serif;
+      color: var(--accent);
+      margin-bottom: 30px;
+    }
+    
+    .section {
+      background: var(--bg-secondary);
+      padding: 24px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+    
+    .test-button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      cursor: pointer;
+      margin: 10px;
+      transition: all 0.2s ease;
+    }
+    
+    .test-button:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+    
+    .test-button.secondary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+    
+    .test-button.secondary:hover {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+    
+    .status {
+      margin: 20px 0;
+      padding: 16px;
+      border-radius: var(--radius-md);
+      font-weight: 500;
+    }
+    
+    .status.verified {
+      background: rgba(16, 185, 129, 0.1);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    
+    .status.not-verified {
+      background: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+    
+    .info {
+      background: var(--bg-tertiary);
+      padding: 16px;
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔞 Age Verification Test</h1>
+    
+    <div id="status-section" class="section">
+      <h3>Verification Status</h3>
+      <div id="verification-status" class="status">Checking...</div>
+    </div>
+    
+    <div class="section">
+      <h3>Test Controls</h3>
+      <p>Use these buttons to test the age verification system:</p>
+      
+      <button class="test-button" onclick="showAgeVerification()">
+        🔞 Show Age Verification Popup
+      </button>
+      
+      <button class="test-button secondary" onclick="resetVerification()">
+        🔄 Reset Verification (Clear localStorage)
+      </button>
+      
+      <button class="test-button secondary" onclick="checkStatus()">
+        ✅ Check Verification Status
+      </button>
+    </div>
+    
+    <div class="section">
+      <h3>Features</h3>
+      <ul>
+        <li>🎨 <strong>Selira AI Themed:</strong> Uses consistent styling with site design</li>
+        <li>💾 <strong>LocalStorage:</strong> Remembers verification for 30 days</li>
+        <li>🔒 <strong>First Visit Only:</strong> Shows only on first visit or after expiry</li>
+        <li>📱 <strong>Responsive:</strong> Works on desktop and mobile devices</li>
+        <li>⚠️ <strong>Content Warning:</strong> Clear adult content notice</li>
+        <li>🚫 <strong>Access Control:</strong> Proper handling for underage users</li>
+      </ul>
+    </div>
+    
+    <div class="section">
+      <h3>Age Verification Flow</h3>
+      <ol>
+        <li><strong>First Visit:</strong> User sees 18+ verification popup</li>
+        <li><strong>Confirm (18+):</strong> Access granted, preference saved for 30 days</li>
+        <li><strong>Deny (Under 18):</strong> Access denied, redirected to safe content</li>
+        <li><strong>Return Visits:</strong> No popup if verified within 30 days</li>
+        <li><strong>Expiry:</strong> After 30 days, verification popup shows again</li>
+      </ol>
+    </div>
+    
+    <div class="info">
+      <strong>Note:</strong> This test page allows you to manually trigger the age verification 
+      popup even if you've already verified. In production, it only appears on first visit 
+      or after the 30-day verification expires.
+    </div>
+  </div>
+
+  <script>
+    // Test functions
+    function showAgeVerification() {
+      if (window.SeliraAgeVerification) {
+        window.SeliraAgeVerification.show();
+      } else {
+        alert('Age verification system not loaded');
+      }
+    }
+    
+    function resetVerification() {
+      if (window.SeliraAgeVerification) {
+        window.SeliraAgeVerification.reset();
+        checkStatus();
+        alert('Age verification has been reset. Refresh the page to see the popup again.');
+      }
+    }
+    
+    function checkStatus() {
+      const statusEl = document.getElementById('verification-status');
+      
+      if (window.SeliraAgeVerification) {
+        const isVerified = window.SeliraAgeVerification.isVerified();
+        const verificationDate = localStorage.getItem('selira_age_verification_date');
+        
+        if (isVerified) {
+          const date = new Date(parseInt(verificationDate));
+          statusEl.className = 'status verified';
+          statusEl.innerHTML = `✅ <strong>Verified</strong><br>Verified on: ${date.toLocaleString()}<br>Valid until: ${new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString()}`;
+        } else {
+          statusEl.className = 'status not-verified';
+          statusEl.innerHTML = '❌ <strong>Not Verified</strong><br>Age verification required';
+        }
+      } else {
+        statusEl.className = 'status not-verified';
+        statusEl.innerHTML = '⚠️ <strong>System Not Loaded</strong><br>Age verification system not available';
+      }
+    }
+    
+    // Check status on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(checkStatus, 500); // Wait for age verification to load
+    });
+    
+    // Update status every 5 seconds
+    setInterval(checkStatus, 5000);
+  </script>
+</body>
+</html>
