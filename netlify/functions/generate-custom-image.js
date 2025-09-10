@@ -66,22 +66,54 @@ exports.handler = async (event, context) => {
                        promptLower.includes('kawaii')
                      ));
     
-    // Enhanced feminine features (SFW)
+    // Enhanced feminine features (SFW) + smart context detection
     const feminineEnhancement = 'beautiful woman, curvy figure, feminine physique, attractive features, well-proportioned';
+    
+    // Smart context enhancement based on keywords
+    let contextualEnhancement = '';
+    
+    // Location contexts
+    if (promptLower.includes('beach')) {
+      contextualEnhancement += ', sunny day, ocean background, vacation vibes, tropical setting';
+    } else if (promptLower.includes('bedroom') || promptLower.includes('bed')) {
+      contextualEnhancement += ', cozy interior, soft lighting, intimate setting';
+    } else if (promptLower.includes('office') || promptLower.includes('work')) {
+      contextualEnhancement += ', professional environment, modern office setting';
+    } else if (promptLower.includes('park') || promptLower.includes('outdoor')) {
+      contextualEnhancement += ', natural outdoor setting, pleasant lighting';
+    }
+    
+    // Pose contexts
+    if (promptLower.includes('leaning forward')) {
+      contextualEnhancement += ', confident pose, engaging expression, dynamic posture';
+    } else if (promptLower.includes('sitting') || promptLower.includes('lying')) {
+      contextualEnhancement += ', relaxed pose, comfortable posture';
+    } else if (promptLower.includes('standing')) {
+      contextualEnhancement += ', confident stance, elegant posture';
+    }
+    
+    // Clothing contexts
+    if (promptLower.includes('white top') || promptLower.includes('shirt')) {
+      contextualEnhancement += ', stylish casual wear, fashionable outfit';
+    } else if (promptLower.includes('dress')) {
+      contextualEnhancement += ', elegant dress, sophisticated style';
+    } else if (promptLower.includes('bikini') || promptLower.includes('swimwear')) {
+      contextualEnhancement += ', beach attire, summer style';
+    }
     
     // Shot type determination
     const isFullBody = shotType === 'fullbody' || promptLower.includes('full body') || 
                        promptLower.includes('fullbody') || promptLower.includes('standing') ||
                        promptLower.includes('beach') || promptLower.includes('pose');
     
-    // Build full prompt with enhanced features
+    // Build full prompt with enhanced features and context
     let fullPrompt;
     if (isAnimeStyle) {
       const shotDesc = isFullBody ? 'full body anime illustration' : 'anime portrait';
-      fullPrompt = `${shotDesc} of ${feminineEnhancement}, anime style, ${customPrompt}, detailed anime art, high quality anime illustration, vibrant colors, cel shading, clean background, single anime character, perfect anime anatomy, anime eyes`;
+      fullPrompt = `${shotDesc} of ${feminineEnhancement}, anime style, ${customPrompt}${contextualEnhancement}, detailed anime art, high quality anime illustration, vibrant colors, cel shading, clean background, single anime character, perfect anime anatomy, anime eyes`;
     } else {
       const shotDesc = isFullBody ? 'full body photograph' : 'portrait photograph';
-      fullPrompt = `realistic photography, ${shotDesc} of ${feminineEnhancement}, ${customPrompt}, photorealistic, real photo, not anime, not cartoon, not illustration, not drawing, professional photography, high quality, professional lighting, clean background, single real person, perfect anatomy, realistic skin, realistic features`;
+      fullPrompt = `realistic photography, ${shotDesc} of ${feminineEnhancement}, ${customPrompt}${contextualEnhancement}, photorealistic, real photo, not anime, not cartoon, not illustration, not drawing, professional photography, high quality, professional lighting, clean background, single real person, perfect anatomy, realistic skin, realistic features`;
     }
     
     console.log('🎨 Full prompt:', fullPrompt);
