@@ -37,12 +37,14 @@ exports.handler = async (event, context) => {
 
   try {
     const body = JSON.parse(event.body || '{}');
-    const { customPrompt, characterName, category } = body;
+    const { customPrompt, characterName, category, style, shotType } = body;
     
     console.log('📋 Received:', {
       customPrompt,
       characterName,
-      category
+      category,
+      style,
+      shotType
     });
     
     if (!customPrompt) {
@@ -53,21 +55,33 @@ exports.handler = async (event, context) => {
       };
     }
     
-    // Determine if anime style based on category or prompt content
+    // Use explicit style if provided, otherwise auto-detect
     const categoryLower = (category || '').toLowerCase();
     const promptLower = customPrompt.toLowerCase();
-    const isAnimeStyle = categoryLower.includes('anime') || 
+    const isAnimeStyle = style === 'anime' || (style !== 'realistic' && (
+                       categoryLower.includes('anime') || 
                        promptLower.includes('anime') || 
                        promptLower.includes('manga') ||
                        promptLower.includes('waifu') ||
-                       promptLower.includes('kawaii');
+                       promptLower.includes('kawaii')
+                     ));
     
-    // Build full prompt with style guidance
+    // Enhanced feminine features (SFW)
+    const feminineEnhancement = 'beautiful woman, curvy figure, feminine physique, attractive features, well-proportioned';
+    
+    // Shot type determination
+    const isFullBody = shotType === 'fullbody' || promptLower.includes('full body') || 
+                       promptLower.includes('fullbody') || promptLower.includes('standing') ||
+                       promptLower.includes('beach') || promptLower.includes('pose');
+    
+    // Build full prompt with enhanced features
     let fullPrompt;
     if (isAnimeStyle) {
-      fullPrompt = `anime style, ${customPrompt}, detailed anime art, high quality anime illustration, vibrant colors, cel shading, clean background, single character`;
+      const shotDesc = isFullBody ? 'full body anime illustration' : 'anime portrait';
+      fullPrompt = `${shotDesc} of ${feminineEnhancement}, anime style, ${customPrompt}, detailed anime art, high quality anime illustration, vibrant colors, cel shading, clean background, single anime character, perfect anime anatomy, anime eyes`;
     } else {
-      fullPrompt = `${customPrompt}, photorealistic, high quality, professional lighting, clean background, single person`;
+      const shotDesc = isFullBody ? 'full body photograph' : 'portrait photograph';
+      fullPrompt = `${shotDesc} of ${feminineEnhancement}, ${customPrompt}, photorealistic, high quality, professional lighting, clean background, single person, perfect anatomy`;
     }
     
     console.log('🎨 Full prompt:', fullPrompt);

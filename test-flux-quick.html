@@ -16,9 +16,11 @@
     <div style="margin-bottom: 20px;">
         <h3>🎨 Custom Prompt Test</h3>
         <input type="text" id="customPromptField" placeholder="Enter custom prompt (e.g. 'leaning forward, beach, white top')" 
+               value="leaning forward, beach, white top"
                style="width: 500px; padding: 10px; background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 5px;">
         <br><br>
-        <button onclick="testCustomPrompt()">Generate Custom Image</button>
+        <button onclick="testCustomAnime()">🎌 Generate Anime Style</button>
+        <button onclick="testCustomRealistic()">📸 Generate Realistic Style</button>
     </div>
     
     <div style="margin-bottom: 20px;">
@@ -87,6 +89,69 @@
             }, 'Realistic Character');
         }
         
+        async function testCustomAnime() {
+            await testCustomPromptWithStyle('anime', 'fullbody');
+        }
+        
+        async function testCustomRealistic() {
+            await testCustomPromptWithStyle('realistic', 'fullbody');
+        }
+        
+        async function testCustomPromptWithStyle(style, shotType) {
+            const prompt = document.getElementById('customPromptField').value;
+            if (!prompt.trim()) {
+                alert('Please enter a prompt');
+                return;
+            }
+            
+            const resultDiv = document.createElement('div');
+            resultDiv.className = 'test-result';
+            resultDiv.innerHTML = `<h3>🔄 Custom ${style} - Generating...</h3><p><strong>Your prompt:</strong> ${prompt}</p>`;
+            document.getElementById('results').appendChild(resultDiv);
+            
+            const startTime = Date.now();
+            
+            try {
+                const response = await fetch('/.netlify/functions/generate-custom-image', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        customPrompt: prompt,
+                        characterName: 'Custom Character',
+                        category: style === 'anime' ? 'anime-manga' : 'realistic',
+                        style: style,
+                        shotType: shotType
+                    })
+                });
+                
+                const endTime = Date.now();
+                const duration = (endTime - startTime) / 1000;
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    resultDiv.innerHTML = `
+                        <h3>✅ Custom ${style} - Success (${duration}s)</h3>
+                        <p><strong>Your Prompt:</strong> ${result.customPrompt}</p>
+                        <p><strong>Full Prompt:</strong> ${result.fullPrompt}</p>
+                        <p><strong>Style:</strong> ${result.isAnimeStyle ? 'Anime' : 'Realistic'} | ${shotType}</p>
+                        <img src="${result.imageUrl}" alt="Custom Generated" class="generated-image" loading="lazy">
+                    `;
+                } else {
+                    const error = await response.json();
+                    resultDiv.innerHTML = `
+                        <h3>❌ Custom ${style} - Failed (${duration}s)</h3>
+                        <p><strong>Error:</strong> ${error.error}</p>
+                        <p><strong>Details:</strong> ${error.details}</p>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <h3>💥 Custom ${style} - Request Failed</h3>
+                    <p><strong>Error:</strong> ${error.message}</p>
+                `;
+            }
+        }
+
         async function testCustomPrompt() {
             const prompt = document.getElementById('customPromptField').value;
             if (!prompt.trim()) {
