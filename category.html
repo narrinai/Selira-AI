@@ -32,6 +32,9 @@
   <!-- Auth0 Authentication System -->
   <script src="/js/auth0-login.js"></script>
   
+  <!-- Selira AI Popup System -->
+  <script src="/js/selira-popups.js"></script>
+  
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -2081,6 +2084,25 @@
     // ===== INITIAL URL HANDLING =====
     function handleInitialURL() {
       const currentURL = window.location.pathname + window.location.search;
+      const hash = window.location.hash;
+      
+      // Check for My Companions hash
+      if (hash === '#my-companions') {
+        // Switch to My Companions tab
+        const tabItems = document.querySelectorAll('.tab-item');
+        tabItems.forEach(tab => {
+          if (tab.textContent.trim() === 'My Companions') {
+            // Remove active from all tabs
+            tabItems.forEach(t => t.classList.remove('active'));
+            // Add active to My Companions tab
+            tab.classList.add('active');
+            // Switch to companions mode
+            currentTab = 'companions';
+            renderMyCompanions();
+          }
+        });
+        return;
+      }
       
       if (currentURL.includes('/tags/')) {
         // Extract tag from URL
