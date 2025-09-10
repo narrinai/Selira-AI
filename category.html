@@ -2953,23 +2953,7 @@
       // Update active nav item
       document.querySelectorAll('.nav-item').forEach(item => {
         item.classList.remove('active');
-        if (item.textContent.includes('My Companions')) {
-          item.classList.add('active');
-        }
       });
-      
-      // Switch to My Companions tab
-      document.querySelectorAll('.tab-item').forEach(tab => {
-        tab.classList.remove('active');
-        if (tab.textContent.trim() === 'My Companions') {
-          tab.classList.add('active');
-        }
-      });
-      
-      // Show My Companions content
-      currentTab = 'companions';
-      renderMyCompanions();
-    }
 
     // ===== INFINITE SCROLL =====
     function setupInfiniteScroll() {
