@@ -1419,9 +1419,99 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+  
+    /* Desktop Navigation Header */
+    .desktop-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(10, 10, 10, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      z-index: 1000;
+      padding: 16px 32px;
+      display: none;
+    }
+
+    .desktop-header-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .desktop-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--accent);
+      text-decoration: none;
+      letter-spacing: -0.5px;
+    }
+
+    .desktop-nav-links {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .desktop-nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .desktop-nav-link:hover {
+      color: var(--text-primary);
+    }
+
+    .desktop-nav-btn {
+      background: var(--accent);
+      color: white;
+      padding: 10px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background 0.2s;
+      border: none;
+      cursor: pointer;
+    }
+
+    .desktop-nav-btn:hover {
+      background: var(--accent-hover);
+    }
+
+    @media (min-width: 1024px) {
+      .desktop-header {
+        display: block;
+      }
+      
+      .app-container {
+        margin-top: 72px;
+      }
+    }
   </style>
 </head>
 <body>
+  <!-- Desktop Navigation Header -->
+  <header class="desktop-header">
+    <div class="desktop-header-content">
+      <a href="/" class="desktop-logo">Selira AI</a>
+      
+      <nav class="desktop-nav-links">
+        <a href="/pricing" class="desktop-nav-link">Plans</a>
+        <a href="/my-companions" class="desktop-nav-link">My Companions</a>
+        <a href="/memory-import" class="desktop-nav-link">Import Memory</a>
+        <a href="/news" class="desktop-nav-link">News & Insights</a>
+        <a href="#" class="desktop-nav-link" id="desktopLoginBtn">Login/Register</a>
+        <a href="/create-character" class="desktop-nav-btn">✨ Create Companion</a>
+      </nav>
+    </div>
+  </header>
+
   <div class="app-container">
     <!-- Left Sidebar Navigation (Character.AI style) -->
     <aside class="sidebar" id="sidebar">
@@ -1474,7 +1564,7 @@
         <div class="mobile-logo">Selira AI</div>
       </div>
 
-      <!-- Top Header -->
+      <!-- Top Header with Search -->
       <header class="top-header">
         <div class="header-top">
           <!-- Search -->
@@ -1483,27 +1573,11 @@
             <input 
               type="text" 
               class="search-input" 
-              placeholder="Search"
+              placeholder="Search characters..."
               id="searchInput"
             >
           </div>
-
-          <!-- User Actions -->
-          <div class="user-actions">
-            <select class="dropdown-btn" style="border: none; background: none; color: var(--text-secondary);">
-              <option>English</option>
-            </select>
-            <a href="#" class="user-btn secondary login-btn" onclick="openLoginModal('login'); return false;">Sign In</a>
-            <a href="#" class="user-btn signup-btn" onclick="openLoginModal('signup'); return false;">Register</a>
-          </div>
         </div>
-
-        <!-- Tab Navigation -->
-        <nav class="tab-nav">
-          <a href="#" class="tab-item active">Discover</a>
-          <a href="#" class="tab-item">My Companions</a>
-          <a href="#" class="tab-item">Memories</a>
-        </nav>
       </header>
 
       <!-- Filter Section -->
