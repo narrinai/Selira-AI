@@ -548,6 +548,27 @@
       margin-top: 8px;
       font-size: 12px;
       color: var(--text-muted);
+      gap: 12px;
+    }
+
+    .request-image-btn {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .request-image-btn:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
     }
 
     /* Character Search Modal */
@@ -781,9 +802,6 @@
           </div>
         </div>
         <div class="chat-actions">
-          <button class="action-btn" onclick="openImageGenerator()" title="Generate Image">
-            <span>🎨</span>
-          </button>
           <button class="action-btn" onclick="toggleCharacterInfo()" title="Character Info">
             <span>ℹ️</span>
           </button>
@@ -816,6 +834,9 @@
           </button>
         </div>
         <div class="input-footer">
+          <button class="request-image-btn" onclick="requestImage()" title="Request Image">
+            🎨 Request Image
+          </button>
           <span class="character-count" id="characterCount">0/2000</span>
           <span class="input-hint">Everything AI says is made up! Please follow your local laws and don't talk about underage content.</span>
         </div>
@@ -1032,6 +1053,15 @@
       const message = messageInput.value.trim();
       
       if (!message) return;
+      
+      // Check if this is an image request
+      if (message.toLowerCase().startsWith('send me a picture')) {
+        await handleImageRequest(message);
+        messageInput.value = '';
+        updateCharacterCount();
+        autoResizeTextarea();
+        return;
+      }
       
       // Add user message
       addMessage(message, 'user');
@@ -1864,132 +1894,58 @@
       });
     }
 
-    // Image generator modal function
-    function openImageGenerator() {
-      // Remove existing modal if open
-      const existingModal = document.getElementById('imageGeneratorModal');
-      if (existingModal) {
-        existingModal.remove();
-        return;
-      }
+    // Request image function - fills input with "Send me a picture "
+    function requestImage() {
+      const messageInput = document.getElementById('messageInput');
+      messageInput.value = 'Send me a picture ';
+      messageInput.focus();
+      // Place cursor at the end
+      messageInput.setSelectionRange(messageInput.value.length, messageInput.value.length);
       
-      const modal = document.createElement('div');
-      modal.id = 'imageGeneratorModal';
-      modal.style.cssText = `
-        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-        background: rgba(0,0,0,0.8); z-index: 2000;
-        display: flex; align-items: center; justify-content: center;
-        backdrop-filter: blur(8px);
-      `;
-      
-      modal.innerHTML = `
-        <div style="
-          background: var(--bg-secondary); border: 1px solid var(--border);
-          border-radius: 16px; padding: 32px; max-width: 500px; margin: 20px;
-          position: relative;
-        ">
-          <button onclick="document.getElementById('imageGeneratorModal').remove()" style="
-            position: absolute; top: 16px; right: 16px; background: none;
-            border: none; color: var(--text-secondary); font-size: 24px;
-            cursor: pointer; width: 32px; height: 32px; display: flex;
-            align-items: center; justify-content: center; border-radius: 50%;
-          ">&times;</button>
-          
-          <h2 style="color: var(--text-primary); margin: 0 0 20px 0; font-family: 'Playfair Display', serif;">🎨 Generate Image</h2>
-          
-          <div style="margin-bottom: 20px;">
-            <label style="color: var(--text-secondary); font-size: 14px; display: block; margin-bottom: 8px;">Describe the image you want:</label>
-            <input type="text" id="imagePrompt" placeholder="e.g. leaning forward, beach, white top" style="
-              width: 100%; padding: 12px; background: var(--bg-tertiary); 
-              border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary);
-              box-sizing: border-box; font-size: 14px;
-            ">
-          </div>
-          
-          <div style="margin-bottom: 20px;">
-            <label style="color: var(--text-secondary); font-size: 14px; display: block; margin-bottom: 8px;">Style:</label>
-            <div style="display: flex; gap: 12px;">
-              <button id="animeBtn" onclick="selectStyle('anime')" style="
-                flex: 1; padding: 12px; background: var(--accent); border: none; border-radius: 8px;
-                color: white; font-weight: 600; cursor: pointer; transition: all 0.2s;
-              ">🎌 Anime</button>
-              <button id="realisticBtn" onclick="selectStyle('realistic')" style="
-                flex: 1; padding: 12px; background: var(--bg-tertiary); border: 1px solid var(--border); 
-                border-radius: 8px; color: var(--text-primary); font-weight: 600; cursor: pointer; transition: all 0.2s;
-              ">📸 Realistic</button>
-            </div>
-          </div>
-          
-          <div style="display: flex; gap: 12px;">
-            <button onclick="generateChatImage()" id="generateBtn" style="
-              flex: 1; padding: 14px; background: var(--accent); border: none; border-radius: 8px;
-              color: white; font-weight: 600; cursor: pointer; font-size: 16px;
-            ">Generate Image</button>
-          </div>
-          
-          <div id="generationStatus" style="margin-top: 16px; text-align: center; color: var(--text-secondary);"></div>
-        </div>
-      `;
-      
-      document.body.appendChild(modal);
-      
-      // Set default style
-      selectStyle('anime');
-      
-      // Focus input
-      setTimeout(() => document.getElementById('imagePrompt').focus(), 100);
-      
-      // Close on outside click
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) modal.remove();
-      });
+      // Update character count
+      updateCharacterCount();
     }
-    
-    // Global variables for image generation
-    let selectedImageStyle = 'anime';
-    
-    function selectStyle(style) {
-      selectedImageStyle = style;
-      const animeBtn = document.getElementById('animeBtn');
-      const realisticBtn = document.getElementById('realisticBtn');
+
+    function updateCharacterCount() {
+      const messageInput = document.getElementById('messageInput');
+      const characterCount = document.getElementById('characterCount');
       
-      if (style === 'anime') {
-        animeBtn.style.background = 'var(--accent)';
-        animeBtn.style.border = 'none';
-        realisticBtn.style.background = 'var(--bg-tertiary)';
-        realisticBtn.style.border = '1px solid var(--border)';
-      } else {
-        realisticBtn.style.background = 'var(--accent)';
-        realisticBtn.style.border = 'none';
-        animeBtn.style.background = 'var(--bg-tertiary)';
-        animeBtn.style.border = '1px solid var(--border)';
+      if (messageInput && characterCount) {
+        characterCount.textContent = `${messageInput.value.length}/2000`;
       }
     }
-    
-    async function generateChatImage() {
-      const prompt = document.getElementById('imagePrompt').value.trim();
-      if (!prompt) {
-        alert('Please enter a prompt');
-        return;
-      }
+
+    async function handleImageRequest(message) {
+      // Extract the prompt part after "send me a picture"
+      const promptPart = message.substring('send me a picture'.length).trim();
+      const fullPrompt = promptPart || 'beautiful portrait';
       
-      const statusDiv = document.getElementById('generationStatus');
-      const generateBtn = document.getElementById('generateBtn');
+      // Add user message
+      addMessage(message, 'user');
       
-      // Show loading state
-      statusDiv.innerHTML = '🔄 Generating image...';
-      generateBtn.disabled = true;
-      generateBtn.textContent = 'Generating...';
+      // Add loading message
+      const loadingId = 'loading-' + Date.now();
+      addMessage('🎨 Generating your image...', 'ai', loadingId);
       
       try {
+        // Detect character style from companion_type field, fallback to Category
+        const characterStyle = currentCharacter.companion_type || 
+                               (currentCharacter.category === 'anime-manga' ? 'anime' : 'realistic');
+        
+        console.log('🎨 Generating image:', {
+          prompt: fullPrompt,
+          characterStyle: characterStyle,
+          character: currentCharacter.name
+        });
+        
         const response = await fetch('/.netlify/functions/generate-custom-image', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            customPrompt: prompt,
+            customPrompt: fullPrompt,
             characterName: currentCharacter.name,
-            category: selectedImageStyle === 'anime' ? 'anime-manga' : 'realistic',
-            style: selectedImageStyle,
+            category: currentCharacter.category,
+            style: characterStyle,
             shotType: 'fullbody'
           })
         });
@@ -1997,41 +1953,54 @@
         if (response.ok) {
           const result = await response.json();
           
-          // Add image to chat as user message
-          addImageToChat(result.imageUrl, prompt, selectedImageStyle);
+          // Remove loading message
+          const loadingMsg = document.getElementById(loadingId);
+          if (loadingMsg) loadingMsg.remove();
           
-          // Close modal
-          document.getElementById('imageGeneratorModal').remove();
+          // Add generated image as AI response
+          addImageMessage(result.imageUrl, fullPrompt, characterStyle);
           
         } else {
           const error = await response.json();
-          statusDiv.innerHTML = `❌ Generation failed: ${error.error}`;
+          // Replace loading with error
+          const loadingMsg = document.getElementById(loadingId);
+          if (loadingMsg) {
+            const messageText = loadingMsg.querySelector('.message-text');
+            if (messageText) {
+              messageText.textContent = `❌ Sorry, I couldn't generate that image: ${error.error}`;
+            }
+          }
         }
         
       } catch (error) {
-        statusDiv.innerHTML = `💥 Error: ${error.message}`;
-      } finally {
-        generateBtn.disabled = false;
-        generateBtn.textContent = 'Generate Image';
+        // Replace loading with error  
+        const loadingMsg = document.getElementById(loadingId);
+        if (loadingMsg) {
+          const messageText = loadingMsg.querySelector('.message-text');
+          if (messageText) {
+            messageText.textContent = `❌ Sorry, there was an error generating your image.`;
+          }
+        }
       }
     }
-    
-    function addImageToChat(imageUrl, prompt, style) {
+
+    function addImageMessage(imageUrl, prompt, style) {
       const messagesContainer = document.getElementById('chatMessages');
       
-      // Create user message with generated image
       const messageDiv = document.createElement('div');
-      messageDiv.className = 'message user';
+      messageDiv.className = 'message ai';
       messageDiv.innerHTML = `
         <div class="message-content">
+          <div class="character-avatar">
+            <img src="${fixAvatarUrl(currentCharacter.avatar)}" alt="${currentCharacter.name}">
+          </div>
           <div class="message-text">
-            <div style="margin-bottom: 8px; color: var(--text-secondary); font-size: 12px;">
-              Generated ${style} image: "${prompt}"
-            </div>
+            <div style="margin-bottom: 8px;">Here's your ${style} image:</div>
             <img src="${imageUrl}" alt="Generated image" style="
               max-width: 300px; border-radius: 12px; cursor: pointer;
-              box-shadow: 0 4px 16px rgba(0,0,0,0.3); transition: transform 0.2s;
+              box-shadow: 0 4px 16px rgba(0,0,0,0.3);
             " onclick="openImageFullscreen('${imageUrl}', '${prompt}')">
+            <div style="margin-top: 4px; font-size: 11px; color: var(--text-muted);">"${prompt}"</div>
           </div>
           <div class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
         </div>
@@ -2039,10 +2008,8 @@
       
       messagesContainer.appendChild(messageDiv);
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
-      
-      console.log('🖼️ Added generated image to chat:', imageUrl);
     }
-    
+
     function openImageFullscreen(imageUrl, prompt) {
       const fullscreenModal = document.createElement('div');
       fullscreenModal.style.cssText = `

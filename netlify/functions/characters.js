@@ -245,6 +245,7 @@ exports.handler = async (event, context) => {
         Visibility: fields.Visibility || 'public',
         Created_by: createdBy,
         character_type: fields.Character_Type || fields.character_type || '',
+        companion_type: fields.companion_type || (fields.Category === 'anime-manga' ? 'anime' : 'realistic'),
         _Created_by_record_id: (Array.isArray(fields.Created_By) && fields.Created_By.length > 0) ? fields.Created_By[0] : null
       };
     });
