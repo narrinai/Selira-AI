@@ -80,7 +80,7 @@ exports.handler = async (event, context) => {
     console.log('🔄 Auth0 user sync:', { auth0_id, email, name });
 
     // Check if user already exists
-    const existingUserUrl = `https://api.airtable.com/v0/${SELIRA_BASE_ID}/Users?filterByFormula={Auth0ID}='${auth0_id}'&maxRecords=1`;
+    const existingUserUrl = `https://api.airtable.com/v0/${SELIRA_BASE_ID}/Users?filterByFormula={NetlifyUID}='${auth0_id}'&maxRecords=1`;
     
     const existingResponse = await fetch(existingUserUrl, {
       headers: {
@@ -142,24 +142,10 @@ exports.handler = async (event, context) => {
         },
         body: JSON.stringify({
           fields: {
-            Auth0ID: auth0_id,
+            NetlifyUID: auth0_id,
             Email: email,
             Name: name,
-            Username: (() => {
-              const username = generateUsername();
-              console.log('📝 Generated username:', username);
-              return username;
-            })(),
-            Display_Name: (() => {
-              const displayName = generateUsername();
-              console.log('📝 Generated display name:', displayName);
-              return displayName;
-            })(),
-            Plan: 'Free', // Default plan
-            CreatedAt: new Date().toISOString(),
-            LastActive: new Date().toISOString(),
-            MessageCount: 0,
-            TrialEndsAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() // 7 days trial
+            Plan: 'Free'
           }
         })
       });
