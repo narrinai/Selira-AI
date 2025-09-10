@@ -2466,11 +2466,15 @@
       justify-content: center;
       color: white;
       font-weight: 600;
+      position: relative;
     }
 
-    .realistic-example::after {
+    .realistic-example::before {
       content: '📸';
-      font-size: 48px;
+      font-size: 64px;
+      z-index: 2;
+      position: relative;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.3);
     }
 
     .anime-example {
@@ -2480,11 +2484,15 @@
       justify-content: center;
       color: white;
       font-weight: 600;
+      position: relative;
     }
 
-    .anime-example::after {
+    .anime-example::before {
       content: '🎌';
-      font-size: 48px;
+      font-size: 64px;
+      z-index: 2;
+      position: relative;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.3);
     }
 
     .card-title {
