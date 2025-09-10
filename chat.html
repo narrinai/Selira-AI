@@ -547,28 +547,7 @@
       align-items: center;
       margin-top: 8px;
       font-size: 12px;
-      gap: 12px;
       color: var(--text-muted);
-    }
-
-    .request-image-btn {
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border);
-      color: var(--text-secondary);
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-size: 11px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .request-image-btn:hover {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: white;
     }
 
     /* Character Search Modal */
@@ -837,9 +816,6 @@
           </button>
         </div>
         <div class="input-footer">
-          <button class="request-image-btn" onclick="requestImage()" title="Request Image">
-            🎨 Request Image
-          </button>
           <span class="character-count" id="characterCount">0/2000</span>
           <span class="input-hint">Everything AI says is made up! Please follow your local laws and don't talk about underage content.</span>
         </div>
@@ -1056,14 +1032,6 @@
       const message = messageInput.value.trim();
       
       if (!message) return;
-      
-      // Check if this is an image request
-      if (message.toLowerCase().startsWith('send me a picture')) {
-        await handleImageRequest(message);
-        messageInput.value = '';
-        updateCharacterCount();
-        return;
-      }
       
       // Add user message
       addMessage(message, 'user');
@@ -2075,141 +2043,6 @@
       console.log('🖼️ Added generated image to chat:', imageUrl);
     }
     
-    function openImageFullscreen(imageUrl, prompt) {
-      const fullscreenModal = document.createElement('div');
-      fullscreenModal.style.cssText = `
-        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-        background: rgba(0,0,0,0.9); z-index: 3000;
-        display: flex; align-items: center; justify-content: center;
-        backdrop-filter: blur(8px);
-      `;
-      
-      fullscreenModal.innerHTML = `
-        <div style="position: relative; max-width: 90vw; max-height: 90vh;">
-          <img src="${imageUrl}" alt="Generated image" style="
-            max-width: 100%; max-height: 100%; border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-          ">
-          <div style="
-            position: absolute; bottom: -40px; left: 0; right: 0; text-align: center;
-            color: white; font-size: 14px; background: rgba(0,0,0,0.7); 
-            padding: 8px; border-radius: 8px;
-          ">"${prompt}"</div>
-          <button onclick="this.parentElement.parentElement.remove()" style="
-            position: absolute; top: -40px; right: 0; background: rgba(255,255,255,0.9); 
-            border: none; border-radius: 50%; width: 32px; height: 32px; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; font-size: 18px;
-          ">&times;</button>
-        </div>
-      `;
-      
-      document.body.appendChild(fullscreenModal);
-      fullscreenModal.addEventListener('click', (e) => {
-        if (e.target === fullscreenModal) fullscreenModal.remove();
-      });
-    }
-
-    // Request image function - fills input with "Send me a picture "
-    function requestImage() {
-      const messageInput = document.getElementById('messageInput');
-      messageInput.value = 'Send me a picture ';
-      messageInput.focus();
-      // Place cursor at the end
-      messageInput.setSelectionRange(messageInput.value.length, messageInput.value.length);
-      
-      // Update character count
-      updateCharacterCount();
-    }
-
-
-    async function handleImageRequest(message) {
-      // Extract the prompt part after "send me a picture"
-      const promptPart = message.substring('send me a picture'.length).trim();
-      const fullPrompt = promptPart || 'beautiful portrait';
-      
-      // Add user message
-      addMessage(message, 'user');
-      
-      // Add loading message
-      const loadingId = 'loading-' + Date.now();
-      addMessage('🎨 Generating your image...', 'ai', loadingId);
-      
-      try {
-        // Detect character style from Category (anime-manga = anime, rest = realistic)
-        const characterStyle = currentCharacter.category === 'anime-manga' ? 'anime' : 'realistic';
-        
-        console.log('🎨 Generating image:', {
-          prompt: fullPrompt,
-          characterStyle: characterStyle,
-          character: currentCharacter.name
-        });
-        
-        const response = await fetch('/.netlify/functions/generate-custom-image', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            customPrompt: fullPrompt,
-            characterName: currentCharacter.name,
-            category: currentCharacter.category,
-            style: characterStyle,
-            shotType: 'fullbody'
-          })
-        });
-        
-        if (response.ok) {
-          const result = await response.json();
-          
-          // Remove loading message
-          const loadingMsg = document.getElementById(loadingId);
-          if (loadingMsg) loadingMsg.remove();
-          
-          // Add generated image
-          addImageMessage(result.imageUrl, fullPrompt, characterStyle);
-          
-        } else {
-          const error = await response.json();
-          // Replace loading with error
-          const loadingMsg = document.getElementById(loadingId);
-          if (loadingMsg) {
-            loadingMsg.querySelector('.message-text').textContent = `❌ Sorry, I couldn't generate that image: ${error.error}`;
-          }
-        }
-        
-      } catch (error) {
-        // Replace loading with error  
-        const loadingMsg = document.getElementById(loadingId);
-        if (loadingMsg) {
-          loadingMsg.querySelector('.message-text').textContent = `❌ Sorry, there was an error generating your image.`;
-        }
-      }
-    }
-
-    function addImageMessage(imageUrl, prompt, style) {
-      const messagesContainer = document.getElementById('chatMessages');
-      
-      const messageDiv = document.createElement('div');
-      messageDiv.className = 'message ai';
-      messageDiv.innerHTML = `
-        <div class="message-content">
-          <div class="character-avatar">
-            <img src="${fixAvatarUrl(currentCharacter.avatar)}" alt="${currentCharacter.name}">
-          </div>
-          <div class="message-text">
-            <div style="margin-bottom: 8px;">Here's your ${style} image:</div>
-            <img src="${imageUrl}" alt="Generated image" style="
-              max-width: 300px; border-radius: 12px; cursor: pointer;
-              box-shadow: 0 4px 16px rgba(0,0,0,0.3);
-            " onclick="openImageFullscreen('${imageUrl}', '${prompt}')">
-            <div style="margin-top: 4px; font-size: 11px; color: var(--text-muted);">"${prompt}"</div>
-          </div>
-          <div class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
-        </div>
-      `;
-      
-      messagesContainer.appendChild(messageDiv);
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
-
     function openImageFullscreen(imageUrl, prompt) {
       const fullscreenModal = document.createElement('div');
       fullscreenModal.style.cssText = `
