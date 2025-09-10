@@ -1509,10 +1509,6 @@
           </div>
         </div>
 
-        <!-- Tab Navigation -->
-        <nav class="tab-nav">
-          <a href="#" class="tab-item active">All Companions</a>
-        </nav>
       </header>
 
       <!-- Filter Section -->
@@ -2151,10 +2147,9 @@
           
           const tabText = this.textContent.trim();
           
-          if (tabText === 'All Companions') {
-            currentTab = 'companions';
-            renderMyCompanions();
-          }
+          // Tab functionality removed - always show companions
+          currentTab = 'companions';
+          renderMyCompanions();
         });
       });
     }
@@ -2172,7 +2167,6 @@
               <div style="font-size: 48px; margin-bottom: 16px;">💬</div>
               <h3 style="color: var(--text-primary); margin-bottom: 8px;">No companions yet</h3>
               <p style="color: var(--text-secondary); margin-bottom: 20px;">Start chatting with characters to add them to your companions!</p>
-              <button class="user-btn" onclick="switchToDiscoverTab()">View All Companions</button>
             </div>
           </div>
         `;
@@ -2335,7 +2329,6 @@
       currentTab = 'discover';
       document.querySelectorAll('.tab-item').forEach(tab => {
         tab.classList.remove('active');
-        if (tab.textContent.trim() === 'All Companions') {
           tab.classList.add('active');
         }
       });
@@ -2935,7 +2928,6 @@
       // Update active nav item
       document.querySelectorAll('.nav-item').forEach(item => {
         item.classList.remove('active');
-        if (item.textContent.includes('All Companions')) {
           item.classList.add('active');
         }
       });
