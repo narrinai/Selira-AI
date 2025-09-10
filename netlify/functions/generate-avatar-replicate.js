@@ -59,8 +59,8 @@ exports.handler = async (event, context) => {
     console.log('🎨 Generated prompt:', prompt);
     console.log('👤 Detected gender:', gender);
     
-    // Use SDXL model with better prompt control
-    const model = "stability-ai/sdxl:39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b";
+    // Use Flux Schnell for faster generation (3-8 seconds)
+    const model = "black-forest-labs/flux-schnell";
     
     // Call Replicate API
     const replicateResponse = await fetch('https://api.replicate.com/v1/predictions', {
@@ -73,12 +73,10 @@ exports.handler = async (event, context) => {
         version: model,
         input: {
           prompt: prompt,
-          negative_prompt: "multiple people, two faces, group photo, crowd, collage, grid layout, multiple portraits, composite image, photo grid, multiple images, triptych, diptych, reflection, mirror, dark background, black background, gray background, colored background, cartoon, anime, illustration, drawing, painting, sketch, 3d render, cgi, low quality, blurry, distorted, deformed, ugly, bad anatomy, bad proportions, extra limbs, missing limbs, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, mutation, mutated, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry, artist name, text, logo, grid, lines, borders, frames, double face, duplicate person, split screen, montage",
           width: 768,
           height: 768,
           num_outputs: 1,
-          guidance_scale: 7.5,
-          num_inference_steps: 30
+          num_inference_steps: 4
         }
       })
     });
@@ -92,10 +90,10 @@ exports.handler = async (event, context) => {
     const prediction = await replicateResponse.json();
     console.log('📊 Prediction created:', prediction.id);
     
-    // Wait for the prediction to complete (max 30 seconds)
+    // Wait for the prediction to complete (max 10 seconds for Flux Schnell)
     let result = prediction;
     let attempts = 0;
-    const maxAttempts = 30;
+    const maxAttempts = 10;
     
     while (result.status !== 'succeeded' && result.status !== 'failed' && attempts < maxAttempts) {
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -290,11 +288,34 @@ function createRealisticPortraitPrompt(characterName, characterTitle, category) 
     ethnicGender = `${ethnicity} ${gender}`;
   }
   
-  // Build professional portrait prompt with light background
-  let prompt = `A single professional headshot portrait of one ${ethnicGender}, `;
+  // Determine if anime style is appropriate based on category
+  const isAnimeCategory = categoryLower.includes('anime') || categoryLower.includes('manga') || 
+                         categoryLower.includes('kawaii') || categoryLower.includes('otaku');
+  
+  // Build prompt with anime consideration
+  let prompt;
+  if (isAnimeCategory) {
+    prompt = `Beautiful anime style portrait of ${ethnicGender}, detailed anime art, high quality anime illustration, `;
+  } else {
+    prompt = `Professional portrait of ${ethnicGender}, photorealistic, high quality, `;
+  }
   
   // Category-specific clothing
   const categoryClothing = {
+    // Anime & Manga specific
+    'anime-manga': {
+      female: ['school uniform', 'magical girl outfit', 'kimono', 'sailor uniform', 'maid outfit', 'casual anime clothes', 'fantasy anime dress', 'modern anime outfit'],
+      male: ['school uniform', 'casual anime clothes', 'anime protagonist outfit', 'modern japanese clothes', 'fantasy anime armor', 'student uniform']
+    },
+    anime: {
+      female: ['school uniform', 'magical girl outfit', 'kimono', 'sailor uniform', 'maid outfit', 'casual anime clothes'],
+      male: ['school uniform', 'casual anime clothes', 'anime protagonist outfit', 'modern japanese clothes']
+    },
+    manga: {
+      female: ['manga style outfit', 'japanese school uniform', 'anime casual wear', 'manga character clothes'],
+      male: ['manga style outfit', 'japanese school uniform', 'anime casual wear', 'manga character clothes']
+    },
+    
     // Cooking & Food
     cooking: {
       female: ['chef jacket and hat', 'professional chef uniform', 'apron over casual clothes', 'culinary school uniform', 'chef whites'],
@@ -411,25 +432,47 @@ function createRealisticPortraitPrompt(characterName, characterTitle, category) 
   
   prompt += `warm friendly smile, confident expression, wearing ${clothing}`;
   
-  // Light background and technical specifications - emphasize single person
-  prompt += ', bright white or light gray background, individual portrait of one person only, close-up headshot, no grid, no collage, no multiple images, single frame, only one face visible, no reflections, no mirrors, no other people in background, soft diffused lighting, well-lit face, high key lighting, professional studio portrait, centered face, direct eye contact, sharp focus, 85mm portrait lens, shallow depth of field';
+  // Style-specific technical specifications
+  if (isAnimeCategory) {
+    prompt += ', clean white background, anime art style, detailed anime character, vibrant colors, cel shading, anime lighting, digital anime art, manga style, single character portrait, no other characters, centered composition, high quality anime artwork, detailed facial features, anime eyes, perfect anime anatomy';
+  } else {
+    prompt += ', bright white or light gray background, individual portrait of one person only, close-up headshot, no grid, no collage, no multiple images, single frame, only one face visible, no reflections, no mirrors, no other people in background, soft diffused lighting, well-lit face, high key lighting, professional studio portrait, centered face, direct eye contact, sharp focus, 85mm portrait lens, shallow depth of field';
+  }
   
-  // Add variety with age groups
-  const ages = ['25-30 years old', '30-35 years old', '35-40 years old', '40-45 years old', '45-50 years old', '50-55 years old', '55-60 years old'];
+  // Add variety with age groups - anime appropriate ages
+  let ages;
+  if (isAnimeCategory) {
+    ages = ['18-22 years old', '20-25 years old', '22-28 years old', '25-30 years old'];
+  } else {
+    ages = ['25-30 years old', '30-35 years old', '35-40 years old', '40-45 years old', '45-50 years old', '50-55 years old', '55-60 years old'];
+  }
   const age = ages[Math.floor(Math.random() * ages.length)];
   prompt += `, ${age}`;
   
-  // Add variety in hair styles only (clothing already handled)
-  const hairStyles = [
-    ', short hair', ', long hair', ', medium length hair', 
-    ', curly hair', ', straight hair', ', wavy hair',
-    ', braided hair', ', ponytail', ', shoulder-length hair',
-    ', buzzcut', ', styled hair', ', natural hair'
-  ];
+  // Add variety in hair styles - anime vs realistic
+  let hairStyles, accessories;
   
-  const accessories = [
-    ', wearing glasses', ', no glasses', ', wearing earrings', ', wearing a watch'
-  ];
+  if (isAnimeCategory) {
+    hairStyles = [
+      ', long flowing hair', ', twin tails', ', ponytail', ', short anime hair',
+      ', colorful hair', ', anime bangs', ', spiky anime hair', ', wavy anime hair',
+      ', braided anime hair', ', anime pigtails', ', messy anime hair', ', straight anime hair'
+    ];
+    accessories = [
+      ', anime glasses', ', hair accessories', ', anime earrings', ', no accessories',
+      ', hair clips', ', anime headband', ', hair ribbon'
+    ];
+  } else {
+    hairStyles = [
+      ', short hair', ', long hair', ', medium length hair', 
+      ', curly hair', ', straight hair', ', wavy hair',
+      ', braided hair', ', ponytail', ', shoulder-length hair',
+      ', buzzcut', ', styled hair', ', natural hair'
+    ];
+    accessories = [
+      ', wearing glasses', ', no glasses', ', wearing earrings', ', wearing a watch'
+    ];
+  }
   
   // Add random hair style
   const hairStyle = hairStyles[Math.floor(Math.random() * hairStyles.length)];
