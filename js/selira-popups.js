@@ -255,12 +255,16 @@ function closePopup() {
 
 // Override browser popups
 function overrideBrowserPopups() {
+  // Store original functions
+  window._originalAlert = window.alert;
+  window._originalConfirm = window.confirm;
+  
   // Override alert
   window.alert = function(message) {
     showPopup(message, 'selira.ai says', 'alert');
   };
   
-  // Override confirm
+  // Override confirm - returns a promise for async usage but still works synchronously
   window.confirm = function(message) {
     return new Promise((resolve) => {
       showPopup(message, 'selira.ai says', 'confirm', resolve);
