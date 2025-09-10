@@ -457,7 +457,12 @@ class Auth0LoginModal {
     const navMenu = document.querySelector('.nav-menu') || document.querySelector('.user-actions');
     const mobileMenu = document.querySelector('.mobile-menu');
     
-    console.log('🔍 Found navigation elements:', { navMenu: !!navMenu, mobileMenu: !!mobileMenu });
+    console.log('🔍 Found navigation elements:', { 
+      navMenu: !!navMenu, 
+      mobileMenu: !!mobileMenu,
+      navMenuClass: navMenu?.className,
+      currentPage: window.location.pathname
+    });
     
     if (isAuthenticated && this.user) {
       // Update desktop nav
@@ -504,26 +509,42 @@ class Auth0LoginModal {
       return;
     }
     
-    console.log('🔄 Updating desktop nav:', { isAuthenticated, element: navMenu.className });
+    console.log('🔄 Updating desktop nav:', { 
+      isAuthenticated, 
+      element: navMenu.className,
+      innerHTML: navMenu.innerHTML.substring(0, 200) + '...'
+    });
     
     // Find existing auth buttons or create them
     let loginBtn = navMenu.querySelector('.login-btn');
     let signupBtn = navMenu.querySelector('.signup-btn');
     let profileBtn = navMenu.querySelector('.profile-btn');
     
+    console.log('🔍 Found buttons:', { 
+      loginBtn: !!loginBtn, 
+      signupBtn: !!signupBtn, 
+      profileBtn: !!profileBtn 
+    });
+    
     if (isAuthenticated) {
       console.log('✅ User authenticated - showing profile button');
       // Update existing login button to profile
       if (loginBtn) {
+        const displayName = this.user.name || 
+                           this.user.nickname || 
+                           (this.user.email ? this.user.email.split('@')[0] : 'Profile');
+        
         loginBtn.href = '/profile.html';
-        loginBtn.textContent = this.user.name || 'Profile';
+        loginBtn.textContent = displayName;
         loginBtn.className = loginBtn.className.replace('login-btn', 'profile-btn');
         loginBtn.onclick = null; // Remove modal trigger
+        console.log('✅ Updated login button to profile:', loginBtn.textContent);
       }
       
       // Hide/remove signup button
       if (signupBtn) {
         signupBtn.style.display = 'none';
+        console.log('✅ Hid signup button');
       }
       
     } else {
@@ -538,6 +559,7 @@ class Auth0LoginModal {
           this.openModal('login');
           return false;
         };
+        console.log('✅ Restored login button functionality');
       }
       
       // Show signup button
@@ -550,6 +572,7 @@ class Auth0LoginModal {
           this.openModal('signup');
           return false;
         };
+        console.log('✅ Restored signup button functionality');
       }
     }
   }
@@ -568,10 +591,14 @@ class Auth0LoginModal {
       signupLink?.remove();
       
       if (!profileLink) {
+        const displayName = this.user.name || 
+                           this.user.nickname || 
+                           (this.user.email ? this.user.email.split('@')[0] : 'Profile');
+        
         profileLink = document.createElement('a');
         profileLink.href = '/profile.html';
         profileLink.className = 'mobile-profile-link';
-        profileLink.textContent = `👤 ${this.user.name || 'Profile'}`;
+        profileLink.textContent = `👤 ${displayName}`;
         
         // Insert before CTA
         const ctaBtn = mobileMenu.querySelector('.cta-btn');
