@@ -225,158 +225,6 @@
       background: var(--bg-secondary);
     }
 
-    /* Character Banner */
-    .character-banner {
-      position: relative;
-      height: 180px;
-      background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
-      border-bottom: 1px solid var(--border);
-      overflow: hidden;
-    }
-
-    .banner-background {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      opacity: 0.3;
-      filter: blur(2px);
-    }
-
-    .banner-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(45deg, rgba(10, 10, 10, 0.8), rgba(26, 26, 26, 0.6));
-    }
-
-    .banner-content {
-      position: relative;
-      z-index: 2;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      padding: 24px 32px;
-      gap: 20px;
-    }
-
-    .banner-avatar {
-      width: 80px;
-      height: 80px;
-      border-radius: 16px;
-      overflow: hidden;
-      border: 3px solid var(--accent);
-      flex-shrink: 0;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    }
-
-    .banner-avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .banner-info {
-      flex: 1;
-      color: white;
-    }
-
-    .banner-character-name {
-      font-size: 28px;
-      font-weight: 700;
-      margin-bottom: 4px;
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-      font-family: 'Playfair Display', serif;
-    }
-
-    .banner-character-title {
-      font-size: 16px;
-      color: rgba(255, 255, 255, 0.8);
-      margin-bottom: 8px;
-      font-weight: 500;
-    }
-
-    .banner-character-description {
-      font-size: 14px;
-      color: rgba(255, 255, 255, 0.7);
-      line-height: 1.4;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .banner-actions {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
-
-    .banner-btn {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: white;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      text-decoration: none;
-    }
-
-    .banner-btn:hover {
-      background: rgba(255, 255, 255, 0.2);
-      border-color: var(--accent);
-      transform: translateY(-1px);
-    }
-
-    .banner-btn.primary {
-      background: var(--accent);
-      border-color: var(--accent);
-    }
-
-    .banner-btn.primary:hover {
-      background: var(--accent-hover);
-    }
-
-    @media (max-width: 768px) {
-      .character-banner {
-        height: 140px;
-      }
-      
-      .banner-content {
-        padding: 20px;
-        gap: 16px;
-      }
-      
-      .banner-avatar {
-        width: 60px;
-        height: 60px;
-        border-radius: 12px;
-      }
-      
-      .banner-character-name {
-        font-size: 22px;
-      }
-      
-      .banner-actions {
-        gap: 8px;
-      }
-      
-      .banner-btn {
-        padding: 6px 12px;
-        font-size: 12px;
-      }
-    }
-
     .character-info-header {
       display: flex;
       align-items: center;
@@ -933,35 +781,14 @@
           </div>
         </div>
         <div class="chat-actions">
+          <button class="action-btn" onclick="toggleCharacterInfo()" title="Character Info">
+            <span>ℹ️</span>
+          </button>
           <button class="action-btn" onclick="clearChat()" title="Clear Chat">
             <span>🗑️</span>
           </button>
         </div>
       </header>
-
-      <!-- Character Banner -->
-      <div class="character-banner" id="characterBanner">
-        <div class="banner-background" id="bannerBackground"></div>
-        <div class="banner-overlay"></div>
-        <div class="banner-content">
-          <div class="banner-avatar" id="bannerAvatar">
-            <img src="/avatars/placeholder.webp" alt="Character" id="bannerCharacterImage">
-          </div>
-          <div class="banner-info">
-            <h1 class="banner-character-name" id="bannerCharacterName">Loading...</h1>
-            <p class="banner-character-title" id="bannerCharacterTitle">AI Companion</p>
-            <p class="banner-character-description" id="bannerCharacterDescription">Ready for meaningful conversation</p>
-          </div>
-          <div class="banner-actions">
-            <button class="banner-btn" onclick="toggleCharacterInfo()" title="More Info">
-              ℹ️ More Info
-            </button>
-            <button class="banner-btn" onclick="regenerateResponse()" title="Regenerate">
-              🔄 Retry
-            </button>
-          </div>
-        </div>
-      </div>
 
       <!-- Chat Messages Area -->
       <div class="chat-messages" id="chatMessages">
@@ -1155,27 +982,6 @@
         headerImage.onerror = function() { this.style.display = 'none'; };
       } else {
         headerImage.style.display = 'none';
-      }
-
-      // Update banner
-      document.getElementById('bannerCharacterName').textContent = currentCharacter.name;
-      document.getElementById('bannerCharacterTitle').textContent = currentCharacter.title || 'AI Companion';
-      document.getElementById('bannerCharacterDescription').textContent = currentCharacter.description || 'Ready for meaningful conversation';
-      
-      const bannerImage = document.getElementById('bannerCharacterImage');
-      const bannerBackground = document.getElementById('bannerBackground');
-      
-      if (currentCharacter.avatar && currentCharacter.avatar !== '/avatars/placeholder.webp') {
-        const avatarUrl = fixAvatarUrl(currentCharacter.avatar);
-        bannerImage.src = avatarUrl;
-        bannerBackground.style.backgroundImage = `url(${avatarUrl})`;
-        bannerImage.onerror = function() { 
-          this.src = '/avatars/placeholder.webp'; 
-          bannerBackground.style.backgroundImage = 'none';
-        };
-      } else {
-        bannerImage.src = '/avatars/placeholder.webp';
-        bannerBackground.style.backgroundImage = 'none';
       }
       
       // Update sidebar
@@ -2055,9 +1861,9 @@
       });
     }
 
-    // Banner action functions
+    // Character info modal function
     function toggleCharacterInfo() {
-      // Create or toggle character info modal/panel
+      // Create or toggle character info modal
       const existingModal = document.getElementById('characterInfoModal');
       if (existingModal) {
         existingModal.remove();
@@ -2108,28 +1914,6 @@
       modal.addEventListener('click', (e) => {
         if (e.target === modal) modal.remove();
       });
-    }
-
-    function regenerateResponse() {
-      const messages = document.querySelectorAll('.message.ai');
-      if (messages.length > 0) {
-        const lastAiMessage = messages[messages.length - 1];
-        const messageText = lastAiMessage.querySelector('.message-text');
-        if (messageText) {
-          messageText.innerHTML = '<div class="typing-indicator"><span></span><span></span><span></span></div>';
-          
-          setTimeout(() => {
-            const regeneratedResponses = [
-              "Let me rephrase that in a different way...",
-              "Here's another perspective on that topic...", 
-              "Allow me to elaborate further...",
-              "Let me approach this from a different angle..."
-            ];
-            const randomResponse = regeneratedResponses[Math.floor(Math.random() * regeneratedResponses.length)];
-            messageText.textContent = randomResponse;
-          }, 1500);
-        }
-      }
     }
 
     console.log('✅ Selira AI Chat interface initialized with modern design');
