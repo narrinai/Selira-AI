@@ -26,10 +26,12 @@ class Auth0LoginModal {
       this.auth0Client = new auth0.Auth0Client({
         domain: this.config.domain,
         clientId: this.config.clientId,
+        cacheLocation: 'localstorage', // Important: Store auth state in localStorage
+        useRefreshTokens: true, // Enable refresh tokens for persistence
         authorizationParams: {
           redirect_uri: this.config.redirectUri,
           audience: this.config.audience,
-          scope: 'openid profile email'
+          scope: 'openid profile email offline_access' // offline_access for refresh tokens
         }
       });
 
