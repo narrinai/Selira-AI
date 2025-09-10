@@ -323,6 +323,52 @@
       margin: 0 auto;
     }
     
+    /* Tab Navigation */
+    .pricing-tabs {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 40px;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      padding: 4px;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 40px;
+    }
+    
+    .tab-button {
+      flex: 1;
+      padding: 12px 24px;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      font-weight: 500;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+    
+    .tab-button.active {
+      background: var(--accent);
+      color: white;
+    }
+    
+    .tab-button:hover:not(.active) {
+      color: var(--text-primary);
+      background: var(--bg-tertiary);
+    }
+    
+    /* Tab Content */
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
     /* Pricing Cards */
     .pricing-cards {
       display: grid;
@@ -644,8 +690,15 @@
 
       <!-- Pricing Section -->
       <section class="pricing-section">
-        <!-- Pricing Cards -->
-        <div class="pricing-cards">
+        <!-- Tab Navigation -->
+        <div class="pricing-tabs">
+          <button class="tab-button active" onclick="switchTab('subscriptions')">Subscription Plans</button>
+          <button class="tab-button" onclick="switchTab('oneoff')">One-off Purchases</button>
+        </div>
+
+        <!-- Subscription Plans Tab -->
+        <div class="tab-content active" id="subscriptions-tab">
+          <div class="pricing-cards">
           <!-- Free Trial -->
           <div class="pricing-card">
             <div class="plan-name">Free Trial</div>
@@ -758,6 +811,121 @@
             <a href="#" class="plan-button">Choose Immerse</a>
           </div>
         </div>
+        </div>
+
+        <!-- One-off Purchases Tab -->
+        <div class="tab-content" id="oneoff-tab">
+          <div class="pricing-cards">
+            <!-- 50 Messages -->
+            <div class="pricing-card">
+              <div class="plan-name">50 Messages</div>
+              <div class="plan-price">
+                <span class="price-currency">$</span>
+                <span class="price-amount">2.99</span>
+              </div>
+              <div class="plan-description">Perfect for occasional chats with your AI companions</div>
+              
+              <ul class="plan-features">
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span>50 chat messages</span>
+                </li>
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span>Access to all companions</span>
+                </li>
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span>Basic memory</span>
+                </li>
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span>30 days to use</span>
+                </li>
+              </ul>
+              
+              <a href="#" class="plan-button">Buy 50 Messages</a>
+            </div>
+
+            <!-- 200 Messages -->
+            <div class="pricing-card featured">
+              <div class="card-badge">Best Value</div>
+              <div class="plan-name">200 Messages</div>
+              <div class="plan-price">
+                <span class="price-currency">$</span>
+                <span class="price-amount">9.99</span>
+              </div>
+              <div class="price-daily">Only $0.05/message</div>
+              <div class="plan-description">Great for regular conversations throughout the month</div>
+              
+              <ul class="plan-features">
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span>200 chat messages</span>
+                </li>
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span>Access to all companions</span>
+                </li>
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span>5 voice chats included</span>
+                </li>
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span>Enhanced memory</span>
+                </li>
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span>60 days to use</span>
+                </li>
+              </ul>
+              
+              <a href="#" class="plan-button">Buy 200 Messages</a>
+            </div>
+
+            <!-- 500 Messages -->
+            <div class="pricing-card">
+              <div class="card-badge" style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);">Power User</div>
+              <div class="plan-name">500 Messages</div>
+              <div class="plan-price">
+                <span class="price-currency">$</span>
+                <span class="price-amount">19.99</span>
+              </div>
+              <div class="price-daily">Only $0.04/message</div>
+              <div class="plan-description">For heavy users who want maximum flexibility</div>
+              
+              <ul class="plan-features">
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span>500 chat messages</span>
+                </li>
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span>Access to all companions</span>
+                </li>
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span>15 voice chats included</span>
+                </li>
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span>Premium memory system</span>
+                </li>
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span>90 days to use</span>
+                </li>
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span>Priority support</span>
+                </li>
+              </ul>
+              
+              <a href="#" class="plan-button">Buy 500 Messages</a>
+            </div>
+          </div>
+        </div>
       </section>
     </main>
   </div>
@@ -784,6 +952,21 @@
     
     function showCreateCharacter() {
       window.location.href = '/category';
+    }
+    
+    // Tab switching functionality
+    function switchTab(tabName) {
+      // Remove active class from all tabs and tab buttons
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.querySelectorAll('.tab-button').forEach(button => {
+        button.classList.remove('active');
+      });
+      
+      // Add active class to selected tab and button
+      document.getElementById(tabName + '-tab').classList.add('active');
+      event.target.classList.add('active');
     }
     
     // TODO: Add authentication integration
