@@ -3,21 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Discover AI Characters | Selira AI</title>
-  <meta name="description" content="Discover thousands of AI characters on Selira AI. Browse by category, filter by tags, and find your perfect AI companion.">
+  <title>My Companions | Selira AI</title>
+  <meta name="description" content="View and manage your AI companions on Selira AI. Access your conversation history and favorite characters.">
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://selira.ai/category">
-  <meta property="og:title" content="Discover AI Characters - Selira AI">
-  <meta property="og:description" content="Browse thousands of AI characters by category. Find your perfect AI companion on Selira AI.">
+  <meta property="og:url" content="https://selira.ai/my-companions">
+  <meta property="og:title" content="My Companions - Selira AI">
+  <meta property="og:description" content="View and manage your AI companions. Access your conversation history on Selira AI.">
   <meta property="og:image" content="https://selira.ai/og-image.jpg">
   
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:url" content="https://selira.ai/category">
-  <meta property="twitter:title" content="Discover AI Characters | Selira AI">
-  <meta property="twitter:description" content="Browse thousands of AI characters by category on Selira AI.">
+  <meta property="twitter:url" content="https://selira.ai/my-companions">
+  <meta property="twitter:title" content="My Companions | Selira AI">
+  <meta property="twitter:description" content="View and manage your AI companions on Selira AI.">
   <meta property="twitter:image" content="https://selira.ai/og-image.jpg">
   
   <!-- Google Analytics -->
@@ -1440,11 +1440,11 @@
 
       <!-- Navigation -->
       <nav class="sidebar-nav">
-        <a href="/category" class="nav-item active">
+        <a href="/category" class="nav-item">
           <span class="nav-item-icon">🔍</span>
           <span>Discover</span>
         </a>
-        <a href="/my-companions" class="nav-item">
+        <a href="/my-companions" class="nav-item active">
           <span class="nav-item-icon">💬</span>
           <span>My Companions</span>
         </a>
@@ -1511,7 +1511,7 @@
 
         <!-- Tab Navigation -->
         <nav class="tab-nav">
-          <a href="#" class="tab-item active">Discover</a>
+          <a href="#" class="tab-item active">All Companions</a>
         </nav>
       </header>
 
@@ -1600,12 +1600,16 @@
 
     // Initialize page
     document.addEventListener('DOMContentLoaded', function() {
-      console.log('🚀 Selira AI Category page loading...');
+      console.log('🚀 Selira AI My Companions page loading...');
       loadCharacters();
       initializeFilters();
       setupTabNavigation();
       setupInfiniteScroll();
-      handleInitialURL();
+      // Default to show My Companions
+      currentTab = 'companions';
+      setTimeout(() => {
+        renderMyCompanions();
+      }, 500);
     });
 
     // ===== CHARACTER LOADING =====
@@ -1993,7 +1997,7 @@
         // Update URL based on tag selection
         if (tagText === 'All') {
           // Go back to /category
-          history.pushState({section: 'category', filter: null}, 'Discover Characters - Selira AI', '/category');
+          history.pushState({section: 'my-companions', filter: null}, 'My Companions - Selira AI', '/my-companions');
           currentFilters.tags = [];
         } else {
           // Create SEO-friendly URL
@@ -2147,9 +2151,9 @@
           
           const tabText = this.textContent.trim();
           
-          if (tabText === 'Discover') {
-            currentTab = 'discover';
-            renderCharacters();
+          if (tabText === 'All Companions') {
+            currentTab = 'companions';
+            renderMyCompanions();
           }
         });
       });
@@ -2168,7 +2172,7 @@
               <div style="font-size: 48px; margin-bottom: 16px;">💬</div>
               <h3 style="color: var(--text-primary); margin-bottom: 8px;">No companions yet</h3>
               <p style="color: var(--text-secondary); margin-bottom: 20px;">Start chatting with characters to add them to your companions!</p>
-              <button class="user-btn" onclick="switchToDiscoverTab()">Discover Characters</button>
+              <button class="user-btn" onclick="switchToDiscoverTab()">View All Companions</button>
             </div>
           </div>
         `;
@@ -2327,11 +2331,11 @@
       ];
     }
 
-    function switchToDiscoverTab() {
+    function switchToAllCompanionsTab() {
       currentTab = 'discover';
       document.querySelectorAll('.tab-item').forEach(tab => {
         tab.classList.remove('active');
-        if (tab.textContent.trim() === 'Discover') {
+        if (tab.textContent.trim() === 'All Companions') {
           tab.classList.add('active');
         }
       });
@@ -2931,7 +2935,7 @@
       // Update active nav item
       document.querySelectorAll('.nav-item').forEach(item => {
         item.classList.remove('active');
-        if (item.textContent.includes('Discover')) {
+        if (item.textContent.includes('All Companions')) {
           item.classList.add('active');
         }
       });
@@ -2941,6 +2945,7 @@
       renderCharacters();
     }
 
+    function showMyCompanions() {
       // Close sidebar on mobile
       closeSidebarOnMobile();
       
