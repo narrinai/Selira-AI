@@ -288,6 +288,9 @@ function createRealisticPortraitPrompt(characterName, characterTitle, category) 
     ethnicGender = `${ethnicity} ${gender}`;
   }
   
+  // Get category for processing
+  const categoryLower = (category || 'default').toLowerCase();
+  
   // Determine if anime style is appropriate based on category
   const isAnimeCategory = categoryLower.includes('anime') || categoryLower.includes('manga') || 
                          categoryLower.includes('kawaii') || categoryLower.includes('otaku');
@@ -401,7 +404,6 @@ function createRealisticPortraitPrompt(characterName, characterTitle, category) 
   
   // Get category-appropriate clothing
   let clothing;
-  const categoryLower = (category || 'default').toLowerCase();
   
   // Find matching category or use default
   let clothingOptions = categoryClothing.default;
