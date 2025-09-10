@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mobile Scroll Test - Selira AI</title>
+  
+  <!-- Mobile Navigation System -->
+  <script src="/js/mobile-nav.js"></script>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #1a1a1a;
+      --bg-tertiary: #2a2a2a;
+      --text-primary: #ffffff;
+      --text-secondary: #b3b3b3;
+      --text-muted: #888888;
+      --accent: #d4a574;
+      --border: #333333;
+      --radius-md: 12px;
+    }
+    
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding-bottom: 100px; /* Extra padding to test scrolling */
+    }
+    
+    h1 {
+      font-family: 'Playfair Display', serif;
+      color: var(--accent);
+      margin-bottom: 30px;
+    }
+    
+    .content-block {
+      background: var(--bg-secondary);
+      padding: 24px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      margin-bottom: 20px;
+      min-height: 300px;
+    }
+    
+    .scroll-indicator {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--accent);
+      color: white;
+      padding: 10px 16px;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      z-index: 1000;
+    }
+    
+    .test-results {
+      background: var(--bg-tertiary);
+      padding: 16px;
+      border-radius: var(--radius-md);
+      margin: 20px 0;
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        padding: 10px;
+        padding-bottom: 150px;
+      }
+      
+      body {
+        padding: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📱 Mobile Scroll Test</h1>
+    
+    <div class="content-block">
+      <h3>Scroll Test Block 1</h3>
+      <p>This page tests mobile scrolling functionality. You should be able to scroll smoothly on mobile devices.</p>
+      <p><strong>Height:</strong> This block is 300px minimum height to create scrollable content.</p>
+    </div>
+    
+    <div class="content-block">
+      <h3>Scroll Test Block 2</h3>
+      <p>If you're on mobile and can read this, scrolling is working!</p>
+      <ul>
+        <li>✅ Mobile navigation should be visible at top</li>
+        <li>✅ You should be able to scroll vertically</li>
+        <li>✅ No horizontal scrolling should be possible</li>
+        <li>✅ Smooth touch scrolling should work</li>
+      </ul>
+    </div>
+    
+    <div class="content-block">
+      <h3>Scroll Test Block 3</h3>
+      <p>More content to ensure we have enough to scroll through...</p>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    </div>
+    
+    <div class="content-block">
+      <h3>Scroll Test Block 4</h3>
+      <p>Testing mobile scroll with the updated navigation system.</p>
+      <div class="test-results">
+        <h4>Fixes Applied:</h4>
+        <ul>
+          <li>✅ <code>overflow-y: auto</code> on body and html</li>
+          <li>✅ <code>-webkit-overflow-scrolling: touch</code> for smooth iOS scrolling</li>
+          <li>✅ <code>min-height: calc(100vh - 60px)</code> on main content</li>
+          <li>✅ Removed conflicting overflow restrictions</li>
+          <li>✅ Added proper box-sizing</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="content-block">
+      <h3>Scroll Test Block 5</h3>
+      <p>Final test block to ensure scrolling works all the way to the bottom.</p>
+      <p>If you can see this text clearly without any issues, mobile scrolling is working correctly!</p>
+    </div>
+    
+    <div class="content-block">
+      <h3>🎉 End of Scroll Test</h3>
+      <p><strong>Success!</strong> If you reached this point by scrolling, the mobile scrolling fix is working properly.</p>
+      <p>The mobile navigation should remain fixed at the top while the content scrolls underneath.</p>
+    </div>
+  </div>
+  
+  <div class="scroll-indicator" id="scrollIndicator">
+    Scroll: 0%
+  </div>
+
+  <script>
+    // Add scroll percentage indicator
+    function updateScrollIndicator() {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPercentage = Math.round((scrollTop / scrollHeight) * 100);
+      
+      const indicator = document.getElementById('scrollIndicator');
+      if (indicator) {
+        indicator.textContent = `Scroll: ${scrollPercentage}%`;
+      }
+    }
+    
+    // Update scroll indicator on scroll
+    window.addEventListener('scroll', updateScrollIndicator);
+    
+    // Test scroll functionality
+    function openLoginModal(type) {
+      alert(`Login modal: ${type}`);
+    }
+    
+    // Log page load
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('Mobile scroll test page loaded');
+      console.log('Window dimensions:', window.innerWidth, 'x', window.innerHeight);
+      console.log('Document height:', document.documentElement.scrollHeight);
+      updateScrollIndicator();
+    });
+  </script>
+</body>
+</html>

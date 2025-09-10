@@ -362,9 +362,17 @@ function addMobileNavStyles() {
         display: block;
       }
       
-      /* Add padding to body to account for mobile nav */
+      /* Add padding to body to account for mobile nav - ensure scrolling works */
       body {
-        padding-top: 60px;
+        padding-top: 60px !important;
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+      
+      /* Ensure html can scroll */
+      html {
+        overflow-x: hidden;
+        overflow-y: auto;
       }
       
       /* Hide desktop navigation elements */
@@ -377,10 +385,19 @@ function addMobileNavStyles() {
       /* Adjust main content */
       .main-content {
         margin-left: 0 !important;
+        min-height: calc(100vh - 60px);
+        overflow-y: auto;
       }
       
       .app-container {
         flex-direction: column;
+        min-height: 100vh;
+      }
+      
+      /* Fix any potential overflow issues */
+      .main-content * {
+        max-width: 100%;
+        box-sizing: border-box;
       }
     }
     
@@ -402,6 +419,54 @@ function addMobileNavStyles() {
   `;
   
   document.head.appendChild(styles);
+  
+  // Add mobile scrolling fix for all pages
+  addMobileScrollFix();
+}
+
+// Add mobile scrolling fix
+function addMobileScrollFix() {
+  // Only apply on mobile devices
+  if (window.innerWidth <= 768) {
+    // Ensure body and html can scroll
+    document.documentElement.style.overflowY = 'auto';
+    document.documentElement.style.overflowX = 'hidden';
+    document.body.style.overflowY = 'auto';
+    document.body.style.overflowX = 'hidden';
+    
+    // Fix any height constraints that might prevent scrolling
+    document.body.style.minHeight = '100vh';
+    document.documentElement.style.minHeight = '100vh';
+    
+    // Ensure proper box-sizing
+    document.body.style.boxSizing = 'border-box';
+    
+    // Add CSS for better mobile scrolling
+    const scrollFix = document.createElement('style');
+    scrollFix.id = 'mobile-scroll-fix';
+    scrollFix.textContent = `
+      @media (max-width: 768px) {
+        * {
+          -webkit-overflow-scrolling: touch;
+        }
+        
+        body, html {
+          overflow-x: hidden !important;
+          overflow-y: auto !important;
+          height: auto !important;
+        }
+        
+        .main-content, .profile-section, .pricing-section {
+          overflow-y: auto !important;
+          -webkit-overflow-scrolling: touch;
+        }
+      }
+    `;
+    
+    if (!document.getElementById('mobile-scroll-fix')) {
+      document.head.appendChild(scrollFix);
+    }
+  }
 }
 
 // Attach event listeners
