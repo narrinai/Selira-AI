@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mobile Navigation Test - Selira AI</title>
+  
+  <!-- Auth0 Authentication System -->
+  <script src="/js/auth0-login.js"></script>
+  
+  <!-- Mobile Navigation System -->
+  <script src="/js/mobile-nav.js"></script>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #1a1a1a;
+      --bg-tertiary: #2a2a2a;
+      --text-primary: #ffffff;
+      --text-secondary: #b3b3b3;
+      --text-muted: #888888;
+      --accent: #d4a574;
+      --accent-hover: #c19456;
+      --border: #333333;
+      --radius-md: 12px;
+    }
+    
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 20px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      font-family: 'Playfair Display', serif;
+      color: var(--accent);
+      margin-bottom: 30px;
+    }
+    
+    .section {
+      background: var(--bg-secondary);
+      padding: 24px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+    
+    .note {
+      background: var(--bg-tertiary);
+      padding: 16px;
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      margin-top: 20px;
+    }
+    
+    @media (min-width: 769px) {
+      .desktop-note {
+        display: block;
+      }
+      .mobile-note {
+        display: none;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .desktop-note {
+        display: none;
+      }
+      .mobile-note {
+        display: block;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Mobile Navigation Test</h1>
+    
+    <div class="section">
+      <h3>Mobile Navigation Features</h3>
+      <ul>
+        <li>📱 Responsive mobile navigation bar (top-fixed)</li>
+        <li>🍔 Hamburger menu with smooth animation</li>
+        <li>🔍 Mobile search overlay</li>
+        <li>👤 Profile shortcut button</li>
+        <li>📋 Full navigation menu with all main sections</li>
+        <li>✨ Smooth slide animations and backdrop blur</li>
+      </ul>
+    </div>
+    
+    <div class="section">
+      <h3>Navigation Items</h3>
+      <p>The mobile menu includes:</p>
+      <ul>
+        <li>🔍 Discover (category page)</li>
+        <li>💬 My Companions</li>
+        <li>➕ Create</li>
+        <li>📋 Memory Import</li>
+        <li>👤 Profile</li>
+        <li>💎 Pricing</li>
+        <li>🔑 Sign In / ✨ Register</li>
+      </ul>
+    </div>
+    
+    <div class="note desktop-note">
+      <strong>Desktop View:</strong> Mobile navigation is hidden on desktop screens (>768px). 
+      Resize your browser window or use developer tools to test mobile view.
+    </div>
+    
+    <div class="note mobile-note">
+      <strong>Mobile View:</strong> You should see the mobile navigation bar at the top! 
+      Try tapping the hamburger menu (☰) to open the side menu, 
+      or the search icon (🔍) to open search overlay.
+    </div>
+  </div>
+
+  <script>
+    // Add some demo functionality
+    function openLoginModal(type) {
+      alert(`${type} modal would open here`);
+    }
+    
+    // Log mobile nav initialization
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('Mobile navigation test page loaded');
+      console.log('Mobile nav element:', document.getElementById('selira-mobile-nav'));
+    });
+  </script>
+</body>
+</html>
