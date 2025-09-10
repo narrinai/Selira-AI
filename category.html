@@ -233,15 +233,13 @@
     }
 
     .user-btn {
-      padding: 10px 20px;
-      background: var(--accent);
-      color: white;
-      border: none;
+      padding: 8px 16px;
       border-radius: var(--radius-md);
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
       text-decoration: none;
+      font-weight: 600;
+      font-size: 13px;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
     }
 
     .user-btn:hover {
@@ -250,14 +248,24 @@
     }
 
     .user-btn.secondary {
-      background: transparent;
-      color: var(--accent);
-      border: 1px solid var(--accent);
+      color: var(--text-secondary);
+      border-color: var(--border);
     }
 
     .user-btn.secondary:hover {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    .signup-btn {
       background: var(--accent);
       color: white;
+    }
+
+    .signup-btn:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(212, 165, 116, 0.3);
     }
 
     /* Tab Navigation */
