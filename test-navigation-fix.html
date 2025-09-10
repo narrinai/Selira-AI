@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Navigation Fix Test - Selira AI</title>
+  
+  <style>
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #1a1a1a;
+      --text-primary: #ffffff;
+      --text-secondary: #b3b3b3;
+      --accent: #d4a574;
+      --border: #333333;
+      --radius-md: 12px;
+    }
+    
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      font-family: 'Playfair Display', serif;
+      color: var(--accent);
+      margin-bottom: 30px;
+    }
+    
+    .fix-section {
+      background: var(--bg-secondary);
+      padding: 24px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+    
+    .test-link {
+      display: inline-block;
+      background: var(--accent);
+      color: white;
+      padding: 12px 24px;
+      border-radius: var(--radius-md);
+      text-decoration: none;
+      font-weight: 600;
+      margin: 10px 10px 10px 0;
+      transition: all 0.2s ease;
+    }
+    
+    .test-link:hover {
+      background: #c19456;
+      transform: translateY(-1px);
+    }
+    
+    .status {
+      padding: 10px;
+      border-radius: var(--radius-md);
+      margin: 10px 0;
+      font-weight: 500;
+    }
+    
+    .status.fixed {
+      background: rgba(16, 185, 129, 0.1);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔧 Navigation Fixes Applied</h1>
+    
+    <div class="fix-section">
+      <h3>✅ Fixed Issues on /category</h3>
+      <ul>
+        <li><strong>Removed duplicate desktop-header navigation</strong> (top navigation bar)</li>
+        <li><strong>Restored sidebar navigation</strong> on left side</li>
+        <li><strong>Kept top-header navigation</strong> with search bar and user actions</li>
+        <li><strong>Navigation now matches profile page structure</strong></li>
+      </ul>
+      <div class="status fixed">✅ Category page navigation fixed</div>
+      <a href="/category" class="test-link">Test Category Page</a>
+    </div>
+    
+    <div class="fix-section">
+      <h3>✅ Fixed Issues on /my-companions</h3>
+      <ul>
+        <li><strong>Restored sidebar navigation</strong> on left side</li>
+        <li><strong>Removed CSS that was hiding the sidebar</strong></li>
+        <li><strong>Navigation consistency restored</strong></li>
+      </ul>
+      <div class="status fixed">✅ My Companions navigation fixed</div>
+      <a href="/my-companions" class="test-link">Test My Companions</a>
+    </div>
+    
+    <div class="fix-section">
+      <h3>📋 Navigation Structure</h3>
+      <p>All pages now have consistent navigation:</p>
+      <ul>
+        <li><strong>Left Sidebar:</strong> Main navigation with icons (Discover, My Companions, Create, etc.)</li>
+        <li><strong>Top Header:</strong> Search bar, language selector, Sign In/Register buttons</li>
+        <li><strong>Mobile:</strong> Mobile navigation system for smaller screens</li>
+      </ul>
+      
+      <h4>Test Pages:</h4>
+      <a href="/category" class="test-link">Category</a>
+      <a href="/my-companions" class="test-link">My Companions</a>
+      <a href="/profile" class="test-link">Profile</a>
+      <a href="/pricing" class="test-link">Pricing</a>
+    </div>
+    
+    <div class="fix-section">
+      <h3>🎯 Expected Result</h3>
+      <p><strong>Desktop:</strong> You should see both the left sidebar navigation AND the top header with search bar on all pages.</p>
+      <p><strong>Mobile:</strong> Mobile navigation system should work consistently across all pages.</p>
+      <p><strong>No duplicate navigation:</strong> Category page no longer has the duplicate desktop header that was conflicting.</p>
+    </div>
+  </div>
+</body>
+</html>
