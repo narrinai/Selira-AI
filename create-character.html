@@ -2401,6 +2401,116 @@
         padding: 6px var(--spacing-xs);
       }
     }
+
+    /* Companion Type Cards */
+    .companion-type-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-xl);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .companion-type-card {
+      background: var(--color-bg-secondary);
+      border: 3px solid var(--color-border-light);
+      border-radius: var(--border-radius-xl);
+      padding: 0;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: block;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .companion-type-card:hover {
+      border-color: var(--color-accent);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-xl);
+    }
+
+    .companion-type-card input[type="radio"] {
+      display: none;
+    }
+
+    .companion-type-card input[type="radio"]:checked + .card-content {
+      border-color: var(--color-accent);
+      background: rgba(212, 165, 116, 0.05);
+    }
+
+    .companion-type-card input[type="radio"]:checked + .card-content .card-title {
+      color: var(--color-accent);
+    }
+
+    .card-content {
+      padding: var(--spacing-xl);
+      height: 100%;
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    .card-image {
+      width: 100%;
+      height: 200px;
+      border-radius: var(--border-radius-lg);
+      margin-bottom: var(--spacing-lg);
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+
+    .realistic-example {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+    }
+
+    .realistic-example::after {
+      content: '📸';
+      font-size: 48px;
+    }
+
+    .anime-example {
+      background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+    }
+
+    .anime-example::after {
+      content: '🎌';
+      font-size: 48px;
+    }
+
+    .card-title {
+      font-size: var(--font-size-xl);
+      font-weight: 700;
+      color: var(--color-text-primary);
+      margin-bottom: var(--spacing-sm);
+      font-family: var(--font-secondary);
+    }
+
+    .card-description {
+      font-size: var(--font-size-sm);
+      color: var(--color-gray);
+      line-height: 1.5;
+    }
+
+    @media (max-width: 768px) {
+      .companion-type-cards {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-lg);
+      }
+      
+      .card-image {
+        height: 150px;
+      }
+    }
   </style>
 
   <!-- Google Analytics -->
@@ -2629,6 +2739,31 @@
             </div>
             <div class="selection-counter" id="traitsCounter">Select 0-5 traits that describe your character</div>
           </div>
+        </div>
+      </div>
+
+      <!-- Image Generation Style -->
+      <div class="form-section">
+        <h2 style="text-align: center; margin-bottom: var(--spacing-xl);">Choose Art Style</h2>
+        
+        <div class="companion-type-cards">
+          <label class="companion-type-card" for="companionTypeRealistic">
+            <input type="radio" id="companionTypeRealistic" name="companionType" value="realistic" checked>
+            <div class="card-content">
+              <div class="card-image realistic-example"></div>
+              <div class="card-title">Realistic</div>
+              <div class="card-description">Photo-realistic AI companions</div>
+            </div>
+          </label>
+          
+          <label class="companion-type-card" for="companionTypeAnime">
+            <input type="radio" id="companionTypeAnime" name="companionType" value="anime">
+            <div class="card-content">
+              <div class="card-image anime-example"></div>
+              <div class="card-title">Anime</div>
+              <div class="card-description">Anime-style illustrations</div>
+            </div>
+          </label>
         </div>
       </div>
 
@@ -5152,6 +5287,7 @@ document.getElementById('characterForm').addEventListener('submit', async (e) =>
     prompt: promptEl.value.trim(),
     category: categoryEl.value,
     character_type: typeEl.value,
+    companion_type: document.querySelector('input[name="companionType"]:checked')?.value || 'realistic',
     visibility: visibilityEl.value,
     avatarUrl: currentAvatarUrl,
     tags: selectedTags
