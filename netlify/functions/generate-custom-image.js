@@ -81,7 +81,7 @@ exports.handler = async (event, context) => {
       fullPrompt = `${shotDesc} of ${feminineEnhancement}, anime style, ${customPrompt}, detailed anime art, high quality anime illustration, vibrant colors, cel shading, clean background, single anime character, perfect anime anatomy, anime eyes`;
     } else {
       const shotDesc = isFullBody ? 'full body photograph' : 'portrait photograph';
-      fullPrompt = `${shotDesc} of ${feminineEnhancement}, ${customPrompt}, photorealistic, high quality, professional lighting, clean background, single person, perfect anatomy`;
+      fullPrompt = `realistic photography, ${shotDesc} of ${feminineEnhancement}, ${customPrompt}, photorealistic, real photo, not anime, not cartoon, not illustration, not drawing, professional photography, high quality, professional lighting, clean background, single real person, perfect anatomy, realistic skin, realistic features`;
     }
     
     console.log('🎨 Full prompt:', fullPrompt);
