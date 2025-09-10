@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create AI Companion | Selira AI</title>
+  <meta name="description" content="Create your perfect AI companion on Selira AI. Design custom appearance, personality, and traits for unique conversations.">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://selira.ai/create">
+  <meta property="og:title" content="Create AI Companion - Selira AI">
+  <meta property="og:description" content="Design your perfect AI companion with custom appearance and personality.">
+  <meta property="og:image" content="https://selira.ai/og-image.jpg">
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://selira.ai/create">
+  <meta property="twitter:title" content="Create AI Companion | Selira AI">
+  <meta property="twitter:description" content="Create your perfect AI companion on Selira AI.">
+  <meta property="twitter:image" content="https://selira.ai/og-image.jpg">
+  
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XZXX201WKD"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XZXX201WKD');
+  </script>
+  
+  <!-- Auth0 Authentication System -->
+  <script src="/js/auth0-login.js"></script>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    :root {
+      /* Selira dark theme - matching category.html */
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #1a1a1a;
+      --bg-tertiary: #2a2a2a;
+      --bg-sidebar: #1a1a1a;
+      --text-primary: #ffffff;
+      --text-secondary: #b3b3b3;
+      --text-muted: #888888;
+      --accent: #d4a574;
+      --accent-hover: #c19456;
+      --accent-secondary: #ec4899;
+      --border: #333333;
+      --border-color: #333333;
+      --success: #10b981;
+      --error: #ef4444;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    
+    .app-container {
+      display: flex;
+      min-height: 100vh;
+    }
+    
+    /* Left Sidebar Navigation (Character.AI style) */
+    .sidebar {
+      width: 220px;
+      background: var(--bg-sidebar);
+      border-right: none;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      height: 100vh;
+      left: 0;
+      top: 0;
+      z-index: 100;
+      overflow-y: auto;
+    }
+    
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      text-decoration: none;
+      color: inherit;
+      transition: opacity 0.2s ease;
+    }
+
+    .sidebar-logo:hover {
+      opacity: 0.8;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .sidebar-logo-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .sidebar-nav {
+      flex: 1;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      margin-bottom: 2px;
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      border-radius: var(--radius-sm);
+      transition: all 0.2s ease;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .nav-item:hover, .nav-item.active {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    .nav-item-icon {
+      font-size: 16px;
+      width: 16px;
+      text-align: center;
+    }
+
+    .nav-section-title {
+      font-size: 10px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.6);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 16px 0 6px;
+      padding: 0 12px;
+    }
+    
+    /* Main Content Area */
+    .main-content {
+      flex: 1;
+      margin-left: 220px;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* Mobile Header (hidden on desktop) */
+    .mobile-header {
+      display: none;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    
+    .mobile-menu-btn {
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 20px;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: var(--radius-sm);
+      transition: background 0.2s ease;
+    }
+    
+    .mobile-menu-btn:hover {
+      background: var(--bg-tertiary);
+    }
+    
+    .mobile-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    
+    /* Top Header (Character.AI style) */
+    .top-header {
+      background: var(--bg-primary);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+    
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 40px;
+      gap: 24px;
+    }
+    
+    /* Search */
+    .search-container {
+      position: relative;
+      flex: 1;
+      max-width: 600px;
+    }
+    
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 16px;
+    }
+    
+    .search-input {
+      width: 100%;
+      padding: 10px 16px 10px 48px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+    
+    .search-input:focus {
+      border-color: var(--accent);
+    }
+    
+    .search-input::placeholder {
+      color: var(--text-muted);
+    }
+    
+    /* User Actions */
+    .user-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    
+    .dropdown-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      transition: all 0.2s ease;
+    }
+    
+    .dropdown-btn:hover {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+    
+    .user-btn {
+      padding: 8px 16px;
+      border-radius: var(--radius-md);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 13px;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+    }
+    
+    .user-btn.secondary {
+      color: var(--text-secondary);
+      border-color: var(--border);
+    }
+    
+    .user-btn.secondary:hover {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+    
+    .signup-btn {
+      background: var(--accent);
+      color: white;
+    }
+    
+    .signup-btn:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(212, 165, 116, 0.3);
+    }
+    
+    /* Create Character Section */
+    .create-character-section {
+      padding: 20px 40px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      min-height: calc(100vh - 80px);
+    }
+    
+    .create-header {
+      text-align: center;
+      margin-bottom: 16px;
+      flex-shrink: 0;
+    }
+    
+    .create-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    
+    .create-header p {
+      color: var(--text-secondary);
+      font-size: 16px;
+    }
+    
+    /* Progress Bar */
+    .creation-progress {
+      margin-bottom: 12px;
+      padding: 0 80px;
+      flex-shrink: 0;
+    }
+    
+    .progress-bar {
+      width: 100%;
+      height: 3px;
+      background: var(--bg-tertiary);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    
+    #progressFill {
+      width: 25%;
+      height: 100%;
+      background: var(--accent);
+      transition: width 0.3s ease;
+    }
+    
+    /* Step Container */
+    .step-container {
+      width: 100%;
+      max-width: none;
+      padding: 0 80px;
+      flex: 1;
+      overflow-y: auto;
+    }
+    
+    .creation-step {
+      display: none;
+    }
+    
+    .creation-step.active {
+      display: block;
+    }
+    
+    /* Style Grid */
+    .style-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      max-width: 800px;
+      margin: 0 auto 20px auto;
+      padding: 0 40px;
+    }
+    
+    .style-option, .ethnicity-option, .hair-option {
+      background: var(--bg-secondary);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .style-option:hover, .ethnicity-option:hover, .hair-option:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* Ethnicity Grid */
+    .ethnicity-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 60px;
+      max-width: none;
+      padding: 0 100px;
+      margin-bottom: 30px;
+    }
+    
+    /* Hair Grid */
+    .hair-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 40px;
+      max-width: none;
+      padding: 0 80px;
+      margin-bottom: 30px;
+    }
+    
+    /* Form Elements */
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+    
+    .form-input:focus {
+      border-color: var(--accent);
+    }
+    
+    .form-input::placeholder {
+      color: var(--text-muted);
+    }
+    
+    /* Tags */
+    .create-popular-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    
+    .create-tag-button {
+      background: var(--bg-primary);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 8px 16px;
+      cursor: pointer;
+      color: var(--text-primary);
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    
+    .create-tag-button.selected {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: white;
+    }
+    
+    .create-selected-tag {
+      background: var(--accent);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .create-selected-tag .remove-tag {
+      cursor: pointer;
+      font-weight: bold;
+      opacity: 0.7;
+    }
+    
+    .create-selected-tag .remove-tag:hover {
+      opacity: 1;
+    }
+    
+    #createTagSearchResults .tag-search-result {
+      padding: 8px 12px;
+      cursor: pointer;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    #createTagSearchResults .tag-search-result:hover {
+      background: var(--bg-secondary);
+    }
+    
+    /* Buttons */
+    .btn {
+      padding: 12px 24px;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+      border: none;
+    }
+    
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+    
+    .btn-secondary {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+    
+    .btn-secondary:hover {
+      background: var(--bg-primary);
+    }
+    
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+    
+    .btn-success:hover {
+      background: #059669;
+    }
+    
+    /* Navigation Buttons */
+    .step-navigation {
+      display: flex;
+      justify-content: center;
+      margin-top: 30px;
+      gap: 20px;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main-content {
+        margin-left: 0;
+      }
+      
+      .mobile-header {
+        display: flex;
+      }
+      
+      .header-top {
+        padding: 16px 20px;
+        flex-direction: column;
+        gap: 16px;
+      }
+      
+      .search-container {
+        order: 2;
+        max-width: none;
+      }
+      
+      .user-actions {
+        order: 1;
+        justify-content: center;
+        width: 100%;
+      }
+      
+      .create-character-section {
+        padding: 20px 16px;
+      }
+      
+      .step-container {
+        padding: 0 20px;
+      }
+      
+      .style-grid, .ethnicity-grid, .hair-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 0 20px;
+      }
+    }
+    
+    /* Sidebar Overlay for Mobile */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 99;
+    }
+    
+    .sidebar-overlay.open {
+      display: block;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .create-character-section {
+      animation: fadeIn 0.6s ease;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Left Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+      <!-- Logo -->
+      <a href="/category" class="sidebar-logo">
+        <div class="sidebar-logo-text">Selira</div>
+      </a>
+
+      <!-- Navigation -->
+      <nav class="sidebar-nav">
+        <a href="/category" class="nav-item">
+          <span class="nav-item-icon">🏠</span>
+          <span>Home</span>
+        </a>
+        <a href="/category" class="nav-item">
+          <span class="nav-item-icon">👥</span>
+          <span>Discover</span>
+        </a>
+        <a href="#" class="nav-item" onclick="showMyCompanions(); return false;">
+          <span class="nav-item-icon">💬</span>
+          <span>My Companions</span>
+        </a>
+        <a href="/create" class="nav-item active">
+          <span class="nav-item-icon">➕</span>
+          <span>Create</span>
+        </a>
+
+        <div class="nav-section-title">Account</div>
+        
+        <a href="/profile" class="nav-item">
+          <span class="nav-item-icon">👤</span>
+          <span>Profile</span>
+        </a>
+        <a href="/pricing" class="nav-item">
+          <span class="nav-item-icon">💎</span>
+          <span>Pricing</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Mobile Header -->
+      <div class="mobile-header">
+        <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+        <div class="mobile-logo">Selira AI</div>
+      </div>
+
+      <!-- Top Header -->
+      <header class="top-header">
+        <div class="header-top">
+          <!-- Search -->
+          <div class="search-container">
+            <div class="search-icon">🔍</div>
+            <input 
+              type="text" 
+              class="search-input" 
+              placeholder="Search"
+              id="searchInput"
+            >
+          </div>
+
+          <!-- User Actions -->
+          <div class="user-actions">
+            <select class="dropdown-btn" style="border: none; background: none; color: var(--text-secondary);">
+              <option>English</option>
+            </select>
+            <a href="#" class="user-btn secondary login-btn" onclick="openLoginModal('login'); return false;">Sign In</a>
+            <a href="#" class="user-btn signup-btn" onclick="openLoginModal('signup'); return false;">Register</a>
+          </div>
+        </div>
+      </header>
+
+      <!-- Create Character Section -->
+      <div class="create-character-section">
+        <div class="create-header">
+          <h2>Create Your AI Companion</h2>
+          <p>Design a unique AI companion with custom appearance and personality</p>
+        </div>
+        
+        <!-- Progress Bar -->
+        <div class="creation-progress">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 11px; color: var(--text-secondary); text-transform: uppercase; font-weight: 600;">
+            <span id="stepIndicator">Step 1 of 4</span>
+            <span id="stepTitle">Choose Style</span>
+          </div>
+          <div class="progress-bar">
+            <div id="progressFill"></div>
+          </div>
+        </div>
+
+        <!-- Step Content -->
+        <div class="step-container">
+          
+          <!-- Step 1: Style Selection -->
+          <div class="creation-step active" id="step1">
+            <h3 style="color: var(--text-primary); margin-bottom: 20px; font-size: 20px; font-weight: 700; text-align: center;">Choose Art Style</h3>
+            <div class="style-grid">
+              <div class="style-option" data-style="realistic" onclick="selectStyleStep('realistic')">
+                <div style="height: 200px; background: url('https://images.unsplash.com/photo-1494790108755-2616b2e4c5d0?w=800') center/cover;"></div>
+                <div style="padding: 12px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 18px; font-weight: 700; margin-bottom: 8px;">Realistic</h4>
+                  <p style="color: var(--text-secondary); font-size: 14px;">Photo-realistic AI companions</p>
+                </div>
+              </div>
+              <div class="style-option" data-style="anime" onclick="selectStyleStep('anime')" style="border-color: var(--accent);">
+                <div style="height: 200px; background: url('https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800') center/cover;"></div>
+                <div style="padding: 12px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 18px; font-weight: 700; margin-bottom: 8px;">Anime</h4>
+                  <p style="color: var(--text-secondary); font-size: 14px;">Anime-style illustrations</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2: Ethnicity Selection -->
+          <div class="creation-step" id="step2">
+            <h3 style="color: var(--text-primary); margin-bottom: 40px; font-size: 28px; font-weight: 700; text-align: center;">Choose Ethnicity</h3>
+            <div class="ethnicity-grid">
+              <div class="ethnicity-option" data-ethnicity="white" onclick="selectEthnicityStep('white')" style="border-color: var(--accent);">
+                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=300') center/cover;"></div>
+                <div style="padding: 12px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">White/Caucasian</h4>
+                </div>
+              </div>
+              <div class="ethnicity-option" data-ethnicity="black" onclick="selectEthnicityStep('black')">
+                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=300') center/cover;"></div>
+                <div style="padding: 12px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Black/African</h4>
+                </div>
+              </div>
+              <div class="ethnicity-option" data-ethnicity="indian" onclick="selectEthnicityStep('indian')">
+                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=300') center/cover;"></div>
+                <div style="padding: 12px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Indian/South Asian</h4>
+                </div>
+              </div>
+              <div class="ethnicity-option" data-ethnicity="middle-east" onclick="selectEthnicityStep('middle-east')">
+                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300') center/cover;"></div>
+                <div style="padding: 12px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Middle Eastern</h4>
+                </div>
+              </div>
+              <div class="ethnicity-option" data-ethnicity="hispanic" onclick="selectEthnicityStep('hispanic')">
+                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=300') center/cover;"></div>
+                <div style="padding: 12px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Hispanic/Latino</h4>
+                </div>
+              </div>
+              <div class="ethnicity-option" data-ethnicity="korean" onclick="selectEthnicityStep('korean')">
+                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=300') center/cover;"></div>
+                <div style="padding: 12px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Korean</h4>
+                </div>
+              </div>
+              <div class="ethnicity-option" data-ethnicity="chinese" onclick="selectEthnicityStep('chinese')">
+                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=300') center/cover;"></div>
+                <div style="padding: 12px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Chinese</h4>
+                </div>
+              </div>
+              <div class="ethnicity-option" data-ethnicity="japanese" onclick="selectEthnicityStep('japanese')">
+                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1569913486515-b74bf7751574?w=300') center/cover;"></div>
+                <div style="padding: 12px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Japanese</h4>
+                </div>
+              </div>
+              <div class="ethnicity-option" data-ethnicity="vietnamese" onclick="selectEthnicityStep('vietnamese')">
+                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=300') center/cover;"></div>
+                <div style="padding: 12px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Vietnamese</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3: Hair Style -->
+          <div class="creation-step" id="step3">
+            <h3 style="color: var(--text-primary); margin-bottom: 40px; font-size: 28px; font-weight: 700; text-align: center;">Choose Hair Style</h3>
+            <div class="hair-grid">
+              <div class="hair-option" data-hair="pixie" onclick="selectHairStep('pixie')" style="border-color: var(--accent);">
+                <div style="height: 140px; background: url('https://images.unsplash.com/photo-1494790108755-2616b2e4c5d0?w=250') center/cover;"></div>
+                <div style="padding: 12px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Pixie</h4>
+                </div>
+              </div>
+              <div class="hair-option" data-hair="short" onclick="selectHairStep('short')">
+                <div style="height: 140px; background: url('https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=250') center/cover;"></div>
+                <div style="padding: 12px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Short</h4>
+                </div>
+              </div>
+              <div class="hair-option" data-hair="long" onclick="selectHairStep('long')">
+                <div style="height: 140px; background: url('https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=250') center/cover;"></div>
+                <div style="padding: 12px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Long</h4>
+                </div>
+              </div>
+              <div class="hair-option" data-hair="wavy" onclick="selectHairStep('wavy')">
+                <div style="height: 140px; background: url('https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?w=250') center/cover;"></div>
+                <div style="padding: 12px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Wavy</h4>
+                </div>
+              </div>
+              <div class="hair-option" data-hair="curly" onclick="selectHairStep('curly')">
+                <div style="height: 140px; background: url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=250') center/cover;"></div>
+                <div style="padding: 12px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Curly</h4>
+                </div>
+              </div>
+              <div class="hair-option" data-hair="braided" onclick="selectHairStep('braided')">
+                <div style="height: 140px; background: url('https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?w=250') center/cover;"></div>
+                <div style="padding: 12px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Braided</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 4: Final Details -->
+          <div class="creation-step" id="step4">
+            <h3 style="color: var(--text-primary); margin-bottom: 30px; font-size: 28px; font-weight: 700; text-align: center;">Final Details</h3>
+            <div style="max-width: 600px; margin: 0 auto; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px;">
+              
+              <div style="text-align: center; margin-bottom: 30px;">
+                <div style="width: 150px; height: 150px; margin: 0 auto 16px; background: var(--bg-tertiary); border-radius: 50%; border: 3px solid var(--accent); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+                  <img id="finalPreview" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDE1MCAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiBmaWxsPSIjMmEyYTJhIiByeD0iNzUiLz4KPHRleHQgeD0iNzUiIHk9Ijc1IiBmaWxsPSIjZDRhNTc0IiBmb250LXNpemU9IjI0IiBmb250LXdlaWdodD0iYm9sZCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9ImNlbnRyYWwiPvCfpK08L3RleHQ+Cjwvc3ZnPgo=" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div style="color: var(--text-secondary); font-size: 14px;" id="selectedTraits">Selected: Anime style, White, Pixie hair</div>
+              </div>
+
+              <div style="margin-bottom: 20px;">
+                <label style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 8px;">Character Name</label>
+                <input type="text" id="characterName" placeholder="e.g., Luna, Aria, Kai..." class="form-input">
+              </div>
+              
+              <div style="margin-bottom: 24px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-primary);">Search Tags</label>
+                <div style="position: relative;">
+                  <input type="text" id="createTagSearchInput" placeholder="Search for tags..." class="form-input">
+                  <div id="createTagSearchResults" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-primary); border: 1px solid var(--border); border-radius: var(--radius-md); margin-top: 4px; max-height: 200px; overflow-y: auto; z-index: 100;"></div>
+                </div>
+              </div>
+              
+              <div style="margin-bottom: 24px;">
+                <label style="display: block; margin-bottom: 12px; font-weight: 600; color: var(--text-primary);">Popular Tags</label>
+                <div class="create-popular-tags">
+                  <button type="button" class="create-tag-button" data-tag="Fantasy">Fantasy</button>
+                  <button type="button" class="create-tag-button" data-tag="Romance">Romance</button>
+                  <button type="button" class="create-tag-button" data-tag="Adventure">Adventure</button>
+                  <button type="button" class="create-tag-button" data-tag="Hero">Hero</button>
+                  <button type="button" class="create-tag-button" data-tag="Mystery">Mystery</button>
+                  <button type="button" class="create-tag-button" data-tag="Action">Action</button>
+                  <button type="button" class="create-tag-button" data-tag="Magic">Magic</button>
+                  <button type="button" class="create-tag-button" data-tag="Wise">Wise</button>
+                  <button type="button" class="create-tag-button" data-tag="Historical">Historical</button>
+                  <button type="button" class="create-tag-button" data-tag="Anime-Manga">Anime-Manga</button>
+                </div>
+              </div>
+              
+              <div style="margin-bottom: 24px;">
+                <label style="display: block; margin-bottom: 12px; font-weight: 600; color: var(--text-primary);">Selected Tags (<span id="createTagCount">0</span>/10)</label>
+                <div id="createSelectedTags" style="min-height: 50px; padding: 12px; border: 2px dashed var(--border); border-radius: var(--radius-md); background: var(--bg-tertiary); display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+                  <span style="color: var(--text-secondary); font-style: italic;">No tags selected</span>
+                </div>
+              </div>
+              
+              <div style="margin-bottom: 30px;">
+                <label style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 8px;">Character Description</label>
+                <textarea id="characterDescription" placeholder="Describe your character's personality and background..." rows="4" class="form-input" style="resize: vertical;"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Navigation -->
+          <div class="step-navigation">
+            <button id="backBtn" onclick="previousStep()" class="btn btn-secondary" style="display: none;">
+              ← Back
+            </button>
+            <button id="continueBtn" onclick="nextStep()" class="btn btn-primary" style="min-width: 140px;">
+              Continue
+            </button>
+            <button id="createFinalBtn" onclick="createCharacter()" class="btn btn-success" style="display: none;">
+              🎭 Create Companion
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Mobile sidebar toggle
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebarOverlay');
+      
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('open');
+    }
+    
+    // Close sidebar when clicking overlay
+    document.getElementById('sidebarOverlay').addEventListener('click', function() {
+      toggleSidebar();
+    });
+    
+    // Navigation functions for consistency with /category
+    function showMyCompanions() {
+      window.location.href = '/category';
+    }
+    
+    // ===== CHARACTER CREATION STATE =====
+    let characterCreationState = {
+      name: '',
+      style: 'anime',
+      ethnicity: 'white',
+      hairStyle: 'pixie',
+      category: 'fantasy',
+      description: '',
+      currentStep: 1
+    };
+
+    let totalSteps = 4;
+
+    // ===== STEP NAVIGATION =====
+    function nextStep() {
+      if (characterCreationState.currentStep < totalSteps) {
+        // Hide current step
+        document.getElementById(`step${characterCreationState.currentStep}`).style.display = 'none';
+        
+        // Move to next step
+        characterCreationState.currentStep++;
+        
+        // Show next step
+        document.getElementById(`step${characterCreationState.currentStep}`).style.display = 'block';
+        
+        // Update progress
+        updateStepProgress();
+      }
+    }
+
+    function previousStep() {
+      if (characterCreationState.currentStep > 1) {
+        // Hide current step
+        document.getElementById(`step${characterCreationState.currentStep}`).style.display = 'none';
+        
+        // Move to previous step
+        characterCreationState.currentStep--;
+        
+        // Show previous step
+        document.getElementById(`step${characterCreationState.currentStep}`).style.display = 'block';
+        
+        // Update progress
+        updateStepProgress();
+      }
+    }
+
+    function updateStepProgress() {
+      const { currentStep } = characterCreationState;
+      const progressPercent = (currentStep / totalSteps) * 100;
+      
+      // Update progress bar
+      document.getElementById('progressFill').style.width = `${progressPercent}%`;
+      document.getElementById('stepIndicator').textContent = `Step ${currentStep} of ${totalSteps}`;
+      
+      // Update step title
+      const stepTitles = {
+        1: 'Choose Style',
+        2: 'Choose Ethnicity', 
+        3: 'Choose Hair Style',
+        4: 'Final Details'
+      };
+      document.getElementById('stepTitle').textContent = stepTitles[currentStep];
+      
+      // Update navigation buttons
+      const backBtn = document.getElementById('backBtn');
+      const continueBtn = document.getElementById('continueBtn');
+      const createBtn = document.getElementById('createFinalBtn');
+      
+      if (backBtn) backBtn.style.display = currentStep > 1 ? 'block' : 'none';
+      if (continueBtn) continueBtn.style.display = currentStep < totalSteps ? 'block' : 'none';
+      if (createBtn) createBtn.style.display = currentStep === totalSteps ? 'block' : 'none';
+    }
+
+    // ===== STEP SELECTION FUNCTIONS =====
+    function selectStyleStep(style) {
+      characterCreationState.style = style;
+      
+      // Update visual selection
+      document.querySelectorAll('.style-option').forEach(option => {
+        option.style.border = '2px solid var(--border)';
+      });
+      document.querySelector(`[data-style="${style}"]`).style.border = '2px solid var(--accent)';
+      
+      console.log('Selected style:', style);
+    }
+
+    function selectEthnicityStep(ethnicity) {
+      characterCreationState.ethnicity = ethnicity;
+      
+      // Update visual selection
+      document.querySelectorAll('.ethnicity-option').forEach(option => {
+        option.style.border = '2px solid var(--border)';
+      });
+      document.querySelector(`[data-ethnicity="${ethnicity}"]`).style.border = '2px solid var(--accent)';
+      
+      console.log('Selected ethnicity:', ethnicity);
+    }
+
+    function selectHairStep(hairStyle) {
+      characterCreationState.hairStyle = hairStyle;
+      
+      // Update visual selection
+      document.querySelectorAll('.hair-option').forEach(option => {
+        option.style.border = '2px solid var(--border)';
+      });
+      document.querySelector(`[data-hair="${hairStyle}"]`).style.border = '2px solid var(--accent)';
+      
+      // Update final preview
+      updateFinalPreview();
+      
+      console.log('Selected hair style:', hairStyle);
+    }
+
+    function updateFinalPreview() {
+      const traits = `${characterCreationState.style} style, ${characterCreationState.ethnicity}, ${characterCreationState.hairStyle} hair`;
+      const traitsEl = document.getElementById('selectedTraits');
+      if (traitsEl) {
+        traitsEl.textContent = `Selected: ${traits}`;
+      }
+    }
+
+    function createCharacter() {
+      const name = document.getElementById('characterName').value.trim();
+      const description = document.getElementById('characterDescription').value.trim();
+      
+      if (!name || !description) {
+        alert('Please fill in both character name and description.');
+        return;
+      }
+      
+      console.log('🎭 Creating character:', {
+        name,
+        description,
+        selectedTags: createSelectedTags,
+        appearance: characterCreationState
+      });
+      
+      // Here you would typically send to your character creation API
+      alert(`🎉 ${name} has been created successfully! They will appear in your character list soon.`);
+      
+      // Redirect back to category page
+      window.location.href = '/category';
+    }
+
+    // ===== CREATE FLOW TAGS SYSTEM =====
+    let createSelectedTags = [];
+    const createMaxTags = 10;
+    const createAvailableTags = [
+      'Fantasy', 'Romance', 'Adventure', 'Hero', 'Mystery', 'Action', 'Magic', 'Wise', 'Historical', 'Anime-Manga',
+      'Friendship', 'Comedy', 'Drama', 'Mentor', 'Villain', 'Warrior', 'Princess', 'Knight', 'Mage', 'Healer'
+    ];
+
+    function initializeCreateTags() {
+      console.log('🏷️ Initializing create tags system...');
+      
+      const tagSearchInput = document.getElementById('createTagSearchInput');
+      const popularTagsContainer = document.querySelector('.create-popular-tags');
+      
+      console.log('✅ Tag search initialized with:', {
+        searchInput: !!tagSearchInput,
+        popularTags: !!popularTagsContainer,
+        availableTags: createAvailableTags.length
+      });
+
+      if (tagSearchInput) {
+        tagSearchInput.addEventListener('input', function() {
+          const searchTerm = this.value.toLowerCase().trim();
+          const results = document.getElementById('createTagSearchResults');
+          
+          if (searchTerm.length >= 2) {
+            showTagSearchResults(searchTerm);
+            results.style.display = 'block';
+          } else {
+            results.style.display = 'none';
+          }
+        });
+        
+        tagSearchInput.addEventListener('blur', function() {
+          setTimeout(() => {
+            const results = document.getElementById('createTagSearchResults');
+            results.style.display = 'none';
+          }, 200);
+        });
+      }
+    }
+
+    function showTagSearchResults(searchTerm) {
+      const resultsContainer = document.getElementById('createTagSearchResults');
+      if (!resultsContainer) return;
+      
+      console.log('🔍 Searching tags for:', searchTerm, {
+        selectedTags: createSelectedTags.length
+      });
+      
+      resultsContainer.innerHTML = '';
+      
+      const matchingTags = createAvailableTags.filter(tag => 
+        tag.toLowerCase().includes(searchTerm) && !createSelectedTags.includes(tag)
+      );
+      
+      if (matchingTags.length > 0) {
+        matchingTags.forEach(tag => {
+          const resultElement = document.createElement('div');
+          resultElement.className = 'tag-search-result';
+          resultElement.textContent = tag;
+          resultElement.onclick = () => selectTag(tag);
+          resultsContainer.appendChild(resultElement);
+        });
+      } else {
+        resultsContainer.innerHTML = '<div style="padding: 8px 12px; color: var(--text-muted);">No matching tags found</div>';
+      }
+    }
+
+    // Event delegation for popular tag buttons
+    document.addEventListener('click', function(event) {
+      if (event.target.classList.contains('create-tag-button')) {
+        const tag = event.target.getAttribute('data-tag');
+        selectTag(tag);
+      }
+    });
+
+    function selectTag(tag) {
+      console.log('🏷️ Attempting to select tag:', tag);
+      
+      if (createSelectedTags.includes(tag)) {
+        console.log('⚠️ Tag already selected');
+        return;
+      }
+      
+      if (createSelectedTags.length >= createMaxTags) {
+        alert(`Je kunt maximaal ${createMaxTags} tags selecteren.`);
+        return;
+      }
+      
+      createSelectedTags.push(tag);
+      console.log('✅ Tag added. Selected tags:', createSelectedTags);
+      
+      updateSelectedTagsDisplay();
+      
+      const searchInput = document.getElementById('createTagSearchInput');
+      if (searchInput) searchInput.value = '';
+      
+      const results = document.getElementById('createTagSearchResults');
+      if (results) results.style.display = 'none';
+    }
+
+    function removeTag(tag) {
+      createSelectedTags = createSelectedTags.filter(t => t !== tag);
+      updateSelectedTagsDisplay();
+    }
+
+    function updateSelectedTagsDisplay() {
+      const selectedTagsContainer = document.getElementById('createSelectedTags');
+      const tagCount = document.getElementById('createTagCount');
+      
+      if (tagCount) {
+        tagCount.textContent = createSelectedTags.length;
+      }
+      
+      if (createSelectedTags.length === 0) {
+        selectedTagsContainer.innerHTML = '<span style="color: var(--text-secondary); font-style: italic;">No tags selected</span>';
+      } else {
+        selectedTagsContainer.innerHTML = createSelectedTags.map(tag => 
+          `<span class="create-selected-tag">
+            ${tag}
+            <span class="remove-tag" onclick="removeTag('${tag}')">×</span>
+          </span>`
+        ).join('');
+      }
+      
+      // Update button states
+      document.querySelectorAll('.create-tag-button').forEach(button => {
+        const tag = button.getAttribute('data-tag');
+        if (createSelectedTags.includes(tag)) {
+          button.classList.add('selected');
+        } else {
+          button.classList.remove('selected');
+        }
+      });
+    }
+
+    // Initialize when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeCreateTags();
+      updateStepProgress();
+    });
+  </script>
+</body>
+</html>
