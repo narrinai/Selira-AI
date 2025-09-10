@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Navigation Style Test - Selira AI</title>
+  
+  <style>
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #1a1a1a;
+      --text-primary: #ffffff;
+      --text-secondary: #b3b3b3;
+      --accent: #d4a574;
+      --border: #333333;
+      --radius-md: 12px;
+    }
+    
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      font-family: 'Playfair Display', serif;
+      color: var(--accent);
+      margin-bottom: 30px;
+    }
+    
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+    
+    .comparison-item {
+      background: var(--bg-secondary);
+      padding: 20px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+    
+    .test-link {
+      display: inline-block;
+      background: var(--accent);
+      color: white;
+      padding: 12px 24px;
+      border-radius: var(--radius-md);
+      text-decoration: none;
+      font-weight: 600;
+      margin: 10px 10px 10px 0;
+      transition: all 0.2s ease;
+    }
+    
+    .test-link:hover {
+      background: #c19456;
+      transform: translateY(-1px);
+    }
+    
+    .status {
+      padding: 10px;
+      border-radius: var(--radius-md);
+      margin: 10px 0;
+      font-weight: 500;
+    }
+    
+    .status.updated {
+      background: rgba(16, 185, 129, 0.1);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    
+    .status.unchanged {
+      background: rgba(245, 158, 11, 0.1);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Navigation Style Comparison</h1>
+    
+    <div class="comparison-grid">
+      <div class="comparison-item">
+        <h3>📱 Updated Navigation (Profile Style)</h3>
+        <p>Clean top header navigation without sidebar</p>
+        <div class="status updated">✅ Updated to match profile page</div>
+        
+        <a href="/category" class="test-link">Test Category Page</a>
+        <a href="/my-companions" class="test-link">Test My Companions</a>
+      </div>
+      
+      <div class="comparison-item">
+        <h3>📋 Reference Navigation</h3>
+        <p>Profile page navigation style (reference)</p>
+        <div class="status unchanged">📋 Reference page</div>
+        
+        <a href="/profile" class="test-link">View Profile Page</a>
+      </div>
+    </div>
+    
+    <div class="comparison-item">
+      <h3>🔧 Changes Made</h3>
+      <ul>
+        <li>✅ <strong>Hidden sidebar</strong> on category and my-companions pages</li>
+        <li>✅ <strong>Adjusted main content</strong> to remove left margin</li>
+        <li>✅ <strong>Column layout</strong> instead of flex sidebar layout</li>
+        <li>✅ <strong>Clean top header</strong> navigation style</li>
+        <li>✅ <strong>Consistent styling</strong> with profile page</li>
+      </ul>
+      
+      <h4>Expected Result:</h4>
+      <p>Both category and my-companions pages should now show only the top navigation header (search bar, language selector, sign in/register buttons) without the left sidebar navigation, matching the clean style shown in the profile page screenshot.</p>
+    </div>
+  </div>
+</body>
+</html>
