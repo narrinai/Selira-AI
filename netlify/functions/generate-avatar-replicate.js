@@ -12,7 +12,7 @@ exports.handler = async (event, context) => {
     };
   }
 
-  const REPLICATE_API_TOKEN = process.env.REPLICATE_API_TOKEN;
+  const REPLICATE_API_TOKEN = process.env.REPLICATE_API_TOKEN_SELIRA || process.env.REPLICATE_API_TOKEN;
   
   console.log('🔑 Environment check:', {
     hasReplicateToken: !!REPLICATE_API_TOKEN,
