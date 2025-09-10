@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Custom Prompt</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #0a0a0a; color: white; }
+        .test-result { margin: 20px 0; padding: 20px; border: 1px solid #333; border-radius: 8px; }
+        .generated-image { max-width: 400px; border: 2px solid #d4a574; border-radius: 8px; }
+        button { padding: 15px 30px; background: #d4a574; border: none; border-radius: 5px; color: white; cursor: pointer; margin: 10px; font-size: 16px; }
+        button:hover { background: #c19456; }
+        input { padding: 10px; width: 500px; background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>🎨 Custom Prompt Test</h1>
+    
+    <div>
+        <input type="text" id="customPrompt" placeholder="Enter your prompt..." value="Send me a picture leaning forward, beach, white top">
+        <br><br>
+        <button onclick="testCustomPrompt()">🚀 Generate Image</button>
+    </div>
+    
+    <div id="results"></div>
+
+    <script>
+        async function testCustomPrompt() {
+            const prompt = document.getElementById('customPrompt').value;
+            const resultDiv = document.createElement('div');
+            resultDiv.className = 'test-result';
+            resultDiv.innerHTML = `<h3>🔄 Generating with custom prompt...</h3><p><strong>Prompt:</strong> ${prompt}</p>`;
+            document.getElementById('results').appendChild(resultDiv);
+            
+            const startTime = Date.now();
+            
+            try {
+                // We'll need to create a new function that accepts custom prompts
+                // For now, let's modify the existing function call
+                const response = await fetch('/.netlify/functions/generate-custom-image', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        customPrompt: prompt,
+                        characterName: 'Anime Girl',
+                        category: 'anime-manga'
+                    })
+                });
+                
+                const endTime = Date.now();
+                const duration = (endTime - startTime) / 1000;
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    resultDiv.innerHTML = `
+                        <h3>✅ Success! (${duration}s)</h3>
+                        <p><strong>Your Prompt:</strong> ${prompt}</p>
+                        <p><strong>Full Prompt:</strong> ${result.fullPrompt}</p>
+                        <img src="${result.imageUrl}" alt="Generated" class="generated-image" loading="lazy">
+                    `;
+                } else {
+                    const error = await response.json();
+                    resultDiv.innerHTML = `
+                        <h3>❌ Failed (${duration}s)</h3>
+                        <p><strong>Error:</strong> ${error.error}</p>
+                        <p><strong>Details:</strong> ${error.details}</p>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <h3>💥 Request Failed</h3>
+                    <p><strong>Error:</strong> ${error.message}</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

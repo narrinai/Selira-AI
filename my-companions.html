@@ -1501,25 +1501,28 @@
         margin-top: 72px;
       }
     }
+    
+    /* Hide sidebar and adjust layout to match profile/create pages exactly */
+    .sidebar {
+      display: none !important;
+    }
+    
+    .main-content {
+      margin-left: 0 !important;
+      width: 100% !important;
+    }
+    
+    .app-container {
+      flex-direction: column;
+    }
+    
+    /* Hide tab navigation to match profile style */
+    .tab-nav {
+      display: none !important;
+    }
   </style>
 </head>
 <body>
-  <!-- Desktop Navigation Header -->
-  <header class="desktop-header">
-    <div class="desktop-header-content">
-      <a href="/" class="desktop-logo">Selira AI</a>
-      
-      <nav class="desktop-nav-links">
-        <a href="/pricing" class="desktop-nav-link">Plans</a>
-        <a href="/my-companions" class="desktop-nav-link">My Companions</a>
-        <a href="/memory-import" class="desktop-nav-link">Import Memory</a>
-        <a href="/news" class="desktop-nav-link">News & Insights</a>
-        <a href="#" class="desktop-nav-link" id="desktopLoginBtn">Login/Register</a>
-        <a href="/create-character" class="desktop-nav-btn">✨ Create Companion</a>
-      </nav>
-    </div>
-  </header>
-
   <div class="app-container">
     <!-- Left Sidebar Navigation (Character.AI style) -->
     <aside class="sidebar" id="sidebar">
