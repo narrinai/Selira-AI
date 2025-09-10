@@ -1449,6 +1449,13 @@
           <span>Create</span>
         </a>
 
+        <div class="nav-section-title">Data</div>
+        
+        <a href="/memory-import" class="nav-item">
+          <span class="nav-item-icon">📋</span>
+          <span>Memory Import</span>
+        </a>
+
         <div class="nav-section-title">Account</div>
         
         <a href="/profile" class="nav-item">
@@ -1502,7 +1509,6 @@
         <nav class="tab-nav">
           <a href="#" class="tab-item active">Discover</a>
           <a href="#" class="tab-item">My Companions</a>
-          <a href="#" class="tab-item">Memories</a>
         </nav>
       </header>
 
@@ -1914,8 +1920,15 @@
     function openCharacter(slug) {
       console.log('Opening character:', slug);
       
-      // Find character to get the correct URL
-      const character = allCharacters.find(c => c.slug === slug);
+      // Find character to get the correct URL - check both allCharacters and userCompanions
+      let character = allCharacters.find(c => c.slug === slug);
+      
+      // If not found in allCharacters, check userCompanions
+      if (!character) {
+        const userCompanions = getUserCompanions();
+        character = userCompanions.find(c => c.slug === slug);
+      }
+      
       if (character && character.character_url) {
         window.location.href = character.character_url;
       } else {
@@ -2135,9 +2148,6 @@
           } else if (tabText === 'My Companions') {
             currentTab = 'companions';
             renderMyCompanions();
-          } else if (tabText === 'Memories') {
-            currentTab = 'memories';
-            renderMemories();
           }
         });
       });
