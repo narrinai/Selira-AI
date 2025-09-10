@@ -601,6 +601,11 @@
       50% { opacity: 0.4; }
     }
 
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     .loading-grid {
       grid-column: 1 / -1;
       text-align: center;
@@ -2243,62 +2248,52 @@
     function renderMemories() {
       const grid = document.getElementById('charactersGrid');
       grid.innerHTML = `
-        <div class="memory-import-section" style="width: 100%; max-width: none; padding: 20px 40px; height: calc(100vh - 140px); overflow-y: auto; display: flex; flex-direction: column;">
-          <div class="memory-header" style="text-align: center; margin-bottom: 30px; flex-shrink: 0;">
-            <h2 style="font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 700; color: var(--text-primary); margin-bottom: 12px;">Import ChatGPT Memories</h2>
-            <p style="color: var(--text-secondary); font-size: 16px; max-width: 700px; margin: 0 auto; line-height: 1.5;">Transfer your ChatGPT conversations to give your AI companions deeper understanding. 100% private and secure.</p>
+        <div class="memory-import-section" style="width: 100%; max-width: none; padding: 32px 40px; height: calc(100vh - 140px); overflow-y: auto; display: flex; flex-direction: column; animation: fadeIn 0.6s ease;">
+          <div class="memory-header" style="text-align: center; margin-bottom: 40px; flex-shrink: 0;">
+            <h1 style="font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 700; color: var(--text-primary); margin-bottom: 16px;">Import ChatGPT Memories</h1>
+            <p style="color: var(--text-secondary); font-size: 18px; max-width: 700px; margin: 0 auto; line-height: 1.6;">Transfer your ChatGPT conversations to give your AI companions deeper understanding. 100% private and secure.</p>
           </div>
           
           <!-- Security Badge -->
           <div style="text-align: center; margin-bottom: 40px;">
-            <div style="display: inline-flex; align-items: center; gap: 8px; background: var(--success); color: white; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600;">
+            <div style="display: inline-flex; align-items: center; gap: 8px; background: var(--success); color: white; padding: 10px 20px; border-radius: 25px; font-size: 14px; font-weight: 600;">
               <span>🔒</span>
               <span>100% Private & Secure Transfer</span>
             </div>
           </div>
           
-          <!-- 3-Step Process -->
-          <div class="import-steps" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-bottom: 50px;">
-            <div class="step-card" style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px; text-align: center; position: relative;">
+          <!-- 2-Step Process -->
+          <div class="import-steps" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; margin-bottom: 40px; max-width: 800px; margin-left: auto; margin-right: auto;">
+            <div class="step-card" style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px; text-align: center; position: relative; transition: transform 0.2s ease;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
               <div style="position: absolute; top: -12px; left: 20px; background: var(--accent); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">1</div>
               <div style="font-size: 48px; margin-bottom: 16px;">📋</div>
               <h3 style="color: var(--text-primary); margin-bottom: 12px; font-size: 20px; font-weight: 700;">Copy Prompt</h3>
               <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 14px; line-height: 1.5;">Copy our specialized prompt to extract your memories from ChatGPT</p>
-              <button onclick="copyPromptToClipboard()" style="background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; font-size: 14px;">
+              <button onclick="copyPromptToClipboard()" style="background: var(--accent); color: white; border: none; padding: 12px 24px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; font-size: 14px; transition: all 0.2s ease;" onmouseover="this.style.background='var(--accent-hover)'; this.style.transform='translateY(-1px)'" onmouseout="this.style.background='var(--accent)'; this.style.transform='translateY(0)'">
                 Copy Prompt
               </button>
             </div>
             
-            <div class="step-card" style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px; text-align: center; position: relative;">
+            <div class="step-card" style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px; text-align: center; position: relative; transition: transform 0.2s ease;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
               <div style="position: absolute; top: -12px; left: 20px; background: var(--accent); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">2</div>
               <div style="font-size: 48px; margin-bottom: 16px;">🤖</div>
               <h3 style="color: var(--text-primary); margin-bottom: 12px; font-size: 20px; font-weight: 700;">Get ChatGPT Response</h3>
               <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 14px; line-height: 1.5;">Paste the prompt in ChatGPT and copy the JSON response it generates</p>
-              <a href="https://chatgpt.com" target="_blank" style="background: #10a37f; color: white; border: none; padding: 10px 20px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; font-size: 14px; text-decoration: none; display: inline-block;">
+              <a href="https://chatgpt.com" target="_blank" style="background: #10a37f; color: white; border: none; padding: 12px 24px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; font-size: 14px; text-decoration: none; display: inline-block; transition: all 0.2s ease;" onmouseover="this.style.background='#0d8566'; this.style.transform='translateY(-1px)'" onmouseout="this.style.background='#10a37f'; this.style.transform='translateY(0)'">
                 Open ChatGPT
               </a>
-            </div>
-            
-            <div class="step-card" style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px; text-align: center; position: relative;">
-              <div style="position: absolute; top: -12px; left: 20px; background: var(--accent); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">3</div>
-              <div style="font-size: 48px; margin-bottom: 16px;">📥</div>
-              <h3 style="color: var(--text-primary); margin-bottom: 12px; font-size: 20px; font-weight: 700;">Import Memories</h3>
-              <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 14px; line-height: 1.5;">Paste the JSON response below to import your memories</p>
-              <button onclick="showImportForm()" style="background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; font-size: 14px;">
-                Start Import
-              </button>
             </div>
           </div>
           
           <!-- Import Form -->
           <div class="import-form" style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px; margin-bottom: 40px;">
             <h3 style="color: var(--text-primary); margin-bottom: 20px; font-size: 22px; font-weight: 700;">Paste ChatGPT Response</h3>
-            <textarea id="memoryImportText" placeholder="Paste the JSON response from ChatGPT here..." rows="8" style="width: 100%; padding: 16px; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text-primary); font-family: monospace; font-size: 14px; resize: vertical;"></textarea>
+            <textarea id="memoryImportText" placeholder="Paste the JSON response from ChatGPT here..." rows="8" style="width: 100%; padding: 16px; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text-primary); font-family: 'Courier New', monospace; font-size: 14px; resize: vertical; min-height: 200px; outline: none; transition: border-color 0.2s ease;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"></textarea>
             <div style="margin-top: 16px; display: flex; gap: 12px;">
-              <button onclick="processMemoryImport()" style="flex: 1; background: var(--accent); color: white; border: none; padding: 12px 24px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; font-size: 16px;">
+              <button onclick="processMemoryImport()" style="flex: 1; background: var(--accent); color: white; border: none; padding: 12px 24px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; font-size: 16px; transition: all 0.2s ease;" onmouseover="this.style.background='var(--accent-hover)'; this.style.transform='translateY(-1px)'" onmouseout="this.style.background='var(--accent)'; this.style.transform='translateY(0)'">
                 Process Memories
               </button>
-              <button onclick="showManualMemoryForm()" style="background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border); padding: 12px 24px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; font-size: 16px;">
+              <button onclick="showManualMemoryForm()" style="background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border); padding: 12px 24px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; font-size: 16px; transition: all 0.2s ease;" onmouseover="this.style.background='var(--bg-primary)'" onmouseout="this.style.background='var(--bg-tertiary)'">
                 Add Manual Memory
               </button>
             </div>
@@ -2313,8 +2308,7 @@
             <div id="importHistory" style="color: var(--text-secondary);">
               <div style="text-align: center; padding: 40px;">
                 <div style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;">📊</div>
-                <p style="font-size: 16px; margin-bottom: 8px;">No memory imports yet</p>
-                <p style="font-size: 14px; opacity: 0.8;">Follow the 3-step process above to import your ChatGPT memories and see your import history here</p>
+                <p style="font-size: 16px; margin-bottom: 8px;">No recent imports. Start by copying the prompt above.</p>
               </div>
             </div>
           </div>
