@@ -184,17 +184,17 @@
     .top-header {
       background: var(--bg-primary);
       border-bottom: 1px solid var(--border-color);
-      padding: 20px 30px;
       position: sticky;
       top: 0;
-      z-index: 50;
+      z-index: 40;
     }
-
+    
     .header-top {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      margin-bottom: 20px;
+      align-items: center;
+      padding: 8px 40px;
+      gap: 24px;
     }
 
     .search-container {
@@ -1500,6 +1500,11 @@
       .app-container {
         margin-top: 72px;
       }
+    }
+    
+    /* Hide filter section to match create page exactly */
+    .filter-section {
+      display: none !important;
     }
   </style>
 </head>
