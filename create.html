@@ -799,12 +799,12 @@
             </div>
           </div>
 
-          <!-- Step 3: Ethnicity Selection -->
-          <div class="creation-step" id="step3">
+          <!-- Step 3a: Female Ethnicity Selection -->
+          <div class="creation-step" id="step3-female">
             <h3 style="color: var(--text-primary); margin-bottom: 40px; font-size: 28px; font-weight: 700; text-align: center;">Choose Ethnicity</h3>
             <div class="ethnicity-grid">
               <div class="ethnicity-option" data-ethnicity="white" onclick="selectEthnicityStep('white')" style="border-color: var(--accent);">
-                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=300') center/cover;"></div>
+                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1494790108755-2616b2e4c5d0?w=300') center/cover;"></div>
                 <div style="padding: 12px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">White/Caucasian</h4>
                 </div>
@@ -816,43 +816,104 @@
                 </div>
               </div>
               <div class="ethnicity-option" data-ethnicity="indian" onclick="selectEthnicityStep('indian')">
+                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300') center/cover;"></div>
+                <div style="padding: 12px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Indian/South Asian</h4>
+                </div>
+              </div>
+              <div class="ethnicity-option" data-ethnicity="middle-east" onclick="selectEthnicityStep('middle-east')">
+                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=300') center/cover;"></div>
+                <div style="padding: 12px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Middle Eastern</h4>
+                </div>
+              </div>
+              <div class="ethnicity-option" data-ethnicity="hispanic" onclick="selectEthnicityStep('hispanic')">
+                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=300') center/cover;"></div>
+                <div style="padding: 12px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Hispanic/Latino</h4>
+                </div>
+              </div>
+              <div class="ethnicity-option" data-ethnicity="korean" onclick="selectEthnicityStep('korean')">
+                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1617127365659-c47fa864d8bc?w=300') center/cover;"></div>
+                <div style="padding: 12px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Korean</h4>
+                </div>
+              </div>
+              <div class="ethnicity-option" data-ethnicity="chinese" onclick="selectEthnicityStep('chinese')">
+                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=300') center/cover;"></div>
+                <div style="padding: 12px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Chinese</h4>
+                </div>
+              </div>
+              <div class="ethnicity-option" data-ethnicity="japanese" onclick="selectEthnicityStep('japanese')">
+                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300') center/cover;"></div>
+                <div style="padding: 12px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Japanese</h4>
+                </div>
+              </div>
+              <div class="ethnicity-option" data-ethnicity="vietnamese" onclick="selectEthnicityStep('vietnamese')">
+                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1580489944761-15a19d654956?w=300') center/cover;"></div>
+                <div style="padding: 12px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Vietnamese</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3b: Male Ethnicity Selection -->
+          <div class="creation-step" id="step3-male">
+            <h3 style="color: var(--text-primary); margin-bottom: 40px; font-size: 28px; font-weight: 700; text-align: center;">Choose Ethnicity</h3>
+            <div class="ethnicity-grid">
+              <div class="ethnicity-option" data-ethnicity="white" onclick="selectEthnicityStep('white')" style="border-color: var(--accent);">
+                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300') center/cover;"></div>
+                <div style="padding: 12px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">White/Caucasian</h4>
+                </div>
+              </div>
+              <div class="ethnicity-option" data-ethnicity="black" onclick="selectEthnicityStep('black')">
+                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300') center/cover;"></div>
+                <div style="padding: 12px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Black/African</h4>
+                </div>
+              </div>
+              <div class="ethnicity-option" data-ethnicity="indian" onclick="selectEthnicityStep('indian')">
                 <div style="height: 160px; background: url('https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=300') center/cover;"></div>
                 <div style="padding: 12px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Indian/South Asian</h4>
                 </div>
               </div>
               <div class="ethnicity-option" data-ethnicity="middle-east" onclick="selectEthnicityStep('middle-east')">
-                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300') center/cover;"></div>
+                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300') center/cover;"></div>
                 <div style="padding: 12px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Middle Eastern</h4>
                 </div>
               </div>
               <div class="ethnicity-option" data-ethnicity="hispanic" onclick="selectEthnicityStep('hispanic')">
-                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=300') center/cover;"></div>
+                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?w=300') center/cover;"></div>
                 <div style="padding: 12px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Hispanic/Latino</h4>
                 </div>
               </div>
               <div class="ethnicity-option" data-ethnicity="korean" onclick="selectEthnicityStep('korean')">
-                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=300') center/cover;"></div>
+                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1595152772835-219674b2a8a6?w=300') center/cover;"></div>
                 <div style="padding: 12px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Korean</h4>
                 </div>
               </div>
               <div class="ethnicity-option" data-ethnicity="chinese" onclick="selectEthnicityStep('chinese')">
-                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=300') center/cover;"></div>
+                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1574015974293-817f0ebebb74?w=300') center/cover;"></div>
                 <div style="padding: 12px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Chinese</h4>
                 </div>
               </div>
               <div class="ethnicity-option" data-ethnicity="japanese" onclick="selectEthnicityStep('japanese')">
-                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1569913486515-b74bf7751574?w=300') center/cover;"></div>
+                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1563237023-b1e970526dcb?w=300') center/cover;"></div>
                 <div style="padding: 12px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Japanese</h4>
                 </div>
               </div>
               <div class="ethnicity-option" data-ethnicity="vietnamese" onclick="selectEthnicityStep('vietnamese')">
-                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=300') center/cover;"></div>
+                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300') center/cover;"></div>
                 <div style="padding: 12px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Vietnamese</h4>
                 </div>

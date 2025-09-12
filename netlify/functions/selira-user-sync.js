@@ -23,7 +23,7 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const { auth0_id, email, name, picture } = JSON.parse(event.body);
+    const { auth0_id, email, name, picture, display_name } = JSON.parse(event.body);
     
     console.log('🔄 Selira user sync:', { email, auth0_id: auth0_id?.substring(0, 20) + '...' });
 
@@ -55,7 +55,16 @@ exports.handler = async (event, context) => {
         const existingUser = checkData.records[0];
         console.log('✅ User exists, updating Auth0ID...');
         
-        // Update existing user with Auth0ID
+        // Update existing user with Auth0ID and display_name
+        const updateFields = {
+          Auth0ID: auth0_id
+        };
+        
+        // Add display_name if provided
+        if (display_name) {
+          updateFields.Display_Name = display_name;
+        }
+        
         const updateResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users/${existingUser.id}`, {
           method: 'PATCH',
           headers: {
@@ -63,9 +72,7 @@ exports.handler = async (event, context) => {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            fields: {
-              Auth0ID: auth0_id
-            }
+            fields: updateFields
           })
         });
 
@@ -98,7 +105,8 @@ exports.handler = async (event, context) => {
         records: [{
           fields: {
             Email: email,
-            Auth0ID: auth0_id
+            Auth0ID: auth0_id,
+            Display_Name: display_name || name || email.split('@')[0]
           }
         }]
       })
