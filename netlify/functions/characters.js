@@ -246,6 +246,11 @@ exports.handler = async (event, context) => {
         Created_by: createdBy,
         character_type: fields.Character_Type || fields.character_type || '',
         companion_type: fields.companion_type || (fields.Category === 'anime-manga' ? 'anime' : 'realistic'),
+        // New appearance fields
+        Art_Style: fields.Art_Style || (fields.Category === 'anime-manga' ? 'anime' : 'realistic'),
+        Sex: fields.Sex || 'female',
+        Ethnicity: fields.Ethnicity || 'white',
+        Hair_Length: fields.Hair_Length || 'medium',
         _Created_by_record_id: (Array.isArray(fields.Created_By) && fields.Created_By.length > 0) ? fields.Created_By[0] : null
       };
     });

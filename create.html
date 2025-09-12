@@ -369,7 +369,7 @@
     }
     
     #progressFill {
-      width: 25%;
+      width: 20%;
       height: 100%;
       background: var(--accent);
       transition: width 0.3s ease;
@@ -402,7 +402,7 @@
       padding: 0 40px;
     }
     
-    .style-option, .ethnicity-option, .hair-option {
+    .style-option, .ethnicity-option, .hair-option, .sex-option {
       background: var(--bg-secondary);
       border: 2px solid var(--border);
       border-radius: var(--radius-lg);
@@ -411,7 +411,7 @@
       transition: all 0.3s ease;
     }
     
-    .style-option:hover, .ethnicity-option:hover, .hair-option:hover {
+    .style-option:hover, .ethnicity-option:hover, .hair-option:hover, .sex-option:hover {
       transform: translateY(-2px);
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
     }
@@ -737,8 +737,33 @@
         <!-- Step Content -->
         <div class="step-container">
           
-          <!-- Step 1: Style Selection -->
+          <!-- Step 1: Sex Selection -->
           <div class="creation-step active" id="step1">
+            <h3 style="color: var(--text-primary); margin-bottom: 40px; font-size: 28px; font-weight: 700; text-align: center;">Choose Sex</h3>
+            <div class="style-grid" style="max-width: 600px;">
+              <div class="sex-option" data-sex="female" onclick="selectSexStep('female')" style="border-color: var(--accent);">
+                <div style="height: 200px; background: linear-gradient(135deg, #ec4899 0%, #f97316 100%); display: flex; align-items: center; justify-content: center; border-radius: 12px;">
+                  <div style="color: white; font-size: 48px; text-shadow: 0 2px 8px rgba(0,0,0,0.3);">♀</div>
+                </div>
+                <div style="padding: 12px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 18px; font-weight: 700; margin-bottom: 8px;">Female</h4>
+                  <p style="color: var(--text-secondary); font-size: 14px;">Female companion</p>
+                </div>
+              </div>
+              <div class="sex-option" data-sex="male" onclick="selectSexStep('male')">
+                <div style="height: 200px; background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); display: flex; align-items: center; justify-content: center; border-radius: 12px;">
+                  <div style="color: white; font-size: 48px; text-shadow: 0 2px 8px rgba(0,0,0,0.3);">♂</div>
+                </div>
+                <div style="padding: 12px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 18px; font-weight: 700; margin-bottom: 8px;">Male</h4>
+                  <p style="color: var(--text-secondary); font-size: 14px;">Male companion</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2: Style Selection -->
+          <div class="creation-step" id="step2">
             <h3 style="color: var(--text-primary); margin-bottom: 20px; font-size: 20px; font-weight: 700; text-align: center;">Choose Art Style</h3>
             <div class="style-grid">
               <div class="style-option" data-style="realistic" onclick="selectStyleStep('realistic')">
@@ -762,8 +787,8 @@
             </div>
           </div>
 
-          <!-- Step 2: Ethnicity Selection -->
-          <div class="creation-step" id="step2">
+          <!-- Step 3: Ethnicity Selection -->
+          <div class="creation-step" id="step3">
             <h3 style="color: var(--text-primary); margin-bottom: 40px; font-size: 28px; font-weight: 700; text-align: center;">Choose Ethnicity</h3>
             <div class="ethnicity-grid">
               <div class="ethnicity-option" data-ethnicity="white" onclick="selectEthnicityStep('white')" style="border-color: var(--accent);">
@@ -823,51 +848,37 @@
             </div>
           </div>
 
-          <!-- Step 3: Hair Style -->
-          <div class="creation-step" id="step3">
-            <h3 style="color: var(--text-primary); margin-bottom: 40px; font-size: 28px; font-weight: 700; text-align: center;">Choose Hair Style</h3>
-            <div class="hair-grid">
-              <div class="hair-option" data-hair="pixie" onclick="selectHairStep('pixie')" style="border-color: var(--accent);">
-                <div style="height: 140px; background: url('https://images.unsplash.com/photo-1494790108755-2616b2e4c5d0?w=250') center/cover;"></div>
-                <div style="padding: 12px; text-align: center;">
-                  <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Pixie</h4>
+
+          <!-- Step 4: Hair Length -->
+          <div class="creation-step" id="step4">
+            <h3 style="color: var(--text-primary); margin-bottom: 40px; font-size: 28px; font-weight: 700; text-align: center;">Choose Hair Length</h3>
+            <div class="hair-grid" style="grid-template-columns: repeat(3, 1fr); gap: 60px; max-width: 800px; margin: 0 auto;">
+              <div class="hair-option" data-hair="short" onclick="selectHairStep('short')" style="border-color: var(--accent);">
+                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=300') center/cover; border-radius: 12px;"></div>
+                <div style="padding: 16px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 16px; font-weight: 600;">Short</h4>
+                  <p style="color: var(--text-secondary); font-size: 13px; margin-top: 4px;">Above shoulders</p>
                 </div>
               </div>
-              <div class="hair-option" data-hair="short" onclick="selectHairStep('short')">
-                <div style="height: 140px; background: url('https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=250') center/cover;"></div>
-                <div style="padding: 12px; text-align: center;">
-                  <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Short</h4>
+              <div class="hair-option" data-hair="medium" onclick="selectHairStep('medium')">
+                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?w=300') center/cover; border-radius: 12px;"></div>
+                <div style="padding: 16px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 16px; font-weight: 600;">Medium</h4>
+                  <p style="color: var(--text-secondary); font-size: 13px; margin-top: 4px;">Shoulder length</p>
                 </div>
               </div>
               <div class="hair-option" data-hair="long" onclick="selectHairStep('long')">
-                <div style="height: 140px; background: url('https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=250') center/cover;"></div>
-                <div style="padding: 12px; text-align: center;">
-                  <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Long</h4>
-                </div>
-              </div>
-              <div class="hair-option" data-hair="wavy" onclick="selectHairStep('wavy')">
-                <div style="height: 140px; background: url('https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?w=250') center/cover;"></div>
-                <div style="padding: 12px; text-align: center;">
-                  <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Wavy</h4>
-                </div>
-              </div>
-              <div class="hair-option" data-hair="curly" onclick="selectHairStep('curly')">
-                <div style="height: 140px; background: url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=250') center/cover;"></div>
-                <div style="padding: 12px; text-align: center;">
-                  <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Curly</h4>
-                </div>
-              </div>
-              <div class="hair-option" data-hair="braided" onclick="selectHairStep('braided')">
-                <div style="height: 140px; background: url('https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?w=250') center/cover;"></div>
-                <div style="padding: 12px; text-align: center;">
-                  <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Braided</h4>
+                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=300') center/cover; border-radius: 12px;"></div>
+                <div style="padding: 16px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 16px; font-weight: 600;">Long</h4>
+                  <p style="color: var(--text-secondary); font-size: 13px; margin-top: 4px;">Below shoulders</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Step 4: Final Details -->
-          <div class="creation-step" id="step4">
+          <!-- Step 5: Final Details -->
+          <div class="creation-step" id="step5">
             <h3 style="color: var(--text-primary); margin-bottom: 30px; font-size: 28px; font-weight: 700; text-align: center;">Final Details</h3>
             <div style="max-width: 600px; margin: 0 auto; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px;">
               
@@ -875,7 +886,7 @@
                 <div style="width: 150px; height: 150px; margin: 0 auto 16px; background: var(--bg-tertiary); border-radius: 50%; border: 3px solid var(--accent); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
                   <img id="finalPreview" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDE1MCAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiBmaWxsPSIjMmEyYTJhIiByeD0iNzUiLz4KPHRleHQgeD0iNzUiIHk9Ijc1IiBmaWxsPSIjZDRhNTc0IiBmb250LXNpemU9IjI0IiBmb250LXdlaWdodD0iYm9sZCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9ImNlbnRyYWwiPvCfpK08L3RleHQ+Cjwvc3ZnPgo=" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
-                <div style="color: var(--text-secondary); font-size: 14px;" id="selectedTraits">Selected: Anime style, White, Pixie hair</div>
+                <div style="color: var(--text-secondary); font-size: 14px;" id="selectedTraits">Selected: Anime style, Female, White, Short hair</div>
               </div>
 
               <div style="margin-bottom: 20px;">
@@ -963,13 +974,14 @@
       name: '',
       style: 'anime',
       ethnicity: 'white',
-      hairStyle: 'pixie',
+      sex: 'female',
+      hairLength: 'short',
       category: 'fantasy',
       description: '',
       currentStep: 1
     };
 
-    let totalSteps = 4;
+    let totalSteps = 5;
 
     // ===== STEP NAVIGATION =====
     function nextStep() {
@@ -1014,10 +1026,11 @@
       
       // Update step title
       const stepTitles = {
-        1: 'Choose Style',
-        2: 'Choose Ethnicity', 
-        3: 'Choose Hair Style',
-        4: 'Final Details'
+        1: 'Choose Sex',
+        2: 'Choose Style', 
+        3: 'Choose Ethnicity',
+        4: 'Choose Hair Length',
+        5: 'Final Details'
       };
       document.getElementById('stepTitle').textContent = stepTitles[currentStep];
       
@@ -1056,30 +1069,42 @@
       console.log('Selected ethnicity:', ethnicity);
     }
 
-    function selectHairStep(hairStyle) {
-      characterCreationState.hairStyle = hairStyle;
+    function selectSexStep(sex) {
+      characterCreationState.sex = sex;
+      
+      // Update visual selection
+      document.querySelectorAll('.sex-option').forEach(option => {
+        option.style.border = '2px solid var(--border)';
+      });
+      document.querySelector(`[data-sex="${sex}"]`).style.border = '2px solid var(--accent)';
+      
+      console.log('Selected sex:', sex);
+    }
+
+    function selectHairStep(hairLength) {
+      characterCreationState.hairLength = hairLength;
       
       // Update visual selection
       document.querySelectorAll('.hair-option').forEach(option => {
         option.style.border = '2px solid var(--border)';
       });
-      document.querySelector(`[data-hair="${hairStyle}"]`).style.border = '2px solid var(--accent)';
+      document.querySelector(`[data-hair="${hairLength}"]`).style.border = '2px solid var(--accent)';
       
       // Update final preview
       updateFinalPreview();
       
-      console.log('Selected hair style:', hairStyle);
+      console.log('Selected hair length:', hairLength);
     }
 
     function updateFinalPreview() {
-      const traits = `${characterCreationState.style} style, ${characterCreationState.ethnicity}, ${characterCreationState.hairStyle} hair`;
+      const traits = `${characterCreationState.style} style, ${characterCreationState.sex}, ${characterCreationState.ethnicity}, ${characterCreationState.hairLength} hair`;
       const traitsEl = document.getElementById('selectedTraits');
       if (traitsEl) {
         traitsEl.textContent = `Selected: ${traits}`;
       }
     }
 
-    function createCharacter() {
+    async function createCharacter() {
       const name = document.getElementById('characterName').value.trim();
       const description = document.getElementById('characterDescription').value.trim();
       
@@ -1088,18 +1113,73 @@
         return;
       }
       
+      // Get user info for creator field
+      let createdBy = 'Anonymous';
+      try {
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        createdBy = user.nickname || user.name || user.email || 'Anonymous';
+      } catch (e) {
+        // Use anonymous if no user data
+      }
+      
+      // Show loading state
+      const createBtn = document.getElementById('createFinalBtn');
+      const originalText = createBtn.textContent;
+      createBtn.textContent = '🎭 Creating...';
+      createBtn.disabled = true;
+      
       console.log('🎭 Creating character:', {
         name,
         description,
         selectedTags: createSelectedTags,
-        appearance: characterCreationState
+        appearance: characterCreationState,
+        createdBy
       });
       
-      // Here you would typically send to your character creation API
-      alert(`🎉 ${name} has been created successfully! They will appear in your character list soon.`);
-      
-      // Redirect back to category page
-      window.location.href = '/category';
+      try {
+        // Send character data to backend
+        const response = await fetch('/.netlify/functions/create-character', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            name: name,
+            description: description,
+            tags: createSelectedTags,
+            artStyle: characterCreationState.style,
+            sex: characterCreationState.sex,
+            ethnicity: characterCreationState.ethnicity,
+            hairLength: characterCreationState.hairLength,
+            createdBy: createdBy
+          })
+        });
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || `HTTP ${response.status}`);
+        }
+        
+        const result = await response.json();
+        
+        console.log('✅ Character created successfully:', result);
+        
+        // Show success message
+        alert(`🎉 ${name} has been created successfully! They will appear in your character list soon.`);
+        
+        // Redirect back to category page
+        window.location.href = '/category';
+        
+      } catch (error) {
+        console.error('❌ Error creating character:', error);
+        
+        // Restore button state
+        createBtn.textContent = originalText;
+        createBtn.disabled = false;
+        
+        // Show error message
+        alert(`❌ Failed to create ${name}: ${error.message}\n\nPlease try again or check your connection.`);
+      }
     }
 
     // ===== CREATE FLOW TAGS SYSTEM =====

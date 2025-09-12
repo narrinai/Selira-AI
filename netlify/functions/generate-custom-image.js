@@ -37,14 +37,17 @@ exports.handler = async (event, context) => {
 
   try {
     const body = JSON.parse(event.body || '{}');
-    const { customPrompt, characterName, category, style, shotType } = body;
+    const { customPrompt, characterName, category, style, shotType, sex, ethnicity, hairLength } = body;
     
     console.log('📋 Received:', {
       customPrompt,
       characterName,
       category,
       style,
-      shotType
+      shotType,
+      sex,
+      ethnicity,
+      hairLength
     });
     
     if (!customPrompt) {
@@ -66,8 +69,33 @@ exports.handler = async (event, context) => {
                        promptLower.includes('kawaii')
                      ));
     
-    // Enhanced feminine features (SFW) + smart context detection
-    const feminineEnhancement = 'beautiful woman, curvy figure, feminine physique, attractive features, well-proportioned';
+    // Character appearance based on creation flow data
+    const genderDescription = sex === 'male' ? 
+      'handsome man, masculine physique, strong features, well-built' : 
+      'beautiful woman, feminine physique, attractive features, well-proportioned';
+    
+    // Ethnicity descriptions
+    const ethnicityMap = {
+      'white': 'Caucasian/European features',
+      'black': 'African/Black features',
+      'indian': 'South Asian/Indian features', 
+      'middle-east': 'Middle Eastern features',
+      'hispanic': 'Hispanic/Latino features',
+      'korean': 'Korean features',
+      'chinese': 'Chinese features', 
+      'japanese': 'Japanese features',
+      'vietnamese': 'Vietnamese features'
+    };
+    
+    // Hair length descriptions
+    const hairMap = {
+      'short': 'short hair',
+      'medium': 'medium length hair, shoulder-length hair',
+      'long': 'long hair, flowing hair'
+    };
+    
+    const ethnicityDesc = ethnicityMap[ethnicity] || 'diverse features';
+    const hairDesc = hairMap[hairLength] || 'styled hair';
     
     // Smart context enhancement based on keywords
     let contextualEnhancement = '';
@@ -106,14 +134,17 @@ exports.handler = async (event, context) => {
                        promptLower.includes('fullbody') || promptLower.includes('standing') ||
                        promptLower.includes('beach') || promptLower.includes('pose');
     
-    // Build full prompt with enhanced features and context
+    // Build character-aware prompt
+    const characterAppearance = `${genderDescription}, ${ethnicityDesc}, ${hairDesc}`;
+    
+    // Build full prompt with character appearance and context
     let fullPrompt;
     if (isAnimeStyle) {
       const shotDesc = isFullBody ? 'full body anime illustration' : 'anime portrait';
-      fullPrompt = `${shotDesc} of ${feminineEnhancement}, anime style, ${customPrompt}${contextualEnhancement}, detailed anime art, high quality anime illustration, vibrant colors, cel shading, clean background, single anime character, perfect anime anatomy, anime eyes`;
+      fullPrompt = `${shotDesc} of ${characterAppearance}, anime style, ${customPrompt}${contextualEnhancement}, detailed anime art, high quality anime illustration, vibrant colors, cel shading, clean background, single anime character, perfect anime anatomy, anime eyes`;
     } else {
       const shotDesc = isFullBody ? 'full body photograph' : 'portrait photograph';
-      fullPrompt = `realistic photography, ${shotDesc} of ${feminineEnhancement}, ${customPrompt}${contextualEnhancement}, photorealistic, real photo, not anime, not cartoon, not illustration, not drawing, professional photography, high quality, professional lighting, clean background, single real person, perfect anatomy, realistic skin, realistic features`;
+      fullPrompt = `realistic photography, ${shotDesc} of ${characterAppearance}, ${customPrompt}${contextualEnhancement}, photorealistic, real photo, not anime, not cartoon, not illustration, not drawing, professional photography, high quality, professional lighting, clean background, single real person, perfect anatomy, realistic skin, realistic features`;
     }
     
     console.log('🎨 Full prompt:', fullPrompt);
