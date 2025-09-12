@@ -38,32 +38,84 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Check if user already exists
-    console.log('🔍 Checking if user already exists...');
-    const checkUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula={Auth0ID}='${auth0_id}'&maxRecords=1`;
+    // Strategy 1: Check if user exists by Auth0ID
+    console.log('🔍 Strategy 1: Checking by Auth0ID...');
+    const checkByAuth0 = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula={Auth0ID}='${auth0_id}'&maxRecords=1`;
     
-    const checkResponse = await fetch(checkUrl, {
+    const auth0Response = await fetch(checkByAuth0, {
       headers: {
         'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
         'Content-Type': 'application/json'
       }
     });
 
-    if (checkResponse.ok) {
-      const checkData = await checkResponse.json();
+    if (auth0Response.ok) {
+      const auth0Data = await auth0Response.json();
       
-      if (checkData.records.length > 0) {
-        console.log('✅ User already exists in Airtable');
+      if (auth0Data.records.length > 0) {
+        console.log('✅ User found by Auth0ID');
         return {
           statusCode: 200,
           headers,
           body: JSON.stringify({
             success: true,
-            action: 'found_existing',
-            user_id: checkData.records[0].id,
+            action: 'found_by_auth0id',
+            user_id: auth0Data.records[0].id,
             message: 'User already synchronized'
           })
         };
+      }
+    }
+
+    // Strategy 2: Check if user exists by Email (to update existing user)
+    console.log('🔍 Strategy 2: Checking by Email to update...');
+    const checkByEmail = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula={Email}='${email}'&maxRecords=1`;
+    
+    const emailResponse = await fetch(checkByEmail, {
+      headers: {
+        'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (emailResponse.ok) {
+      const emailData = await emailResponse.json();
+      
+      if (emailData.records.length > 0) {
+        const existingUser = emailData.records[0];
+        console.log('✅ Found existing user by email, updating Auth0ID...');
+        
+        // Update existing user with Auth0ID
+        const updateUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users/${existingUser.id}`;
+        
+        const updateResponse = await fetch(updateUrl, {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            fields: {
+              Auth0ID: auth0_id,
+              Name: name || existingUser.fields.Name,
+              Nickname: nickname || existingUser.fields.Nickname
+            }
+          })
+        });
+
+        if (updateResponse.ok) {
+          console.log('✅ Updated existing user with Auth0ID');
+          return {
+            statusCode: 200,
+            headers,
+            body: JSON.stringify({
+              success: true,
+              action: 'updated_existing',
+              user_id: existingUser.id,
+              message: 'User updated with Auth0ID'
+            })
+          };
+        }
       }
     }
 
