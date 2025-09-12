@@ -922,12 +922,12 @@
           </div>
 
 
-          <!-- Step 4: Hair Length -->
-          <div class="creation-step" id="step4">
+          <!-- Step 4a: Female Hair Length -->
+          <div class="creation-step" id="step4-female">
             <h3 style="color: var(--text-primary); margin-bottom: 40px; font-size: 28px; font-weight: 700; text-align: center;">Choose Hair Length</h3>
             <div class="hair-grid" style="grid-template-columns: repeat(3, 1fr); gap: 60px; max-width: 800px; margin: 0 auto;">
               <div class="hair-option" data-hair="short" onclick="selectHairStep('short')" style="border-color: var(--accent);">
-                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=300') center/cover; border-radius: 12px;"></div>
+                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1494790108755-2616b2e4c5d0?w=300') center/cover; border-radius: 12px;"></div>
                 <div style="padding: 16px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 16px; font-weight: 600;">Short</h4>
                   <p style="color: var(--text-secondary); font-size: 13px; margin-top: 4px;">Above shoulders</p>
@@ -945,6 +945,34 @@
                 <div style="padding: 16px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 16px; font-weight: 600;">Long</h4>
                   <p style="color: var(--text-secondary); font-size: 13px; margin-top: 4px;">Below shoulders</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 4b: Male Hair Length -->
+          <div class="creation-step" id="step4-male">
+            <h3 style="color: var(--text-primary); margin-bottom: 40px; font-size: 28px; font-weight: 700; text-align: center;">Choose Hair Length</h3>
+            <div class="hair-grid" style="grid-template-columns: repeat(3, 1fr); gap: 60px; max-width: 800px; margin: 0 auto;">
+              <div class="hair-option" data-hair="short" onclick="selectHairStep('short')" style="border-color: var(--accent);">
+                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300') center/cover; border-radius: 12px;"></div>
+                <div style="padding: 16px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 16px; font-weight: 600;">Short</h4>
+                  <p style="color: var(--text-secondary); font-size: 13px; margin-top: 4px;">Classic cut</p>
+                </div>
+              </div>
+              <div class="hair-option" data-hair="medium" onclick="selectHairStep('medium')">
+                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300') center/cover; border-radius: 12px;"></div>
+                <div style="padding: 16px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 16px; font-weight: 600;">Medium</h4>
+                  <p style="color: var(--text-secondary); font-size: 13px; margin-top: 4px;">Styled length</p>
+                </div>
+              </div>
+              <div class="hair-option" data-hair="long" onclick="selectHairStep('long')">
+                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?w=300') center/cover; border-radius: 12px;"></div>
+                <div style="padding: 16px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 16px; font-weight: 600;">Long</h4>
+                  <p style="color: var(--text-secondary); font-size: 13px; margin-top: 4px;">Flowing style</p>
                 </div>
               </div>
             </div>
@@ -973,12 +1001,6 @@
             <h3 style="color: var(--text-primary); margin-bottom: 30px; font-size: 28px; font-weight: 700; text-align: center;">Final Details</h3>
             <div style="max-width: 600px; margin: 0 auto; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px;">
               
-              <div style="text-align: center; margin-bottom: 30px;">
-                <div style="width: 150px; height: 150px; margin: 0 auto 16px; background: var(--bg-tertiary); border-radius: 50%; border: 3px solid var(--accent); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
-                  <img id="finalPreview" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDE1MCAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiBmaWxsPSIjMmEyYTJhIiByeD0iNzUiLz4KPHRleHQgeD0iNzUiIHk9Ijc1IiBmaWxsPSIjZDRhNTc0IiBmb250LXNpemU9IjI0IiBmb250LXdlaWdodD0iYm9sZCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9ImNlbnRyYWwiPvCfpK08L3RleHQ+Cjwvc3ZnPgo=" style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-                <div style="color: var(--text-secondary); font-size: 14px;" id="selectedTraits">Selected: Anime style, Female, White, Short brown hair</div>
-              </div>
 
               <div style="margin-bottom: 20px;">
                 <label style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 8px;">Character Name</label>
@@ -1079,29 +1101,61 @@
     function nextStep() {
       if (characterCreationState.currentStep < totalSteps) {
         // Hide current step
-        document.getElementById(`step${characterCreationState.currentStep}`).style.display = 'none';
+        hideCurrentStep();
         
         // Move to next step
         characterCreationState.currentStep++;
         
         // Show next step
-        document.getElementById(`step${characterCreationState.currentStep}`).style.display = 'block';
+        showCurrentStep();
         
         // Update progress
         updateStepProgress();
       }
     }
 
+    function hideCurrentStep() {
+      const currentStep = characterCreationState.currentStep;
+      
+      // Handle gender-specific steps
+      if (currentStep === 3) {
+        document.getElementById('step3-female').style.display = 'none';
+        document.getElementById('step3-male').style.display = 'none';
+      } else if (currentStep === 4) {
+        document.getElementById('step4-female').style.display = 'none';
+        document.getElementById('step4-male').style.display = 'none';
+      } else {
+        const stepElement = document.getElementById(`step${currentStep}`);
+        if (stepElement) stepElement.style.display = 'none';
+      }
+    }
+
+    function showCurrentStep() {
+      const currentStep = characterCreationState.currentStep;
+      
+      // Handle gender-specific steps
+      if (currentStep === 3) {
+        const genderStep = characterCreationState.sex === 'female' ? 'step3-female' : 'step3-male';
+        document.getElementById(genderStep).style.display = 'block';
+      } else if (currentStep === 4) {
+        const genderStep = characterCreationState.sex === 'female' ? 'step4-female' : 'step4-male';
+        document.getElementById(genderStep).style.display = 'block';
+      } else {
+        const stepElement = document.getElementById(`step${currentStep}`);
+        if (stepElement) stepElement.style.display = 'block';
+      }
+    }
+
     function previousStep() {
       if (characterCreationState.currentStep > 1) {
         // Hide current step
-        document.getElementById(`step${characterCreationState.currentStep}`).style.display = 'none';
+        hideCurrentStep();
         
         // Move to previous step
         characterCreationState.currentStep--;
         
         // Show previous step
-        document.getElementById(`step${characterCreationState.currentStep}`).style.display = 'block';
+        showCurrentStep();
         
         // Update progress
         updateStepProgress();
@@ -1236,7 +1290,21 @@
       });
       
       try {
-        // Send character data to backend
+        // Generate avatar first
+        console.log('🎨 Generating companion avatar...');
+        createBtn.textContent = '🎨 Generating Avatar...';
+        
+        const avatarUrl = await generateCompanionAvatar({
+          name: name,
+          style: characterCreationState.style,
+          sex: characterCreationState.sex,
+          ethnicity: characterCreationState.ethnicity,
+          hairLength: characterCreationState.hairLength,
+          hairColor: characterCreationState.hairColor
+        });
+        
+        // Send character data to backend with avatar
+        createBtn.textContent = '💾 Saving Companion...';
         const response = await fetch('/.netlify/functions/create-character', {
           method: 'POST',
           headers: {
@@ -1251,7 +1319,8 @@
             ethnicity: characterCreationState.ethnicity,
             hairLength: characterCreationState.hairLength,
             hairColor: characterCreationState.hairColor,
-            createdBy: createdBy
+            createdBy: createdBy,
+            avatarUrl: avatarUrl
           })
         });
         
@@ -1417,6 +1486,41 @@
           button.classList.remove('selected');
         }
       });
+    }
+
+    // Generate companion avatar using the same system as chat
+    async function generateCompanionAvatar(companion) {
+      try {
+        const response = await fetch('/.netlify/functions/generate-custom-image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            customPrompt: 'professional headshot portrait, looking at camera, neutral expression',
+            characterName: companion.name,
+            category: companion.style === 'anime' ? 'anime-manga' : 'realistic',
+            style: companion.style,
+            shotType: 'portrait',
+            sex: companion.sex,
+            ethnicity: companion.ethnicity,
+            hairLength: companion.hairLength,
+            hairColor: companion.hairColor
+          })
+        });
+        
+        if (response.ok) {
+          const result = await response.json();
+          console.log('✅ Generated companion avatar:', result.imageUrl);
+          return result.imageUrl;
+        } else {
+          const error = await response.json();
+          console.error('❌ Avatar generation failed:', error);
+          return null;
+        }
+        
+      } catch (error) {
+        console.error('❌ Avatar generation error:', error);
+        return null;
+      }
     }
 
     // Initialize when page loads

@@ -45,7 +45,8 @@ exports.handler = async (event, context) => {
       ethnicity, 
       hairLength,
       hairColor,
-      createdBy 
+      createdBy,
+      avatarUrl
     } = body;
     
     console.log('📋 Received character data:', {
@@ -90,6 +91,7 @@ exports.handler = async (event, context) => {
       Visibility: 'public',
       Category: 'user-created',
       Character_Title: `AI Companion`,
+      Avatar_URL: avatarUrl || null,
       Created_At: new Date().toISOString()
     };
     
