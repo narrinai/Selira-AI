@@ -142,11 +142,14 @@ exports.handler = async (event, context) => {
       }
     }
 
+    let userData;
     if (!userResponse.ok) {
-      throw new Error(`Failed to fetch user: ${userResponse.status}`);
+      console.log(`⚠️ User lookup failed with status ${userResponse.status}, will create new user`);
+      // Don't throw error, just set empty data to trigger user creation
+      userData = { records: [] };
+    } else {
+      userData = await userResponse.json();
     }
-
-    let userData = await userResponse.json();
     console.log(`👤 User lookup result (${lookupStrategy}):`, userData.records.length, 'users found');
     
     if (userData.records.length > 0) {
