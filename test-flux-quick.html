@@ -1,427 +1,101 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Flux Image Generation Test | Selira AI</title>
+  <title>Flux Generator | Selira AI</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    
-    body {
-      font-family: 'Inter', system-ui, sans-serif;
-      background: #0a0a0a;
-      color: #ffffff;
-      padding: 20px;
-      line-height: 1.6;
-    }
-    
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    
-    .header {
-      text-align: center;
-      margin-bottom: 40px;
-    }
-    
-    .header h1 {
-      color: #d4a574;
-      margin-bottom: 16px;
-      font-size: 32px;
-    }
-    
-    .test-section {
-      background: #1a1a1a;
-      border: 1px solid #333;
-      border-radius: 12px;
-      padding: 24px;
-      margin-bottom: 20px;
-    }
-    
-    .test-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      margin-bottom: 20px;
-    }
-    
-    .form-group {
-      margin-bottom: 16px;
-    }
-    
-    .form-label {
-      display: block;
-      color: #d4a574;
-      margin-bottom: 8px;
-      font-weight: 600;
-    }
-    
-    .form-input, .form-select {
-      width: 100%;
-      padding: 12px;
-      background: #2a2a2a;
-      border: 1px solid #444;
-      border-radius: 8px;
-      color: white;
-      font-size: 14px;
-    }
-    
-    .form-select option {
-      background: #2a2a2a;
-      color: white;
-    }
-    
-    .btn {
-      background: #d4a574;
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      margin-right: 8px;
-      margin-bottom: 8px;
-    }
-    
-    .btn:hover {
-      background: #c19456;
-    }
-    
-    .btn-secondary {
-      background: #6b7280;
-    }
-    
-    .btn-secondary:hover {
-      background: #555;
-    }
-    
-    .preset-btn {
-      background: #2a2a2a;
-      border: 1px solid #444;
-      color: white;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      margin: 4px;
-      font-size: 12px;
-    }
-    
-    .preset-btn:hover {
-      background: #d4a574;
-      border-color: #d4a574;
-    }
-    
-    .results {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px;
-      margin-top: 20px;
-    }
-    
-    .result-item {
-      background: #2a2a2a;
-      border: 1px solid #444;
-      border-radius: 12px;
-      overflow: hidden;
-    }
-    
-    .result-image {
-      width: 100%;
-      height: 300px;
-      object-fit: cover;
-      cursor: pointer;
-    }
-    
-    .result-info {
-      padding: 16px;
-    }
-    
-    .result-prompt {
-      color: #b3b3b3;
-      font-size: 12px;
-      margin-bottom: 8px;
-    }
-    
-    .result-details {
-      color: #888;
-      font-size: 11px;
-    }
-    
-    .loading {
-      background: #2a2a2a;
-      border: 1px solid #444;
-      border-radius: 12px;
-      padding: 40px;
-      text-align: center;
-      color: #888;
-    }
-    
-    .error {
-      background: #2a1a1a;
-      border: 1px solid #ef4444;
-      border-radius: 12px;
-      padding: 20px;
-      color: #ef4444;
-    }
-
-    .presets {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-
-    @media (max-width: 768px) {
-      .test-row {
-        grid-template-columns: 1fr;
-      }
-      
-      .results {
-        grid-template-columns: 1fr;
-      }
-    }
+    body { font-family: system-ui; background: #0a0a0a; color: white; padding: 20px; }
+    .container { max-width: 1000px; margin: 0 auto; }
+    .section { background: #1a1a1a; padding: 20px; border-radius: 12px; margin: 15px 0; border: 1px solid #333; }
+    .presets { display: flex; flex-wrap: wrap; gap: 8px; margin: 15px 0; }
+    .preset { background: #2a2a2a; border: 1px solid #444; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; }
+    .preset:hover { background: #d4a574; }
+    input, select { width: 100%; padding: 10px; margin: 5px 0; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 6px; }
+    button { background: #d4a574; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; margin: 5px; }
+    .results { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin: 20px 0; }
+    .result { background: #2a2a2a; border-radius: 8px; overflow: hidden; }
+    .result img { width: 100%; height: 250px; object-fit: cover; cursor: pointer; }
+    .loading { text-align: center; padding: 30px; color: #888; }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="header">
-      <h1>🎨 Flux Image Generation Test</h1>
-      <p style="color: #b3b3b3;">Test Flux Schnell model voor mannelijke en vrouwelijke character images</p>
-    </div>
+    <h1 style="color: #d4a574; text-align: center;">🎨 Flux Schnell Test</h1>
+    <p style="color: #888; text-align: center;">Test Flux Schnell model via Replicate</p>
     
-    <!-- Quick Presets -->
-    <div class="test-section">
-      <h2 style="color: #d4a574; margin-bottom: 16px;">⚡ Quick Presets</h2>
+    <div class="section">
+      <h3>Quick Presets:</h3>
       <div class="presets">
-        <button class="preset-btn" onclick="loadPreset('male-portrait')">👨 Male Portrait</button>
-        <button class="preset-btn" onclick="loadPreset('female-portrait')">👩 Female Portrait</button>
-        <button class="preset-btn" onclick="loadPreset('male-anime')">🎌 Male Anime</button>
-        <button class="preset-btn" onclick="loadPreset('female-anime')">🎌 Female Anime</button>
-        <button class="preset-btn" onclick="loadPreset('male-fantasy')">⚔️ Male Fantasy</button>
-        <button class="preset-btn" onclick="loadPreset('female-fantasy')">✨ Female Fantasy</button>
-        <button class="preset-btn" onclick="loadPreset('male-business')">💼 Male Business</button>
-        <button class="preset-btn" onclick="loadPreset('female-casual')">👕 Female Casual</button>
+        <div class="preset" onclick="loadPreset('male-portrait')">👨 Male Portrait</div>
+        <div class="preset" onclick="loadPreset('female-portrait')">👩 Female Portrait</div>
+        <div class="preset" onclick="loadPreset('male-anime')">🎌 Male Anime</div>
+        <div class="preset" onclick="loadPreset('female-anime')">🎌 Female Anime</div>
+        <div class="preset" onclick="loadPreset('male-fantasy')">⚔️ Male Fantasy</div>
+        <div class="preset" onclick="loadPreset('female-fantasy')">✨ Female Fantasy</div>
       </div>
+      
+      <h3>Custom:</h3>
+      <input type="text" id="prompt" placeholder="Custom prompt" value="professional headshot portrait">
+      <select id="sex">
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+      </select>
+      <select id="style">
+        <option value="realistic">Realistic</option>
+        <option value="anime">Anime</option>
+      </select>
+      <select id="ethnicity">
+        <option value="white">White</option>
+        <option value="black">Black</option>
+        <option value="korean">Korean</option>
+        <option value="japanese">Japanese</option>
+      </select>
+      
+      <button onclick="generate()">🎨 Generate</button>
+      <button onclick="clear()">🗑️ Clear</button>
     </div>
 
-    <!-- Custom Generation -->
-    <div class="test-section">
-      <h2 style="color: #d4a574; margin-bottom: 16px;">🎛️ Custom Generation</h2>
-      
-      <div class="test-row">
-        <div class="form-group">
-          <label class="form-label">Custom Prompt</label>
-          <input type="text" id="customPrompt" class="form-input" placeholder="e.g., professional headshot, casual portrait" value="professional headshot portrait">
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label">Character Name</label>
-          <input type="text" id="characterName" class="form-input" placeholder="Character name" value="Alex">
-        </div>
-      </div>
-      
-      <div class="test-row">
-        <div class="form-group">
-          <label class="form-label">Sex</label>
-          <select id="sex" class="form-select">
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-          </select>
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label">Style</label>
-          <select id="style" class="form-select">
-            <option value="realistic">Realistic</option>
-            <option value="anime">Anime</option>
-          </select>
-        </div>
-      </div>
-      
-      <div class="test-row">
-        <div class="form-group">
-          <label class="form-label">Ethnicity</label>
-          <select id="ethnicity" class="form-select">
-            <option value="white">White/Caucasian</option>
-            <option value="black">Black/African</option>
-            <option value="indian">Indian/South Asian</option>
-            <option value="middle-east">Middle Eastern</option>
-            <option value="hispanic">Hispanic/Latino</option>
-            <option value="korean">Korean</option>
-            <option value="chinese">Chinese</option>
-            <option value="japanese">Japanese</option>
-            <option value="vietnamese">Vietnamese</option>
-          </select>
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label">Hair Length</label>
-          <select id="hairLength" class="form-select">
-            <option value="short">Short</option>
-            <option value="medium">Medium</option>
-            <option value="long">Long</option>
-          </select>
-        </div>
-      </div>
-      
-      <div class="test-row">
-        <div class="form-group">
-          <label class="form-label">Hair Color</label>
-          <select id="hairColor" class="form-select">
-            <option value="brown">Brown</option>
-            <option value="black">Black</option>
-            <option value="blonde">Blonde</option>
-            <option value="red">Red</option>
-            <option value="auburn">Auburn</option>
-            <option value="gray">Gray</option>
-            <option value="white">White</option>
-            <option value="purple">Purple</option>
-          </select>
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label">Shot Type</label>
-          <select id="shotType" class="form-select">
-            <option value="portrait">Portrait</option>
-            <option value="fullbody">Full Body</option>
-          </select>
-        </div>
-      </div>
-      
-      <button onclick="generateImage()" class="btn" id="generateBtn">🎨 Generate Image</button>
-      <button onclick="clearResults()" class="btn btn-secondary">🗑️ Clear Results</button>
-    </div>
-
-    <!-- Results -->
     <div id="results" class="results"></div>
   </div>
 
   <script>
     const presets = {
-      'male-portrait': {
-        customPrompt: 'professional headshot portrait, looking at camera, confident expression',
-        characterName: 'Marcus',
-        sex: 'male',
-        style: 'realistic',
-        ethnicity: 'white',
-        hairLength: 'medium',
-        hairColor: 'brown',
-        shotType: 'portrait'
-      },
-      'female-portrait': {
-        customPrompt: 'professional headshot portrait, looking at camera, elegant expression',
-        characterName: 'Luna',
-        sex: 'female',
-        style: 'realistic',
-        ethnicity: 'white',
-        hairLength: 'long',
-        hairColor: 'brown',
-        shotType: 'portrait'
-      },
-      'male-anime': {
-        customPrompt: 'anime style character portrait, handsome young man',
-        characterName: 'Kai',
-        sex: 'male',
-        style: 'anime',
-        ethnicity: 'japanese',
-        hairLength: 'medium',
-        hairColor: 'black',
-        shotType: 'portrait'
-      },
-      'female-anime': {
-        customPrompt: 'anime style character portrait, beautiful young woman',
-        characterName: 'Sakura',
-        sex: 'female',
-        style: 'anime',
-        ethnicity: 'japanese',
-        hairLength: 'long',
-        hairColor: 'black',
-        shotType: 'portrait'
-      },
-      'male-fantasy': {
-        customPrompt: 'fantasy warrior character, medieval armor, heroic pose',
-        characterName: 'Aragorn',
-        sex: 'male',
-        style: 'realistic',
-        ethnicity: 'white',
-        hairLength: 'long',
-        hairColor: 'brown',
-        shotType: 'fullbody'
-      },
-      'female-fantasy': {
-        customPrompt: 'fantasy mage character, magical robes, mystical aura',
-        characterName: 'Elara',
-        sex: 'female',
-        style: 'realistic',
-        ethnicity: 'white',
-        hairLength: 'long',
-        hairColor: 'auburn',
-        shotType: 'fullbody'
-      },
-      'male-business': {
-        customPrompt: 'professional businessman, formal suit, office background',
-        characterName: 'James',
-        sex: 'male',
-        style: 'realistic',
-        ethnicity: 'white',
-        hairLength: 'short',
-        hairColor: 'black',
-        shotType: 'portrait'
-      },
-      'female-casual': {
-        customPrompt: 'casual portrait, friendly smile, natural lighting',
-        characterName: 'Emma',
-        sex: 'female',
-        style: 'realistic',
-        ethnicity: 'white',
-        hairLength: 'medium',
-        hairColor: 'blonde',
-        shotType: 'portrait'
-      }
+      'male-portrait': { prompt: 'professional headshot portrait, confident man', sex: 'male', style: 'realistic', ethnicity: 'white' },
+      'female-portrait': { prompt: 'professional headshot portrait, elegant woman', sex: 'female', style: 'realistic', ethnicity: 'white' },
+      'male-anime': { prompt: 'anime style portrait, handsome young man', sex: 'male', style: 'anime', ethnicity: 'japanese' },
+      'female-anime': { prompt: 'anime style portrait, beautiful young woman', sex: 'female', style: 'anime', ethnicity: 'japanese' },
+      'male-fantasy': { prompt: 'fantasy warrior with armor, heroic pose', sex: 'male', style: 'realistic', ethnicity: 'white' },
+      'female-fantasy': { prompt: 'fantasy mage with robes, mystical aura', sex: 'female', style: 'realistic', ethnicity: 'white' }
     };
     
-    function loadPreset(presetName) {
-      const preset = presets[presetName];
-      if (!preset) return;
-      
-      document.getElementById('customPrompt').value = preset.customPrompt;
-      document.getElementById('characterName').value = preset.characterName;
+    function loadPreset(type) {
+      const preset = presets[type];
+      document.getElementById('prompt').value = preset.prompt;
       document.getElementById('sex').value = preset.sex;
       document.getElementById('style').value = preset.style;
       document.getElementById('ethnicity').value = preset.ethnicity;
-      document.getElementById('hairLength').value = preset.hairLength;
-      document.getElementById('hairColor').value = preset.hairColor;
-      document.getElementById('shotType').value = preset.shotType;
-      
-      console.log('✅ Loaded preset:', presetName);
+      console.log('Loaded preset:', type);
     }
     
-    async function generateImage() {
-      const btn = document.getElementById('generateBtn');
-      const originalText = btn.textContent;
+    async function generate() {
+      const btn = event.target;
+      btn.textContent = '🎨 Generating...';
+      btn.disabled = true;
+      
+      const params = {
+        customPrompt: document.getElementById('prompt').value,
+        characterName: 'Test Character',
+        sex: document.getElementById('sex').value,
+        style: document.getElementById('style').value,
+        ethnicity: document.getElementById('ethnicity').value,
+        hairLength: 'medium',
+        hairColor: 'brown',
+        shotType: 'portrait',
+        category: document.getElementById('style').value === 'anime' ? 'anime-manga' : 'realistic'
+      };
+      
+      document.getElementById('results').innerHTML = '<div class="loading">🎨 Generating with Flux Schnell...</div>';
       
       try {
-        btn.textContent = '🎨 Generating...';
-        btn.disabled = true;
-        
-        const params = {
-          customPrompt: document.getElementById('customPrompt').value,
-          characterName: document.getElementById('characterName').value,
-          sex: document.getElementById('sex').value,
-          style: document.getElementById('style').value,
-          ethnicity: document.getElementById('ethnicity').value,
-          hairLength: document.getElementById('hairLength').value,
-          hairColor: document.getElementById('hairColor').value,
-          shotType: document.getElementById('shotType').value,
-          category: document.getElementById('style').value === 'anime' ? 'anime-manga' : 'realistic'
-        };
-        
-        console.log('🎨 Generating image with params:', params);
-        
-        // Add loading indicator
-        addLoadingIndicator(params);
-        
         const response = await fetch('/.netlify/functions/generate-custom-image', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -431,129 +105,34 @@
         const result = await response.json();
         
         if (response.ok && result.success) {
-          console.log('✅ Image generated successfully');
-          displayResult(result, params);
+          const genderIcon = params.sex === 'male' ? '👨' : '👩';
+          document.getElementById('results').innerHTML = `
+            <div class="result">
+              <img src="${result.imageUrl}" onclick="window.open('${result.imageUrl}', '_blank')">
+              <div style="padding: 15px;">
+                <div style="font-size: 12px; color: #888;">"${params.customPrompt}"</div>
+                <div style="font-size: 11px; color: #666; margin-top: 5px;">${genderIcon} ${params.style} • ${params.ethnicity}</div>
+              </div>
+            </div>
+          `;
         } else {
-          console.error('❌ Image generation failed:', result);
-          displayError(result.error || 'Unknown error', params);
+          document.getElementById('results').innerHTML = `<div style="color: #ef4444; padding: 20px;">❌ Error: ${result.error}</div>`;
         }
         
       } catch (error) {
-        console.error('❌ Generation error:', error);
-        displayError(error.message, {});
-      } finally {
-        btn.textContent = originalText;
-        btn.disabled = false;
-        removeLoadingIndicator();
+        document.getElementById('results').innerHTML = `<div style="color: #ef4444; padding: 20px;">❌ Error: ${error.message}</div>`;
       }
+      
+      btn.textContent = '🎨 Generate';
+      btn.disabled = false;
     }
     
-    function addLoadingIndicator(params) {
-      const loading = document.createElement('div');
-      loading.id = 'loading';
-      loading.className = 'loading';
-      loading.innerHTML = `
-        <div>🎨 Generating ${params.sex} ${params.style} image...</div>
-        <div style="margin-top: 8px; font-size: 12px;">"${params.customPrompt}"</div>
-        <div style="margin-top: 8px; font-size: 12px;">Using Flux Schnell via Replicate API</div>
-        <div style="margin-top: 8px; font-size: 12px;">⏱️ Expected: 30-60 seconds</div>
-      `;
-      document.getElementById('results').appendChild(loading);
-    }
-    
-    function removeLoadingIndicator() {
-      const loading = document.getElementById('loading');
-      if (loading) loading.remove();
-    }
-    
-    function displayResult(result, params) {
-      const resultDiv = document.createElement('div');
-      resultDiv.className = 'result-item';
-      
-      const timestamp = new Date().toLocaleTimeString();
-      const genderIcon = params.sex === 'male' ? '👨' : '👩';
-      
-      resultDiv.innerHTML = `
-        <img src="${result.imageUrl}" alt="Generated image" class="result-image" onclick="openFullscreen('${result.imageUrl}', '${params.customPrompt}')">
-        <div class="result-info">
-          <div class="result-prompt">"${params.customPrompt}"</div>
-          <div class="result-details">
-            ${genderIcon} <strong>${params.characterName}</strong> • ${params.style} • ${params.ethnicity} • ${params.hairLength} ${params.hairColor} hair • ${timestamp}
-          </div>
-          <div style="margin-top: 8px;">
-            <button onclick="copyImageUrl('${result.imageUrl}')" style="background: #2a2a2a; border: 1px solid #444; color: white; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 11px;">Copy URL</button>
-            <button onclick="downloadImage('${result.imageUrl}', '${params.characterName}_${timestamp.replace(/:/g, '-')}')" style="background: #2a2a2a; border: 1px solid #444; color: white; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 11px; margin-left: 4px;">Download</button>
-          </div>
-        </div>
-      `;
-      
-      document.getElementById('results').prepend(resultDiv);
-    }
-    
-    function displayError(error, params) {
-      const errorDiv = document.createElement('div');
-      errorDiv.className = 'error';
-      
-      const timestamp = new Date().toLocaleTimeString();
-      
-      errorDiv.innerHTML = `
-        <h3>❌ Generation Failed</h3>
-        <p><strong>Error:</strong> ${error}</p>
-        <p><strong>Prompt:</strong> "${params.customPrompt || 'N/A'}"</p>
-        <p><strong>Parameters:</strong> ${params.sex || 'N/A'} • ${params.style || 'N/A'} • ${params.ethnicity || 'N/A'}</p>
-        <p><strong>Time:</strong> ${timestamp}</p>
-      `;
-      
-      document.getElementById('results').prepend(errorDiv);
-    }
-    
-    function openFullscreen(imageUrl, prompt) {
-      const modal = document.createElement('div');
-      modal.style.cssText = `
-        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-        background: rgba(0,0,0,0.9); z-index: 3000;
-        display: flex; align-items: center; justify-content: center;
-        backdrop-filter: blur(8px); cursor: pointer;
-      `;
-      
-      modal.innerHTML = `
-        <div style="position: relative; max-width: 90vw; max-height: 90vh;">
-          <img src="${imageUrl}" style="max-width: 100%; max-height: 100%; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.5);">
-          <div style="position: absolute; bottom: -40px; left: 0; right: 0; text-align: center; color: white; font-size: 14px; background: rgba(0,0,0,0.7); padding: 8px; border-radius: 8px;">"${prompt}"</div>
-          <button onclick="this.parentElement.parentElement.remove()" style="position: absolute; top: -40px; right: 0; background: rgba(255,255,255,0.9); border: none; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px;">&times;</button>
-        </div>
-      `;
-      
-      document.body.appendChild(modal);
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) modal.remove();
-      });
-    }
-    
-    function copyImageUrl(url) {
-      navigator.clipboard.writeText(url).then(() => {
-        console.log('✅ Image URL copied to clipboard');
-        alert('Image URL copied to clipboard!');
-      });
-    }
-    
-    function downloadImage(url, filename) {
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename + '.webp';
-      a.click();
-    }
-    
-    function clearResults() {
+    function clear() {
       document.getElementById('results').innerHTML = '';
-      console.log('🗑️ Results cleared');
     }
     
     // Initialize
-    document.addEventListener('DOMContentLoaded', function() {
-      console.log('🎨 Flux Image Test initialized');
-      loadPreset('male-portrait'); // Default to male portrait
-    });
+    loadPreset('male-portrait');
   </script>
 </body>
 </html>
