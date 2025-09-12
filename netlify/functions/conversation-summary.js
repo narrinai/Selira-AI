@@ -48,10 +48,10 @@ exports.handler = async (event, context) => {
       throw new Error('No valid user identifier provided');
     }
     
-    // NetlifyUID is primary identifier
+    // AuthID is primary identifier
     if (netlify_uid) {
-      userFilter = `{NetlifyUID}='${netlify_uid}'`;
-      console.log('🔍 Looking up user by NetlifyUID:', netlify_uid);
+      userFilter = `{AuthID}='${netlify_uid}'`;
+      console.log('🔍 Looking up user by AuthID:', netlify_uid);
     } else if (userIdentifier && userIdentifier.includes('@')) {
       // Fallback to email - escape single quotes
       escapedUserId = userIdentifier.replace(/'/g, "\\'");

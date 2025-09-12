@@ -32,8 +32,8 @@ exports.handler = async (event, context) => {
       // Step 1: Get user email if not provided
       let emailToSearch = user_email;
       if (!emailToSearch && user_uid) {
-        console.log('👤 Getting email from NetlifyUID:', user_uid);
-        const userLookupUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula={NetlifyUID}='${user_uid}'&maxRecords=1`;
+        console.log('👤 Getting email from AuthID:', user_uid);
+        const userLookupUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula={AuthID}='${user_uid}'&maxRecords=1`;
         const userResponse = await fetch(userLookupUrl, {
           headers: {
             'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
@@ -76,8 +76,8 @@ exports.handler = async (event, context) => {
       const chatData = await chatResponse.json();
       console.log('📊 Found', chatData.records.length, 'total records');
       
-      // Step 3: Get user record ID from NetlifyUID lookup
-      const userLookupUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula={NetlifyUID}='${user_uid}'&maxRecords=1`;
+      // Step 3: Get user record ID from AuthID lookup
+      const userLookupUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula={AuthID}='${user_uid}'&maxRecords=1`;
       const userLookupResponse = await fetch(userLookupUrl, {
         headers: {
           'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
@@ -95,7 +95,7 @@ exports.handler = async (event, context) => {
       }
       
       if (!userRecordId) {
-        console.log('❌ No user record found for NetlifyUID:', user_uid);
+        console.log('❌ No user record found for AuthID:', user_uid);
         return {
           statusCode: 404,
           headers: { 'Content-Type': 'application/json' },

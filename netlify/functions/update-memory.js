@@ -306,7 +306,7 @@ exports.handler = async (event, context) => {
       console.log('🔍 No specific record_id, searching for recent record...');
       
       // Strategy 2: Zoek naar recente record van deze user
-      // Prioritize NetlifyUID as primary identifier
+      // Prioritize AuthID as primary identifier
       const user_id_param = netlify_uid || body.user_uid || body.user_id || body.user_email;
       const user_uid = netlify_uid || body.user_uid;
       
@@ -321,12 +321,12 @@ exports.handler = async (event, context) => {
       if (user_id_param || user_email || user_uid) {
         console.log('🔍 Searching for user records...');
         
-        // Strategy 2A: NetlifyUID lookup - HIGHEST PRIORITY
+        // Strategy 2A: AuthID lookup - HIGHEST PRIORITY
         if (user_uid && user_uid !== 'null' && user_uid !== '') {
-          console.log('🎯 Trying NetlifyUID filter:', user_uid);
+          console.log('🎯 Trying AuthID filter:', user_uid);
           
-          // First, look up the user by NetlifyUID to get their Airtable record ID
-          const userLookupUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula={NetlifyUID}='${user_uid}'&maxRecords=1`;
+          // First, look up the user by AuthID to get their Airtable record ID
+          const userLookupUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula={AuthID}='${user_uid}'&maxRecords=1`;
           
           const userLookupResponse = await fetch(userLookupUrl, {
             headers: {
@@ -339,7 +339,7 @@ exports.handler = async (event, context) => {
             const userData = await userLookupResponse.json();
             if (userData.records.length > 0) {
               const userRecordId = userData.records[0].id;
-              console.log('✅ Found user record ID from NetlifyUID:', userRecordId);
+              console.log('✅ Found user record ID from AuthID:', userRecordId);
               
               // Now search ChatHistory with this user record ID
               const chatFilter = `{User} = '${userRecordId}'`;
@@ -354,7 +354,7 @@ exports.handler = async (event, context) => {
               
               if (chatResponse.ok) {
                 const chatData = await chatResponse.json();
-                console.log('📊 NetlifyUID lookup found', chatData.records.length, 'recent records');
+                console.log('📊 AuthID lookup found', chatData.records.length, 'recent records');
                 
                 if (chatData.records.length > 0) {
                   // Find the most recent user message
@@ -367,7 +367,7 @@ exports.handler = async (event, context) => {
                   }
                   
                   if (latestRecord) {
-                    console.log('🎯 Found latest user record via NetlifyUID:', latestRecord.id);
+                    console.log('🎯 Found latest user record via AuthID:', latestRecord.id);
                     
                     // Update the record
                     const updateData = {
@@ -391,7 +391,7 @@ exports.handler = async (event, context) => {
                     
                     if (updateResponse.ok) {
                       const updateResult = await updateResponse.json();
-                      console.log('✅ Memory updated successfully via NetlifyUID lookup');
+                      console.log('✅ Memory updated successfully via AuthID lookup');
                       
                       return {
                         statusCode: 200,
@@ -401,7 +401,7 @@ exports.handler = async (event, context) => {
                           method: 'netlify_uid_lookup',
                           record_id: updateResult.id,
                           analysis: analysis,
-                          message: 'Memory processed successfully via NetlifyUID'
+                          message: 'Memory processed successfully via AuthID'
                         })
                       };
                     }

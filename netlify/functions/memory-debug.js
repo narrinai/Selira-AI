@@ -53,7 +53,7 @@ exports.handler = async (event, context) => {
           User: {
             value: fields.User,
             type: Array.isArray(fields.User) ? 'array' : typeof fields.User,
-            isNetlifyUID: fields.User && typeof fields.User === 'string' && fields.User.includes('-'),
+            isAuthID: fields.User && typeof fields.User === 'string' && fields.User.includes('-'),
             matchesRequestUID: fields.User === user_uid
           },
           Character: {
