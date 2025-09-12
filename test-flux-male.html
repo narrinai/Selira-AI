@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Male Character Image Test | Selira AI</title>
+  <style>
+    body { font-family: system-ui; background: #0a0a0a; color: white; padding: 20px; }
+    .container { max-width: 1000px; margin: 0 auto; }
+    .header { text-align: center; margin-bottom: 30px; }
+    .header h1 { color: #3b82f6; font-size: 28px; margin-bottom: 10px; }
+    .form { background: #1a1a1a; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 2px solid #3b82f6; }
+    .preset-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 20px; }
+    .preset { background: #2a2a2a; padding: 10px; border-radius: 8px; cursor: pointer; text-align: center; border: 1px solid #444; transition: all 0.2s; }
+    .preset:hover { background: #3b82f6; border-color: #3b82f6; }
+    input, select { width: 100%; padding: 10px; margin: 5px 0; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 6px; }
+    button { background: #3b82f6; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; margin: 5px; font-weight: 600; }
+    button:hover { background: #2563eb; }
+    .btn-secondary { background: #6b7280; }
+    .results { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin-top: 20px; }
+    .result { background: #2a2a2a; border-radius: 8px; overflow: hidden; border: 1px solid #444; }
+    .result img { width: 100%; height: 250px; object-fit: cover; cursor: pointer; }
+    .result-info { padding: 12px; }
+    .loading { background: #2a2a2a; padding: 30px; text-align: center; color: #888; border-radius: 8px; }
+    .error { background: #2a1a1a; border: 1px solid #ef4444; padding: 15px; color: #ef4444; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>👨 Male Character Image Generator</h1>
+      <p style="color: #b3b3b3;">Flux Schnell via Replicate - Specialized for male characters</p>
+    </div>
+    
+    <div class="form">
+      <h3 style="color: #3b82f6; margin-bottom: 15px;">⚡ Male Character Presets</h3>
+      <div class="preset-grid">
+        <div class="preset" onclick="loadPreset('businessman')">
+          <div style="font-size: 20px; margin-bottom: 5px;">💼</div>
+          <div>Professional</div>
+        </div>
+        <div class="preset" onclick="loadPreset('warrior')">
+          <div style="font-size: 20px; margin-bottom: 5px;">⚔️</div>
+          <div>Fantasy Warrior</div>
+        </div>
+        <div class="preset" onclick="loadPreset('anime-hero')">
+          <div style="font-size: 20px; margin-bottom: 5px;">🎌</div>
+          <div>Anime Hero</div>
+        </div>
+        <div class="preset" onclick="loadPreset('casual')">
+          <div style="font-size: 20px; margin-bottom: 5px;">👕</div>
+          <div>Casual Guy</div>
+        </div>
+        <div class="preset" onclick="loadPreset('formal')">
+          <div style="font-size: 20px; margin-bottom: 5px;">🤵</div>
+          <div>Formal Style</div>
+        </div>
+        <div class="preset" onclick="loadPreset('rugged')">
+          <div style="font-size: 20px; margin-bottom: 5px;">🧔</div>
+          <div>Rugged Look</div>
+        </div>
+      </div>
+      
+      <h3 style="color: #3b82f6; margin: 20px 0 10px;">🎛️ Customize</h3>
+      <input type="text" id="prompt" placeholder="Custom prompt" value="professional headshot portrait, confident man">
+      
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0;">
+        <select id="style">
+          <option value="realistic">Realistic</option>
+          <option value="anime">Anime</option>
+        </select>
+        <select id="ethnicity">
+          <option value="white">White/Caucasian</option>
+          <option value="black">Black/African</option>
+          <option value="korean">Korean</option>
+          <option value="japanese">Japanese</option>
+          <option value="indian">Indian</option>
+          <option value="hispanic">Hispanic</option>
+        </select>
+      </div>
+      
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0;">
+        <select id="hair">
+          <option value="short">Short Hair</option>
+          <option value="medium">Medium Hair</option>
+          <option value="long">Long Hair</option>
+        </select>
+        <select id="shot">
+          <option value="portrait">Portrait</option>
+          <option value="fullbody">Full Body</option>
+        </select>
+      </div>
+      
+      <button onclick="generate()" id="genBtn">🎨 Generate Male Image</button>
+      <button onclick="clear()" class="btn-secondary">Clear Results</button>
+    </div>
+
+    <div id="results"></div>
+  </div>
+
+  <script>
+    const malePresets = {
+      businessman: 'professional businessman in suit, confident expression, office background',
+      warrior: 'fantasy warrior with armor, heroic pose, medieval setting',
+      'anime-hero': 'anime style male hero, determined expression, dynamic pose',
+      casual: 'casual young man, friendly smile, natural lighting',
+      formal: 'formal portrait, well-dressed man, sophisticated look',
+      rugged: 'rugged masculine man, beard, outdoor setting'
+    };
+    
+    function loadPreset(type) {
+      document.getElementById('prompt').value = malePresets[type] || malePresets.businessman;
+      console.log('✅ Loaded male preset:', type);
+    }
+    
+    async function generate() {
+      const btn = document.getElementById('genBtn');
+      btn.textContent = '🎨 Generating...';
+      btn.disabled = true;
+      
+      const params = {
+        customPrompt: document.getElementById('prompt').value,
+        characterName: 'Male Test Character',
+        sex: 'male', // Always male for this page
+        style: document.getElementById('style').value,
+        ethnicity: document.getElementById('ethnicity').value,
+        hairLength: document.getElementById('hair').value,
+        hairColor: 'brown',
+        shotType: document.getElementById('shot').value,
+        category: document.getElementById('style').value === 'anime' ? 'anime-manga' : 'realistic'
+      };
+      
+      console.log('🎨 Generating male image:', params);
+      
+      document.getElementById('results').innerHTML = '<div class="loading">🎨 Generating male character with Flux Schnell...<br>⏱️ This may take 30-60 seconds</div>';
+      
+      try {
+        const response = await fetch('/.netlify/functions/generate-custom-image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(params)
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok && result.success) {
+          const timestamp = new Date().toLocaleTimeString();
+          document.getElementById('results').innerHTML = `
+            <div class="result">
+              <img src="${result.imageUrl}" onclick="window.open('${result.imageUrl}', '_blank')" alt="Generated male character">
+              <div class="result-info">
+                <div style="color: #3b82f6; font-weight: 600; margin-bottom: 5px;">👨 Male Character Generated</div>
+                <div style="font-size: 12px; color: #b3b3b3; margin-bottom: 8px;">"${params.customPrompt}"</div>
+                <div style="font-size: 11px; color: #888;">
+                  ${params.style} • ${params.ethnicity} • ${params.hairLength} hair • ${timestamp}
+                </div>
+                <button onclick="copyUrl('${result.imageUrl}')" style="background: #333; border: 1px solid #555; color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; margin-top: 8px;">Copy URL</button>
+              </div>
+            </div>
+          `;
+          console.log('✅ Male image generated successfully:', result.imageUrl);
+        } else {
+          document.getElementById('results').innerHTML = `<div class="error">❌ Generation failed: ${result.error}</div>`;
+        }
+        
+      } catch (error) {
+        document.getElementById('results').innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+      }
+      
+      btn.textContent = '🎨 Generate Male Image';
+      btn.disabled = false;
+    }
+    
+    function copyUrl(url) {
+      navigator.clipboard.writeText(url);
+      alert('Image URL copied!');
+    }
+    
+    function clear() {
+      document.getElementById('results').innerHTML = '';
+    }
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      loadPreset('businessman');
+      console.log('👨 Male character image test ready');
+    });
+  </script>
+</body>
+</html>
