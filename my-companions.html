@@ -2408,6 +2408,7 @@
       currentTab = 'discover';
       document.querySelectorAll('.tab-item').forEach(tab => {
         tab.classList.remove('active');
+        if (tab.textContent.includes('All')) {
           tab.classList.add('active');
         }
       });
