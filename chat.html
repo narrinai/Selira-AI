@@ -1389,15 +1389,23 @@
         // Get user data for API call - handle both authenticated and anonymous users
         let auth0_id = 'anonymous';
         let user_email = 'anonymous';
+        let user_data = null;
         try {
           const user = JSON.parse(localStorage.getItem('user') || '{}');
           auth0_id = user.sub || user.uid || user.auth0_id || user.email || 'anonymous';
           user_email = user.email || user.sub || 'anonymous';
+          user_data = user;
           console.log('👤 User data found:', { 
             auth0_id: auth0_id, 
             email: user_email, 
             userKeys: Object.keys(user) 
           });
+          
+          // Auto-sync user to Airtable if authenticated
+          if (auth0_id !== 'anonymous') {
+            await ensureUserInAirtable(auth0_id, user_email, user.name, user.nickname);
+          }
+          
         } catch (e) {
           // If no user data, use anonymous
           auth0_id = 'anonymous';
@@ -2081,6 +2089,36 @@
       messagesContainer.appendChild(typingDiv);
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
       return typingDiv;
+    }
+
+    // Ensure user exists in Airtable (auto-sync from Auth0)
+    async function ensureUserInAirtable(auth0_id, email, name, nickname) {
+      try {
+        console.log('🔄 Syncing Auth0 user to Airtable...');
+        
+        const response = await fetch('/.netlify/functions/sync-auth0-user', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            auth0_id: auth0_id,
+            email: email,
+            name: name,
+            nickname: nickname
+          })
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          console.log('✅ User sync result:', result.action, result.message);
+        } else {
+          console.log('⚠️ User sync failed:', response.status);
+        }
+      } catch (error) {
+        console.log('⚠️ User sync error:', error.message);
+        // Don't fail the chat if sync fails
+      }
     }
 
     // Save chat message to Airtable
