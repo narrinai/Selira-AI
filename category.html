@@ -1508,13 +1508,6 @@
         <!-- Filter Dropdowns Row -->
         <div class="filter-row">
           <div class="filter-dropdown">
-            <button class="dropdown-btn" onclick="toggleDropdown('recent')">
-              <span>Recent Hits</span>
-              <span class="dropdown-arrow">▼</span>
-            </button>
-          </div>
-          
-          <div class="filter-dropdown">
             <button class="dropdown-btn" onclick="toggleDropdown('gender')">
               <span>Female</span>
               <span class="dropdown-arrow">▼</span>
@@ -1576,8 +1569,8 @@
       gender: 'all',
       category: 'all',
       tags: [],
-      animated: false,
-      unfiltered: true
+      animated: undefined, // undefined = show all, true = only animated, false = only realistic
+      unfiltered: undefined // undefined = show all, true = only unfiltered, false = only safe
     };
 
     // Global state
@@ -1621,7 +1614,14 @@
             tags: Array.isArray(char.Tags) ? char.Tags : (char.Tags || '').toString().split(',').filter(Boolean),
             chats: Math.floor(Math.random() * 100) + 'K',
             rating: (Math.random() * 2 + 3).toFixed(1),
-            character_url: char.Character_URL ? char.Character_URL.replace('narrin.ai', 'selira.ai') : `https://selira.ai/chat.html?char=${char.Slug || (char.Name ? char.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'unknown')}`
+            character_url: char.Character_URL ? char.Character_URL.replace('narrin.ai', 'selira.ai') : `https://selira.ai/chat.html?char=${char.Slug || (char.Name ? char.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'unknown')}`,
+            // Add filter fields from Airtable
+            companion_type: char.companion_type || 'realistic',
+            sex: char.sex || 'female',
+            ethnicity: char.ethnicity || 'white',
+            hair_length: char.hair_length || 'medium',
+            is_unfiltered: char.is_unfiltered || false,
+            created: char.Created || new Date().toISOString()
           }));
           
           console.log('✅ Loaded characters:', allCharacters.length);
@@ -1866,31 +1866,105 @@
           return false;
         }
 
-        // Gender filter
-        if (currentFilters.gender !== 'all') {
-          // Implementation would depend on how gender is stored
+        // Gender filter (sex field from Airtable)
+        if (currentFilters.gender && currentFilters.gender !== 'all') {
+          if (character.sex && character.sex.toLowerCase() !== currentFilters.gender.toLowerCase()) {
+            return false;
+          }
         }
 
-        // Other filters would be implemented here
+        // Animated filter (companion_type field from Airtable)
+        if (currentFilters.animated !== undefined) {
+          const isAnimated = character.companion_type === 'anime' || character.companion_type === 'animated';
+          if (currentFilters.animated && !isAnimated) {
+            return false;
+          }
+          if (!currentFilters.animated && isAnimated) {
+            return false;
+          }
+        }
+
+        // Unfiltered content filter (is_unfiltered field from Airtable)
+        if (currentFilters.unfiltered !== undefined) {
+          if (currentFilters.unfiltered && !character.is_unfiltered) {
+            return false;
+          }
+          if (!currentFilters.unfiltered && character.is_unfiltered) {
+            return false;
+          }
+        }
+
+        // Category filter
+        if (currentFilters.category && currentFilters.category !== 'all') {
+          if (character.category.toLowerCase() !== currentFilters.category.toLowerCase()) {
+            return false;
+          }
+        }
+
+        // Tags filter
+        if (currentFilters.tags && currentFilters.tags.length > 0) {
+          const hasMatchingTag = currentFilters.tags.some(filterTag => 
+            character.tags.some(characterTag => 
+              characterTag.toLowerCase() === filterTag.toLowerCase()
+            )
+          );
+          if (!hasMatchingTag) {
+            return false;
+          }
+        }
         
         return true;
       });
 
       renderCharacters();
-      console.log('🔍 Filtered characters:', filteredCharacters.length, '/', allCharacters.length);
+      console.log('🔍 Filtered characters:', filteredCharacters.length, '/', allCharacters.length, 'with filters:', currentFilters);
     }
 
     // ===== UI INTERACTIONS =====
     function toggleDropdown(type) {
       console.log('Toggle dropdown:', type);
-      // Implementation for dropdown menus
+      
+      if (type === 'gender') {
+        // Cycle through gender options
+        const currentGender = currentFilters.gender || 'all';
+        const genderOptions = ['all', 'female', 'male'];
+        const currentIndex = genderOptions.indexOf(currentGender);
+        const nextIndex = (currentIndex + 1) % genderOptions.length;
+        
+        currentFilters.gender = genderOptions[nextIndex];
+        
+        // Update button text
+        const dropdownBtn = document.querySelector('.dropdown-btn[onclick*="gender"] span:first-child');
+        if (dropdownBtn) {
+          const genderLabels = {
+            'all': 'All',
+            'female': 'Female',
+            'male': 'Male'
+          };
+          dropdownBtn.textContent = genderLabels[currentFilters.gender];
+        }
+        
+        console.log('Gender filter changed to:', currentFilters.gender);
+        applyFilters();
+      }
     }
 
     function toggleSwitch(type) {
       const toggle = document.getElementById(type + 'Toggle');
       if (toggle) {
         toggle.classList.toggle('active');
-        currentFilters[type] = toggle.classList.contains('active');
+        
+        if (type === 'animated' || type === 'unfiltered') {
+          // For switches that can be on/off/undefined, cycle through states
+          if (toggle.classList.contains('active')) {
+            currentFilters[type] = true; // Show only this type
+          } else {
+            currentFilters[type] = undefined; // Show all
+          }
+        } else {
+          currentFilters[type] = toggle.classList.contains('active');
+        }
+        
         console.log('Toggle', type, ':', currentFilters[type]);
         applyFilters();
       }
@@ -1901,10 +1975,10 @@
       const unfilteredToggle = document.getElementById('unfilteredToggle');
       
       if (animatedToggle) {
-        animatedToggle.classList.toggle('active', currentFilters.animated);
+        animatedToggle.classList.toggle('active', currentFilters.animated === true);
       }
       if (unfilteredToggle) {
-        unfilteredToggle.classList.toggle('active', currentFilters.unfiltered);
+        unfilteredToggle.classList.toggle('active', currentFilters.unfiltered === true);
       }
     }
 

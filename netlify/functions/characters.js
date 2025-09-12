@@ -247,11 +247,10 @@ exports.handler = async (event, context) => {
         character_type: fields.Character_Type || fields.character_type || '',
         companion_type: fields.companion_type || (fields.Category === 'anime-manga' ? 'anime' : 'realistic'),
         // New appearance fields
-        Art_Style: fields.Art_Style || (fields.Category === 'anime-manga' ? 'anime' : 'realistic'),
-        Sex: fields.Sex || 'female',
-        Ethnicity: fields.Ethnicity || 'white',
-        Hair_Length: fields.Hair_Length || 'medium',
-        Hair_Color: fields.Hair_Color || 'brown',
+        sex: fields.sex || 'female',
+        ethnicity: fields.ethnicity || 'white',
+        hair_length: fields.hair_length || 'medium',
+        hair_color: fields.hair_color || 'brown',
         _Created_by_record_id: (Array.isArray(fields.Created_By) && fields.Created_By.length > 0) ? fields.Created_By[0] : null
       };
     });

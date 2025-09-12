@@ -1829,11 +1829,11 @@
             tags: Array.isArray(char.Tags) ? char.Tags.slice(0, 11) : (char.Tags || '').toString().split(',').filter(Boolean).slice(0, 11), // Get real tags
             character_url: char.Character_URL ? char.Character_URL.replace('narrin.ai', 'selira.ai') : null,
             // Add appearance data
-            Art_Style: char.Art_Style,
-            Sex: char.Sex,
-            Ethnicity: char.Ethnicity,
-            Hair_Length: char.Hair_Length,
-            Hair_Color: char.Hair_Color
+            companion_type: char.companion_type,
+            sex: char.sex,
+            ethnicity: char.ethnicity,
+            hair_length: char.hair_length,
+            hair_color: char.hair_color
           }));
           
           // Store characters globally
@@ -2294,10 +2294,10 @@
         });
         
         // Use character appearance data if available, otherwise fallback
-        const characterSex = currentCharacter.Sex || currentCharacter.sex || 'female';
-        const characterEthnicity = currentCharacter.Ethnicity || currentCharacter.ethnicity || 'white';  
-        const characterHairLength = currentCharacter.Hair_Length || currentCharacter.hairLength || 'medium';
-        const characterHairColor = currentCharacter.Hair_Color || currentCharacter.hairColor || 'brown';
+        const characterSex = currentCharacter.sex || 'female';
+        const characterEthnicity = currentCharacter.ethnicity || 'white';  
+        const characterHairLength = currentCharacter.hair_length || 'medium';
+        const characterHairColor = currentCharacter.hair_color || 'brown';
         
         const response = await fetch('/.netlify/functions/generate-custom-image', {
           method: 'POST',
