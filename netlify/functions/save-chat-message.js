@@ -102,45 +102,16 @@ exports.handler = async (event, context) => {
     let userResponse;
     let lookupStrategy = 'unknown';
     
-    // Strategy 1: Try Auth0 ID lookup first (using correct field name)
-    try {
-      console.log('🔍 Strategy 1: Looking up by Auth0 ID (Auth0ID field)');
-      userResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula=${encodeURIComponent(`{Auth0ID}='${user_uid}'`)}`, {
-        headers: {
-          'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      if (userResponse.ok) {
-        const testData = await userResponse.json();
-        if (testData.records.length > 0) {
-          lookupStrategy = 'auth0_id';
-          console.log('✅ Found user by Auth0 ID (Auth0ID field)');
-        } else {
-          console.log('❌ No user found by Auth0 ID, trying email...');
-          throw new Error('Not found by Auth0 ID');
-        }
-      } else {
-        throw new Error('Auth0 ID lookup failed');
+    // Temporary fix: Use email lookup only (most reliable)
+    console.log('🔍 Using email lookup as primary strategy');
+    userResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula=${encodeURIComponent(`{Email}='${user_email}'`)}`, {
+      headers: {
+        'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+        'Content-Type': 'application/json'
       }
-    } catch (e) {
-      // Strategy 2: Try email lookup
-      console.log('🔍 Strategy 2: Looking up by Email');
-      userResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula=${encodeURIComponent(`{Email}='${user_email}'`)}`, {
-        headers: {
-          'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      if (userResponse.ok) {
-        lookupStrategy = 'email';
-        console.log('✅ Found user by email');
-      } else {
-        console.log('❌ Email lookup also failed');
-      }
-    }
+    });
+    
+    lookupStrategy = 'email_only';
 
     if (!userResponse.ok) {
       console.log(`❌ User lookup failed with status ${userResponse.status}`);
