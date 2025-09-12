@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memory System Test | Selira AI</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #0a0a0a;
+      color: #ffffff;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .test-section {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    
+    .test-section h2 {
+      color: #d4a574;
+      margin-bottom: 16px;
+      font-size: 20px;
+    }
+    
+    .test-input {
+      width: 100%;
+      padding: 12px;
+      background: #2a2a2a;
+      border: 1px solid #444;
+      border-radius: 8px;
+      color: white;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+    
+    .test-btn {
+      background: #d4a574;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-right: 8px;
+    }
+    
+    .test-btn:hover {
+      background: #c19456;
+    }
+    
+    .result {
+      background: #2a2a2a;
+      border: 1px solid #444;
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 12px;
+      font-family: monospace;
+      font-size: 12px;
+      white-space: pre-wrap;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    
+    .success { border-left: 4px solid #10b981; }
+    .error { border-left: 4px solid #ef4444; }
+    
+    .memory-item {
+      background: #2a2a2a;
+      border: 1px solid #444;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 8px;
+    }
+    
+    .importance {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: bold;
+    }
+    
+    .imp-high { background: #ef4444; }
+    .imp-medium { background: #f59e0b; }
+    .imp-low { background: #6b7280; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 style="color: #d4a574; margin-bottom: 32px; text-align: center;">🧠 Memory System Test Dashboard</h1>
+    
+    <!-- Message Analysis Test -->
+    <div class="test-section">
+      <h2>📝 Message Analysis Test</h2>
+      <p style="margin-bottom: 16px; color: #b3b3b3;">Test how messages are analyzed for memory importance and emotional content.</p>
+      
+      <input type="text" id="testMessage" class="test-input" placeholder="Enter a test message..." value="My name is Sarah and I'm 25 years old">
+      <button onclick="analyzeTestMessage()" class="test-btn">Analyze Message</button>
+      <button onclick="fillTestMessages()" class="test-btn" style="background: #6b7280;">Load Test Examples</button>
+      
+      <div id="analysisResult" class="result" style="display: none;"></div>
+    </div>
+    
+    <!-- Memory Retrieval Test -->
+    <div class="test-section">
+      <h2>🔍 Memory Retrieval Test</h2>
+      <p style="margin-bottom: 16px; color: #b3b3b3;">Test retrieving saved memories for a user and character.</p>
+      
+      <input type="text" id="testUserId" class="test-input" placeholder="User ID (Auth0 ID)" value="test-user-12345">
+      <input type="text" id="testCharacterSlug" class="test-input" placeholder="Character slug" value="luna">
+      <button onclick="getMemories()" class="test-btn">Get Memories</button>
+      <button onclick="debugMemories()" class="test-btn" style="background: #6b7280;">Debug Info</button>
+      
+      <div id="memoryResult" class="result" style="display: none;"></div>
+    </div>
+    
+    <!-- Simulate Chat Test -->
+    <div class="test-section">
+      <h2>💬 Full Chat Simulation</h2>
+      <p style="margin-bottom: 16px; color: #b3b3b3;">Simulate a complete chat interaction with memory saving.</p>
+      
+      <input type="text" id="chatMessage" class="test-input" placeholder="Enter chat message..." value="Hi! My name is Alex and I love adventure games">
+      <input type="text" id="chatUserId" class="test-input" placeholder="User ID" value="test-user-alex">
+      <input type="text" id="chatCharacter" class="test-input" placeholder="Character" value="aragorn">
+      <button onclick="simulateChat()" class="test-btn">Send Chat</button>
+      
+      <div id="chatResult" class="result" style="display: none;"></div>
+    </div>
+    
+    <!-- Current Memories Display -->
+    <div class="test-section">
+      <h2>💾 Memory Browser</h2>
+      <p style="margin-bottom: 16px; color: #b3b3b3;">Browse existing memories in the system.</p>
+      
+      <button onclick="loadAllMemories()" class="test-btn">Load Recent Memories</button>
+      <button onclick="clearResults()" class="test-btn" style="background: #6b7280;">Clear Results</button>
+      
+      <div id="memoryBrowser" style="margin-top: 16px;"></div>
+    </div>
+  </div>
+
+  <script>
+    async function callAPI(endpoint, data) {
+      try {
+        const response = await fetch(`/.netlify/functions/${endpoint}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        return { status: response.status, data: result };
+      } catch (error) {
+        return { status: 500, data: { error: error.message } };
+      }
+    }
+    
+    async function analyzeTestMessage() {
+      const message = document.getElementById('testMessage').value;
+      const resultDiv = document.getElementById('analysisResult');
+      
+      if (!message.trim()) {
+        alert('Please enter a message to analyze');
+        return;
+      }
+      
+      resultDiv.style.display = 'block';
+      resultDiv.textContent = '🔄 Analyzing message...';
+      resultDiv.className = 'result';
+      
+      const result = await callAPI('analyze-memory', {
+        message: message,
+        context: 'Browser test'
+      });
+      
+      if (result.status === 200 && result.data.success) {
+        const analysis = result.data.analysis;
+        
+        resultDiv.className = 'result success';
+        resultDiv.textContent = `✅ Analysis Complete:
+
+📊 Importance: ${analysis.memory_importance}/10
+😊 Emotion: ${analysis.emotional_state}
+🏷️ Tags: [${analysis.memory_tags.join(', ')}]
+📝 Summary: "${analysis.summary}"
+🤖 Method: ${result.data.method}
+
+${analysis.memory_importance >= 7 ? '💾 Would be saved as memory' : '📝 Would only be saved as chat history'}`;
+      } else {
+        resultDiv.className = 'result error';
+        resultDiv.textContent = `❌ Analysis Failed: ${JSON.stringify(result.data, null, 2)}`;
+      }
+    }
+    
+    async function getMemories() {
+      const userId = document.getElementById('testUserId').value;
+      const characterSlug = document.getElementById('testCharacterSlug').value;
+      const resultDiv = document.getElementById('memoryResult');
+      
+      resultDiv.style.display = 'block';
+      resultDiv.textContent = '🔄 Retrieving memories...';
+      resultDiv.className = 'result';
+      
+      const result = await callAPI('memory', {
+        action: 'get_memories',
+        user_uid: userId,
+        character_slug: characterSlug
+      });
+      
+      if (result.status === 200 && result.data.success) {
+        resultDiv.className = 'result success';
+        
+        if (result.data.memories.length > 0) {
+          let output = `✅ Found ${result.data.memories.length} memories:\n\n`;
+          result.data.memories.forEach((memory, index) => {
+            output += `${index + 1}. [${memory.importance}/10] "${memory.summary}"\n`;
+            output += `   Emotion: ${memory.emotional_state} | Tags: [${memory.tags.join(', ')}]\n`;
+            output += `   Date: ${memory.date}\n\n`;
+          });
+          resultDiv.textContent = output;
+        } else {
+          resultDiv.textContent = '✅ Connection successful, but no memories found for this user/character combination.';
+        }
+      } else {
+        resultDiv.className = 'result error';
+        resultDiv.textContent = `❌ Memory Retrieval Failed: ${JSON.stringify(result.data, null, 2)}`;
+      }
+    }
+    
+    async function debugMemories() {
+      const userId = document.getElementById('testUserId').value;
+      const characterSlug = document.getElementById('testCharacterSlug').value;
+      const resultDiv = document.getElementById('memoryResult');
+      
+      resultDiv.style.display = 'block';
+      resultDiv.textContent = '🔄 Getting debug info...';
+      
+      const result = await callAPI('memory-debug', {
+        action: 'get_memories',
+        user_uid: userId,
+        character_slug: characterSlug
+      });
+      
+      resultDiv.className = result.status === 200 ? 'result success' : 'result error';
+      resultDiv.textContent = `Debug Info:\n${JSON.stringify(result.data, null, 2)}`;
+    }
+    
+    async function simulateChat() {
+      const message = document.getElementById('chatMessage').value;
+      const userId = document.getElementById('chatUserId').value;
+      const character = document.getElementById('chatCharacter').value;
+      const resultDiv = document.getElementById('chatResult');
+      
+      resultDiv.style.display = 'block';
+      resultDiv.textContent = '🔄 Simulating chat...';
+      resultDiv.className = 'result';
+      
+      const result = await callAPI('openrouter-chat', {
+        message: message,
+        character_slug: character,
+        auth0_id: userId,
+        model: 'mistralai/mistral-nemo'
+      });
+      
+      if (result.status === 200 && result.data.success) {
+        resultDiv.className = 'result success';
+        resultDiv.textContent = `✅ Chat Successful:
+
+🤖 AI Response: "${result.data.response.substring(0, 200)}..."
+📊 Model: ${result.data.model_used}
+💾 Saved to DB: ${result.data.saved_to_db}
+🧠 Memory Analysis: ${result.data.memory_analysis ? 'Performed' : 'Skipped'}`;
+      } else {
+        resultDiv.className = 'result error';
+        resultDiv.textContent = `❌ Chat Failed: ${JSON.stringify(result.data, null, 2)}`;
+      }
+    }
+    
+    function fillTestMessages() {
+      const testMessages = [
+        "My name is Sarah and I'm 25 years old",
+        "I love fantasy books and adventure stories", 
+        "Do you remember what my name is?",
+        "Hello, how are you?",
+        "I'm feeling really excited about my new job!"
+      ];
+      
+      const select = document.createElement('select');
+      select.style.cssText = 'width: 100%; padding: 8px; background: #2a2a2a; color: white; border: 1px solid #444; border-radius: 4px; margin-bottom: 8px;';
+      
+      testMessages.forEach(msg => {
+        const option = document.createElement('option');
+        option.value = msg;
+        option.textContent = msg;
+        select.appendChild(option);
+      });
+      
+      select.onchange = () => {
+        document.getElementById('testMessage').value = select.value;
+      };
+      
+      const input = document.getElementById('testMessage');
+      input.parentNode.insertBefore(select, input);
+    }
+    
+    function clearResults() {
+      document.getElementById('memoryBrowser').innerHTML = '';
+      ['analysisResult', 'memoryResult', 'chatResult'].forEach(id => {
+        const elem = document.getElementById(id);
+        if (elem) {
+          elem.style.display = 'none';
+          elem.textContent = '';
+        }
+      });
+    }
+    
+    async function loadAllMemories() {
+      const browserDiv = document.getElementById('memoryBrowser');
+      browserDiv.innerHTML = '<div style="color: #888;">🔄 Loading recent memories...</div>';
+      
+      // Try to load memories for a few different test users
+      const testUsers = ['test-user-12345', 'test-user-alex', 'memory-test-user'];
+      const testChars = ['luna', 'aragorn', 'emily'];
+      
+      let allMemories = [];
+      
+      for (const user of testUsers) {
+        for (const char of testChars) {
+          try {
+            const result = await callAPI('memory', {
+              action: 'get_memories',
+              user_uid: user,
+              character_slug: char
+            });
+            
+            if (result.status === 200 && result.data.success && result.data.memories.length > 0) {
+              result.data.memories.forEach(memory => {
+                allMemories.push({
+                  ...memory,
+                  user: user,
+                  character: char
+                });
+              });
+            }
+          } catch (e) {
+            // Skip errors
+          }
+        }
+      }
+      
+      if (allMemories.length > 0) {
+        browserDiv.innerHTML = `<h3 style="color: #d4a574; margin-bottom: 12px;">📚 Found ${allMemories.length} memories:</h3>`;
+        
+        allMemories
+          .sort((a, b) => b.importance - a.importance)
+          .slice(0, 10)
+          .forEach(memory => {
+            const impClass = memory.importance >= 7 ? 'imp-high' : memory.importance >= 4 ? 'imp-medium' : 'imp-low';
+            
+            const memDiv = document.createElement('div');
+            memDiv.className = 'memory-item';
+            memDiv.innerHTML = `
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span class="importance ${impClass}">${memory.importance}/10</span>
+                <span style="color: #888; font-size: 12px;">${memory.user} → ${memory.character}</span>
+              </div>
+              <div style="color: #fff; margin-bottom: 4px;">"${memory.summary}"</div>
+              <div style="color: #888; font-size: 11px;">
+                😊 ${memory.emotional_state} | 🏷️ [${memory.tags.join(', ')}]
+              </div>
+            `;
+            browserDiv.appendChild(memDiv);
+          });
+      } else {
+        browserDiv.innerHTML = '<div style="color: #888;">No memories found. Try having some conversations first!</div>';
+      }
+    }
+    
+    // Auto-focus on first input
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('testMessage').focus();
+    });
+  </script>
+</body>
+</html>
