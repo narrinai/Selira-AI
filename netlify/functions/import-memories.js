@@ -145,9 +145,9 @@ exports.handler = async (event, context) => {
 
     console.log('🧠 Processing', memories.length, 'memories for user:', user_uid);
 
-    // Step 1: Look up user by AuthID to get Airtable record ID
-    console.log('👤 Looking up user by AuthID:', user_uid);
-    const userLookupUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula={AuthID}='${user_uid}'&maxRecords=1`;
+    // Step 1: Look up user by Auth0ID to get Airtable record ID
+    console.log('👤 Looking up user by Auth0ID:', user_uid);
+    const userLookupUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula={Auth0ID}='${user_uid}'&maxRecords=1`;
     
     const userLookupResponse = await fetch(userLookupUrl, {
       headers: {
@@ -168,7 +168,7 @@ exports.handler = async (event, context) => {
       userRecordId = userData.records[0].id;
       console.log('✅ Found user record ID:', userRecordId);
     } else {
-      console.log('❌ No user found with AuthID:', user_uid);
+      console.log('❌ No user found with Auth0ID:', user_uid);
       return {
         statusCode: 404,
         headers: { 'Content-Type': 'application/json' },

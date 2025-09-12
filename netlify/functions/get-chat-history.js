@@ -51,10 +51,10 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Stap 1: Haal user op uit Users tabel - gebruik AuthID als primary identifier
-    console.log('🔍 Looking up user by AuthID:', user_uid);
+    // Stap 1: Haal user op uit Users tabel - gebruik Auth0ID als primary identifier
+    console.log('🔍 Looking up user by Auth0ID:', user_uid);
     
-    const userResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula={AuthID}='${user_uid}'`, {
+    const userResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula={Auth0ID}='${user_uid}'`, {
       headers: {
         'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
         'Content-Type': 'application/json'
@@ -83,9 +83,9 @@ exports.handler = async (event, context) => {
     }
 
     const userRecordId = userData.records[0].id;
-    const userAuthID = userData.records[0].fields.AuthID;
+    const userAuth0ID = userData.records[0].fields.Auth0ID;
     const userEmail = userData.records[0].fields.Email;
-    console.log('✅ Found user - Record ID:', userRecordId, 'AuthID:', userAuthID, 'Email:', userEmail);
+    console.log('✅ Found user - Record ID:', userRecordId, 'Auth0ID:', userAuth0ID, 'Email:', userEmail);
     
     // Find ALL user records with this email (for transition period)
     let allUserRecordIds = [userRecordId];
@@ -146,25 +146,25 @@ exports.handler = async (event, context) => {
     // We gebruiken nu ALLEEN User_ID voor lookups
     const userRecord = userData.records[0];
     
-    // Haal chat history op met AuthID
-    console.log('📊 Getting ChatHistory for AuthID:', userAuthID);
+    // Haal chat history op met Auth0ID
+    console.log('📊 Getting ChatHistory for Auth0ID:', userAuth0ID);
     
     let allChatHistory = [];
     let offset = null;
     
     // Gebruik linked record IDs voor de lookup in ChatHistory
     do {
-      // Check if User field contains AuthID directly or as linked records
-      // For direct AuthID: {User} = 'netlifyuid'
+      // Check if User field contains Auth0ID directly or as linked records
+      // For direct Auth0ID: {User} = 'netlifyuid'
       // For linked records: SEARCH('recordid', ARRAYJOIN({User}))
       
       let userFilter;
       if (allUserRecordIds.length === 1 && allUserRecordIds[0] === userRecordId) {
-        // Single user, check both direct AuthID and linked record
-        userFilter = `OR({User}='${userAuthID}',SEARCH('${userRecordId}',ARRAYJOIN({User})))`;
+        // Single user, check both direct Auth0ID and linked record
+        userFilter = `OR({User}='${userAuth0ID}',SEARCH('${userRecordId}',ARRAYJOIN({User})))`;
       } else {
         // Multiple users, build complex OR condition
-        const directUIDCondition = `{User}='${userAuthID}'`;
+        const directUIDCondition = `{User}='${userAuth0ID}'`;
         const linkedRecordConditions = allUserRecordIds.map(id => `SEARCH('${id}',ARRAYJOIN({User}))`).join(',');
         userFilter = `OR(${directUIDCondition},${linkedRecordConditions})`;
       }

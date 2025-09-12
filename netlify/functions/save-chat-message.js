@@ -104,8 +104,8 @@ exports.handler = async (event, context) => {
     
     // Strategy 1: Try Auth0 ID lookup first (using correct field name)
     try {
-      console.log('🔍 Strategy 1: Looking up by Auth0 ID (AuthID field)');
-      userResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula=${encodeURIComponent(`{AuthID}='${user_uid}'`)}`, {
+      console.log('🔍 Strategy 1: Looking up by Auth0 ID (Auth0ID field)');
+      userResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula=${encodeURIComponent(`{Auth0ID}='${user_uid}'`)}`, {
         headers: {
           'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
           'Content-Type': 'application/json'
@@ -116,7 +116,7 @@ exports.handler = async (event, context) => {
         const testData = await userResponse.json();
         if (testData.records.length > 0) {
           lookupStrategy = 'auth0_id';
-          console.log('✅ Found user by Auth0 ID (AuthID field)');
+          console.log('✅ Found user by Auth0 ID (Auth0ID field)');
         } else {
           console.log('❌ No user found by Auth0 ID, trying email...');
           throw new Error('Not found by Auth0 ID');
@@ -156,16 +156,16 @@ exports.handler = async (event, context) => {
       console.log('✅ Found existing user:', {
         id: userData.records[0].id,
         email: userData.records[0].fields.Email,
-        authID: userData.records[0].fields.AuthID,
+        authID: userData.records[0].fields.Auth0ID,
         userID: userData.records[0].fields.User_ID,
         strategy: lookupStrategy
       });
     } else {
-      console.log('❌ No user found with either AuthID or Email. Will create new user.');
+      console.log('❌ No user found with either Auth0ID or Email. Will create new user.');
       console.log('🔍 Search attempted:', {
         authID: user_uid,
         email: user_email,
-        strategies: ['AuthID lookup', 'Email lookup']
+        strategies: ['Auth0ID lookup', 'Email lookup']
       });
     }
     
@@ -184,7 +184,7 @@ exports.handler = async (event, context) => {
       const timestamp = Date.now();
       const newUserFields = {
         Email: user_email,
-        AuthID: user_uid, // Use AuthID field name from Airtable
+        Auth0ID: user_uid, // Use Auth0ID field name from Airtable
         User_ID: timestamp.toString(), // Generate unique ID
         created_time: new Date().toISOString(), // Use created_time field name from Airtable
         Source: 'Auth0_Chat_Auto' // Track automatic creation
@@ -213,7 +213,7 @@ exports.handler = async (event, context) => {
           recordId: userRecordId,
           userID: userIdForSave,
           email: newUserFields.Email,
-          authID: newUserFields.AuthID
+          authID: newUserFields.Auth0ID
         });
       } else {
         const createError = await createUserResponse.text();

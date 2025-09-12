@@ -136,14 +136,14 @@ exports.handler = async (event, context) => {
     allUsersData.records.forEach((record, index) => {
       const emailMatch = record.fields.Email === user_email || 
                         (record.fields.Email && record.fields.Email.toLowerCase() === user_email.toLowerCase());
-      const uidMatch = record.fields.AuthID === user_uid;
+      const uidMatch = record.fields.Auth0ID === user_uid;
       
       // Log alleen potentiële matches of eerste paar users
       if (emailMatch || uidMatch || index < 3) {
         console.log(`👤 DEBUG User ${index + 1}:`, {
           id: record.id,
           email_field: record.fields.Email,
-          netlify_uid: record.fields.AuthID,
+          netlify_uid: record.fields.Auth0ID,
           email_matches: emailMatch,
           uid_matches: uidMatch,
           all_fields: Object.keys(record.fields)
@@ -156,7 +156,7 @@ exports.handler = async (event, context) => {
           exact_email: record.fields.Email,
           searching_for: user_email,
           exact_match: record.fields.Email === user_email,
-          uid_in_record: record.fields.AuthID,
+          uid_in_record: record.fields.Auth0ID,
           uid_searching: user_uid
         });
       }
@@ -164,7 +164,7 @@ exports.handler = async (event, context) => {
 
     // Zoek handmatig naar de gebruiker - EERST op UID (meest betrouwbaar), dan op email
     let targetUser = allUsersData.records.find(record => 
-      record.fields.AuthID === user_uid
+      record.fields.Auth0ID === user_uid
     );
     
     if (!targetUser) {
@@ -227,16 +227,16 @@ if (userEmail) {
 }
 
 // Build filter for all possible user records
-// Handle both direct AuthID values and linked records
+// Handle both direct Auth0ID values and linked records
 let userFilter;
 if (allUserRecordIds.length === 1) {
-  // Single user - check both direct AuthID and linked record
-  const userAuthID = targetUser.fields.AuthID || user_uid;
-  userFilter = `OR({User}='${userAuthID}',SEARCH('${userRecordId}',ARRAYJOIN({User})))`;
+  // Single user - check both direct Auth0ID and linked record
+  const userAuth0ID = targetUser.fields.Auth0ID || user_uid;
+  userFilter = `OR({User}='${userAuth0ID}',SEARCH('${userRecordId}',ARRAYJOIN({User})))`;
 } else {
   // Multiple users - build complex OR condition
-  const userAuthID = targetUser.fields.AuthID || user_uid;
-  const directUIDCondition = `{User}='${userAuthID}'`;
+  const userAuth0ID = targetUser.fields.Auth0ID || user_uid;
+  const directUIDCondition = `{User}='${userAuth0ID}'`;
   const linkedRecordConditions = allUserRecordIds.map(id => `SEARCH('${id}',ARRAYJOIN({User}))`).join(',');
   userFilter = `OR(${directUIDCondition},${linkedRecordConditions})`;
 }
