@@ -157,6 +157,13 @@ exports.handler = async (event, context) => {
         userID: userData.records[0].fields.User_ID,
         strategy: lookupStrategy
       });
+    } else {
+      console.log('❌ No user found with either AuthID or Email. Will create new user.');
+      console.log('🔍 Search attempted:', {
+        authID: user_uid,
+        email: user_email,
+        strategies: ['AuthID lookup', 'Email lookup']
+      });
     }
     
     let userIdForSave = null; // Will be set based on user data
@@ -171,14 +178,16 @@ exports.handler = async (event, context) => {
       });
       
       // Create a new user record with proper Auth0 integration using correct field names
+      const timestamp = Date.now();
       const newUserFields = {
-        Email: user_email.includes('@') ? user_email : `${user_email}@auth0.temp`, // Ensure email format
+        Email: user_email,
         AuthID: user_uid, // Use AuthID field name from Airtable
-        User_ID: Date.now().toString(), // Generate unique ID
-        created_time: new Date().toISOString(), // Use created_time field name
-        Source: 'Auth0_Chat', // Track where user was created
-        Auth0_Subject: user_uid // Store original Auth0 subject ID
+        User_ID: timestamp.toString(), // Generate unique ID
+        created_time: new Date().toISOString(), // Use created_time field name from Airtable
+        Source: 'Auth0_Chat_Auto' // Track automatic creation
       };
+      
+      console.log('🔨 Creating user with fields:', newUserFields);
       
       const createUserResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users`, {
         method: 'POST',

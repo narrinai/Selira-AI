@@ -568,7 +568,7 @@ class Auth0LoginModal {
       if (signupBtn) {
         signupBtn.style.display = '';
         signupBtn.href = '#';
-        signupBtn.textContent = 'Register';
+        signupBtn.textContent = '👤';
         signupBtn.onclick = (e) => {
           e.preventDefault();
           this.openModal('signup');
