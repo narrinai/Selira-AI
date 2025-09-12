@@ -402,7 +402,7 @@
       padding: 0 40px;
     }
     
-    .style-option, .ethnicity-option, .hair-option, .sex-option {
+    .style-option, .ethnicity-option, .hair-option, .sex-option, .hair-color-option {
       background: var(--bg-secondary);
       border: 2px solid var(--border);
       border-radius: var(--radius-lg);
@@ -411,7 +411,7 @@
       transition: all 0.3s ease;
     }
     
-    .style-option:hover, .ethnicity-option:hover, .hair-option:hover, .sex-option:hover {
+    .style-option:hover, .ethnicity-option:hover, .hair-option:hover, .sex-option:hover, .hair-color-option:hover {
       transform: translateY(-2px);
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
     }
@@ -867,49 +867,49 @@
           <div class="creation-step" id="step4">
             <h3 style="color: var(--text-primary); margin-bottom: 40px; font-size: 28px; font-weight: 700; text-align: center;">Choose Hair Color</h3>
             <div class="hair-grid" style="grid-template-columns: repeat(4, 1fr); gap: 40px; max-width: 1000px; margin: 0 auto;">
-              <div class="hair-option" data-hair-color="brown" onclick="selectHairColorStep('brown')" style="border-color: var(--accent);">
+              <div class="hair-color-option" data-hair-color="brown" onclick="selectHairColorStep('brown')" style="border-color: var(--accent);">
                 <div style="height: 160px; background: url('/images/brown-hair-female.png') center/cover; border-radius: 12px;"></div>
                 <div style="padding: 12px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Brown</h4>
                 </div>
               </div>
-              <div class="hair-option" data-hair-color="black" onclick="selectHairColorStep('black')">
+              <div class="hair-color-option" data-hair-color="black" onclick="selectHairColorStep('black')">
                 <div style="height: 160px; background: url('/images/black-hair-female.png') center/cover; border-radius: 12px;"></div>
                 <div style="padding: 12px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Black</h4>
                 </div>
               </div>
-              <div class="hair-option" data-hair-color="red" onclick="selectHairColorStep('red')">
+              <div class="hair-color-option" data-hair-color="red" onclick="selectHairColorStep('red')">
                 <div style="height: 160px; background: url('/images/red-hair-female.png') center/cover; border-radius: 12px;"></div>
                 <div style="padding: 12px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Red</h4>
                 </div>
               </div>
-              <div class="hair-option" data-hair-color="gray" onclick="selectHairColorStep('gray')">
+              <div class="hair-color-option" data-hair-color="gray" onclick="selectHairColorStep('gray')">
                 <div style="height: 160px; background: url('/images/grey-hair-female.png') center/cover; border-radius: 12px;"></div>
                 <div style="padding: 12px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Gray</h4>
                 </div>
               </div>
-              <div class="hair-option" data-hair-color="blonde" onclick="selectHairColorStep('blonde')">
+              <div class="hair-color-option" data-hair-color="blonde" onclick="selectHairColorStep('blonde')">
                 <div style="height: 160px; background: url('/images/blonde-hair-female.png') center/cover; border-radius: 12px;"></div>
                 <div style="padding: 12px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Blonde</h4>
                 </div>
               </div>
-              <div class="hair-option" data-hair-color="auburn" onclick="selectHairColorStep('auburn')">
+              <div class="hair-color-option" data-hair-color="auburn" onclick="selectHairColorStep('auburn')">
                 <div style="height: 160px; background: url('/images/auburn-hair-female.png') center/cover; border-radius: 12px;"></div>
                 <div style="padding: 12px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Auburn</h4>
                 </div>
               </div>
-              <div class="hair-option" data-hair-color="white" onclick="selectHairColorStep('white')">
+              <div class="hair-color-option" data-hair-color="white" onclick="selectHairColorStep('white')">
                 <div style="height: 160px; background: url('/images/white-hair-female.png') center/cover; border-radius: 12px;"></div>
                 <div style="padding: 12px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">White</h4>
                 </div>
               </div>
-              <div class="hair-option" data-hair-color="purple" onclick="selectHairColorStep('purple')">
+              <div class="hair-color-option" data-hair-color="purple" onclick="selectHairColorStep('purple')">
                 <div style="height: 160px; background: url('/images/purple-hair-female.png') center/cover; border-radius: 12px;"></div>
                 <div style="padding: 12px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Purple</h4>
@@ -1132,6 +1132,12 @@
 
     function selectHairColorStep(hairColor) {
       characterCreationState.hairColor = hairColor;
+      
+      // Update visual selection
+      document.querySelectorAll('.hair-color-option').forEach(option => {
+        option.style.border = '2px solid var(--border)';
+      });
+      document.querySelector(`[data-hair-color="${hairColor}"]`).style.border = '2px solid var(--accent)';
       
       // Update final preview
       updateFinalPreview();
