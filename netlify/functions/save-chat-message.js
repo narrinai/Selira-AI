@@ -180,14 +180,11 @@ exports.handler = async (event, context) => {
         emailIsAuth0ID: !user_email.includes('@')
       });
       
-      // Create a new user record with proper Auth0 integration using correct field names
+      // Create a new user record with only the essential fields that exist in Airtable
       const timestamp = Date.now();
       const newUserFields = {
         Email: user_email,
-        Auth0ID: user_uid, // Use Auth0ID field name from Airtable
-        User_ID: timestamp.toString(), // Generate unique ID
-        created_time: new Date().toISOString(), // Use created_time field name from Airtable
-        Source: 'Auth0_Chat_Auto' // Track automatic creation
+        Auth0ID: user_uid
       };
       
       console.log('🔨 Creating user with fields:', newUserFields);
@@ -208,12 +205,12 @@ exports.handler = async (event, context) => {
       if (createUserResponse.ok) {
         const createData = await createUserResponse.json();
         userRecordId = createData.records[0].id;
-        userIdForSave = createData.records[0].fields.User_ID;
+        userIdForSave = userRecordId; // Use record ID directly
         console.log('✅ Created new user:', {
           recordId: userRecordId,
           userID: userIdForSave,
           email: newUserFields.Email,
-          authID: newUserFields.Auth0ID
+          auth0ID: newUserFields.Auth0ID
         });
       } else {
         const createError = await createUserResponse.text();
@@ -231,10 +228,9 @@ exports.handler = async (event, context) => {
       }
     } else {
       userRecordId = userData.records[0].id;
-      const customUserId = userData.records[0].fields.User_ID;
-      // Use custom User_ID for saving (based on ChatHistory table structure)
-      userIdForSave = customUserId;
-      console.log('✅ Found user - Record ID:', userRecordId, 'Custom User_ID:', customUserId, 'Using:', userIdForSave);
+      // Use record ID directly since User_ID field might not exist
+      userIdForSave = userRecordId;
+      console.log('✅ Found user - Record ID:', userRecordId, 'Using as User ID:', userIdForSave);
     }
 
     // Stap 2: Get character name and ID from Characters table
