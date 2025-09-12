@@ -95,31 +95,68 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Stap 1: Haal user_id op uit Users tabel - STRIKTE verificatie
-    // BELANGRIJKE FIX: Zoek alleen users die BEIDE NetlifyUID EN email matchen
-    console.log('🔐 Strict user lookup with NetlifyUID AND email');
-    let userResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula=${encodeURIComponent(`AND({Email}='${user_email}',{NetlifyUID}='${user_uid}')`)}`, {
-      headers: {
-        'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
-        'Content-Type': 'application/json'
+    // Stap 1: Haal user_id op uit Users tabel - probeer verschillende lookup strategieën
+    console.log('🔐 User lookup starting:', { user_email, user_uid });
+    
+    // Try multiple lookup strategies to find the user
+    let userResponse;
+    let lookupStrategy = 'unknown';
+    
+    // Strategy 1: Try Auth0 ID lookup first (most reliable for Auth0 users)
+    try {
+      console.log('🔍 Strategy 1: Looking up by Auth0 ID (NetlifyUID)');
+      userResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula=${encodeURIComponent(`{NetlifyUID}='${user_uid}'`)}`, {
+        headers: {
+          'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (userResponse.ok) {
+        const testData = await userResponse.json();
+        if (testData.records.length > 0) {
+          lookupStrategy = 'auth0_id';
+          console.log('✅ Found user by Auth0 ID');
+        } else {
+          console.log('❌ No user found by Auth0 ID, trying email...');
+          throw new Error('Not found by Auth0 ID');
+        }
+      } else {
+        throw new Error('Auth0 ID lookup failed');
       }
-    });
+    } catch (e) {
+      // Strategy 2: Try email lookup
+      console.log('🔍 Strategy 2: Looking up by Email');
+      userResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula=${encodeURIComponent(`{Email}='${user_email}'`)}`, {
+        headers: {
+          'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (userResponse.ok) {
+        lookupStrategy = 'email';
+        console.log('✅ Found user by email');
+      } else {
+        console.log('❌ Email lookup also failed');
+      }
+    }
 
     if (!userResponse.ok) {
       throw new Error(`Failed to fetch user: ${userResponse.status}`);
     }
 
     let userData = await userResponse.json();
-    console.log('👤 User lookup result (with NetlifyUID AND email):', userData.records.length, 'users found');
+    console.log(`👤 User lookup result (${lookupStrategy}):`, userData.records.length, 'users found');
     
-    // If not found with strict match, DO NOT fallback to email only for existing users
-    // This prevents saving messages to wrong user accounts
-    if (userData.records.length === 0 && user_uid) {
-      console.log('❌ No user found with NetlifyUID + email combination');
-      console.log('🔐 Security: Not falling back to email-only search when NetlifyUID is provided');
-      
-      // Only create new user if NetlifyUID is provided but no match found
-      // This means it's a genuinely new user, not a mismatch
+    if (userData.records.length > 0) {
+      console.log('✅ Found existing user:', {
+        id: userData.records[0].id,
+        email: userData.records[0].fields.Email,
+        netlifyUID: userData.records[0].fields.NetlifyUID,
+        userID: userData.records[0].fields.User_ID,
+        strategy: lookupStrategy
+      });
     }
     
     let userIdForSave = null; // Will be set based on user data
@@ -127,8 +164,22 @@ exports.handler = async (event, context) => {
     
     if (userData.records.length === 0) {
       console.log('⚠️ User not found in Users table, creating new user...');
+      console.log('👤 Creating user with:', {
+        email: user_email,
+        auth0_id: user_uid,
+        emailIsAuth0ID: !user_email.includes('@')
+      });
       
-      // Create a new user record
+      // Create a new user record with proper Auth0 integration
+      const newUserFields = {
+        Email: user_email.includes('@') ? user_email : `${user_email}@auth0.temp`, // Ensure email format
+        NetlifyUID: user_uid,
+        User_ID: Date.now().toString(), // Generate unique ID
+        CreatedTime: new Date().toISOString(),
+        Source: 'Auth0_Chat', // Track where user was created
+        Auth0_Subject: user_uid // Store original Auth0 subject ID
+      };
+      
       const createUserResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users`, {
         method: 'POST',
         headers: {
@@ -137,12 +188,7 @@ exports.handler = async (event, context) => {
         },
         body: JSON.stringify({
           records: [{
-            fields: {
-              Email: user_email,
-              NetlifyUID: user_uid || '',
-              User_ID: Date.now().toString(), // Generate unique ID
-              CreatedTime: new Date().toISOString()
-            }
+            fields: newUserFields
           }]
         })
       });
@@ -151,15 +197,23 @@ exports.handler = async (event, context) => {
         const createData = await createUserResponse.json();
         userRecordId = createData.records[0].id;
         userIdForSave = createData.records[0].fields.User_ID;
-        console.log('✅ Created new user with ID:', userIdForSave);
+        console.log('✅ Created new user:', {
+          recordId: userRecordId,
+          userID: userIdForSave,
+          email: newUserFields.Email,
+          auth0ID: newUserFields.Auth0_Subject
+        });
       } else {
-        console.log('❌ Failed to create user');
+        const createError = await createUserResponse.text();
+        console.log('❌ Failed to create user:', createUserResponse.status, createError);
         return {
           statusCode: 500,
           headers,
           body: JSON.stringify({ 
             success: false, 
-            error: 'Failed to create user record' 
+            error: 'Failed to create user record',
+            details: createError,
+            debug: { newUserFields, status: createUserResponse.status }
           })
         };
       }
