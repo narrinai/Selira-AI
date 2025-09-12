@@ -1398,8 +1398,10 @@
             userKeys: Object.keys(user) 
           });
           
-          // Skip sync during deployment
-          console.log('⚠️ User sync temporarily disabled during function deployment');
+          // Ensure user exists with clean sync function
+          if (auth0_id !== 'anonymous') {
+            await ensureUserInAirtable(auth0_id, user_email, user.name, user.nickname);
+          }
           
         } catch (e) {
           // If no user data, use anonymous
@@ -1452,9 +1454,13 @@
         // Save both user and AI message to localStorage
         saveBothMessagesToStorage(currentCharacter.slug, message, data.response);
         
-        // Temporarily skip Airtable memory while new functions deploy
-        console.log('⚠️ Memory system temporarily disabled during deployment');
-        // Memory functions are being updated - will be re-enabled after deployment
+        // Save conversation to Airtable with clean functions
+        try {
+          await saveChatMessage(auth0_id, user_email, currentCharacter.slug, message, data.response);
+        } catch (error) {
+          console.log('⚠️ Memory save failed (functions may still be deploying):', error.message);
+          // Chat continues to work via localStorage
+        }
         
       } catch (error) {
         console.error('❌ Error sending message:', error);
