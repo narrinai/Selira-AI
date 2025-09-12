@@ -1398,10 +1398,8 @@
             userKeys: Object.keys(user) 
           });
           
-          // Auto-sync user to Airtable if authenticated
-          if (auth0_id !== 'anonymous') {
-            await ensureUserInAirtable(auth0_id, user_email, user.name, user.nickname);
-          }
+          // Skip auto-sync during chat - user should already exist from registration
+          // Auto-sync causes delays and the user was already synced during Auth0 callback
           
         } catch (e) {
           // If no user data, use anonymous
