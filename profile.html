@@ -981,12 +981,10 @@
           // Update email field
           document.getElementById('userEmail').value = user.email;
           
-          // Update display name if exists
-          if (user.name) {
-            const displayNameField = document.getElementById('userDisplayName');
-            if (displayNameField) {
-              displayNameField.value = user.name;
-            }
+          // Update display name if exists (prefer saved display_name over Auth0 name)
+          const displayNameField = document.getElementById('userDisplayName');
+          if (displayNameField) {
+            displayNameField.value = user.display_name || user.name || '';
           }
           
           // Update any other profile fields that exist
