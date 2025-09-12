@@ -532,7 +532,7 @@ class Auth0LoginModal {
       console.log('✅ User authenticated - showing profile button');
       // Update existing login button to profile
       if (loginBtn) {
-        loginBtn.href = '/profile.html';
+        loginBtn.href = '/profile';
         loginBtn.textContent = '👤';
         loginBtn.className = loginBtn.className.replace('login-btn', 'profile-btn');
         loginBtn.onclick = null; // Remove modal trigger
@@ -590,7 +590,7 @@ class Auth0LoginModal {
       
       if (!profileLink) {
         profileLink = document.createElement('a');
-        profileLink.href = '/profile.html';
+        profileLink.href = '/profile';
         profileLink.className = 'mobile-profile-link';
         profileLink.textContent = '👤';
         

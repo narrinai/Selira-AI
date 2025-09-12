@@ -834,6 +834,12 @@
             <button class="btn btn-secondary" style="width: 100%;" onclick="managePlan()">
               Manage Subscription
             </button>
+            
+            <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border);">
+              <button class="btn" style="width: 100%; background: var(--error); color: white;" onclick="logout()">
+                🚪 Logout
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -894,6 +900,24 @@
     
     function showCreateCharacter() {
       window.location.href = '/create';
+    }
+
+    // Logout function
+    function logout() {
+      if (confirm('Are you sure you want to logout?')) {
+        // Clear local storage
+        localStorage.clear();
+        
+        // If Auth0 is available, logout
+        if (window.auth0Client) {
+          window.auth0Client.logout({
+            returnTo: window.location.origin
+          });
+        } else {
+          // Fallback: redirect to home
+          window.location.href = '/';
+        }
+      }
     }
     
     // TODO: Add authentication integration
