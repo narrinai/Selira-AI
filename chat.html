@@ -2084,6 +2084,15 @@
           return;
         }
         
+        // Get user token from Auth0 if available
+        let userToken = 'dummy_token'; // Fallback
+        try {
+          const user = JSON.parse(localStorage.getItem('user') || '{}');
+          userToken = user.access_token || user.token || user.id_token || 'dummy_token';
+        } catch (e) {
+          console.log('⚠️ Could not get user token, using fallback');
+        }
+
         const response = await fetch('/.netlify/functions/save-chat-message', {
           method: 'POST',
           headers: {
@@ -2092,6 +2101,7 @@
           body: JSON.stringify({
             user_email: auth0_id, // Use auth0_id as email for now
             user_uid: auth0_id,
+            user_token: userToken,
             char: character_slug,
             user_message: userMessage,
             ai_response: aiResponse
@@ -2101,7 +2111,17 @@
         if (response.ok) {
           console.log('✅ Chat message saved successfully');
         } else {
+          const errorData = await response.text();
           console.log('⚠️ Failed to save chat message:', response.status);
+          console.log('❌ Error details:', errorData);
+          
+          // Try to parse error for better debugging
+          try {
+            const errorJson = JSON.parse(errorData);
+            console.log('🔍 Parsed error:', errorJson);
+          } catch (e) {
+            console.log('🔍 Raw error response:', errorData.substring(0, 200));
+          }
         }
       } catch (error) {
         console.error('❌ Error saving chat message:', error);
