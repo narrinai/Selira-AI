@@ -284,6 +284,45 @@
       border-color: var(--accent);
     }
 
+    /* Action Menu Dropdown */
+    .action-menu-container {
+      position: relative;
+    }
+
+    .action-menu {
+      position: absolute;
+      top: 50px;
+      right: 0;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      min-width: 200px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+      overflow: hidden;
+    }
+
+    .action-menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: background 0.2s ease;
+      font-size: 14px;
+    }
+
+    .action-menu-item:hover {
+      background: var(--bg-tertiary);
+    }
+
+    .menu-icon {
+      font-size: 16px;
+      width: 20px;
+      text-align: center;
+    }
+
     /* Right Sidebar Character Details */
     .character-sidebar {
       width: 320px;
@@ -1024,9 +1063,17 @@
           </div>
         </div>
         <div class="chat-actions">
-          <button class="action-btn" onclick="toggleCharacterInfo()" title="Character Info">
-            <span>ℹ️</span>
-          </button>
+          <div class="action-menu-container">
+            <button class="action-btn" onclick="toggleActionMenu()" title="More options" id="actionMenuBtn">
+              <span>⋮</span>
+            </button>
+            <div class="action-menu" id="actionMenu" style="display: none;">
+              <div class="action-menu-item" onclick="toggleCharacterInfo(); closeActionMenu();">
+                <span class="menu-icon">ℹ️</span>
+                <span>Companion information</span>
+              </div>
+            </div>
+          </div>
           <button class="action-btn" onclick="clearChat()" title="Clear Chat">
             <span>🗑️</span>
           </button>
@@ -2416,6 +2463,33 @@
         if (e.target === fullscreenModal) fullscreenModal.remove();
       });
     }
+
+    // Action menu functions
+    function toggleActionMenu() {
+      const menu = document.getElementById('actionMenu');
+      const isVisible = menu.style.display !== 'none';
+      
+      if (isVisible) {
+        menu.style.display = 'none';
+      } else {
+        menu.style.display = 'block';
+      }
+    }
+
+    function closeActionMenu() {
+      const menu = document.getElementById('actionMenu');
+      menu.style.display = 'none';
+    }
+
+    // Close action menu when clicking outside
+    document.addEventListener('click', function(e) {
+      const menuContainer = document.querySelector('.action-menu-container');
+      const menu = document.getElementById('actionMenu');
+      
+      if (menuContainer && !menuContainer.contains(e.target) && menu) {
+        menu.style.display = 'none';
+      }
+    });
 
     // Character info modal function
     function toggleCharacterInfo() {
