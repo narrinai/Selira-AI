@@ -55,15 +55,10 @@ exports.handler = async (event, context) => {
         const existingUser = checkData.records[0];
         console.log('✅ User exists, updating Auth0ID...');
         
-        // Update existing user with Auth0ID and display_name
+        // Update existing user with Auth0ID only (keep it simple)
         const updateFields = {
           Auth0ID: auth0_id
         };
-        
-        // Add display_name if provided
-        if (display_name) {
-          updateFields.Display_Name = display_name;
-        }
         
         const updateResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users/${existingUser.id}`, {
           method: 'PATCH',
@@ -105,8 +100,7 @@ exports.handler = async (event, context) => {
         records: [{
           fields: {
             Email: email,
-            Auth0ID: auth0_id,
-            Display_Name: display_name || name || email.split('@')[0]
+            Auth0ID: auth0_id
           }
         }]
       })
