@@ -543,7 +543,7 @@
 
     .input-footer {
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-start;
       align-items: center;
       margin-top: 8px;
       font-size: 12px;
@@ -1009,7 +1009,6 @@
           <button class="request-image-btn" onclick="requestImage()" title="Request Image">
             🎨 Request Image
           </button>
-          <span class="character-count" id="characterCount">0/2000</span>
           <span class="input-hint">Everything AI says is made up! Please follow your local laws and don't talk about underage content.</span>
         </div>
       </div>
@@ -1143,15 +1142,6 @@
     }
 
     function setupEventListeners() {
-      // Character count update
-      const messageInput = document.getElementById('messageInput');
-      const characterCount = document.getElementById('characterCount');
-      
-      if (messageInput && characterCount) {
-        messageInput.addEventListener('input', function() {
-          characterCount.textContent = `${this.value.length}/2000`;
-        });
-      }
     }
 
     function autoResizeTextarea() {
@@ -1230,7 +1220,6 @@
       if (message.toLowerCase().startsWith('send me a picture')) {
         await handleImageRequest(message);
         messageInput.value = '';
-        updateCharacterCount();
         autoResizeTextarea();
         return;
       }
@@ -2105,18 +2094,8 @@
       // Place cursor at the end
       messageInput.setSelectionRange(messageInput.value.length, messageInput.value.length);
       
-      // Update character count
-      updateCharacterCount();
     }
 
-    function updateCharacterCount() {
-      const messageInput = document.getElementById('messageInput');
-      const characterCount = document.getElementById('characterCount');
-      
-      if (messageInput && characterCount) {
-        characterCount.textContent = `${messageInput.value.length}/2000`;
-      }
-    }
 
     async function handleImageRequest(message) {
       // Extract the prompt part after "send me a picture"
