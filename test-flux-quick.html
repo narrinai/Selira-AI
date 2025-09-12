@@ -1,209 +1,128 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Test Flux Schnell Generation</title>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 20px; background: #0a0a0a; color: white; }
-        .test-result { margin: 20px 0; padding: 20px; border: 1px solid #333; border-radius: 8px; }
-        .generated-image { max-width: 300px; border: 2px solid #d4a574; border-radius: 8px; }
-        button { padding: 10px 20px; background: #d4a574; border: none; border-radius: 5px; color: white; cursor: pointer; margin: 5px; }
-        button:hover { background: #c19456; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flux Image Test | Selira AI</title>
+  <style>
+    body { font-family: system-ui; background: #0a0a0a; color: white; padding: 20px; }
+    .container { max-width: 800px; margin: 0 auto; }
+    .form { background: #1a1a1a; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+    input, select { width: 100%; padding: 10px; margin: 5px 0; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 6px; }
+    button { background: #d4a574; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; margin: 5px; }
+    .preset { background: #333; padding: 5px 10px; margin: 3px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+    .result { background: #2a2a2a; border-radius: 8px; margin: 10px 0; overflow: hidden; }
+    .result img { width: 100%; max-width: 400px; }
+    .loading { text-align: center; padding: 40px; color: #888; }
+  </style>
 </head>
 <body>
-    <h1>🧪 Flux Schnell Test</h1>
+  <div class="container">
+    <h1 style="color: #d4a574; text-align: center;">🎨 Flux Schnell Test</h1>
     
-    <div style="margin-bottom: 20px;">
-        <h3>🎨 Custom Prompt Test</h3>
-        <input type="text" id="customPromptField" placeholder="Enter custom prompt (e.g. 'leaning forward, beach, white top')" 
-               value="leaning forward, beach, white top"
-               style="width: 500px; padding: 10px; background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 5px;">
-        <br><br>
-        <button onclick="testCustomAnime()">🎌 Generate Anime Style</button>
-        <button onclick="testCustomRealistic()">📸 Generate Realistic Style</button>
+    <div class="form">
+      <h3>Quick Presets:</h3>
+      <div onclick="loadPreset('male')" class="preset">👨 Male Portrait</div>
+      <div onclick="loadPreset('female')" class="preset">👩 Female Portrait</div>
+      <div onclick="loadPreset('anime-male')" class="preset">🎌 Anime Male</div>
+      <div onclick="loadPreset('anime-female')" class="preset">🎌 Anime Female</div>
+      
+      <h3>Custom:</h3>
+      <input type="text" id="prompt" placeholder="Custom prompt" value="professional headshot portrait">
+      <select id="sex">
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+      </select>
+      <select id="style">
+        <option value="realistic">Realistic</option>
+        <option value="anime">Anime</option>
+      </select>
+      <select id="ethnicity">
+        <option value="white">White</option>
+        <option value="black">Black</option>
+        <option value="korean">Korean</option>
+        <option value="japanese">Japanese</option>
+      </select>
+      
+      <button onclick="generate()">🎨 Generate</button>
+      <button onclick="clear()">🗑️ Clear</button>
     </div>
-    
-    <div style="margin-bottom: 20px;">
-        <h3>📋 Pre-built Tests</h3>
-        <button onclick="testAnime()">Test Anime Character</button>
-        <button onclick="testRealistic()">Test Realistic Character</button>
-    </div>
-    
+
     <div id="results"></div>
+  </div>
 
-    <script>
-        async function testGeneration(data, testName) {
-            const resultDiv = document.createElement('div');
-            resultDiv.className = 'test-result';
-            resultDiv.innerHTML = `<h3>🔄 ${testName} - Generating...</h3>`;
-            document.getElementById('results').appendChild(resultDiv);
-            
-            const startTime = Date.now();
-            
-            try {
-                const response = await fetch('/.netlify/functions/generate-avatar-replicate', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-                
-                const endTime = Date.now();
-                const duration = (endTime - startTime) / 1000;
-                
-                if (response.ok) {
-                    const result = await response.json();
-                    resultDiv.innerHTML = `
-                        <h3>✅ ${testName} - Success (${duration}s)</h3>
-                        <p><strong>Prompt:</strong> ${result.prompt}</p>
-                        <img src="${result.imageUrl}" alt="${testName}" class="generated-image" loading="lazy">
-                    `;
-                } else {
-                    const error = await response.json();
-                    resultDiv.innerHTML = `
-                        <h3>❌ ${testName} - Failed (${duration}s)</h3>
-                        <p><strong>Error:</strong> ${error.error}</p>
-                        <p><strong>Details:</strong> ${error.details}</p>
-                    `;
-                }
-            } catch (error) {
-                resultDiv.innerHTML = `
-                    <h3>💥 ${testName} - Request Failed</h3>
-                    <p><strong>Error:</strong> ${error.message}</p>
-                `;
-            }
+  <script>
+    function loadPreset(type) {
+      const presets = {
+        'male': { prompt: 'professional headshot portrait, confident man', sex: 'male', style: 'realistic', ethnicity: 'white' },
+        'female': { prompt: 'professional headshot portrait, elegant woman', sex: 'female', style: 'realistic', ethnicity: 'white' },
+        'anime-male': { prompt: 'anime style portrait, handsome young man', sex: 'male', style: 'anime', ethnicity: 'japanese' },
+        'anime-female': { prompt: 'anime style portrait, beautiful young woman', sex: 'female', style: 'anime', ethnicity: 'japanese' }
+      };
+      
+      const preset = presets[type];
+      document.getElementById('prompt').value = preset.prompt;
+      document.getElementById('sex').value = preset.sex;
+      document.getElementById('style').value = preset.style;
+      document.getElementById('ethnicity').value = preset.ethnicity;
+    }
+    
+    async function generate() {
+      const btn = event.target;
+      btn.textContent = '🎨 Generating...';
+      btn.disabled = true;
+      
+      const params = {
+        customPrompt: document.getElementById('prompt').value,
+        characterName: 'Test Character',
+        sex: document.getElementById('sex').value,
+        style: document.getElementById('style').value,
+        ethnicity: document.getElementById('ethnicity').value,
+        hairLength: 'medium',
+        hairColor: 'brown',
+        shotType: 'portrait',
+        category: document.getElementById('style').value === 'anime' ? 'anime-manga' : 'realistic'
+      };
+      
+      document.getElementById('results').innerHTML = '<div class="loading">🎨 Generating with Flux Schnell...</div>';
+      
+      try {
+        const response = await fetch('/.netlify/functions/generate-custom-image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(params)
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok && result.success) {
+          document.getElementById('results').innerHTML = `
+            <div class="result">
+              <img src="${result.imageUrl}" onclick="window.open('${result.imageUrl}', '_blank')">
+              <div style="padding: 15px;">
+                <div style="font-size: 12px; color: #888;">"${params.customPrompt}"</div>
+                <div style="font-size: 11px; color: #666; margin-top: 5px;">${params.sex} • ${params.style} • ${params.ethnicity}</div>
+              </div>
+            </div>
+          `;
+        } else {
+          document.getElementById('results').innerHTML = `<div style="color: #ef4444; padding: 20px;">❌ Error: ${result.error}</div>`;
         }
         
-        function testAnime() {
-            testGeneration({
-                characterName: 'Akira Yoshida',
-                characterTitle: 'Magical School Student', 
-                category: 'anime-manga'
-            }, 'Anime Character');
-        }
-        
-        function testRealistic() {
-            testGeneration({
-                characterName: 'Elena Rodriguez',
-                characterTitle: 'Business Consultant',
-                category: 'business'
-            }, 'Realistic Character');
-        }
-        
-        async function testCustomAnime() {
-            await testCustomPromptWithStyle('anime', 'fullbody');
-        }
-        
-        async function testCustomRealistic() {
-            await testCustomPromptWithStyle('realistic', 'fullbody');
-        }
-        
-        async function testCustomPromptWithStyle(style, shotType) {
-            const prompt = document.getElementById('customPromptField').value;
-            if (!prompt.trim()) {
-                alert('Please enter a prompt');
-                return;
-            }
-            
-            const resultDiv = document.createElement('div');
-            resultDiv.className = 'test-result';
-            resultDiv.innerHTML = `<h3>🔄 Custom ${style} - Generating...</h3><p><strong>Your prompt:</strong> ${prompt}</p>`;
-            document.getElementById('results').appendChild(resultDiv);
-            
-            const startTime = Date.now();
-            
-            try {
-                const response = await fetch('/.netlify/functions/generate-custom-image', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        customPrompt: prompt,
-                        characterName: 'Custom Character',
-                        category: style === 'anime' ? 'anime-manga' : 'realistic',
-                        style: style,
-                        shotType: shotType
-                    })
-                });
-                
-                const endTime = Date.now();
-                const duration = (endTime - startTime) / 1000;
-                
-                if (response.ok) {
-                    const result = await response.json();
-                    resultDiv.innerHTML = `
-                        <h3>✅ Custom ${style} - Success (${duration}s)</h3>
-                        <p><strong>Your Prompt:</strong> ${result.customPrompt}</p>
-                        <p><strong>Full Prompt:</strong> ${result.fullPrompt}</p>
-                        <p><strong>Style:</strong> ${result.isAnimeStyle ? 'Anime' : 'Realistic'} | ${shotType}</p>
-                        <img src="${result.imageUrl}" alt="Custom Generated" class="generated-image" loading="lazy">
-                    `;
-                } else {
-                    const error = await response.json();
-                    resultDiv.innerHTML = `
-                        <h3>❌ Custom ${style} - Failed (${duration}s)</h3>
-                        <p><strong>Error:</strong> ${error.error}</p>
-                        <p><strong>Details:</strong> ${error.details}</p>
-                    `;
-                }
-            } catch (error) {
-                resultDiv.innerHTML = `
-                    <h3>💥 Custom ${style} - Request Failed</h3>
-                    <p><strong>Error:</strong> ${error.message}</p>
-                `;
-            }
-        }
-
-        async function testCustomPrompt() {
-            const prompt = document.getElementById('customPromptField').value;
-            if (!prompt.trim()) {
-                alert('Please enter a prompt');
-                return;
-            }
-            
-            const resultDiv = document.createElement('div');
-            resultDiv.className = 'test-result';
-            resultDiv.innerHTML = `<h3>🔄 Custom Prompt - Generating...</h3><p><strong>Your prompt:</strong> ${prompt}</p>`;
-            document.getElementById('results').appendChild(resultDiv);
-            
-            const startTime = Date.now();
-            
-            try {
-                const response = await fetch('/.netlify/functions/generate-custom-image', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        customPrompt: prompt,
-                        characterName: 'Custom Character',
-                        category: 'anime-manga'
-                    })
-                });
-                
-                const endTime = Date.now();
-                const duration = (endTime - startTime) / 1000;
-                
-                if (response.ok) {
-                    const result = await response.json();
-                    resultDiv.innerHTML = `
-                        <h3>✅ Custom Prompt - Success (${duration}s)</h3>
-                        <p><strong>Your Prompt:</strong> ${result.customPrompt}</p>
-                        <p><strong>Full Prompt:</strong> ${result.fullPrompt}</p>
-                        <p><strong>Style:</strong> ${result.isAnimeStyle ? 'Anime' : 'Realistic'}</p>
-                        <img src="${result.imageUrl}" alt="Custom Generated" class="generated-image" loading="lazy">
-                    `;
-                } else {
-                    const error = await response.json();
-                    resultDiv.innerHTML = `
-                        <h3>❌ Custom Prompt - Failed (${duration}s)</h3>
-                        <p><strong>Error:</strong> ${error.error}</p>
-                        <p><strong>Details:</strong> ${error.details}</p>
-                    `;
-                }
-            } catch (error) {
-                resultDiv.innerHTML = `
-                    <h3>💥 Custom Prompt - Request Failed</h3>
-                    <p><strong>Error:</strong> ${error.message}</p>
-                `;
-            }
-        }
-    </script>
+      } catch (error) {
+        document.getElementById('results').innerHTML = `<div style="color: #ef4444; padding: 20px;">❌ Error: ${error.message}</div>`;
+      }
+      
+      btn.textContent = '🎨 Generate';
+      btn.disabled = false;
+    }
+    
+    function clear() {
+      document.getElementById('results').innerHTML = '';
+    }
+    
+    // Load male preset by default
+    loadPreset('male');
+  </script>
 </body>
 </html>
