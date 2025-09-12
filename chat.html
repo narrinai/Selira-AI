@@ -1410,11 +1410,8 @@
           console.log('👤 No user data found, using anonymous');
         }
         
-        // Get chat history for context (enhanced with memory analysis)
+        // Get chat history for context
         const chatHistory = getChatHistoryForContext(currentCharacter.slug);
-        
-        // Add memory analysis to important messages in context
-        const enhancedHistory = await enhanceHistoryWithMemory(chatHistory, currentCharacter.slug);
         
         // Call OpenRouter chat API
         console.log('🤖 Sending message to AI:', { 
@@ -1434,7 +1431,7 @@
             character_slug: currentCharacter.slug,
             auth0_id: auth0_id,
             model: 'mistralai/mistral-nemo',
-            local_history: enhancedHistory // Send enhanced history with memory context
+            local_history: chatHistory // Send localStorage history for context
           })
         });
         
@@ -1642,61 +1639,6 @@
       }
     }
 
-    // Enhanced memory system using localStorage analysis
-    async function enhanceHistoryWithMemory(chatHistory, characterSlug) {
-      try {
-        // Analyze recent messages for important personal info
-        const fullHistory = cleanupChatHistory(characterSlug);
-        const importantMemories = [];
-        
-        // Find messages with high memory importance
-        for (const msg of fullHistory) {
-          if (msg.type === 'user' && msg.content.length > 10) {
-            try {
-              // Quick local analysis of message importance
-              const importance = analyzeMessageImportance(msg.content);
-              if (importance >= 7) {
-                importantMemories.push({
-                  role: 'system',
-                  content: `Important memory about user: "${msg.content}"`
-                });
-              }
-            } catch (e) {
-              // Skip if analysis fails
-            }
-          }
-        }
-        
-        // Combine memories with chat history
-        const enhanced = [...importantMemories, ...chatHistory];
-        
-        console.log('🧠 Enhanced history:', {
-          memories: importantMemories.length,
-          chatHistory: chatHistory.length,
-          total: enhanced.length
-        });
-        
-        return enhanced.slice(-12); // Keep last 12 items (memories + recent chat)
-        
-      } catch (error) {
-        console.log('⚠️ Memory enhancement failed, using basic history');
-        return chatHistory;
-      }
-    }
-
-    // Simple local message importance analysis
-    function analyzeMessageImportance(message) {
-      const lowerMsg = message.toLowerCase();
-      let importance = 3;
-      
-      // High importance patterns
-      if (lowerMsg.includes('my name is') || lowerMsg.includes('i am') || lowerMsg.includes("i'm")) importance += 5;
-      if (lowerMsg.includes('years old') || lowerMsg.includes('age')) importance += 4;
-      if (lowerMsg.includes('i love') || lowerMsg.includes('i like') || lowerMsg.includes('favorite')) importance += 3;
-      if (lowerMsg.includes('i work') || lowerMsg.includes('job') || lowerMsg.includes('career')) importance += 4;
-      
-      return Math.min(importance, 10);
-    }
 
     // Get chat history for AI context (last 10 messages)
     function getChatHistoryForContext(characterSlug) {
