@@ -978,8 +978,71 @@
             </div>
           </div>
 
-          <!-- Step 5: Hair Color -->
-          <div class="creation-step" id="step5">
+          <!-- Step 5a: Female Hair Color -->
+          <div class="creation-step" id="step5-female">
+            <h3 style="color: var(--text-primary); margin-bottom: 40px; font-size: 28px; font-weight: 700; text-align: center;">Choose Hair Color</h3>
+            <div class="hair-grid" style="grid-template-columns: repeat(4, 1fr); gap: 40px; max-width: 1000px; margin: 0 auto;">
+              <div class="hair-option" data-hair-color="brown" onclick="selectHairColorStep('brown')" style="border-color: var(--accent);">
+                <div style="height: 160px; background: url('/images/brown-hair-female.png') center/cover; border-radius: 12px;"></div>
+                <div style="padding: 12px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Brown</h4>
+                </div>
+              </div>
+              <div class="hair-option" data-hair-color="black" onclick="selectHairColorStep('black')">
+                <div style="height: 160px; background: url('/images/black-hair-female.png') center/cover; border-radius: 12px;"></div>
+                <div style="padding: 12px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Black</h4>
+                </div>
+              </div>
+              <div class="hair-option" data-hair-color="red" onclick="selectHairColorStep('red')">
+                <div style="height: 160px; background: url('/images/red-hair-female.png') center/cover; border-radius: 12px;"></div>
+                <div style="padding: 12px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Red</h4>
+                </div>
+              </div>
+              <div class="hair-option" data-hair-color="gray" onclick="selectHairColorStep('gray')">
+                <div style="height: 160px; background: url('/images/grey-hair-female.png') center/cover; border-radius: 12px;"></div>
+                <div style="padding: 12px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Gray</h4>
+                </div>
+              </div>
+              <div class="hair-option" data-hair-color="blonde" onclick="selectHairColorStep('blonde')">
+                <div style="height: 160px; background: linear-gradient(135deg, #FFD700, #FFF8DC); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                  <div style="width: 60px; height: 60px; background: #FFD700; border-radius: 50%; border: 3px solid white; box-shadow: 0 4px 12px rgba(0,0,0,0.3);"></div>
+                </div>
+                <div style="padding: 12px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Blonde</h4>
+                </div>
+              </div>
+              <div class="hair-option" data-hair-color="auburn" onclick="selectHairColorStep('auburn')">
+                <div style="height: 160px; background: linear-gradient(135deg, #A52A2A, #CD853F); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                  <div style="width: 60px; height: 60px; background: #A52A2A; border-radius: 50%; border: 3px solid white; box-shadow: 0 4px 12px rgba(0,0,0,0.3);"></div>
+                </div>
+                <div style="padding: 12px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Auburn</h4>
+                </div>
+              </div>
+              <div class="hair-option" data-hair-color="white" onclick="selectHairColorStep('white')">
+                <div style="height: 160px; background: linear-gradient(135deg, #F5F5F5, #FFFFFF); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                  <div style="width: 60px; height: 60px; background: #F8F8FF; border-radius: 50%; border: 3px solid #333; box-shadow: 0 4px 12px rgba(0,0,0,0.3);"></div>
+                </div>
+                <div style="padding: 12px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">White</h4>
+                </div>
+              </div>
+              <div class="hair-option" data-hair-color="purple" onclick="selectHairColorStep('purple')">
+                <div style="height: 160px; background: linear-gradient(135deg, #800080, #DA70D6); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                  <div style="width: 60px; height: 60px; background: #800080; border-radius: 50%; border: 3px solid white; box-shadow: 0 4px 12px rgba(0,0,0,0.3);"></div>
+                </div>
+                <div style="padding: 12px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Purple</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 5b: Male Hair Color -->
+          <div class="creation-step" id="step5-male">
             <h3 style="color: var(--text-primary); margin-bottom: 40px; font-size: 28px; font-weight: 700; text-align: center;">Choose Hair Color</h3>
             <div style="max-width: 400px; margin: 0 auto;">
               <label style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 12px; font-size: 16px;">Hair Color</label>
@@ -1124,6 +1187,9 @@
       } else if (currentStep === 4) {
         document.getElementById('step4-female').style.display = 'none';
         document.getElementById('step4-male').style.display = 'none';
+      } else if (currentStep === 5) {
+        document.getElementById('step5-female').style.display = 'none';
+        document.getElementById('step5-male').style.display = 'none';
       } else {
         const stepElement = document.getElementById(`step${currentStep}`);
         if (stepElement) stepElement.style.display = 'none';
@@ -1139,6 +1205,9 @@
         document.getElementById(genderStep).style.display = 'block';
       } else if (currentStep === 4) {
         const genderStep = characterCreationState.sex === 'female' ? 'step4-female' : 'step4-male';
+        document.getElementById(genderStep).style.display = 'block';
+      } else if (currentStep === 5) {
+        const genderStep = characterCreationState.sex === 'female' ? 'step5-female' : 'step5-male';
         document.getElementById(genderStep).style.display = 'block';
       } else {
         const stepElement = document.getElementById(`step${currentStep}`);
