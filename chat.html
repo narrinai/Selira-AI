@@ -2227,6 +2227,9 @@
       // Add user message
       addMessage(message, 'user');
       
+      // Save user message to localStorage
+      saveUserMessageToStorage(currentCharacter.slug, message);
+      
       // Add loading message
       const loadingId = 'loading-' + Date.now();
       addMessage('🎨 Generating your image...', 'ai', loadingId);
@@ -2293,6 +2296,30 @@
             messageText.textContent = `❌ Sorry, there was an error generating your image.`;
           }
         }
+      }
+    }
+
+    // Save single user message to localStorage
+    function saveUserMessageToStorage(characterSlug, userMessage) {
+      try {
+        const storageKey = `chat_${characterSlug}`;
+        let chatHistory = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        
+        // Add user message
+        chatHistory.push({
+          type: 'user',
+          content: userMessage,
+          timestamp: Date.now()
+        });
+        
+        // Keep only last 50 messages
+        chatHistory = chatHistory.slice(-50);
+        
+        localStorage.setItem(storageKey, JSON.stringify(chatHistory));
+        console.log('💾 Saved user message to localStorage:', characterSlug);
+        
+      } catch (error) {
+        console.error('❌ Error saving user message to localStorage:', error);
       }
     }
 
