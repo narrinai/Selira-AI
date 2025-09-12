@@ -752,7 +752,7 @@
             
             <div class="form-group">
               <label class="form-label">Email Address</label>
-              <input type="email" class="form-input" value="user@example.com" disabled>
+              <input type="email" class="form-input" id="userEmail" value="Loading..." disabled>
             </div>
             
             <div class="form-group">
@@ -918,6 +918,48 @@
       }
     }
     
+    // Load user profile data from Auth0
+    function loadUserProfile() {
+      try {
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        
+        console.log('👤 Loading user profile:', {
+          hasUser: !!user,
+          userKeys: Object.keys(user),
+          email: user.email,
+          name: user.name
+        });
+        
+        if (user.email) {
+          // Update email field
+          document.getElementById('userEmail').value = user.email;
+          
+          // Update display name if exists
+          if (user.name) {
+            const displayNameField = document.getElementById('userDisplayName');
+            if (displayNameField) {
+              displayNameField.value = user.name;
+            }
+          }
+          
+          // Update any other profile fields that exist
+          console.log('✅ Profile loaded:', user.email);
+        } else {
+          console.log('⚠️ No user data found in localStorage');
+          document.getElementById('userEmail').value = 'Not logged in';
+        }
+        
+      } catch (error) {
+        console.error('❌ Error loading profile:', error);
+        document.getElementById('userEmail').value = 'Error loading profile';
+      }
+    }
+
+    // Initialize profile on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      loadUserProfile();
+    });
+
     // TODO: Add authentication integration
     // TODO: Add real API calls for saving user data
     // TODO: Add loading states for save buttons
