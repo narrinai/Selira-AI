@@ -1398,8 +1398,10 @@
             userKeys: Object.keys(user) 
           });
           
-          // Skip auto-sync during chat - user should already exist from registration
-          // Auto-sync causes delays and the user was already synced during Auth0 callback
+          // Ensure user exists in Airtable with new clean sync function
+          if (auth0_id !== 'anonymous') {
+            await ensureUserInAirtable(auth0_id, user_email, user.name, user.nickname);
+          }
           
         } catch (e) {
           // If no user data, use anonymous
@@ -2097,7 +2099,7 @@
       try {
         console.log('🔄 Syncing Auth0 user to Airtable...');
         
-        const response = await fetch('/.netlify/functions/sync-auth0-user', {
+        const response = await fetch('/.netlify/functions/selira-user-sync', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -2106,7 +2108,7 @@
             auth0_id: auth0_id,
             email: email,
             name: name,
-            nickname: nickname
+            picture: user_data?.picture
           })
         });
 
@@ -2139,16 +2141,15 @@
           hasAiResponse: !!aiResponse
         });
 
-        const response = await fetch('/.netlify/functions/save-chat-message', {
+        const response = await fetch('/.netlify/functions/selira-save-chat', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            user_email: user_email,
-            user_uid: auth0_id, // Use Auth0 ID as unique identifier
-            user_token: 'auth0_authenticated', // Simple token to indicate Auth0 authentication
-            char: character_slug,
+            email: user_email,
+            auth0_id: auth0_id,
+            character_slug: character_slug,
             user_message: userMessage,
             ai_response: aiResponse
           })
