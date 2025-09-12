@@ -369,7 +369,7 @@
     }
     
     #progressFill {
-      width: 16.66%;
+      width: 20%;
       height: 100%;
       background: var(--accent);
       transition: width 0.3s ease;
@@ -751,33 +751,8 @@
         <!-- Step Content -->
         <div class="step-container">
           
-          <!-- Step 1: Sex Selection -->
+          <!-- Step 1: Style Selection -->
           <div class="creation-step active" id="step1">
-            <h3 style="color: var(--text-primary); margin-bottom: 40px; font-size: 28px; font-weight: 700; text-align: center;">Choose Sex</h3>
-            <div class="style-grid" style="max-width: 600px;">
-              <div class="sex-option" data-sex="female" onclick="selectSexStep('female')" style="border-color: var(--accent);">
-                <div style="height: 200px; background: linear-gradient(135deg, #ec4899 0%, #f97316 100%); display: flex; align-items: center; justify-content: center; border-radius: 12px;">
-                  <div style="color: white; font-size: 48px; text-shadow: 0 2px 8px rgba(0,0,0,0.3);">♀</div>
-                </div>
-                <div style="padding: 12px; text-align: center;">
-                  <h4 style="color: var(--text-primary); font-size: 18px; font-weight: 700; margin-bottom: 8px;">Female</h4>
-                  <p style="color: var(--text-secondary); font-size: 14px;">Female companion</p>
-                </div>
-              </div>
-              <div class="sex-option" data-sex="male" onclick="selectSexStep('male')">
-                <div style="height: 200px; background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); display: flex; align-items: center; justify-content: center; border-radius: 12px;">
-                  <div style="color: white; font-size: 48px; text-shadow: 0 2px 8px rgba(0,0,0,0.3);">♂</div>
-                </div>
-                <div style="padding: 12px; text-align: center;">
-                  <h4 style="color: var(--text-primary); font-size: 18px; font-weight: 700; margin-bottom: 8px;">Male</h4>
-                  <p style="color: var(--text-secondary); font-size: 14px;">Male companion</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Step 2: Style Selection -->
-          <div class="creation-step" id="step2">
             <h3 style="color: var(--text-primary); margin-bottom: 20px; font-size: 20px; font-weight: 700; text-align: center;">Choose Art Style</h3>
             <div class="style-grid">
               <div class="style-option" data-style="realistic" onclick="selectStyleStep('realistic')">
@@ -799,8 +774,8 @@
             </div>
           </div>
 
-          <!-- Step 3a: Female Ethnicity Selection -->
-          <div class="creation-step" id="step3-female">
+          <!-- Step 2: Ethnicity Selection -->
+          <div class="creation-step" id="step2">
             <h3 style="color: var(--text-primary); margin-bottom: 40px; font-size: 28px; font-weight: 700; text-align: center;">Choose Ethnicity</h3>
             <div class="ethnicity-grid">
               <div class="ethnicity-option" data-ethnicity="white" onclick="selectEthnicityStep('white')" style="border-color: var(--accent);">
@@ -860,70 +835,8 @@
             </div>
           </div>
 
-          <!-- Step 3b: Male Ethnicity Selection -->
-          <div class="creation-step" id="step3-male">
-            <h3 style="color: var(--text-primary); margin-bottom: 40px; font-size: 28px; font-weight: 700; text-align: center;">Choose Ethnicity</h3>
-            <div class="ethnicity-grid">
-              <div class="ethnicity-option" data-ethnicity="white" onclick="selectEthnicityStep('white')" style="border-color: var(--accent);">
-                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300') center/cover;"></div>
-                <div style="padding: 12px; text-align: center;">
-                  <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">White/Caucasian</h4>
-                </div>
-              </div>
-              <div class="ethnicity-option" data-ethnicity="black" onclick="selectEthnicityStep('black')">
-                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300') center/cover;"></div>
-                <div style="padding: 12px; text-align: center;">
-                  <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Black/African</h4>
-                </div>
-              </div>
-              <div class="ethnicity-option" data-ethnicity="indian" onclick="selectEthnicityStep('indian')">
-                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=300') center/cover;"></div>
-                <div style="padding: 12px; text-align: center;">
-                  <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Indian/South Asian</h4>
-                </div>
-              </div>
-              <div class="ethnicity-option" data-ethnicity="middle-east" onclick="selectEthnicityStep('middle-east')">
-                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300') center/cover;"></div>
-                <div style="padding: 12px; text-align: center;">
-                  <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Middle Eastern</h4>
-                </div>
-              </div>
-              <div class="ethnicity-option" data-ethnicity="hispanic" onclick="selectEthnicityStep('hispanic')">
-                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?w=300') center/cover;"></div>
-                <div style="padding: 12px; text-align: center;">
-                  <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Hispanic/Latino</h4>
-                </div>
-              </div>
-              <div class="ethnicity-option" data-ethnicity="korean" onclick="selectEthnicityStep('korean')">
-                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1595152772835-219674b2a8a6?w=300') center/cover;"></div>
-                <div style="padding: 12px; text-align: center;">
-                  <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Korean</h4>
-                </div>
-              </div>
-              <div class="ethnicity-option" data-ethnicity="chinese" onclick="selectEthnicityStep('chinese')">
-                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1566492031773-4f4e44671d66?w=300') center/cover;"></div>
-                <div style="padding: 12px; text-align: center;">
-                  <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Chinese</h4>
-                </div>
-              </div>
-              <div class="ethnicity-option" data-ethnicity="japanese" onclick="selectEthnicityStep('japanese')">
-                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1563237023-b1e970526dcb?w=300') center/cover;"></div>
-                <div style="padding: 12px; text-align: center;">
-                  <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Japanese</h4>
-                </div>
-              </div>
-              <div class="ethnicity-option" data-ethnicity="vietnamese" onclick="selectEthnicityStep('vietnamese')">
-                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1548142813-c348350df52d?w=300') center/cover;"></div>
-                <div style="padding: 12px; text-align: center;">
-                  <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Vietnamese</h4>
-                </div>
-              </div>
-            </div>
-          </div>
-
-
-          <!-- Step 4a: Female Hair Length -->
-          <div class="creation-step" id="step4-female">
+          <!-- Step 3: Hair Length -->
+          <div class="creation-step" id="step3">
             <h3 style="color: var(--text-primary); margin-bottom: 40px; font-size: 28px; font-weight: 700; text-align: center;">Choose Hair Length</h3>
             <div class="hair-grid" style="grid-template-columns: repeat(3, 1fr); gap: 60px; max-width: 800px; margin: 0 auto;">
               <div class="hair-option" data-hair="short" onclick="selectHairStep('short')" style="border-color: var(--accent);">
@@ -950,36 +863,8 @@
             </div>
           </div>
 
-          <!-- Step 4b: Male Hair Length -->
-          <div class="creation-step" id="step4-male">
-            <h3 style="color: var(--text-primary); margin-bottom: 40px; font-size: 28px; font-weight: 700; text-align: center;">Choose Hair Length</h3>
-            <div class="hair-grid" style="grid-template-columns: repeat(3, 1fr); gap: 60px; max-width: 800px; margin: 0 auto;">
-              <div class="hair-option" data-hair="short" onclick="selectHairStep('short')" style="border-color: var(--accent);">
-                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300') center/cover; border-radius: 12px;"></div>
-                <div style="padding: 16px; text-align: center;">
-                  <h4 style="color: var(--text-primary); font-size: 16px; font-weight: 600;">Short</h4>
-                  <p style="color: var(--text-secondary); font-size: 13px; margin-top: 4px;">Buzz cut / short</p>
-                </div>
-              </div>
-              <div class="hair-option" data-hair="medium" onclick="selectHairStep('medium')">
-                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300') center/cover; border-radius: 12px;"></div>
-                <div style="padding: 16px; text-align: center;">
-                  <h4 style="color: var(--text-primary); font-size: 16px; font-weight: 600;">Medium</h4>
-                  <p style="color: var(--text-secondary); font-size: 13px; margin-top: 4px;">Business style</p>
-                </div>
-              </div>
-              <div class="hair-option" data-hair="long" onclick="selectHairStep('long')">
-                <div style="height: 160px; background: url('https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=300') center/cover; border-radius: 12px;"></div>
-                <div style="padding: 16px; text-align: center;">
-                  <h4 style="color: var(--text-primary); font-size: 16px; font-weight: 600;">Long</h4>
-                  <p style="color: var(--text-secondary); font-size: 13px; margin-top: 4px;">Flowing / manbun</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Step 5a: Female Hair Color -->
-          <div class="creation-step" id="step5-female">
+          <!-- Step 4: Hair Color -->
+          <div class="creation-step" id="step4">
             <h3 style="color: var(--text-primary); margin-bottom: 40px; font-size: 28px; font-weight: 700; text-align: center;">Choose Hair Color</h3>
             <div class="hair-grid" style="grid-template-columns: repeat(4, 1fr); gap: 40px; max-width: 1000px; margin: 0 auto;">
               <div class="hair-option" data-hair-color="brown" onclick="selectHairColorStep('brown')" style="border-color: var(--accent);">
@@ -1033,26 +918,8 @@
             </div>
           </div>
 
-          <!-- Step 5b: Male Hair Color -->
-          <div class="creation-step" id="step5-male">
-            <h3 style="color: var(--text-primary); margin-bottom: 40px; font-size: 28px; font-weight: 700; text-align: center;">Choose Hair Color</h3>
-            <div style="max-width: 400px; margin: 0 auto;">
-              <label style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 12px; font-size: 16px;">Hair Color</label>
-              <select id="hairColorSelect" class="form-input" style="font-size: 16px; padding: 16px;" onchange="selectHairColorStep(this.value)">
-                <option value="brown" selected>Brown</option>
-                <option value="black">Black</option>
-                <option value="blonde">Blonde</option>
-                <option value="red">Red</option>
-                <option value="auburn">Auburn</option>
-                <option value="gray">Gray</option>
-                <option value="white">White</option>
-                <option value="purple">Purple</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Step 6: Final Details -->
-          <div class="creation-step" id="step6">
+          <!-- Step 5: Final Details -->
+          <div class="creation-step" id="step5">
             <h3 style="color: var(--text-primary); margin-bottom: 30px; font-size: 28px; font-weight: 700; text-align: center;">Final Details</h3>
             <div style="max-width: 600px; margin: 0 auto; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px;">
               
@@ -1142,7 +1009,7 @@
       name: '',
       style: 'anime',
       ethnicity: 'white',
-      sex: 'female',
+      sex: 'female', // Fixed to female
       hairLength: 'short',
       hairColor: 'brown',
       category: 'fantasy',
@@ -1150,7 +1017,7 @@
       currentStep: 1
     };
 
-    let totalSteps = 6;
+    let totalSteps = 5;
 
     // ===== STEP NAVIGATION =====
     function nextStep() {
@@ -1171,40 +1038,14 @@
 
     function hideCurrentStep() {
       const currentStep = characterCreationState.currentStep;
-      
-      // Handle gender-specific steps
-      if (currentStep === 3) {
-        document.getElementById('step3-female').style.display = 'none';
-        document.getElementById('step3-male').style.display = 'none';
-      } else if (currentStep === 4) {
-        document.getElementById('step4-female').style.display = 'none';
-        document.getElementById('step4-male').style.display = 'none';
-      } else if (currentStep === 5) {
-        document.getElementById('step5-female').style.display = 'none';
-        document.getElementById('step5-male').style.display = 'none';
-      } else {
-        const stepElement = document.getElementById(`step${currentStep}`);
-        if (stepElement) stepElement.style.display = 'none';
-      }
+      const stepElement = document.getElementById(`step${currentStep}`);
+      if (stepElement) stepElement.style.display = 'none';
     }
 
     function showCurrentStep() {
       const currentStep = characterCreationState.currentStep;
-      
-      // Handle gender-specific steps
-      if (currentStep === 3) {
-        const genderStep = characterCreationState.sex === 'female' ? 'step3-female' : 'step3-male';
-        document.getElementById(genderStep).style.display = 'block';
-      } else if (currentStep === 4) {
-        const genderStep = characterCreationState.sex === 'female' ? 'step4-female' : 'step4-male';
-        document.getElementById(genderStep).style.display = 'block';
-      } else if (currentStep === 5) {
-        const genderStep = characterCreationState.sex === 'female' ? 'step5-female' : 'step5-male';
-        document.getElementById(genderStep).style.display = 'block';
-      } else {
-        const stepElement = document.getElementById(`step${currentStep}`);
-        if (stepElement) stepElement.style.display = 'block';
-      }
+      const stepElement = document.getElementById(`step${currentStep}`);
+      if (stepElement) stepElement.style.display = 'block';
     }
 
     function previousStep() {
@@ -1233,12 +1074,11 @@
       
       // Update step title
       const stepTitles = {
-        1: 'Choose Sex',
-        2: 'Choose Style', 
-        3: 'Choose Ethnicity',
-        4: 'Choose Hair Length',
-        5: 'Choose Hair Color',
-        6: 'Final Details'
+        1: 'Choose Style',
+        2: 'Choose Ethnicity', 
+        3: 'Choose Hair Length',
+        4: 'Choose Hair Color',
+        5: 'Final Details'
       };
       document.getElementById('stepTitle').textContent = stepTitles[currentStep];
       
@@ -1277,17 +1117,6 @@
       console.log('Selected ethnicity:', ethnicity);
     }
 
-    function selectSexStep(sex) {
-      characterCreationState.sex = sex;
-      
-      // Update visual selection
-      document.querySelectorAll('.sex-option').forEach(option => {
-        option.style.border = '2px solid var(--border)';
-      });
-      document.querySelector(`[data-sex="${sex}"]`).style.border = '2px solid var(--accent)';
-      
-      console.log('Selected sex:', sex);
-    }
 
     function selectHairStep(hairLength) {
       characterCreationState.hairLength = hairLength;
@@ -1311,7 +1140,7 @@
     }
 
     function updateFinalPreview() {
-      const traits = `${characterCreationState.style} style, ${characterCreationState.sex}, ${characterCreationState.ethnicity}, ${characterCreationState.hairLength} ${characterCreationState.hairColor} hair`;
+      const traits = `${characterCreationState.style} style, ${characterCreationState.ethnicity}, ${characterCreationState.hairLength} ${characterCreationState.hairColor} hair`;
       const traitsEl = document.getElementById('selectedTraits');
       if (traitsEl) {
         traitsEl.textContent = `Selected: ${traits}`;
