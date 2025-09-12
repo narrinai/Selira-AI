@@ -369,7 +369,7 @@
     }
     
     #progressFill {
-      width: 20%;
+      width: 16.66%;
       height: 100%;
       background: var(--accent);
       transition: width 0.3s ease;
@@ -877,8 +877,26 @@
             </div>
           </div>
 
-          <!-- Step 5: Final Details -->
+          <!-- Step 5: Hair Color -->
           <div class="creation-step" id="step5">
+            <h3 style="color: var(--text-primary); margin-bottom: 40px; font-size: 28px; font-weight: 700; text-align: center;">Choose Hair Color</h3>
+            <div style="max-width: 400px; margin: 0 auto;">
+              <label style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 12px; font-size: 16px;">Hair Color</label>
+              <select id="hairColorSelect" class="form-input" style="font-size: 16px; padding: 16px;" onchange="selectHairColorStep(this.value)">
+                <option value="brown" selected>Brown</option>
+                <option value="black">Black</option>
+                <option value="blonde">Blonde</option>
+                <option value="red">Red</option>
+                <option value="auburn">Auburn</option>
+                <option value="gray">Gray</option>
+                <option value="white">White</option>
+                <option value="purple">Purple</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Step 6: Final Details -->
+          <div class="creation-step" id="step6">
             <h3 style="color: var(--text-primary); margin-bottom: 30px; font-size: 28px; font-weight: 700; text-align: center;">Final Details</h3>
             <div style="max-width: 600px; margin: 0 auto; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px;">
               
@@ -886,7 +904,7 @@
                 <div style="width: 150px; height: 150px; margin: 0 auto 16px; background: var(--bg-tertiary); border-radius: 50%; border: 3px solid var(--accent); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
                   <img id="finalPreview" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDE1MCAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiBmaWxsPSIjMmEyYTJhIiByeD0iNzUiLz4KPHRleHQgeD0iNzUiIHk9Ijc1IiBmaWxsPSIjZDRhNTc0IiBmb250LXNpemU9IjI0IiBmb250LXdlaWdodD0iYm9sZCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9ImNlbnRyYWwiPvCfpK08L3RleHQ+Cjwvc3ZnPgo=" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
-                <div style="color: var(--text-secondary); font-size: 14px;" id="selectedTraits">Selected: Anime style, Female, White, Short hair</div>
+                <div style="color: var(--text-secondary); font-size: 14px;" id="selectedTraits">Selected: Anime style, Female, White, Short brown hair</div>
               </div>
 
               <div style="margin-bottom: 20px;">
@@ -976,12 +994,13 @@
       ethnicity: 'white',
       sex: 'female',
       hairLength: 'short',
+      hairColor: 'brown',
       category: 'fantasy',
       description: '',
       currentStep: 1
     };
 
-    let totalSteps = 5;
+    let totalSteps = 6;
 
     // ===== STEP NAVIGATION =====
     function nextStep() {
@@ -1030,7 +1049,8 @@
         2: 'Choose Style', 
         3: 'Choose Ethnicity',
         4: 'Choose Hair Length',
-        5: 'Final Details'
+        5: 'Choose Hair Color',
+        6: 'Final Details'
       };
       document.getElementById('stepTitle').textContent = stepTitles[currentStep];
       
@@ -1090,14 +1110,20 @@
       });
       document.querySelector(`[data-hair="${hairLength}"]`).style.border = '2px solid var(--accent)';
       
-      // Update final preview
-      updateFinalPreview();
-      
       console.log('Selected hair length:', hairLength);
     }
 
+    function selectHairColorStep(hairColor) {
+      characterCreationState.hairColor = hairColor;
+      
+      // Update final preview
+      updateFinalPreview();
+      
+      console.log('Selected hair color:', hairColor);
+    }
+
     function updateFinalPreview() {
-      const traits = `${characterCreationState.style} style, ${characterCreationState.sex}, ${characterCreationState.ethnicity}, ${characterCreationState.hairLength} hair`;
+      const traits = `${characterCreationState.style} style, ${characterCreationState.sex}, ${characterCreationState.ethnicity}, ${characterCreationState.hairLength} ${characterCreationState.hairColor} hair`;
       const traitsEl = document.getElementById('selectedTraits');
       if (traitsEl) {
         traitsEl.textContent = `Selected: ${traits}`;
@@ -1151,6 +1177,7 @@
             sex: characterCreationState.sex,
             ethnicity: characterCreationState.ethnicity,
             hairLength: characterCreationState.hairLength,
+            hairColor: characterCreationState.hairColor,
             createdBy: createdBy
           })
         });

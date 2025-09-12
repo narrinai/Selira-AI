@@ -1832,7 +1832,8 @@
             Art_Style: char.Art_Style,
             Sex: char.Sex,
             Ethnicity: char.Ethnicity,
-            Hair_Length: char.Hair_Length
+            Hair_Length: char.Hair_Length,
+            Hair_Color: char.Hair_Color
           }));
           
           // Store characters globally
@@ -2296,6 +2297,7 @@
         const characterSex = currentCharacter.Sex || currentCharacter.sex || 'female';
         const characterEthnicity = currentCharacter.Ethnicity || currentCharacter.ethnicity || 'white';  
         const characterHairLength = currentCharacter.Hair_Length || currentCharacter.hairLength || 'medium';
+        const characterHairColor = currentCharacter.Hair_Color || currentCharacter.hairColor || 'brown';
         
         const response = await fetch('/.netlify/functions/generate-custom-image', {
           method: 'POST',
@@ -2308,7 +2310,8 @@
             shotType: 'fullbody',
             sex: characterSex,
             ethnicity: characterEthnicity,
-            hairLength: characterHairLength
+            hairLength: characterHairLength,
+            hairColor: characterHairColor
           })
         });
         

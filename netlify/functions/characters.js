@@ -251,6 +251,7 @@ exports.handler = async (event, context) => {
         Sex: fields.Sex || 'female',
         Ethnicity: fields.Ethnicity || 'white',
         Hair_Length: fields.Hair_Length || 'medium',
+        Hair_Color: fields.Hair_Color || 'brown',
         _Created_by_record_id: (Array.isArray(fields.Created_By) && fields.Created_By.length > 0) ? fields.Created_By[0] : null
       };
     });

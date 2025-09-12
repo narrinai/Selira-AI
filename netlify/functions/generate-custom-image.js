@@ -37,7 +37,7 @@ exports.handler = async (event, context) => {
 
   try {
     const body = JSON.parse(event.body || '{}');
-    const { customPrompt, characterName, category, style, shotType, sex, ethnicity, hairLength } = body;
+    const { customPrompt, characterName, category, style, shotType, sex, ethnicity, hairLength, hairColor } = body;
     
     console.log('📋 Received:', {
       customPrompt,
@@ -47,7 +47,8 @@ exports.handler = async (event, context) => {
       shotType,
       sex,
       ethnicity,
-      hairLength
+      hairLength,
+      hairColor
     });
     
     if (!customPrompt) {
@@ -94,8 +95,21 @@ exports.handler = async (event, context) => {
       'long': 'long hair, flowing hair'
     };
     
+    // Hair color descriptions
+    const hairColorMap = {
+      'brown': 'brown hair',
+      'black': 'black hair',
+      'blonde': 'blonde hair, golden hair',
+      'red': 'red hair, ginger hair',
+      'auburn': 'auburn hair, reddish-brown hair',
+      'gray': 'gray hair, silver hair',
+      'white': 'white hair, platinum hair',
+      'purple': 'purple hair, violet hair'
+    };
+    
     const ethnicityDesc = ethnicityMap[ethnicity] || 'diverse features';
-    const hairDesc = hairMap[hairLength] || 'styled hair';
+    const hairLengthDesc = hairMap[hairLength] || 'styled hair';
+    const hairColorDesc = hairColorMap[hairColor] || 'brown hair';
     
     // Smart context enhancement based on keywords
     let contextualEnhancement = '';
@@ -135,7 +149,7 @@ exports.handler = async (event, context) => {
                        promptLower.includes('beach') || promptLower.includes('pose');
     
     // Build character-aware prompt
-    const characterAppearance = `${genderDescription}, ${ethnicityDesc}, ${hairDesc}`;
+    const characterAppearance = `${genderDescription}, ${ethnicityDesc}, ${hairLengthDesc}, ${hairColorDesc}`;
     
     // Build full prompt with character appearance and context
     let fullPrompt;

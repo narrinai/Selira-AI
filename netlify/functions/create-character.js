@@ -44,6 +44,7 @@ exports.handler = async (event, context) => {
       sex, 
       ethnicity, 
       hairLength,
+      hairColor,
       createdBy 
     } = body;
     
@@ -55,6 +56,7 @@ exports.handler = async (event, context) => {
       sex,
       ethnicity,
       hairLength,
+      hairColor,
       createdBy
     });
     
@@ -83,6 +85,7 @@ exports.handler = async (event, context) => {
       Sex: sex || 'female',
       Ethnicity: ethnicity || 'white',
       Hair_Length: hairLength || 'medium',
+      Hair_Color: hairColor || 'brown',
       Created_by: createdBy || 'User',
       Visibility: 'public',
       Category: 'user-created',
