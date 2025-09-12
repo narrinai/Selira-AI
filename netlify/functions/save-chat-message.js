@@ -142,14 +142,20 @@ exports.handler = async (event, context) => {
       }
     }
 
-    let userData;
     if (!userResponse.ok) {
-      console.log(`⚠️ User lookup failed with status ${userResponse.status}, will create new user`);
-      // Don't throw error, just set empty data to trigger user creation
-      userData = { records: [] };
-    } else {
-      userData = await userResponse.json();
+      console.log(`❌ User lookup failed with status ${userResponse.status}`);
+      return {
+        statusCode: 404,
+        headers,
+        body: JSON.stringify({ 
+          success: false, 
+          error: 'User not found in system',
+          message: 'Please ensure user is registered in Airtable first'
+        })
+      };
     }
+
+    const userData = await userResponse.json();
     console.log(`👤 User lookup result (${lookupStrategy}):`, userData.records.length, 'users found');
     
     if (userData.records.length > 0) {
@@ -173,65 +179,23 @@ exports.handler = async (event, context) => {
     let userRecordId = null;
     
     if (userData.records.length === 0) {
-      console.log('⚠️ User not found in Users table, creating new user...');
-      console.log('👤 Creating user with:', {
-        email: user_email,
-        auth0_id: user_uid,
-        emailIsAuth0ID: !user_email.includes('@')
-      });
-      
-      // Create a new user record with only the essential fields that exist in Airtable
-      const timestamp = Date.now();
-      const newUserFields = {
-        Email: user_email,
-        Auth0ID: user_uid
-      };
-      
-      console.log('🔨 Creating user with fields:', newUserFields);
-      
-      const createUserResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          records: [{
-            fields: newUserFields
-          }]
+      console.log('❌ User not found in Users table');
+      return {
+        statusCode: 404,
+        headers,
+        body: JSON.stringify({ 
+          success: false, 
+          error: 'User not found in Airtable Users table',
+          message: 'User must exist in Airtable to save memory. Please register first.',
+          debug: { email: user_email, auth0_id: user_uid }
         })
-      });
-      
-      if (createUserResponse.ok) {
-        const createData = await createUserResponse.json();
-        userRecordId = createData.records[0].id;
-        userIdForSave = userRecordId; // Use record ID directly
-        console.log('✅ Created new user:', {
-          recordId: userRecordId,
-          userID: userIdForSave,
-          email: newUserFields.Email,
-          auth0ID: newUserFields.Auth0ID
-        });
-      } else {
-        const createError = await createUserResponse.text();
-        console.log('❌ Failed to create user:', createUserResponse.status, createError);
-        return {
-          statusCode: 500,
-          headers,
-          body: JSON.stringify({ 
-            success: false, 
-            error: 'Failed to create user record',
-            details: createError,
-            debug: { newUserFields, status: createUserResponse.status }
-          })
-        };
-      }
-    } else {
-      userRecordId = userData.records[0].id;
-      // Use record ID directly since User_ID field might not exist
-      userIdForSave = userRecordId;
-      console.log('✅ Found user - Record ID:', userRecordId, 'Using as User ID:', userIdForSave);
+      };
     }
+
+    // User found - use existing record
+    userRecordId = userData.records[0].id;
+    userIdForSave = userData.records[0].fields.User_ID || userRecordId;
+    console.log('✅ Found user - Record ID:', userRecordId, 'User ID:', userIdForSave);
 
     // Stap 2: Get character name and ID from Characters table
     const characterResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters?filterByFormula={Slug}='${char}'`, {
