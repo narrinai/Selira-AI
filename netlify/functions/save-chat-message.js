@@ -34,7 +34,7 @@ exports.handler = async (event, context) => {
     const { 
       user_email, 
       user_uid, 
-      user_token, 
+      user_token, // Optional - not required anymore
       char, 
       user_message, 
       ai_response 
@@ -47,13 +47,14 @@ exports.handler = async (event, context) => {
     
     console.log('🔍 SaveChatMessage request:', { 
       user_email, 
-      user_uid: !!user_uid, 
+      user_uid, 
       user_token: !!user_token, 
       char,
       isAnonymousUser,
       isFeaturedCharacter,
       user_message: user_message ? user_message.substring(0, 50) + '...' : 'none',
-      ai_response: ai_response ? ai_response.substring(0, 50) + '...' : 'none'
+      ai_response: ai_response ? ai_response.substring(0, 50) + '...' : 'none',
+      emailType: user_email ? (user_email.includes('@') ? 'email' : 'auth0_id') : 'none'
     });
     
     // For anonymous users with featured characters, use a shared anonymous user record
@@ -77,13 +78,19 @@ exports.handler = async (event, context) => {
       });
     }
 
-    if (!user_email || !user_uid || !user_token || !char) {
+    if (!user_email || !user_uid || !char) {
       return {
         statusCode: 400,
         headers,
         body: JSON.stringify({ 
           success: false, 
-          error: 'Missing required fields: user_email, user_uid, user_token, char' 
+          error: 'Missing required fields: user_email, user_uid, char',
+          received: { 
+            user_email: !!user_email, 
+            user_uid: !!user_uid, 
+            user_token: !!user_token, 
+            char: !!char 
+          }
         })
       };
     }

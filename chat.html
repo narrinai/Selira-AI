@@ -1389,12 +1389,21 @@
       try {
         // Get user data for API call - handle both authenticated and anonymous users
         let auth0_id = 'anonymous';
+        let user_email = 'anonymous';
         try {
           const user = JSON.parse(localStorage.getItem('user') || '{}');
-          auth0_id = user.sub || user.auth0_id || user.email || 'anonymous';
+          auth0_id = user.sub || user.uid || user.auth0_id || user.email || 'anonymous';
+          user_email = user.email || user.sub || 'anonymous';
+          console.log('👤 User data found:', { 
+            auth0_id: auth0_id, 
+            email: user_email, 
+            userKeys: Object.keys(user) 
+          });
         } catch (e) {
           // If no user data, use anonymous
           auth0_id = 'anonymous';
+          user_email = 'anonymous';
+          console.log('👤 No user data found, using anonymous');
         }
         
         // Get chat history for context
@@ -1442,7 +1451,7 @@
         saveBothMessagesToStorage(currentCharacter.slug, message, data.response);
         
         // Save conversation to Airtable (async)
-        saveChatMessage(auth0_id, currentCharacter.slug, message, data.response);
+        saveChatMessage(auth0_id, user_email, currentCharacter.slug, message, data.response);
         
       } catch (error) {
         console.error('❌ Error sending message:', error);
@@ -2076,7 +2085,7 @@
     }
 
     // Save chat message to Airtable
-    async function saveChatMessage(auth0_id, character_slug, userMessage, aiResponse) {
+    async function saveChatMessage(auth0_id, user_email, character_slug, userMessage, aiResponse) {
       try {
         // Skip saving for anonymous users
         if (auth0_id === 'anonymous') {
@@ -2084,14 +2093,13 @@
           return;
         }
         
-        // Get user token from Auth0 if available
-        let userToken = 'dummy_token'; // Fallback
-        try {
-          const user = JSON.parse(localStorage.getItem('user') || '{}');
-          userToken = user.access_token || user.token || user.id_token || 'dummy_token';
-        } catch (e) {
-          console.log('⚠️ Could not get user token, using fallback');
-        }
+        console.log('💾 Saving chat message:', {
+          auth0_id: auth0_id,
+          email: user_email,
+          character: character_slug,
+          hasUserMessage: !!userMessage,
+          hasAiResponse: !!aiResponse
+        });
 
         const response = await fetch('/.netlify/functions/save-chat-message', {
           method: 'POST',
@@ -2099,9 +2107,9 @@
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            user_email: auth0_id, // Use auth0_id as email for now
-            user_uid: auth0_id,
-            user_token: userToken,
+            user_email: user_email,
+            user_uid: auth0_id, // Use Auth0 ID as unique identifier
+            user_token: 'auth0_authenticated', // Simple token to indicate Auth0 authentication
             char: character_slug,
             user_message: userMessage,
             ai_response: aiResponse
