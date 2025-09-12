@@ -102,10 +102,10 @@ exports.handler = async (event, context) => {
     let userResponse;
     let lookupStrategy = 'unknown';
     
-    // Strategy 1: Try Auth0 ID lookup first (most reliable for Auth0 users)
+    // Strategy 1: Try Auth0 ID lookup first (using correct field name)
     try {
-      console.log('🔍 Strategy 1: Looking up by Auth0 ID (NetlifyUID)');
-      userResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula=${encodeURIComponent(`{NetlifyUID}='${user_uid}'`)}`, {
+      console.log('🔍 Strategy 1: Looking up by Auth0 ID (AuthID field)');
+      userResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula=${encodeURIComponent(`{AuthID}='${user_uid}'`)}`, {
         headers: {
           'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
           'Content-Type': 'application/json'
@@ -116,7 +116,7 @@ exports.handler = async (event, context) => {
         const testData = await userResponse.json();
         if (testData.records.length > 0) {
           lookupStrategy = 'auth0_id';
-          console.log('✅ Found user by Auth0 ID');
+          console.log('✅ Found user by Auth0 ID (AuthID field)');
         } else {
           console.log('❌ No user found by Auth0 ID, trying email...');
           throw new Error('Not found by Auth0 ID');
@@ -153,7 +153,7 @@ exports.handler = async (event, context) => {
       console.log('✅ Found existing user:', {
         id: userData.records[0].id,
         email: userData.records[0].fields.Email,
-        netlifyUID: userData.records[0].fields.NetlifyUID,
+        authID: userData.records[0].fields.AuthID,
         userID: userData.records[0].fields.User_ID,
         strategy: lookupStrategy
       });
@@ -170,12 +170,12 @@ exports.handler = async (event, context) => {
         emailIsAuth0ID: !user_email.includes('@')
       });
       
-      // Create a new user record with proper Auth0 integration
+      // Create a new user record with proper Auth0 integration using correct field names
       const newUserFields = {
         Email: user_email.includes('@') ? user_email : `${user_email}@auth0.temp`, // Ensure email format
-        NetlifyUID: user_uid,
+        AuthID: user_uid, // Use AuthID field name from Airtable
         User_ID: Date.now().toString(), // Generate unique ID
-        CreatedTime: new Date().toISOString(),
+        created_time: new Date().toISOString(), // Use created_time field name
         Source: 'Auth0_Chat', // Track where user was created
         Auth0_Subject: user_uid // Store original Auth0 subject ID
       };
@@ -201,7 +201,7 @@ exports.handler = async (event, context) => {
           recordId: userRecordId,
           userID: userIdForSave,
           email: newUserFields.Email,
-          auth0ID: newUserFields.Auth0_Subject
+          authID: newUserFields.AuthID
         });
       } else {
         const createError = await createUserResponse.text();
