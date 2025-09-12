@@ -96,9 +96,7 @@ exports.handler = async (event, context) => {
           },
           body: JSON.stringify({
             fields: {
-              Auth0ID: auth0_id,
-              Name: name || existingUser.fields.Name,
-              Nickname: nickname || existingUser.fields.Nickname
+              Auth0ID: auth0_id
             }
           })
         });
@@ -127,9 +125,7 @@ exports.handler = async (event, context) => {
       records: [{
         fields: {
           Email: email,
-          Auth0ID: auth0_id,
-          Name: name || nickname || email.split('@')[0],
-          Nickname: nickname || email.split('@')[0]
+          Auth0ID: auth0_id
         }
       }]
     };
