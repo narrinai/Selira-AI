@@ -865,6 +865,33 @@
         /* Ensure the input stays visible above virtual keyboard */
         z-index: 10;
       }
+      
+      /* Additional mobile keyboard fixes for all browsers */
+      @media (max-width: 768px) {
+        /* Prevent viewport zoom when focusing inputs */
+        input, textarea, select {
+          font-size: 16px !important;
+          -webkit-text-size-adjust: 100%;
+          -webkit-appearance: none;
+        }
+        
+        /* Alternative fixed positioning for input container */
+        body.keyboard-open .chat-input-container {
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          z-index: 1000;
+          background: var(--bg-secondary);
+          border-top: 1px solid var(--border);
+          padding-bottom: env(safe-area-inset-bottom, 0px);
+        }
+        
+        /* Adjust messages area when keyboard is open */
+        body.keyboard-open .chat-messages {
+          padding-bottom: 100px;
+        }
+      }
 
       /* Additional mobile fixes */
       .app-container {
@@ -895,10 +922,33 @@
           /* Prevent iOS Safari from zooming when focusing input */
           transform: scale(1);
           transition: transform 0.1s ease;
+          /* Additional zoom prevention */
+          -webkit-text-size-adjust: 100%;
         }
 
         #messageInput:focus {
           transform: scale(1);
+          /* Ensure no zoom on focus */
+          -webkit-text-size-adjust: 100%;
+        }
+        
+        /* Fix for keyboard covering send button */
+        .chat-input-container {
+          /* Keep input container in view when keyboard appears */
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          background: var(--bg-secondary);
+          border-top: 1px solid var(--border);
+          padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+          z-index: 1000;
+        }
+        
+        /* Adjust chat messages to account for fixed input */
+        .chat-messages {
+          /* Add bottom padding to prevent content being hidden behind fixed input */
+          padding-bottom: 120px;
         }
       }
 
@@ -1120,12 +1170,67 @@
       return avatarUrl;
     }
 
+    // Mobile keyboard detection to keep send button visible
+    function setupMobileKeyboardDetection() {
+      if (window.innerWidth <= 768) {
+        const messageInput = document.getElementById('messageInput');
+        let initialViewportHeight = window.innerHeight;
+        
+        // Modern browsers: Use Visual Viewport API if available
+        if (window.visualViewport) {
+          function handleViewportChange() {
+            const heightDiff = window.innerHeight - window.visualViewport.height;
+            if (heightDiff > 150) {
+              document.body.classList.add('keyboard-open');
+              console.log('🎹 Keyboard open (Visual Viewport)');
+            } else {
+              document.body.classList.remove('keyboard-open');
+              console.log('🎹 Keyboard closed (Visual Viewport)');
+            }
+          }
+          
+          window.visualViewport.addEventListener('resize', handleViewportChange);
+        } else {
+          // Fallback: Detect when keyboard opens/closes by monitoring viewport height changes
+          window.addEventListener('resize', function() {
+            const currentHeight = window.innerHeight;
+            const heightDifference = initialViewportHeight - currentHeight;
+            
+            // If viewport height decreased significantly, keyboard is likely open
+            if (heightDifference > 150) {
+              document.body.classList.add('keyboard-open');
+              console.log('🎹 Keyboard detected as open');
+            } else {
+              document.body.classList.remove('keyboard-open');
+              console.log('🎹 Keyboard detected as closed');
+            }
+          });
+        }
+        
+        // Also listen for focus/blur events on input as additional detection
+        if (messageInput) {
+          messageInput.addEventListener('focus', function() {
+            setTimeout(() => {
+              document.body.classList.add('keyboard-open');
+            }, 300); // Delay to allow keyboard to appear
+          });
+          
+          messageInput.addEventListener('blur', function() {
+            setTimeout(() => {
+              document.body.classList.remove('keyboard-open');
+            }, 300); // Delay to allow keyboard to disappear
+          });
+        }
+      }
+    }
+
     // Initialize chat interface
     document.addEventListener('DOMContentLoaded', function() {
       console.log('🚀 Selira AI Chat interface loading...');
       loadCharactersFromDatabase();
       initializeChatInterface();
       setupEventListeners();
+      setupMobileKeyboardDetection();
       // Character from URL will be loaded after characters are fetched in loadCharactersFromDatabase
     });
 
@@ -1445,7 +1550,14 @@
           messagesContainer.innerHTML = '';
           
           chatHistory.forEach(msg => {
-            addMessage(msg.content, msg.type, false);
+            if (msg.type === 'image') {
+              // Handle image messages
+              const imageData = msg.content;
+              addImageMessage(imageData.imageUrl, imageData.prompt, imageData.style, false);
+            } else {
+              // Handle regular text messages
+              addMessage(msg.content, msg.type, false);
+            }
           });
           
           setTimeout(() => {
@@ -1469,10 +1581,20 @@
         const fullHistory = cleanupChatHistory(characterSlug);
         
         // Get last 10 messages for context (exclude current message being sent)
-        const contextHistory = fullHistory.slice(-10).map(msg => ({
-          role: msg.type === 'user' ? 'user' : 'assistant',
-          content: msg.content
-        }));
+        const contextHistory = fullHistory.slice(-10).map(msg => {
+          if (msg.type === 'image') {
+            // Convert image messages to text for AI context
+            return {
+              role: 'assistant',
+              content: `I generated an image for you: "${msg.content.prompt}" in ${msg.content.style} style.`
+            };
+          } else {
+            return {
+              role: msg.type === 'user' ? 'user' : 'assistant',
+              content: msg.content
+            };
+          }
+        });
         
         console.log('🧠 Sending context history:', contextHistory.length, 'messages');
         return contextHistory;
@@ -2174,7 +2296,36 @@
       }
     }
 
-    function addImageMessage(imageUrl, prompt, style) {
+    // Save image message to localStorage
+    function saveImageMessageToStorage(characterSlug, imageUrl, prompt, style) {
+      try {
+        const storageKey = `chat_${characterSlug}`;
+        let chatHistory = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        
+        // Add image message
+        chatHistory.push({
+          type: 'image',
+          content: {
+            imageUrl: imageUrl,
+            prompt: prompt,
+            style: style,
+            text: `Here's your ${style} image:`
+          },
+          timestamp: Date.now()
+        });
+        
+        // Keep only last 50 messages
+        chatHistory = chatHistory.slice(-50);
+        
+        localStorage.setItem(storageKey, JSON.stringify(chatHistory));
+        console.log('💾 Saved image message to localStorage:', characterSlug);
+        
+      } catch (error) {
+        console.error('❌ Error saving image message to localStorage:', error);
+      }
+    }
+
+    function addImageMessage(imageUrl, prompt, style, saveToStorage = true) {
       const messagesContainer = document.getElementById('chatMessages');
       
       const messageDiv = document.createElement('div');
@@ -2198,6 +2349,11 @@
       
       messagesContainer.appendChild(messageDiv);
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      
+      // Save to localStorage if requested
+      if (saveToStorage && currentCharacter.slug) {
+        saveImageMessageToStorage(currentCharacter.slug, imageUrl, prompt, style);
+      }
     }
 
     function openImageFullscreen(imageUrl, prompt) {
