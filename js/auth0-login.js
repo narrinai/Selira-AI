@@ -532,12 +532,8 @@ class Auth0LoginModal {
       console.log('✅ User authenticated - showing profile button');
       // Update existing login button to profile
       if (loginBtn) {
-        const displayName = this.user.name || 
-                           this.user.nickname || 
-                           (this.user.email ? this.user.email.split('@')[0] : 'Profile');
-        
         loginBtn.href = '/profile.html';
-        loginBtn.textContent = displayName;
+        loginBtn.textContent = '👤';
         loginBtn.className = loginBtn.className.replace('login-btn', 'profile-btn');
         loginBtn.onclick = null; // Remove modal trigger
         console.log('✅ Updated login button to profile:', loginBtn.textContent);
@@ -593,14 +589,10 @@ class Auth0LoginModal {
       signupLink?.remove();
       
       if (!profileLink) {
-        const displayName = this.user.name || 
-                           this.user.nickname || 
-                           (this.user.email ? this.user.email.split('@')[0] : 'Profile');
-        
         profileLink = document.createElement('a');
         profileLink.href = '/profile.html';
         profileLink.className = 'mobile-profile-link';
-        profileLink.textContent = `👤 ${displayName}`;
+        profileLink.textContent = '👤';
         
         // Insert before CTA
         const ctaBtn = mobileMenu.querySelector('.cta-btn');
