@@ -966,10 +966,8 @@
     <div style="text-align: center; padding: 40px; background: var(--bg-secondary); border-radius: 20px;">
       <h3 style="margin-bottom: 16px;">Create Beautiful AI Characters</h3>
       <p style="color: var(--text-secondary); margin-bottom: 24px;">Ultimate Realistic Anime Female Character, Perfect Waifu</p>
-      <div style="display: flex; justify-content: center; gap: 20px; margin-bottom: 24px;">
-        <img src="/avatars/ai-girl-1.jpg" alt="AI Character 1" style="width: 120px; height: 150px; object-fit: cover; border-radius: 12px;" onerror="this.style.display='none'">
-        <img src="/avatars/ai-girl-2.jpg" alt="AI Character 2" style="width: 120px; height: 150px; object-fit: cover; border-radius: 12px;" onerror="this.style.display='none'">
-        <img src="/avatars/ai-girl-3.jpg" alt="AI Character 3" style="width: 120px; height: 150px; object-fit: cover; border-radius: 12px;" onerror="this.style.display='none'">
+      <div id="previewAvatars" style="display: flex; justify-content: center; gap: 20px; margin-bottom: 24px;">
+        <!-- Will be populated with real character avatars from Airtable -->
       </div>
       <a href="/create-character.html" class="primary-btn">Generate Now</a>
     </div>
@@ -1351,7 +1349,31 @@
         character_url: char.character_url,
         slug: char.slug
       })));
+      
+      // Update preview avatars with real character images
+      updatePreviewAvatars();
       initializeCharacterCarousel();
+    }
+    
+    // Update preview avatars with real character images from Airtable
+    function updatePreviewAvatars() {
+      const previewContainer = document.getElementById('previewAvatars');
+      if (!previewContainer || featuredCharacters.length === 0) return;
+      
+      // Use first 3 featured characters for preview
+      const previewChars = featuredCharacters.slice(0, 3);
+      
+      previewContainer.innerHTML = previewChars.map(char => `
+        <img 
+          src="${char.avatar || '/avatars/placeholder.webp'}" 
+          alt="${char.name}" 
+          style="width: 120px; height: 150px; object-fit: cover; border-radius: 12px; cursor: pointer;" 
+          onclick="window.location.href='${char.character_url || `/chat.html?char=${char.slug}`}'"
+          onerror="this.src='/avatars/placeholder.webp'"
+        >
+      `).join('');
+      
+      console.log('🖼️ Updated preview avatars with real characters:', previewChars.map(c => c.name));
     }
     
     function initializeCharacterCarousel() {
