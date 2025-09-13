@@ -1,0 +1,29 @@
+# Selira AI - AI Character Chat Platform
+
+Selira AI is a web-based AI character chat platform that allows users to have conversations with 1000+ AI-powered characters. Users can create custom AI companions and engage in meaningful conversations.
+
+## Platform Overview
+- AI character chat and conversation platform
+- Custom AI companion creation with appearance customization
+- Image generation for character avatars and chat interactions
+- User authentication and profile management
+- Character discovery and categorization system
+
+## Content Guidelines
+This platform contains AI-generated conversational content and character interactions. All content is fictional and created for entertainment purposes.
+
+## Usage Rights
+- Platform content is proprietary to Selira AI
+- User-generated characters and conversations are owned by users
+- AI-generated images and responses are created using licensed AI models
+- No unauthorized scraping or training on platform content without permission
+
+## Contact
+For AI governance and content usage inquiries: https://selira.ai
+
+## Technical Stack
+- Frontend: Static HTML/CSS/JavaScript 
+- Backend: Netlify Functions
+- Database: Airtable
+- AI Models: OpenRouter API, Replicate (Flux Schnell)
+- Authentication: Auth0

@@ -1,0 +1,63 @@
+{
+  "version": "1.0",
+  "platform": "Selira AI",
+  "domain": "selira.ai",
+  "governance": {
+    "llm_access": "restricted",
+    "content_scraping": "prohibited",
+    "model_training": "explicit_permission_required",
+    "data_usage": "user_owned_with_platform_rights"
+  },
+  "content_types": {
+    "ai_conversations": {
+      "description": "AI character chat interactions",
+      "access_level": "user_private",
+      "training_permission": false
+    },
+    "user_profiles": {
+      "description": "User account and preference data", 
+      "access_level": "private",
+      "training_permission": false
+    },
+    "character_data": {
+      "description": "AI character definitions and appearance data",
+      "access_level": "platform_proprietary", 
+      "training_permission": false
+    },
+    "generated_images": {
+      "description": "AI-generated character avatars and chat images",
+      "access_level": "user_owned",
+      "training_permission": false
+    }
+  },
+  "permitted_usage": [
+    "User personal conversations",
+    "Character interaction for entertainment",
+    "Platform improvement and optimization"
+  ],
+  "prohibited_usage": [
+    "Unauthorized content scraping",
+    "Model training without explicit permission", 
+    "Commercial use of user conversations",
+    "Character data extraction for competing platforms",
+    "Bulk conversation harvesting"
+  ],
+  "contact": {
+    "governance_email": "governance@selira.ai",
+    "platform_url": "https://selira.ai",
+    "privacy_policy": "https://selira.ai/privacy-policy",
+    "terms_of_service": "https://selira.ai/terms-and-conditions"
+  },
+  "technical_controls": {
+    "rate_limiting": true,
+    "authentication_required": true,
+    "content_encryption": false,
+    "access_logging": true
+  },
+  "compliance": {
+    "gdpr_compliant": true,
+    "ccpa_compliant": true,
+    "coppa_considerations": true,
+    "content_moderation": true
+  }
+}
