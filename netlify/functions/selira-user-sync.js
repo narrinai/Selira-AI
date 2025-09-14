@@ -53,13 +53,36 @@ exports.handler = async (event, context) => {
       
       if (checkData.records.length > 0) {
         const existingUser = checkData.records[0];
-        console.log('✅ User exists, updating Auth0ID...');
-        
-        // Update existing user with Auth0ID only (keep it simple)
+        console.log('✅ User exists, updating Auth0ID and display name...');
+
+        // Create display name if not exists
+        let userDisplayName = existingUser.fields.display_name;
+        if (!userDisplayName) {
+          if (display_name) {
+            userDisplayName = display_name;
+          } else if (name) {
+            userDisplayName = name.split(' ')[0] || name;
+          } else {
+            userDisplayName = email.split('@')[0];
+          }
+          console.log('📝 Setting missing display name for existing user:', userDisplayName);
+        }
+
+        // Update existing user with Auth0ID and display name if missing
         const updateFields = {
           Auth0ID: auth0_id
         };
-        
+
+        // Only update display_name if it's empty
+        if (!existingUser.fields.display_name && userDisplayName) {
+          updateFields.display_name = userDisplayName;
+        }
+
+        // Update Name if missing
+        if (!existingUser.fields.Name && name) {
+          updateFields.Name = name;
+        }
+
         const updateResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users/${existingUser.id}`, {
           method: 'PATCH',
           headers: {
@@ -87,9 +110,23 @@ exports.handler = async (event, context) => {
       }
     }
 
-    // Create new user
+    // Create new user with display name
     console.log('🔨 Creating new user...');
-    
+
+    // Create display name from name or email
+    let defaultDisplayName = '';
+    if (display_name) {
+      defaultDisplayName = display_name;
+    } else if (name) {
+      // Use first name or full name
+      defaultDisplayName = name.split(' ')[0] || name;
+    } else {
+      // Fallback to email prefix
+      defaultDisplayName = email.split('@')[0];
+    }
+
+    console.log('📝 Setting display name:', defaultDisplayName);
+
     const createResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users`, {
       method: 'POST',
       headers: {
@@ -100,7 +137,9 @@ exports.handler = async (event, context) => {
         records: [{
           fields: {
             Email: email,
-            Auth0ID: auth0_id
+            Auth0ID: auth0_id,
+            Name: name || defaultDisplayName,
+            display_name: defaultDisplayName
           }
         }]
       })

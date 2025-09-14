@@ -145,7 +145,8 @@ exports.handler = async (event, context) => {
             Auth0ID: auth0_id,
             Email: email,
             Name: name,
-            Plan: 'Free'
+            Plan: 'Free',
+            display_name: name ? (name.split(' ')[0] || name) : email.split('@')[0]
           }
         })
       });
