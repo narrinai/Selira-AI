@@ -50,57 +50,45 @@ exports.handler = async (event, context) => {
 
   if (!OPENROUTER_API_KEY) {
     console.log('⚠️ OpenRouter API key missing - using fallback response for testing');
-    // Return a test response for now to test the chat saving functionality
-    const { message, character_slug, auth0_id } = JSON.parse(event.body);
 
-    // Generate a simple fallback AI response
-    const aiResponse = `Hello! I'm ${character_slug}. This is a test response since OpenRouter API key is not configured. You said: "${message.substring(0, 50)}${message.length > 50 ? '...' : ''}"`;
-
-    // Still try to save the message to test our chat history functionality
+    // Simple test to see if we can parse the request and return a response
     try {
-      if (auth0_id !== 'anonymous') {
-        const userResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula={NetlifyUID}='${auth0_id}'&maxRecords=1`, {
-          headers: {
-            'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
-            'Content-Type': 'application/json'
+      const { message, character_slug, auth0_id } = JSON.parse(event.body);
+
+      const aiResponse = `Hello! I'm ${character_slug}. This is a test response. You said: "${message.substring(0, 50)}${message.length > 50 ? '...' : ''}"`;
+
+      console.log('✅ Fallback response generated successfully');
+
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({
+          success: true,
+          response: aiResponse,
+          model_used: 'test-fallback',
+          tokens_used: 50,
+          timestamp: Date.now(),
+          saved_to_db: false,
+          note: 'Using fallback response - OpenRouter API key not configured',
+          debug: {
+            hasAirtableBase: !!AIRTABLE_BASE_ID,
+            hasAirtableToken: !!AIRTABLE_TOKEN,
+            baseIdLength: AIRTABLE_BASE_ID?.length,
+            tokenLength: AIRTABLE_TOKEN?.length
           }
-        });
-
-        if (userResponse.ok) {
-          const userData = await userResponse.json();
-          if (userData.records.length > 0) {
-            const userEmail = userData.records[0].fields.Email;
-            console.log('💾 Saving test messages for user:', userEmail);
-
-            await saveChatMessageInternal({
-              user_email: userEmail,
-              user_uid: auth0_id,
-              char: character_slug,
-              user_message: message,
-              ai_response: aiResponse
-            });
-
-            console.log('✅ Test messages saved to ChatHistory');
-          }
-        }
-      }
-    } catch (saveError) {
-      console.error('⚠️ Test message saving failed:', saveError);
+        })
+      };
+    } catch (parseError) {
+      console.error('❌ Error in fallback mode:', parseError);
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({
+          error: 'Fallback mode failed',
+          details: parseError.message
+        })
+      };
     }
-
-    return {
-      statusCode: 200,
-      headers,
-      body: JSON.stringify({
-        success: true,
-        response: aiResponse,
-        model_used: 'test-fallback',
-        tokens_used: 50,
-        timestamp: Date.now(),
-        saved_to_db: auth0_id !== 'anonymous',
-        note: 'Using fallback response - OpenRouter API key not configured'
-      })
-    };
   }
 
   try {
