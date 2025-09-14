@@ -7,7 +7,64 @@
 document.addEventListener('DOMContentLoaded', function() {
   createMobileNav();
   attachMobileNavEvents();
+  initAuthStateListener();
 });
+
+// Listen for auth state changes and update mobile nav
+function initAuthStateListener() {
+  // Check initial auth state
+  setTimeout(() => {
+    updateMobileNavAuthState();
+  }, 1000);
+
+  // Listen for auth state changes
+  window.addEventListener('auth-state-changed', function(event) {
+    updateMobileNavAuthState(event.detail);
+  });
+}
+
+// Update mobile nav based on auth state
+function updateMobileNavAuthState(authDetail = null) {
+  const profileBtn = document.getElementById('mobileProfileBtn');
+  const profileText = profileBtn?.querySelector('.profile-text');
+  const loginLinks = document.querySelectorAll('.mobile-menu-nav .login-link, .mobile-menu-nav .signup-link');
+
+  if (!profileBtn || !profileText) return;
+
+  let isAuthenticated = false;
+  if (authDetail) {
+    isAuthenticated = authDetail.isAuthenticated;
+  } else if (window.isUserAuthenticated) {
+    isAuthenticated = window.isUserAuthenticated();
+  }
+
+  // Update profile button text and style
+  if (isAuthenticated) {
+    profileText.textContent = 'Profile';
+    profileBtn.style.background = 'var(--accent, #d4a574)';
+    profileBtn.style.color = 'white';
+    profileBtn.style.borderRadius = '25px';
+    profileBtn.style.padding = '10px 20px';
+    profileBtn.style.fontSize = '14px';
+    profileBtn.style.fontWeight = '600';
+    profileBtn.style.width = 'auto';
+    profileBtn.style.height = 'auto';
+    // Hide login/signup links in menu
+    loginLinks.forEach(link => link.style.display = 'none');
+  } else {
+    profileText.textContent = 'Login';
+    profileBtn.style.background = 'var(--accent, #d4a574)';
+    profileBtn.style.color = 'white';
+    profileBtn.style.borderRadius = '25px';
+    profileBtn.style.padding = '10px 20px';
+    profileBtn.style.fontSize = '14px';
+    profileBtn.style.fontWeight = '600';
+    profileBtn.style.width = 'auto';
+    profileBtn.style.height = 'auto';
+    // Show login/signup links in menu
+    loginLinks.forEach(link => link.style.display = 'flex');
+  }
+}
 
 // Create mobile navigation HTML
 function createMobileNav() {
@@ -29,15 +86,18 @@ function createMobileNav() {
       </div>
       
       <div class="mobile-nav-center">
-        <a href="/category" class="mobile-logo">Selira</a>
+        <a href="/category" class="mobile-logo">Selira AI</a>
       </div>
       
       <div class="mobile-nav-right">
         <button class="mobile-nav-btn mobile-search-btn" id="mobileSearchBtn">
-          <span class="search-icon">🔍</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2"/>
+          </svg>
         </button>
         <button class="mobile-nav-btn mobile-profile-btn" id="mobileProfileBtn">
-          <span class="profile-icon">👤</span>
+          <span class="profile-text">Login</span>
         </button>
       </div>
     </div>
@@ -512,9 +572,20 @@ function attachMobileNavEvents() {
     }
   });
   
-  // Profile button
+  // Profile button - handle both authenticated and non-authenticated states
   profileBtn.addEventListener('click', function() {
-    window.location.href = '/profile';
+    if (window.isUserAuthenticated && window.isUserAuthenticated()) {
+      // User is authenticated, go to profile
+      window.location.href = '/profile';
+    } else {
+      // User not authenticated, open login modal
+      if (window.openLoginModal) {
+        window.openLoginModal('login');
+      } else {
+        // Fallback to profile page which will handle login redirect
+        window.location.href = '/profile';
+      }
+    }
   });
   
   // Search functionality
