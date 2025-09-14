@@ -234,11 +234,11 @@ exports.handler = async (event, context) => {
 // Helper Functions
 
 // Internal function to save chat messages (reuses save-chat-message logic)
-async function saveChatMessageInternal({ user_email, user_uid, char, user_message, ai_response }) {
+async function saveChatMessageInternal({ user_email, user_uid, char, user_message, ai_response }, airtableBaseId, airtableToken) {
   // Step 1: Find user by email
-  const userResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula=${encodeURIComponent(`{Email}='${user_email}'`)}`, {
+  const userResponse = await fetch(`https://api.airtable.com/v0/${airtableBaseId}/Users?filterByFormula=${encodeURIComponent(`{Email}='${user_email}'`)}`, {
     headers: {
-      'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+      'Authorization': `Bearer ${airtableToken}`,
       'Content-Type': 'application/json'
     }
   });
@@ -255,9 +255,9 @@ async function saveChatMessageInternal({ user_email, user_uid, char, user_messag
   const userRecordId = userData.records[0].id;
 
   // Step 2: Find character by slug
-  const characterResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters?filterByFormula={Slug}='${char}'`, {
+  const characterResponse = await fetch(`https://api.airtable.com/v0/${airtableBaseId}/Characters?filterByFormula={Slug}='${char}'`, {
     headers: {
-      'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+      'Authorization': `Bearer ${airtableToken}`,
       'Content-Type': 'application/json'
     }
   });
@@ -302,10 +302,10 @@ async function saveChatMessageInternal({ user_email, user_uid, char, user_messag
   }
 
   if (recordsToCreate.length > 0) {
-    const chatHistoryResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/ChatHistory`, {
+    const chatHistoryResponse = await fetch(`https://api.airtable.com/v0/${airtableBaseId}/ChatHistory`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+        'Authorization': `Bearer ${airtableToken}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({ records: recordsToCreate })
