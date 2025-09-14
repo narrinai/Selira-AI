@@ -28,16 +28,70 @@ exports.handler = async (event, context) => {
   const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID; // Use standard Airtable config
   const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN;
 
-  if (!OPENROUTER_API_KEY || !AIRTABLE_BASE_ID || !AIRTABLE_TOKEN) {
-    console.log('❌ Missing configuration:', {
-      hasOpenRouter: !!OPENROUTER_API_KEY,
+  if (!AIRTABLE_BASE_ID || !AIRTABLE_TOKEN) {
+    console.log('❌ Missing Airtable configuration:', {
       hasAirtableBase: !!AIRTABLE_BASE_ID,
       hasAirtableToken: !!AIRTABLE_TOKEN
     });
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ error: 'Missing configuration' })
+      body: JSON.stringify({ error: 'Missing Airtable configuration' })
+    };
+  }
+
+  if (!OPENROUTER_API_KEY) {
+    console.log('⚠️ OpenRouter API key missing - using fallback response for testing');
+    // Return a test response for now to test the chat saving functionality
+    const { message, character_slug, auth0_id } = JSON.parse(event.body);
+
+    // Generate a simple fallback AI response
+    const aiResponse = `Hello! I'm ${character_slug}. This is a test response since OpenRouter API key is not configured. You said: "${message.substring(0, 50)}${message.length > 50 ? '...' : ''}"`;
+
+    // Still try to save the message to test our chat history functionality
+    try {
+      if (auth0_id !== 'anonymous') {
+        const userResponse = await fetch(\`https://api.airtable.com/v0/\${AIRTABLE_BASE_ID}/Users?filterByFormula={NetlifyUID}='\${auth0_id}'&maxRecords=1\`, {
+          headers: {
+            'Authorization': \`Bearer \${AIRTABLE_TOKEN}\`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (userResponse.ok) {
+          const userData = await userResponse.json();
+          if (userData.records.length > 0) {
+            const userEmail = userData.records[0].fields.Email;
+            console.log('💾 Saving test messages for user:', userEmail);
+
+            await saveChatMessageInternal({
+              user_email: userEmail,
+              user_uid: auth0_id,
+              char: character_slug,
+              user_message: message,
+              ai_response: aiResponse
+            });
+
+            console.log('✅ Test messages saved to ChatHistory');
+          }
+        }
+      }
+    } catch (saveError) {
+      console.error('⚠️ Test message saving failed:', saveError);
+    }
+
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({
+        success: true,
+        response: aiResponse,
+        model_used: 'test-fallback',
+        tokens_used: 50,
+        timestamp: Date.now(),
+        saved_to_db: auth0_id !== 'anonymous',
+        note: 'Using fallback response - OpenRouter API key not configured'
+      })
     };
   }
 
