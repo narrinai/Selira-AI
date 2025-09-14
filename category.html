@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Discover AI Characters | Selira AI</title>
   <meta name="description" content="Discover thousands of AI characters on Selira AI. Browse by category, filter by tags, and find your perfect AI companion.">
   
@@ -71,6 +71,20 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+    }
+
+    /* Prevent mobile zoom on form inputs */
+    input, textarea, select, button {
+      font-size: 16px !important;
+    }
+
+    /* Prevent zoom on focus for mobile devices */
+    @media screen and (max-width: 768px) {
+      input, textarea, select {
+        font-size: 16px !important;
+        transform-origin: left top;
+        transform: scale(1);
+      }
     }
 
     body {
