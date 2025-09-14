@@ -773,6 +773,7 @@
               <div class="input-group">
                 <input type="text" class="form-input" id="userDisplayName" placeholder="Enter display name">
                 <button class="btn" onclick="saveDisplayName()">Save</button>
+                <button class="btn btn-secondary" onclick="debugUserLookup()" style="margin-left: 8px;">Debug</button>
               </div>
             </div>
 
@@ -876,6 +877,39 @@
       }
     }
     
+    // Debug function to inspect user data in Airtable
+    async function debugUserLookup() {
+      try {
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        const email = user.email || 'unknown';
+
+        console.log('🔍 Debugging user lookup for:', email);
+
+        const response = await fetch('/.netlify/functions/debug-user-lookup', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email: email
+          })
+        });
+
+        const result = await response.json();
+        console.log('🔍 Debug result:', result);
+
+        if (result.success) {
+          alert(`Debug Info:\n\nUser found: ${result.emailSearch.found}\nRecord count: ${result.emailSearch.count}\n\nCheck console for full details.`);
+        } else {
+          alert(`Debug failed: ${result.error}`);
+        }
+
+      } catch (error) {
+        console.error('❌ Debug error:', error);
+        alert('Debug error - check console');
+      }
+    }
+
     // Save display name
     async function saveDisplayName() {
       const displayName = document.getElementById('userDisplayName').value;
