@@ -28,6 +28,14 @@ exports.handler = async (event, context) => {
   const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA; // Use Selira-specific config
   const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA;
 
+  console.log('🔧 Environment check:', {
+    hasOpenRouter: !!OPENROUTER_API_KEY,
+    hasAirtableBase: !!AIRTABLE_BASE_ID,
+    hasAirtableToken: !!AIRTABLE_TOKEN,
+    baseIdLength: AIRTABLE_BASE_ID?.length,
+    tokenLength: AIRTABLE_TOKEN?.length
+  });
+
   if (!AIRTABLE_BASE_ID || !AIRTABLE_TOKEN) {
     console.log('❌ Missing Airtable configuration:', {
       hasAirtableBase: !!AIRTABLE_BASE_ID,
