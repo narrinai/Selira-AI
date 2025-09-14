@@ -25,10 +25,15 @@ exports.handler = async (event, context) => {
   }
 
   const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
-  const SELIRA_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA;
-  const SELIRA_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA;
+  const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID; // Use standard Airtable config
+  const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN;
 
-  if (!OPENROUTER_API_KEY || !SELIRA_BASE_ID || !SELIRA_TOKEN) {
+  if (!OPENROUTER_API_KEY || !AIRTABLE_BASE_ID || !AIRTABLE_TOKEN) {
+    console.log('❌ Missing configuration:', {
+      hasOpenRouter: !!OPENROUTER_API_KEY,
+      hasAirtableBase: !!AIRTABLE_BASE_ID,
+      hasAirtableToken: !!AIRTABLE_TOKEN
+    });
     return {
       statusCode: 500,
       headers,
@@ -110,12 +115,36 @@ exports.handler = async (event, context) => {
     // Try to save messages but don't fail chat if saving fails
     try {
       if (auth0_id !== 'anonymous') {
-        await Promise.all([
-          saveMessage(auth0_id, character_slug, message, 'user'),
-          saveMessage(auth0_id, character_slug, aiResponse, 'assistant'),
-          updateMemoryIfNeeded(auth0_id, character_slug, message, aiResponse)
-        ]);
-        console.log('💾 Messages saved to database');
+        // Get user email for save-chat-message function
+        const userResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula={NetlifyUID}='${auth0_id}'&maxRecords=1`, {
+          headers: {
+            'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (userResponse.ok) {
+          const userData = await userResponse.json();
+          if (userData.records.length > 0) {
+            const userEmail = userData.records[0].fields.Email;
+
+            // Call save-chat-message function internally
+            console.log('💾 Saving messages via save-chat-message function...');
+            await saveChatMessageInternal({
+              user_email: userEmail,
+              user_uid: auth0_id,
+              char: character_slug,
+              user_message: message,
+              ai_response: aiResponse
+            });
+
+            console.log('✅ Messages saved to ChatHistory via save-chat-message');
+          } else {
+            console.log('⚠️ User not found for message saving');
+          }
+        } else {
+          console.log('⚠️ Failed to fetch user for message saving');
+        }
       } else {
         console.log('👤 Anonymous user - skipping message save');
       }
@@ -154,12 +183,99 @@ exports.handler = async (event, context) => {
 
 // Helper Functions
 
+// Internal function to save chat messages (reuses save-chat-message logic)
+async function saveChatMessageInternal({ user_email, user_uid, char, user_message, ai_response }) {
+  // Step 1: Find user by email
+  const userResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula=${encodeURIComponent(`{Email}='${user_email}'`)}`, {
+    headers: {
+      'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+      'Content-Type': 'application/json'
+    }
+  });
+
+  if (!userResponse.ok) {
+    throw new Error('User lookup failed for chat save');
+  }
+
+  const userData = await userResponse.json();
+  if (userData.records.length === 0) {
+    throw new Error('User not found for chat save');
+  }
+
+  const userRecordId = userData.records[0].id;
+
+  // Step 2: Find character by slug
+  const characterResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters?filterByFormula={Slug}='${char}'`, {
+    headers: {
+      'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+      'Content-Type': 'application/json'
+    }
+  });
+
+  let characterRecordId = null;
+  if (characterResponse.ok) {
+    const characterData = await characterResponse.json();
+    if (characterData.records.length > 0) {
+      characterRecordId = characterData.records[0].id;
+    }
+  }
+
+  if (!characterRecordId) {
+    throw new Error(`Character not found for slug: ${char}`);
+  }
+
+  // Step 3: Save messages to ChatHistory
+  const recordsToCreate = [];
+
+  // User message
+  if (user_message && user_message.trim()) {
+    recordsToCreate.push({
+      fields: {
+        'Role': 'user',
+        'Message': user_message.trim(),
+        'User': [userRecordId],
+        'Character': [characterRecordId]
+      }
+    });
+  }
+
+  // AI response
+  if (ai_response && ai_response.trim()) {
+    recordsToCreate.push({
+      fields: {
+        'Role': 'ai assistant',
+        'Message': ai_response.trim(),
+        'User': [userRecordId],
+        'Character': [characterRecordId]
+      }
+    });
+  }
+
+  if (recordsToCreate.length > 0) {
+    const chatHistoryResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/ChatHistory`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ records: recordsToCreate })
+    });
+
+    if (!chatHistoryResponse.ok) {
+      const errorData = await chatHistoryResponse.text();
+      throw new Error(`ChatHistory save failed: ${errorData}`);
+    }
+
+    console.log(`✅ Saved ${recordsToCreate.length} messages to ChatHistory`);
+  }
+}
+
 async function getCharacterData(character_slug) {
-  const url = `https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID_SELIRA}/Characters?filterByFormula={Slug}='${character_slug}'&maxRecords=1`;
+  const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters?filterByFormula={Slug}='${character_slug}'&maxRecords=1`;
   
   const response = await fetch(url, {
     headers: {
-      'Authorization': `Bearer ${process.env.AIRTABLE_TOKEN_SELIRA}`,
+      'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
       'Content-Type': 'application/json'
     }
   });
@@ -174,11 +290,11 @@ async function getCharacterData(character_slug) {
 
 async function getRelevantMemories(auth0_id, character_slug, limit = 5) {
   // Get user record ID first
-  const userUrl = `https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID_SELIRA}/Users?filterByFormula={Auth0ID}='${auth0_id}'&maxRecords=1`;
+  const userUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula={Auth0ID}='${auth0_id}'&maxRecords=1`;
   
   const userResponse = await fetch(userUrl, {
     headers: {
-      'Authorization': `Bearer ${process.env.AIRTABLE_TOKEN_SELIRA}`,
+      'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
       'Content-Type': 'application/json'
     }
   });
@@ -191,11 +307,11 @@ async function getRelevantMemories(auth0_id, character_slug, limit = 5) {
   const userRecordId = userData.records[0].id;
 
   // Get memories for this user and character
-  const memoriesUrl = `https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID_SELIRA}/Memories?filterByFormula=AND({UserID}='${userRecordId}',{CharacterSlug}='${character_slug}',{Importance}>=7)&sort[0][field]=Importance&sort[0][direction]=desc&maxRecords=${limit}`;
+  const memoriesUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Memories?filterByFormula=AND({UserID}='${userRecordId}',{CharacterSlug}='${character_slug}',{Importance}>=7)&sort[0][field]=Importance&sort[0][direction]=desc&maxRecords=${limit}`;
   
   const memoriesResponse = await fetch(memoriesUrl, {
     headers: {
-      'Authorization': `Bearer ${process.env.AIRTABLE_TOKEN_SELIRA}`,
+      'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
       'Content-Type': 'application/json'
     }
   });
@@ -208,11 +324,11 @@ async function getRelevantMemories(auth0_id, character_slug, limit = 5) {
 
 async function getChatHistory(auth0_id, character_slug, limit = 10) {
   // Similar pattern as memories - get user record ID first
-  const userUrl = `https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID_SELIRA}/Users?filterByFormula={Auth0ID}='${auth0_id}'&maxRecords=1`;
+  const userUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula={Auth0ID}='${auth0_id}'&maxRecords=1`;
   
   const userResponse = await fetch(userUrl, {
     headers: {
-      'Authorization': `Bearer ${process.env.AIRTABLE_TOKEN_SELIRA}`,
+      'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
       'Content-Type': 'application/json'
     }
   });
@@ -224,11 +340,11 @@ async function getChatHistory(auth0_id, character_slug, limit = 10) {
 
   const userRecordId = userData.records[0].id;
 
-  const historyUrl = `https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID_SELIRA}/Messages?filterByFormula=AND({UserID}='${userRecordId}',{CharacterSlug}='${character_slug}')&sort[0][field]=Timestamp&sort[0][direction]=desc&maxRecords=${limit}`;
+  const historyUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Messages?filterByFormula=AND({UserID}='${userRecordId}',{CharacterSlug}='${character_slug}')&sort[0][field]=Timestamp&sort[0][direction]=desc&maxRecords=${limit}`;
   
   const historyResponse = await fetch(historyUrl, {
     headers: {
-      'Authorization': `Bearer ${process.env.AIRTABLE_TOKEN_SELIRA}`,
+      'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
       'Content-Type': 'application/json'
     }
   });
@@ -268,11 +384,11 @@ function buildCharacterPrompt(characterData, memoryData) {
 
 async function saveMessage(auth0_id, character_slug, content, message_type) {
   // Get user record ID
-  const userUrl = `https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID_SELIRA}/Users?filterByFormula={Auth0ID}='${auth0_id}'&maxRecords=1`;
+  const userUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula={Auth0ID}='${auth0_id}'&maxRecords=1`;
   
   const userResponse = await fetch(userUrl, {
     headers: {
-      'Authorization': `Bearer ${process.env.AIRTABLE_TOKEN_SELIRA}`,
+      'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
       'Content-Type': 'application/json'
     }
   });
@@ -289,12 +405,12 @@ async function saveMessage(auth0_id, character_slug, content, message_type) {
   const userRecordId = userData.records[0].id;
 
   // Save message
-  const messageUrl = `https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID_SELIRA}/Messages`;
+  const messageUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Messages`;
   
   const messageResponse = await fetch(messageUrl, {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${process.env.AIRTABLE_TOKEN_SELIRA}`,
+      'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
@@ -329,11 +445,11 @@ async function updateMemoryIfNeeded(auth0_id, character_slug, userMessage, aiRes
   
   if (importance >= 7) {
     // Save as memory
-    const userUrl = `https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID_SELIRA}/Users?filterByFormula={Auth0ID}='${auth0_id}'&maxRecords=1`;
+    const userUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula={Auth0ID}='${auth0_id}'&maxRecords=1`;
     
     const userResponse = await fetch(userUrl, {
       headers: {
-        'Authorization': `Bearer ${process.env.AIRTABLE_TOKEN_SELIRA}`,
+        'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
         'Content-Type': 'application/json'
       }
     });
@@ -343,12 +459,12 @@ async function updateMemoryIfNeeded(auth0_id, character_slug, userMessage, aiRes
       if (userData.records.length > 0) {
         const userRecordId = userData.records[0].id;
         
-        const memoryUrl = `https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID_SELIRA}/Memories`;
+        const memoryUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Memories`;
         
         await fetch(memoryUrl, {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${process.env.AIRTABLE_TOKEN_SELIRA}`,
+            'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
