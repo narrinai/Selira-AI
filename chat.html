@@ -1428,6 +1428,7 @@
             message: message,
             character_slug: currentCharacter.slug,
             auth0_id: auth0_id,
+            user_email: user_email, // Add user email for message saving
             model: 'mistralai/mistral-nemo',
             local_history: chatHistory // Send localStorage history for context
           })

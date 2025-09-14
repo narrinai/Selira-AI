@@ -46,25 +46,27 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const { message, character_slug, auth0_id } = JSON.parse(event.body);
+    const { message, character_slug, auth0_id, user_email } = JSON.parse(event.body);
 
-    console.log('🚀 Chat request:', { character_slug, auth0_id: auth0_id?.substring(0, 20) + '...' });
+    console.log('🚀 Chat request:', { character_slug, user_email });
 
     // For now, use fallback response since OpenRouter isn't configured
     const aiResponse = `Hello! I'm ${character_slug}. This is a test response. You said: "${message.substring(0, 50)}${message.length > 50 ? '...' : ''}"`;
 
     console.log('✅ Fallback response generated');
 
-    // Try to save messages to ChatHistory if user is authenticated
+    // Try to save messages to ChatHistory if user is authenticated and email is provided
     let messageSaved = false;
-    if (auth0_id !== 'anonymous') {
+    if (user_email && user_email !== 'anonymous') {
       try {
-        await saveChatMessages(auth0_id, character_slug, message, aiResponse, AIRTABLE_BASE_ID, AIRTABLE_TOKEN);
+        await saveChatMessages(user_email, character_slug, message, aiResponse, AIRTABLE_BASE_ID, AIRTABLE_TOKEN);
         messageSaved = true;
         console.log('✅ Messages saved to ChatHistory');
       } catch (saveError) {
         console.error('⚠️ Message saving failed:', saveError.message);
       }
+    } else {
+      console.log('👤 No user email provided - skipping message save');
     }
 
     return {
@@ -103,11 +105,11 @@ exports.handler = async (event, context) => {
 };
 
 // Save messages to ChatHistory table
-async function saveChatMessages(auth0_id, character_slug, user_message, ai_response, baseId, token) {
-  console.log('💾 Starting message save process...');
+async function saveChatMessages(user_email, character_slug, user_message, ai_response, baseId, token) {
+  console.log('💾 Starting message save process for:', user_email);
 
-  // Step 1: Find user by NetlifyUID (which contains Auth0ID)
-  const userResponse = await fetch(`https://api.airtable.com/v0/${baseId}/Users?filterByFormula={NetlifyUID}='${auth0_id}'&maxRecords=1`, {
+  // Step 1: Find user by email (primary identifier)
+  const userResponse = await fetch(`https://api.airtable.com/v0/${baseId}/Users?filterByFormula=${encodeURIComponent(`{Email}='${user_email}'`)}`, {
     headers: {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
