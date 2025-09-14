@@ -528,6 +528,42 @@
       gap: 4px;
     }
 
+    /* Companion type badges */
+    .companion-type-badge {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+      font-weight: 600;
+      color: white;
+      z-index: 2;
+    }
+
+    .user-created-badge {
+      background: linear-gradient(135deg, #10b981, #059669);
+      box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+    }
+
+    .chatted-badge {
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      box-shadow: 0 2px 4px rgba(99, 102, 241, 0.3);
+    }
+
+    .creator-indicator {
+      color: var(--accent-primary);
+      font-weight: 600;
+    }
+
+    .character-card.user-created {
+      border: 2px solid var(--accent-primary);
+    }
+
+    .character-card.user-created:hover {
+      border-color: var(--accent-secondary);
+    }
+
     .character-info {
       padding: 16px;
     }
@@ -1682,8 +1718,8 @@
       setupInfiniteScroll();
       // Default to show My Companions
       currentTab = 'companions';
-      setTimeout(() => {
-        renderMyCompanions();
+      setTimeout(async () => {
+        await renderMyCompanions();
       }, 500);
     });
 
@@ -2215,37 +2251,48 @@
       const tabItems = document.querySelectorAll('.tab-item');
       
       tabItems.forEach(tab => {
-        tab.addEventListener('click', function(e) {
+        tab.addEventListener('click', async function(e) {
           e.preventDefault();
-          
+
           // Remove active from all tabs
           tabItems.forEach(t => t.classList.remove('active'));
-          
+
           // Add active to clicked tab
           this.classList.add('active');
-          
+
           const tabText = this.textContent.trim();
-          
+
           // Tab functionality removed - always show companions
           currentTab = 'companions';
-          renderMyCompanions();
+          await renderMyCompanions();
         });
       });
     }
 
-    function renderMyCompanions() {
+    async function renderMyCompanions() {
       const grid = document.getElementById('charactersGrid');
-      
-      // Get user's companions from localStorage or API
-      const userCompanions = getUserCompanions();
-      
+
+      // Show loading state first
+      grid.innerHTML = `
+        <div class="loading-grid">
+          <div style="text-align: center; padding: 40px;">
+            <div style="font-size: 48px; margin-bottom: 16px;">⏳</div>
+            <h3 style="color: var(--text-primary); margin-bottom: 8px;">Loading your companions...</h3>
+            <p style="color: var(--text-secondary);">Getting your chatted and created characters</p>
+          </div>
+        </div>
+      `;
+
+      // Get user's companions from API
+      const userCompanions = await getUserCompanions();
+
       if (userCompanions.length === 0) {
         grid.innerHTML = `
           <div class="loading-grid">
             <div style="text-align: center; padding: 40px;">
               <div style="font-size: 48px; margin-bottom: 16px;">💬</div>
               <h3 style="color: var(--text-primary); margin-bottom: 8px;">No companions yet</h3>
-              <p style="color: var(--text-secondary); margin-bottom: 20px;">Start chatting with characters to add them to your companions!</p>
+              <p style="color: var(--text-secondary); margin-bottom: 20px;">Start chatting with characters or create your own to see them here!</p>
             </div>
           </div>
         `;
@@ -2253,16 +2300,23 @@
       }
 
       grid.innerHTML = userCompanions.map(character => `
-        <div class="character-card" onclick="openCharacter('${character.slug}')">
-          ${character.avatar ? 
+        <div class="character-card ${character.isUserCreated ? 'user-created' : ''}" onclick="openCharacter('${character.slug}')">
+          ${character.avatar ?
             `<img src="${character.avatar}" alt="${character.name}" class="character-image" loading="lazy">` :
             `<div class="character-image-placeholder">${character.name.charAt(0)}</div>`
           }
-          
+
+          <!-- Show different icons for user-created vs. chatted companions -->
           <button class="character-favorite active" onclick="event.stopPropagation(); removeFavorite('${character.id}')">
-            ❤️
+            ${character.isUserCreated ? '👤' : '❤️'}
           </button>
-          
+
+          <!-- Badge to indicate companion type -->
+          ${character.isUserCreated ?
+            `<div class="companion-type-badge user-created-badge">Created by you</div>` :
+            (character.hasChats ? `<div class="companion-type-badge chatted-badge">Chatted</div>` : '')
+          }
+
           <div class="character-stats-overlay">
             <div class="stat-badge">
               <span>💬</span>
@@ -2273,22 +2327,23 @@
               <span>${character.rating}</span>
             </div>
           </div>
-          
+
           <div class="character-info">
             <h3 class="character-name">${character.name}</h3>
             <div class="character-creator">
               <span>@${character.creator}</span>
+              ${character.isUserCreated ? '<span class="creator-indicator"> (You)</span>' : ''}
             </div>
             <p class="character-description">${character.description}</p>
-            
+
             <!-- Stats for mobile (shown in character-info, hidden overlay on mobile) -->
             <div class="character-stats">
               <span>💬 ${character.chats}</span>
               <span>⭐ ${character.rating}</span>
             </div>
-            
+
             <div class="character-tags">
-              ${character.tags.slice(0, 3).map(tag => `
+              ${(character.tags || []).slice(0, 3).map(tag => `
                 <span class="character-tag">${tag}</span>
               `).join('')}
             </div>
@@ -2368,40 +2423,81 @@
       `;
     }
 
-    function getUserCompanions() {
-      // Get from localStorage or return sample companions
-      const savedCompanions = localStorage.getItem('userCompanions');
-      if (savedCompanions) {
-        return JSON.parse(savedCompanions);
+    async function getUserCompanions() {
+      // Try to get real companions from API
+      const user = auth0.getUserInfo();
+      if (!user || !user.email || !user.sub) {
+        console.log('⚠️ No user info available for companions fetch');
+        return getSampleCompanions();
       }
-      
-      // Return some sample companions for demo
-      return [
-        {
-          id: 'aragorn',
-          name: 'Aragorn',
-          title: 'Ranger King',
-          description: 'Your trusted companion on many adventures.',
-          avatar: 'https://selira.ai/avatars/aragorn-1750067445.webp?v=1750067445',
-          category: 'Fantasy',
-          creator: 'Selira',
-          tags: ['Fantasy', 'Warrior', 'Leader'],
-          chats: '127K',
-          rating: '4.8'
-        },
-        {
-          id: 'naruto-uzumaki',
-          name: 'Naruto Uzumaki',
-          title: 'Hokage Ninja',
-          description: 'Your ninja friend who never gives up!',
-          avatar: 'https://selira.ai/avatars/naruto-uzumaki-1750068388.webp?v=1750068388',
-          category: 'Anime-Manga',
-          creator: 'Selira',
-          tags: ['Anime-Manga', 'Ninja', 'Hero'],
-          chats: '234K',
-          rating: '4.7'
+
+      try {
+        console.log('🔍 Fetching user companions...');
+
+        const response = await fetch('/.netlify/functions/get-my-companions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            user_email: user.email,
+            user_uid: user.sub
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
-      ];
+
+        const data = await response.json();
+
+        if (data.success && data.companions) {
+          console.log('✅ Successfully fetched', data.companions.length, 'companions');
+          console.log('📊 Stats:', {
+            total: data.total,
+            user_created: data.user_created_count,
+            chatted: data.chatted_count
+          });
+
+          // Cache the results for 5 minutes
+          const cacheData = {
+            companions: data.companions,
+            timestamp: Date.now()
+          };
+          localStorage.setItem('userCompanions', JSON.stringify(cacheData));
+
+          return data.companions;
+        } else {
+          console.error('❌ API returned unsuccessful response:', data.error);
+          return getSampleCompanions();
+        }
+
+      } catch (error) {
+        console.error('❌ Error fetching user companions:', error);
+        return getSampleCompanions();
+      }
+    }
+
+    function getSampleCompanions() {
+      // Check if we have cached data that's less than 5 minutes old
+      const cached = localStorage.getItem('userCompanions');
+      if (cached) {
+        try {
+          const cacheData = JSON.parse(cached);
+          const fiveMinutesAgo = Date.now() - (5 * 60 * 1000);
+          if (cacheData.timestamp && cacheData.timestamp > fiveMinutesAgo) {
+            console.log('📦 Using cached companions data');
+            return cacheData.companions || [];
+          }
+        } catch (e) {
+          console.log('⚠️ Invalid cache data, clearing...');
+          localStorage.removeItem('userCompanions');
+        }
+      }
+
+      // Return empty array by default - will show "No companions yet" message
+      console.log('📝 No companions data available, showing empty state');
+      return [];
     }
 
     function switchToAllCompanionsTab() {
@@ -2415,14 +2511,12 @@
       renderCharacters();
     }
 
-    function removeFavorite(characterId) {
-      // Remove from user companions
-      const companions = getUserCompanions();
-      const updated = companions.filter(c => c.id !== characterId);
-      localStorage.setItem('userCompanions', JSON.stringify(updated));
-      
+    async function removeFavorite(characterId) {
+      // Remove from user companions cache
+      localStorage.removeItem('userCompanions');
+
       if (currentTab === 'companions') {
-        renderMyCompanions();
+        await renderMyCompanions();
       }
     }
 
@@ -3018,16 +3112,16 @@
       renderCharacters();
     }
 
-    function showMyCompanions() {
+    async function showMyCompanions() {
       // Close sidebar on mobile
       closeSidebarOnMobile();
-      
+
       // Show filter section and tabs
       const filterSection = document.querySelector('.filter-section');
       const tabsSection = document.querySelector('.tab-nav');
       filterSection.style.display = 'block';
       if (tabsSection) tabsSection.style.display = 'block';
-      
+
       // Update active nav item
       document.querySelectorAll('.nav-item').forEach(item => {
         item.classList.remove('active');
@@ -3035,7 +3129,7 @@
           item.classList.add('active');
         }
       });
-      
+
       // Switch to My Companions tab
       document.querySelectorAll('.tab-item').forEach(tab => {
         tab.classList.remove('active');
@@ -3043,10 +3137,10 @@
           tab.classList.add('active');
         }
       });
-      
+
       // Show My Companions content
       currentTab = 'companions';
-      renderMyCompanions();
+      await renderMyCompanions();
     }
 
     // ===== INFINITE SCROLL =====
