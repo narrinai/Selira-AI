@@ -75,7 +75,7 @@ exports.handler = async (event, context) => {
     } while (offset);
 
     // Find user by UID first, then email
-    let targetUser = allUsers.find(record => record.fields.Auth0ID === user_uid);
+    let targetUser = allUsers.find(record => record.fields.NetlifyUID === user_uid);
     if (!targetUser) {
       targetUser = allUsers.find(record =>
         record.fields.Email === user_email ||
@@ -95,11 +95,11 @@ exports.handler = async (event, context) => {
     }
 
     const userRecordId = targetUser.id;
-    const userAuth0ID = targetUser.fields.Auth0ID || user_uid;
-    console.log('✅ Found user:', userRecordId, userAuth0ID);
+    const userNetlifyUID = targetUser.fields.NetlifyUID || user_uid;
+    console.log('✅ Found user:', userRecordId, userNetlifyUID);
 
     // Step 2: Get companions from chat history (same logic as get-user-chats.js)
-    const userFilter = `OR({User}='${userAuth0ID}',SEARCH('${userRecordId}',ARRAYJOIN({User})))`;
+    const userFilter = `OR({User}='${userNetlifyUID}',SEARCH('${userRecordId}',ARRAYJOIN({User})))`;
     const chatHistoryUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/ChatHistory?filterByFormula=${userFilter}&sort[0][field]=CreatedTime&sort[0][direction]=desc`;
 
     const chatResponse = await fetch(chatHistoryUrl, {
@@ -132,7 +132,7 @@ exports.handler = async (event, context) => {
 
     do {
       // Build filter for user-created characters: public visibility AND created by this user
-      const createdByFilter = `AND({Visibility} = "public", OR({Created_By} = "${userAuth0ID}", SEARCH("${userRecordId}", ARRAYJOIN({Created_By}))))`;
+      const createdByFilter = `AND({Visibility} = "public", OR({Created_By} = "${userNetlifyUID}", SEARCH("${userRecordId}", ARRAYJOIN({Created_By}))))`;
 
       const userCreatedUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters?filterByFormula=${encodeURIComponent(createdByFilter)}${charactersOffset ? `&offset=${charactersOffset}` : ''}`;
 
