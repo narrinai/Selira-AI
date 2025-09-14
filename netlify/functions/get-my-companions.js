@@ -74,14 +74,11 @@ exports.handler = async (event, context) => {
       offset = pageData.offset;
     } while (offset);
 
-    // Find user by UID first, then email
-    let targetUser = allUsers.find(record => record.fields.NetlifyUID === user_uid);
-    if (!targetUser) {
-      targetUser = allUsers.find(record =>
-        record.fields.Email === user_email ||
-        (record.fields.Email && record.fields.Email.toLowerCase() === user_email.toLowerCase())
-      );
-    }
+    // Find user by email (primary identifier)
+    let targetUser = allUsers.find(record =>
+      record.fields.Email === user_email ||
+      (record.fields.Email && record.fields.Email.toLowerCase() === user_email.toLowerCase())
+    );
 
     if (!targetUser) {
       return {
@@ -95,11 +92,11 @@ exports.handler = async (event, context) => {
     }
 
     const userRecordId = targetUser.id;
-    const userNetlifyUID = targetUser.fields.NetlifyUID || user_uid;
-    console.log('✅ Found user:', userRecordId, userNetlifyUID);
+    const userEmail = targetUser.fields.Email;
+    console.log('✅ Found user:', userRecordId, userEmail);
 
-    // Step 2: Get companions from chat history (same logic as get-user-chats.js)
-    const userFilter = `OR({User}='${userNetlifyUID}',SEARCH('${userRecordId}',ARRAYJOIN({User})))`;
+    // Step 2: Get companions from chat history - use both email and record ID for matching
+    const userFilter = `OR({User}='${userEmail}',SEARCH('${userRecordId}',ARRAYJOIN({User})))`;
     const chatHistoryUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/ChatHistory?filterByFormula=${userFilter}&sort[0][field]=CreatedTime&sort[0][direction]=desc`;
 
     const chatResponse = await fetch(chatHistoryUrl, {
@@ -131,8 +128,8 @@ exports.handler = async (event, context) => {
     let charactersOffset = null;
 
     do {
-      // Build filter for user-created characters: public visibility AND created by this user
-      const createdByFilter = `AND({Visibility} = "public", OR({Created_By} = "${userNetlifyUID}", SEARCH("${userRecordId}", ARRAYJOIN({Created_By}))))`;
+      // Build filter for user-created characters: public visibility AND created by this user (using email)
+      const createdByFilter = `AND({Visibility} = "public", OR({Created_By} = "${userEmail}", SEARCH("${userRecordId}", ARRAYJOIN({Created_By}))))`;
 
       const userCreatedUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters?filterByFormula=${encodeURIComponent(createdByFilter)}${charactersOffset ? `&offset=${charactersOffset}` : ''}`;
 
