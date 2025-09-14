@@ -883,42 +883,69 @@
         alert('Please enter a display name');
         return;
       }
-      
+
       try {
         // Get user data
         const user = JSON.parse(localStorage.getItem('user') || '{}');
         const auth0_id = user.sub || user.auth0_id || user.email || 'anonymous';
         const user_email = user.email || 'anonymous';
-        
+
         if (auth0_id === 'anonymous') {
           alert('Please login to save your display name');
           return;
         }
-        
+
         console.log('💾 Saving display name:', displayName);
-        
-        // Save display name to localStorage only for now (Airtable integration later)
-        console.log('💾 Saving display name to localStorage (Airtable integration pending)');
-        
-        // Update user object in localStorage
-        user.display_name = displayName;
-        localStorage.setItem('user', JSON.stringify(user));
-        
-        // Simulate successful response
-        const response = { ok: true };
-        
-        if (response.ok) {
-          console.log('✅ Display name saved to localStorage');
+        console.log('🔍 Using Auth0 ID:', auth0_id);
+
+        // Show loading state
+        const saveButton = document.querySelector('button[onclick="saveDisplayName()"]');
+        const originalText = saveButton.textContent;
+        saveButton.textContent = 'Saving...';
+        saveButton.disabled = true;
+
+        // Call Netlify function to update Airtable
+        const response = await fetch('/.netlify/functions/update-profile', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            auth0_id: auth0_id,
+            display_name: displayName
+          })
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          console.log('✅ Display name saved to Airtable');
+
+          // Update user object in localStorage
+          user.display_name = displayName;
+          localStorage.setItem('user', JSON.stringify(user));
+
           alert('Display name saved successfully!');
-          
+
         } else {
-          console.error('❌ Failed to save display name');
-          alert('Failed to save display name. Please try again.');
+          console.error('❌ Failed to save display name:', result.error);
+          alert(`Failed to save display name: ${result.error || 'Unknown error'}`);
         }
-        
+
+        // Restore button state
+        saveButton.textContent = originalText;
+        saveButton.disabled = false;
+
       } catch (error) {
         console.error('❌ Error saving display name:', error);
         alert('Error saving display name. Please try again.');
+
+        // Restore button state in case of error
+        const saveButton = document.querySelector('button[onclick="saveDisplayName()"]');
+        if (saveButton) {
+          saveButton.textContent = 'Save Display Name';
+          saveButton.disabled = false;
+        }
       }
     }
     
