@@ -1147,6 +1147,65 @@
       .mobile-header {
         padding: 16px 20px;
       }
+
+      /* Mobile Search Overlay */
+      .mobile-search-content {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .mobile-search-header {
+        display: flex;
+        align-items: center;
+        padding: 16px 20px;
+        background: var(--bg-primary);
+        border-bottom: 1px solid var(--border);
+        position: relative;
+        justify-content: center;
+      }
+
+      .mobile-search-close {
+        position: absolute;
+        left: 20px;
+        background: none;
+        border: none;
+        color: var(--text-primary);
+        font-size: 18px;
+        cursor: pointer;
+        padding: 8px;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .mobile-search-header span {
+        font-weight: 600;
+        color: var(--text-primary);
+        font-size: 16px;
+      }
+
+      .mobile-search-input-container {
+        padding: 20px;
+      }
+
+      #mobileSearchInput {
+        width: 100%;
+        padding: 16px 20px;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border);
+        border-radius: 25px;
+        font-size: 16px;
+        color: var(--text-primary);
+        box-sizing: border-box;
+      }
+
+      #mobileSearchInput:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
     }
 
     /* Sidebar Overlay for Mobile */
@@ -1485,9 +1544,14 @@
       <!-- Mobile Header -->
       <div class="mobile-header" style="display: none;">
         <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
-        <div class="mobile-logo">Selira</div>
+        <div class="mobile-logo">Selira AI</div>
         <div style="display: flex; align-items: center; gap: 16px;">
-          <button onclick="showMobileSearch()" style="background: none; border: none; color: var(--text-secondary); font-size: 20px; cursor: pointer; padding: 8px; display: flex; align-items: center; justify-content: center;">🔍</button>
+          <button onclick="showMobileSearch()" class="mobile-search-btn" style="background: none; border: none; cursor: pointer; padding: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="11" cy="11" r="8" stroke="var(--text-primary)" stroke-width="2"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="var(--text-primary)" stroke-width="2"/>
+            </svg>
+          </button>
           <button class="user-btn login-btn" onclick="openLoginModal('login'); return false;" style="padding: 10px 20px; font-size: 14px; border-radius: 25px; background: var(--accent); color: white; border: none; font-weight: 600; flex-shrink: 0;">Login</button>
         </div>
       </div>
@@ -2022,19 +2086,57 @@
     }
 
     function showMobileSearch() {
-      // Focus on the search input (if visible) or create a simple search prompt
-      const searchInput = document.getElementById('searchInput');
-      if (searchInput && searchInput.offsetParent !== null) {
-        // If search input is visible, focus on it
-        searchInput.focus();
-        searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      } else {
-        // Create a simple search prompt for mobile
-        const searchTerm = prompt('Search characters:', '');
-        if (searchTerm && searchTerm.trim()) {
-          currentFilters.search = searchTerm.toLowerCase().trim();
+      // Create or show mobile search overlay
+      let mobileSearchOverlay = document.getElementById('mobileSearchOverlay');
+
+      if (!mobileSearchOverlay) {
+        // Create mobile search overlay
+        mobileSearchOverlay = document.createElement('div');
+        mobileSearchOverlay.id = 'mobileSearchOverlay';
+        mobileSearchOverlay.innerHTML = `
+          <div class="mobile-search-content">
+            <div class="mobile-search-header">
+              <button onclick="hideMobileSearch()" class="mobile-search-close">✕</button>
+              <span>Search Characters</span>
+            </div>
+            <div class="mobile-search-input-container">
+              <input type="text" id="mobileSearchInput" placeholder="Type to search characters..." autocomplete="off">
+            </div>
+          </div>
+        `;
+
+        // Add styles
+        mobileSearchOverlay.style.cssText = `
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: var(--bg-primary);
+          z-index: 1000;
+          display: none;
+        `;
+
+        document.body.appendChild(mobileSearchOverlay);
+
+        // Add search functionality
+        const mobileSearchInput = document.getElementById('mobileSearchInput');
+        mobileSearchInput.addEventListener('input', function() {
+          currentFilters.search = this.value.toLowerCase();
           applyFilters();
-        }
+        });
+      }
+
+      mobileSearchOverlay.style.display = 'block';
+      setTimeout(() => {
+        document.getElementById('mobileSearchInput').focus();
+      }, 100);
+    }
+
+    function hideMobileSearch() {
+      const mobileSearchOverlay = document.getElementById('mobileSearchOverlay');
+      if (mobileSearchOverlay) {
+        mobileSearchOverlay.style.display = 'none';
       }
     }
 
