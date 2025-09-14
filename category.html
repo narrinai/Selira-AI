@@ -1486,7 +1486,10 @@
       <div class="mobile-header" style="display: none;">
         <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
         <div class="mobile-logo">Selira</div>
-        <button class="user-btn login-btn" onclick="openLoginModal('login'); return false;" style="padding: 10px 20px; font-size: 14px; border-radius: 25px; background: var(--accent); color: white; border: none; font-weight: 600; flex-shrink: 0;">Login</button>
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <button onclick="showMobileSearch()" style="background: none; border: none; color: var(--text-secondary); font-size: 20px; cursor: pointer; padding: 8px; display: flex; align-items: center; justify-content: center;">🔍</button>
+          <button class="user-btn login-btn" onclick="openLoginModal('login'); return false;" style="padding: 10px 20px; font-size: 14px; border-radius: 25px; background: var(--accent); color: white; border: none; font-weight: 600; flex-shrink: 0;">Login</button>
+        </div>
       </div>
 
       <!-- Top Header with Search -->
@@ -2013,9 +2016,26 @@
     function toggleSidebar() {
       const sidebar = document.getElementById('sidebar');
       const overlay = document.getElementById('sidebarOverlay');
-      
+
       sidebar.classList.toggle('open');
       overlay.classList.toggle('open');
+    }
+
+    function showMobileSearch() {
+      // Focus on the search input (if visible) or create a simple search prompt
+      const searchInput = document.getElementById('searchInput');
+      if (searchInput && searchInput.offsetParent !== null) {
+        // If search input is visible, focus on it
+        searchInput.focus();
+        searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else {
+        // Create a simple search prompt for mobile
+        const searchTerm = prompt('Search characters:', '');
+        if (searchTerm && searchTerm.trim()) {
+          currentFilters.search = searchTerm.toLowerCase().trim();
+          applyFilters();
+        }
+      }
     }
 
     function closeSidebarOnMobile() {
