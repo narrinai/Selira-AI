@@ -588,13 +588,8 @@ class Auth0LoginModal {
         loginBtn.textContent = 'Profile';
         loginBtn.onclick = (e) => {
           e.preventDefault();
-          // Check if showProfile function exists (category page)
-          if (typeof showProfile === 'function') {
-            showProfile();
-          } else {
-            // Fallback to profile page navigation
-            window.location.href = '/profile';
-          }
+          // Always navigate to /profile page
+          window.location.href = '/profile';
           return false;
         };
         console.log('✅ Updated mobile header to show Profile button');
