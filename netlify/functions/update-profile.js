@@ -31,10 +31,17 @@ exports.handler = async (event, context) => {
   }
 
   try {
+    console.log('📥 Received request:', {
+      method: event.httpMethod,
+      body: event.body,
+      headers: event.headers
+    });
+
     // Parse request body
     let requestData;
     try {
       requestData = JSON.parse(event.body);
+      console.log('📥 Parsed request data:', requestData);
     } catch (parseError) {
       console.error('❌ Invalid JSON in request body:', parseError);
       return {
@@ -143,26 +150,40 @@ exports.handler = async (event, context) => {
     const findResult = await findUserRecord();
 
     if (findResult.statusCode !== 200) {
-      console.error('❌ Error finding user:', findResult.data);
+      console.error('❌ Error finding user:', {
+        statusCode: findResult.statusCode,
+        data: findResult.data
+      });
       return {
         statusCode: 500,
         headers: {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*'
         },
-        body: JSON.stringify({ error: 'Failed to find user record' })
+        body: JSON.stringify({
+          error: 'Failed to find user record',
+          details: `HTTP ${findResult.statusCode}`,
+          airtableError: findResult.data
+        })
       };
     }
 
     if (!findResult.data.records || findResult.data.records.length === 0) {
-      console.error('❌ User not found with Auth0 ID:', auth0_id);
+      console.error('❌ User not found with email:', auth0_id, {
+        searchResult: findResult.data,
+        recordCount: findResult.data.records?.length || 0
+      });
       return {
         statusCode: 404,
         headers: {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*'
         },
-        body: JSON.stringify({ error: 'User not found' })
+        body: JSON.stringify({
+          error: 'User not found',
+          searchedEmail: auth0_id,
+          recordCount: findResult.data.records?.length || 0
+        })
       };
     }
 

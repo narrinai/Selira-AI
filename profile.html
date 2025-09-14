@@ -774,6 +774,7 @@
                 <input type="text" class="form-input" id="userDisplayName" placeholder="Enter display name">
                 <button class="btn" onclick="saveDisplayName()">Save</button>
                 <button class="btn btn-secondary" onclick="debugUserLookup()" style="margin-left: 8px;">Debug</button>
+                <button class="btn btn-secondary" onclick="testUpdateProfile()" style="margin-left: 8px;">Test</button>
               </div>
             </div>
 
@@ -907,6 +908,47 @@
       } catch (error) {
         console.error('❌ Debug error:', error);
         alert('Debug error - check console');
+      }
+    }
+
+    // Test update profile function directly
+    async function testUpdateProfile() {
+      try {
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        const auth0_id = user.sub || user.auth0_id || user.email || 'anonymous';
+        const email = user.email;
+
+        console.log('🧪 Testing update profile with:', { auth0_id, email });
+
+        const response = await fetch('/.netlify/functions/update-profile', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            auth0_id: email, // Use email directly
+            display_name: 'test-name-' + Date.now()
+          })
+        });
+
+        console.log('📊 Response status:', response.status);
+        console.log('📊 Response ok:', response.ok);
+
+        const result = await response.text(); // Get as text first
+        console.log('📊 Raw response:', result);
+
+        try {
+          const jsonResult = JSON.parse(result);
+          console.log('📊 Parsed result:', jsonResult);
+          alert(`Test result: ${jsonResult.success ? 'SUCCESS' : 'FAILED'}\nError: ${jsonResult.error || 'none'}`);
+        } catch (parseError) {
+          console.error('❌ Could not parse response as JSON:', parseError);
+          alert(`Response was not JSON:\n${result}`);
+        }
+
+      } catch (error) {
+        console.error('❌ Test error:', error);
+        alert('Test error - check console');
       }
     }
 
