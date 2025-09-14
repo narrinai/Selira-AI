@@ -773,6 +773,7 @@
               <div class="input-group">
                 <input type="text" class="form-input" id="userDisplayName" placeholder="Enter display name">
                 <button class="btn" onclick="saveDisplayName()">Save</button>
+                <button class="btn btn-secondary" onclick="loadUserProfile()" style="margin-left: 8px;">Refresh</button>
               </div>
             </div>
 
@@ -1054,35 +1055,75 @@
       }
     }
     
-    // Load user profile data from Auth0
-    function loadUserProfile() {
+    // Load user profile data from localStorage and Airtable
+    async function loadUserProfile() {
       try {
         const user = JSON.parse(localStorage.getItem('user') || '{}');
-        
+
         console.log('👤 Loading user profile:', {
           hasUser: !!user,
           userKeys: Object.keys(user),
           email: user.email,
           name: user.name
         });
-        
+
         if (user.email) {
-          // Update email field
+          // Update email field immediately from localStorage
           document.getElementById('userEmail').value = user.email;
-          
-          // Update display name if exists (prefer saved display_name over Auth0 name)
+
+          // Set initial display name from localStorage
           const displayNameField = document.getElementById('userDisplayName');
           if (displayNameField) {
             displayNameField.value = user.display_name || user.name || '';
           }
-          
-          // Update any other profile fields that exist
-          console.log('✅ Profile loaded:', user.email);
+
+          console.log('✅ Profile loaded from localStorage:', user.email);
+
+          // Now fetch the latest profile data from Airtable
+          console.log('🔄 Fetching latest profile data from Airtable...');
+
+          try {
+            const response = await fetch('/.netlify/functions/get-user-profile', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                email: user.email
+              })
+            });
+
+            if (response.ok) {
+              const result = await response.json();
+
+              if (result.success && result.profile) {
+                console.log('✅ Latest profile data from Airtable:', result.profile);
+
+                // Update display name with the latest value from Airtable
+                if (displayNameField && result.profile.display_name) {
+                  displayNameField.value = result.profile.display_name;
+                  console.log('📝 Updated display name from Airtable:', result.profile.display_name);
+                }
+
+                // Update localStorage with the latest display_name
+                user.display_name = result.profile.display_name;
+                localStorage.setItem('user', JSON.stringify(user));
+
+              } else {
+                console.log('⚠️ Could not fetch latest profile data:', result.error);
+              }
+            } else {
+              console.log('⚠️ Failed to fetch profile data from Airtable');
+            }
+          } catch (airtableError) {
+            console.log('⚠️ Error fetching from Airtable (using localStorage):', airtableError);
+          }
+
         } else {
           console.log('⚠️ No user data found in localStorage');
           document.getElementById('userEmail').value = 'Not logged in';
         }
-        
+
       } catch (error) {
         console.error('❌ Error loading profile:', error);
         document.getElementById('userEmail').value = 'Error loading profile';
