@@ -2425,7 +2425,7 @@
 
     async function getUserCompanions() {
       // Try to get real companions from API
-      const user = auth0.getUser();
+      const user = window.getCurrentUser();
       if (!user || !user.email || !user.sub) {
         console.log('⚠️ No user info available for companions fetch');
         return getSampleCompanions();
