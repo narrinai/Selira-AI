@@ -77,12 +77,25 @@ exports.handler = async (event, context) => {
     console.log('🔍 Updating profile for Auth0 ID:', auth0_id);
     console.log('📝 New display name:', display_name);
 
-    // Get environment variables
-    const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN || process.env.AIRTABLE_API_KEY;
-    const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
+    // Get environment variables - try both Selira and regular credentials
+    const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA || process.env.AIRTABLE_TOKEN || process.env.AIRTABLE_API_KEY;
+    const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA || process.env.AIRTABLE_BASE_ID;
+
+    console.log('🔍 Environment check:', {
+      hasSeliraToken: !!process.env.AIRTABLE_TOKEN_SELIRA,
+      hasToken: !!process.env.AIRTABLE_TOKEN,
+      hasApiKey: !!process.env.AIRTABLE_API_KEY,
+      hasSeliraBaseId: !!process.env.AIRTABLE_BASE_ID_SELIRA,
+      hasBaseId: !!process.env.AIRTABLE_BASE_ID,
+      finalToken: !!AIRTABLE_TOKEN,
+      finalBaseId: !!AIRTABLE_BASE_ID
+    });
 
     if (!AIRTABLE_TOKEN || !AIRTABLE_BASE_ID) {
-      console.error('❌ Missing Airtable credentials');
+      console.error('❌ Missing Airtable credentials', {
+        token: !!AIRTABLE_TOKEN,
+        baseId: !!AIRTABLE_BASE_ID
+      });
       return {
         statusCode: 500,
         headers: {
@@ -93,17 +106,16 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // First, find the user record by Auth0 ID
-    const findUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula=AND({AuthID}="${auth0_id}")`;
-
+    // First, find the user record by Auth0 ID - try both field names
     console.log('🔍 Searching for user with Auth0 ID:', auth0_id);
 
     const findUserRecord = () => {
       return new Promise((resolve, reject) => {
-        const options = {
+        // First try Auth0ID field
+        const options1 = {
           hostname: 'api.airtable.com',
           port: 443,
-          path: `/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula=AND({AuthID}="${auth0_id}")`,
+          path: `/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula=AND({Auth0ID}="${auth0_id}")`,
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
@@ -111,7 +123,7 @@ exports.handler = async (event, context) => {
           }
         };
 
-        const req = https.request(options, (res) => {
+        const req1 = https.request(options1, (res) => {
           let data = '';
 
           res.on('data', (chunk) => {
@@ -121,20 +133,66 @@ exports.handler = async (event, context) => {
           res.on('end', () => {
             try {
               const response = JSON.parse(data);
-              resolve({ statusCode: res.statusCode, data: response });
+              if (res.statusCode === 200 && response.records && response.records.length > 0) {
+                console.log('✅ Found user using Auth0ID field');
+                resolve({ statusCode: res.statusCode, data: response });
+                return;
+              }
+
+              // If not found, try AuthID field
+              console.log('🔍 User not found with Auth0ID, trying AuthID field');
+              const options2 = {
+                hostname: 'api.airtable.com',
+                port: 443,
+                path: `/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula=AND({AuthID}="${auth0_id}")`,
+                method: 'GET',
+                headers: {
+                  'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+                  'Content-Type': 'application/json'
+                }
+              };
+
+              const req2 = https.request(options2, (res2) => {
+                let data2 = '';
+
+                res2.on('data', (chunk) => {
+                  data2 += chunk;
+                });
+
+                res2.on('end', () => {
+                  try {
+                    const response2 = JSON.parse(data2);
+                    if (res2.statusCode === 200 && response2.records && response2.records.length > 0) {
+                      console.log('✅ Found user using AuthID field');
+                    }
+                    resolve({ statusCode: res2.statusCode, data: response2 });
+                  } catch (error) {
+                    console.error('❌ Error parsing AuthID response:', error);
+                    reject(error);
+                  }
+                });
+              });
+
+              req2.on('error', (error) => {
+                console.error('❌ AuthID request error:', error);
+                reject(error);
+              });
+
+              req2.end();
+
             } catch (error) {
-              console.error('❌ Error parsing Airtable response:', error);
+              console.error('❌ Error parsing Auth0ID response:', error);
               reject(error);
             }
           });
         });
 
-        req.on('error', (error) => {
-          console.error('❌ Request error:', error);
+        req1.on('error', (error) => {
+          console.error('❌ Auth0ID request error:', error);
           reject(error);
         });
 
-        req.end();
+        req1.end();
       });
     };
 
