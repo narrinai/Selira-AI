@@ -2177,49 +2177,6 @@
     window.addEventListener('resize', handleResize);
     document.addEventListener('DOMContentLoaded', handleResize);
 
-    // ===== MOBILE AUTH NAVIGATION HANDLING =====
-    function updateMobileAuthButton(isAuthenticated, user = null) {
-      const loginBtn = document.querySelector('.mobile-header .login-btn');
-
-      if (!loginBtn) return;
-
-      if (isAuthenticated && user) {
-        // Update button to show Profile
-        loginBtn.textContent = 'Profile';
-        loginBtn.onclick = (e) => {
-          e.preventDefault();
-          showProfile();
-          return false;
-        };
-        console.log('✅ Updated mobile navigation to show Profile button');
-      } else {
-        // Reset to Login button
-        loginBtn.textContent = 'Login';
-        loginBtn.onclick = (e) => {
-          e.preventDefault();
-          openLoginModal('login');
-          return false;
-        };
-        console.log('✅ Updated mobile navigation to show Login button');
-      }
-    }
-
-    // Listen for auth state changes from Auth0
-    window.addEventListener('auth-state-changed', function(event) {
-      const { isAuthenticated, user } = event.detail;
-      updateMobileAuthButton(isAuthenticated, user);
-    });
-
-    // Check auth state on page load
-    document.addEventListener('DOMContentLoaded', function() {
-      // Wait a bit for Auth0 to initialize, then check auth state
-      setTimeout(() => {
-        if (window.isUserAuthenticated && window.isUserAuthenticated()) {
-          const user = window.getCurrentUser && window.getCurrentUser();
-          updateMobileAuthButton(true, user);
-        }
-      }, 1000);
-    });
 
     // ===== TAG FILTERING WITH URLS =====
     document.addEventListener('click', function(e) {

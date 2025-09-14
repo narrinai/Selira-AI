@@ -576,33 +576,68 @@ class Auth0LoginModal {
   }
 
   updateMobileNav(mobileMenu, isAuthenticated) {
+    // Check for category page specific mobile header
+    const mobileHeader = document.querySelector('.mobile-header');
+    const loginBtn = mobileHeader?.querySelector('.login-btn');
+
+    if (loginBtn) {
+      // Handle category page mobile header
+      console.log('🔄 Updating category page mobile header:', { isAuthenticated, loginBtn: loginBtn.textContent });
+
+      if (isAuthenticated) {
+        loginBtn.textContent = 'Profile';
+        loginBtn.onclick = (e) => {
+          e.preventDefault();
+          // Check if showProfile function exists (category page)
+          if (typeof showProfile === 'function') {
+            showProfile();
+          } else {
+            // Fallback to profile page navigation
+            window.location.href = '/profile';
+          }
+          return false;
+        };
+        console.log('✅ Updated mobile header to show Profile button');
+      } else {
+        loginBtn.textContent = 'Login';
+        loginBtn.onclick = (e) => {
+          e.preventDefault();
+          this.openModal('login');
+          return false;
+        };
+        console.log('✅ Updated mobile header to show Login button');
+      }
+      return;
+    }
+
+    // Fallback to original mobile menu handling
     if (!mobileMenu) return;
-    
+
     // Find existing auth links
     let loginLink = mobileMenu.querySelector('.mobile-login-link');
     let signupLink = mobileMenu.querySelector('.mobile-signup-link');
     let profileLink = mobileMenu.querySelector('.mobile-profile-link');
-    
+
     if (isAuthenticated) {
       // Remove login/signup, add profile
       loginLink?.remove();
       signupLink?.remove();
-      
+
       if (!profileLink) {
         profileLink = document.createElement('a');
         profileLink.href = '/profile';
         profileLink.className = 'mobile-profile-link';
         profileLink.textContent = '👤';
-        
+
         // Insert before CTA
         const ctaBtn = mobileMenu.querySelector('.cta-btn');
         mobileMenu.insertBefore(profileLink, ctaBtn);
       }
-      
+
     } else {
       // Remove profile, add login/signup
       profileLink?.remove();
-      
+
       if (!loginLink) {
         loginLink = document.createElement('a');
         loginLink.href = '#';
@@ -612,11 +647,11 @@ class Auth0LoginModal {
           e.preventDefault();
           this.openModal('login');
         });
-        
+
         const ctaBtn = mobileMenu.querySelector('.cta-btn');
         mobileMenu.insertBefore(loginLink, ctaBtn);
       }
-      
+
       if (!signupLink) {
         signupLink = document.createElement('a');
         signupLink.href = '#';
@@ -626,7 +661,7 @@ class Auth0LoginModal {
           e.preventDefault();
           this.openModal('signup');
         });
-        
+
         const ctaBtn = mobileMenu.querySelector('.cta-btn');
         mobileMenu.insertBefore(signupLink, ctaBtn);
       }
