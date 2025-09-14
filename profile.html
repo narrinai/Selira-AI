@@ -963,16 +963,15 @@
       try {
         // Get user data
         const user = JSON.parse(localStorage.getItem('user') || '{}');
-        const auth0_id = user.sub || user.auth0_id || user.email || 'anonymous';
         const user_email = user.email || 'anonymous';
 
-        if (auth0_id === 'anonymous') {
+        if (user_email === 'anonymous' || !user_email) {
           alert('Please login to save your display name');
           return;
         }
 
         console.log('💾 Saving display name:', displayName);
-        console.log('🔍 Using Auth0 ID:', auth0_id);
+        console.log('📧 Using email:', user_email);
 
         // Show loading state
         const saveButton = document.querySelector('button[onclick="saveDisplayName()"]');
@@ -987,7 +986,7 @@
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            auth0_id: auth0_id,
+            auth0_id: user_email, // Use email directly like the test function
             display_name: displayName
           })
         });
