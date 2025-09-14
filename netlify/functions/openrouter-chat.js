@@ -51,9 +51,9 @@ exports.handler = async (event, context) => {
     // Still try to save the message to test our chat history functionality
     try {
       if (auth0_id !== 'anonymous') {
-        const userResponse = await fetch(\`https://api.airtable.com/v0/\${AIRTABLE_BASE_ID}/Users?filterByFormula={NetlifyUID}='\${auth0_id}'&maxRecords=1\`, {
+        const userResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula={NetlifyUID}='${auth0_id}'&maxRecords=1`, {
           headers: {
-            'Authorization': \`Bearer \${AIRTABLE_TOKEN}\`,
+            'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
             'Content-Type': 'application/json'
           }
         });
