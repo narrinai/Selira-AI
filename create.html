@@ -55,6 +55,31 @@
   
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+    /* Image optimization styles */
+    .image-container {
+      position: relative;
+      overflow: hidden;
+      border-radius: 12px;
+    }
+
+    .lazy-image {
+      transition: opacity 0.3s ease;
+      opacity: 0;
+    }
+
+    .lazy-image.loaded {
+      opacity: 1;
+    }
+
+    .image-placeholder {
+      background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      font-size: 24px;
+    }
     
     :root {
       /* Selira dark theme - matching category.html */
@@ -756,7 +781,12 @@
             <h3 style="color: var(--text-primary); margin-bottom: 20px; font-size: 20px; font-weight: 700; text-align: center;">Choose Art Style</h3>
             <div class="style-grid">
               <div class="style-option" data-style="realistic" onclick="selectStyleStep('realistic')">
-                <div style="height: 200px; background: url('/images/realistic-card.png') center/cover; border-radius: 12px;">
+                <div class="image-container" style="height: 200px;">
+                  <div class="image-placeholder" style="height: 200px;">🎭</div>
+                  <img class="lazy-image"
+                       data-src="/images/realistic-card.png"
+                       alt="Realistic style"
+                       style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
                 </div>
                 <div style="padding: 12px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 18px; font-weight: 700; margin-bottom: 8px;">Realistic</h4>
@@ -764,7 +794,12 @@
                 </div>
               </div>
               <div class="style-option" data-style="anime" onclick="selectStyleStep('anime')" style="border-color: var(--accent);">
-                <div style="height: 200px; background: url('/images/anime-card.png') center/cover; border-radius: 12px;">
+                <div class="image-container" style="height: 200px;">
+                  <div class="image-placeholder" style="height: 200px;">✨</div>
+                  <img class="lazy-image"
+                       data-src="/images/anime-card.png"
+                       alt="Anime style"
+                       style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
                 </div>
                 <div style="padding: 12px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 18px; font-weight: 700; margin-bottom: 8px;">Anime</h4>
@@ -779,55 +814,82 @@
             <h3 style="color: var(--text-primary); margin-bottom: 40px; font-size: 28px; font-weight: 700; text-align: center;">Choose Ethnicity</h3>
             <div class="ethnicity-grid">
               <div class="ethnicity-option" data-ethnicity="white" onclick="selectEthnicityStep('white')" style="border-color: var(--accent);">
-                <div style="height: 160px; background: url('/images/white-et.png') center/cover;"></div>
+                <div class="image-container" style="height: 160px;">
+                  <div class="image-placeholder" style="height: 160px;">👤</div>
+                  <img class="lazy-image" data-src="/images/white-et.png" alt="White/Caucasian" loading="lazy" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+                </div>
                 <div style="padding: 12px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">White/Caucasian</h4>
                 </div>
               </div>
               <div class="ethnicity-option" data-ethnicity="black" onclick="selectEthnicityStep('black')">
-                <div style="height: 160px; background: url('/images/black-et.png') center/cover;"></div>
+                <div class="image-container" style="height: 160px;">
+                  <div class="image-placeholder" style="height: 160px;">👤</div>
+                  <img class="lazy-image" data-src="/images/black-et.png" alt="Black/African" loading="lazy" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+                </div>
                 <div style="padding: 12px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Black/African</h4>
                 </div>
               </div>
               <div class="ethnicity-option" data-ethnicity="indian" onclick="selectEthnicityStep('indian')">
-                <div style="height: 160px; background: url('/images/indian-et.png') center/cover;"></div>
+                <div class="image-container" style="height: 160px;">
+                  <div class="image-placeholder" style="height: 160px;">👤</div>
+                  <img class="lazy-image" data-src="/images/indian-et.png" alt="Indian/South Asian" loading="lazy" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+                </div>
                 <div style="padding: 12px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Indian/South Asian</h4>
                 </div>
               </div>
               <div class="ethnicity-option" data-ethnicity="middle-east" onclick="selectEthnicityStep('middle-east')">
-                <div style="height: 160px; background: url('/images/middle-east-et.png') center/cover;"></div>
+                <div class="image-container" style="height: 160px;">
+                  <div class="image-placeholder" style="height: 160px;">👤</div>
+                  <img class="lazy-image" data-src="/images/middle-east-et.png" alt="Middle Eastern" loading="lazy" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+                </div>
                 <div style="padding: 12px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Middle Eastern</h4>
                 </div>
               </div>
               <div class="ethnicity-option" data-ethnicity="hispanic" onclick="selectEthnicityStep('hispanic')">
-                <div style="height: 160px; background: url('/images/hispanic-et.png') center/cover;"></div>
+                <div class="image-container" style="height: 160px;">
+                  <div class="image-placeholder" style="height: 160px;">👤</div>
+                  <img class="lazy-image" data-src="/images/hispanic-et.png" alt="Hispanic/Latino" loading="lazy" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+                </div>
                 <div style="padding: 12px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Hispanic/Latino</h4>
                 </div>
               </div>
               <div class="ethnicity-option" data-ethnicity="korean" onclick="selectEthnicityStep('korean')">
-                <div style="height: 160px; background: url('/images/korean-et.png') center/cover;"></div>
+                <div class="image-container" style="height: 160px;">
+                  <div class="image-placeholder" style="height: 160px;">👤</div>
+                  <img class="lazy-image" data-src="/images/korean-et.png" alt="Korean" loading="lazy" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+                </div>
                 <div style="padding: 12px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Korean</h4>
                 </div>
               </div>
               <div class="ethnicity-option" data-ethnicity="chinese" onclick="selectEthnicityStep('chinese')">
-                <div style="height: 160px; background: url('/images/chinese-et.png') center/cover;"></div>
+                <div class="image-container" style="height: 160px;">
+                  <div class="image-placeholder" style="height: 160px;">👤</div>
+                  <img class="lazy-image" data-src="/images/chinese-et.png" alt="Chinese" loading="lazy" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+                </div>
                 <div style="padding: 12px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Chinese</h4>
                 </div>
               </div>
               <div class="ethnicity-option" data-ethnicity="japanese" onclick="selectEthnicityStep('japanese')">
-                <div style="height: 160px; background: url('/images/japanese-et.png') center/cover;"></div>
+                <div class="image-container" style="height: 160px;">
+                  <div class="image-placeholder" style="height: 160px;">👤</div>
+                  <img class="lazy-image" data-src="/images/japanese-et.png" alt="Japanese" loading="lazy" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+                </div>
                 <div style="padding: 12px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Japanese</h4>
                 </div>
               </div>
               <div class="ethnicity-option" data-ethnicity="vietnamese" onclick="selectEthnicityStep('vietnamese')">
-                <div style="height: 160px; background: url('/images/vietnamese-et.png') center/cover;"></div>
+                <div class="image-container" style="height: 160px;">
+                  <div class="image-placeholder" style="height: 160px;">👤</div>
+                  <img class="lazy-image" data-src="/images/vietnamese-et.png" alt="Vietnamese" loading="lazy" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+                </div>
                 <div style="padding: 12px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Vietnamese</h4>
                 </div>
@@ -840,21 +902,30 @@
             <h3 style="color: var(--text-primary); margin-bottom: 40px; font-size: 28px; font-weight: 700; text-align: center;">Choose Hair Length</h3>
             <div class="hair-grid" style="grid-template-columns: repeat(3, 1fr); gap: 60px; max-width: 800px; margin: 0 auto;">
               <div class="hair-option" data-hair="short" onclick="selectHairStep('short')" style="border-color: var(--accent);">
-                <div style="height: 160px; background: url('/images/short-hair.png') center/cover; border-radius: 12px;"></div>
+                <div class="image-container" style="height: 160px;">
+                  <div class="image-placeholder" style="height: 160px;">💇‍♀️</div>
+                  <img class="lazy-image" data-src="/images/short-hair.png" alt="Short hair" loading="lazy" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+                </div>
                 <div style="padding: 16px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 16px; font-weight: 600;">Short</h4>
                   <p style="color: var(--text-secondary); font-size: 13px; margin-top: 4px;">Above shoulders</p>
                 </div>
               </div>
               <div class="hair-option" data-hair="medium" onclick="selectHairStep('medium')">
-                <div style="height: 160px; background: url('/images/medium-hair.png') center/cover; border-radius: 12px;"></div>
+                <div class="image-container" style="height: 160px;">
+                  <div class="image-placeholder" style="height: 160px;">💇‍♀️</div>
+                  <img class="lazy-image" data-src="/images/medium-hair.png" alt="Medium hair" loading="lazy" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+                </div>
                 <div style="padding: 16px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 16px; font-weight: 600;">Medium</h4>
                   <p style="color: var(--text-secondary); font-size: 13px; margin-top: 4px;">Shoulder length</p>
                 </div>
               </div>
               <div class="hair-option" data-hair="long" onclick="selectHairStep('long')">
-                <div style="height: 160px; background: url('/images/long-hair.png') center/cover; border-radius: 12px;"></div>
+                <div class="image-container" style="height: 160px;">
+                  <div class="image-placeholder" style="height: 160px;">💇‍♀️</div>
+                  <img class="lazy-image" data-src="/images/long-hair.png" alt="Long hair" loading="lazy" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+                </div>
                 <div style="padding: 16px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 16px; font-weight: 600;">Long</h4>
                   <p style="color: var(--text-secondary); font-size: 13px; margin-top: 4px;">Below shoulders</p>
@@ -868,49 +939,73 @@
             <h3 style="color: var(--text-primary); margin-bottom: 40px; font-size: 28px; font-weight: 700; text-align: center;">Choose Hair Color</h3>
             <div class="hair-grid" style="grid-template-columns: repeat(4, 1fr); gap: 40px; max-width: 1000px; margin: 0 auto;">
               <div class="hair-color-option" data-hair-color="brown" onclick="selectHairColorStep('brown')" style="border-color: var(--accent);">
-                <div style="height: 160px; background: url('/images/brown-hair-female.png') center/cover; border-radius: 12px;"></div>
+                <div class="image-container" style="height: 160px;">
+                  <div class="image-placeholder" style="height: 160px;">🎨</div>
+                  <img class="lazy-image" data-src="/images/brown-hair-female.png" alt="Brown hair" loading="lazy" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+                </div>
                 <div style="padding: 12px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Brown</h4>
                 </div>
               </div>
               <div class="hair-color-option" data-hair-color="black" onclick="selectHairColorStep('black')">
-                <div style="height: 160px; background: url('/images/black-hair-female.png') center/cover; border-radius: 12px;"></div>
+                <div class="image-container" style="height: 160px;">
+                  <div class="image-placeholder" style="height: 160px;">🎨</div>
+                  <img class="lazy-image" data-src="/images/black-hair-female.png" alt="Black hair" loading="lazy" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+                </div>
                 <div style="padding: 12px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Black</h4>
                 </div>
               </div>
               <div class="hair-color-option" data-hair-color="red" onclick="selectHairColorStep('red')">
-                <div style="height: 160px; background: url('/images/red-hair-female.png') center/cover; border-radius: 12px;"></div>
+                <div class="image-container" style="height: 160px;">
+                  <div class="image-placeholder" style="height: 160px;">🎨</div>
+                  <img class="lazy-image" data-src="/images/red-hair-female.png" alt="Red hair" loading="lazy" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+                </div>
                 <div style="padding: 12px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Red</h4>
                 </div>
               </div>
               <div class="hair-color-option" data-hair-color="gray" onclick="selectHairColorStep('gray')">
-                <div style="height: 160px; background: url('/images/grey-hair-female.png') center/cover; border-radius: 12px;"></div>
+                <div class="image-container" style="height: 160px;">
+                  <div class="image-placeholder" style="height: 160px;">🎨</div>
+                  <img class="lazy-image" data-src="/images/grey-hair-female.png" alt="Gray hair" loading="lazy" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+                </div>
                 <div style="padding: 12px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Gray</h4>
                 </div>
               </div>
               <div class="hair-color-option" data-hair-color="blonde" onclick="selectHairColorStep('blonde')">
-                <div style="height: 160px; background: url('/images/blonde-hair-female.png') center/cover; border-radius: 12px;"></div>
+                <div class="image-container" style="height: 160px;">
+                  <div class="image-placeholder" style="height: 160px;">🎨</div>
+                  <img class="lazy-image" data-src="/images/blonde-hair-female.png" alt="Blonde hair" loading="lazy" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+                </div>
                 <div style="padding: 12px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Blonde</h4>
                 </div>
               </div>
               <div class="hair-color-option" data-hair-color="auburn" onclick="selectHairColorStep('auburn')">
-                <div style="height: 160px; background: url('/images/auburn-hair-female.png') center/cover; border-radius: 12px;"></div>
+                <div class="image-container" style="height: 160px;">
+                  <div class="image-placeholder" style="height: 160px;">🎨</div>
+                  <img class="lazy-image" data-src="/images/auburn-hair-female.png" alt="Auburn hair" loading="lazy" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+                </div>
                 <div style="padding: 12px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Auburn</h4>
                 </div>
               </div>
               <div class="hair-color-option" data-hair-color="white" onclick="selectHairColorStep('white')">
-                <div style="height: 160px; background: url('/images/white-hair-female.png') center/cover; border-radius: 12px;"></div>
+                <div class="image-container" style="height: 160px;">
+                  <div class="image-placeholder" style="height: 160px;">🎨</div>
+                  <img class="lazy-image" data-src="/images/white-hair-female.png" alt="White hair" loading="lazy" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+                </div>
                 <div style="padding: 12px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">White</h4>
                 </div>
               </div>
               <div class="hair-color-option" data-hair-color="purple" onclick="selectHairColorStep('purple')">
-                <div style="height: 160px; background: url('/images/purple-hair-female.png') center/cover; border-radius: 12px;"></div>
+                <div class="image-container" style="height: 160px;">
+                  <div class="image-placeholder" style="height: 160px;">🎨</div>
+                  <img class="lazy-image" data-src="/images/purple-hair-female.png" alt="Purple hair" loading="lazy" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+                </div>
                 <div style="padding: 12px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Purple</h4>
                 </div>
@@ -1024,15 +1119,18 @@
       if (characterCreationState.currentStep < totalSteps) {
         // Hide current step
         hideCurrentStep();
-        
+
         // Move to next step
         characterCreationState.currentStep++;
-        
+
         // Show next step
         showCurrentStep();
-        
+
         // Update progress
         updateStepProgress();
+
+        // Preload images for next step
+        preloadStepImages(characterCreationState.currentStep);
       }
     }
 
@@ -1419,8 +1517,92 @@
       }
     }
 
+    // ===== LAZY LOADING SYSTEM =====
+    function initializeLazyLoading() {
+      console.log('🖼️ Initializing lazy loading system...');
+
+      // Intersection Observer for lazy loading
+      const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const img = entry.target;
+            const placeholder = img.parentElement.querySelector('.image-placeholder');
+
+            img.src = img.getAttribute('data-src');
+            img.onload = function() {
+              img.classList.add('loaded');
+              if (placeholder) {
+                placeholder.style.opacity = '0';
+                setTimeout(() => placeholder.remove(), 300);
+              }
+            };
+            observer.unobserve(img);
+          }
+        });
+      }, {
+        rootMargin: '50px'
+      });
+
+      // Observe all lazy images
+      document.querySelectorAll('.lazy-image').forEach(img => {
+        imageObserver.observe(img);
+      });
+
+      console.log('✅ Lazy loading initialized for', document.querySelectorAll('.lazy-image').length, 'images');
+    }
+
+    // Preload critical images for first step
+    function preloadCriticalImages() {
+      const criticalImages = [
+        '/images/realistic-card.png',
+        '/images/anime-card.png'
+      ];
+
+      criticalImages.forEach(src => {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.as = 'image';
+        link.href = src;
+        document.head.appendChild(link);
+      });
+
+      console.log('🚀 Preloaded', criticalImages.length, 'critical images');
+    }
+
+    // Progressive image preloading for upcoming steps
+    function preloadStepImages(stepNumber) {
+      const stepImageMap = {
+        2: [
+          '/images/white-et.png',
+          '/images/black-et.png',
+          '/images/indian-et.png'
+        ],
+        3: [
+          '/images/short-hair.png',
+          '/images/medium-hair.png',
+          '/images/long-hair.png'
+        ],
+        4: [
+          '/images/brown-hair-female.png',
+          '/images/black-hair-female.png',
+          '/images/blonde-hair-female.png'
+        ]
+      };
+
+      const imagesToPreload = stepImageMap[stepNumber];
+      if (imagesToPreload) {
+        imagesToPreload.forEach(src => {
+          const img = new Image();
+          img.src = src;
+        });
+        console.log('📦 Preloaded', imagesToPreload.length, 'images for step', stepNumber);
+      }
+    }
+
     // Initialize when page loads
     document.addEventListener('DOMContentLoaded', function() {
+      preloadCriticalImages();
+      initializeLazyLoading();
       initializeCreateTags();
       updateStepProgress();
     });
