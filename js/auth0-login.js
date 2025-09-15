@@ -533,9 +533,18 @@ class Auth0LoginModal {
       // Update existing login button to profile
       if (loginBtn) {
         loginBtn.href = '/profile';
-        loginBtn.textContent = '👤';
+        loginBtn.textContent = 'Profile';
         loginBtn.className = loginBtn.className.replace('login-btn', 'profile-btn');
         loginBtn.onclick = null; // Remove modal trigger
+        // Style like the mobile profile button
+        loginBtn.style.background = 'var(--accent, #d4a574)';
+        loginBtn.style.color = 'white';
+        loginBtn.style.borderRadius = '25px';
+        loginBtn.style.padding = '10px 20px';
+        loginBtn.style.fontSize = '14px';
+        loginBtn.style.fontWeight = '600';
+        loginBtn.style.border = 'none';
+        loginBtn.style.textDecoration = 'none';
         console.log('✅ Updated login button to profile:', loginBtn.textContent);
       }
       
@@ -557,6 +566,15 @@ class Auth0LoginModal {
           this.openModal('login');
           return false;
         };
+        // Reset to original styling
+        loginBtn.style.background = '';
+        loginBtn.style.color = '';
+        loginBtn.style.borderRadius = '';
+        loginBtn.style.padding = '';
+        loginBtn.style.fontSize = '';
+        loginBtn.style.fontWeight = '';
+        loginBtn.style.border = '';
+        loginBtn.style.textDecoration = '';
         console.log('✅ Restored login button functionality');
       }
       
