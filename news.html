@@ -140,7 +140,6 @@
 
     html {
       scroll-behavior: smooth;
-      height: 100%;
     }
 
     body {
@@ -151,6 +150,7 @@
       -webkit-font-smoothing: antialiased;
       min-height: 100vh;
       overflow-x: hidden;
+      overflow-y: auto;
       padding-top: 80px; /* Account for fixed header */
     }
 
@@ -981,7 +981,7 @@
         <a href="/pricing.html" class="nav-link">Pricing</a>
         <a href="#" class="nav-link login-btn" onclick="openLoginModal('login'); return false;">Login</a>
         <a href="#" class="nav-link signup-btn" onclick="openLoginModal('signup'); return false;">Sign Up</a>
-        <a href="/chat.html" class="cta-btn">Start Chatting</a>
+        <a href="/category" class="cta-btn">Start Chatting</a>
       </div>
       <button class="hamburger" onclick="toggleMobileMenu()">☰</button>
     </nav>
