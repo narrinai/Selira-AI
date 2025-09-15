@@ -1668,13 +1668,16 @@
     const charactersPerPage = 12;
 
     // Initialize page
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', async function() {
       console.log('🚀 Selira AI Category page loading...');
       loadCharacters();
       initializeFilters();
       setupTabNavigation();
       setupInfiniteScroll();
       handleInitialURL();
+
+      // Load tags for filter pills
+      await loadCreateTagsFromAirtable();
     });
 
     // ===== CHARACTER LOADING =====
@@ -4132,12 +4135,12 @@ Please be thorough and include important details from our conversations.`;
       const dynamicFilters = document.getElementById('dynamicTagFilters');
       if (!dynamicFilters) return;
 
-      // Filter out category tags and basic ones, limit to most relevant
-      const categoryTags = ['Fantasy', 'Anime-Manga', 'Historical'];
+      // Filter out basic system tags, show the actual character tags
+      const systemTags = ['All', 'Unfiltered'];
       const filteredTags = tags
-        .filter(tag => !categoryTags.includes(tag))
-        .filter(tag => tag && tag.length > 0)
-        .slice(0, 12); // Show max 12 additional tags
+        .filter(tag => !systemTags.includes(tag))
+        .filter(tag => tag && tag.length > 0 && tag.trim() !== '')
+        .slice(0, 15); // Show max 15 relevant tags
 
       // Create tag pills
       const tagPills = filteredTags.map(tag =>
