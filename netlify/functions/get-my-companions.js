@@ -34,8 +34,8 @@ exports.handler = async (event, context) => {
       };
     }
 
-    const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
-    const AIRTABLE_API_KEY = process.env.AIRTABLE_TOKEN;
+    const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA;
+    const AIRTABLE_API_KEY = process.env.AIRTABLE_TOKEN_SELIRA;
 
     if (!AIRTABLE_BASE_ID || !AIRTABLE_API_KEY) {
       return {
