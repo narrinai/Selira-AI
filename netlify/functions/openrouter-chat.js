@@ -50,10 +50,59 @@ exports.handler = async (event, context) => {
 
     console.log('🚀 Chat request:', { character_slug, user_email });
 
-    // For now, use fallback response since OpenRouter isn't configured
-    const aiResponse = `Hello! I'm ${character_slug}. This is a test response. You said: "${message.substring(0, 50)}${message.length > 50 ? '...' : ''}"`;
+    let aiResponse;
+    let modelUsed = 'test-fallback';
+    let tokensUsed = 50;
 
-    console.log('✅ Fallback response generated');
+    if (OPENROUTER_API_KEY) {
+      console.log('🤖 Using OpenRouter for AI response...');
+
+      // Get character data for context
+      const characterData = await getCharacterData(character_slug, AIRTABLE_BASE_ID, AIRTABLE_TOKEN);
+
+      // Build chat messages for OpenRouter
+      const messages = [
+        {
+          role: 'system',
+          content: `You are ${characterData.name || character_slug}. ${characterData.description || ''}. Stay in character and respond naturally.`
+        },
+        {
+          role: 'user',
+          content: message
+        }
+      ];
+
+      // Call OpenRouter API
+      const openrouterResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+          'Content-Type': 'application/json',
+          'HTTP-Referer': 'https://selira.ai',
+          'X-Title': 'Selira AI'
+        },
+        body: JSON.stringify({
+          model: 'mistralai/mistral-nemo',
+          messages: messages,
+          max_tokens: 500,
+          temperature: 0.7
+        })
+      });
+
+      if (openrouterResponse.ok) {
+        const openrouterData = await openrouterResponse.json();
+        aiResponse = openrouterData.choices[0].message.content;
+        modelUsed = 'mistralai/mistral-nemo';
+        tokensUsed = openrouterData.usage?.total_tokens || 0;
+        console.log('✅ Real AI response generated via OpenRouter');
+      } else {
+        throw new Error(`OpenRouter API failed: ${openrouterResponse.status}`);
+      }
+    } else {
+      // Fallback if no OpenRouter key
+      aiResponse = `Hello! I'm ${character_slug}. This is a test response. You said: "${message.substring(0, 50)}${message.length > 50 ? '...' : ''}"`;
+      console.log('✅ Fallback response generated (no OpenRouter key)');
+    }
 
     // Try to save messages to ChatHistory if user is authenticated and email is provided
     let messageSaved = false;
@@ -75,17 +124,11 @@ exports.handler = async (event, context) => {
       body: JSON.stringify({
         success: true,
         response: aiResponse,
-        model_used: 'test-fallback',
-        tokens_used: 50,
+        model_used: modelUsed,
+        tokens_used: tokensUsed,
         timestamp: Date.now(),
         saved_to_db: messageSaved,
-        note: OPENROUTER_API_KEY ? 'OpenRouter configured' : 'Using fallback - OpenRouter not configured',
-        debug: {
-          hasAirtableBase: !!AIRTABLE_BASE_ID,
-          hasAirtableToken: !!AIRTABLE_TOKEN,
-          baseIdLength: AIRTABLE_BASE_ID?.length,
-          tokenLength: AIRTABLE_TOKEN?.length
-        }
+        note: OPENROUTER_API_KEY ? 'OpenRouter AI enabled' : 'Using fallback - OpenRouter not configured'
       })
     };
 
@@ -195,4 +238,33 @@ async function saveChatMessages(user_email, character_slug, user_message, ai_res
     const result = await chatHistoryResponse.json();
     console.log(`✅ Saved ${result.records?.length || recordsToCreate.length} messages to ChatHistory`);
   }
+}
+
+// Get character data for AI context
+async function getCharacterData(character_slug, baseId, token) {
+  const url = `https://api.airtable.com/v0/${baseId}/Characters?filterByFormula={Slug}='${character_slug}'&maxRecords=1`;
+
+  const response = await fetch(url, {
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch character: ${response.status}`);
+  }
+
+  const data = await response.json();
+  if (data.records.length === 0) {
+    throw new Error(`Character not found: ${character_slug}`);
+  }
+
+  const character = data.records[0].fields;
+  return {
+    name: character.Name || character_slug,
+    description: character.Character_Description || '',
+    personality: character.Character_Personality || '',
+    backstory: character.Character_Backstory || ''
+  };
 }
