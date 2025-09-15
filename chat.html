@@ -2621,6 +2621,77 @@
       });
     }
 
+    // ===== MEMORY FUNCTIONS =====
+    async function loadMemoriesForContext(characterSlug, auth0Id) {
+      try {
+        console.log('🧠 Loading memories for context:', { characterSlug, auth0Id });
+
+        const user = window.getCurrentUser();
+        if (!user?.email) {
+          console.log('⚠️ No user email for memory loading');
+          return;
+        }
+
+        const response = await fetch('/.netlify/functions/memory', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'get_memories',
+            user_email: user.email,
+            character_slug: characterSlug,
+            user_uid: auth0Id
+          })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log('✅ Loaded memories:', data.memories?.length || 0);
+          // Store memories for AI context
+          window.currentMemories = data.memories || [];
+        } else {
+          console.log('⚠️ Memory loading failed:', response.status);
+        }
+      } catch (error) {
+        console.error('❌ Memory loading error:', error);
+      }
+    }
+
+    async function saveMemoryIfImportant(characterSlug, userMessage, aiResponse, auth0Id) {
+      try {
+        console.log('🧠 Analyzing memory importance...');
+
+        const user = window.getCurrentUser();
+        if (!user?.email) {
+          console.log('⚠️ No user email for memory saving');
+          return;
+        }
+
+        const response = await fetch('/.netlify/functions/analyze-memory', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            user_email: user.email,
+            character_slug: characterSlug,
+            user_message: userMessage,
+            ai_response: aiResponse,
+            user_uid: auth0Id
+          })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log('✅ Memory analysis complete:', {
+            importance: data.importance,
+            saved: data.memory_saved
+          });
+        } else {
+          console.log('⚠️ Memory analysis failed:', response.status);
+        }
+      } catch (error) {
+        console.error('❌ Memory saving error:', error);
+      }
+    }
+
     console.log('✅ Selira AI Chat interface initialized with modern design');
   </script>
 </body>
