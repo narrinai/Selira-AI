@@ -1624,21 +1624,16 @@
         </div>
 
         <!-- Tag Pills Row -->
-        <div class="tag-filters">
+        <div class="tag-filters" id="tagFilters">
           <a href="#" class="tag-pill active">All</a>
           <a href="#" class="tag-pill category">🏰 Fantasy</a>
           <a href="#" class="tag-pill category">🎌 Anime-Manga</a>
           <a href="#" class="tag-pill category">🏛️ Historical</a>
-          <a href="#" class="tag-pill">Magic</a>
-          <a href="#" class="tag-pill">Warrior</a>
-          <a href="#" class="tag-pill">Wizard</a>
-          <a href="#" class="tag-pill">Hero</a>
-          <a href="#" class="tag-pill">Ninja</a>
-          <a href="#" class="tag-pill">Samurai</a>
-          <a href="#" class="tag-pill">Adventure</a>
-          <a href="#" class="tag-pill">Romance</a>
-          <a href="#" class="tag-pill">Mystery</a>
-          <a href="#" class="tag-pill">Action</a>
+          <!-- Dynamic tags will be inserted here -->
+          <div id="dynamicTagFilters">
+            <!-- Loading placeholder -->
+            <span class="loading-tags">Loading tags...</span>
+          </div>
           <a href="#" class="tag-pill special">Unfiltered</a>
           <button class="more-tags-btn">All tags</button>
         </div>
@@ -4122,11 +4117,67 @@ Please be thorough and include important details from our conversations.`;
             source: data.source,
             sample: data.tags.slice(0, 10)
           });
+
+          // Also populate the filter pills
+          populateTagFilters(data.tags);
         }
       } catch (error) {
         console.warn('⚠️ Error loading tags from API:', error.message);
         console.log('📝 Using fallback tags instead');
+
+        // Use fallback tags for filters too
+        populateTagFilters(createAvailableTags);
       }
+    }
+
+    // Populate dynamic tag filter pills
+    function populateTagFilters(tags) {
+      const dynamicFilters = document.getElementById('dynamicTagFilters');
+      if (!dynamicFilters) return;
+
+      // Filter out category tags and basic ones, limit to most relevant
+      const categoryTags = ['Fantasy', 'Anime-Manga', 'Historical'];
+      const filteredTags = tags
+        .filter(tag => !categoryTags.includes(tag))
+        .filter(tag => tag && tag.length > 0)
+        .slice(0, 12); // Show max 12 additional tags
+
+      // Create tag pills
+      const tagPills = filteredTags.map(tag =>
+        `<a href="#" class="tag-pill" data-tag="${tag}">${tag}</a>`
+      ).join('');
+
+      dynamicFilters.innerHTML = tagPills;
+
+      // Add click handlers for new tag pills
+      dynamicFilters.querySelectorAll('.tag-pill').forEach(pill => {
+        pill.addEventListener('click', function(e) {
+          e.preventDefault();
+          const tag = this.getAttribute('data-tag');
+          filterByTag(tag);
+
+          // Update active state
+          document.querySelectorAll('.tag-pill').forEach(p => p.classList.remove('active'));
+          this.classList.add('active');
+        });
+      });
+
+      console.log('✅ Populated tag filters with', filteredTags.length, 'dynamic tags');
+    }
+
+    // Filter characters by tag
+    function filterByTag(tag) {
+      console.log('🏷️ Filtering by tag:', tag);
+
+      // Update current filters
+      currentFilters.tags = [tag];
+
+      // Filter and display characters
+      filterAndDisplayCharacters();
+
+      // Update URL
+      const tagSlug = tag.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      history.pushState({section: 'category', filter: tagSlug}, `${tag} Characters - Selira AI`, `/category?filter=${tagSlug}`);
     }
 
     function initializeCreateTags() {

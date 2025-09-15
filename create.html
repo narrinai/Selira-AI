@@ -1034,17 +1034,9 @@
               
               <div style="margin-bottom: 24px;">
                 <label style="display: block; margin-bottom: 12px; font-weight: 600; color: var(--text-primary);">Popular Tags</label>
-                <div class="create-popular-tags">
-                  <button type="button" class="create-tag-button" data-tag="Fantasy">Fantasy</button>
-                  <button type="button" class="create-tag-button" data-tag="Romance">Romance</button>
-                  <button type="button" class="create-tag-button" data-tag="Adventure">Adventure</button>
-                  <button type="button" class="create-tag-button" data-tag="Hero">Hero</button>
-                  <button type="button" class="create-tag-button" data-tag="Mystery">Mystery</button>
-                  <button type="button" class="create-tag-button" data-tag="Action">Action</button>
-                  <button type="button" class="create-tag-button" data-tag="Magic">Magic</button>
-                  <button type="button" class="create-tag-button" data-tag="Wise">Wise</button>
-                  <button type="button" class="create-tag-button" data-tag="Historical">Historical</button>
-                  <button type="button" class="create-tag-button" data-tag="Anime-Manga">Anime-Manga</button>
+                <div class="create-popular-tags" id="createPopularTags">
+                  <!-- Dynamic tags will be populated here -->
+                  <span class="loading-tags" style="color: var(--text-secondary); font-size: 14px;">Loading tags...</span>
                 </div>
               </div>
               
@@ -1379,11 +1371,35 @@
             source: data.source,
             sample: data.tags.slice(0, 10)
           });
+
+          // Also populate the popular tags
+          populatePopularTags(data.tags);
         }
       } catch (error) {
         console.warn('⚠️ Error loading tags from API:', error.message);
         console.log('📝 Using fallback tags instead');
+
+        // Use fallback tags for popular tags too
+        populatePopularTags(createAvailableTags);
       }
+    }
+
+    // Populate popular tags with dynamic content
+    function populatePopularTags(tags) {
+      const popularContainer = document.getElementById('createPopularTags');
+      if (!popularContainer) return;
+
+      // Show most relevant/common tags as popular (limit to 10)
+      const popularTags = tags.slice(0, 10);
+
+      // Create tag buttons
+      const tagButtons = popularTags.map(tag =>
+        `<button type="button" class="create-tag-button" data-tag="${tag}">${tag}</button>`
+      ).join('');
+
+      popularContainer.innerHTML = tagButtons;
+
+      console.log('✅ Populated popular tags with', popularTags.length, 'dynamic tags');
     }
 
     function initializeCreateTags() {
