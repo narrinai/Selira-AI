@@ -57,6 +57,7 @@
       color: var(--text-primary);
       line-height: 1.6;
       overflow-x: hidden;
+      overflow-y: auto;
     }
 
     /* Header */
@@ -1382,35 +1383,38 @@
     function initializeCharacterCarousel() {
       const carousel = document.getElementById('characterCarousel');
       if (!carousel || featuredCharacters.length === 0) return;
-      
-      // Create character cards
-      carousel.innerHTML = featuredCharacters.map((character, index) => `
-        <a href="${character.character_url || `/chat.html?char=${character.slug}`}" class="carousel-card carousel-link ${index === 0 ? 'active' : ''}" data-index="${index}">
-          <img 
-            src="${character.avatar}" 
-            alt="${character.name}"
-            class="carousel-image"
-            loading="lazy"
-            onerror="this.style.display='none';"
-          >
-          <div class="carousel-overlay">${character.role}</div>
-          <div class="carousel-content">
-            <h3 class="carousel-name">${character.name}</h3>
-            <p class="carousel-title">${character.role}</p>
-            <p class="carousel-description">${character.description}</p>
-            <div class="carousel-stats">
-              <span>👥 ${character.chats} chats</span>
-              <span>⭐ ${character.rating}</span>
+
+      // Use requestAnimationFrame for better performance
+      requestAnimationFrame(() => {
+        // Create character cards
+        carousel.innerHTML = featuredCharacters.map((character, index) => `
+          <a href="${character.character_url || `/chat.html?char=${character.slug}`}" class="carousel-card carousel-link ${index === 0 ? 'active' : ''}" data-index="${index}">
+            <img
+              src="${character.avatar || '/avatars/placeholder.webp'}"
+              alt="${character.name}"
+              class="carousel-image"
+              loading="lazy"
+              onerror="this.src='/avatars/placeholder.webp'; this.style.display='block';"
+            >
+            <div class="carousel-overlay">${character.role}</div>
+            <div class="carousel-content">
+              <h3 class="carousel-name">${character.name}</h3>
+              <p class="carousel-title">${character.role}</p>
+              <p class="carousel-description">${character.description}</p>
+              <div class="carousel-stats">
+                <span>👥 ${character.chats} chats</span>
+                <span>⭐ ${character.rating}</span>
+              </div>
+              <div class="carousel-actions">
+                <span class="carousel-chat-btn-inline">💬 Chat</span>
+                <button class="carousel-heart-btn" onclick="event.stopPropagation(); toggleFavorite('${character.slug}'); return false;">
+                  ❤️
+                </button>
+              </div>
             </div>
-            <div class="carousel-actions">
-              <span class="carousel-chat-btn-inline">💬 Chat</span>
-              <button class="carousel-heart-btn" onclick="event.stopPropagation(); toggleFavorite('${character.slug}'); return false;">
-                ❤️
-              </button>
-            </div>
-          </div>
-        </a>
-      `).join('');
+          </a>
+        `).join('');
+      });
     }
     
     function rotateCharacterCarousel() {
@@ -1432,11 +1436,11 @@
     // Initialize character carousel when DOM is ready
     document.addEventListener('DOMContentLoaded', function() {
       // Carousel will be initialized by updateFeaturedCharacters() after loading characters
-      
-      // Start rotating after 3 seconds to give time for character loading
+
+      // Start rotating after 1 second to give time for character loading
       setTimeout(() => {
         setInterval(rotateCharacterCarousel, 4000);
-      }, 3000);
+      }, 1000);
     });
   </script>
 </body>
