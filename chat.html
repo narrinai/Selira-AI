@@ -1398,8 +1398,9 @@
             userKeys: Object.keys(user) 
           });
           
-          // Memory sync disabled until clean functions are deployed
-          console.log('⏳ Memory sync disabled - waiting for clean function deployment');
+          // Memory sync re-enabled now that functions are working
+          console.log('🧠 Memory sync enabled - loading memories...');
+          await loadMemoriesForContext(currentCharacter.slug, auth0_id);
           
         } catch (e) {
           // If no user data, use anonymous
@@ -1453,9 +1454,9 @@
         // Save both user and AI message to localStorage
         saveBothMessagesToStorage(currentCharacter.slug, message, data.response);
         
-        // Memory saving disabled until clean functions are deployed  
-        console.log('⏳ Memory saving disabled - waiting for clean function deployment');
-        // Chat works perfectly via localStorage, memory will be enabled when functions are ready
+        // Memory saving re-enabled now that functions are working
+        console.log('🧠 Memory saving enabled - saving important memories...');
+        await saveMemoryIfImportant(currentCharacter.slug, message, data.response, auth0_id);
         
       } catch (error) {
         console.error('❌ Error sending message:', error);
