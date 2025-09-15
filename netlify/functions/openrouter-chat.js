@@ -46,9 +46,14 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const { message, character_slug, auth0_id, user_email } = JSON.parse(event.body);
+    const { message, character_slug, auth0_id, user_email, local_history, memories } = JSON.parse(event.body);
 
-    console.log('🚀 Chat request:', { character_slug, user_email });
+    console.log('🚀 Chat request:', {
+      character_slug,
+      user_email,
+      historyLength: local_history?.length || 0,
+      memoriesCount: memories?.length || 0
+    });
 
     let aiResponse;
     let modelUsed = 'test-fallback';
@@ -60,17 +65,41 @@ exports.handler = async (event, context) => {
       // Get character data for context
       const characterData = await getCharacterData(character_slug, AIRTABLE_BASE_ID, AIRTABLE_TOKEN);
 
+      // Build system prompt with character info and memory context
+      let systemPrompt = `You are ${characterData.name || character_slug}. ${characterData.description || ''}. Stay in character and respond naturally.`;
+
+      // Add memory context if available
+      if (memories && memories.length > 0) {
+        const memoryContext = memories.map(m => m.content || m.summary || m.text).join(' ');
+        systemPrompt += `\n\nIMPORTANT MEMORIES about this user: ${memoryContext}`;
+        console.log('🧠 Added memory context:', memories.length, 'memories');
+      }
+
       // Build chat messages for OpenRouter
       const messages = [
         {
           role: 'system',
-          content: `You are ${characterData.name || character_slug}. ${characterData.description || ''}. Stay in character and respond naturally.`
-        },
-        {
-          role: 'user',
-          content: message
+          content: systemPrompt
         }
       ];
+
+      // Add recent chat history for context (last 5 messages)
+      if (local_history && local_history.length > 0) {
+        const recentHistory = local_history.slice(-5);
+        recentHistory.forEach(msg => {
+          messages.push({
+            role: msg.type === 'user' ? 'user' : 'assistant',
+            content: msg.content
+          });
+        });
+        console.log('📚 Added chat history:', recentHistory.length, 'messages');
+      }
+
+      // Add current user message
+      messages.push({
+        role: 'user',
+        content: message
+      });
 
       // Call OpenRouter API
       const openrouterResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {

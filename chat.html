@@ -1431,7 +1431,8 @@
             auth0_id: auth0_id,
             user_email: user_email, // Add user email for message saving
             model: 'mistralai/mistral-nemo',
-            local_history: chatHistory // Send localStorage history for context
+            local_history: chatHistory, // Send localStorage history for context
+            memories: window.currentMemories || [] // Send loaded memories for AI context
           })
         });
         
