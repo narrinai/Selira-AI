@@ -68,7 +68,7 @@ exports.handler = async (event, context) => {
     };
   }
 
-  const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+  const OPENAI_API_KEY = process.env.OPENAI_API_KEY_SELIRA;
   
   console.log('🔑 Environment check:', {
     hasOpenAI: !!OPENAI_API_KEY,
