@@ -48,131 +48,20 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    console.log('🏷️ Fetching tags from Airtable...');
+    console.log('🏷️ Fetching tags from Characters table...');
 
-    // Check if there's a Tags table, if not we'll extract from Characters
-    let url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Tags`;
-
-    const response = await fetch(url, {
-      headers: {
-        'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
-        'Content-Type': 'application/json'
-      }
-    });
-
-    if (response.status === 404) {
-      // Tags table doesn't exist, extract unique tags from Characters table
-      console.log('📋 Tags table not found, extracting from Characters...');
-      return await extractTagsFromCharacters(AIRTABLE_BASE_ID, AIRTABLE_TOKEN, headers);
-    }
-
-    if (!response.ok) {
-      console.error('❌ Airtable API error:', response.status, response.statusText);
-      const errorText = await response.text();
-      console.error('❌ Error details:', errorText);
-      throw new Error(`Airtable API error: ${response.status}`);
-    }
-
-    const data = await response.json();
-    console.log('✅ Raw Airtable response:', data);
-
-    // Extract tag names from the response
-    const tags = data.records.map(record => record.fields.Name || record.fields.Tag).filter(Boolean);
-
-    console.log('🏷️ Extracted tags:', tags);
-
-    return {
-      statusCode: 200,
-      headers,
-      body: JSON.stringify({
-        success: true,
-        tags: tags.sort(),
-        total: tags.length,
-        source: 'tags_table'
-      })
-    };
+    // Go directly to Characters table and extract tags
+    return await extractTagsFromCharacters(AIRTABLE_BASE_ID, AIRTABLE_TOKEN, headers);
 
   } catch (error) {
     console.error('❌ Tags fetch error:', error);
     console.error('❌ Error stack:', error.stack);
 
-    return {
-      statusCode: 500,
-      headers,
-      body: JSON.stringify({
-        error: 'Failed to fetch tags',
-        details: error.message
-      })
-    };
-  }
-};
-
-// Fallback: Extract unique tags from Characters table
-async function extractTagsFromCharacters(baseId, token, headers) {
-  try {
-    console.log('🔍 Extracting tags from Characters table...');
-
-    let url = `https://api.airtable.com/v0/${baseId}/Characters`;
-    let allTags = new Set();
-
-    // Fetch all characters to extract tags
-    do {
-      const response = await fetch(url, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch characters: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      // Extract tags from each character
-      data.records.forEach(record => {
-        const tags = record.fields.Tags;
-        if (tags) {
-          if (Array.isArray(tags)) {
-            // If tags is an array
-            tags.forEach(tag => allTags.add(tag.trim()));
-          } else if (typeof tags === 'string') {
-            // If tags is a comma-separated string
-            tags.split(',').forEach(tag => allTags.add(tag.trim()));
-          }
-        }
-      });
-
-      // Get next page if available
-      url = data.offset ? `https://api.airtable.com/v0/${baseId}/Characters?offset=${data.offset}` : null;
-
-    } while (url);
-
-    const tagsArray = Array.from(allTags).filter(tag => tag.length > 0).sort();
-
-    console.log('✅ Extracted tags from characters:', tagsArray);
-
-    return {
-      statusCode: 200,
-      headers,
-      body: JSON.stringify({
-        success: true,
-        tags: tagsArray,
-        total: tagsArray.length,
-        source: 'characters_table'
-      })
-    };
-
-  } catch (error) {
-    console.error('❌ Character tags extraction error:', error);
-
     // Return fallback tags if everything fails
     const fallbackTags = [
-      'Fantasy', 'Romance', 'Adventure', 'Hero', 'Mystery', 'Action', 'Magic', 'Wise', 'Historical', 'Anime-Manga',
-      'Friendship', 'Comedy', 'Drama', 'Mentor', 'Villain', 'Warrior', 'Princess', 'Knight', 'Mage', 'Healer',
-      'Girlfriend', 'Boyfriend', 'Companion', 'Flirty', 'Cute', 'Seductive', 'Dominant', 'Submissive', 'Tsundere',
-      'Yandere', 'Angel', 'Demon', 'Elf', 'Vampire', 'School', 'Teacher', 'Student', 'Boss', 'Secretary', 'Maid'
+      'Fantasy', 'Romance', 'Adventure', 'Mystery', 'Action', 'Historical', 'Anime-Manga',
+      'Friendship', 'Comedy', 'Drama', 'Girlfriend', 'Boyfriend', 'Companion', 'Flirty',
+      'Cute', 'Seductive', 'Dominant', 'Submissive', 'Angel', 'Demon', 'Vampire'
     ];
 
     return {
@@ -182,7 +71,109 @@ async function extractTagsFromCharacters(baseId, token, headers) {
         success: true,
         tags: fallbackTags,
         total: fallbackTags.length,
-        source: 'fallback'
+        source: 'fallback_hardcoded'
+      })
+    };
+  }
+};
+
+// Fallback: Extract unique tags from Characters table
+async function extractTagsFromCharacters(baseId, token, headers) {
+  try {
+    console.log('🔍 Extracting tags from Characters table...');
+    console.log('🔑 Using baseId:', baseId ? baseId.substring(0, 8) + '...' : 'none');
+
+    let url = `https://api.airtable.com/v0/${baseId}/Characters?maxRecords=100`;
+    let allTags = new Set();
+    let recordCount = 0;
+
+    // Fetch characters to extract tags (limit to avoid timeouts)
+    const response = await fetch(url, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('❌ Characters API error:', response.status, errorText);
+      throw new Error(`Failed to fetch characters: ${response.status} - ${errorText}`);
+    }
+
+    const data = await response.json();
+    console.log('📊 Characters response:', {
+      recordCount: data.records?.length || 0,
+      hasOffset: !!data.offset
+    });
+
+    // Extract tags from each character
+    if (data.records && Array.isArray(data.records)) {
+      data.records.forEach(record => {
+        recordCount++;
+        const tags = record.fields?.Tags;
+        if (tags) {
+          if (Array.isArray(tags)) {
+            // If tags is an array
+            tags.forEach(tag => {
+              if (tag && typeof tag === 'string') {
+                allTags.add(tag.trim());
+              }
+            });
+          } else if (typeof tags === 'string') {
+            // If tags is a comma-separated string
+            tags.split(',').forEach(tag => {
+              const cleanTag = tag.trim();
+              if (cleanTag) {
+                allTags.add(cleanTag);
+              }
+            });
+          }
+        }
+      });
+    }
+
+    const tagsArray = Array.from(allTags).filter(tag => tag && tag.length > 0).sort();
+
+    console.log('✅ Extracted tags from characters:', {
+      totalRecords: recordCount,
+      uniqueTags: tagsArray.length,
+      sampleTags: tagsArray.slice(0, 10)
+    });
+
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({
+        success: true,
+        tags: tagsArray,
+        total: tagsArray.length,
+        source: 'characters_table',
+        recordsProcessed: recordCount
+      })
+    };
+
+  } catch (error) {
+    console.error('❌ Character tags extraction error:', error);
+    console.error('❌ Error details:', error.message);
+
+    // Return fallback tags if everything fails
+    const fallbackTags = [
+      'Fantasy', 'Romance', 'Adventure', 'Mystery', 'Action', 'Historical', 'Anime-Manga',
+      'Friendship', 'Comedy', 'Drama', 'Girlfriend', 'Boyfriend', 'Companion', 'Flirty',
+      'Cute', 'Seductive', 'Dominant', 'Submissive', 'Angel', 'Demon', 'Vampire'
+    ];
+
+    console.log('🔄 Returning fallback tags:', fallbackTags.length);
+
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({
+        success: true,
+        tags: fallbackTags,
+        total: fallbackTags.length,
+        source: 'fallback_after_error'
       })
     };
   }

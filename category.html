@@ -4109,6 +4109,7 @@ Please be thorough and include important details from our conversations.`;
 
         if (!response.ok) {
           console.warn('⚠️ Failed to load tags from API, using fallback');
+          populateTagFilters(createAvailableTags);
           return;
         }
 
