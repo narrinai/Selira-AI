@@ -33,15 +33,15 @@ exports.handler = async (event, context) => {
       hasSeliraBaseId: !!process.env.AIRTABLE_BASE_ID_SELIRA
     });
 
-    // Check environment variables (updated for Selira with fallbacks)
-    const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA || process.env.AIRTABLE_TOKEN;
-    const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA || process.env.AIRTABLE_BASE_ID;
-    
+    // Check environment variables - use only Selira credentials
+    const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA;
+    const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA;
+
     if (!AIRTABLE_TOKEN) {
-      throw new Error('AIRTABLE_TOKEN_SELIRA or AIRTABLE_TOKEN not found');
+      throw new Error('AIRTABLE_TOKEN_SELIRA not found');
     }
     if (!AIRTABLE_BASE_ID) {
-      throw new Error('AIRTABLE_BASE_ID_SELIRA or AIRTABLE_BASE_ID not found');
+      throw new Error('AIRTABLE_BASE_ID_SELIRA not found');
     }
 
     // Get query parameters

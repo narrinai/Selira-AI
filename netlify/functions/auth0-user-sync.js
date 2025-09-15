@@ -24,8 +24,8 @@ exports.handler = async (event, context) => {
     };
   }
 
-  const SELIRA_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA || process.env.AIRTABLE_BASE_ID;
-  const SELIRA_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA || process.env.AIRTABLE_TOKEN;
+  const SELIRA_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA;
+  const SELIRA_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA;
 
   console.log('🔍 Environment check:', {
     hasBaseId: !!SELIRA_BASE_ID,

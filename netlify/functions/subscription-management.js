@@ -26,8 +26,8 @@ exports.handler = async (event, context) => {
     };
   }
 
-  const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA || process.env.AIRTABLE_BASE_ID;
-  const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA || process.env.AIRTABLE_TOKEN;
+  const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA;
+  const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA;
   const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
 
   if (!AIRTABLE_BASE_ID || !AIRTABLE_TOKEN) {

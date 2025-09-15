@@ -84,9 +84,9 @@ exports.handler = async (event, context) => {
     console.log('🔍 Updating profile for user email:', auth0_id);
     console.log('📝 New display name:', display_name);
 
-    // Get environment variables - try both Selira and regular credentials
-    const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA || process.env.AIRTABLE_TOKEN || process.env.AIRTABLE_API_KEY;
-    const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA || process.env.AIRTABLE_BASE_ID;
+    // Get environment variables - use only Selira credentials
+    const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA;
+    const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA;
 
     if (!AIRTABLE_TOKEN || !AIRTABLE_BASE_ID) {
       console.error('❌ Missing Airtable credentials');

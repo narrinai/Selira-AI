@@ -41,9 +41,9 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Get environment variables
-    const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA || process.env.AIRTABLE_TOKEN || process.env.AIRTABLE_API_KEY;
-    const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA || process.env.AIRTABLE_BASE_ID;
+    // Get environment variables - use only Selira credentials
+    const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA;
+    const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA;
 
     console.log('🔍 Environment check:', {
       hasSeliraToken: !!process.env.AIRTABLE_TOKEN_SELIRA,
