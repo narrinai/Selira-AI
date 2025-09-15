@@ -1474,6 +1474,14 @@
     // Debug function to test OpenRouter API
     async function testOpenRouterAPI() {
       try {
+        // Get current user data for test
+        const user = window.getCurrentUser();
+        const testAuth0Id = user?.sub || 'anonymous';
+        const testEmail = user?.email || 'anonymous';
+        const testCharSlug = currentCharacter?.slug || 'orion-nightfall';
+
+        console.log('🧪 Testing with:', { testCharSlug, testEmail });
+
         const response = await fetch('/.netlify/functions/openrouter-chat', {
           method: 'POST',
           headers: {
@@ -1481,8 +1489,9 @@
           },
           body: JSON.stringify({
             message: 'Hello, how are you?',
-            character_slug: 'test',
-            auth0_id: 'test-user',
+            character_slug: testCharSlug,
+            auth0_id: testAuth0Id,
+            user_email: testEmail,
             model: 'mistralai/mistral-nemo'
           })
         });
