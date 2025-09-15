@@ -1707,7 +1707,7 @@
             category: char.Category || 'Other',
             slug: char.Slug || (char.Name ? char.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'unknown'),
             creator: char.Created_by || 'Selira',
-            tags: Array.isArray(char.Tags_2) ? char.Tags_2 : (char.Tags_2 || '').toString().split(',').filter(Boolean),
+            tags: Array.isArray(char.Tags) ? char.Tags : (char.Tags || '').toString().split(',').filter(Boolean),
             chats: Math.floor(Math.random() * 100) + 'K',
             rating: (Math.random() * 2 + 3).toFixed(1),
             character_url: char.Character_URL ? char.Character_URL.replace('narrin.ai', 'selira.ai') : `https://selira.ai/chat.html?char=${char.Slug || (char.Name ? char.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'unknown')}`,

@@ -132,7 +132,7 @@ async function extractTagsFromCharacters(baseId, token, headers) {
 
       // Extract tags from each character
       data.records.forEach(record => {
-        const tags = record.fields.Tags_2;
+        const tags = record.fields.Tags;
         if (tags) {
           if (Array.isArray(tags)) {
             // If tags is an array
