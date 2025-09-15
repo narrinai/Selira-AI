@@ -3922,7 +3922,8 @@ Please be thorough and include important details from our conversations.`;
       });
       
       // Initialize tags system after DOM is updated
-      setTimeout(() => {
+      setTimeout(async () => {
+        await loadCreateTagsFromAirtable();
         initializeCreateTags();
       }, 100);
     }
@@ -4092,13 +4093,41 @@ Please be thorough and include important details from our conversations.`;
     // ===== CREATE FLOW TAGS SYSTEM =====
     let createSelectedTags = [];
     const createMaxTags = 10;
-    const createAvailableTags = [
-      'Fantasy', 'Romance', 'Adventure', 'Hero', 'Mystery', 'Action', 'Magic', 'Wise', 
+    let createAvailableTags = [
+      // Fallback tags if API fails
+      'Fantasy', 'Romance', 'Adventure', 'Hero', 'Mystery', 'Action', 'Magic', 'Wise',
       'Historical', 'Anime-Manga', 'Warrior', 'Leader', 'Ninja', 'Wizard', 'Cute',
       'Funny', 'Caring', 'Helpful', 'Creative', 'Confident', 'Energetic', 'Calm',
       'Mysterious', 'Loyal', 'Brave', 'Kind', 'Smart', 'Strong', 'Gentle', 'Playful',
-      'Serious', 'Romantic', 'Friendly', 'Bold', 'Shy', 'Outgoing', 'Patient'
+      'Serious', 'Romantic', 'Friendly', 'Bold', 'Shy', 'Outgoing', 'Patient',
+      'Girlfriend', 'Boyfriend', 'Companion', 'Flirty', 'Seductive', 'Dominant', 'Submissive'
     ];
+
+    // Load tags from Airtable
+    async function loadCreateTagsFromAirtable() {
+      try {
+        console.log('🔄 Loading tags from Airtable...');
+        const response = await fetch('/.netlify/functions/tags');
+
+        if (!response.ok) {
+          console.warn('⚠️ Failed to load tags from API, using fallback');
+          return;
+        }
+
+        const data = await response.json();
+        if (data.success && data.tags && data.tags.length > 0) {
+          createAvailableTags = data.tags;
+          console.log('✅ Loaded tags from Airtable:', {
+            total: data.tags.length,
+            source: data.source,
+            sample: data.tags.slice(0, 10)
+          });
+        }
+      } catch (error) {
+        console.warn('⚠️ Error loading tags from API:', error.message);
+        console.log('📝 Using fallback tags instead');
+      }
+    }
 
     function initializeCreateTags() {
       console.log('🏷️ Initializing create tags system...');
@@ -4253,7 +4282,8 @@ Please be thorough and include important details from our conversations.`;
       originalShow();
       
       // Initialize tags after DOM is updated
-      setTimeout(() => {
+      setTimeout(async () => {
+        await loadCreateTagsFromAirtable();
         initializeCreateTags();
       }, 100);
     }
