@@ -10,8 +10,8 @@ exports.handler = async (event, context) => {
     };
   }
 
-  const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
-  const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN || process.env.AIRTABLE_API_KEY;
+  const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA;
+  const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA;
   
   console.log('🔑 Environment check:', {
     hasBaseId: !!AIRTABLE_BASE_ID,
@@ -27,9 +27,9 @@ exports.handler = async (event, context) => {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*'
       },
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         error: 'Airtable credentials not configured',
-        debug: 'Please add AIRTABLE_BASE_ID and AIRTABLE_TOKEN to environment variables'
+        debug: 'Please add AIRTABLE_BASE_ID_SELIRA and AIRTABLE_TOKEN_SELIRA to environment variables'
       })
     };
   }
@@ -81,7 +81,7 @@ exports.handler = async (event, context) => {
       Name: name,
       Character_Description: description,
       Slug: slug,
-      Tags: tags || [],
+      Tags: tags ? tags.join(', ') : '', // Convert array to string
       companion_type: artStyle || 'anime',
       sex: sex || 'female',
       ethnicity: ethnicity || 'white',
@@ -89,7 +89,7 @@ exports.handler = async (event, context) => {
       hair_color: hairColor || 'brown',
       Created_by: createdBy || 'User',
       Visibility: 'public',
-      Category: 'user-created',
+      Category: 'User-Created',
       Character_Title: `AI Companion`,
       Avatar_URL: avatarUrl || null,
       Created_At: new Date().toISOString()

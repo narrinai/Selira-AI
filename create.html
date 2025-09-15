@@ -1143,7 +1143,11 @@
     function showCurrentStep() {
       const currentStep = characterCreationState.currentStep;
       const stepElement = document.getElementById(`step${currentStep}`);
-      if (stepElement) stepElement.style.display = 'block';
+      if (stepElement) {
+        stepElement.style.display = 'block';
+        // Scroll to top of page when showing new step
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
     }
 
     function previousStep() {
@@ -1350,7 +1354,9 @@
     const createMaxTags = 10;
     const createAvailableTags = [
       'Fantasy', 'Romance', 'Adventure', 'Hero', 'Mystery', 'Action', 'Magic', 'Wise', 'Historical', 'Anime-Manga',
-      'Friendship', 'Comedy', 'Drama', 'Mentor', 'Villain', 'Warrior', 'Princess', 'Knight', 'Mage', 'Healer'
+      'Friendship', 'Comedy', 'Drama', 'Mentor', 'Villain', 'Warrior', 'Princess', 'Knight', 'Mage', 'Healer',
+      'Girlfriend', 'Boyfriend', 'Companion', 'Flirty', 'Cute', 'Seductive', 'Dominant', 'Submissive', 'Tsundere',
+      'Yandere', 'Angel', 'Demon', 'Elf', 'Vampire', 'School', 'Teacher', 'Student', 'Boss', 'Secretary', 'Maid'
     ];
 
     function initializeCreateTags() {
