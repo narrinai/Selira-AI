@@ -81,7 +81,7 @@ exports.handler = async (event, context) => {
       Name: name,
       Character_Description: description,
       Slug: slug,
-      Tags: tags ? tags.join(', ') : '', // Convert array to string
+      Tags_2: tags ? tags.join(', ') : '', // Convert array to string
       companion_type: artStyle || 'anime',
       sex: sex || 'female',
       ethnicity: ethnicity || 'white',
@@ -135,7 +135,7 @@ exports.handler = async (event, context) => {
           sex: result.fields.Sex,
           ethnicity: result.fields.Ethnicity,
           hairLength: result.fields.Hair_Length,
-          tags: result.fields.Tags
+          tags: result.fields.Tags_2
         }
       })
     };
