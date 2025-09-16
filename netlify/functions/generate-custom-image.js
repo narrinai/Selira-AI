@@ -164,9 +164,9 @@ exports.handler = async (event, context) => {
     console.log('🎨 Full prompt:', fullPrompt);
     console.log('🎌 Anime style:', isAnimeStyle);
     
-    // Use Flux Schnell for fast generation
-    const model = "black-forest-labs/flux-schnell";
-    
+    // Use Flux Schnell for fast generation with the correct version ID
+    const modelVersion = "5599ed30703defd1d160a25a63321b4dec97101d98b4674bcc56e41f62f35637";
+
     // Call Replicate API
     const replicateResponse = await fetch('https://api.replicate.com/v1/predictions', {
       method: 'POST',
@@ -175,7 +175,7 @@ exports.handler = async (event, context) => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        version: model,
+        version: modelVersion,
         input: {
           prompt: fullPrompt,
           width: 768,

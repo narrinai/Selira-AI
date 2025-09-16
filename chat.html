@@ -158,8 +158,8 @@
     .chat-item {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 8px 8px;
+      gap: 12px;
+      padding: 12px 16px;
       margin-bottom: 2px;
       border-radius: var(--radius-sm);
       cursor: pointer;
@@ -171,10 +171,12 @@
     }
 
     .chat-avatar {
-      width: 32px;
-      height: 32px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       overflow: hidden;
+      flex-shrink: 0;
+      background: var(--bg-tertiary);
       flex-shrink: 0;
     }
 
@@ -192,15 +194,17 @@
     .chat-name {
       font-weight: 600;
       color: var(--text-primary);
-      margin-bottom: 2px;
-      font-size: 12px;
+      margin-bottom: 4px;
+      font-size: 14px;
     }
 
     .chat-preview {
       color: var(--text-secondary);
-      font-size: 10px;
+      font-size: 12px;
       overflow: hidden;
       text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 100%;
       white-space: nowrap;
     }
 
@@ -1274,6 +1278,13 @@
       initializeChatInterface();
       setupEventListeners();
       setupMobileKeyboardDetection();
+
+      // Load active chats in sidebar immediately
+      updateActiveChatsSidebar();
+
+      // Refresh sidebar periodically (every 30 seconds)
+      setInterval(updateActiveChatsSidebar, 30000);
+
       // Character from URL will be loaded after characters are fetched in loadCharactersFromDatabase
     });
 
@@ -1454,6 +1465,9 @@
         
         // Save both user and AI message to localStorage
         saveBothMessagesToStorage(currentCharacter.slug, message, data.response);
+
+        // Update sidebar to reflect new activity
+        updateActiveChatsSidebar();
         
         // Memory saving re-enabled now that functions are working
         console.log('🧠 Memory saving enabled - saving important memories...');
@@ -1724,6 +1738,9 @@
         const storageKey = `chat_${currentCharacter.slug}`;
         localStorage.removeItem(storageKey);
         console.log('🗑️ Cleared chat history for:', currentCharacter.slug);
+
+        // Update sidebar after clearing
+        updateActiveChatsSidebar();
       }
     }
 
@@ -1866,10 +1883,13 @@
           
           // Update character search modal with real characters
           updateCharacterSearchModal(characters);
-          
-          // Update recent chats sidebar with some characters
-          updateRecentChatsSidebar(characters.slice(0, 5));
-          
+
+          // Store all characters globally for later use
+          window.allCharacters = characters;
+
+          // Update sidebar with active chat companions
+          updateActiveChatsSidebar();
+
           console.log('✅ Loaded characters from database:', characters.length);
           
           // Now load character from URL parameter
@@ -1899,21 +1919,166 @@
       `).join('');
     }
 
-    function updateRecentChatsSidebar(characters) {
+    // Get all active chat companions from localStorage
+    function getActiveChatCompanions() {
+      const companions = [];
+      const keys = Object.keys(localStorage);
+
+      // Find all chat_ keys in localStorage
+      keys.forEach(key => {
+        if (key.startsWith('chat_')) {
+          const characterSlug = key.replace('chat_', '');
+          const chatHistory = JSON.parse(localStorage.getItem(key) || '[]');
+
+          // Only include if there are messages
+          if (chatHistory.length > 0) {
+            // Get last message for preview
+            const lastMessage = chatHistory[chatHistory.length - 1];
+            const lastUserMessage = chatHistory.filter(m => m.type === 'user').pop();
+
+            companions.push({
+              slug: characterSlug,
+              lastMessage: lastMessage?.content || '',
+              lastUserMessage: lastUserMessage?.content || '',
+              timestamp: lastMessage?.timestamp || Date.now(),
+              messageCount: chatHistory.length
+            });
+          }
+        }
+      });
+
+      // Sort by most recent activity
+      companions.sort((a, b) => b.timestamp - a.timestamp);
+
+      return companions;
+    }
+
+    // Update sidebar with active chat companions
+    async function updateActiveChatsSidebar() {
       const chatList = document.getElementById('chatList');
       if (!chatList) return;
-      
-      chatList.innerHTML = characters.map((character, index) => `
-        <div class="chat-item ${index === 0 ? 'active' : ''}" onclick="selectCharacterFromSidebar('${character.slug}', '${character.name}', '${fixAvatarUrl(character.avatar)}', '${character.title}')">
-          <div class="chat-avatar">
-            <img src="${fixAvatarUrl(character.avatar)}" alt="${character.name}" onerror="this.style.display='none'">
+
+      const activeCompanions = getActiveChatCompanions();
+
+      if (activeCompanions.length === 0) {
+        chatList.innerHTML = `
+          <div class="no-chats" style="text-align: center; padding: 20px; color: var(--text-secondary); font-size: 14px;">
+            <div style="margin-bottom: 8px;">💬</div>
+            <div>No active chats yet</div>
+            <div style="font-size: 12px; margin-top: 4px;">Start a conversation!</div>
           </div>
-          <div class="chat-info">
-            <div class="chat-name">${character.name}</div>
-            <div class="chat-preview">${character.description.substring(0, 30)}...</div>
+        `;
+        return;
+      }
+
+      // Build HTML for active chats
+      let html = '';
+
+      for (const companion of activeCompanions) {
+        // Try to find character in loaded characters
+        let character = loadedCharacters.find(c => c.slug === companion.slug);
+
+        // If not found, try to find from loaded characters by slug
+        if (!character && window.allCharacters) {
+          character = window.allCharacters.find(c => c.slug === companion.slug);
+        }
+
+        // Create chat item
+        const isActive = currentCharacter && currentCharacter.slug === companion.slug;
+        const preview = companion.lastUserMessage.length > 40
+          ? companion.lastUserMessage.substring(0, 40) + '...'
+          : companion.lastUserMessage;
+
+        html += `
+          <div class="chat-item ${isActive ? 'active' : ''}"
+               onclick="switchToCompanion('${companion.slug}')"
+               data-slug="${companion.slug}">
+            <div class="chat-avatar">
+              ${ character ?
+                `<img src="${fixAvatarUrl(character.avatar)}" alt="${character.name}" onerror="this.style.display='none'">` :
+                `<div style="width: 40px; height: 40px; background: var(--bg-tertiary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-secondary);">?</div>`
+              }
+            </div>
+            <div class="chat-info">
+              <div class="chat-name">${character ? character.name : companion.slug}</div>
+              <div class="chat-preview">${preview || character?.description?.substring(0, 30) || 'Start chatting...'}</div>
+            </div>
           </div>
-        </div>
-      `).join('');
+        `;
+      }
+
+      chatList.innerHTML = html;
+    }
+
+    // Switch to a companion from the sidebar
+    async function switchToCompanion(slug) {
+      // Find character in loaded data
+      let character = loadedCharacters.find(c => c.slug === slug);
+
+      if (!character && window.allCharacters) {
+        character = window.allCharacters.find(c => c.slug === slug);
+      }
+
+      if (!character) {
+        // Try to load character data from API
+        try {
+          const response = await fetch(`/.netlify/functions/characters?slug=${slug}`);
+          if (response.ok) {
+            const data = await response.json();
+            if (data.characters && data.characters.length > 0) {
+              character = data.characters[0];
+            }
+          }
+        } catch (error) {
+          console.error('❌ Error loading character:', error);
+        }
+      }
+
+      if (character) {
+        // Update current character
+        currentCharacter = {
+          name: character.name,
+          slug: character.slug,
+          avatar: character.avatar,
+          title: character.title || character.description,
+          description: character.description,
+          greeting: character.greeting || `Hello! I'm ${character.name}. ${character.description}`,
+          creator: character.creator || '@Selira',
+          chats: character.chats || '0',
+          rating: character.rating || '4.5',
+          tags: character.tags || [],
+          voice: character.voice || ''
+        };
+
+        // Update UI
+        updateCharacterDisplay();
+
+        // Load chat history
+        loadChatHistoryFromStorage(slug);
+
+        // Update active state in sidebar
+        document.querySelectorAll('.chat-item').forEach(item => {
+          item.classList.toggle('active', item.dataset.slug === slug);
+        });
+
+        // Close sidebar on mobile
+        if (window.innerWidth <= 768) {
+          closeSidebar();
+        }
+
+        console.log('✅ Switched to companion:', character.name);
+      } else {
+        console.error('❌ Character not found:', slug);
+        // Still load the chat history even if character data not found
+        loadChatHistoryFromStorage(slug);
+      }
+    }
+
+    // Legacy function for compatibility
+    function updateRecentChatsSidebar(characters) {
+      // This function is now replaced by updateActiveChatsSidebar
+      // Keep it for compatibility but call the new function
+      updateActiveChatsSidebar();
     }
 
     function selectCharacterFromSidebar(slug, name, avatar, title) {
@@ -2477,15 +2642,12 @@
 
     function addImageMessage(imageUrl, prompt, style, saveToStorage = true) {
       const messagesContainer = document.getElementById('chatMessages');
-      
+
       const messageDiv = document.createElement('div');
       messageDiv.className = 'message ai';
       messageDiv.innerHTML = `
         <div class="message-content">
-          <div class="character-avatar">
-            <img src="${fixAvatarUrl(currentCharacter.avatar)}" alt="${currentCharacter.name}">
-          </div>
-          <div class="message-text">
+          <div class="message-text" style="margin-left: 0;">
             <div style="margin-bottom: 8px;">Here's your ${style} image:</div>
             <img src="${imageUrl}" alt="Generated image" style="
               max-width: 300px; border-radius: 12px; cursor: pointer;
@@ -2496,13 +2658,16 @@
           <div class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
         </div>
       `;
-      
+
       messagesContainer.appendChild(messageDiv);
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
       
       // Save to localStorage if requested
       if (saveToStorage && currentCharacter.slug) {
         saveImageMessageToStorage(currentCharacter.slug, imageUrl, prompt, style);
+
+        // Update sidebar to reflect new activity
+        updateActiveChatsSidebar();
       }
     }
 
