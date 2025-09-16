@@ -1713,17 +1713,19 @@
     const charactersPerPage = 12;
 
     // Initialize page
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', async function() {
       console.log('🚀 Selira AI My Companions page loading...');
-      loadCharacters();
+
+      // Load all characters first for global access
+      await loadCharacters();
+
       initializeFilters();
       setupTabNavigation();
       setupInfiniteScroll();
-      // Default to show My Companions
+
+      // Default to show My Companions immediately
       currentTab = 'companions';
-      setTimeout(async () => {
-        await renderMyCompanions();
-      }, 500);
+      await renderMyCompanions();
     });
 
     // ===== CHARACTER LOADING =====
@@ -1764,7 +1766,9 @@
         // Use demo characters as fallback
         allCharacters = getDemoCharacters();
       }
-      
+
+      // Store globally for later use
+      window.allCharacters = allCharacters;
       filteredCharacters = [...allCharacters];
       renderCharacters();
     }
