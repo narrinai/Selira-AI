@@ -1,10 +1,15 @@
 // Custom image generation for chat - accepts user prompts
 // Based on Flux Schnell for fast generation
 
+// Track recent requests to prevent rapid-fire calls
+const recentRequests = new Map();
+const REQUEST_COOLDOWN_MS = 2000; // 2 second cooldown between requests
+
 exports.handler = async (event, context) => {
-  console.log('🎨 generate-custom-image function called');
-  console.log('📝 Request method:', event.httpMethod);
-  console.log('📝 Request headers:', event.headers);
+  const requestId = Math.random().toString(36).substring(7);
+  console.log(`🎨 [${requestId}] generate-custom-image function called`);
+  console.log(`📝 [${requestId}] Request method:`, event.httpMethod);
+  console.log(`📝 [${requestId}] Request headers:`, event.headers);
 
   // CORS headers
   const corsHeaders = {
@@ -31,8 +36,8 @@ exports.handler = async (event, context) => {
   }
 
   const REPLICATE_API_TOKEN = process.env.REPLICATE_API_TOKEN_SELIRA || process.env.REPLICATE_API_TOKEN;
-  
-  console.log('🔑 Environment check:', {
+
+  console.log(`🔑 [${requestId}] Environment check:`, {
     hasReplicateToken: !!REPLICATE_API_TOKEN,
     tokenLength: REPLICATE_API_TOKEN ? REPLICATE_API_TOKEN.length : 0,
     tokenPrefix: REPLICATE_API_TOKEN ? REPLICATE_API_TOKEN.substring(0, 3) : 'none'
@@ -51,6 +56,37 @@ exports.handler = async (event, context) => {
         debug: 'Please add REPLICATE_API_TOKEN to Netlify environment variables'
       })
     };
+  }
+
+  // Check for rate limiting - simple in-memory check
+  const clientIp = event.headers['x-forwarded-for'] || event.headers['client-ip'] || 'unknown';
+  const lastRequestTime = recentRequests.get(clientIp);
+  const now = Date.now();
+
+  if (lastRequestTime && (now - lastRequestTime) < REQUEST_COOLDOWN_MS) {
+    const waitTime = REQUEST_COOLDOWN_MS - (now - lastRequestTime);
+    console.log(`⏱️ [${requestId}] Rate limit: Client ${clientIp} must wait ${waitTime}ms`);
+    return {
+      statusCode: 429,
+      headers: {
+        ...corsHeaders,
+        'Content-Type': 'application/json',
+        'Retry-After': Math.ceil(waitTime / 1000).toString()
+      },
+      body: JSON.stringify({
+        error: 'Too many requests. Please wait a moment before generating another image.',
+        retryAfter: Math.ceil(waitTime / 1000)
+      })
+    };
+  }
+
+  // Update last request time
+  recentRequests.set(clientIp, now);
+
+  // Clean up old entries to prevent memory leak (keep only last 100 entries)
+  if (recentRequests.size > 100) {
+    const firstKey = recentRequests.keys().next().value;
+    recentRequests.delete(firstKey);
   }
 
   try {
@@ -75,7 +111,7 @@ exports.handler = async (event, context) => {
 
     const { customPrompt, characterName, category, style, shotType, sex, ethnicity, hairLength, hairColor } = body;
     
-    console.log('📋 Received:', {
+    console.log(`📋 [${requestId}] Received:`, {
       customPrompt,
       characterName,
       category,
@@ -197,14 +233,17 @@ exports.handler = async (event, context) => {
       fullPrompt = `realistic photography, ${shotDesc} of ${characterAppearance}, ${customPrompt}${contextualEnhancement}, photorealistic, real photo, not anime, not cartoon, not illustration, not drawing, professional photography, high quality, professional lighting, clean background, single real person, perfect anatomy, realistic skin, realistic features`;
     }
     
-    console.log('🎨 Full prompt:', fullPrompt);
-    console.log('🎌 Anime style:', isAnimeStyle);
+    console.log(`🎨 [${requestId}] Full prompt:`, fullPrompt);
+    console.log(`🎌 [${requestId}] Anime style:`, isAnimeStyle);
     
     // Use Flux Schnell for fast generation with the correct version ID
     const modelVersion = "5599ed30703defd1d160a25a63321b4dec97101d98b4674bcc56e41f62f35637";
 
+    // Add small delay to prevent rate limiting
+    await new Promise(resolve => setTimeout(resolve, 500));
+
     // Call Replicate API
-    console.log('📡 Calling Replicate API with model version:', modelVersion);
+    console.log(`📡 [${requestId}] Calling Replicate API with model version:`, modelVersion);
     const replicateResponse = await fetch('https://api.replicate.com/v1/predictions', {
       method: 'POST',
       headers: {
@@ -244,8 +283,8 @@ exports.handler = async (event, context) => {
     let prediction;
     try {
       prediction = await replicateResponse.json();
-      console.log('📊 Prediction created:', prediction.id);
-      console.log('📊 Prediction status:', prediction.status);
+      console.log(`📊 [${requestId}] Prediction created:`, prediction.id);
+      console.log(`📊 [${requestId}] Prediction status:`, prediction.status);
     } catch (jsonError) {
       console.error('❌ Failed to parse Replicate response as JSON:', jsonError);
       throw new Error('Invalid response from Replicate API');
@@ -272,7 +311,7 @@ exports.handler = async (event, context) => {
       }
       
       result = await statusResponse.json();
-      console.log(`⏳ Status [${attempts}/${maxAttempts}]:`, result.status);
+      console.log(`⏳ [${requestId}] Status [${attempts}/${maxAttempts}]:`, result.status);
     }
     
     if (attempts >= maxAttempts) {
@@ -290,7 +329,7 @@ exports.handler = async (event, context) => {
       throw new Error('No image URL in response');
     }
     
-    console.log('✅ Custom image generated successfully:', imageUrl);
+    console.log(`✅ [${requestId}] Custom image generated successfully:`, imageUrl);
     
     return {
       statusCode: 200,
@@ -308,8 +347,9 @@ exports.handler = async (event, context) => {
     };
     
   } catch (error) {
-    console.error('❌ Generate custom image error:', error);
-    console.error('❌ Error stack:', error.stack);
+    console.error(`❌ [${requestId}] Generate custom image error:`, error);
+    console.error(`❌ [${requestId}] Error stack:`, error.stack);
+    console.error(`❌ [${requestId}] Error details:`, error.message);
     
     return {
       statusCode: 500,

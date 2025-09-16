@@ -2317,7 +2317,10 @@
           <!-- Badge to indicate companion type -->
           ${character.isUserCreated ?
             `<div class="companion-type-badge user-created-badge">Created by you</div>` :
-            (character.hasChats ? `<div class="companion-type-badge chatted-badge">Chatted</div>` : '')
+            (character.messageCount ?
+              `<div class="companion-type-badge chatted-badge">${character.messageCount} messages</div>` :
+              (character.hasChats ? `<div class="companion-type-badge chatted-badge">Chatted</div>` : '')
+            )
           }
 
           <div class="character-stats-overlay">
@@ -2426,16 +2429,150 @@
       `;
     }
 
+    // Get all active chat companions from localStorage
+    function getActiveChatsFromLocalStorage() {
+      const companions = [];
+      const keys = Object.keys(localStorage);
+
+      // Find all chat_ keys in localStorage
+      keys.forEach(key => {
+        if (key.startsWith('chat_')) {
+          const characterSlug = key.replace('chat_', '');
+          const chatHistory = JSON.parse(localStorage.getItem(key) || '[]');
+
+          // Only include if there are messages
+          if (chatHistory.length > 0) {
+            // Get last message for preview
+            const lastMessage = chatHistory[chatHistory.length - 1];
+            const messageCount = chatHistory.length;
+
+            companions.push({
+              slug: characterSlug,
+              lastMessage: lastMessage?.content || '',
+              timestamp: lastMessage?.timestamp || Date.now(),
+              messageCount: messageCount,
+              isFromLocalStorage: true
+            });
+          }
+        }
+      });
+
+      return companions;
+    }
+
+    // Get character data from API or cache
+    async function getCharacterData(slug) {
+      try {
+        // Check if we have this character in allCharacters cache
+        if (window.allCharacters) {
+          const found = window.allCharacters.find(c => c.slug === slug);
+          if (found) return found;
+        }
+
+        // Try to fetch from API
+        const response = await fetch(`/.netlify/functions/characters?slug=${slug}`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.characters && data.characters.length > 0) {
+            return data.characters[0];
+          }
+        }
+      } catch (error) {
+        console.error('❌ Error fetching character data for', slug, error);
+      }
+      return null;
+    }
+
+    // Merge companions from API with local chat history
+    async function mergeCompanions(apiCompanions, localCompanions) {
+      const merged = [...apiCompanions];
+      const existingSlugs = new Set(apiCompanions.map(c => c.slug));
+
+      // Add local companions that aren't already in API results
+      for (const localComp of localCompanions) {
+        if (!existingSlugs.has(localComp.slug)) {
+          // Try to get character data
+          const enriched = await getCharacterData(localComp.slug);
+          if (enriched) {
+            merged.push({
+              ...enriched,
+              isFromLocalStorage: true,
+              messageCount: localComp.messageCount,
+              lastChatTimestamp: localComp.timestamp
+            });
+          } else {
+            // Even without character data, add basic info
+            merged.push({
+              slug: localComp.slug,
+              name: localComp.slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+              description: `Active chat with ${localComp.messageCount} messages`,
+              isFromLocalStorage: true,
+              messageCount: localComp.messageCount,
+              lastChatTimestamp: localComp.timestamp,
+              chats: localComp.messageCount.toString(),
+              rating: '4.5',
+              creator: 'Selira'
+            });
+          }
+        } else {
+          // Update existing companion with local chat data
+          const existingIndex = merged.findIndex(c => c.slug === localComp.slug);
+          if (existingIndex !== -1) {
+            merged[existingIndex].messageCount = localComp.messageCount;
+            merged[existingIndex].lastChatTimestamp = localComp.timestamp;
+          }
+        }
+      }
+
+      // Sort by last activity (most recent first)
+      merged.sort((a, b) => {
+        const aTime = a.lastChatTimestamp || 0;
+        const bTime = b.lastChatTimestamp || 0;
+        return bTime - aTime;
+      });
+
+      return merged;
+    }
+
     async function getUserCompanions() {
+      // First, get companions from localStorage (active chats)
+      const localCompanions = getActiveChatsFromLocalStorage();
+      console.log('💾 Found', localCompanions.length, 'active chats in localStorage');
+
       // Try to get real companions from API
       const user = window.getCurrentUser();
       if (!user || !user.email || !user.sub) {
         console.log('⚠️ No user info available for companions fetch');
-        return getSampleCompanions();
+        // Still try to enrich local companions with character data
+        const enriched = [];
+        for (const localComp of localCompanions) {
+          const characterData = await getCharacterData(localComp.slug);
+          if (characterData) {
+            enriched.push({
+              ...characterData,
+              isFromLocalStorage: true,
+              messageCount: localComp.messageCount,
+              lastChatTimestamp: localComp.timestamp
+            });
+          } else {
+            enriched.push({
+              slug: localComp.slug,
+              name: localComp.slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+              description: `Active chat with ${localComp.messageCount} messages`,
+              isFromLocalStorage: true,
+              messageCount: localComp.messageCount,
+              lastChatTimestamp: localComp.timestamp,
+              chats: localComp.messageCount.toString(),
+              rating: '4.5',
+              creator: 'Selira'
+            });
+          }
+        }
+        return enriched.length > 0 ? enriched : getSampleCompanions();
       }
 
       try {
-        console.log('🔍 Fetching user companions...');
+        console.log('🔍 Fetching user companions from API...');
 
         const response = await fetch('/.netlify/functions/get-my-companions', {
           method: 'POST',
@@ -2455,33 +2592,62 @@
         const data = await response.json();
 
         if (data.success && data.companions) {
-          console.log('✅ Successfully fetched', data.companions.length, 'companions');
+          console.log('✅ Successfully fetched', data.companions.length, 'companions from API');
           console.log('📊 Stats:', {
             total: data.total,
             user_created: data.user_created_count,
             chatted: data.chatted_count
           });
 
+          // Merge API companions with local companions
+          const mergedCompanions = await mergeCompanions(data.companions, localCompanions);
+
           // Cache the results for 5 minutes
           const cacheData = {
-            companions: data.companions,
+            companions: mergedCompanions,
             timestamp: Date.now()
           };
           localStorage.setItem('userCompanions', JSON.stringify(cacheData));
 
-          return data.companions;
+          return mergedCompanions;
         } else {
           console.error('❌ API returned unsuccessful response:', data.error);
-          return getSampleCompanions();
+          // On API error, still use local companions
+          const enriched = [];
+          for (const localComp of localCompanions) {
+            const characterData = await getCharacterData(localComp.slug);
+            if (characterData) {
+              enriched.push({
+                ...characterData,
+                isFromLocalStorage: true,
+                messageCount: localComp.messageCount,
+                lastChatTimestamp: localComp.timestamp
+              });
+            }
+          }
+          return enriched.length > 0 ? enriched : getSampleCompanions();
         }
 
       } catch (error) {
         console.error('❌ Error fetching user companions:', error);
-        return getSampleCompanions();
+        // On error, still use local companions
+        const enriched = [];
+        for (const localComp of localCompanions) {
+          const characterData = await getCharacterData(localComp.slug);
+          if (characterData) {
+            enriched.push({
+              ...characterData,
+              isFromLocalStorage: true,
+              messageCount: localComp.messageCount,
+              lastChatTimestamp: localComp.timestamp
+            });
+          }
+        }
+        return enriched.length > 0 ? enriched : getSampleCompanions();
       }
     }
 
-    function getSampleCompanions() {
+    async function getSampleCompanions() {
       // Check if we have cached data that's less than 5 minutes old
       const cached = localStorage.getItem('userCompanions');
       if (cached) {
@@ -2496,6 +2662,37 @@
           console.log('⚠️ Invalid cache data, clearing...');
           localStorage.removeItem('userCompanions');
         }
+      }
+
+      // Even without cache, check for local chat history
+      const localCompanions = getActiveChatsFromLocalStorage();
+      if (localCompanions.length > 0) {
+        console.log('💬 Found active chats in localStorage');
+        const enriched = [];
+        for (const localComp of localCompanions) {
+          const characterData = await getCharacterData(localComp.slug);
+          if (characterData) {
+            enriched.push({
+              ...characterData,
+              isFromLocalStorage: true,
+              messageCount: localComp.messageCount,
+              lastChatTimestamp: localComp.timestamp
+            });
+          } else {
+            enriched.push({
+              slug: localComp.slug,
+              name: localComp.slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+              description: `Active chat with ${localComp.messageCount} messages`,
+              isFromLocalStorage: true,
+              messageCount: localComp.messageCount,
+              lastChatTimestamp: localComp.timestamp,
+              chats: localComp.messageCount.toString(),
+              rating: '4.5',
+              creator: 'Selira'
+            });
+          }
+        }
+        return enriched;
       }
 
       // Return empty array by default - will show "No companions yet" message
