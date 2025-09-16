@@ -3,7 +3,7 @@
 
 // Track recent requests to prevent rapid-fire calls
 const recentRequests = new Map();
-const REQUEST_COOLDOWN_MS = 2000; // 2 second cooldown between requests
+const REQUEST_COOLDOWN_MS = 3000; // 3 second cooldown between requests
 
 exports.handler = async (event, context) => {
   const requestId = Math.random().toString(36).substring(7);
@@ -242,25 +242,44 @@ exports.handler = async (event, context) => {
     // Add small delay to prevent rate limiting
     await new Promise(resolve => setTimeout(resolve, 500));
 
-    // Call Replicate API
+    // Call Replicate API with timeout
     console.log(`📡 [${requestId}] Calling Replicate API with model version:`, modelVersion);
-    const replicateResponse = await fetch('https://api.replicate.com/v1/predictions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Token ${REPLICATE_API_TOKEN}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        version: modelVersion,
-        input: {
-          prompt: fullPrompt,
-          width: 768,
-          height: 768,
-          num_outputs: 1,
-          num_inference_steps: 4
-        }
-      })
-    });
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+
+    let replicateResponse;
+    try {
+      replicateResponse = await fetch('https://api.replicate.com/v1/predictions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Token ${REPLICATE_API_TOKEN}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          version: modelVersion,
+          input: {
+            prompt: fullPrompt,
+            width: 768,
+            height: 768,
+            num_outputs: 1,
+            num_inference_steps: 4
+          }
+        }),
+        signal: controller.signal
+      });
+    } catch (fetchError) {
+      clearTimeout(timeoutId);
+      if (fetchError.name === 'AbortError') {
+        console.error(`❌ [${requestId}] Request timeout after 30 seconds`);
+        throw new Error('Request timeout - Replicate API took too long to respond');
+      }
+      console.error(`❌ [${requestId}] Fetch error:`, fetchError);
+      throw new Error(`Network error: ${fetchError.message}`);
+    } finally {
+      clearTimeout(timeoutId);
+    }
 
     if (!replicateResponse.ok) {
       const errorText = await replicateResponse.text();
@@ -299,19 +318,35 @@ exports.handler = async (event, context) => {
       await new Promise(resolve => setTimeout(resolve, 1000));
       attempts++;
       
-      const statusResponse = await fetch(`https://api.replicate.com/v1/predictions/${prediction.id}`, {
-        headers: {
-          'Authorization': `Token ${REPLICATE_API_TOKEN}`
+      try {
+        const statusResponse = await fetch(`https://api.replicate.com/v1/predictions/${prediction.id}`, {
+          headers: {
+            'Authorization': `Token ${REPLICATE_API_TOKEN}`,
+            'Accept': 'application/json'
+          }
+        });
+
+        if (!statusResponse.ok) {
+          console.error(`❌ [${requestId}] Status check failed:`, statusResponse.status);
+          const errorText = await statusResponse.text();
+          console.error(`❌ [${requestId}] Status check error:`, errorText);
+          // Don't throw immediately, continue trying
+          if (attempts >= maxAttempts - 1) {
+            throw new Error(`Status check failed after ${attempts} attempts: ${statusResponse.status}`);
+          }
+          continue;
         }
-      });
-      
-      if (!statusResponse.ok) {
-        console.error('❌ Status check failed:', statusResponse.status);
-        throw new Error(`Status check failed: ${statusResponse.status}`);
+
+        result = await statusResponse.json();
+        console.log(`⏳ [${requestId}] Status [${attempts}/${maxAttempts}]:`, result.status);
+      } catch (statusError) {
+        console.error(`❌ [${requestId}] Error checking status:`, statusError);
+        if (attempts >= maxAttempts - 1) {
+          throw statusError;
+        }
+        // Continue trying if not at max attempts
+        continue;
       }
-      
-      result = await statusResponse.json();
-      console.log(`⏳ [${requestId}] Status [${attempts}/${maxAttempts}]:`, result.status);
     }
     
     if (attempts >= maxAttempts) {
