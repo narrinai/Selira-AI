@@ -3,11 +3,29 @@
 
 exports.handler = async (event, context) => {
   console.log('🎨 generate-custom-image function called');
-  
+  console.log('📝 Request method:', event.httpMethod);
+  console.log('📝 Request headers:', event.headers);
+
+  // CORS headers
+  const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS'
+  };
+
+  // Handle preflight OPTIONS request
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 200,
+      headers: corsHeaders,
+      body: ''
+    };
+  }
+
   if (event.httpMethod !== 'POST') {
     return {
       statusCode: 405,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       body: JSON.stringify({ error: 'Method not allowed' })
     };
   }
@@ -24,9 +42,9 @@ exports.handler = async (event, context) => {
     console.error('❌ Replicate API token not found');
     return {
       statusCode: 500,
-      headers: { 
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
+      headers: {
+        ...corsHeaders,
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({ 
         error: 'Replicate API token not configured',
@@ -36,7 +54,25 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const body = JSON.parse(event.body || '{}');
+    // Parse request body
+    let body;
+    try {
+      body = JSON.parse(event.body || '{}');
+    } catch (parseError) {
+      console.error('❌ Failed to parse request body:', parseError);
+      return {
+        statusCode: 400,
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          error: 'Invalid JSON in request body',
+          details: parseError.message
+        })
+      };
+    }
+
     const { customPrompt, characterName, category, style, shotType, sex, ethnicity, hairLength, hairColor } = body;
     
     console.log('📋 Received:', {
@@ -205,13 +241,20 @@ exports.handler = async (event, context) => {
       throw new Error(`Replicate API error ${replicateResponse.status}: ${errorDetails}`);
     }
     
-    const prediction = await replicateResponse.json();
-    console.log('📊 Prediction created:', prediction.id);
+    let prediction;
+    try {
+      prediction = await replicateResponse.json();
+      console.log('📊 Prediction created:', prediction.id);
+      console.log('📊 Prediction status:', prediction.status);
+    } catch (jsonError) {
+      console.error('❌ Failed to parse Replicate response as JSON:', jsonError);
+      throw new Error('Invalid response from Replicate API');
+    }
     
-    // Wait for the prediction to complete (max 15 seconds for custom prompts)
+    // Wait for the prediction to complete (max 30 seconds for custom prompts)
     let result = prediction;
     let attempts = 0;
-    const maxAttempts = 15;
+    const maxAttempts = 30;
     
     while (result.status !== 'succeeded' && result.status !== 'failed' && attempts < maxAttempts) {
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -237,7 +280,9 @@ exports.handler = async (event, context) => {
     }
     
     if (result.status === 'failed') {
-      throw new Error('Image generation failed');
+      console.error('❌ Generation failed. Full result:', JSON.stringify(result, null, 2));
+      const errorMsg = result.error || 'Image generation failed';
+      throw new Error(errorMsg);
     }
     
     const imageUrl = result.output?.[0];
@@ -249,9 +294,9 @@ exports.handler = async (event, context) => {
     
     return {
       statusCode: 200,
-      headers: { 
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
+      headers: {
+        ...corsHeaders,
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         success: true,
@@ -268,9 +313,9 @@ exports.handler = async (event, context) => {
     
     return {
       statusCode: 500,
-      headers: { 
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
+      headers: {
+        ...corsHeaders,
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({ 
         error: 'Custom image generation failed',
