@@ -168,6 +168,7 @@ exports.handler = async (event, context) => {
     const modelVersion = "5599ed30703defd1d160a25a63321b4dec97101d98b4674bcc56e41f62f35637";
 
     // Call Replicate API
+    console.log('📡 Calling Replicate API with model version:', modelVersion);
     const replicateResponse = await fetch('https://api.replicate.com/v1/predictions', {
       method: 'POST',
       headers: {
@@ -185,11 +186,23 @@ exports.handler = async (event, context) => {
         }
       })
     });
-    
+
     if (!replicateResponse.ok) {
       const errorText = await replicateResponse.text();
       console.error('❌ Replicate API error:', errorText);
-      throw new Error(`Replicate API error: ${replicateResponse.status}`);
+      console.error('❌ Response status:', replicateResponse.status);
+      console.error('❌ Response headers:', replicateResponse.headers);
+
+      // Try to parse error details
+      let errorDetails = errorText;
+      try {
+        const errorJson = JSON.parse(errorText);
+        errorDetails = errorJson.detail || errorJson.message || errorText;
+      } catch (e) {
+        // Keep original error text if not JSON
+      }
+
+      throw new Error(`Replicate API error ${replicateResponse.status}: ${errorDetails}`);
     }
     
     const prediction = await replicateResponse.json();

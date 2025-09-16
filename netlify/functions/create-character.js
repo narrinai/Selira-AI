@@ -10,26 +10,26 @@ exports.handler = async (event, context) => {
     };
   }
 
-  const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA;
-  const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA;
-  
+  const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA || process.env.AIRTABLE_BASE_ID;
+  const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA || process.env.AIRTABLE_TOKEN || process.env.AIRTABLE_API_KEY;
+
   console.log('🔑 Environment check:', {
     hasBaseId: !!AIRTABLE_BASE_ID,
     hasToken: !!AIRTABLE_TOKEN,
     baseId: AIRTABLE_BASE_ID ? AIRTABLE_BASE_ID.substring(0, 8) + '...' : 'none'
   });
-  
+
   if (!AIRTABLE_BASE_ID || !AIRTABLE_TOKEN) {
     console.error('❌ Airtable credentials not found');
     return {
       statusCode: 500,
-      headers: { 
+      headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*'
       },
       body: JSON.stringify({
         error: 'Airtable credentials not configured',
-        debug: 'Please add AIRTABLE_BASE_ID_SELIRA and AIRTABLE_TOKEN_SELIRA to environment variables'
+        debug: 'Please add AIRTABLE_BASE_ID and AIRTABLE_TOKEN to environment variables'
       })
     };
   }
