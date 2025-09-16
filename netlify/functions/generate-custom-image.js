@@ -40,7 +40,8 @@ exports.handler = async (event, context) => {
   console.log(`🔑 [${requestId}] Environment check:`, {
     hasReplicateToken: !!REPLICATE_API_TOKEN,
     tokenLength: REPLICATE_API_TOKEN ? REPLICATE_API_TOKEN.length : 0,
-    tokenPrefix: REPLICATE_API_TOKEN ? REPLICATE_API_TOKEN.substring(0, 3) : 'none'
+    tokenPrefix: REPLICATE_API_TOKEN ? REPLICATE_API_TOKEN.substring(0, 8) + '...' : 'none',
+    envKeys: Object.keys(process.env).filter(key => key.includes('REPLICATE')).join(', ')
   });
   
   if (!REPLICATE_API_TOKEN) {
@@ -242,11 +243,8 @@ exports.handler = async (event, context) => {
     // Add small delay to prevent rate limiting
     await new Promise(resolve => setTimeout(resolve, 500));
 
-    // Call Replicate API with timeout
+    // Call Replicate API
     console.log(`📡 [${requestId}] Calling Replicate API with model version:`, modelVersion);
-
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
 
     let replicateResponse;
     try {
@@ -266,26 +264,20 @@ exports.handler = async (event, context) => {
             num_outputs: 1,
             num_inference_steps: 4
           }
-        }),
-        signal: controller.signal
+        })
       });
     } catch (fetchError) {
-      clearTimeout(timeoutId);
-      if (fetchError.name === 'AbortError') {
-        console.error(`❌ [${requestId}] Request timeout after 30 seconds`);
-        throw new Error('Request timeout - Replicate API took too long to respond');
-      }
       console.error(`❌ [${requestId}] Fetch error:`, fetchError);
+      console.error(`❌ [${requestId}] Error name:`, fetchError.name);
+      console.error(`❌ [${requestId}] Error message:`, fetchError.message);
       throw new Error(`Network error: ${fetchError.message}`);
-    } finally {
-      clearTimeout(timeoutId);
     }
 
     if (!replicateResponse.ok) {
       const errorText = await replicateResponse.text();
-      console.error('❌ Replicate API error:', errorText);
-      console.error('❌ Response status:', replicateResponse.status);
-      console.error('❌ Response headers:', replicateResponse.headers);
+      console.error(`❌ [${requestId}] Replicate API error:`, errorText);
+      console.error(`❌ [${requestId}] Response status:`, replicateResponse.status);
+      console.error(`❌ [${requestId}] Response headers:`, [...replicateResponse.headers.entries()]);
 
       // Try to parse error details
       let errorDetails = errorText;
