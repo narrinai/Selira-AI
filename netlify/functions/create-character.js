@@ -120,7 +120,7 @@ exports.handler = async (event, context) => {
     
     return {
       statusCode: 200,
-      headers: { 
+      headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*'
       },
@@ -131,11 +131,13 @@ exports.handler = async (event, context) => {
           name: result.fields.Name,
           slug: result.fields.Slug,
           description: result.fields.Character_Description,
-          artStyle: result.fields.Art_Style,
-          sex: result.fields.Sex,
-          ethnicity: result.fields.Ethnicity,
-          hairLength: result.fields.Hair_Length,
-          tags: result.fields.Tags
+          artStyle: result.fields.companion_type,
+          sex: result.fields.sex,
+          ethnicity: result.fields.ethnicity,
+          hairLength: result.fields.hair_length,
+          hairColor: result.fields.hair_color,
+          tags: result.fields.Tags,
+          avatarUrl: result.fields.Avatar_URL
         }
       })
     };
