@@ -3,7 +3,9 @@
 
 // Track recent requests to prevent rapid-fire calls
 const recentRequests = new Map();
-const REQUEST_COOLDOWN_MS = 3000; // 3 second cooldown between requests
+const REQUEST_COOLDOWN_MS = 5000; // 5 second cooldown between requests
+let globalRequestCount = 0; // Track total requests in this instance
+let activeReplicateRequests = 0; // Track concurrent Replicate API calls
 
 exports.handler = async (event, context) => {
   const requestId = Math.random().toString(36).substring(7);
@@ -81,8 +83,11 @@ exports.handler = async (event, context) => {
     };
   }
 
-  // Update last request time
+  // Update last request time and increment counter
   recentRequests.set(clientIp, now);
+  globalRequestCount++;
+
+  console.log(`📊 [${requestId}] Request #${globalRequestCount} from ${clientIp}`);
 
   // Clean up old entries to prevent memory leak (keep only last 100 entries)
   if (recentRequests.size > 100) {
@@ -240,12 +245,35 @@ exports.handler = async (event, context) => {
     // Use Flux Schnell for fast generation with the correct version ID
     const modelVersion = "5599ed30703defd1d160a25a63321b4dec97101d98b4674bcc56e41f62f35637";
 
-    // Add small delay to prevent rate limiting
-    await new Promise(resolve => setTimeout(resolve, 500));
+    // Add progressive delay to prevent rate limiting
+    // More requests = longer delay
+    const baseDelay = 1000; // 1 second base
+    const progressiveDelay = Math.min(baseDelay * Math.floor(globalRequestCount / 2), 5000); // Max 5 seconds
+    console.log(`⏱️ [${requestId}] Waiting ${progressiveDelay}ms before API call (request #${globalRequestCount})`);
+    await new Promise(resolve => setTimeout(resolve, progressiveDelay));
+
+    // Check if too many concurrent Replicate requests
+    if (activeReplicateRequests >= 2) {
+      console.error(`❌ [${requestId}] Too many concurrent Replicate requests (${activeReplicateRequests})`);
+      return {
+        statusCode: 503,
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'application/json',
+          'Retry-After': '5'
+        },
+        body: JSON.stringify({
+          error: 'Service temporarily busy. Please try again in a few seconds.',
+          retryAfter: 5
+        })
+      };
+    }
 
     // Call Replicate API
     console.log(`📡 [${requestId}] Calling Replicate API with model version:`, modelVersion);
+    console.log(`📡 [${requestId}] Active Replicate requests: ${activeReplicateRequests}`);
 
+    activeReplicateRequests++;
     let replicateResponse;
     try {
       replicateResponse = await fetch('https://api.replicate.com/v1/predictions', {
@@ -267,6 +295,7 @@ exports.handler = async (event, context) => {
         })
       });
     } catch (fetchError) {
+      activeReplicateRequests--;
       console.error(`❌ [${requestId}] Fetch error:`, fetchError);
       console.error(`❌ [${requestId}] Error name:`, fetchError.name);
       console.error(`❌ [${requestId}] Error message:`, fetchError.message);
@@ -288,6 +317,7 @@ exports.handler = async (event, context) => {
         // Keep original error text if not JSON
       }
 
+      activeReplicateRequests--;
       throw new Error(`Replicate API error ${replicateResponse.status}: ${errorDetails}`);
     }
     
@@ -357,7 +387,11 @@ exports.handler = async (event, context) => {
     }
     
     console.log(`✅ [${requestId}] Custom image generated successfully:`, imageUrl);
-    
+
+    // Decrement active requests counter
+    activeReplicateRequests--;
+    console.log(`📊 [${requestId}] Completed. Active requests now: ${activeReplicateRequests}`);
+
     return {
       statusCode: 200,
       headers: {
