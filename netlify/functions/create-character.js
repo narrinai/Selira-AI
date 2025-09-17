@@ -1,3 +1,55 @@
+// Helper function to generate greeting based on character traits
+function generateGreeting(name, tags, extraInstructions) {
+  const tagGreetings = {
+    'Girlfriend': `*smiles warmly* Hey there, sweetheart! I'm ${name}, and I've been looking forward to spending time with you. *gently takes your hand*`,
+    'Boyfriend': `*grins confidently* Hey beautiful! I'm ${name}. Ready for an amazing time together? *winks playfully*`,
+    'Romance': `*looks into your eyes with a gentle smile* Hello, I'm ${name}. There's something magical about meeting someone new, don't you think? *blushes softly*`,
+    'Flirty': `*gives you a charming smile* Well hello there, gorgeous! I'm ${name}, and you've definitely caught my attention. *playfully tilts head*`,
+    'Cute': `*bounces excitedly* Hi hi! I'm ${name}! *giggles adorably* You seem really nice! Want to be friends? *sparkles with enthusiasm*`,
+    'Seductive': `*leans in with a mysterious smile* Hello, darling... I'm ${name}. *traces finger along an invisible line* I have a feeling we're going to have some... interesting conversations. *winks seductively*`,
+    'Submissive': `*looks up shyly* H-hello... I'm ${name}. *fidgets with hands* I hope I can make you happy... *blushes and looks down*`,
+    'Tsundere': `*crosses arms and looks away* I-It's not like I wanted to meet you or anything! I'm ${name}... *steals a glance* B-but I guess you seem... okay... *blushes slightly*`,
+    'Yandere': `*smiles sweetly but with intense eyes* Hello, my darling... I'm ${name}. *tilts head* You're exactly what I've been waiting for... *giggles softly* We're going to be so close, just you and me...`,
+    'Maid': `*curtseys gracefully* Good day, Master/Mistress! I am ${name}, your devoted maid. *smiles professionally* How may I serve you today? *bows politely*`,
+    'Boss': `*adjusts suit confidently* I'm ${name}, and I expect excellence in everything I do. *looks at you appraisingly* I hope you're ready to keep up with my standards. *smirks*`,
+    'Secretary': `*adjusts glasses and smiles professionally* Good morning! I'm ${name}, your personal assistant. *holds clipboard* I've already organized today's schedule. Shall we begin? *pen ready*`,
+    'Teacher': `*warm, encouraging smile* Welcome to class! I'm ${name}, your instructor. *gestures to seat* I believe every student has potential - let me help you discover yours. *eyes twinkle with wisdom*`,
+    'Student': `*waves enthusiastically* Hi there! I'm ${name}! *bounces slightly* I'm so excited to learn new things! You seem really smart - can you teach me something cool? *looks up with curiosity*`,
+    'Fantasy': `*ethereal presence* Greetings, traveler... I am ${name}, from realms beyond your world. *magical sparkles around* The stars have guided our paths to cross... *mystical smile*`,
+    'Angel': `*radiant, peaceful aura* Blessings upon you, dear soul... I am ${name}. *gentle wings flutter* I have been sent to bring light and comfort to your journey. *serene smile*`,
+    'Monster': `*playful yet mysterious* Well, well... what do we have here? *tilts head curiously* I'm ${name}... don't worry, I only bite if you ask nicely~ *mischievous grin*`,
+    'Ex': `*awkward but trying to be casual* Oh... hey. I'm ${name}. *runs hand through hair* I guess we're... talking again? *complicated expression* This is... weird, isn't it?`
+  };
+
+  // Find the most prominent tag for greeting
+  let selectedGreeting = null;
+  const priorityTags = ['Girlfriend', 'Boyfriend', 'Romance', 'Yandere', 'Tsundere', 'Angel', 'Monster', 'Ex'];
+
+  for (let tag of priorityTags) {
+    if (tags && tags.includes(tag)) {
+      selectedGreeting = tagGreetings[tag];
+      break;
+    }
+  }
+
+  // Fallback to any available tag greeting
+  if (!selectedGreeting && tags && tags.length > 0) {
+    for (let tag of tags) {
+      if (tagGreetings[tag]) {
+        selectedGreeting = tagGreetings[tag];
+        break;
+      }
+    }
+  }
+
+  // Default greeting if no specific tag match
+  if (!selectedGreeting) {
+    selectedGreeting = `*smiles warmly* Hello there! I'm ${name}. *bright expression* I'm really excited to get to know you better! What would you like to talk about? *tilts head with genuine interest*`;
+  }
+
+  return selectedGreeting;
+}
+
 // Helper function to generate personality traits from tags
 function generatePersonalityFromTags(tags) {
   if (!Array.isArray(tags) || tags.length === 0) return '';
@@ -185,8 +237,25 @@ BOUNDARIES:
 
     console.log('🎨 Setting up avatar for character...');
 
-    // Use a default avatar URL that we know exists
-    const avatarUrlToUse = 'https://selira.ai/avatars/default-companion.webp';
+    // Generate avatar URL based on character attributes
+    const genderPrefix = sex === 'male' ? 'male' : 'female';
+    const ethnicityCode = ethnicity === 'white' ? 'caucasian' :
+                         ethnicity === 'black' ? 'african' :
+                         ethnicity === 'japanese' ? 'asian' :
+                         ethnicity === 'hispanic' ? 'latino' :
+                         ethnicity === 'middle-east' ? 'middle-eastern' :
+                         ethnicity === 'indian' ? 'indian' : 'caucasian';
+    const styleCode = artStyle === 'anime' ? 'anime' : 'realistic';
+
+    // Generate a more specific avatar URL
+    const avatarUrlToUse = `https://selira.ai/avatars/${genderPrefix}-${ethnicityCode}-${styleCode}-${hairColor || 'brown'}.webp`;
+
+    // Generate greeting based on character traits
+    const greetingText = generateGreeting(name, tags, extraInstructions);
+
+    // Determine if character should be unfiltered based on tags
+    const unfilteredTags = ['Seductive', 'Yandere', 'Ex', 'Boss', 'Monster'];
+    const isUnfiltered = tags && tags.some(tag => unfilteredTags.includes(tag));
 
     // Prepare character data with all required fields
     const characterData = {
@@ -196,6 +265,7 @@ BOUNDARIES:
       Slug: slug,
       Character_URL: characterUrl,
       Prompt: fullPrompt,
+      Greeting: greetingText,
       Tags: Array.isArray(tags) && tags.length > 0 ? tags : [],
       Visibility: visibility || 'public',
       companion_type: artStyle || 'realistic',
@@ -204,7 +274,9 @@ BOUNDARIES:
       hair_length: hairLength || 'long',
       hair_color: hairColor || 'brown',
       Avatar_URL: avatarUrlToUse,
-      is_unfiltered: false
+      is_unfiltered: isUnfiltered,
+      chats: 0,
+      rating: 5.0
       // Created_By removed temporarily - it's a linked record field, not text
     };
 
@@ -268,6 +340,7 @@ BOUNDARIES:
           url: result.fields.Character_URL,
           description: result.fields.Character_Description,
           prompt: result.fields.Prompt,
+          greeting: result.fields.Greeting,
           title: result.fields.Character_Title,
           artStyle: result.fields.companion_type,
           sex: result.fields.sex,
@@ -277,7 +350,9 @@ BOUNDARIES:
           tags: result.fields.Tags,
           avatarUrl: result.fields.Avatar_URL,
           isUnfiltered: result.fields.is_unfiltered,
-          visibility: result.fields.Visibility
+          visibility: result.fields.Visibility,
+          chats: result.fields.chats,
+          rating: result.fields.rating
         }
       })
     };

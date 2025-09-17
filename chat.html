@@ -2189,22 +2189,60 @@
       }
     });
 
+    // Check if character was recently created (within last 5 minutes)
+    function checkIfNewCharacter(slug) {
+      const newCharacterKey = `new_character_${slug}`;
+      const creationTime = localStorage.getItem(newCharacterKey);
+
+      if (!creationTime) return false;
+
+      const now = Date.now();
+      const created = parseInt(creationTime);
+      const fiveMinutes = 5 * 60 * 1000; // 5 minutes in milliseconds
+
+      if (now - created < fiveMinutes) {
+        return true;
+      } else {
+        // Clean up old marker
+        localStorage.removeItem(newCharacterKey);
+        return false;
+      }
+    }
+
     // Switch character without updating URL (for browser navigation)
     function selectCharacterFromSidebarSilent(slug, name, avatar, title) {
       // Find character in loaded data for real tags and creator
       const character = loadedCharacters.find(c => c.slug === slug) || {};
-      
+
+      // Check if this is a newly created character (less than 5 minutes old in localStorage)
+      const isNewCharacter = checkIfNewCharacter(slug);
+
       // Update current character
       currentCharacter = {
         name: name,
         slug: slug,
         avatar: fixAvatarUrl(avatar),
-        creator: '@' + (character.creator || 'Selira'),
+        creator: '@' + (character.creator || character.createdBy || 'Selira'),
         description: character.description || 'Start a conversation with ' + name,
-        chats: Math.floor(Math.random() * 100) + 'K',
-        rating: (Math.random() * 2 + 3).toFixed(1),
+        greeting: character.greeting || `Hello! I'm ${name}. Nice to meet you!`,
+        chats: character.chats || (isNewCharacter ? '0' : Math.floor(Math.random() * 100) + 'K'),
+        rating: character.rating || (isNewCharacter ? '5.0' : (Math.random() * 2 + 3).toFixed(1)),
         tags: character.tags || ['Fantasy', 'Adventure', 'Hero']
       };
+
+      // If this is a new character, clear any existing chat history
+      if (isNewCharacter) {
+        const storageKey = `chat_${slug}`;
+        localStorage.removeItem(storageKey);
+        console.log('🧹 Cleared chat history for new character:', slug);
+
+        // Add the greeting message as the first message
+        setTimeout(() => {
+          if (currentCharacter.greeting) {
+            addMessage('character', currentCharacter.greeting);
+          }
+        }, 500);
+      }
       
       updateCharacterDisplay();
       
