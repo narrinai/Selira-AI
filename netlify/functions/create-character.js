@@ -159,7 +159,7 @@ BOUNDARIES:
       Character_URL: characterUrl,
       Slug: slug,
       // Category field removed - Selira uses tags instead of categories
-      Tags: Array.isArray(tags) ? tags : [], // Array format like existing characters
+      // Tags: Array.isArray(tags) ? tags : [], // Skip - might require linked records to Tags table
       // Created_By: displayName, // Skip - might require linked records to Users table
       Visibility: visibility || 'public',
       companion_type: artStyle || 'realistic',
