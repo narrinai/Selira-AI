@@ -108,17 +108,22 @@ exports.handler = async (event, context) => {
     const characterData = {
       Name: name,
       Character_Description: description,
+      Character_Title: `AI Companion created by ${createdBy || 'User'}`,
       Slug: slug,
       Tags: Array.isArray(tags) ? tags.join(', ') : (tags || ''),
       Category: 'User-Created',
-      Character_Title: `AI Companion created by ${createdBy || 'User'}`,
-      Visibility: 'public',
-      Created_By: createdBy || 'User', // Note: Capital B for Selira
-      companion_type: artStyle || 'anime',
+      Created_By: createdBy || 'User',
+      Status: 'Active',
+      Is_Public: true,
+      User_UID: createdBy || 'User',
+      Created_At: new Date().toISOString(),
+      companion_type: artStyle || 'realistic',
       sex: sex || 'female',
       ethnicity: ethnicity || 'white',
-      hair_length: hairLength || 'medium',
-      hair_color: hairColor || 'brown'
+      hair_length: hairLength || 'long',
+      hair_color: hairColor || 'brown',
+      needs_ai_avatar: false, // Since we're providing an avatar
+      Prompt: `You are ${name}, ${description}. Engage in friendly conversation and stay in character.`
     };
 
     // Only add Avatar_URL if provided (it should be a string URL)
