@@ -1817,6 +1817,37 @@
     let isLoading = false;
     const charactersPerPage = 12;
 
+    // Helper function to get working avatar based on character name and sex
+    function getWorkingAvatar(name, sex) {
+      // Map specific character names to working avatars
+      const nameMap = {
+        'emma': 'emma.webp',
+        'sarah': 'sarah.webp',
+        'aria': 'aria.webp',
+        'ava': 'ava.webp',
+        'anna': 'anna.webp',
+        'alex': 'alex.webp',
+        'blake': 'blake.webp',
+        'chris': 'chris.webp'
+      };
+
+      const nameLower = (name || '').toLowerCase();
+      for (const [key, avatar] of Object.entries(nameMap)) {
+        if (nameLower.includes(key)) {
+          return avatar;
+        }
+      }
+
+      // Gender-based fallback
+      if (sex === 'male') {
+        const maleAvatars = ['alex.webp', 'blake.webp', 'chris.webp'];
+        return maleAvatars[Math.floor(Math.random() * maleAvatars.length)];
+      } else {
+        const femaleAvatars = ['aria.webp', 'ava.webp', 'emma.webp', 'sarah.webp', 'anna.webp'];
+        return femaleAvatars[Math.floor(Math.random() * femaleAvatars.length)];
+      }
+    }
+
     // Initialize page
     document.addEventListener('DOMContentLoaded', async function() {
       console.log('🚀 Selira AI Category page loading...');
@@ -2051,8 +2082,8 @@
       
       grid.innerHTML = initialCharacters.map(character => `
         <div class="character-card" onclick="openCharacter('${character.slug}')">
-          ${character.avatar ? 
-            `<img src="${character.avatar}" alt="${character.name}" class="character-image" loading="lazy">` :
+          ${character.avatar ?
+            `<img src="${character.avatar}" alt="${character.name}" class="character-image" loading="lazy" onerror="this.onerror=null; this.src='https://selira.ai/avatars/${getWorkingAvatar(character.name, character.sex)}'; console.log('🔧 Fixed broken avatar for ${character.name}');">` :
             `<div class="character-image-placeholder">${character.name.charAt(0)}</div>`
           }
           
@@ -2700,8 +2731,8 @@
 
       grid.innerHTML = userCompanions.map(character => `
         <div class="character-card" onclick="openCharacter('${character.slug}')">
-          ${character.avatar ? 
-            `<img src="${character.avatar}" alt="${character.name}" class="character-image" loading="lazy">` :
+          ${character.avatar ?
+            `<img src="${character.avatar}" alt="${character.name}" class="character-image" loading="lazy" onerror="this.onerror=null; this.src='https://selira.ai/avatars/${getWorkingAvatar(character.name, character.sex)}'; console.log('🔧 Fixed broken avatar for ${character.name}');">` :
             `<div class="character-image-placeholder">${character.name.charAt(0)}</div>`
           }
           
@@ -3517,8 +3548,8 @@
       const grid = document.getElementById('charactersGrid');
       const newCharactersHTML = characters.map(character => `
         <div class="character-card" onclick="openCharacter('${character.slug}')">
-          ${character.avatar ? 
-            `<img src="${character.avatar}" alt="${character.name}" class="character-image" loading="lazy">` :
+          ${character.avatar ?
+            `<img src="${character.avatar}" alt="${character.name}" class="character-image" loading="lazy" onerror="this.onerror=null; this.src='https://selira.ai/avatars/${getWorkingAvatar(character.name, character.sex)}'; console.log('🔧 Fixed broken avatar for ${character.name}');">` :
             `<div class="character-image-placeholder">${character.name.charAt(0)}</div>`
           }
           
