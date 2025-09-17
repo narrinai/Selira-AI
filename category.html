@@ -1819,16 +1819,16 @@
 
     // Helper function to get working avatar based on character name and sex
     function getWorkingAvatar(name, sex) {
-      // Map specific character names to working avatars
+      // Map specific character names to working timestamped avatars
       const nameMap = {
-        'emma': 'emma.webp',
-        'sarah': 'sarah.webp',
-        'aria': 'aria.webp',
-        'ava': 'ava.webp',
-        'anna': 'anna.webp',
-        'alex': 'alex.webp',
-        'blake': 'blake.webp',
-        'chris': 'chris.webp'
+        'aria': 'aria-1754289110066.webp',
+        'ava': 'ava-1754251730993.webp',
+        'alex': 'alex-1754251778919.webp',
+        'blake': 'blake-1754250785212.webp',
+        'anna': 'anna-1754249784269.webp',
+        'sarah': 'sarah-1754252677323.webp',
+        'emma': 'ava-1754251730993.webp', // Use ava as fallback for emma
+        'chris': 'alex-1754251778919.webp' // Use alex as fallback for chris
       };
 
       const nameLower = (name || '').toLowerCase();
@@ -1838,12 +1838,22 @@
         }
       }
 
-      // Gender-based fallback
+      // Gender-based fallback with confirmed working avatars
       if (sex === 'male') {
-        const maleAvatars = ['alex.webp', 'blake.webp', 'chris.webp'];
+        const maleAvatars = [
+          'alex-1754251778919.webp',
+          'blake-1754250785212.webp',
+          'adrian-1754252368714.webp'
+        ];
         return maleAvatars[Math.floor(Math.random() * maleAvatars.length)];
       } else {
-        const femaleAvatars = ['aria.webp', 'ava.webp', 'emma.webp', 'sarah.webp', 'anna.webp'];
+        const femaleAvatars = [
+          'aria-1754289110066.webp',
+          'ava-1754251730993.webp',
+          'anna-1754249784269.webp',
+          'sarah-1754252677323.webp',
+          'amelia-1754250154314.webp'
+        ];
         return femaleAvatars[Math.floor(Math.random() * femaleAvatars.length)];
       }
     }
