@@ -29,6 +29,29 @@
     gtag('config', 'G-XZXX201WKD');
   </script>
   
+  <!-- Immediate Auth State Check -->
+  <script>
+    // Check auth state immediately before page renders
+    (function() {
+      const userEmail = localStorage.getItem('user_email');
+      const authTimestamp = localStorage.getItem('user_auth_timestamp');
+      const now = Date.now();
+      const maxAge = 24 * 60 * 60 * 1000; // 24 hours
+
+      // Check if we have recent valid auth data
+      const isRecentlyAuthenticated = userEmail && authTimestamp &&
+        (now - parseInt(authTimestamp)) < maxAge;
+
+      if (isRecentlyAuthenticated) {
+        // Hide login/signup buttons immediately and show profile
+        document.documentElement.style.setProperty('--auth-state', 'authenticated');
+      } else {
+        // Show login/signup buttons
+        document.documentElement.style.setProperty('--auth-state', 'unauthenticated');
+      }
+    })();
+  </script>
+
   <!-- Auth0 Authentication System -->
   <script src="/js/auth0-login.js"></script>
   
@@ -302,12 +325,33 @@
       display: flex;
       align-items: center;
       gap: 16px;
-      opacity: 0;
-      transition: opacity 0.3s ease;
+      opacity: 1;
     }
 
-    .user-actions.loaded {
-      opacity: 1;
+    /* Auth state based visibility */
+    .login-btn, .signup-btn {
+      display: none;
+    }
+
+    .profile-btn {
+      display: none;
+    }
+
+    /* Show appropriate buttons based on auth state */
+    :root[style*="--auth-state: unauthenticated"] .login-btn,
+    :root[style*="--auth-state: unauthenticated"] .signup-btn {
+      display: inline-block;
+    }
+
+    :root[style*="--auth-state: authenticated"] .profile-btn {
+      display: inline-block;
+    }
+
+    /* Initially hide all auth buttons until state is determined */
+    :root:not([style*="--auth-state"]) .login-btn,
+    :root:not([style*="--auth-state"]) .signup-btn,
+    :root:not([style*="--auth-state"]) .profile-btn {
+      opacity: 0;
     }
     
     .dropdown-btn {
@@ -734,9 +778,10 @@
       <div class="mobile-header">
         <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
         <div class="mobile-logo">Selira</div>
-        <div class="mobile-user-actions" style="display: flex; align-items: center; gap: 12px; opacity: 0; transition: opacity 0.3s ease;">
+        <div class="mobile-user-actions" style="display: flex; align-items: center; gap: 12px;">
           <button style="background: none; border: none; color: var(--text-secondary); font-size: 18px; cursor: pointer; padding: 8px;">🔍</button>
           <button class="user-btn secondary login-btn" onclick="openLoginModal('login'); return false;" style="padding: 6px 12px; font-size: 12px;">Sign In</button>
+          <a href="/profile" class="user-btn profile-btn" style="padding: 6px 12px; font-size: 12px; background: var(--accent); color: white; text-decoration: none; border-radius: 6px;">Profile</a>
         </div>
       </div>
 
@@ -761,6 +806,7 @@
             </select>
             <a href="#" class="user-btn secondary login-btn" onclick="openLoginModal('login'); return false;">Sign In</a>
             <a href="#" class="user-btn signup-btn" onclick="openLoginModal('signup'); return false;">Register</a>
+            <a href="/profile" class="user-btn profile-btn" style="background: var(--accent); color: white;">Profile</a>
           </div>
         </div>
       </header>
@@ -1658,19 +1704,16 @@
       }
     }
 
-    // Show user actions after auth check
-    function showUserActions() {
-      const userActions = document.querySelector('.user-actions');
-      const mobileUserActions = document.querySelector('.mobile-user-actions');
-
-      if (userActions) userActions.classList.add('loaded');
-      if (mobileUserActions) mobileUserActions.style.opacity = '1';
-    }
-
-    // Listen for auth state changes to show user actions
+    // Listen for auth state changes to update CSS custom property
     window.addEventListener('auth-state-changed', function(event) {
-      console.log('🔐 Auth state changed, showing user actions');
-      showUserActions();
+      console.log('🔐 Auth state changed:', event.detail);
+      const isAuthenticated = event.detail.isAuthenticated;
+
+      // Update CSS custom property for real-time auth state
+      document.documentElement.style.setProperty(
+        '--auth-state',
+        isAuthenticated ? 'authenticated' : 'unauthenticated'
+      );
     });
 
     // Initialize when page loads
@@ -1683,15 +1726,6 @@
       initializeCreateTags();
 
       updateStepProgress();
-
-      // Fallback: show user actions after delay if no auth event received
-      setTimeout(() => {
-        const userActions = document.querySelector('.user-actions');
-        if (userActions && !userActions.classList.contains('loaded')) {
-          console.log('🔐 Auth event not received, showing user actions as fallback');
-          showUserActions();
-        }
-      }, 1000);
     });
 
     // Populate all tags container
