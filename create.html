@@ -1100,15 +1100,9 @@
                 </div>
               </div>
               
-              <div style="margin-bottom: 24px;">
-                <label style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 8px;">Character Description</label>
-                <textarea id="characterDescription" placeholder="Describe your character's personality and background..." rows="3" class="form-input" style="resize: vertical;"></textarea>
-              </div>
-
               <div style="margin-bottom: 30px;">
                 <label style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 8px;">Extra Instructions <span style="color: var(--text-secondary); font-weight: 400;">(Optional)</span></label>
                 <textarea id="extraInstructions" placeholder="Add specific instructions or personality traits for your companion..." rows="3" class="form-input" style="resize: vertical;"></textarea>
-                <p style="color: var(--text-secondary); font-size: 12px; margin-top: 4px;">These instructions will be added to the companion's behavior prompt.</p>
               </div>
             </div>
           </div>
@@ -1315,11 +1309,10 @@
 
     async function createCharacter() {
       const name = document.getElementById('characterName').value.trim();
-      const description = document.getElementById('characterDescription').value.trim();
       const extraInstructions = document.getElementById('extraInstructions')?.value.trim() || '';
 
-      if (!name || !description) {
-        alert('Please fill in both character name and description.');
+      if (!name) {
+        alert('Please fill in the character name.');
         return;
       }
 
@@ -1349,7 +1342,6 @@
       
       console.log('🎭 Creating character:', {
         name,
-        description,
         selectedTags: createSelectedTags,
         appearance: characterCreationState,
         createdBy
@@ -1378,7 +1370,6 @@
           },
           body: JSON.stringify({
             name: name,
-            description: description,
             extraInstructions: extraInstructions,
             tags: createSelectedTags,
             artStyle: characterCreationState.style,
@@ -1423,11 +1414,9 @@
     const createMaxTags = 5;
     let allTagsVisible = false;
     let createAvailableTags = [
-      // Fallback tags if API fails
-      'Fantasy', 'Romance', 'Adventure', 'Hero', 'Mystery', 'Action', 'Magic', 'Wise', 'Historical', 'Anime-Manga',
-      'Friendship', 'Comedy', 'Drama', 'Mentor', 'Villain', 'Warrior', 'Princess', 'Knight', 'Mage', 'Healer',
-      'Girlfriend', 'Boyfriend', 'Companion', 'Flirty', 'Cute', 'Seductive', 'Dominant', 'Submissive', 'Tsundere',
-      'Yandere', 'Angel', 'Demon', 'Elf', 'Vampire', 'School', 'Teacher', 'Student', 'Boss', 'Secretary', 'Maid'
+      // Complete list from Airtable
+      'Girlfriend', 'Boyfriend', 'Ex', 'Romance', 'Companion', 'Fantasy', 'Flirty', 'Cute', 'Seductive', 'Submissive',
+      'Tsundere', 'Yandere', 'Maid', 'Boss', 'Student', 'Secretary', 'Teacher', 'Angel', 'Elf', 'Monster', 'Lesbian', 'Cheating'
     ];
 
     // Load tags from Airtable
@@ -1469,8 +1458,8 @@
       const popularContainer = document.getElementById('createPopularTags');
       if (!popularContainer) return;
 
-      // Show most relevant/common tags as popular (limit to 10)
-      const popularTags = tags.slice(0, 10);
+      // Show all tags as popular
+      const popularTags = tags;
 
       // Create tag buttons
       const tagButtons = popularTags.map(tag =>
