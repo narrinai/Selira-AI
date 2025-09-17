@@ -1107,19 +1107,63 @@
 
               <div style="margin-bottom: 30px;">
                 <label style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 12px;">Visibility</label>
-                <div style="display: flex; gap: 16px;">
-                  <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                    <input type="radio" name="visibility" value="public" checked style="width: 18px; height: 18px;">
-                    <span style="color: var(--text-primary);">🌍 Public</span>
-                    <span style="color: var(--text-secondary); font-size: 12px; margin-left: 4px;">(Anyone can chat)</span>
+
+                <!-- Toggle Switch Container -->
+                <div style="display: flex; align-items: center; gap: 16px; padding: 16px; background: var(--bg-tertiary); border-radius: var(--radius-md); border: 1px solid var(--border);">
+                  <div style="display: flex; align-items: center; gap: 8px; color: var(--text-primary);">
+                    <span>🌍</span>
+                    <span style="font-size: 14px;">Public</span>
+                    <span style="color: var(--text-secondary); font-size: 12px;">(Anyone can chat)</span>
+                  </div>
+
+                  <!-- Toggle Switch -->
+                  <label class="visibility-toggle" style="position: relative; display: inline-block; width: 60px; height: 32px; cursor: pointer;">
+                    <input type="checkbox" id="visibilityToggle" style="opacity: 0; width: 0; height: 0;">
+                    <span class="toggle-slider" style="
+                      position: absolute;
+                      top: 0;
+                      left: 0;
+                      right: 0;
+                      bottom: 0;
+                      background: var(--accent);
+                      border-radius: 32px;
+                      transition: all 0.3s ease;
+                    ">
+                      <span class="toggle-thumb" style="
+                        position: absolute;
+                        left: 4px;
+                        top: 4px;
+                        width: 24px;
+                        height: 24px;
+                        background: white;
+                        border-radius: 50%;
+                        transition: all 0.3s ease;
+                        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                      "></span>
+                    </span>
                   </label>
-                  <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                    <input type="radio" name="visibility" value="private" style="width: 18px; height: 18px;">
-                    <span style="color: var(--text-primary);">🔒 Private</span>
-                    <span style="color: var(--text-secondary); font-size: 12px; margin-left: 4px;">(Only you)</span>
-                  </label>
+
+                  <div style="display: flex; align-items: center; gap: 8px; color: var(--text-primary);">
+                    <span>🔒</span>
+                    <span style="font-size: 14px;">Private</span>
+                    <span style="color: var(--text-secondary); font-size: 12px;">(Only you)</span>
+                  </div>
                 </div>
               </div>
+
+              <style>
+                #visibilityToggle:checked ~ .toggle-slider {
+                  background: var(--border);
+                }
+
+                #visibilityToggle:checked ~ .toggle-slider .toggle-thumb {
+                  transform: translateX(28px);
+                }
+
+                .visibility-toggle:hover .toggle-slider {
+                  opacity: 0.9;
+                }
+              </style>
             </div>
           </div>
 
@@ -1375,8 +1419,9 @@
         // Use anonymous if no user data
       }
       
-      // Get visibility setting
-      const visibility = document.querySelector('input[name="visibility"]:checked')?.value || 'public';
+      // Get visibility setting from toggle
+      const visibilityToggle = document.getElementById('visibilityToggle');
+      const visibility = visibilityToggle && visibilityToggle.checked ? 'private' : 'public';
 
       // Show loading state
       const createBtn = document.getElementById('createFinalBtn');
