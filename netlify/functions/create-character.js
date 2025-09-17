@@ -145,75 +145,8 @@ BOUNDARIES:
 
     console.log('🎨 Generating avatar for character...');
 
-    // Generate avatar using the generate-custom-image function
-    const avatarResponse = await fetch(`https://selira.ai/.netlify/functions/generate-custom-image`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        customPrompt: `Portrait of ${name}, ${description}`,
-        characterName: name,
-        category: 'companion',
-        style: artStyle || 'realistic',
-        shotType: 'portrait',
-        sex: sex || 'female',
-        ethnicity: ethnicity || 'white',
-        hairLength: hairLength || 'long',
-        hairColor: hairColor || 'brown'
-      })
-    });
-
-    if (!avatarResponse.ok) {
-      const errorText = await avatarResponse.text();
-      console.error('❌ Avatar generation failed:', errorText);
-      throw new Error('Failed to generate avatar for character');
-    }
-
-    const avatarData = await avatarResponse.json();
-    const replicateImageUrl = avatarData.imageUrl;
-
-    console.log('✅ Avatar generated:', replicateImageUrl);
-
-    // Generate timestamp for unique filename
-    const timestamp = Date.now();
-    const avatarFilename = `${slug}-${timestamp}.webp`;
-    const finalAvatarUrl = `https://selira.ai/avatars/${avatarFilename}?v=${timestamp}`;
-
-    console.log('💾 Avatar will be saved as:', finalAvatarUrl);
-
-    // Initialize avatar URL with the generated URL
-    let avatarUrlToUse = finalAvatarUrl;
-
-    // Save the avatar using the existing save-avatar-locally function
-    try {
-      console.log('📥 Saving avatar locally...');
-      const saveAvatarResponse = await fetch(`https://selira.ai/.netlify/functions/save-avatar-locally`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          imageUrl: replicateImageUrl,
-          filename: avatarFilename,
-          characterName: name
-        })
-      });
-
-      if (saveAvatarResponse.ok) {
-        const saveResult = await saveAvatarResponse.json();
-        console.log('✅ Avatar saved successfully:', saveResult);
-      } else {
-        console.error('❌ Avatar save failed, using Replicate URL');
-        // Use Replicate URL as fallback
-        avatarUrlToUse = replicateImageUrl;
-      }
-    } catch (avatarError) {
-      console.error('❌ Error saving avatar:', avatarError);
-      // Continue with character creation using Replicate URL as fallback
-      console.log('⚠️ Using Replicate URL as fallback');
-      avatarUrlToUse = replicateImageUrl;
-    }
+    // For now, use a placeholder avatar until generate-custom-image is deployed
+    const avatarUrlToUse = `https://selira.ai/avatars/placeholder-${artStyle || 'realistic'}.webp`;
 
     // Prepare character data for Airtable with SELIRA field names
     const characterData = {
