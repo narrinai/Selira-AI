@@ -1489,10 +1489,16 @@
         console.log('✅ Character created successfully:', result);
         
         // Show success message
-        alert(`🎉 ${name} has been created successfully! They will appear in your character list soon.`);
-        
-        // Redirect back to category page
-        window.location.href = '/category';
+        alert(`🎉 ${name} has been created successfully! Redirecting to chat...`);
+
+        // Redirect to the character's chat page using the returned URL
+        if (result.character && result.character.url) {
+          window.location.href = result.character.url;
+        } else if (result.character && result.character.slug) {
+          window.location.href = `/chat.html?char=${result.character.slug}`;
+        } else {
+          window.location.href = '/category';
+        }
         
       } catch (error) {
         console.error('❌ Error creating character:', error);
