@@ -148,25 +148,23 @@ BOUNDARIES:
     // Use a default avatar URL that we know exists
     const avatarUrlToUse = 'https://selira.ai/avatars/default-companion.webp';
 
-    // Prepare character data for Airtable with SELIRA field names
+    // Prepare character data for Airtable with SELIRA field names (matching characters.js)
     const characterData = {
       Name: name,
       Character_Description: fullDescription,
       Character_Title: `AI Companion created by ${createdBy || 'User'}`,
       Character_URL: characterUrl,
       Slug: slug,
-      Tags: Array.isArray(tags) ? tags.join(', ') : (tags || ''),
+      Category: artStyle === 'anime' ? 'anime-manga' : 'historical', // Add Category field
+      Tags: Array.isArray(tags) ? tags : (typeof tags === 'string' ? [tags] : []),
       Created_By: userEmail || createdBy || 'User',
       Visibility: visibility || 'public',
-      Created: new Date().toISOString(),
       companion_type: artStyle || 'realistic',
       sex: sex || 'female',
       ethnicity: ethnicity || 'white',
       hair_length: hairLength || 'long',
       hair_color: hairColor || 'brown',
-      needs_ai_avatar: false, // Since we're providing an avatar
-      Avatar_URL: avatarUrlToUse,
-      Prompt: fullPrompt
+      Avatar_URL: avatarUrlToUse
     };
 
     // Note: Avatar_URL is now automatically generated and included in characterData
