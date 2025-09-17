@@ -1094,15 +1094,31 @@
               </div>
               
               <div style="margin-bottom: 24px;">
-                <label style="display: block; margin-bottom: 12px; font-weight: 600; color: var(--text-primary);">Selected Tags (<span id="createTagCount">0</span>/5)</label>
+                <label style="display: block; margin-bottom: 12px; font-weight: 600; color: var(--text-primary);">Selected Tags (<span id="createTagCount">0</span>/5) <span style="color: var(--accent); font-weight: 400;">*Required</span></label>
                 <div id="createSelectedTags" style="min-height: 50px; padding: 12px; border: 2px dashed var(--border); border-radius: var(--radius-md); background: var(--bg-tertiary); display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
                   <span style="color: var(--text-secondary); font-style: italic;">No tags selected</span>
                 </div>
               </div>
               
-              <div style="margin-bottom: 30px;">
+              <div style="margin-bottom: 24px;">
                 <label style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 8px;">Extra Instructions <span style="color: var(--text-secondary); font-weight: 400;">(Optional)</span></label>
                 <textarea id="extraInstructions" placeholder="Add specific instructions or personality traits for your companion..." rows="3" class="form-input" style="resize: vertical;"></textarea>
+              </div>
+
+              <div style="margin-bottom: 30px;">
+                <label style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 12px;">Visibility</label>
+                <div style="display: flex; gap: 16px;">
+                  <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                    <input type="radio" name="visibility" value="public" checked style="width: 18px; height: 18px;">
+                    <span style="color: var(--text-primary);">🌍 Public</span>
+                    <span style="color: var(--text-secondary); font-size: 12px; margin-left: 4px;">(Anyone can chat)</span>
+                  </label>
+                  <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                    <input type="radio" name="visibility" value="private" style="width: 18px; height: 18px;">
+                    <span style="color: var(--text-primary);">🔒 Private</span>
+                    <span style="color: var(--text-secondary); font-size: 12px; margin-left: 4px;">(Only you)</span>
+                  </label>
+                </div>
               </div>
             </div>
           </div>
@@ -1336,6 +1352,11 @@
         return;
       }
 
+      if (createSelectedTags.length === 0) {
+        alert('Please select at least one tag for your character.');
+        return;
+      }
+
       // Get user email from auth
       let userEmail = 'anonymous';
       try {
@@ -1354,16 +1375,20 @@
         // Use anonymous if no user data
       }
       
+      // Get visibility setting
+      const visibility = document.querySelector('input[name="visibility"]:checked')?.value || 'public';
+
       // Show loading state
       const createBtn = document.getElementById('createFinalBtn');
       const originalText = createBtn.textContent;
       createBtn.textContent = '🎭 Creating...';
       createBtn.disabled = true;
-      
+
       console.log('🎭 Creating character:', {
         name,
         selectedTags: createSelectedTags,
         appearance: characterCreationState,
+        visibility,
         createdBy
       });
       
@@ -1397,6 +1422,7 @@
             ethnicity: characterCreationState.ethnicity,
             hairLength: characterCreationState.hairLength,
             hairColor: characterCreationState.hairColor,
+            visibility: visibility,
             createdBy: createdBy,
             userEmail: userEmail
           })

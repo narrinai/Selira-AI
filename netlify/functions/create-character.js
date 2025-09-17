@@ -65,6 +65,7 @@ exports.handler = async (event, context) => {
       ethnicity,
       hairLength,
       hairColor,
+      visibility,
       createdBy,
       userEmail
     } = body;
@@ -78,6 +79,7 @@ exports.handler = async (event, context) => {
       ethnicity,
       hairLength,
       hairColor,
+      visibility,
       createdBy,
       userEmail
     });
@@ -222,7 +224,7 @@ BOUNDARIES:
       Slug: slug,
       Tags: Array.isArray(tags) ? tags.join(', ') : (tags || ''),
       Created_By: userEmail || createdBy || 'User',
-      Visibility: 'public',
+      Visibility: visibility || 'public',
       Created: new Date().toISOString(),
       companion_type: artStyle || 'realistic',
       sex: sex || 'female',
