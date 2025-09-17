@@ -276,9 +276,8 @@ BOUNDARIES:
       hair_length: hairLength || 'long',
       hair_color: hairColor || 'brown',
       Avatar_URL: avatarUrlToUse,
-      is_unfiltered: isUnfiltered,
-      chats: 0,
-      rating: 5.0
+      is_unfiltered: isUnfiltered
+      // chats and rating fields don't exist in Airtable - removed
       // Created_By removed temporarily - it's a linked record field, not text
     };
 
@@ -353,8 +352,8 @@ BOUNDARIES:
           avatarUrl: result.fields.Avatar_URL,
           isUnfiltered: result.fields.is_unfiltered,
           visibility: result.fields.Visibility,
-          chats: result.fields.chats,
-          rating: result.fields.rating
+          chats: '0', // Default for new characters
+          rating: '5.0' // Default for new characters
         }
       })
     };
