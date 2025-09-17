@@ -156,7 +156,7 @@ BOUNDARIES:
       Character_URL: characterUrl,
       Slug: slug,
       Category: artStyle === 'anime' ? 'anime-manga' : 'historical', // Add Category field
-      Tags: Array.isArray(tags) ? tags.join(', ') : (tags || ''), // Try as comma-separated string
+      // Tags: Array.isArray(tags) ? tags.join(', ') : (tags || ''), // Skip for now - still causing parse error
       Created_By: userEmail || createdBy || 'User', // Try as string - characters.js shows it can be string or array
       Visibility: visibility || 'public',
       companion_type: artStyle || 'realistic',
