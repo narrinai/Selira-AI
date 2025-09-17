@@ -197,9 +197,12 @@ exports.handler = async (event, context) => {
     // Generate Character_URL
     const characterUrl = `https://selira.ai/chat.html?char=${slug}`;
 
+    // Generate greeting based on character traits first
+    const greetingText = generateGreeting(name, tags, extraInstructions);
+
     // Generate automatic description based on appearance and extra instructions
     const description = `A ${artStyle || 'realistic'} companion with ${ethnicity || 'diverse'} features, ${hairLength || 'medium'} ${hairColor || 'brown'} hair`;
-    const fullDescription = extraInstructions ? `${description}\n\nExtra Instructions: ${extraInstructions}` : description;
+    const fullDescription = extraInstructions ? `${description}\n\nExtra Instructions: ${extraInstructions}\n\nGreeting: ${greetingText}` : `${description}\n\nGreeting: ${greetingText}`;
 
     // Generate personalized prompt based on user selections
     const genderPronoun = sex === 'male' ? 'he/him' : 'she/her';
@@ -250,8 +253,7 @@ BOUNDARIES:
     // Generate a more specific avatar URL
     const avatarUrlToUse = `https://selira.ai/avatars/${genderPrefix}-${ethnicityCode}-${styleCode}-${hairColor || 'brown'}.webp`;
 
-    // Generate greeting based on character traits
-    const greetingText = generateGreeting(name, tags, extraInstructions);
+    // Greeting is now stored in description, no need to generate again
 
     // Determine if character should be unfiltered based on tags
     const unfilteredTags = ['Seductive', 'Yandere', 'Ex', 'Boss', 'Monster'];
@@ -265,7 +267,7 @@ BOUNDARIES:
       Slug: slug,
       Character_URL: characterUrl,
       Prompt: fullPrompt,
-      Greeting: greetingText,
+      // Greeting is stored in Character_Description
       Tags: Array.isArray(tags) && tags.length > 0 ? tags : [],
       Visibility: visibility || 'public',
       companion_type: artStyle || 'realistic',
@@ -340,7 +342,7 @@ BOUNDARIES:
           url: result.fields.Character_URL,
           description: result.fields.Character_Description,
           prompt: result.fields.Prompt,
-          greeting: result.fields.Greeting,
+          greeting: greetingText, // Extract from description or use generated
           title: result.fields.Character_Title,
           artStyle: result.fields.companion_type,
           sex: result.fields.sex,

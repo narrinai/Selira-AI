@@ -2189,6 +2189,14 @@
       }
     });
 
+    // Extract greeting from character description
+    function extractGreetingFromDescription(description) {
+      if (!description) return null;
+
+      const greetingMatch = description.match(/Greeting:\s*(.+?)(?:\n|$)/);
+      return greetingMatch ? greetingMatch[1].trim() : null;
+    }
+
     // Check if character was recently created (within last 5 minutes)
     function checkIfNewCharacter(slug) {
       const newCharacterKey = `new_character_${slug}`;
@@ -2224,7 +2232,7 @@
         avatar: fixAvatarUrl(avatar),
         creator: '@' + (character.creator || character.createdBy || 'Selira'),
         description: character.description || 'Start a conversation with ' + name,
-        greeting: character.greeting || `Hello! I'm ${name}. Nice to meet you!`,
+        greeting: character.greeting || extractGreetingFromDescription(character.description) || `Hello! I'm ${name}. Nice to meet you!`,
         chats: character.chats || (isNewCharacter ? '0' : Math.floor(Math.random() * 100) + 'K'),
         rating: character.rating || (isNewCharacter ? '5.0' : (Math.random() * 2 + 3).toFixed(1)),
         tags: character.tags || ['Fantasy', 'Adventure', 'Hero']
