@@ -151,16 +151,12 @@ BOUNDARIES:
     // Use a default avatar URL that we know exists
     const avatarUrlToUse = 'https://selira.ai/avatars/default-companion.webp';
 
-    // Prepare character data for Airtable with SELIRA field names (matching characters.js)
+    // Prepare character data with only essential fields to avoid linked record issues
     const characterData = {
       Name: name,
       Character_Description: `${fullDescription}\n\nCreated by: ${displayName}`,
       Character_Title: `AI Companion`,
-      Character_URL: characterUrl,
       Slug: slug,
-      // Category field removed - Selira uses tags instead of categories
-      // Tags: Array.isArray(tags) ? tags : [], // Skip - might require linked records to Tags table
-      // Created_By: displayName, // Skip - might require linked records to Users table
       Visibility: visibility || 'public',
       companion_type: artStyle || 'realistic',
       sex: sex || 'female',
