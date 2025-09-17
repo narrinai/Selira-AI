@@ -59,6 +59,7 @@ exports.handler = async (event, context) => {
     const {
       name,
       description,
+      extraInstructions,
       tags,
       artStyle,
       sex,
@@ -66,12 +67,13 @@ exports.handler = async (event, context) => {
       hairLength,
       hairColor,
       createdBy,
-      avatarUrl
+      userEmail
     } = body;
 
     console.log('📋 Received character data:', {
       name,
       description: description?.substring(0, 50) + '...',
+      extraInstructions: extraInstructions?.substring(0, 50) + '...',
       tags: tags?.length || 0,
       artStyle,
       sex,
@@ -79,7 +81,7 @@ exports.handler = async (event, context) => {
       hairLength,
       hairColor,
       createdBy,
-      avatarUrl: avatarUrl?.substring(0, 50) + '...'
+      userEmail
     });
 
     if (!name || !description) {
@@ -93,46 +95,142 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Generate slug from name with timestamp to ensure uniqueness
-    const timestamp = Date.now();
-    const baseSlug = name.toLowerCase()
+    // Generate slug from name (simple version without timestamp)
+    const slug = name.toLowerCase()
       .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
       .trim()
       .replace(/\s+/g, '-') // Replace spaces with hyphens
       .replace(/-+/g, '-') // Replace multiple hyphens with single
       .replace(/^-|-$/g, ''); // Remove leading/trailing hyphens
 
-    const slug = `${baseSlug}-${timestamp}`;
+    // Generate Character_URL
+    const characterUrl = `https://selira.ai/chat.html?char=${slug}`;
+
+    // Generate automatic prompt based on your earlier suggestion
+    const basePrompt = `You are a confident, charming companion who engages in friendly, flirtatious conversation. You have a warm personality and enjoy making connections with people.
+
+PERSONALITY:
+- Confident and comfortable with yourself
+- Playful and flirtatious in a tasteful way
+- Supportive and encouraging
+- Uses *actions* to express emotions and movements
+- Responds with enthusiasm to compliments
+
+INTERACTION STYLE:
+- Use *action* markers for physical expressions: *smiles warmly*, *laughs softly*, *tilts head curiously*
+- Be engaging and show genuine interest in the conversation
+- Keep responses friendly and appropriately flirtatious
+- When asked about appearance, describe yourself confidently but tastefully
+
+IMAGE RESPONSES:
+When asked for photos or to show yourself:
+- Respond enthusiastically: "I'd love to show you!" or "Sure, let me strike a pose for you!"
+- Use *action* to set the scene: *adjusts hair and smiles at camera*
+- Provide tasteful image descriptions in brackets
+- Example: [Image: A confident woman in elegant summer attire, smiling warmly at the camera with natural lighting]
+
+BOUNDARIES:
+- Keep all interactions respectful and appropriate
+- Focus on building connection through personality
+- Maintain a fun, flirty atmosphere without explicit content`;
+
+    // Combine base prompt with extra instructions if provided
+    const fullPrompt = extraInstructions ? `${basePrompt}\n\nADDITIONAL INSTRUCTIONS:\n${extraInstructions}` : basePrompt;
+
+    // Combine description with extra instructions for Character_Description
+    const fullDescription = extraInstructions ? `${description}\n\nExtra Instructions: ${extraInstructions}` : description;
+
+    console.log('🎨 Generating avatar for character...');
+
+    // Generate avatar using the generate-custom-image function
+    const avatarResponse = await fetch(`https://selira.ai/.netlify/functions/generate-custom-image`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        customPrompt: `Portrait of ${name}, ${description}`,
+        characterName: name,
+        category: 'companion',
+        style: artStyle || 'realistic',
+        shotType: 'portrait',
+        sex: sex || 'female',
+        ethnicity: ethnicity || 'white',
+        hairLength: hairLength || 'long',
+        hairColor: hairColor || 'brown'
+      })
+    });
+
+    if (!avatarResponse.ok) {
+      const errorText = await avatarResponse.text();
+      console.error('❌ Avatar generation failed:', errorText);
+      throw new Error('Failed to generate avatar for character');
+    }
+
+    const avatarData = await avatarResponse.json();
+    const replicateImageUrl = avatarData.imageUrl;
+
+    console.log('✅ Avatar generated:', replicateImageUrl);
+
+    // Generate timestamp for unique filename
+    const timestamp = Date.now();
+    const avatarFilename = `${slug}-${timestamp}.webp`;
+    const finalAvatarUrl = `https://selira.ai/avatars/${avatarFilename}?v=${timestamp}`;
+
+    console.log('💾 Avatar will be saved as:', finalAvatarUrl);
+
+    // Save the avatar using the existing save-avatar-locally function
+    try {
+      console.log('📥 Saving avatar locally...');
+      const saveAvatarResponse = await fetch(`https://selira.ai/.netlify/functions/save-avatar-locally`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          imageUrl: replicateImageUrl,
+          filename: avatarFilename,
+          characterName: name
+        })
+      });
+
+      if (saveAvatarResponse.ok) {
+        const saveResult = await saveAvatarResponse.json();
+        console.log('✅ Avatar saved successfully:', saveResult);
+      } else {
+        console.error('❌ Avatar save failed, using Replicate URL');
+        // Use Replicate URL as fallback but with /avatars structure
+        characterData.Avatar_URL = replicateImageUrl;
+      }
+    } catch (avatarError) {
+      console.error('❌ Error saving avatar:', avatarError);
+      // Continue with character creation using Replicate URL as fallback
+      console.log('⚠️ Using Replicate URL as fallback');
+      characterData.Avatar_URL = replicateImageUrl;
+    }
 
     // Prepare character data for Airtable with SELIRA field names
     const characterData = {
       Name: name,
-      Character_Description: description,
+      Character_Description: fullDescription,
       Character_Title: `AI Companion created by ${createdBy || 'User'}`,
+      Character_URL: characterUrl,
       Slug: slug,
       Tags: Array.isArray(tags) ? tags.join(', ') : (tags || ''),
-      Category: 'User-Created',
-      Created_By: createdBy || 'User',
-      Status: 'Active',
-      Is_Public: true,
-      User_UID: createdBy || 'User',
-      Created_At: new Date().toISOString(),
+      Created_By: userEmail || createdBy || 'User',
+      Visibility: 'public',
+      Created: new Date().toISOString(),
       companion_type: artStyle || 'realistic',
       sex: sex || 'female',
       ethnicity: ethnicity || 'white',
       hair_length: hairLength || 'long',
       hair_color: hairColor || 'brown',
       needs_ai_avatar: false, // Since we're providing an avatar
-      Prompt: `You are ${name}, ${description}. Engage in friendly conversation and stay in character.`
+      Avatar_URL: finalAvatarUrl,
+      Prompt: fullPrompt
     };
 
-    // Only add Avatar_URL if provided (it should be a string URL)
-    if (avatarUrl) {
-      // If avatarUrl is provided as string, store it directly
-      if (typeof avatarUrl === 'string') {
-        characterData.Avatar_URL = avatarUrl;
-      }
-    }
+    // Note: Avatar_URL is now automatically generated and included in characterData
 
     console.log('💾 Saving to Airtable with fields:', Object.keys(characterData));
     console.log('💾 Character data:', characterData);
