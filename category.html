@@ -358,6 +358,39 @@
       color: #666;
     }
 
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+      margin-top: 4px;
+    }
+
+    .dropdown-menu a {
+      display: block;
+      padding: 10px 16px;
+      color: var(--text-primary);
+      text-decoration: none;
+      font-size: 14px;
+      transition: all 0.2s ease;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .dropdown-menu a:last-child {
+      border-bottom: none;
+    }
+
+    .dropdown-menu a:hover {
+      background: var(--bg-tertiary);
+      color: var(--accent);
+    }
+
     .toggle-switch {
       display: flex;
       align-items: center;
@@ -400,18 +433,18 @@
     .tag-filters {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 12px;
       align-items: center;
     }
 
     .tag-pill {
-      padding: 8px 16px;
-      background: white;
-      border: none;
-      border-radius: 25px;
-      font-size: 14px;
-      font-weight: 500;
-      color: #666;
+      padding: 6px 14px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--text-secondary);
       cursor: pointer;
       transition: all 0.2s ease;
       text-decoration: none;
@@ -421,24 +454,28 @@
     }
 
     .tag-pill:hover {
-      background: #f0f0f0;
-      color: #333;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      border-color: var(--accent);
     }
 
     .tag-pill.active {
-      background: #333;
+      background: var(--accent);
       color: white;
+      border-color: var(--accent);
     }
 
     .tag-pill.special {
       background: #ec4899;
       color: white;
+      border-color: #ec4899;
     }
 
     .tag-pill.category {
       background: var(--accent);
       color: white;
-      font-weight: 600;
+      font-weight: 500;
+      border-color: var(--accent);
     }
 
     .more-tags-btn {
@@ -1124,7 +1161,7 @@
       }
 
       .tag-filters {
-        gap: 6px;
+        gap: 8px;
       }
 
       .tag-pill {
@@ -1703,11 +1740,23 @@
               <span>Female</span>
               <span class="dropdown-arrow">▼</span>
             </button>
+            <div class="dropdown-menu" id="genderDropdown">
+              <a href="#" onclick="setGenderFilter('all')">All</a>
+              <a href="#" onclick="setGenderFilter('female')">Female</a>
+              <a href="#" onclick="setGenderFilter('male')">Male</a>
+            </div>
           </div>
 
-          <div class="toggle-switch">
-            <span>Animated</span>
-            <div class="switch" id="animatedToggle" onclick="toggleSwitch('animated')"></div>
+          <div class="filter-dropdown">
+            <button class="dropdown-btn" onclick="toggleDropdown('style')">
+              <span>Realistic</span>
+              <span class="dropdown-arrow">▼</span>
+            </button>
+            <div class="dropdown-menu" id="styleDropdown">
+              <a href="#" onclick="setStyleFilter('all')">All</a>
+              <a href="#" onclick="setStyleFilter('realistic')">Realistic</a>
+              <a href="#" onclick="setStyleFilter('anime')">Anime</a>
+            </div>
           </div>
 
           <div style="margin-left: auto;">
@@ -1769,6 +1818,15 @@
       initializeFilters();
       setupTabNavigation();
       setupInfiniteScroll();
+
+      // Close dropdowns when clicking outside
+      document.addEventListener('click', function(event) {
+        if (!event.target.closest('.filter-dropdown')) {
+          document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            menu.style.display = 'none';
+          });
+        }
+      });
       handleInitialURL();
 
       // Load tags for filter pills
@@ -2059,14 +2117,16 @@
           }
         }
 
-        // Animated filter (companion_type field from Airtable)
-        if (currentFilters.animated !== undefined) {
-          const isAnimated = character.companion_type === 'anime' || character.companion_type === 'animated';
-          if (currentFilters.animated && !isAnimated) {
-            return false;
-          }
-          if (!currentFilters.animated && isAnimated) {
-            return false;
+        // Style filter (companion_type field from Airtable)
+        if (currentFilters.style) {
+          if (currentFilters.style === 'anime') {
+            if (character.companion_type !== 'anime' && character.companion_type !== 'animated') {
+              return false;
+            }
+          } else if (currentFilters.style === 'realistic') {
+            if (character.companion_type === 'anime' || character.companion_type === 'animated') {
+              return false;
+            }
           }
         }
 
@@ -2109,30 +2169,61 @@
     // ===== UI INTERACTIONS =====
     function toggleDropdown(type) {
       console.log('Toggle dropdown:', type);
-      
-      if (type === 'gender') {
-        // Cycle through gender options
-        const currentGender = currentFilters.gender || 'all';
-        const genderOptions = ['all', 'female', 'male'];
-        const currentIndex = genderOptions.indexOf(currentGender);
-        const nextIndex = (currentIndex + 1) % genderOptions.length;
-        
-        currentFilters.gender = genderOptions[nextIndex];
-        
-        // Update button text
-        const dropdownBtn = document.querySelector('.dropdown-btn[onclick*="gender"] span:first-child');
-        if (dropdownBtn) {
-          const genderLabels = {
-            'all': 'All',
-            'female': 'Female',
-            'male': 'Male'
-          };
-          dropdownBtn.textContent = genderLabels[currentFilters.gender];
+
+      // Close all other dropdowns first
+      document.querySelectorAll('.dropdown-menu').forEach(menu => {
+        if (menu.id !== type + 'Dropdown') {
+          menu.style.display = 'none';
         }
-        
-        console.log('Gender filter changed to:', currentFilters.gender);
-        applyFilters();
+      });
+
+      // Toggle the requested dropdown
+      const dropdown = document.getElementById(type + 'Dropdown');
+      if (dropdown) {
+        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
       }
+    }
+
+    function setGenderFilter(gender) {
+      currentFilters.gender = gender === 'all' ? undefined : gender;
+
+      // Update button text
+      const dropdownBtn = document.querySelector('.dropdown-btn[onclick*="gender"] span:first-child');
+      if (dropdownBtn) {
+        const genderLabels = {
+          'all': 'All',
+          'female': 'Female',
+          'male': 'Male'
+        };
+        dropdownBtn.textContent = genderLabels[gender] || 'All';
+      }
+
+      // Hide dropdown
+      document.getElementById('genderDropdown').style.display = 'none';
+
+      console.log('Gender filter changed to:', currentFilters.gender);
+      applyFilters();
+    }
+
+    function setStyleFilter(style) {
+      currentFilters.style = style === 'all' ? undefined : style;
+
+      // Update button text
+      const dropdownBtn = document.querySelector('.dropdown-btn[onclick*="style"] span:first-child');
+      if (dropdownBtn) {
+        const styleLabels = {
+          'all': 'All',
+          'realistic': 'Realistic',
+          'anime': 'Anime'
+        };
+        dropdownBtn.textContent = styleLabels[style] || 'Realistic';
+      }
+
+      // Hide dropdown
+      document.getElementById('styleDropdown').style.display = 'none';
+
+      console.log('Style filter changed to:', currentFilters.style);
+      applyFilters();
     }
 
     function toggleSwitch(type) {
