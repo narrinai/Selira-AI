@@ -1419,20 +1419,17 @@
         return;
       }
 
-      // Get user info from auth (using same format as other Selira functions)
+      // Get user info for creator identification
       let userEmail = 'anonymous';
-      let userUid = 'anonymous';
       let createdBy = 'Anonymous';
 
       try {
         const user = JSON.parse(localStorage.getItem('user') || '{}');
         userEmail = user.email || 'anonymous';
-        userUid = user.sub || 'anonymous'; // Auth0 ID
         createdBy = user.nickname || user.name || user.email || 'Anonymous';
 
         console.log('👤 User info for character creation:', {
           email: userEmail,
-          uid: userUid,
           displayName: createdBy
         });
       } catch (error) {
@@ -1478,9 +1475,7 @@
             hairColor: characterCreationState.hairColor,
             visibility: visibility,
             createdBy: createdBy,
-            userEmail: userEmail,
-            user_email: userEmail,  // Proper Selira format
-            user_uid: userUid       // Auth0 ID
+            userEmail: userEmail
           })
         });
         
