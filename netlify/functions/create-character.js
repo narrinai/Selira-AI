@@ -157,7 +157,7 @@ BOUNDARIES:
       Slug: slug,
       Category: artStyle === 'anime' ? 'anime-manga' : 'historical', // Add Category field
       Tags: '', // Set as empty string - might be required field
-      Created_By: userEmail || createdBy || 'User', // Try as string - characters.js shows it can be string or array
+      // Created_By: userEmail || createdBy || 'User', // Skip - might be linked records only
       Visibility: visibility || 'public',
       companion_type: artStyle || 'realistic',
       sex: sex || 'female',
