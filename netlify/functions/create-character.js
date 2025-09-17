@@ -1,3 +1,13 @@
+// Helper function to escape strings for JSON safety
+function escapeForJson(str) {
+  if (!str) return str;
+  return str.replace(/\\/g, '\\\\')
+            .replace(/"/g, '\\"')
+            .replace(/\n/g, '\\n')
+            .replace(/\r/g, '\\r')
+            .replace(/\t/g, '\\t');
+}
+
 // Helper function to generate greeting based on character traits
 function generateGreeting(name, tags, extraInstructions) {
   const tagGreetings = {
@@ -47,7 +57,8 @@ function generateGreeting(name, tags, extraInstructions) {
     selectedGreeting = `*smiles warmly* Hello there! I'm ${name}. *bright expression* I'm really excited to get to know you better! What would you like to talk about? *tilts head with genuine interest*`;
   }
 
-  return selectedGreeting;
+  // Escape special characters for JSON safety
+  return selectedGreeting.replace(/"/g, '\\"').replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/\r/g, '\\r').replace(/\t/g, '\\t');
 }
 
 // Helper function to generate personality traits from tags
@@ -259,14 +270,14 @@ BOUNDARIES:
     const unfilteredTags = ['Seductive', 'Yandere', 'Ex', 'Boss', 'Monster'];
     const isUnfiltered = tags && tags.some(tag => unfilteredTags.includes(tag));
 
-    // Prepare character data with all required fields
+    // Prepare character data with all required fields (escape strings for safety)
     const characterData = {
-      Name: name,
-      Character_Description: fullDescription,
+      Name: escapeForJson(name),
+      Character_Description: escapeForJson(fullDescription),
       Character_Title: '', // Leave empty as requested
-      Slug: slug,
-      Character_URL: characterUrl,
-      Prompt: fullPrompt,
+      Slug: slug, // Slug should be URL-safe, no escaping needed
+      Character_URL: characterUrl, // URL should be safe
+      Prompt: escapeForJson(fullPrompt),
       // Greeting is stored in Character_Description
       Tags: Array.isArray(tags) && tags.length > 0 ? tags : [],
       Visibility: visibility || 'public',
