@@ -1191,7 +1191,14 @@
       if (stepElement) {
         stepElement.style.display = 'block';
         // Scroll to top of page when showing new step
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setTimeout(() => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          // Fallback for older browsers
+          if (window.pageYOffset !== 0) {
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+          }
+        }, 100);
       }
     }
 
