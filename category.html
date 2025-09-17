@@ -1776,8 +1776,7 @@
 
         <!-- Tag Pills Row -->
         <div class="tag-filters" id="tagFilters">
-          <a href="#" class="tag-pill active">All</a>
-          <!-- Dynamic tags will be inserted here -->
+          <!-- Dynamic tags will be inserted here with All button first -->
           <div id="dynamicTagFilters">
             <!-- Loading placeholder -->
             <span class="loading-tags">Loading tags...</span>
@@ -4455,19 +4454,30 @@ Please be thorough and include important details from our conversations.`;
         .filter(tag => tag && tag.length > 0 && tag.trim() !== '')
         .slice(0, 15); // Show max 15 relevant tags
 
-      // Create tag pills
+      // Create tag pills with "All" button first
+      const allButton = '<a href="#" class="tag-pill active" data-tag="all">All</a>';
       const tagPills = filteredTags.map(tag =>
         `<a href="#" class="tag-pill" data-tag="${tag}">${tag}</a>`
       ).join('');
 
-      dynamicFilters.innerHTML = tagPills;
+      dynamicFilters.innerHTML = allButton + tagPills;
 
       // Add click handlers for new tag pills
       dynamicFilters.querySelectorAll('.tag-pill').forEach(pill => {
         pill.addEventListener('click', function(e) {
           e.preventDefault();
           const tag = this.getAttribute('data-tag');
-          filterByTag(tag);
+
+          if (tag === 'all') {
+            // Clear all filters and show all characters
+            currentFilters.tags = [];
+            filterAndDisplayCharacters();
+
+            // Update URL for all characters
+            history.pushState({section: 'category'}, 'All Characters - Selira AI', '/category');
+          } else {
+            filterByTag(tag);
+          }
 
           // Update active state
           document.querySelectorAll('.tag-pill').forEach(p => p.classList.remove('active'));
