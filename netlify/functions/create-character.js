@@ -204,8 +204,8 @@ BOUNDARIES:
       hair_length: hairLength || 'long',
       hair_color: hairColor || 'brown',
       Avatar_URL: avatarUrlToUse,
-      is_unfiltered: false,
-      Created_By: displayName
+      is_unfiltered: false
+      // Created_By removed temporarily - it's a linked record field, not text
     };
 
     // Note: Avatar_URL is now automatically generated and included in characterData
@@ -268,6 +268,7 @@ BOUNDARIES:
           url: result.fields.Character_URL,
           description: result.fields.Character_Description,
           prompt: result.fields.Prompt,
+          title: result.fields.Character_Title,
           artStyle: result.fields.companion_type,
           sex: result.fields.sex,
           ethnicity: result.fields.ethnicity,
@@ -275,8 +276,8 @@ BOUNDARIES:
           hairColor: result.fields.hair_color,
           tags: result.fields.Tags,
           avatarUrl: result.fields.Avatar_URL,
-          createdBy: result.fields.Created_By,
-          isUnfiltered: result.fields.is_unfiltered
+          isUnfiltered: result.fields.is_unfiltered,
+          visibility: result.fields.Visibility
         }
       })
     };
