@@ -1875,6 +1875,8 @@
           }));
           
           console.log('✅ Loaded characters:', allCharacters.length);
+          console.log('🔍 Sample character names:', allCharacters.slice(-5).map(c => c.name));
+          console.log('🔍 New test characters:', allCharacters.filter(c => c.name.includes('Emma') || c.name.includes('Sarah') || c.name.includes('Visible')));
         } else {
           throw new Error('Invalid API response');
         }
@@ -1886,6 +1888,8 @@
       }
       
       filteredCharacters = [...allCharacters];
+      console.log('📋 Initial filteredCharacters:', filteredCharacters.length);
+      console.log('🔍 Test characters in filtered:', filteredCharacters.filter(c => c.name.includes('Emma') || c.name.includes('Sarah') || c.name.includes('Visible')));
       renderCharacters();
     }
 
