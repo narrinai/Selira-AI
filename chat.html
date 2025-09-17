@@ -530,6 +530,49 @@
       background: var(--bg-secondary);
     }
 
+    .image-prompt-suggestions {
+      margin-bottom: 16px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-in-out;
+    }
+
+    .image-prompt-suggestions.visible {
+      max-height: 200px;
+    }
+
+    .suggestions-header {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .suggestion-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .suggestion-button {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 13px;
+      color: var(--text-primary);
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s ease;
+      line-height: 1.3;
+    }
+
+    .suggestion-button:hover {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
     .chat-input-wrapper {
       display: flex;
       gap: 12px;
@@ -1091,6 +1134,14 @@
 
       <!-- Chat Input -->
       <div class="chat-input-container" id="chatInputContainer">
+        <!-- Image Prompt Suggestions -->
+        <div class="image-prompt-suggestions" id="imagePromptSuggestions">
+          <div class="suggestions-header">💡 Image suggestions from your companion:</div>
+          <div class="suggestion-buttons" id="suggestionButtons">
+            <!-- Suggestions will be populated by JavaScript -->
+          </div>
+        </div>
+
         <div class="chat-input-wrapper">
           <textarea 
             id="messageInput" 
@@ -1103,8 +1154,8 @@
           </button>
         </div>
         <div class="input-footer">
-          <button class="request-image-btn" onclick="requestImage()" title="Request Image">
-            🎨 Request Image
+          <button class="request-image-btn" onclick="requestImage()" title="Get Image Suggestions">
+            💡 Image Ideas
           </button>
           <span class="input-hint">Everything AI says is made up! Please follow your local laws and don't talk about underage content.</span>
         </div>
@@ -1295,12 +1346,153 @@
       // Auto-resize textarea
       const messageInput = document.getElementById('messageInput');
       if (messageInput) {
-        messageInput.addEventListener('input', autoResizeTextarea);
+        messageInput.addEventListener('input', function() {
+          autoResizeTextarea();
+          // Hide suggestions when user starts typing (unless they just used a suggestion)
+          if (messageInput.value && !messageInput.value.startsWith('Send me a picture')) {
+            hideImagePromptSuggestions();
+          }
+        });
         messageInput.addEventListener('keydown', handleKeyDown);
       }
     }
 
     function setupEventListeners() {
+    }
+
+    // Generate image prompt suggestions based on character
+    function generateImagePromptSuggestions(character) {
+      const name = character.name || 'companion';
+      const tags = character.tags || [];
+      const description = character.description || '';
+      const ethnicity = character.ethnicity || 'diverse';
+      const hairColor = character.hair_color || character.hairColor || 'brown';
+      const hairLength = character.hair_length || character.hairLength || 'medium';
+      const artStyle = character.companion_type || character.artStyle || 'realistic';
+
+      // Base scenarios that work for most characters
+      const baseScenarios = [
+        `Send me a picture of ${name} in a cozy coffee shop, sitting by the window with soft natural lighting illuminating her ${hairLength} ${hairColor} hair.`,
+        `Send me a picture of ${name} in an elegant outfit, posing confidently with a warm smile and gentle gaze.`,
+        `Send me a picture of ${name} in a beautiful garden setting, surrounded by flowers with the golden hour light highlighting her features.`
+      ];
+
+      // Tag-specific scenarios
+      const tagScenarios = {
+        'Girlfriend': [
+          `Send me a picture of ${name} in a romantic candlelit dinner setting, wearing an elegant dress with soft lighting accentuating her beauty.`,
+          `Send me a picture of ${name} cuddling on a cozy couch, wearing comfortable clothes with a loving expression.`
+        ],
+        'Romance': [
+          `Send me a picture of ${name} on a moonlit beach, her ${hairLength} ${hairColor} hair flowing in the gentle breeze as she gazes at the stars.`,
+          `Send me a picture of ${name} in a field of roses, wearing a flowing dress with petals gently falling around her.`
+        ],
+        'Cute': [
+          `Send me a picture of ${name} in adorable casual wear, making a playful expression with sparkling eyes.`,
+          `Send me a picture of ${name} holding a cute plushie, sitting in a colorful room with a sweet innocent smile.`
+        ],
+        'Seductive': [
+          `Send me a picture of ${name} in sophisticated lingerie, posing elegantly with confidence and allure.`,
+          `Send me a picture of ${name} in a luxury bedroom setting, wearing silk pajamas with an inviting gaze.`
+        ],
+        'Maid': [
+          `Send me a picture of ${name} in a classic maid outfit, gracefully cleaning in an elegant mansion with perfect posture.`,
+          `Send me a picture of ${name} serving tea in a beautiful maid uniform, with a professional yet warm smile.`
+        ],
+        'Fantasy': [
+          `Send me a picture of ${name} in a magical forest clearing, wearing flowing robes with mystical light surrounding her.`,
+          `Send me a picture of ${name} casting spells in an enchanted tower, her ${hairColor} hair glowing with magical energy.`
+        ],
+        'Angel': [
+          `Send me a picture of ${name} with beautiful white wings spread wide, standing in heavenly light with a serene expression.`,
+          `Send me a picture of ${name} in flowing white robes on fluffy clouds, radiating divine beauty and grace.`
+        ],
+        'Monster': [
+          `Send me a picture of ${name} with her unique monster features, posing playfully in a mysterious dark forest.`,
+          `Send me a picture of ${name} showing her supernatural side while maintaining an alluring and captivating presence.`
+        ],
+        'Boss': [
+          `Send me a picture of ${name} in a power suit at her executive office, commanding presence with confident authority.`,
+          `Send me a picture of ${name} in professional attire during a business meeting, exuding leadership and elegance.`
+        ],
+        'Student': [
+          `Send me a picture of ${name} in a school uniform, studying in a bright classroom with focused determination.`,
+          `Send me a picture of ${name} in casual student clothes on campus, carrying books with a cheerful expression.`
+        ],
+        'Teacher': [
+          `Send me a picture of ${name} in professional teacher attire, standing confidently in front of a classroom blackboard.`,
+          `Send me a picture of ${name} in smart business casual, grading papers in a cozy office with warm lighting.`
+        ]
+      };
+
+      // Art style specific additions
+      const artStyleAdditions = {
+        'anime': ' in beautiful anime art style with vibrant colors and detailed animation quality',
+        'realistic': ' in photorealistic style with natural lighting and detailed features'
+      };
+
+      // Build suggestions array
+      let suggestions = [...baseScenarios];
+
+      // Add tag-specific suggestions
+      tags.forEach(tag => {
+        if (tagScenarios[tag]) {
+          suggestions.push(...tagScenarios[tag]);
+        }
+      });
+
+      // Add art style modifier to all suggestions
+      const styleModifier = artStyleAdditions[artStyle] || '';
+      suggestions = suggestions.map(suggestion => suggestion + styleModifier);
+
+      // Return 3 random suggestions
+      const shuffled = suggestions.sort(() => 0.5 - Math.random());
+      return shuffled.slice(0, 3);
+    }
+
+    // Show image prompt suggestions
+    function showImagePromptSuggestions() {
+      if (!currentCharacter || !currentCharacter.name) return;
+
+      const suggestions = generateImagePromptSuggestions(currentCharacter);
+      const suggestionContainer = document.getElementById('suggestionButtons');
+      const suggestionsDiv = document.getElementById('imagePromptSuggestions');
+
+      if (!suggestionContainer || !suggestionsDiv) return;
+
+      // Clear existing suggestions
+      suggestionContainer.innerHTML = '';
+
+      // Add new suggestion buttons
+      suggestions.forEach(suggestion => {
+        const button = document.createElement('button');
+        button.className = 'suggestion-button';
+        button.textContent = suggestion;
+        button.onclick = () => useSuggestion(suggestion);
+        suggestionContainer.appendChild(button);
+      });
+
+      // Show suggestions
+      suggestionsDiv.classList.add('visible');
+    }
+
+    // Hide image prompt suggestions
+    function hideImagePromptSuggestions() {
+      const suggestionsDiv = document.getElementById('imagePromptSuggestions');
+      if (suggestionsDiv) {
+        suggestionsDiv.classList.remove('visible');
+      }
+    }
+
+    // Use a suggestion (put it in the input field)
+    function useSuggestion(suggestion) {
+      const messageInput = document.getElementById('messageInput');
+      if (messageInput) {
+        messageInput.value = suggestion;
+        messageInput.focus();
+        autoResizeTextarea();
+      }
+      hideImagePromptSuggestions();
     }
 
     function autoResizeTextarea() {
@@ -1347,10 +1539,13 @@
       // Update tags
       const tagsContainer = document.getElementById('sidebarCharacterTags');
       if (tagsContainer && currentCharacter.tags) {
-        tagsContainer.innerHTML = currentCharacter.tags.map(tag => 
+        tagsContainer.innerHTML = currentCharacter.tags.map(tag =>
           `<span class="character-tag">${tag}</span>`
         ).join('');
       }
+
+      // Hide any existing suggestions when character changes
+      hideImagePromptSuggestions();
     }
 
     function showCharacterSearch() {
@@ -2542,12 +2737,16 @@
 
     // Request image function - fills input with "Send me a picture "
     function requestImage() {
-      const messageInput = document.getElementById('messageInput');
-      messageInput.value = 'Send me a picture ';
-      messageInput.focus();
-      // Place cursor at the end
-      messageInput.setSelectionRange(messageInput.value.length, messageInput.value.length);
-      
+      // Check if suggestions are already visible
+      const suggestionsDiv = document.getElementById('imagePromptSuggestions');
+
+      if (suggestionsDiv && suggestionsDiv.classList.contains('visible')) {
+        // Hide suggestions if already showing
+        hideImagePromptSuggestions();
+      } else {
+        // Show suggestions
+        showImagePromptSuggestions();
+      }
     }
 
 
