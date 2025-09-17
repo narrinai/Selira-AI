@@ -160,7 +160,7 @@ BOUNDARIES:
       Slug: slug,
       // Category field removed - Selira uses tags instead of categories
       Tags: Array.isArray(tags) ? tags : [], // Array format like existing characters
-      Created_By: displayName, // String format for creator name - matches existing Selira field
+      // Created_By: displayName, // Skip - might require linked records to Users table
       Visibility: visibility || 'public',
       companion_type: artStyle || 'realistic',
       sex: sex || 'female',
