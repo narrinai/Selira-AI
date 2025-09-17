@@ -179,6 +179,9 @@ BOUNDARIES:
 
     console.log('💾 Avatar will be saved as:', finalAvatarUrl);
 
+    // Initialize avatar URL with the generated URL
+    let avatarUrlToUse = finalAvatarUrl;
+
     // Save the avatar using the existing save-avatar-locally function
     try {
       console.log('📥 Saving avatar locally...');
@@ -199,14 +202,14 @@ BOUNDARIES:
         console.log('✅ Avatar saved successfully:', saveResult);
       } else {
         console.error('❌ Avatar save failed, using Replicate URL');
-        // Use Replicate URL as fallback but with /avatars structure
-        characterData.Avatar_URL = replicateImageUrl;
+        // Use Replicate URL as fallback
+        avatarUrlToUse = replicateImageUrl;
       }
     } catch (avatarError) {
       console.error('❌ Error saving avatar:', avatarError);
       // Continue with character creation using Replicate URL as fallback
       console.log('⚠️ Using Replicate URL as fallback');
-      characterData.Avatar_URL = replicateImageUrl;
+      avatarUrlToUse = replicateImageUrl;
     }
 
     // Prepare character data for Airtable with SELIRA field names
@@ -226,7 +229,7 @@ BOUNDARIES:
       hair_length: hairLength || 'long',
       hair_color: hairColor || 'brown',
       needs_ai_avatar: false, // Since we're providing an avatar
-      Avatar_URL: finalAvatarUrl,
+      Avatar_URL: avatarUrlToUse,
       Prompt: fullPrompt
     };
 
