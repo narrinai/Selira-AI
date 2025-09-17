@@ -1,6 +1,6 @@
 // Create character in Airtable - Selira version with correct field names
 exports.handler = async (event, context) => {
-  console.log('🎭 create-character function called (Selira version)');
+  console.log('🎭 create-character function called (Selira version v1.1)');
 
   // CORS headers
   const corsHeaders = {
