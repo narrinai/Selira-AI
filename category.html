@@ -1852,6 +1852,9 @@
         const data = await response.json();
         
         if (data.success && data.characters) {
+          console.log('📡 Raw API response:', data.characters.length, 'characters');
+          console.log('🔍 Sample raw characters:', data.characters.slice(-3).map(c => ({name: c.Name, category: c.Category, visibility: c.Visibility})));
+
           allCharacters = data.characters.map(char => ({
             id: char.Character_ID || char.Name,
             name: char.Name || 'Unknown',
