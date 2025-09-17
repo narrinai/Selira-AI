@@ -1436,21 +1436,10 @@
       });
       
       try {
-        // Generate avatar first
-        console.log('🎨 Generating companion avatar...');
-        createBtn.textContent = '🎨 Generating Companion...';
-        
-        const avatarUrl = await generateCompanionAvatar({
-          name: name,
-          style: characterCreationState.style,
-          sex: characterCreationState.sex,
-          ethnicity: characterCreationState.ethnicity,
-          hairLength: characterCreationState.hairLength,
-          hairColor: characterCreationState.hairColor
-        });
-        
-        // Send character data to backend with avatar
-        createBtn.textContent = '💾 Saving Companion...';
+        // Skip avatar generation for now and proceed directly to character creation
+        console.log('💾 Creating companion...');
+        createBtn.textContent = '💾 Creating Companion...';
+
         const response = await fetch('/.netlify/functions/create-character', {
           method: 'POST',
           headers: {

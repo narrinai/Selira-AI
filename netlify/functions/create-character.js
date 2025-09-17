@@ -143,10 +143,10 @@ BOUNDARIES:
     // Combine description with extra instructions for Character_Description
     const fullDescription = extraInstructions ? `${description}\n\nExtra Instructions: ${extraInstructions}` : description;
 
-    console.log('🎨 Generating avatar for character...');
+    console.log('🎨 Setting up avatar for character...');
 
-    // For now, use a placeholder avatar until generate-custom-image is deployed
-    const avatarUrlToUse = `https://selira.ai/avatars/placeholder-${artStyle || 'realistic'}.webp`;
+    // Use a default avatar URL that we know exists
+    const avatarUrlToUse = 'https://selira.ai/avatars/default-companion.webp';
 
     // Prepare character data for Airtable with SELIRA field names
     const characterData = {
