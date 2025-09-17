@@ -2412,6 +2412,15 @@
       }
     }
 
+    // Clear all messages from chat display
+    function clearChatDisplay() {
+      const chatMessages = document.getElementById('chatMessages');
+      if (chatMessages) {
+        chatMessages.innerHTML = '';
+        console.log('🧽 Cleared chat display');
+      }
+    }
+
     // Switch character without updating URL (for browser navigation)
     function selectCharacterFromSidebarSilent(slug, name, avatar, title) {
       // Find character in loaded data for real tags and creator
@@ -2433,7 +2442,10 @@
         tags: character.tags || ['Fantasy', 'Adventure', 'Hero']
       };
 
-      // If this is a new character, clear any existing chat history
+      // Clear chat display first
+      clearChatDisplay();
+
+      // If this is a new character, clear any existing chat history and start fresh
       if (isNewCharacter) {
         const storageKey = `chat_${slug}`;
         localStorage.removeItem(storageKey);
@@ -2445,10 +2457,13 @@
             addMessage('character', currentCharacter.greeting);
           }
         }, 500);
+      } else {
+        // Load existing chat history for this character
+        loadChatHistoryFromStorage(slug);
       }
-      
+
       updateCharacterDisplay();
-      
+
       // Update active chat item
       document.querySelectorAll('.chat-item').forEach(item => {
         item.classList.remove('active');
@@ -2460,9 +2475,6 @@
           item.classList.add('active');
         }
       });
-      
-      // Load chat history for this character instead of clearing
-      loadChatHistoryFromStorage(slug);
       
       // Only show welcome message if no history exists
       setTimeout(() => {
@@ -2621,11 +2633,22 @@
     }
 
     // Load specific character from API if not found in initial data
-    async function loadSpecificCharacterFromAPI(characterSlug) {
+    async function loadSpecificCharacterFromAPI(characterSlug, retryCount = 0) {
       try {
-        console.log('🔄 Fetching specific character from API:', characterSlug);
+        console.log('🔄 Fetching specific character from API:', characterSlug, `(attempt ${retryCount + 1})`);
+
+        // Check if this is a newly created character
+        const newCharacterKey = `new_character_${characterSlug}`;
+        const isNewCharacter = localStorage.getItem(newCharacterKey);
+
+        if (isNewCharacter && retryCount < 3) {
+          console.log('🆕 This is a newly created character, retrying in 2 seconds...');
+          setTimeout(() => loadSpecificCharacterFromAPI(characterSlug, retryCount + 1), 2000);
+          return;
+        }
+
         const response = await fetch(`/.netlify/functions/characters?slug=${encodeURIComponent(characterSlug)}`);
-        
+
         if (response.ok) {
           const data = await response.json();
           if (data.success && data.characters && data.characters.length > 0) {
@@ -2642,17 +2665,41 @@
               tags: Array.isArray(character.Tags) ? character.Tags.slice(0, 11) : (character.Tags || '').toString().split(',').filter(Boolean).slice(0, 11),
               character_url: character.Character_URL ? character.Character_URL.replace('narrin.ai', 'selira.ai') : null
             };
-            
+
             console.log('✅ Loaded specific character:', processedChar.name);
+
+            // Clear the new character flag
+            if (isNewCharacter) {
+              localStorage.removeItem(newCharacterKey);
+              console.log('🧹 Cleared new character flag for:', characterSlug);
+            }
+
             selectCharacterFromSidebarSilent(processedChar.slug, processedChar.name, fixAvatarUrl(processedChar.avatar), processedChar.title);
           } else {
-            console.log('❌ Character not found in API, using fallback character');
+            if (isNewCharacter && retryCount < 3) {
+              console.log('🔄 New character not found yet, retrying in 2 seconds...');
+              setTimeout(() => loadSpecificCharacterFromAPI(characterSlug, retryCount + 1), 2000);
+            } else {
+              console.log('❌ Character not found in API, using fallback character');
+              loadFallbackCharacter();
+            }
+          }
+        } else {
+          if (isNewCharacter && retryCount < 3) {
+            console.log('🔄 API error for new character, retrying in 2 seconds...');
+            setTimeout(() => loadSpecificCharacterFromAPI(characterSlug, retryCount + 1), 2000);
+          } else {
             loadFallbackCharacter();
           }
         }
       } catch (error) {
         console.error('❌ Error loading specific character:', error);
-        loadFallbackCharacter();
+        if (isNewCharacter && retryCount < 3) {
+          console.log('🔄 Error loading new character, retrying in 2 seconds...');
+          setTimeout(() => loadSpecificCharacterFromAPI(characterSlug, retryCount + 1), 2000);
+        } else {
+          loadFallbackCharacter();
+        }
       }
     }
 

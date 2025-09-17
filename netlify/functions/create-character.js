@@ -251,18 +251,8 @@ BOUNDARIES:
 
     console.log('🎨 Setting up avatar for character...');
 
-    // Generate avatar URL based on character attributes
-    const genderPrefix = sex === 'male' ? 'male' : 'female';
-    const ethnicityCode = ethnicity === 'white' ? 'caucasian' :
-                         ethnicity === 'black' ? 'african' :
-                         ethnicity === 'japanese' ? 'asian' :
-                         ethnicity === 'hispanic' ? 'latino' :
-                         ethnicity === 'middle-east' ? 'middle-eastern' :
-                         ethnicity === 'indian' ? 'indian' : 'caucasian';
-    const styleCode = artStyle === 'anime' ? 'anime' : 'realistic';
-
-    // Generate a more specific avatar URL
-    const avatarUrlToUse = `https://selira.ai/avatars/${genderPrefix}-${ethnicityCode}-${styleCode}-${hairColor || 'brown'}.webp`;
+    // Use a working placeholder avatar
+    const avatarUrlToUse = 'https://selira.ai/avatars/placeholder.webp';
 
     // Greeting is now stored in description, no need to generate again
 

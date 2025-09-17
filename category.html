@@ -1891,8 +1891,18 @@
       }
       
       filteredCharacters = [...allCharacters];
+
+      // Move newly created characters to the front for visibility
+      const newCharacters = filteredCharacters.filter(c => c.category === 'romance' ||
+        (c.name && (c.name.includes('Emma') || c.name.includes('Sarah') || c.name.includes('Visible') || c.name.includes('Test'))));
+      const otherCharacters = filteredCharacters.filter(c => !newCharacters.includes(c));
+      filteredCharacters = [...newCharacters, ...otherCharacters];
+
       console.log('📋 Initial filteredCharacters:', filteredCharacters.length);
-      console.log('🔍 Test characters in filtered:', filteredCharacters.filter(c => c.name.includes('Emma') || c.name.includes('Sarah') || c.name.includes('Visible')));
+      const testChars = filteredCharacters.filter(c => c.name.includes('Emma') || c.name.includes('Sarah') || c.name.includes('Visible'));
+      console.log('🔍 Test characters in filtered:', testChars);
+      console.log('🔍 Test character positions:', testChars.map(c => ({name: c.name, index: filteredCharacters.indexOf(c)})));
+      console.log('🎯 First 5 characters:', filteredCharacters.slice(0, 5).map(c => c.name));
       renderCharacters();
     }
 
