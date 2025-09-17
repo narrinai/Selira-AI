@@ -171,6 +171,7 @@ BOUNDARIES:
 
     console.log('💾 Saving to Airtable with fields:', Object.keys(characterData));
     console.log('💾 Character data:', characterData);
+    console.log('🏷️ Tags being sent:', characterData.Tags, 'Type:', typeof characterData.Tags, 'Is Array:', Array.isArray(characterData.Tags));
 
     // Create character in Airtable
     const airtableResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters`, {
