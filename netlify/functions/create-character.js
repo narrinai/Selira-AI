@@ -157,7 +157,7 @@ BOUNDARIES:
       Character_Description: `${fullDescription}\n\nCreated by: ${displayName}`,
       Character_Title: `AI Companion`,
       Slug: slug,
-      Tags: Array.isArray(tags) ? tags.join(', ') : '', // Try as comma-separated string
+      // Tags: Array.isArray(tags) ? tags.join(', ') : '', // Skip for now - causing parse errors
       Visibility: visibility || 'public',
       companion_type: artStyle || 'realistic',
       sex: sex || 'female',
