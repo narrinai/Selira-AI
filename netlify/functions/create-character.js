@@ -251,8 +251,52 @@ BOUNDARIES:
 
     console.log('🎨 Setting up avatar for character...');
 
-    // Use a working placeholder avatar
-    const avatarUrlToUse = 'https://selira.ai/avatars/placeholder.webp';
+    // Generate avatar using existing avatar generation system
+    let avatarUrlToUse = 'https://selira.ai/avatars/placeholder.webp'; // Fallback
+
+    try {
+      // Call the generate-and-save-avatar function to create a custom avatar
+      console.log('🎨 Generating custom avatar with Replicate...');
+
+      const generateUrl = `${process.env.URL || 'https://selira.ai'}/.netlify/functions/generate-and-save-avatar`;
+
+      const avatarPayload = {
+        characterName: name,
+        characterTitle: '', // We don't have titles for new characters
+        category: 'romance', // Match the category we set
+        characterSlug: slug,
+        artStyle: artStyle || 'realistic',
+        sex: sex || 'female',
+        ethnicity: ethnicity || 'white',
+        hairLength: hairLength || 'long',
+        hairColor: hairColor || 'brown',
+        tags: tags || []
+      };
+
+      console.log('📤 Calling generate-and-save-avatar with:', avatarPayload);
+
+      const avatarResponse = await fetch(generateUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(avatarPayload)
+      });
+
+      if (avatarResponse.ok) {
+        const avatarResult = await avatarResponse.json();
+        if (avatarResult.success && avatarResult.avatarUrl) {
+          avatarUrlToUse = avatarResult.avatarUrl;
+          console.log('✅ Custom avatar generated:', avatarUrlToUse);
+        } else {
+          console.log('⚠️ Avatar generation returned success=false, using fallback');
+        }
+      } else {
+        console.log('⚠️ Avatar generation failed with HTTP', avatarResponse.status, ', using fallback');
+      }
+    } catch (error) {
+      console.log('⚠️ Avatar generation error:', error.message, ', using fallback');
+    }
 
     // Greeting is now stored in description, no need to generate again
 

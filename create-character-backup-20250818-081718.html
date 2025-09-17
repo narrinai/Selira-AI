@@ -4942,7 +4942,7 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
     
     <div class="upgrade-benefits" style="background: #f8fafc; border-radius: 12px; padding: 20px; margin-bottom: 24px; text-align: left;">
-      <h4 style="margin: 0 0 12px 0; color: #1e293b; font-size: 14px; font-weight: 600;">Upgrade to Immerse and get:</h4>
+      <h4 style="margin: 0 0 12px 0; color: #1e293b; font-size: 14px; font-weight: 600;">Upgrade to Premium and get:</h4>
       <div class="benefit-item" style="display: flex; align-items: center; padding: 8px 0;">
         <span class="benefit-icon" style="font-size: 20px; margin-right: 12px;">💬</span>
         <span class="benefit-text" style="color: #475569;">Unlimited Chat Messages</span>
@@ -4996,14 +4996,14 @@ function showUpgradePopup(reason) {
     if (userPlan === 'Free') {
       message.innerHTML = "<strong>You've reached your limit of 2 active companions on the Free plan.</strong><br><br>To create this new companion, you'll need to pause an existing one or upgrade your plan. Free users can have 2 active companions at a time.";
     } else if (userPlan === 'Engage') {
-      message.innerHTML = "<strong>You've reached your limit of 5 active companions on the Engage plan.</strong><br><br>To create this new companion, you'll need to pause an existing one or upgrade to Immerse for unlimited active companions.";
+      message.innerHTML = "<strong>You've reached your limit of 5 active companions on the Engage plan.</strong><br><br>To create this new companion, you'll need to pause an existing one or upgrade to Premium for unlimited active companions.";
     }
   } else if (reason === 'message_limit') {
     title.textContent = 'Message Limit Reached';
     message.innerHTML = "<strong>You've used all 10 free messages for today.</strong><br><br>Upgrade to continue chatting with unlimited messages and unlock voice features, more companions, and premium benefits.";
   } else if (reason === 'voice_feature') {
     title.textContent = 'Premium Feature';
-    message.innerHTML = "<strong>Voice chat is a premium feature.</strong><br><br>Upgrade to Immerse to use unlimited voice messages (text-to-speech) and voice input (speech-to-text) with all your companions.";
+    message.innerHTML = "<strong>Voice chat is a premium feature.</strong><br><br>Upgrade to Premium to use unlimited voice messages (text-to-speech) and voice input (speech-to-text) with all your companions.";
   } else {
     title.textContent = 'Continue Your Journey';
     message.innerHTML = "Unlock the full Narrin AI experience with our premium plans!";

@@ -243,7 +243,7 @@ exports.handler = async (event, context) => {
                   </div>
                   
                   <div style="flex: 1; max-width: 200px; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 24px 20px; text-align: center;">
-                    <div style="font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 8px;">Immerse</div>
+                    <div style="font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 8px;">Premium</div>
                     <div style="font-size: 24px; font-weight: 800; color: #14b8a6; margin-bottom: 4px;">$11.99</div>
                     <div style="font-size: 12px; color: #94a3b8;">/month</div>
                   </div>

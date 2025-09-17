@@ -39,7 +39,7 @@ async function checkCompanionLimitBeforeNavigation(e, targetUrl = 'create-charac
         
         // Get user plan
         const userPlan = localStorage.getItem('user_plan') || 'Free';
-        const maxActive = userPlan === 'Free' ? 2 : userPlan === 'Engage' ? 5 : Infinity;
+        const maxActive = userPlan === 'Free' ? 2 : userPlan === 'Basic' ? 5 : Infinity;
         
         console.log(`Companion check: ${activeChats.length}/${maxActive} active`);
         
@@ -75,7 +75,7 @@ function showCompanionLimitModal(current, max) {
           <h3 class="upgrade-title">Companion Limit Reached</h3>
           <p class="upgrade-subtitle">
             <strong>You've reached your limit of ${max} active companions.</strong><br><br>
-            To activate more companions, you need to pause existing ones or upgrade to ${max === 2 ? 'Engage or Immerse' : 'Immerse'} for unlimited active companions.
+            To activate more companions, you need to pause existing ones or upgrade to ${max === 2 ? 'Basic or Premium' : 'Premium'} for unlimited active companions.
           </p>
         </div>
         
@@ -166,7 +166,7 @@ async function checkCompanionLimitForChat(e, characterSlug) {
           const activeChats = data.chats.filter(chat => !pausedChats.includes(chat.character_slug));
           
           const userPlan = localStorage.getItem('user_plan') || 'Free';
-          const maxActive = userPlan === 'Free' ? 2 : userPlan === 'Engage' ? 5 : Infinity;
+          const maxActive = userPlan === 'Free' ? 2 : userPlan === 'Basic' ? 5 : Infinity;
           
           if (activeChats.length >= maxActive) {
             showCompanionLimitModal(activeChats.length, maxActive);

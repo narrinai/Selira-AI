@@ -110,7 +110,7 @@ async function sendTestTrialExpiredEmail(SENDGRID_API_KEY) {
               
               <p style="margin-bottom: 16px;">Your free trial has ended, but your AI companions are still there - ready to help you organize your thoughts and find mental clarity.</p>
               
-              <p style="margin-bottom: 16px;">Choose a plan: <strong>Engage ($4.99/month)</strong> or <strong>Immerse ($11.99/month)</strong></p>
+              <p style="margin-bottom: 16px;">Choose a plan: <strong>Engage ($4.99/month)</strong> or <strong>Premium ($11.99/month)</strong></p>
             </div>
 
             <a href="https://narrin.ai/profile" style="display: inline-block; background: linear-gradient(135deg, #14b8a6 0%, #f97316 100%); color: white; font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 700; text-decoration: none; padding: 18px 36px; border-radius: 16px;">

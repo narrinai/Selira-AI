@@ -44,7 +44,7 @@ exports.handler = async (event, context) => {
     // Map plan names to Stripe price IDs
     const priceIds = {
       'engage': 'price_1Rx75wDU567HpUYxekUyZ62T',
-      'immerse': 'price_1Rx774DU567HpUYxf0mAZInC'
+      'premium': 'price_1Rx774DU567HpUYxf0mAZInC'
     };
 
     const newPriceId = priceIds[new_plan.toLowerCase()];
@@ -55,7 +55,7 @@ exports.handler = async (event, context) => {
         headers,
         body: JSON.stringify({ 
           error: 'Invalid plan',
-          details: `Plan "${new_plan}" is not valid. Use "engage" or "immerse"`
+          details: `Plan "${new_plan}" is not valid. Use "engage" or "premium"`
         })
       };
     }

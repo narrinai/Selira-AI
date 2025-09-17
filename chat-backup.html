@@ -8934,11 +8934,11 @@ Ready to start chatting, or would you like to explore these personalization opti
     function checkVoiceUsageLimit() {
       // Check user plan
       const userPlan = localStorage.getItem('user_plan');
-      const isImmerse = userPlan === 'immerse' || userPlan === 'Immerse';
+      const isImmerse = userPlan === 'premium' || userPlan === 'Premium';
       const isEngage = userPlan === 'engage' || userPlan === 'Engage' || userPlan === 'premium' || userPlan === 'pro';
       
       if (isImmerse) {
-        console.log('🗣️ Immerse user - unlimited voice conversations');
+        console.log('🗣️ Premium user - unlimited voice conversations');
         return true;
       }
       
@@ -9210,7 +9210,7 @@ Ready to start chatting, or would you like to explore these personalization opti
             'Advanced Memory System'
           ];
         } else if (currentLimit === 5) {
-          // Engage to Immerse upgrade
+          // Engage to Premium upgrade
           title = '🎭 Companion Limit Reached';
           message = `You've reached your limit of <strong>5 active companions</strong> on the Engage plan.`;
           benefits = [
@@ -9249,7 +9249,7 @@ Ready to start chatting, or would you like to explore these personalization opti
       document.body.appendChild(modal);
     }
 
-    // Show Engage to Immerse upgrade modal for voice limit
+    // Show Engage to Premium upgrade modal for voice limit
     function showEngageVoiceUpgradeModal() {
       const modal = document.createElement('div');
       modal.className = 'voice-upgrade-modal';
@@ -9261,7 +9261,7 @@ Ready to start chatting, or would you like to explore these personalization opti
           </div>
           <div class="voice-upgrade-body">
             <p>You've reached your limit of <strong>25 voice conversations</strong> per month on the Engage plan.</p>
-            <p>Upgrade to <strong>Immerse</strong> for unlimited voice conversations!</p>
+            <p>Upgrade to <strong>Premium</strong> for unlimited voice conversations!</p>
             <div class="voice-upgrade-benefits">
               <div class="voice-benefit">
                 <div class="checkmark"></div>
@@ -9279,7 +9279,7 @@ Ready to start chatting, or would you like to explore these personalization opti
           </div>
           <div class="voice-upgrade-buttons">
             <button class="btn-secondary" id="engageCloseLater">Maybe Later</button>
-            <button class="btn-primary" id="engageUpgradeBtn">Upgrade to Immerse</button>
+            <button class="btn-primary" id="engageUpgradeBtn">Upgrade to Premium</button>
           </div>
         </div>
       `;
@@ -16797,7 +16797,7 @@ async function checkUsageLimit() {
                      localTrialStatus === 'trial' || isLocalTrial;
     
     const isPaidPlan = 
-      (plan.toLowerCase() === 'immerse' || plan.toLowerCase() === 'engage') &&
+      (plan.toLowerCase() === 'premium' || plan.toLowerCase() === 'engage') &&
       (subscriptionStatus === 'active' || subscriptionStatus === 'trial' || subscriptionStatus === 'trialing' ||
        stripeStatus === 'active' || stripeStatus === 'trial' || stripeStatus === 'trialing') ||
       isLocalTrial || isOnTrial;
@@ -16903,7 +16903,7 @@ async function checkVoiceLimit(type) {
     const plan = data.plan || 'Free';
     
     // Paid users have unlimited voice features
-    if (plan.toLowerCase() === 'immerse' || plan.toLowerCase() === 'engage' || plan.toLowerCase() === 'premium' || plan.toLowerCase() === 'pro') {
+    if (plan.toLowerCase() === 'premium' || plan.toLowerCase() === 'engage') {
       console.log('✅ Paid user - unlimited voice features');
       return true;
     }
@@ -16951,11 +16951,11 @@ function showUpgradePrompt(usage, quota, type = 'messages') {
           }</h3>
           <p class="upgrade-subtitle">${
             type === 'tts' 
-              ? `<strong>Text-to-Speech is a premium feature.</strong><br><br>You tried to use voice messages, but this feature is only available on the Immerse plan. Upgrade now to hear your companions speak!`
+              ? `<strong>Text-to-Speech is a premium feature.</strong><br><br>You tried to use voice messages, but this feature is only available on the Premium plan. Upgrade now to hear your companions speak!`
               : type === 'stt' 
-              ? `<strong>Speech-to-Text is a premium feature.</strong><br><br>You tried to use voice input, but this feature is only available on the Immerse plan. Upgrade now to talk naturally with your companions!`
+              ? `<strong>Speech-to-Text is a premium feature.</strong><br><br>You tried to use voice input, but this feature is only available on the Premium plan. Upgrade now to talk naturally with your companions!`
               : type === 'companions'
-              ? `<strong>You've reached your limit of ${quota} active companions.</strong><br><br>To activate more companions, you need to pause existing ones or upgrade to Immerse for unlimited active companions.`
+              ? `<strong>You've reached your limit of ${quota} active companions.</strong><br><br>To activate more companions, you need to pause existing ones or upgrade to Premium for unlimited active companions.`
               : isFeaturedCharacter 
                 ? `<strong>You've used all ${quota} free messages with this character.</strong><br><br>Create an account for a 3-day unlimited trial, or upgrade to Engage for unlimited messaging!`
                 : `<strong>Your trial has ended.</strong><br><br>Upgrade to Engage for unlimited messaging with all your companions!`
