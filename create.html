@@ -1371,8 +1371,10 @@
           console.log('✅ Loaded tags from Airtable:', {
             total: data.tags.length,
             source: data.source,
-            sample: data.tags.slice(0, 10)
+            sample: data.tags.slice(0, 10),
+            allTags: data.tags
           });
+          console.log('🔍 Full tags list:', data.tags);
 
           // Also populate the popular tags
           populatePopularTags(data.tags);
@@ -1663,17 +1665,20 @@
     });
 
     // Populate all tags container
-    function populateAllTags(tags) {
+    function populateAllTags(tags = null) {
       const allTagsList = document.getElementById('allTagsList');
       if (!allTagsList) return;
 
+      // Use passed tags or fall back to createAvailableTags
+      const tagsToUse = tags || createAvailableTags;
+
       // Create tag buttons for all tags
-      const allTagButtons = tags.map(tag =>
+      const allTagButtons = tagsToUse.map(tag =>
         `<button type="button" class="create-tag-button" data-tag="${tag}">${tag}</button>`
       ).join('');
 
       allTagsList.innerHTML = allTagButtons;
-      console.log('✅ Populated all tags with', tags.length, 'tags');
+      console.log('✅ Populated all tags with', tagsToUse.length, 'tags:', tagsToUse.slice(0, 5), '...');
     }
 
     // Toggle showing all tags
@@ -1686,6 +1691,8 @@
       allTagsVisible = !allTagsVisible;
 
       if (allTagsVisible) {
+        // Refresh the all tags list to make sure it's up to date
+        populateAllTags();
         allTagsContainer.style.display = 'block';
         buttonText.textContent = 'Hide All Tags';
       } else {
@@ -1698,6 +1705,7 @@
     const originalPopulatePopularTags = populatePopularTags;
     populatePopularTags = function(tags) {
       originalPopulatePopularTags(tags);
+      // Make sure to pass the full tags array to populateAllTags
       populateAllTags(tags);
     };
 
