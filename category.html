@@ -3486,7 +3486,7 @@
       setTimeout(() => {
         const startIndex = (currentPage - 1) * charactersPerPage;
         const endIndex = startIndex + charactersPerPage;
-        const pageCharacters = allCharacters.slice(startIndex, endIndex);
+        const pageCharacters = filteredCharacters.slice(startIndex, endIndex);
         
         if (pageCharacters.length > 0) {
           appendCharacters(pageCharacters);
