@@ -19,7 +19,7 @@ const companions = [
   {
     name: "Yuki Tanaka",
     tags: ["Cute", "Submissive", "Anime"],
-    artStyle: "anime",
+    artStyle: "realistic",
     sex: "female",
     ethnicity: "japanese",
     hairLength: "medium",
@@ -45,7 +45,7 @@ const companions = [
     sex: "female",
     ethnicity: "white",
     hairLength: "medium",
-    hairColor: "blonde",
+    hairColor: "brown",
     extraInstructions: "A complex ex-girlfriend with a tsundere personality - tough exterior but caring inside.",
     avatarUrl: "https://selira.ai/avatars/elena-volkov.webp"
   },
