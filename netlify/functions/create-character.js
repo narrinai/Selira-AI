@@ -1,6 +1,6 @@
 // Create character in Airtable - Selira version with correct field names
 exports.handler = async (event, context) => {
-  console.log('🎭 create-character function called (Selira version v1.2)');
+  console.log('🎭 create-character function called (Selira version v1.3 - Tags disabled)');
 
   // CORS headers
   const corsHeaders = {
@@ -156,7 +156,7 @@ BOUNDARIES:
       Character_URL: characterUrl,
       Slug: slug,
       Category: artStyle === 'anime' ? 'anime-manga' : 'historical', // Add Category field
-      // Tags: Array.isArray(tags) ? tags.join(', ') : (tags || ''), // Skip for now - still causing parse error
+      Tags: '', // Set as empty string - might be required field
       Created_By: userEmail || createdBy || 'User', // Try as string - characters.js shows it can be string or array
       Visibility: visibility || 'public',
       companion_type: artStyle || 'realistic',
