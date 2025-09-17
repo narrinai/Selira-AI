@@ -67,7 +67,9 @@ exports.handler = async (event, context) => {
       hairColor,
       visibility,
       createdBy,
-      userEmail
+      userEmail,
+      user_email,  // Auth0 email (preferred)
+      user_uid     // Auth0 ID
     } = body;
 
     console.log('📋 Received character data:', {
@@ -94,6 +96,11 @@ exports.handler = async (event, context) => {
         body: JSON.stringify({ error: 'Name is required' })
       };
     }
+
+    // Use proper user identification like other Selira functions
+    const userIdentification = user_email || userEmail || 'unknown@example.com';
+    const userAuthId = user_uid || 'unknown';
+    const displayName = createdBy || userIdentification;
 
     // Generate automatic description based on appearance
     const description = `A ${artStyle || 'realistic'} companion with ${ethnicity || 'diverse'} features, ${hairLength || 'medium'} ${hairColor || 'brown'} hair`;
@@ -151,12 +158,12 @@ BOUNDARIES:
     // Prepare character data for Airtable with SELIRA field names (matching characters.js)
     const characterData = {
       Name: name,
-      Character_Description: `${fullDescription}\n\nCreated by: ${createdBy || userEmail || 'User'}`,
+      Character_Description: `${fullDescription}\n\nCreated by: ${displayName} (${userIdentification})`,
       Character_Title: `AI Companion`,
       Character_URL: characterUrl,
       Slug: slug,
       Category: artStyle === 'anime' ? 'anime-manga' : 'historical', // Add Category field
-      // Tags: '', // Skip for now - causing parse errors
+      Tags: Array.isArray(tags) ? tags : [], // Array format like existing characters
       // Creator_Email: userEmail || 'unknown', // Skip - focus on getting basic creation working
       Visibility: visibility || 'public',
       companion_type: artStyle || 'realistic',
