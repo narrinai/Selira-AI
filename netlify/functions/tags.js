@@ -48,10 +48,30 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    console.log('🏷️ Fetching tags from Characters table...');
+    console.log('🏷️ Fetching all available tags...');
 
-    // Go directly to Characters table and extract tags
-    return await extractTagsFromCharacters(AIRTABLE_BASE_ID, AIRTABLE_TOKEN, headers);
+    // Return all available tags that should be selectable
+    const allAvailableTags = [
+      'Girlfriend', 'Boyfriend', 'Ex', 'Romance', 'Companion', 'Fantasy', 'Flirty',
+      'Cute', 'Seductive', 'Submissive', 'Tsundere', 'Yandere', 'Maid', 'Boss',
+      'Student', 'Secretary', 'Teacher', 'Angel', 'Elf', 'Monster', 'Lesbian', 'Cheating'
+    ];
+
+    console.log('✅ Returning all available tags:', {
+      total: allAvailableTags.length,
+      tags: allAvailableTags
+    });
+
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({
+        success: true,
+        tags: allAvailableTags,
+        total: allAvailableTags.length,
+        source: 'predefined_all_tags'
+      })
+    };
 
   } catch (error) {
     console.error('❌ Tags fetch error:', error);
