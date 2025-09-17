@@ -151,13 +151,13 @@ BOUNDARIES:
     // Prepare character data for Airtable with SELIRA field names (matching characters.js)
     const characterData = {
       Name: name,
-      Character_Description: fullDescription,
-      Character_Title: `AI Companion created by ${createdBy || 'User'}`,
+      Character_Description: `${fullDescription}\n\nCreated by: ${createdBy || userEmail || 'User'}`,
+      Character_Title: `AI Companion`,
       Character_URL: characterUrl,
       Slug: slug,
       Category: artStyle === 'anime' ? 'anime-manga' : 'historical', // Add Category field
       // Tags: '', // Skip for now - causing parse errors
-      Creator_Email: userEmail || 'unknown', // Simple text field for ownership tracking
+      // Creator_Email: userEmail || 'unknown', // Skip - focus on getting basic creation working
       Visibility: visibility || 'public',
       companion_type: artStyle || 'realistic',
       sex: sex || 'female',
