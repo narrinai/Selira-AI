@@ -58,7 +58,6 @@ exports.handler = async (event, context) => {
     const body = JSON.parse(event.body || '{}');
     const {
       name,
-      description,
       extraInstructions,
       tags,
       artStyle,
@@ -72,7 +71,6 @@ exports.handler = async (event, context) => {
 
     console.log('📋 Received character data:', {
       name,
-      description: description?.substring(0, 50) + '...',
       extraInstructions: extraInstructions?.substring(0, 50) + '...',
       tags: tags?.length || 0,
       artStyle,
@@ -84,16 +82,19 @@ exports.handler = async (event, context) => {
       userEmail
     });
 
-    if (!name || !description) {
+    if (!name) {
       return {
         statusCode: 400,
         headers: {
           ...corsHeaders,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ error: 'Name and description are required' })
+        body: JSON.stringify({ error: 'Name is required' })
       };
     }
+
+    // Generate automatic description based on appearance
+    const description = `A ${artStyle || 'realistic'} companion with ${ethnicity || 'diverse'} features, ${hairLength || 'medium'} ${hairColor || 'brown'} hair`;
 
     // Generate slug from name (simple version without timestamp)
     const slug = name.toLowerCase()
