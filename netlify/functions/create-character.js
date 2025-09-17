@@ -156,8 +156,8 @@ BOUNDARIES:
       Character_URL: characterUrl,
       Slug: slug,
       Category: artStyle === 'anime' ? 'anime-manga' : 'historical', // Add Category field
-      Tags: Array.isArray(tags) ? tags : (typeof tags === 'string' ? [tags] : []),
-      Created_By: userEmail || createdBy || 'User',
+      // Tags: Array.isArray(tags) ? tags : (typeof tags === 'string' ? [tags] : []), // Skip for now - might be linked records
+      // Created_By: userEmail || createdBy || 'User', // Skip for now - might be linked records
       Visibility: visibility || 'public',
       companion_type: artStyle || 'realistic',
       sex: sex || 'female',
