@@ -1419,22 +1419,24 @@
         return;
       }
 
-      // Get user email from auth
+      // Get user info from auth (using same format as other Selira functions)
       let userEmail = 'anonymous';
-      try {
-        const user = JSON.parse(localStorage.getItem('user') || '{}');
-        userEmail = user.email || user.sub || 'anonymous';
-      } catch (error) {
-        console.log('Could not get user email, using anonymous');
-      }
-      
-      // Get user info for creator field
+      let userUid = 'anonymous';
       let createdBy = 'Anonymous';
+
       try {
         const user = JSON.parse(localStorage.getItem('user') || '{}');
+        userEmail = user.email || 'anonymous';
+        userUid = user.sub || 'anonymous'; // Auth0 ID
         createdBy = user.nickname || user.name || user.email || 'Anonymous';
-      } catch (e) {
-        // Use anonymous if no user data
+
+        console.log('👤 User info for character creation:', {
+          email: userEmail,
+          uid: userUid,
+          displayName: createdBy
+        });
+      } catch (error) {
+        console.log('Could not get user info, using anonymous');
       }
       
       // Get visibility setting from toggle
@@ -1476,7 +1478,9 @@
             hairColor: characterCreationState.hairColor,
             visibility: visibility,
             createdBy: createdBy,
-            userEmail: userEmail
+            userEmail: userEmail,
+            user_email: userEmail,  // Proper Selira format
+            user_uid: userUid       // Auth0 ID
           })
         });
         
