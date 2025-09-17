@@ -160,7 +160,6 @@ BOUNDARIES:
       Slug: slug,
       Category: artStyle === 'anime' ? 'anime-manga' : 'historical', // Add Category field
       Tags: Array.isArray(tags) ? tags : [], // Array format like existing characters
-      Created_by_name: displayName, // Simple text field for creator name
       Visibility: visibility || 'public',
       companion_type: artStyle || 'realistic',
       sex: sex || 'female',
