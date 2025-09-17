@@ -160,6 +160,7 @@ BOUNDARIES:
       Slug: slug,
       Category: artStyle === 'anime' ? 'anime-manga' : 'historical', // Add Category field
       Tags: Array.isArray(tags) ? tags : [], // Array format like existing characters
+      Created_By: displayName, // String format for creator name - matches existing Selira field
       Visibility: visibility || 'public',
       companion_type: artStyle || 'realistic',
       sex: sex || 'female',
