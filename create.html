@@ -1658,6 +1658,21 @@
       }
     }
 
+    // Show user actions after auth check
+    function showUserActions() {
+      const userActions = document.querySelector('.user-actions');
+      const mobileUserActions = document.querySelector('.mobile-user-actions');
+
+      if (userActions) userActions.classList.add('loaded');
+      if (mobileUserActions) mobileUserActions.style.opacity = '1';
+    }
+
+    // Listen for auth state changes to show user actions
+    window.addEventListener('auth-state-changed', function(event) {
+      console.log('🔐 Auth state changed, showing user actions');
+      showUserActions();
+    });
+
     // Initialize when page loads
     document.addEventListener('DOMContentLoaded', async function() {
       preloadCriticalImages();
@@ -1668,6 +1683,15 @@
       initializeCreateTags();
 
       updateStepProgress();
+
+      // Fallback: show user actions after delay if no auth event received
+      setTimeout(() => {
+        const userActions = document.querySelector('.user-actions');
+        if (userActions && !userActions.classList.contains('loaded')) {
+          console.log('🔐 Auth event not received, showing user actions as fallback');
+          showUserActions();
+        }
+      }, 1000);
     });
 
     // Populate all tags container

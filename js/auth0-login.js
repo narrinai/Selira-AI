@@ -510,6 +510,15 @@ class Auth0LoginModal {
       console.log('⚠️ No navMenu found to update');
       return;
     }
+
+    // Show user actions now that auth state is determined
+    navMenu.classList.add('loaded');
+
+    // Also show mobile user actions if present
+    const mobileUserActions = document.querySelector('.mobile-user-actions');
+    if (mobileUserActions) {
+      mobileUserActions.style.opacity = '1';
+    }
     
     console.log('🔄 Updating desktop nav:', { 
       isAuthenticated, 
