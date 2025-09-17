@@ -302,6 +302,12 @@
       display: flex;
       align-items: center;
       gap: 16px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .user-actions.loaded {
+      opacity: 1;
     }
     
     .dropdown-btn {
@@ -728,7 +734,7 @@
       <div class="mobile-header">
         <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
         <div class="mobile-logo">Selira</div>
-        <div style="display: flex; align-items: center; gap: 12px;">
+        <div class="mobile-user-actions" style="display: flex; align-items: center; gap: 12px; opacity: 0; transition: opacity 0.3s ease;">
           <button style="background: none; border: none; color: var(--text-secondary); font-size: 18px; cursor: pointer; padding: 8px;">🔍</button>
           <button class="user-btn secondary login-btn" onclick="openLoginModal('login'); return false;" style="padding: 6px 12px; font-size: 12px;">Sign In</button>
         </div>
