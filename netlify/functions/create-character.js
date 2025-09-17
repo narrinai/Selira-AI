@@ -281,6 +281,7 @@ BOUNDARIES:
       // Greeting is stored in Character_Description
       Tags: Array.isArray(tags) && tags.length > 0 ? tags : [],
       Visibility: visibility || 'public',
+      Category: 'romance', // Set appropriate category for new companions instead of default
       companion_type: artStyle || 'realistic',
       sex: sex || 'female',
       ethnicity: ethnicity || 'white',
