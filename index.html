@@ -54,6 +54,9 @@
     html {
       scroll-behavior: smooth;
       -webkit-overflow-scrolling: touch;
+      height: 100%;
+      overflow-x: hidden;
+      overflow-y: auto;
     }
 
     body {
@@ -61,10 +64,12 @@
       background-color: var(--bg-primary);
       color: var(--text-primary);
       line-height: 1.6;
+      min-height: 100vh;
       overflow-x: hidden;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
       overscroll-behavior: contain;
+      position: relative;
     }
 
     /* Header */
@@ -768,9 +773,16 @@
 
     /* Mobile Responsive */
     @media (max-width: 768px) {
+      html, body {
+        height: 100%;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-y: contain;
+      }
+
       .header {
         padding: 16px 20px;
-        position: relative;
+        position: fixed;
       }
 
       .nav-menu {
