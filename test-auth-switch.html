@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Auth Switch - Selira AI</title>
+  <link rel="stylesheet" href="shared-styles.css">
+</head>
+<body>
+  <div style="padding: 40px; text-align: center;">
+    <h1>Test Authentication Modal Switch</h1>
+    <p>Click the buttons below to test the login/signup modal switching functionality:</p>
+
+    <div style="margin: 20px 0; gap: 10px; display: flex; justify-content: center;">
+      <button onclick="openLoginModal('login')" class="primary-btn">Test Login Modal</button>
+      <button onclick="openLoginModal('signup')" class="primary-btn">Test Signup Modal</button>
+    </div>
+
+    <p style="color: var(--text-secondary); margin-top: 20px;">
+      The signup modal should show "Already have an account? Login here" at the bottom.<br>
+      The login modal should show "Don't have an account? Sign up here" at the bottom.
+    </p>
+  </div>
+
+  <!-- Auth0 Authentication System -->
+  <script src="/js/auth0-login.js"></script>
+</body>
+</html>

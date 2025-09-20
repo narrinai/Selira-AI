@@ -266,11 +266,25 @@ class Auth0LoginModal {
 
           <!-- Terms Notice -->
           <div class="auth0-terms">
-            By ${isSignup ? 'signing up' : 'continuing'}, you agree to our 
-            <a href="/terms-and-conditions.html" target="_blank">Terms of Service</a> 
-            and 
+            By ${isSignup ? 'signing up' : 'continuing'}, you agree to our
+            <a href="/terms-and-conditions.html" target="_blank">Terms of Service</a>
+            and
             <a href="/privacy-policy.html" target="_blank">Privacy Policy</a>
           </div>
+
+          ${isSignup ? `
+          <!-- Switch to Login -->
+          <div class="auth0-switch-mode">
+            Already have an account?
+            <a href="#" class="auth0-switch-link" onclick="switchToLogin(event)">Login here</a>
+          </div>
+          ` : `
+          <!-- Switch to Signup -->
+          <div class="auth0-switch-mode">
+            Don't have an account?
+            <a href="#" class="auth0-switch-link" onclick="switchToSignup(event)">Sign up here</a>
+          </div>
+          `}
         </div>
       </div>
     `;
@@ -977,6 +991,27 @@ const AUTH0_STYLES = `
   text-decoration: underline;
 }
 
+.auth0-switch-mode {
+  font-size: 13px;
+  color: #b3b3b3;
+  text-align: center;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #333333;
+}
+
+.auth0-switch-link {
+  color: #d4a574;
+  text-decoration: none;
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+.auth0-switch-link:hover {
+  text-decoration: underline;
+  color: #c19456;
+}
+
 .auth0-error {
   background: rgba(239, 68, 68, 0.1);
   border: 1px solid rgba(239, 68, 68, 0.3);
@@ -1123,4 +1158,25 @@ window.getCurrentUser = function() {
 
 window.isUserAuthenticated = function() {
   return seliraAuth?.isAuthenticated() || false;
+};
+
+// Switch between login and signup modes
+window.switchToLogin = function(event) {
+  event.preventDefault();
+  if (seliraAuth) {
+    seliraAuth.closeModal();
+    setTimeout(() => {
+      seliraAuth.openModal('login');
+    }, 100);
+  }
+};
+
+window.switchToSignup = function(event) {
+  event.preventDefault();
+  if (seliraAuth) {
+    seliraAuth.closeModal();
+    setTimeout(() => {
+      seliraAuth.openModal('signup');
+    }, 100);
+  }
 };
