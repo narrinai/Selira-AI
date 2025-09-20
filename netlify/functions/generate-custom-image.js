@@ -115,7 +115,7 @@ exports.handler = async (event, context) => {
       };
     }
 
-    const { customPrompt, characterName, category, style, shotType, sex, ethnicity, hairLength, hairColor } = body;
+    const { customPrompt, characterName, category, style, shotType, sex, ethnicity, hairLength, hairColor, email, auth0_id } = body;
     
     console.log(`📋 [${requestId}] Received:`, {
       customPrompt,
@@ -132,9 +132,55 @@ exports.handler = async (event, context) => {
     if (!customPrompt) {
       return {
         statusCode: 400,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         body: JSON.stringify({ error: 'Missing custom prompt' })
       };
+    }
+
+    // Check hourly image limits for authenticated users
+    if (email || auth0_id) {
+      console.log(`🔍 [${requestId}] Checking hourly limits for user:`, { email, auth0_id });
+
+      try {
+        const limitResponse = await fetch(`${process.env.NETLIFY_FUNCTIONS_URL || 'https://selira.ai/.netlify/functions'}/check-image-limit`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, auth0_id })
+        });
+
+        const limitData = await limitResponse.json();
+
+        if (limitResponse.status === 429) {
+          console.log(`🚫 [${requestId}] User exceeded hourly limit:`, limitData);
+          return {
+            statusCode: 429,
+            headers: {
+              ...corsHeaders,
+              'Content-Type': 'application/json',
+              'Retry-After': '3600'
+            },
+            body: JSON.stringify({
+              error: limitData.error,
+              plan: limitData.plan,
+              limit: limitData.limit,
+              usage: limitData.usage,
+              retryAfter: 3600
+            })
+          };
+        }
+
+        if (!limitResponse.ok) {
+          console.warn(`⚠️ [${requestId}] Could not check limits (${limitResponse.status}), allowing generation`);
+        } else {
+          console.log(`✅ [${requestId}] Limit check passed:`, limitData);
+          // Store limit data for later use when incrementing
+          body.limitData = limitData;
+        }
+      } catch (limitError) {
+        console.warn(`⚠️ [${requestId}] Limit check failed, allowing generation:`, limitError.message);
+      }
+    } else {
+      console.log(`👤 [${requestId}] Anonymous user - no limit checking`);
     }
     
     // Use explicit style if provided, otherwise auto-detect

@@ -144,6 +144,60 @@
       align-items: center;
     }
 
+    .hero-badge {
+      margin-bottom: 20px;
+    }
+
+    .free-badge {
+      background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+      color: white;
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-size: 16px;
+      font-weight: 700;
+      display: inline-block;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 15px rgba(212, 165, 116, 0.3);
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% {
+        box-shadow: 0 4px 15px rgba(212, 165, 116, 0.3);
+        transform: scale(1);
+      }
+      50% {
+        box-shadow: 0 6px 25px rgba(212, 165, 116, 0.5);
+        transform: scale(1.02);
+      }
+    }
+
+    .free-features {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin: 24px 0 32px 0;
+      padding: 20px;
+      background: rgba(212, 165, 116, 0.08);
+      border: 1px solid rgba(212, 165, 116, 0.2);
+      border-radius: 16px;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .feature-icon {
+      font-size: 20px;
+      width: 24px;
+      text-align: center;
+    }
+
     .hero-content h1 {
       font-family: 'Playfair Display', serif;
       font-size: 52px;
@@ -824,6 +878,24 @@
         text-align: center;
       }
 
+      .free-badge {
+        font-size: 14px;
+        padding: 10px 20px;
+      }
+
+      .free-features {
+        margin: 20px 0 24px 0;
+        padding: 16px;
+      }
+
+      .feature-item {
+        font-size: 14px;
+      }
+
+      .feature-icon {
+        font-size: 18px;
+      }
+
       .section {
         padding: 40px 20px;
       }
@@ -913,10 +985,27 @@
   <!-- Hero Section -->
   <section class="hero">
     <div class="hero-content">
+      <div class="hero-badge">
+        <span class="free-badge">✨ Always Free Chat</span>
+      </div>
       <h1>Craft Your Perfect <span class="highlight">AI Companion</span></h1>
       <p>Discover thousands of unique AI characters or create your own. Engage in meaningful conversations, explore diverse personalities, and experience immersive storytelling like never before.</p>
+      <div class="free-features">
+        <div class="feature-item">
+          <span class="feature-icon">💬</span>
+          <span>Unlimited free conversations</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">🎭</span>
+          <span>1000+ characters available</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">🚀</span>
+          <span>No message limits</span>
+        </div>
+      </div>
       <div class="hero-actions">
-        <a href="/category.html" class="primary-btn">Start Free →</a>
+        <a href="/category.html" class="primary-btn">Start Free Chat →</a>
         <a href="#discover" class="secondary-btn">Discover More</a>
       </div>
     </div>
