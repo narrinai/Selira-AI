@@ -2835,10 +2835,15 @@
         
         // Use character appearance data if available, otherwise fallback
         const characterSex = currentCharacter.sex || 'female';
-        const characterEthnicity = currentCharacter.ethnicity || 'white';  
+        const characterEthnicity = currentCharacter.ethnicity || 'white';
         const characterHairLength = currentCharacter.hair_length || 'medium';
         const characterHairColor = currentCharacter.hair_color || 'brown';
-        
+
+        // Get user info for rate limiting
+        const user = window.getCurrentUser ? window.getCurrentUser() : null;
+        const userEmail = user?.email;
+        const userAuth0Id = user?.sub || user?.auth0_id;
+
         const response = await fetch('/.netlify/functions/generate-custom-image', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -2851,7 +2856,9 @@
             sex: characterSex,
             ethnicity: characterEthnicity,
             hairLength: characterHairLength,
-            hairColor: characterHairColor
+            hairColor: characterHairColor,
+            email: userEmail,
+            auth0_id: userAuth0Id
           })
         });
         
@@ -2872,7 +2879,24 @@
           if (loadingMsg) {
             const messageText = loadingMsg.querySelector('.message-text');
             if (messageText) {
-              messageText.textContent = `⏱️ Please wait a moment before generating another image. Try again in ${error.retryAfter || 2} seconds.`;
+              // Check if it's hourly limit or request cooldown
+              if (error.plan && error.limit) {
+                // Hourly plan limit reached
+                messageText.innerHTML = `
+                  <div style="color: #ff6b6b; font-weight: 500;">
+                    🚫 ${error.plan} Plan Limit Reached
+                  </div>
+                  <div style="margin-top: 8px; color: #666; font-size: 14px;">
+                    You've used ${error.usage}/${error.limit} images this hour.
+                  </div>
+                  <div style="margin-top: 8px; color: #666; font-size: 14px;">
+                    ${error.plan === 'Basic' ? 'Upgrade to Premium for 20 images per hour!' : 'Try again in the next hour.'}
+                  </div>
+                `;
+              } else {
+                // Regular rate limit (5 second cooldown)
+                messageText.textContent = `⏱️ Please wait a moment before generating another image. Try again in ${error.retryAfter || 2} seconds.`;
+              }
             }
           }
         } else {
