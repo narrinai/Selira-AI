@@ -2827,7 +2827,7 @@
               <div style="margin-bottom: 16px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                   <span style="color: var(--text-secondary); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Daily Usage</span>
-                  <span style="color: var(--text-primary); font-size: 12px; font-weight: 600;" id="currentUsage">3/5 messages</span>
+                  <span style="color: var(--text-primary); font-size: 12px; font-weight: 600;" id="currentUsage">Unlimited</span>
                 </div>
                 <div class="usage-bar" style="
                   background: rgba(236, 72, 153, 0.2);
@@ -3057,7 +3057,7 @@
                   font-size: 10px;
                 ">
                   <span class="feature-icon" style="color: var(--success); font-weight: 700;">✓</span>
-                  <span class="feature-text">5 messages per day</span>
+                  <span class="feature-text">Unlimited messages</span>
                 </li>
                 <li class="feature-item" style="
                   display: flex;
@@ -3691,7 +3691,7 @@ Please be thorough and include important details from our conversations.`;
         
         // Mock usage data (connect to your actual usage tracking)
         const mockUsage = Math.floor(Math.random() * 50) + 10;
-        const planLimit = currentPlan === 'Free Trial' ? '5 messages/day' : 'Unlimited';
+        const planLimit = 'Unlimited';
         
         document.getElementById('currentUsage').textContent = `${mockUsage} messages`;
         document.getElementById('planLimit').textContent = planLimit;

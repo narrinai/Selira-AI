@@ -1567,9 +1567,71 @@
     async function sendMessage() {
       const messageInput = document.getElementById('messageInput');
       const message = messageInput.value.trim();
-      
+
       if (!message) return;
-      
+
+      // Check authentication first
+      const isAuthenticated = window.isUserAuthenticated ? window.isUserAuthenticated() : false;
+      const user = window.getCurrentUser ? window.getCurrentUser() : null;
+
+      if (!isAuthenticated || !user) {
+        // Show login prompt instead of sending message
+        console.log('🔒 User not authenticated, showing login prompt');
+
+        // Show custom popup with login/register options
+        const modal = document.createElement('div');
+        modal.style.cssText = `
+          position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+          background: rgba(0,0,0,0.8); z-index: 10000;
+          display: flex; align-items: center; justify-content: center;
+          backdrop-filter: blur(8px);
+        `;
+
+        modal.innerHTML = `
+          <div style="
+            background: var(--bg-secondary); border: 1px solid var(--accent);
+            border-radius: 16px; padding: 32px; max-width: 400px; margin: 20px;
+            text-align: center;
+          ">
+            <h2 style="color: var(--accent); margin: 0 0 16px 0; font-family: 'Playfair Display', serif;">
+              Login Required
+            </h2>
+            <p style="color: var(--text-secondary); margin: 0 0 24px 0; line-height: 1.6;">
+              Please login or create an account to chat with AI companions on Selira AI.
+            </p>
+            <div style="display: flex; gap: 12px; justify-content: center;">
+              <button onclick="window.openLoginModal('login'); this.closest('[style*=fixed]').remove();" style="
+                background: var(--accent); color: white; border: none;
+                padding: 12px 24px; border-radius: 8px; font-weight: 600;
+                cursor: pointer; font-size: 14px;
+              ">Login</button>
+              <button onclick="window.openLoginModal('signup'); this.closest('[style*=fixed]').remove();" style="
+                background: transparent; color: var(--text-primary);
+                border: 1px solid var(--border); padding: 12px 24px;
+                border-radius: 8px; font-weight: 600; cursor: pointer;
+                font-size: 14px;
+              ">Sign Up</button>
+              <button onclick="this.closest('[style*=fixed]').remove();" style="
+                background: transparent; color: var(--text-secondary);
+                border: 1px solid var(--border); padding: 12px 24px;
+                border-radius: 8px; font-weight: 600; cursor: pointer;
+                font-size: 14px;
+              ">Cancel</button>
+            </div>
+          </div>
+        `;
+
+        document.body.appendChild(modal);
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) modal.remove();
+        });
+
+        // Clear the input
+        messageInput.value = '';
+        autoResizeTextarea();
+        return;
+      }
+
       // Check if this is an image request
       if (message.toLowerCase().startsWith('send me a picture')) {
         await handleImageRequest(message);
@@ -1577,43 +1639,30 @@
         autoResizeTextarea();
         return;
       }
-      
+
       // Add user message
       addMessage(message, 'user');
       messageInput.value = '';
       autoResizeTextarea();
-      
+
       // User message will be saved together with AI response
-      
+
       // Show typing indicator
       const typingIndicator = addTypingIndicator();
-      
+
       try {
-        // Get user data for API call - handle both authenticated and anonymous users
-        let auth0_id = 'anonymous';
-        let user_email = 'anonymous';
-        let user_data = null;
-        try {
-          const user = JSON.parse(localStorage.getItem('user') || '{}');
-          auth0_id = user.sub || user.uid || user.auth0_id || user.email || 'anonymous';
-          user_email = user.email || user.sub || 'anonymous';
-          user_data = user;
-          console.log('👤 User data found:', { 
-            auth0_id: auth0_id, 
-            email: user_email, 
-            userKeys: Object.keys(user) 
-          });
-          
-          // Memory sync re-enabled now that functions are working
-          console.log('🧠 Memory sync enabled - loading memories...');
-          await loadMemoriesForContext(currentCharacter.slug, auth0_id);
-          
-        } catch (e) {
-          // If no user data, use anonymous
-          auth0_id = 'anonymous';
-          user_email = 'anonymous';
-          console.log('👤 No user data found, using anonymous');
-        }
+        // Use authenticated user data
+        const auth0_id = user.sub || user.uid || user.auth0_id;
+        const user_email = user.email;
+
+        console.log('👤 Authenticated user:', {
+          auth0_id: auth0_id,
+          email: user_email
+        });
+
+        // Memory sync for authenticated users
+        console.log('🧠 Memory sync enabled - loading memories...');
+        await loadMemoriesForContext(currentCharacter.slug, auth0_id);
         
         // Get chat history for context
         const chatHistory = getChatHistoryForContext(currentCharacter.slug);

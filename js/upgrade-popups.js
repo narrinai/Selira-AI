@@ -236,7 +236,7 @@ function getUpgradeContent(usage, quota, type) {
   };
   
   const subtitles = {
-    messages: `You've used all <strong>${quota} free messages</strong>.<br><br>Upgrade to Basic or Premium for unlimited messaging with all your companions!`,
+    messages: `<strong>Authentication Required</strong><br><br>Please login or sign up to chat with AI companions. It's free and takes just a moment!`,
     companions: `You've reached your limit of <strong>${quota} active companions</strong> on the Free plan.<br><br>To activate this companion, you need to pause another one first, or upgrade your plan.`,
     tts: `<strong>Text-to-Speech is a premium feature.</strong><br><br>You tried to use voice messages, but this feature is only available on the Premium plan. Upgrade now to hear your companions speak!`,
     stt: `<strong>Speech-to-Text is a premium feature.</strong><br><br>You tried to use voice input, but this feature is only available on the Premium plan. Upgrade now to talk naturally with your companions!`

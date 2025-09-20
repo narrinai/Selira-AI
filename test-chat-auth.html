@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Chat Authentication - Selira AI</title>
+  <link rel="stylesheet" href="shared-styles.css">
+</head>
+<body>
+  <div style="padding: 40px; max-width: 800px; margin: 0 auto;">
+    <h1>Chat Authentication Test</h1>
+
+    <div style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin: 20px 0;">
+      <h2>Test Results</h2>
+      <p id="authStatus" style="color: var(--text-secondary); margin: 10px 0;">Checking authentication...</p>
+      <p id="userInfo" style="color: var(--text-secondary); margin: 10px 0;">Loading user info...</p>
+    </div>
+
+    <div style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin: 20px 0;">
+      <h2>Changes Implemented:</h2>
+      <ul style="color: var(--text-secondary); line-height: 1.8;">
+        <li>✅ Users must login/register to chat</li>
+        <li>✅ Removed all 5 message per day limits</li>
+        <li>✅ Updated all references to show "Unlimited messages"</li>
+        <li>✅ Authentication popup shows when non-logged users try to chat</li>
+        <li>✅ Free accounts now have unlimited messages (after login)</li>
+      </ul>
+    </div>
+
+    <div style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin: 20px 0;">
+      <h2>Test Actions:</h2>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px;">
+        <button onclick="testLogin()" class="primary-btn">Test Login Modal</button>
+        <button onclick="testSignup()" class="primary-btn">Test Signup Modal</button>
+        <button onclick="testLogout()" class="secondary-btn">Test Logout</button>
+        <button onclick="window.location.href='/chat.html'" class="primary-btn">Go to Chat</button>
+      </div>
+    </div>
+
+    <div style="background: var(--bg-tertiary); border: 1px solid var(--accent); border-radius: 12px; padding: 20px; margin: 20px 0;">
+      <h3 style="color: var(--accent); margin-bottom: 10px;">How to Test:</h3>
+      <ol style="color: var(--text-secondary); line-height: 1.8; margin-left: 20px;">
+        <li>Click "Test Logout" to ensure you're logged out</li>
+        <li>Click "Go to Chat" and try sending a message</li>
+        <li>You should see a login/register popup instead of the message being sent</li>
+        <li>Click "Test Login Modal" to login</li>
+        <li>After login, try chatting again - it should work with unlimited messages</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Auth0 Authentication System -->
+  <script src="/js/auth0-login.js"></script>
+
+  <script>
+    // Check authentication status on load
+    window.addEventListener('DOMContentLoaded', async function() {
+      checkAuthStatus();
+
+      // Listen for auth state changes
+      window.addEventListener('auth-state-changed', function(e) {
+        console.log('Auth state changed:', e.detail);
+        checkAuthStatus();
+      });
+    });
+
+    function checkAuthStatus() {
+      const isAuthenticated = window.isUserAuthenticated ? window.isUserAuthenticated() : false;
+      const user = window.getCurrentUser ? window.getCurrentUser() : null;
+
+      document.getElementById('authStatus').innerHTML = isAuthenticated
+        ? '✅ <strong style="color: var(--success);">Authenticated</strong> - User can chat with unlimited messages'
+        : '❌ <strong style="color: var(--error);">Not Authenticated</strong> - User must login to chat';
+
+      document.getElementById('userInfo').innerHTML = user
+        ? `👤 User: <strong>${user.email || user.name || 'Unknown'}</strong> (${user.sub || 'No ID'})`
+        : '👤 No user logged in';
+    }
+
+    function testLogin() {
+      if (window.openLoginModal) {
+        window.openLoginModal('login');
+      } else {
+        alert('Login system not loaded yet');
+      }
+    }
+
+    function testSignup() {
+      if (window.openLoginModal) {
+        window.openLoginModal('signup');
+      } else {
+        alert('Signup system not loaded yet');
+      }
+    }
+
+    function testLogout() {
+      if (window.logout) {
+        window.logout();
+      } else {
+        alert('Logout system not loaded yet');
+      }
+    }
+  </script>
+</body>
+</html>
