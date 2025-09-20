@@ -434,6 +434,31 @@ exports.handler = async (event, context) => {
     
     console.log(`✅ [${requestId}] Custom image generated successfully:`, imageUrl);
 
+    // Increment usage counter for authenticated users
+    if (body.limitData && (email || auth0_id)) {
+      console.log(`📈 [${requestId}] Incrementing usage counter`);
+      try {
+        const incrementResponse = await fetch(`${process.env.NETLIFY_FUNCTIONS_URL || 'https://selira.ai/.netlify/functions'}/increment-image-usage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId: body.limitData.userId,
+            usageRecordId: body.limitData.usageRecordId,
+            currentHour: body.limitData.currentHour
+          })
+        });
+
+        if (incrementResponse.ok) {
+          const incrementData = await incrementResponse.json();
+          console.log(`✅ [${requestId}] Usage incremented to:`, incrementData.newCount);
+        } else {
+          console.warn(`⚠️ [${requestId}] Failed to increment usage counter`);
+        }
+      } catch (incrementError) {
+        console.warn(`⚠️ [${requestId}] Error incrementing usage:`, incrementError.message);
+      }
+    }
+
     // Decrement active requests counter
     activeReplicateRequests--;
     console.log(`📊 [${requestId}] Completed. Active requests now: ${activeReplicateRequests}`);
