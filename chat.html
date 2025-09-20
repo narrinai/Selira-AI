@@ -1575,56 +1575,17 @@
       const user = window.getCurrentUser ? window.getCurrentUser() : null;
 
       if (!isAuthenticated || !user) {
-        // Show login prompt instead of sending message
-        console.log('🔒 User not authenticated, showing login prompt');
+        // Show signup modal directly (which has login link at bottom)
+        console.log('🔒 User not authenticated, showing signup modal');
 
-        // Show custom popup with login/register options
-        const modal = document.createElement('div');
-        modal.style.cssText = `
-          position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-          background: rgba(0,0,0,0.8); z-index: 10000;
-          display: flex; align-items: center; justify-content: center;
-          backdrop-filter: blur(8px);
-        `;
-
-        modal.innerHTML = `
-          <div style="
-            background: var(--bg-secondary); border: 1px solid var(--accent);
-            border-radius: 16px; padding: 32px; max-width: 400px; margin: 20px;
-            text-align: center;
-          ">
-            <h2 style="color: var(--accent); margin: 0 0 16px 0; font-family: 'Playfair Display', serif;">
-              Login Required
-            </h2>
-            <p style="color: var(--text-secondary); margin: 0 0 24px 0; line-height: 1.6;">
-              Please login or create an account to chat with AI companions on Selira AI.
-            </p>
-            <div style="display: flex; gap: 12px; justify-content: center;">
-              <button onclick="window.openLoginModal('login'); this.closest('[style*=fixed]').remove();" style="
-                background: var(--accent); color: white; border: none;
-                padding: 12px 24px; border-radius: 8px; font-weight: 600;
-                cursor: pointer; font-size: 14px;
-              ">Login</button>
-              <button onclick="window.openLoginModal('signup'); this.closest('[style*=fixed]').remove();" style="
-                background: transparent; color: var(--text-primary);
-                border: 1px solid var(--border); padding: 12px 24px;
-                border-radius: 8px; font-weight: 600; cursor: pointer;
-                font-size: 14px;
-              ">Sign Up</button>
-              <button onclick="this.closest('[style*=fixed]').remove();" style="
-                background: transparent; color: var(--text-secondary);
-                border: 1px solid var(--border); padding: 12px 24px;
-                border-radius: 8px; font-weight: 600; cursor: pointer;
-                font-size: 14px;
-              ">Cancel</button>
-            </div>
-          </div>
-        `;
-
-        document.body.appendChild(modal);
-        modal.addEventListener('click', (e) => {
-          if (e.target === modal) modal.remove();
-        });
+        // Open the signup modal directly
+        if (window.openLoginModal) {
+          window.openLoginModal('signup');
+        } else {
+          // Fallback if auth system not loaded yet
+          console.error('Auth system not ready, showing fallback message');
+          alert('Please sign up or login to chat with AI companions on Selira AI.');
+        }
 
         // Clear the input
         messageInput.value = '';
