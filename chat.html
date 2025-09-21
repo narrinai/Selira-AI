@@ -1135,6 +1135,216 @@
       from { transform: scale(0.5); opacity: 0; }
       to { transform: scale(1); opacity: 1; }
     }
+
+    /* Image Upgrade Modal Styles */
+    .image-upgrade-modal {
+      display: none;
+      position: fixed;
+      z-index: 10001;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
+      animation: fadeIn 0.3s ease;
+    }
+
+    .image-upgrade-modal.show {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .image-upgrade-content {
+      background: var(--bg-primary);
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 480px;
+      width: 90vw;
+      box-shadow: 0 16px 64px rgba(0, 0, 0, 0.4);
+      animation: zoomIn 0.3s ease;
+      border: 1px solid var(--border);
+    }
+
+    .image-upgrade-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .image-upgrade-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .image-upgrade-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .image-upgrade-subtitle {
+      color: var(--text-secondary);
+      font-size: 16px;
+    }
+
+    .image-upgrade-features {
+      margin: 24px 0;
+    }
+
+    .image-upgrade-feature {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+    }
+
+    .image-upgrade-feature-icon {
+      margin-right: 12px;
+      font-size: 20px;
+      color: var(--accent);
+    }
+
+    .image-upgrade-buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .image-upgrade-btn {
+      flex: 1;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      text-align: center;
+      transition: all 0.2s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .image-upgrade-btn.primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .image-upgrade-btn.primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-2px);
+    }
+
+    .image-upgrade-btn.secondary {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+
+    .image-upgrade-btn.secondary:hover {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    .image-upgrade-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 24px;
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.2s ease;
+    }
+
+    .image-upgrade-close:hover {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    /* Image Suggestions Enhancement Styles */
+    .image-upgrade-notice {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .upgrade-notice-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .upgrade-notice-icon {
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+
+    .upgrade-notice-text {
+      flex: 1;
+    }
+
+    .upgrade-notice-title {
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .upgrade-notice-subtitle {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .upgrade-notice-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .upgrade-notice-btn:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+
+    .image-plan-info {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+
+    .plan-badge {
+      background: var(--accent);
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    .plan-remaining {
+      color: var(--text-secondary);
+    }
   </style>
 </head>
 <body>
@@ -1143,6 +1353,43 @@
     <div class="avatar-modal-content">
       <button class="avatar-modal-close" onclick="closeAvatarModal()">&times;</button>
       <img id="avatarModalImage" src="" alt="Character Avatar">
+    </div>
+  </div>
+
+  <!-- Image Upgrade Modal -->
+  <div class="image-upgrade-modal" id="imageUpgradeModal">
+    <div class="image-upgrade-content">
+      <button class="image-upgrade-close" onclick="closeImageUpgradeModal()">&times;</button>
+
+      <div class="image-upgrade-header">
+        <div class="image-upgrade-icon">🎨</div>
+        <div class="image-upgrade-title" id="upgradeModalTitle">Unlock Image Generation</div>
+        <div class="image-upgrade-subtitle" id="upgradeModalSubtitle">Generate beautiful AI images of your characters</div>
+      </div>
+
+      <div class="image-upgrade-features">
+        <div class="image-upgrade-feature">
+          <div class="image-upgrade-feature-icon">✨</div>
+          <div>AI-powered character images</div>
+        </div>
+        <div class="image-upgrade-feature">
+          <div class="image-upgrade-feature-icon">🎯</div>
+          <div>Custom poses and scenarios</div>
+        </div>
+        <div class="image-upgrade-feature">
+          <div class="image-upgrade-feature-icon">⚡</div>
+          <div>Fast generation with Flux AI</div>
+        </div>
+        <div class="image-upgrade-feature">
+          <div class="image-upgrade-feature-icon">🔄</div>
+          <div id="imageLimit">10 images per hour (Basic) • 20 images per hour (Premium)</div>
+        </div>
+      </div>
+
+      <div class="image-upgrade-buttons">
+        <button class="image-upgrade-btn secondary" onclick="closeImageUpgradeModal()">Maybe Later</button>
+        <a href="/pricing" class="image-upgrade-btn primary" id="upgradeButton">Upgrade Now</a>
+      </div>
     </div>
   </div>
 
@@ -1536,7 +1783,7 @@
     }
 
     // Show image prompt suggestions
-    function showImagePromptSuggestions() {
+    async function showImagePromptSuggestions() {
       if (!currentCharacter || !currentCharacter.name) return;
 
       const suggestions = generateImagePromptSuggestions(currentCharacter);
@@ -1545,17 +1792,48 @@
 
       if (!suggestionContainer || !suggestionsDiv) return;
 
+      // Check user permissions
+      const permissions = await checkUserImagePermissions();
+
       // Clear existing suggestions
       suggestionContainer.innerHTML = '';
 
-      // Add new suggestion buttons
-      suggestions.forEach(suggestion => {
-        const button = document.createElement('button');
-        button.className = 'suggestion-button';
-        button.textContent = suggestion;
-        button.onclick = () => useSuggestion(suggestion);
-        suggestionContainer.appendChild(button);
-      });
+      if (!permissions.canGenerate) {
+        // Show upgrade notice instead of suggestions
+        const upgradeNotice = document.createElement('div');
+        upgradeNotice.className = 'image-upgrade-notice';
+        upgradeNotice.innerHTML = `
+          <div class="upgrade-notice-content">
+            <span class="upgrade-notice-icon">🔒</span>
+            <div class="upgrade-notice-text">
+              <div class="upgrade-notice-title">${permissions.plan === 'Guest' ? 'Login Required' : 'Upgrade Required'}</div>
+              <div class="upgrade-notice-subtitle">${permissions.plan === 'Guest' ? 'Sign up to generate images' : 'Image generation requires Basic plan or higher'}</div>
+            </div>
+            <button class="upgrade-notice-btn" onclick="showImageUpgradeModal(${JSON.stringify(permissions).replace(/"/g, '&quot;')})">
+              ${permissions.plan === 'Guest' ? 'Sign Up' : 'Upgrade'}
+            </button>
+          </div>
+        `;
+        suggestionContainer.appendChild(upgradeNotice);
+      } else {
+        // Show suggestions with plan info
+        const planInfo = document.createElement('div');
+        planInfo.className = 'image-plan-info';
+        planInfo.innerHTML = `
+          <span class="plan-badge">${permissions.plan}</span>
+          <span class="plan-remaining">${permissions.remaining || 0} / ${permissions.limit || 0} images left this hour</span>
+        `;
+        suggestionContainer.appendChild(planInfo);
+
+        // Add suggestion buttons
+        suggestions.forEach(suggestion => {
+          const button = document.createElement('button');
+          button.className = 'suggestion-button';
+          button.textContent = suggestion;
+          button.onclick = () => useSuggestion(suggestion);
+          suggestionContainer.appendChild(button);
+        });
+      }
 
       // Show suggestions
       suggestionsDiv.classList.add('visible');
@@ -2938,8 +3216,59 @@
       });
     }
 
+    // Check if user can generate images
+    async function checkUserImagePermissions() {
+      const user = window.getCurrentUser ? window.getCurrentUser() : null;
+      if (!user?.email && !user?.sub) {
+        return { canGenerate: false, plan: 'Guest', reason: 'Please log in to generate images' };
+      }
+
+      try {
+        const response = await fetch('/.netlify/functions/check-image-limit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: user.email,
+            auth0_id: user.sub || user.auth0_id
+          })
+        });
+
+        if (response.status === 403) {
+          const error = await response.json();
+          return {
+            canGenerate: false,
+            plan: error.plan || 'Free',
+            reason: 'Image generation requires Basic plan or higher'
+          };
+        }
+
+        if (response.ok) {
+          const data = await response.json();
+          return {
+            canGenerate: true,
+            plan: data.plan,
+            remaining: data.remaining,
+            limit: data.limit
+          };
+        }
+
+        return { canGenerate: true, plan: 'Unknown' }; // Default to allow if check fails
+      } catch (error) {
+        console.warn('⚠️ Could not check image permissions:', error);
+        return { canGenerate: true, plan: 'Unknown' }; // Default to allow if check fails
+      }
+    }
+
     // Request image function - fills input with "Send me a picture "
-    function requestImage() {
+    async function requestImage() {
+      // Check user permissions first
+      const permissions = await checkUserImagePermissions();
+
+      if (!permissions.canGenerate) {
+        showImageUpgradeModal(permissions);
+        return;
+      }
+
       // Check if suggestions are already visible
       const suggestionsDiv = document.getElementById('imagePromptSuggestions');
 
@@ -2954,6 +3283,27 @@
 
 
     async function handleImageRequest(message) {
+      // Check user permissions before processing
+      const permissions = await checkUserImagePermissions();
+
+      if (!permissions.canGenerate) {
+        // Add user message first
+        addMessage(message, 'user');
+        saveUserMessageToStorage(currentCharacter.slug, message);
+
+        // Show upgrade modal and add explanation message
+        showImageUpgradeModal(permissions);
+
+        const explanationText = permissions.plan === 'Guest'
+          ? '🔐 Please log in to generate images. Create a free account to get started!'
+          : `🔐 Image generation is not available on the ${permissions.plan} plan. Upgrade to Basic or Premium to generate images!`;
+
+        setTimeout(() => {
+          addMessage('ai', explanationText);
+        }, 500);
+        return;
+      }
+
       // Extract the prompt part after "send me a picture"
       const promptPart = message.substring('send me a picture'.length).trim();
       const fullPrompt = promptPart || 'beautiful portrait';
@@ -3416,6 +3766,48 @@
           openAvatarModal(currentCharacter.avatar, currentCharacter.name);
         };
       }
+    }
+
+    // Image Upgrade Modal Functions
+    function showImageUpgradeModal(permissions) {
+      const modal = document.getElementById('imageUpgradeModal');
+      const title = document.getElementById('upgradeModalTitle');
+      const subtitle = document.getElementById('upgradeModalSubtitle');
+      const upgradeButton = document.getElementById('upgradeButton');
+
+      // Customize modal content based on user status
+      if (permissions.plan === 'Guest') {
+        title.textContent = 'Login Required';
+        subtitle.textContent = 'Create an account to start generating images';
+        upgradeButton.textContent = 'Sign Up Free';
+        upgradeButton.href = '/signup';
+      } else {
+        title.textContent = 'Unlock Image Generation';
+        subtitle.textContent = `${permissions.plan} plan doesn't include image generation`;
+        upgradeButton.textContent = 'Upgrade Plan';
+        upgradeButton.href = '/pricing';
+      }
+
+      modal.classList.add('show');
+
+      // Close modal when clicking outside
+      modal.onclick = function(event) {
+        if (event.target === modal) {
+          closeImageUpgradeModal();
+        }
+      };
+
+      // Close modal with Escape key
+      document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+          closeImageUpgradeModal();
+        }
+      });
+    }
+
+    function closeImageUpgradeModal() {
+      const modal = document.getElementById('imageUpgradeModal');
+      modal.classList.remove('show');
     }
 
     console.log('✅ Selira AI Chat interface initialized with modern design');
