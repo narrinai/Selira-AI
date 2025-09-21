@@ -2093,19 +2093,27 @@
           const cacheData = JSON.parse(cached);
           console.log('🔍 Found cached data:', cacheData);
 
-          // Check if cache is still valid (5 minutes)
-          const cacheAge = Date.now() - cacheData.timestamp;
-          const cacheValidTime = 5 * 60 * 1000; // 5 minutes
+          // Check if cache has proper structure and is valid
+          if (cacheData && cacheData.companions && Array.isArray(cacheData.companions)) {
+            // Check if cache is still valid (5 minutes) and not from the future
+            const cacheAge = Date.now() - cacheData.timestamp;
+            const cacheValidTime = 5 * 60 * 1000; // 5 minutes
 
-          if (cacheAge < cacheValidTime && cacheData.companions && Array.isArray(cacheData.companions)) {
-            console.log('✅ Using valid cached companions:', cacheData.companions.length);
-            return cacheData.companions;
+            if (cacheAge >= 0 && cacheAge < cacheValidTime) {
+              console.log('✅ Using valid cached companions:', cacheData.companions.length);
+              return cacheData.companions;
+            } else {
+              console.log('⚠️ Cache expired or has invalid timestamp, clearing and fetching fresh data');
+              localStorage.removeItem('userCompanions');
+            }
           } else {
-            console.log('⚠️ Cache expired or invalid, fetching fresh data');
+            console.log('⚠️ Cache has invalid structure, clearing and fetching fresh data');
+            localStorage.removeItem('userCompanions');
           }
         }
       } catch (error) {
         console.warn('⚠️ Error reading cache:', error);
+        localStorage.removeItem('userCompanions');
       }
 
       // First, get companions from localStorage (active chats)
