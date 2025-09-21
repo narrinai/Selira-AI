@@ -130,10 +130,10 @@ exports.handler = async (event, context) => {
     let charactersOffset = null;
 
     do {
-      // Build filter for user-created characters: public visibility AND created by this user (using Auth0 ID for Selira)
-      const createdByFilter = `AND({Visibility} = "public", {Created_by} = "${user_uid}")`;
+      // Build filter for user-created characters: ANY visibility if created by this user (using Auth0 ID for Selira)
+      const createdByFilter = `{Created_by} = "${user_uid}"`;
 
-      console.log('🔍 Filter for user-created characters:', createdByFilter);
+      console.log('🔍 Filter for user-created characters (any visibility):', createdByFilter);
       console.log('🔍 Search parameters:', { userEmail, userRecordId, user_uid });
       console.log('🔍 Primary matching on Auth0 ID (Selira):', user_uid);
 
