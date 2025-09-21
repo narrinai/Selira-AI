@@ -1,5 +1,5 @@
-// netlify/functions/get-my-companions.js
-// Gets both companions the user has chatted with AND companions they have created
+// netlify/functions/selira-get-my-companions.js
+// Gets both companions the user has chatted with AND companions they have created (Selira version)
 exports.handler = async (event, context) => {
   const headers = {
     'Access-Control-Allow-Origin': '*',
