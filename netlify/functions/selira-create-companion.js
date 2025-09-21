@@ -260,16 +260,13 @@ BOUNDARIES:
     let avatarUrlToUse = 'https://selira.ai/avatars/placeholder.webp'; // Fallback
 
     try {
-      // Call the generate-and-save-avatar function to create a custom avatar
+      // Call the generate-companion-avatar function to create a custom avatar
       console.log('🎨 Generating custom avatar with Replicate...');
 
-      const generateUrl = `${process.env.URL || 'https://selira.ai'}/.netlify/functions/selira-generate-and-save-avatar`;
+      const generateUrl = `${process.env.URL || 'https://selira.ai'}/.netlify/functions/selira-generate-companion-avatar`;
 
       const avatarPayload = {
         characterName: name,
-        characterTitle: '', // We don't have titles for new characters
-        category: 'romance', // Match the category we set
-        characterSlug: slug,
         artStyle: artStyle || 'realistic',
         sex: sex || 'female',
         ethnicity: ethnicity || 'white',
@@ -278,26 +275,32 @@ BOUNDARIES:
         tags: tags || []
       };
 
-      console.log('📤 Calling generate-and-save-avatar with:', avatarPayload);
+      console.log('📤 Calling selira-generate-companion-avatar with:', avatarPayload);
 
       const avatarResponse = await fetch(generateUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(avatarPayload)
+        body: JSON.stringify(avatarPayload),
+        timeout: 120000 // 2 minute timeout for Replicate generation
       });
 
       if (avatarResponse.ok) {
         const avatarResult = await avatarResponse.json();
-        if (avatarResult.success && avatarResult.avatarUrl) {
-          avatarUrlToUse = avatarResult.avatarUrl;
+        console.log('🎨 Avatar generation response:', avatarResult);
+
+        if (avatarResult.success && avatarResult.imageUrl) {
+          avatarUrlToUse = avatarResult.imageUrl;
           console.log('✅ Custom avatar generated:', avatarUrlToUse);
         } else {
           console.log('⚠️ Avatar generation returned success=false, using fallback');
+          console.log('⚠️ Response details:', avatarResult);
         }
       } else {
-        console.log('⚠️ Avatar generation failed with HTTP', avatarResponse.status, ', using fallback');
+        const errorText = await avatarResponse.text();
+        console.log('⚠️ Avatar generation failed with HTTP', avatarResponse.status);
+        console.log('⚠️ Error response:', errorText);
       }
     } catch (error) {
       console.log('⚠️ Avatar generation error:', error.message, ', using fallback');
