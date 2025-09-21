@@ -2115,9 +2115,15 @@
             const cacheAge = Date.now() - cacheData.timestamp;
             const cacheValidTime = 5 * 60 * 1000; // 5 minutes
 
-            if (cacheAge >= 0 && cacheAge < cacheValidTime) {
+            // Force refresh if cache has 0 companions but we expect some
+            const shouldForceRefresh = cacheData.companions.length === 0 && cacheAge > 30 * 1000; // 30 seconds
+
+            if (cacheAge >= 0 && cacheAge < cacheValidTime && !shouldForceRefresh) {
               console.log('✅ Using valid cached companions:', cacheData.companions.length);
               return cacheData.companions;
+            } else if (shouldForceRefresh) {
+              console.log('🔄 Force refreshing due to empty cache older than 30 seconds');
+              localStorage.removeItem('userCompanions');
             } else {
               console.log('⚠️ Cache expired or has invalid timestamp, clearing and fetching fresh data');
               localStorage.removeItem('userCompanions');
