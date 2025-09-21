@@ -1739,9 +1739,23 @@
       setupTabNavigation();
       setupInfiniteScroll();
 
+      // Ensure sidebar and filters are visible on page load
+      const sidebar = document.querySelector('.sidebar');
+      const filterSection = document.querySelector('.filter-section');
+
+      if (sidebar) {
+        sidebar.style.display = 'flex';
+        console.log('✅ Sidebar made visible');
+      }
+
+      if (filterSection) {
+        filterSection.style.display = 'block';
+        console.log('✅ Filter section made visible');
+      }
+
       // Default to show My Companions immediately
       currentTab = 'companions';
-      await renderMyCompanions();
+      await showMyCompanions();
     });
 
     // ===== CHARACTER LOADING =====
