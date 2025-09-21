@@ -747,7 +747,7 @@ const AUTH0_STYLES = `
   padding: 24px;
   width: 90%;
   max-width: 380px;
-  max-height: 90vh;
+  max-height: 95vh;
   overflow-y: auto;
   position: relative;
   transform: scale(0.9) translateY(20px);
@@ -818,8 +818,8 @@ const AUTH0_STYLES = `
 .auth0-social-buttons {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-bottom: 16px;
+  gap: 6px;
+  margin-bottom: 12px;
 }
 
 .auth0-social-btn {
@@ -879,7 +879,7 @@ const AUTH0_STYLES = `
 .auth0-divider {
   display: flex;
   align-items: center;
-  margin: 16px 0;
+  margin: 12px 0;
   color: #64748b;
   font-size: 13px;
 }
@@ -899,7 +899,7 @@ const AUTH0_STYLES = `
 .auth0-form {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .auth0-input-group {
@@ -980,7 +980,7 @@ const AUTH0_STYLES = `
   color: #b3b3b3;
   text-align: center;
   line-height: 1.4;
-  margin-top: 12px;
+  margin-top: 8px;
 }
 
 .auth0-terms a {
@@ -996,8 +996,8 @@ const AUTH0_STYLES = `
   font-size: 13px;
   color: #b3b3b3;
   text-align: center;
-  margin-top: 16px;
-  padding-top: 16px;
+  margin-top: 12px;
+  padding-top: 12px;
   border-top: 1px solid #333333;
   display: block !important;
   visibility: visible !important;
