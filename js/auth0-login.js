@@ -277,17 +277,15 @@ class Auth0LoginModal {
           </div>
 
           <!-- Switch Mode Links -->
-          ${isSignup ? `
-          <div class="auth0-switch-mode">
-            Already have an account?
-            <a href="#" class="auth0-switch-link" onclick="switchToLogin(event)">Login here</a>
+          <div class="auth0-switch-mode" style="display: block !important; visibility: visible !important;">
+            ${isSignup ? `
+              Already have an account?
+              <a href="#" class="auth0-switch-link" onclick="switchToLogin(event)">Login here</a>
+            ` : `
+              Don't have an account?
+              <a href="#" class="auth0-switch-link" onclick="switchToSignup(event)">Sign up here</a>
+            `}
           </div>
-          ` : `
-          <div class="auth0-switch-mode">
-            Don't have an account?
-            <a href="#" class="auth0-switch-link" onclick="switchToSignup(event)">Sign up here</a>
-          </div>
-          `}
         </div>
       </div>
     `;
@@ -1001,6 +999,8 @@ const AUTH0_STYLES = `
   margin-top: 16px;
   padding-top: 16px;
   border-top: 1px solid #333333;
+  display: block !important;
+  visibility: visible !important;
 }
 
 .auth0-switch-link {
