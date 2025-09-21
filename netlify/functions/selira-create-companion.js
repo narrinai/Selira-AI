@@ -210,7 +210,7 @@ exports.handler = async (event, context) => {
         const userLookupResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula={Email}="${userEmail}"`, {
           method: 'GET',
           headers: {
-            'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+            'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
             'Content-Type': 'application/json'
           }
         });
@@ -420,7 +420,7 @@ BOUNDARIES:
         const userResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users/${userRecordId}`, {
           method: 'GET',
           headers: {
-            'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+            'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
             'Content-Type': 'application/json'
           }
         });
@@ -436,7 +436,7 @@ BOUNDARIES:
           const updateUserResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users/${userRecordId}`, {
             method: 'PATCH',
             headers: {
-              'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+              'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
