@@ -331,10 +331,9 @@ BOUNDARIES:
       hair_color: hairColor || 'brown',
       Avatar_URL: avatarUrlToUse,
       is_unfiltered: isUnfiltered,
-      // Store creator email for finding user-created companions
-      Creator_Email: userEmail || 'unknown@example.com'
+      // Use actual Creator field that exists in Airtable
+      Created_by: displayName
       // chats and rating fields don't exist in Airtable - removed
-      // Created_By removed temporarily - it's a linked record field, not text
     };
 
     // Note: Avatar_URL is now automatically generated and included in characterData
