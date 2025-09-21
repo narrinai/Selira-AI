@@ -95,11 +95,11 @@ exports.handler = async (event, context) => {
     const userEmail = targetUser.fields.Email;
     console.log('✅ Found user:', userRecordId, userEmail);
 
-    // Step 2: Get companions from chat history - use Auth0 ID, email, and record ID for matching
-    const userFilter = `OR({User}='${userEmail}',SEARCH('${userRecordId}',ARRAYJOIN({User})),{User}='${user_uid}')`;
+    // Step 2: Get companions from chat history - use email and record ID for matching (consistent with chat saving)
+    const userFilter = `OR({User}='${userEmail}',SEARCH('${userRecordId}',ARRAYJOIN({User})))`;
     const chatHistoryUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/ChatHistory?filterByFormula=${userFilter}&sort[0][field]=CreatedTime&sort[0][direction]=desc`;
 
-    console.log('🔍 Chat history filter:', userFilter);
+    console.log('🔍 Chat history filter (email-based):', userFilter);
 
     const chatResponse = await fetch(chatHistoryUrl, {
       method: 'GET',
@@ -130,12 +130,12 @@ exports.handler = async (event, context) => {
     let charactersOffset = null;
 
     do {
-      // Build filter for user-created characters: public visibility AND created by this user (using Auth0 ID primarily)
-      const createdByFilter = `AND({Visibility} = "public", {Created_by} = "${user_uid}")`;
+      // Build filter for user-created characters: public visibility AND created by this user (using email as primary identifier)
+      const createdByFilter = `AND({Visibility} = "public", {Created_by} = "${userEmail}")`;
 
       console.log('🔍 Filter for user-created characters:', createdByFilter);
       console.log('🔍 Search parameters:', { userEmail, userRecordId, user_uid });
-      console.log('🔍 Primary matching on Auth0 ID:', user_uid);
+      console.log('🔍 Primary matching on email:', userEmail);
 
       const userCreatedUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters?filterByFormula=${encodeURIComponent(createdByFilter)}${charactersOffset ? `&offset=${charactersOffset}` : ''}`;
 
