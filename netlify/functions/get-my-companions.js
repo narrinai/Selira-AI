@@ -128,8 +128,11 @@ exports.handler = async (event, context) => {
     let charactersOffset = null;
 
     do {
-      // Build filter for user-created characters: public visibility AND created by this user (using email or displayName)
-      const createdByFilter = `AND({Visibility} = "public", OR({Created_by} = "${userEmail}", {Created_by} = "${userRecordId}", SEARCH("${userEmail}", {Created_by})))`;
+      // Build filter for user-created characters: public visibility AND created by this user (using email, recordId, or Auth0 ID)
+      const createdByFilter = `AND({Visibility} = "public", OR({Created_by} = "${userEmail}", {Created_by} = "${userRecordId}", {Created_by} = "${user_uid}", SEARCH("${userEmail}", {Created_by})))`;
+
+      console.log('🔍 Filter for user-created characters:', createdByFilter);
+      console.log('🔍 Search parameters:', { userEmail, userRecordId, user_uid });
 
       const userCreatedUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters?filterByFormula=${encodeURIComponent(createdByFilter)}${charactersOffset ? `&offset=${charactersOffset}` : ''}`;
 
@@ -140,10 +143,11 @@ exports.handler = async (event, context) => {
 
       if (userCreatedResponse.ok) {
         const pageData = await userCreatedResponse.json();
+        console.log('✅ Found', pageData.records.length, 'user-created characters in this page');
         userCreatedCharacters = userCreatedCharacters.concat(pageData.records);
         charactersOffset = pageData.offset;
       } else {
-        console.log('⚠️ Could not fetch user-created characters');
+        console.log('⚠️ Could not fetch user-created characters:', userCreatedResponse.status, userCreatedResponse.statusText);
         break;
       }
     } while (charactersOffset);

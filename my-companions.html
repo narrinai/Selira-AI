@@ -1575,7 +1575,7 @@
       <!-- Navigation -->
       <nav class="sidebar-nav">
         <a href="/category" class="nav-item">
-          <span class="nav-item-icon">🔍</span>
+          <span class="nav-item-icon">👥</span>
           <span>Discover</span>
         </a>
         <a href="/my-companions" class="nav-item active">
@@ -1587,15 +1587,8 @@
           <span>Create</span>
         </a>
 
-        <div class="nav-section-title">Data</div>
-        
-        <a href="/memory-import" class="nav-item">
-          <span class="nav-item-icon">📋</span>
-          <span>Memory Import</span>
-        </a>
-
         <div class="nav-section-title">Account</div>
-        
+
         <a href="/profile" class="nav-item">
           <span class="nav-item-icon">👤</span>
           <span>Profile</span>
@@ -1948,11 +1941,11 @@
           <div class="character-stats-overlay">
             <div class="stat-badge">
               <span>💬</span>
-              <span>${character.chats}</span>
+              <span>${character.chats || '0'}</span>
             </div>
             <div class="stat-badge">
               <span>⭐</span>
-              <span>${character.rating}</span>
+              <span>${character.rating || '4.5'}</span>
             </div>
           </div>
           
@@ -1966,8 +1959,8 @@
             
             <!-- Stats for mobile (shown in character-info, hidden overlay on mobile) -->
             <div class="character-stats">
-              <span>💬 ${character.chats}</span>
-              <span>⭐ ${character.rating}</span>
+              <span>💬 ${character.chats || '0'}</span>
+              <span>⭐ ${character.rating || '4.5'}</span>
             </div>
             
             <!-- Tags -->
@@ -2325,8 +2318,8 @@
       grid.innerHTML = userCompanions.map(character => `
         <div class="character-card ${character.isUserCreated ? 'user-created' : ''}" onclick="openCharacter('${character.slug}')">
           ${character.avatar ?
-            `<img src="${character.avatar}" alt="${character.name}" class="character-image" loading="lazy">` :
-            `<div class="character-image-placeholder">${character.name.charAt(0)}</div>`
+            `<img src="${character.avatar}" alt="${character.name || character.slug}" class="character-image" loading="lazy">` :
+            `<div class="character-image-placeholder">${(character.name || character.slug || 'Unknown').charAt(0).toUpperCase()}</div>`
           }
 
           <!-- Show different icons for user-created vs. chatted companions -->
@@ -2346,26 +2339,26 @@
           <div class="character-stats-overlay">
             <div class="stat-badge">
               <span>💬</span>
-              <span>${character.chats}</span>
+              <span>${character.chats || '0'}</span>
             </div>
             <div class="stat-badge">
               <span>⭐</span>
-              <span>${character.rating}</span>
+              <span>${character.rating || '4.5'}</span>
             </div>
           </div>
 
           <div class="character-info">
-            <h3 class="character-name">${character.name}</h3>
+            <h3 class="character-name">${character.name || character.slug || 'Unknown'}</h3>
             <div class="character-creator">
-              <span>@${character.creator}</span>
+              <span>@${character.creator || 'Selira'}</span>
               ${character.isUserCreated ? '<span class="creator-indicator"> (You)</span>' : ''}
             </div>
-            <p class="character-description">${character.description}</p>
+            <p class="character-description">${character.description || 'No description available'}</p>
 
             <!-- Stats for mobile (shown in character-info, hidden overlay on mobile) -->
             <div class="character-stats">
-              <span>💬 ${character.chats}</span>
-              <span>⭐ ${character.rating}</span>
+              <span>💬 ${character.chats || '0'}</span>
+              <span>⭐ ${character.rating || '4.5'}</span>
             </div>
 
             <div class="character-tags">
@@ -3412,11 +3405,11 @@
           <div class="character-stats-overlay">
             <div class="stat-badge">
               <span>💬</span>
-              <span>${character.chats}</span>
+              <span>${character.chats || '0'}</span>
             </div>
             <div class="stat-badge">
               <span>⭐</span>
-              <span>${character.rating}</span>
+              <span>${character.rating || '4.5'}</span>
             </div>
           </div>
           
@@ -3429,8 +3422,8 @@
             
             <!-- Stats for mobile (shown in character-info, hidden overlay on mobile) -->
             <div class="character-stats">
-              <span>💬 ${character.chats}</span>
-              <span>⭐ ${character.rating}</span>
+              <span>💬 ${character.chats || '0'}</span>
+              <span>⭐ ${character.rating || '4.5'}</span>
             </div>
             
             <div class="character-tags">
