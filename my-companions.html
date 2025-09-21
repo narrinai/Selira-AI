@@ -2115,8 +2115,8 @@
             const cacheAge = Date.now() - cacheData.timestamp;
             const cacheValidTime = 5 * 60 * 1000; // 5 minutes
 
-            // Force refresh if cache has 0 companions but we expect some
-            const shouldForceRefresh = cacheData.companions.length === 0 && cacheAge > 30 * 1000; // 30 seconds
+            // Force refresh if cache has 0 companions (always refresh empty cache for debugging)
+            const shouldForceRefresh = cacheData.companions.length === 0; // Always refresh if empty
 
             if (cacheAge >= 0 && cacheAge < cacheValidTime && !shouldForceRefresh) {
               console.log('✅ Using valid cached companions:', cacheData.companions.length);
