@@ -12,7 +12,7 @@ exports.handler = async (event, context) => {
     };
   }
 
-  const REPLICATE_API_TOKEN = process.env.REPLICATE_API_TOKEN_SELIRA || process.env.REPLICATE_API_TOKEN;
+  const REPLICATE_API_TOKEN = process.env.REPLICATE_API_TOKEN_SELIRA;
   
   console.log('🔑 Environment check:', {
     hasReplicateToken: !!REPLICATE_API_TOKEN,
@@ -30,7 +30,7 @@ exports.handler = async (event, context) => {
       },
       body: JSON.stringify({ 
         error: 'Replicate API token not configured',
-        debug: 'Please add REPLICATE_API_TOKEN to Netlify environment variables'
+        debug: 'Please add REPLICATE_API_TOKEN_SELIRA to Netlify environment variables'
       })
     };
   }

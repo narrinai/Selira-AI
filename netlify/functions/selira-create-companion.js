@@ -128,9 +128,9 @@ exports.handler = async (event, context) => {
     };
   }
 
-  // Use Selira-specific environment variables with fallback to regular ones
-  const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA || process.env.AIRTABLE_BASE_ID;
-  const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA || process.env.AIRTABLE_TOKEN || process.env.AIRTABLE_API_KEY;
+  // Use Selira-specific environment variables only
+  const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA;
+  const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA;
 
   console.log('🔑 Environment check (Selira):', {
     hasBaseId: !!AIRTABLE_BASE_ID,
@@ -140,8 +140,8 @@ exports.handler = async (event, context) => {
 
   if (!AIRTABLE_BASE_ID || !AIRTABLE_TOKEN) {
     console.error('❌ Airtable credentials not found');
-    console.error('   Tried: AIRTABLE_BASE_ID_SELIRA, AIRTABLE_BASE_ID');
-    console.error('   Tried: AIRTABLE_TOKEN_SELIRA, AIRTABLE_TOKEN, AIRTABLE_API_KEY');
+    console.error('   Missing: AIRTABLE_BASE_ID_SELIRA');
+    console.error('   Missing: AIRTABLE_TOKEN_SELIRA');
     return {
       statusCode: 500,
       headers: {
@@ -153,7 +153,7 @@ exports.handler = async (event, context) => {
         debug: 'Missing environment variables for Airtable access',
         hasBaseId: !!AIRTABLE_BASE_ID,
         hasToken: !!AIRTABLE_TOKEN,
-        checkedVars: ['AIRTABLE_BASE_ID_SELIRA', 'AIRTABLE_BASE_ID', 'AIRTABLE_TOKEN_SELIRA', 'AIRTABLE_TOKEN', 'AIRTABLE_API_KEY']
+        requiredVars: ['AIRTABLE_BASE_ID_SELIRA', 'AIRTABLE_TOKEN_SELIRA']
       })
     };
   }
