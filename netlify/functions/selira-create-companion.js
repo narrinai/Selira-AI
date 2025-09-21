@@ -202,6 +202,31 @@ exports.handler = async (event, context) => {
     // Simple text-based creator identification for now
     const displayName = createdBy || userEmail || 'Unknown User';
 
+    // Get the user record ID for linking in Created_By field
+    let userRecordId = null;
+    if (userEmail) {
+      try {
+        console.log('🔍 Looking up user record for Created_By field...');
+        const userLookupResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula={Email}="${userEmail}"`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (userLookupResponse.ok) {
+          const userLookupData = await userLookupResponse.json();
+          if (userLookupData.records && userLookupData.records.length > 0) {
+            userRecordId = userLookupData.records[0].id;
+            console.log('✅ Found user record ID:', userRecordId);
+          }
+        }
+      } catch (error) {
+        console.log('⚠️ Could not lookup user record:', error.message);
+      }
+    }
+
     // Generate slug from name (simple version without timestamp)
     const slug = name.toLowerCase()
       .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
@@ -336,6 +361,11 @@ BOUNDARIES:
       // chats and rating fields don't exist in Airtable - removed
     };
 
+    // Add Created_By field only if we have a user record ID (linked record field)
+    if (userRecordId) {
+      characterData.Created_By = [userRecordId];
+    }
+
     // Note: Avatar_URL is now automatically generated and included in characterData
 
     console.log('💾 Saving to Airtable with fields:', Object.keys(characterData));
@@ -380,6 +410,53 @@ BOUNDARIES:
     const result = JSON.parse(responseText);
     console.log('✅ Character created successfully:', result.id);
     console.log('✅ Created fields:', result.fields);
+
+    // Now update the Users table to link this character to the user
+    if (userRecordId) {
+      try {
+        console.log('🔗 Linking character to user in Users table...');
+
+        // Get the current user record to find existing characters
+        const userResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users/${userRecordId}`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (userResponse.ok) {
+          const userData = await userResponse.json();
+          const existingCharacters = userData.fields.Characters || [];
+
+          // Add the new character ID to the list
+          const updatedCharacters = [...existingCharacters, result.id];
+
+          // Update the user record with the new character list
+          const updateUserResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users/${userRecordId}`, {
+            method: 'PATCH',
+            headers: {
+              'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              fields: {
+                Characters: updatedCharacters
+              }
+            })
+          });
+
+          if (updateUserResponse.ok) {
+            console.log('✅ Successfully linked character to user');
+          } else {
+            console.log('⚠️ Failed to update user record with character link');
+          }
+        }
+      } catch (error) {
+        console.log('⚠️ Error linking character to user:', error.message);
+        // Don't fail the whole operation if user linking fails
+      }
+    }
 
     return {
       statusCode: 200,
