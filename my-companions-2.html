@@ -2086,6 +2086,28 @@
     async function getUserCompanions() {
       console.log('🔍 Starting getUserCompanions...');
 
+      // Check for cached companions first
+      try {
+        const cached = localStorage.getItem('userCompanions');
+        if (cached) {
+          const cacheData = JSON.parse(cached);
+          console.log('🔍 Found cached data:', cacheData);
+
+          // Check if cache is still valid (5 minutes)
+          const cacheAge = Date.now() - cacheData.timestamp;
+          const cacheValidTime = 5 * 60 * 1000; // 5 minutes
+
+          if (cacheAge < cacheValidTime && cacheData.companions && Array.isArray(cacheData.companions)) {
+            console.log('✅ Using valid cached companions:', cacheData.companions.length);
+            return cacheData.companions;
+          } else {
+            console.log('⚠️ Cache expired or invalid, fetching fresh data');
+          }
+        }
+      } catch (error) {
+        console.warn('⚠️ Error reading cache:', error);
+      }
+
       // First, get companions from localStorage (active chats)
       const localCompanions = getActiveChatsFromLocalStorage();
       console.log('💾 Found', localCompanions.length, 'active chats in localStorage');
