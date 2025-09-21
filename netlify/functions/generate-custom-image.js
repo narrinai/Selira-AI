@@ -169,6 +169,24 @@ exports.handler = async (event, context) => {
           };
         }
 
+        if (limitResponse.status === 403) {
+          console.log(`🚫 [${requestId}] Free plan user blocked from image generation:`, limitData);
+          return {
+            statusCode: 403,
+            headers: {
+              ...corsHeaders,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              error: limitData.error,
+              plan: limitData.plan,
+              limit: limitData.limit,
+              usage: limitData.usage,
+              upgradeRequired: limitData.upgradeRequired
+            })
+          };
+        }
+
         if (!limitResponse.ok) {
           console.warn(`⚠️ [${requestId}] Could not check limits (${limitResponse.status}), allowing generation`);
         } else {

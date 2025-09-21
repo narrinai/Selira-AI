@@ -109,6 +109,25 @@ exports.handler = async (event, context) => {
 
     console.log('👤 User plan:', userPlan);
 
+    // Block Free plan users from generating images
+    if (userPlan === 'Free') {
+      return {
+        statusCode: 403,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        },
+        body: JSON.stringify({
+          error: 'Image generation is not available on the Free plan. Upgrade to Basic or Premium to generate images!',
+          plan: userPlan,
+          limit: 0,
+          usage: 0,
+          canGenerate: false,
+          upgradeRequired: true
+        })
+      };
+    }
+
     // Check current hour's image usage
     const now = new Date();
     const currentHour = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours());

@@ -2899,6 +2899,28 @@
               }
             }
           }
+        } else if (response.status === 403) {
+          // Free plan user blocked from image generation
+          const error = await response.json();
+          const loadingMsg = document.getElementById(loadingId);
+          if (loadingMsg) {
+            const messageText = loadingMsg.querySelector('.message-text');
+            if (messageText) {
+              messageText.innerHTML = `
+                <div style="color: #ff6b6b; font-weight: 500;">
+                  🔒 Image Generation Not Available
+                </div>
+                <div style="margin-top: 8px; color: #666; font-size: 14px;">
+                  ${error.error}
+                </div>
+                <div style="margin-top: 12px;">
+                  <a href="/pricing" style="background: var(--accent); color: white; padding: 8px 16px; border-radius: 20px; text-decoration: none; font-size: 14px; font-weight: 600;">
+                    Upgrade Now
+                  </a>
+                </div>
+              `;
+            }
+          }
         } else {
           const error = await response.json();
           // Replace loading with error
