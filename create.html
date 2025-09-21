@@ -1442,7 +1442,7 @@
       // Show loading state
       const createBtn = document.getElementById('createFinalBtn');
       const originalText = createBtn.textContent;
-      createBtn.textContent = '🎨 Generating Avatar...';
+      createBtn.textContent = '💾 Creating Companion...';
       createBtn.disabled = true;
 
       console.log('🎭 Creating character:', {
@@ -1454,14 +1454,8 @@
       });
 
       try {
-        // Show avatar generation phase
-        console.log('🎨 Generating custom avatar and creating companion...');
-        createBtn.textContent = '🎨 Generating Custom Avatar...';
-
-        // Small delay to show the avatar generation message
-        await new Promise(resolve => setTimeout(resolve, 500));
-
-        createBtn.textContent = '💾 Creating Companion...';
+        // Avatar generation happens silently in the background
+        console.log('💾 Creating companion with automatic avatar generation...');
 
         const response = await fetch('/.netlify/functions/selira-create-companion', {
           method: 'POST',
