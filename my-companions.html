@@ -1610,18 +1610,30 @@
       <div class="mobile-header" style="display: none;">
         <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
         <div class="mobile-logo">Selira AI</div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button onclick="showMobileSearch()" class="mobile-search-btn" style="background: none; border: none; cursor: pointer; padding: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="11" cy="11" r="8" stroke="var(--text-primary)" stroke-width="2"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="var(--text-primary)" stroke-width="2"/>
+            </svg>
+          </button>
+          <button onclick="showMobileFilters()" class="mobile-filter-btn" style="background: #3b82f6; border: none; cursor: pointer; padding: 6px 12px; border-radius: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: white; font-size: 12px; font-weight: 500;">
+            Filters
+          </button>
+          <button class="user-btn login-btn" onclick="openLoginModal('login'); return false;" style="padding: 10px 20px; font-size: 14px; border-radius: 25px; background: var(--accent); color: white; border: none; font-weight: 600; flex-shrink: 0;">Login</button>
+        </div>
       </div>
 
-      <!-- Top Header -->
+      <!-- Top Header with Search -->
       <header class="top-header">
         <div class="header-top">
           <!-- Search -->
           <div class="search-container">
             <div class="search-icon">🔍</div>
-            <input 
-              type="text" 
-              class="search-input" 
-              placeholder="Search"
+            <input
+              type="text"
+              class="search-input"
+              placeholder="Search companions..."
               id="searchInput"
             >
           </div>
@@ -1635,7 +1647,6 @@
             <a href="#" class="user-btn signup-btn" onclick="openLoginModal('signup'); return false;">Register</a>
           </div>
         </div>
-
       </header>
 
       <!-- Filter Section -->
@@ -1643,50 +1654,46 @@
         <!-- Filter Dropdowns Row -->
         <div class="filter-row">
           <div class="filter-dropdown">
-            <button class="dropdown-btn" onclick="toggleDropdown('recent')">
-              <span>Recent Hits</span>
+            <button class="dropdown-btn" onclick="toggleDropdown('type')">
+              <span>All Companions</span>
               <span class="dropdown-arrow">▼</span>
             </button>
-          </div>
-          
-          <div class="filter-dropdown">
-            <button class="dropdown-btn" onclick="toggleDropdown('gender')">
-              <span>Female</span>
-              <span class="dropdown-arrow">▼</span>
-            </button>
+            <div class="dropdown-menu" id="typeDropdown">
+              <a href="#" onclick="setTypeFilter('all')">All Companions</a>
+              <a href="#" onclick="setTypeFilter('created')">Created by Me</a>
+              <a href="#" onclick="setTypeFilter('chatted')">Chatted With</a>
+            </div>
           </div>
 
-          <div class="toggle-switch">
-            <span>Animated</span>
-            <div class="switch" id="animatedToggle" onclick="toggleSwitch('animated')"></div>
+          <div class="filter-dropdown">
+            <button class="dropdown-btn" onclick="toggleDropdown('activity')">
+              <span>Recent Activity</span>
+              <span class="dropdown-arrow">▼</span>
+            </button>
+            <div class="dropdown-menu" id="activityDropdown">
+              <a href="#" onclick="setActivityFilter('recent')">Recent Activity</a>
+              <a href="#" onclick="setActivityFilter('most_messages')">Most Messages</a>
+              <a href="#" onclick="setActivityFilter('newest')">Newest First</a>
+            </div>
           </div>
 
           <div style="margin-left: auto;">
             <div class="toggle-switch">
-              <span style="color: var(--accent-primary); font-weight: 600;">Unfiltered</span>
-              <div class="switch active" id="unfilteredToggle" onclick="toggleSwitch('unfiltered')"></div>
+              <span style="color: var(--accent-primary); font-weight: 600;">Show Empty</span>
+              <div class="switch" id="showEmptyToggle" onclick="toggleSwitch('showEmpty')"></div>
             </div>
           </div>
         </div>
 
         <!-- Tag Pills Row -->
-        <div class="tag-filters">
-          <a href="#" class="tag-pill active">All</a>
-          <a href="#" class="tag-pill category">🏰 Fantasy</a>
-          <a href="#" class="tag-pill category">🎌 Anime-Manga</a>
-          <a href="#" class="tag-pill category">🏛️ Historical</a>
-          <a href="#" class="tag-pill">Magic</a>
-          <a href="#" class="tag-pill">Warrior</a>
-          <a href="#" class="tag-pill">Wizard</a>
-          <a href="#" class="tag-pill">Hero</a>
-          <a href="#" class="tag-pill">Ninja</a>
-          <a href="#" class="tag-pill">Samurai</a>
-          <a href="#" class="tag-pill">Adventure</a>
-          <a href="#" class="tag-pill">Romance</a>
-          <a href="#" class="tag-pill">Mystery</a>
-          <a href="#" class="tag-pill">Action</a>
-          <a href="#" class="tag-pill special">Unfiltered</a>
-          <button class="more-tags-btn">All tags</button>
+        <div class="tag-filters" id="tagFilters">
+          <!-- Dynamic tags will be inserted here with All button first -->
+          <div id="dynamicTagFilters">
+            <a href="#" class="tag-pill active" onclick="setTagFilter('all')">All</a>
+            <a href="#" class="tag-pill" onclick="setTagFilter('created')">👤 Created by Me</a>
+            <a href="#" class="tag-pill" onclick="setTagFilter('chatted')">💬 Chatted With</a>
+          </div>
+          <button class="more-tags-btn">All filters</button>
         </div>
       </section>
 
@@ -1928,8 +1935,8 @@
       grid.innerHTML = initialCharacters.map(character => `
         <div class="character-card" onclick="openCharacter('${character.slug}')">
           ${character.avatar ? 
-            `<img src="${character.avatar}" alt="${character.name}" class="character-image" loading="lazy">` :
-            `<div class="character-image-placeholder">${character.name.charAt(0)}</div>`
+            `<img src="${character.avatar}" alt="${character.name || character.slug}" class="character-image" loading="lazy">` :
+            `<div class="character-image-placeholder">${(character.name || character.slug || 'Unknown').charAt(0).toUpperCase()}</div>`
           }
           
           <!-- Favorite Button -->
@@ -1951,7 +1958,7 @@
           
           <!-- Character Info -->
           <div class="character-info">
-            <h3 class="character-name">${character.name}</h3>
+            <h3 class="character-name">${character.name || character.slug || 'Unknown'}</h3>
             <div class="character-creator">
               <span>@${character.creator}</span>
             </div>
@@ -2003,9 +2010,9 @@
       filteredCharacters = allCharacters.filter(character => {
         // Search filter
         if (currentFilters.search && 
-            !character.name.toLowerCase().includes(currentFilters.search) &&
-            !character.description.toLowerCase().includes(currentFilters.search) &&
-            !character.tags.some(tag => tag.toLowerCase().includes(currentFilters.search))) {
+            !(character.name || character.slug || '').toLowerCase().includes(currentFilters.search) &&
+            !(character.description || '').toLowerCase().includes(currentFilters.search) &&
+            !(character.tags || []).some(tag => tag.toLowerCase().includes(currentFilters.search))) {
           return false;
         }
 
@@ -3394,8 +3401,8 @@
       const newCharactersHTML = characters.map(character => `
         <div class="character-card" onclick="openCharacter('${character.slug}')">
           ${character.avatar ? 
-            `<img src="${character.avatar}" alt="${character.name}" class="character-image" loading="lazy">` :
-            `<div class="character-image-placeholder">${character.name.charAt(0)}</div>`
+            `<img src="${character.avatar}" alt="${character.name || character.slug}" class="character-image" loading="lazy">` :
+            `<div class="character-image-placeholder">${(character.name || character.slug || 'Unknown').charAt(0).toUpperCase()}</div>`
           }
           
           <button class="character-favorite" onclick="event.stopPropagation(); toggleFavorite('${character.id}')">
@@ -3414,7 +3421,7 @@
           </div>
           
           <div class="character-info">
-            <h3 class="character-name">${character.name}</h3>
+            <h3 class="character-name">${character.name || character.slug || 'Unknown'}</h3>
             <div class="character-creator">
               <span>@${character.creator}</span>
             </div>
