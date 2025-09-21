@@ -1535,9 +1535,25 @@
       .desktop-header {
         display: block;
       }
-      
+
       .app-container {
         margin-top: 72px;
+      }
+
+      /* Hide sidebar on desktop to match pricing page */
+      .sidebar {
+        display: none;
+      }
+
+      /* Make main content full width */
+      .main-content {
+        width: 100%;
+        margin-left: 0;
+      }
+
+      /* Ensure top header is always visible on desktop */
+      .top-header {
+        display: block !important;
       }
     }
     
@@ -1553,7 +1569,7 @@
     <aside class="sidebar" id="sidebar">
       <!-- Logo -->
       <a href="/category" class="sidebar-logo">
-        <div class="sidebar-logo-text">Selira</div>
+        <div class="sidebar-logo-text">Selira AI</div>
       </a>
 
       <!-- Navigation -->
