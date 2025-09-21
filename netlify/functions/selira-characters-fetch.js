@@ -154,50 +154,31 @@ exports.handler = async (event, context) => {
         Avatar_URL: fields.Avatar_URL
       });
       
-      // Extract avatar URL properly
+      // Extract avatar URL properly - prefer local path over Replicate URL
       let avatarUrl = '';
-      
+
       // First check for local avatar path
       if (fields.Local_Avatar_Path && typeof fields.Local_Avatar_Path === 'string') {
-        // Use local path if available, but fix common naming issues
-        let localPath = fields.Local_Avatar_Path;
-        
-        // Fix for cases where avatar name doesn't match actual file
-        // For example: /avatars/emily.webp -> /avatars/emily-1754251534076.webp
-        if (localPath.includes('/avatars/') && !localPath.includes('-175')) {
-          const baseName = localPath.split('/avatars/')[1].replace('.webp', '');
-          
-          // Common mappings for known characters
-          const avatarMappings = {
-            'emily': 'emily-1754251534076.webp',
-            'aiko': 'aiko-1754252402847.webp'
-          };
-          
-          if (avatarMappings[baseName]) {
-            localPath = '/avatars/' + avatarMappings[baseName];
-            console.log(`🔧 Fixed avatar path for ${fields.Name}: ${fields.Local_Avatar_Path} -> ${localPath}`);
-          }
+        // Use local path if available
+        avatarUrl = fields.Local_Avatar_Path;
+        console.log(`📁 Using local avatar for ${fields.Name}: ${avatarUrl}`);
+      }
+      // Check for string Avatar_URL (could be Replicate URL)
+      else if (fields.Avatar_URL && typeof fields.Avatar_URL === 'string') {
+        avatarUrl = fields.Avatar_URL;
+
+        // If it's a Replicate URL, use it but note it should be downloaded
+        if (avatarUrl.includes('replicate.delivery')) {
+          console.log(`🌐 Using Replicate URL for ${fields.Name} (should be downloaded locally)`);
         }
-        
-        avatarUrl = localPath;
-      } 
-      // Check for Airtable attachment field Avatar_URL
+      }
+      // Check for Airtable attachment fields
       else if (fields.Avatar_URL && Array.isArray(fields.Avatar_URL) && fields.Avatar_URL.length > 0) {
         avatarUrl = fields.Avatar_URL[0].url || '';
       } else if (fields.Avatar_File && Array.isArray(fields.Avatar_File) && fields.Avatar_File.length > 0) {
         avatarUrl = fields.Avatar_File[0].url || '';
-      } else if (fields.Avatar_URL && typeof fields.Avatar_URL === 'string') {
-        avatarUrl = fields.Avatar_URL;
       } else if (fields.avatar_url && typeof fields.avatar_url === 'string') {
         avatarUrl = fields.avatar_url;
-      }
-      
-      // Keep Replicate URLs as is - they work directly
-      if (avatarUrl && avatarUrl.includes('replicate.delivery')) {
-        // Use the Replicate URL directly
-        console.log(`🌐 Using Replicate URL for ${fields.Name}: ${avatarUrl}`);
-        // We'll use the Replicate URL for now but log it
-        console.log(`⚠️ Replicate URL found for ${fields.Name}, should be replaced with local avatar`);
       }
       
       // Debug Created_By field (with capital B)
