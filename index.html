@@ -1313,7 +1313,7 @@
     // Load characters from Airtable
     async function loadCharacters() {
       try {
-        const response = await fetch('/.netlify/functions/characters');
+        const response = await fetch('/.netlify/functions/selira-characters-fetch');
         if (!response.ok) throw new Error('Failed to load characters');
         
         const data = await response.json();
@@ -1512,7 +1512,7 @@
     async function debugCharacterLoading() {
       try {
         console.log('🔍 Testing character API...');
-        const response = await fetch('/.netlify/functions/characters');
+        const response = await fetch('/.netlify/functions/selira-characters-fetch');
         console.log('📊 API Response status:', response.status);
         
         if (response.ok) {

@@ -2055,7 +2055,7 @@
     async function loadCharactersFromDatabase() {
       try {
         console.log('📡 Loading characters from database...');
-        const response = await fetch('/.netlify/functions/characters');
+        const response = await fetch('/.netlify/functions/selira-characters-fetch');
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -2227,7 +2227,7 @@
       if (!character) {
         // Try to load character data from API
         try {
-          const response = await fetch(`/.netlify/functions/characters?slug=${slug}`);
+          const response = await fetch(`/.netlify/functions/selira-characters-fetch?slug=${slug}`);
           if (response.ok) {
             const data = await response.json();
             if (data.characters && data.characters.length > 0) {
@@ -2657,7 +2657,7 @@
           return;
         }
 
-        const response = await fetch(`/.netlify/functions/characters?slug=${encodeURIComponent(characterSlug)}`);
+        const response = await fetch(`/.netlify/functions/selira-characters-fetch?slug=${encodeURIComponent(characterSlug)}`);
 
         if (response.ok) {
           const data = await response.json();

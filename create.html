@@ -402,19 +402,19 @@
     
     /* Create Character Section */
     .create-character-section {
-      padding: 20px 40px;
+      padding: 16px 40px;
       display: flex;
       flex-direction: column;
       height: calc(100vh - 80px);
       overflow-y: auto;
     }
-    
+
     .create-header {
       text-align: center;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
       flex-shrink: 0;
     }
-    
+
     .create-header h2 {
       font-family: 'Playfair Display', serif;
       font-size: 28px;
@@ -422,15 +422,15 @@
       color: var(--text-primary);
       margin-bottom: 8px;
     }
-    
+
     .create-header p {
       color: var(--text-secondary);
       font-size: 16px;
     }
-    
+
     /* Progress Bar */
     .creation-progress {
-      margin-bottom: 12px;
+      margin-bottom: 8px;
       padding: 0 80px;
       flex-shrink: 0;
     }
@@ -495,10 +495,10 @@
     .ethnicity-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 60px;
+      gap: 24px;
       max-width: none;
-      padding: 0 100px;
-      margin-bottom: 30px;
+      padding: 0 80px;
+      margin-bottom: 16px;
     }
     
     /* Hair Grid */
@@ -862,87 +862,87 @@
 
           <!-- Step 2: Ethnicity Selection -->
           <div class="creation-step" id="step2">
-            <h3 style="color: var(--text-primary); margin-bottom: 40px; font-size: 28px; font-weight: 700; text-align: center;">Choose Ethnicity</h3>
+            <h3 style="color: var(--text-primary); margin-bottom: 20px; font-size: 24px; font-weight: 700; text-align: center;">Choose Ethnicity</h3>
             <div class="ethnicity-grid">
               <div class="ethnicity-option" data-ethnicity="white" onclick="selectEthnicityStep('white')">
-                <div class="image-container" style="height: 120px;">
-                  <div class="image-placeholder" style="height: 120px;">👤</div>
+                <div class="image-container" style="height: 100px;">
+                  <div class="image-placeholder" style="height: 100px;">👤</div>
                   <img class="lazy-image" data-src="/images/white-et.png" alt="White/Caucasian" loading="lazy" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
                 </div>
-                <div style="padding: 12px; text-align: center;">
-                  <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">White/Caucasian</h4>
+                <div style="padding: 8px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">White/Caucasian</h4>
                 </div>
               </div>
               <div class="ethnicity-option" data-ethnicity="black" onclick="selectEthnicityStep('black')">
-                <div class="image-container" style="height: 120px;">
-                  <div class="image-placeholder" style="height: 120px;">👤</div>
+                <div class="image-container" style="height: 100px;">
+                  <div class="image-placeholder" style="height: 100px;">👤</div>
                   <img class="lazy-image" data-src="/images/black-et.png" alt="Black/African" loading="lazy" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
                 </div>
-                <div style="padding: 12px; text-align: center;">
-                  <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Black/African</h4>
+                <div style="padding: 8px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Black/African</h4>
                 </div>
               </div>
               <div class="ethnicity-option" data-ethnicity="indian" onclick="selectEthnicityStep('indian')">
-                <div class="image-container" style="height: 120px;">
-                  <div class="image-placeholder" style="height: 120px;">👤</div>
+                <div class="image-container" style="height: 100px;">
+                  <div class="image-placeholder" style="height: 100px;">👤</div>
                   <img class="lazy-image" data-src="/images/indian-et.png" alt="Indian/South Asian" loading="lazy" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
                 </div>
-                <div style="padding: 12px; text-align: center;">
-                  <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Indian/South Asian</h4>
+                <div style="padding: 8px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Indian/South Asian</h4>
                 </div>
               </div>
               <div class="ethnicity-option" data-ethnicity="middle-east" onclick="selectEthnicityStep('middle-east')">
-                <div class="image-container" style="height: 120px;">
-                  <div class="image-placeholder" style="height: 120px;">👤</div>
+                <div class="image-container" style="height: 100px;">
+                  <div class="image-placeholder" style="height: 100px;">👤</div>
                   <img class="lazy-image" data-src="/images/middle-east-et.png" alt="Middle Eastern" loading="lazy" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
                 </div>
-                <div style="padding: 12px; text-align: center;">
-                  <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Middle Eastern</h4>
+                <div style="padding: 8px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Middle Eastern</h4>
                 </div>
               </div>
               <div class="ethnicity-option" data-ethnicity="hispanic" onclick="selectEthnicityStep('hispanic')">
-                <div class="image-container" style="height: 120px;">
-                  <div class="image-placeholder" style="height: 120px;">👤</div>
+                <div class="image-container" style="height: 100px;">
+                  <div class="image-placeholder" style="height: 100px;">👤</div>
                   <img class="lazy-image" data-src="/images/hispanic-et.png" alt="Hispanic/Latino" loading="lazy" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
                 </div>
-                <div style="padding: 12px; text-align: center;">
-                  <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Hispanic/Latino</h4>
+                <div style="padding: 8px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Hispanic/Latino</h4>
                 </div>
               </div>
               <div class="ethnicity-option" data-ethnicity="korean" onclick="selectEthnicityStep('korean')">
-                <div class="image-container" style="height: 120px;">
-                  <div class="image-placeholder" style="height: 120px;">👤</div>
+                <div class="image-container" style="height: 100px;">
+                  <div class="image-placeholder" style="height: 100px;">👤</div>
                   <img class="lazy-image" data-src="/images/korean-et.png" alt="Korean" loading="lazy" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
                 </div>
-                <div style="padding: 12px; text-align: center;">
-                  <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Korean</h4>
+                <div style="padding: 8px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Korean</h4>
                 </div>
               </div>
               <div class="ethnicity-option" data-ethnicity="chinese" onclick="selectEthnicityStep('chinese')">
-                <div class="image-container" style="height: 120px;">
-                  <div class="image-placeholder" style="height: 120px;">👤</div>
+                <div class="image-container" style="height: 100px;">
+                  <div class="image-placeholder" style="height: 100px;">👤</div>
                   <img class="lazy-image" data-src="/images/chinese-et.png" alt="Chinese" loading="lazy" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
                 </div>
-                <div style="padding: 12px; text-align: center;">
-                  <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Chinese</h4>
+                <div style="padding: 8px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Chinese</h4>
                 </div>
               </div>
               <div class="ethnicity-option" data-ethnicity="japanese" onclick="selectEthnicityStep('japanese')">
-                <div class="image-container" style="height: 120px;">
-                  <div class="image-placeholder" style="height: 120px;">👤</div>
+                <div class="image-container" style="height: 100px;">
+                  <div class="image-placeholder" style="height: 100px;">👤</div>
                   <img class="lazy-image" data-src="/images/japanese-et.png" alt="Japanese" loading="lazy" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
                 </div>
-                <div style="padding: 12px; text-align: center;">
-                  <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Japanese</h4>
+                <div style="padding: 8px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Japanese</h4>
                 </div>
               </div>
               <div class="ethnicity-option" data-ethnicity="vietnamese" onclick="selectEthnicityStep('vietnamese')">
-                <div class="image-container" style="height: 120px;">
-                  <div class="image-placeholder" style="height: 120px;">👤</div>
+                <div class="image-container" style="height: 100px;">
+                  <div class="image-placeholder" style="height: 100px;">👤</div>
                   <img class="lazy-image" data-src="/images/vietnamese-et.png" alt="Vietnamese" loading="lazy" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
                 </div>
-                <div style="padding: 12px; text-align: center;">
-                  <h4 style="color: var(--text-primary); font-size: 15px; font-weight: 600;">Vietnamese</h4>
+                <div style="padding: 8px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 14px; font-weight: 600;">Vietnamese</h4>
                 </div>
               </div>
             </div>

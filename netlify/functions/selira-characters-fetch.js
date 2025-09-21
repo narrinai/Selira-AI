@@ -1,4 +1,4 @@
-// netlify/functions/characters.js
+// netlify/functions/selira-characters-fetch.js
 exports.handler = async (event, context) => {
   // CORS headers
   const headers = {

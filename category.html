@@ -1884,7 +1884,7 @@
     async function loadCharacters() {
       try {
         console.log('📡 Loading characters from API...');
-        const response = await fetch('/.netlify/functions/characters');
+        const response = await fetch('/.netlify/functions/selira-characters-fetch');
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);

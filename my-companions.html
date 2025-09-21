@@ -1732,7 +1732,7 @@
     async function loadCharacters() {
       try {
         console.log('📡 Loading characters from API...');
-        const response = await fetch('/.netlify/functions/characters');
+        const response = await fetch('/.netlify/functions/selira-characters-fetch');
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -2474,7 +2474,7 @@
         }
 
         // Try to fetch from API
-        const response = await fetch(`/.netlify/functions/characters?slug=${slug}`);
+        const response = await fetch(`/.netlify/functions/selira-characters-fetch?slug=${slug}`);
         if (response.ok) {
           const data = await response.json();
           if (data.characters && data.characters.length > 0) {
