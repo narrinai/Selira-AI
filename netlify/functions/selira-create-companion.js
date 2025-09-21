@@ -327,7 +327,9 @@ BOUNDARIES:
       hair_length: hairLength || 'long',
       hair_color: hairColor || 'brown',
       Avatar_URL: avatarUrlToUse,
-      is_unfiltered: isUnfiltered
+      is_unfiltered: isUnfiltered,
+      // Store creator email for finding user-created companions
+      Creator_Email: userEmail || 'unknown@example.com'
       // chats and rating fields don't exist in Airtable - removed
       // Created_By removed temporarily - it's a linked record field, not text
     };

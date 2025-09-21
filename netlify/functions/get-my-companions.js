@@ -129,7 +129,7 @@ exports.handler = async (event, context) => {
 
     do {
       // Build filter for user-created characters: public visibility AND created by this user (using email)
-      const createdByFilter = `AND({Visibility} = "public", OR({Created_By} = "${userEmail}", SEARCH("${userRecordId}", ARRAYJOIN({Created_By}))))`;
+      const createdByFilter = `AND({Visibility} = "public", OR({Created_By} = "${userEmail}", SEARCH("${userRecordId}", ARRAYJOIN({Created_By})), {Creator_Email} = "${userEmail}"))`;
 
       const userCreatedUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters?filterByFormula=${encodeURIComponent(createdByFilter)}${charactersOffset ? `&offset=${charactersOffset}` : ''}`;
 
