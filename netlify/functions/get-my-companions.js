@@ -95,9 +95,11 @@ exports.handler = async (event, context) => {
     const userEmail = targetUser.fields.Email;
     console.log('✅ Found user:', userRecordId, userEmail);
 
-    // Step 2: Get companions from chat history - use both email and record ID for matching
-    const userFilter = `OR({User}='${userEmail}',SEARCH('${userRecordId}',ARRAYJOIN({User})))`;
+    // Step 2: Get companions from chat history - use Auth0 ID, email, and record ID for matching
+    const userFilter = `OR({User}='${userEmail}',SEARCH('${userRecordId}',ARRAYJOIN({User})),{User}='${user_uid}')`;
     const chatHistoryUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/ChatHistory?filterByFormula=${userFilter}&sort[0][field]=CreatedTime&sort[0][direction]=desc`;
+
+    console.log('🔍 Chat history filter:', userFilter);
 
     const chatResponse = await fetch(chatHistoryUrl, {
       method: 'GET',
@@ -128,11 +130,12 @@ exports.handler = async (event, context) => {
     let charactersOffset = null;
 
     do {
-      // Build filter for user-created characters: public visibility AND created by this user (using email, recordId, or Auth0 ID)
-      const createdByFilter = `AND({Visibility} = "public", OR({Created_by} = "${userEmail}", {Created_by} = "${userRecordId}", {Created_by} = "${user_uid}", SEARCH("${userEmail}", {Created_by})))`;
+      // Build filter for user-created characters: public visibility AND created by this user (using Auth0 ID primarily)
+      const createdByFilter = `AND({Visibility} = "public", {Created_by} = "${user_uid}")`;
 
       console.log('🔍 Filter for user-created characters:', createdByFilter);
       console.log('🔍 Search parameters:', { userEmail, userRecordId, user_uid });
+      console.log('🔍 Primary matching on Auth0 ID:', user_uid);
 
       const userCreatedUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters?filterByFormula=${encodeURIComponent(createdByFilter)}${charactersOffset ? `&offset=${charactersOffset}` : ''}`;
 
@@ -144,10 +147,16 @@ exports.handler = async (event, context) => {
       if (userCreatedResponse.ok) {
         const pageData = await userCreatedResponse.json();
         console.log('✅ Found', pageData.records.length, 'user-created characters in this page');
+        console.log('🔍 Raw response data:', JSON.stringify(pageData, null, 2));
+        if (pageData.records.length > 0) {
+          console.log('🔍 First character Created_by field:', pageData.records[0].fields.Created_by);
+        }
         userCreatedCharacters = userCreatedCharacters.concat(pageData.records);
         charactersOffset = pageData.offset;
       } else {
+        const errorText = await userCreatedResponse.text();
         console.log('⚠️ Could not fetch user-created characters:', userCreatedResponse.status, userCreatedResponse.statusText);
+        console.log('⚠️ Error details:', errorText);
         break;
       }
     } while (charactersOffset);
