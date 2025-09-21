@@ -1880,7 +1880,12 @@
     // Initialize page
     document.addEventListener('DOMContentLoaded', async function() {
       console.log('🚀 Selira AI Category page loading...');
-      loadCharacters();
+
+      // Wait a bit for Auth0 to initialize
+      setTimeout(() => {
+        loadCharacters();
+      }, 1000);
+
       initializeFilters();
       setupTabNavigation();
       setupInfiniteScroll();
@@ -1903,7 +1908,14 @@
     async function loadCharacters() {
       try {
         console.log('📡 Loading user companions...');
-        const userCompanions = await getUserCompanions();
+        let userCompanions;
+
+        try {
+          userCompanions = await getUserCompanions();
+        } catch (getUserError) {
+          console.error('❌ Error in getUserCompanions:', getUserError);
+          userCompanions = [];
+        }
 
         console.log('🔍 getUserCompanions returned:', userCompanions);
         console.log('🔍 Type of userCompanions:', typeof userCompanions);
@@ -2079,7 +2091,12 @@
       console.log('💾 Found', localCompanions.length, 'active chats in localStorage');
 
       // Try to get real companions from API
-      const user = window.getCurrentUser();
+      let user = null;
+      if (typeof window.getCurrentUser === 'function') {
+        user = window.getCurrentUser();
+      } else {
+        console.warn('⚠️ getCurrentUser function not available yet');
+      }
       console.log('🔍 User check:', user);
       console.log('🔍 User email:', user?.email);
       console.log('🔍 User sub:', user?.sub);
