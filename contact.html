@@ -1177,7 +1177,8 @@
           <a href="/my-companions" class="nav-link">My Companions</a>
           <a href="/memory-import" class="nav-link">Import Memory</a>
           <a href="/news" class="nav-link">News & Insights</a>
-          <a href="#" class="nav-link" id="loginBtn">Login/Register</a>
+          <a href="#" class="nav-link login-btn" onclick="openLoginModal('login'); return false;">Login</a>
+          <a href="#" class="nav-link signup-btn" onclick="openLoginModal('signup'); return false;">Sign Up</a>
           <a href="/create" class="btn btn-primary">✨ Create Companion</a>
         </nav>
 
@@ -1261,9 +1262,13 @@
           <span class="mobile-menu-link-icon">📰</span>
           News & Insights
         </a>
-        <a href="#" class="mobile-menu-link" id="mobileLoginBtn">
-          <span class="mobile-menu-link-icon">👤</span>
-          Login/Register
+        <a href="#" class="mobile-menu-link mobile-login-link" onclick="openLoginModal('login'); return false;">
+          <span class="mobile-menu-link-icon">🔑</span>
+          Login
+        </a>
+        <a href="#" class="mobile-menu-link mobile-signup-link" onclick="openLoginModal('signup'); return false;">
+          <span class="mobile-menu-link-icon">✨</span>
+          Sign Up
         </a>
         <a href="/create" class="mobile-menu-link btn-primary">
           <span class="mobile-menu-link-icon">✨</span>
@@ -1574,56 +1579,8 @@
       updateLoginButton();
     }
 
-    // ===== NETLIFY IDENTITY =====
-    function updateLoginButton() {
-      const loginBtn = document.getElementById('loginBtn');
-      const mobileLoginBtn = document.getElementById('mobileLoginBtn');
-      
-      // Check both Netlify Identity and local storage for user info
-      const netlifyUser = window.netlifyIdentity && window.netlifyIdentity.currentUser();
-      const localEmail = localStorage.getItem("user_email");
-      const localToken = localStorage.getItem("user_token");
-      const isAnonymousUser = localStorage.getItem('is_anonymous_user') === 'true';
-      const isAnonymousEmail = localEmail === 'anonymous@narrin.ai';
-      
-      // Only consider truly authenticated users (not anonymous)
-      const isLoggedIn = netlifyUser || (localEmail && localToken && !isAnonymousUser && !isAnonymousEmail);
-      
-      if (isLoggedIn) {
-        // Always show "Profile" for logged in users instead of their name
-        if (loginBtn) {
-          loginBtn.textContent = 'Profile';
-          loginBtn.href = '/profile';
-        }
-        if (mobileLoginBtn) {
-          const icon = mobileLoginBtn.querySelector('.mobile-menu-link-icon');
-          mobileLoginBtn.innerHTML = `${icon ? icon.outerHTML : '<span class="mobile-menu-link-icon">👤</span>'}Profile`;
-          mobileLoginBtn.href = "/profile";
-        }
-      } else {
-        if (loginBtn) {
-          loginBtn.textContent = 'Login/Register';
-          loginBtn.href = '#';
-          loginBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (window.netlifyIdentity) {
-              window.netlifyIdentity.open();
-            }
-          });
-        }
-        if (mobileLoginBtn) {
-          const icon = mobileLoginBtn.querySelector('.mobile-menu-link-icon');
-          mobileLoginBtn.innerHTML = `${icon ? icon.outerHTML : '<span class="mobile-menu-link-icon">👤</span>'}Login/Register`;
-          mobileLoginBtn.href = '#';
-          mobileLoginBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (window.netlifyIdentity) {
-              window.netlifyIdentity.open();
-            }
-          });
-        }
-      }
-    }
+    // Auth0 authentication is now handled by auth0-login.js
+    // Navigation buttons use openLoginModal('login') and openLoginModal('signup')
 
     // ===== SEARCH FUNCTIONALITY =====
     function handleSearch(searchTerm) {

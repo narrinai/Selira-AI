@@ -1522,7 +1522,8 @@
           <a href="/" class="nav-link">Characters</a>
           <a href="/my-companions" class="nav-link">Chats</a>
           <a href="/memory-import" class="nav-link">Import Memory</a>
-          <a href="/profile" class="nav-link" id="loginBtn">Login/Register</a>
+          <a href="#" class="nav-link login-btn" onclick="openLoginModal('login'); return false;">Login</a>
+          <a href="#" class="nav-link signup-btn" onclick="openLoginModal('signup'); return false;">Sign Up</a>
           <a href="/create" class="btn btn-primary">✨ Create Companion</a>
         </nav>
 
@@ -1590,9 +1591,13 @@
           <span class="mobile-menu-link-icon">🧠</span>
           Import Memory
         </a>
-        <a href="/profile" class="mobile-menu-link" id="mobileLoginBtn">
-          <span class="mobile-menu-link-icon">👤</span>
-          Login/Register
+        <a href="#" class="mobile-menu-link mobile-login-link" onclick="openLoginModal('login'); return false;">
+          <span class="mobile-menu-link-icon">🔑</span>
+          Login
+        </a>
+        <a href="#" class="mobile-menu-link mobile-signup-link" onclick="openLoginModal('signup'); return false;">
+          <span class="mobile-menu-link-icon">✨</span>
+          Sign Up
         </a>
         <a href="/create" class="mobile-menu-link btn-primary">
           <span class="mobile-menu-link-icon">✨</span>
