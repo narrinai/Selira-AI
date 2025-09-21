@@ -1881,6 +1881,21 @@
     document.addEventListener('DOMContentLoaded', async function() {
       console.log('🚀 Selira AI Category page loading...');
 
+      // Force clear invalid cache first
+      try {
+        const cached = localStorage.getItem('userCompanions');
+        if (cached) {
+          const cacheData = JSON.parse(cached);
+          if (cacheData.timestamp > Date.now()) {
+            console.log('🗑️ Clearing invalid future-dated cache');
+            localStorage.removeItem('userCompanions');
+          }
+        }
+      } catch (e) {
+        console.log('🗑️ Clearing malformed cache');
+        localStorage.removeItem('userCompanions');
+      }
+
       // Wait a bit for Auth0 to initialize
       setTimeout(() => {
         loadCharacters();
@@ -2085,6 +2100,7 @@
     // ===== COMPANION FETCHING =====
     async function getUserCompanions() {
       console.log('🔍 Starting getUserCompanions...');
+      console.log('🔍 Function called from:', new Error().stack.slice(0, 200));
 
       // Check for cached companions first
       try {
