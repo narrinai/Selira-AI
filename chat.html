@@ -1058,9 +1058,94 @@
         display: none;
       }
     }
+
+    /* Avatar Modal Styles */
+    .avatar-modal {
+      display: none;
+      position: fixed;
+      z-index: 10000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
+      animation: fadeIn 0.3s ease;
+    }
+
+    .avatar-modal.show {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .avatar-modal-content {
+      max-width: 90vw;
+      max-height: 90vh;
+      position: relative;
+      animation: zoomIn 0.3s ease;
+    }
+
+    .avatar-modal img {
+      width: auto;
+      height: auto;
+      max-width: 100%;
+      max-height: 90vh;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    }
+
+    .avatar-modal-close {
+      position: absolute;
+      top: -40px;
+      right: 0;
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .avatar-modal-close:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .clickable-avatar {
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .clickable-avatar:hover {
+      transform: scale(1.05);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes zoomIn {
+      from { transform: scale(0.5); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
   </style>
 </head>
 <body>
+  <!-- Avatar Modal -->
+  <div class="avatar-modal" id="avatarModal">
+    <div class="avatar-modal-content">
+      <button class="avatar-modal-close" onclick="closeAvatarModal()">&times;</button>
+      <img id="avatarModalImage" src="" alt="Character Avatar">
+    </div>
+  </div>
+
   <div class="app-container">
     <!-- Left Sidebar with Character List -->
     <aside class="sidebar" id="sidebar">
@@ -1546,6 +1631,9 @@
 
       // Hide any existing suggestions when character changes
       hideImagePromptSuggestions();
+
+      // Make avatars clickable
+      makeAvatarsClickable();
     }
 
     function showCharacterSearch() {
@@ -2652,8 +2740,8 @@
         const isNewCharacter = localStorage.getItem(newCharacterKey);
 
         if (isNewCharacter && retryCount < 3) {
-          console.log('🆕 This is a newly created character, retrying in 2 seconds...');
-          setTimeout(() => loadSpecificCharacterFromAPI(characterSlug, retryCount + 1), 2000);
+          console.log('🆕 This is a newly created character, retrying in 500ms...');
+          setTimeout(() => loadSpecificCharacterFromAPI(characterSlug, retryCount + 1), 500);
           return;
         }
 
@@ -2687,28 +2775,43 @@
             selectCharacterFromSidebarSilent(processedChar.slug, processedChar.name, fixAvatarUrl(processedChar.avatar), processedChar.title);
           } else {
             if (isNewCharacter && retryCount < 3) {
-              console.log('🔄 New character not found yet, retrying in 2 seconds...');
-              setTimeout(() => loadSpecificCharacterFromAPI(characterSlug, retryCount + 1), 2000);
+              console.log('🔄 New character not found yet, retrying in 500ms...');
+              setTimeout(() => loadSpecificCharacterFromAPI(characterSlug, retryCount + 1), 500);
             } else {
-              console.log('❌ Character not found in API, using fallback character');
-              loadFallbackCharacter();
+              console.log('❌ Character not found in API after retries');
+              // For new characters, don't load fallback - show error instead
+              if (isNewCharacter) {
+                showCharacterNotFoundError(characterSlug);
+              } else {
+                loadFallbackCharacter();
+              }
             }
           }
         } else {
           if (isNewCharacter && retryCount < 3) {
-            console.log('🔄 API error for new character, retrying in 2 seconds...');
-            setTimeout(() => loadSpecificCharacterFromAPI(characterSlug, retryCount + 1), 2000);
+            console.log('🔄 API error for new character, retrying in 500ms...');
+            setTimeout(() => loadSpecificCharacterFromAPI(characterSlug, retryCount + 1), 500);
           } else {
-            loadFallbackCharacter();
+            // For new characters, don't load fallback - show error instead
+            if (isNewCharacter) {
+              showCharacterNotFoundError(characterSlug);
+            } else {
+              loadFallbackCharacter();
+            }
           }
         }
       } catch (error) {
         console.error('❌ Error loading specific character:', error);
         if (isNewCharacter && retryCount < 3) {
-          console.log('🔄 Error loading new character, retrying in 2 seconds...');
-          setTimeout(() => loadSpecificCharacterFromAPI(characterSlug, retryCount + 1), 2000);
+          console.log('🔄 Error loading new character, retrying in 500ms...');
+          setTimeout(() => loadSpecificCharacterFromAPI(characterSlug, retryCount + 1), 500);
         } else {
-          loadFallbackCharacter();
+          // For new characters, don't load fallback - show error instead
+          if (isNewCharacter) {
+            showCharacterNotFoundError(characterSlug);
+          } else {
+            loadFallbackCharacter();
+          }
         }
       }
     }
@@ -2719,6 +2822,49 @@
         const fallbackChar = loadedCharacters[0];
         console.log('🔄 Loading fallback character:', fallbackChar.name);
         selectCharacterFromSidebarSilent(fallbackChar.slug, fallbackChar.name, fixAvatarUrl(fallbackChar.avatar), fallbackChar.title);
+      }
+    }
+
+    // Show error when new character cannot be found
+    function showCharacterNotFoundError(characterSlug) {
+      console.log('❌ New character not found, showing error for:', characterSlug);
+
+      // Clear chat display
+      clearChatDisplay();
+
+      // Set minimal character info for UI
+      currentCharacter = {
+        name: characterSlug,
+        slug: characterSlug,
+        avatar: null,
+        creator: '@Selira',
+        description: 'Character is being created...',
+        greeting: '',
+        chats: '0',
+        rating: '5.0',
+        tags: ['New']
+      };
+
+      // Update UI with placeholder data
+      updateCharacterUI();
+
+      // Show error message in chat
+      const chatMessages = document.getElementById('chatMessages');
+      if (chatMessages) {
+        chatMessages.innerHTML = `
+          <div class="message character-message">
+            <div class="character-avatar" style="background: linear-gradient(45deg, #ff6b6b, #ff8e8e);">
+              <span>?</span>
+            </div>
+            <div class="message-content">
+              <div class="character-name">Selira AI</div>
+              <div class="message-text">
+                ⚠️ Your new character "${characterSlug}" is still being created. This usually takes a few moments.<br><br>
+                Please try refreshing the page in a minute, or <a href="/create.html" style="color: #007acc;">create a new character</a>.
+              </div>
+            </div>
+          </div>
+        `;
       }
     }
 
@@ -3213,6 +3359,62 @@
         }
       } catch (error) {
         console.error('❌ Memory saving error:', error);
+      }
+    }
+
+    // Avatar Modal Functions
+    function openAvatarModal(avatarUrl, characterName) {
+      if (!avatarUrl || avatarUrl === '/avatars/placeholder.webp') {
+        console.log('⚠️ No avatar to display');
+        return;
+      }
+
+      const modal = document.getElementById('avatarModal');
+      const modalImage = document.getElementById('avatarModalImage');
+
+      modalImage.src = avatarUrl;
+      modalImage.alt = `${characterName} - Full Size Avatar`;
+
+      modal.classList.add('show');
+
+      // Close modal when clicking outside the image
+      modal.onclick = function(event) {
+        if (event.target === modal) {
+          closeAvatarModal();
+        }
+      };
+
+      // Close modal with Escape key
+      document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+          closeAvatarModal();
+        }
+      });
+    }
+
+    function closeAvatarModal() {
+      const modal = document.getElementById('avatarModal');
+      modal.classList.remove('show');
+    }
+
+    // Make avatars clickable
+    function makeAvatarsClickable() {
+      // Header avatar
+      const headerAvatar = document.getElementById('characterImage');
+      if (headerAvatar) {
+        headerAvatar.classList.add('clickable-avatar');
+        headerAvatar.onclick = function() {
+          openAvatarModal(currentCharacter.avatar, currentCharacter.name);
+        };
+      }
+
+      // Sidebar avatar
+      const sidebarAvatar = document.getElementById('sidebarCharacterImage');
+      if (sidebarAvatar) {
+        sidebarAvatar.classList.add('clickable-avatar');
+        sidebarAvatar.onclick = function() {
+          openAvatarModal(currentCharacter.avatar, currentCharacter.name);
+        };
       }
     }
 
