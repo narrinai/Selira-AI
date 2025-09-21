@@ -168,6 +168,8 @@ class Auth0LoginModal {
   }
 
   createModal(mode = 'login') {
+    console.log('🔧 Creating Auth0 modal with mode:', mode);
+
     if (document.getElementById('auth0-modal')) {
       document.getElementById('auth0-modal').remove();
     }
@@ -175,10 +177,12 @@ class Auth0LoginModal {
     const modal = document.createElement('div');
     modal.id = 'auth0-modal';
     modal.className = 'auth0-modal-overlay';
-    
+
     const isSignup = mode === 'signup';
     const title = isSignup ? 'Join Selira AI' : 'Welcome Back';
     const subtitle = isSignup ? 'Start chatting with thousands of AI companions' : 'Connect with your AI companions';
+
+    console.log('🔧 Modal configuration:', { mode, isSignup, title });
     
     modal.innerHTML = `
       <div class="auth0-modal-content">
@@ -272,14 +276,13 @@ class Auth0LoginModal {
             <a href="/privacy-policy.html" target="_blank">Privacy Policy</a>
           </div>
 
+          <!-- Switch Mode Links -->
           ${isSignup ? `
-          <!-- Switch to Login -->
           <div class="auth0-switch-mode">
             Already have an account?
             <a href="#" class="auth0-switch-link" onclick="switchToLogin(event)">Login here</a>
           </div>
           ` : `
-          <!-- Switch to Signup -->
           <div class="auth0-switch-mode">
             Don't have an account?
             <a href="#" class="auth0-switch-link" onclick="switchToSignup(event)">Sign up here</a>
@@ -1135,8 +1138,11 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 // ===== GLOBAL AUTH FUNCTIONS FOR SELIRA =====
 window.openLoginModal = function(mode = 'login') {
+  console.log('🌍 openLoginModal called with mode:', mode);
   if (seliraAuth) {
     seliraAuth.openModal(mode);
+  } else {
+    console.error('❌ seliraAuth not initialized yet');
   }
 };
 
