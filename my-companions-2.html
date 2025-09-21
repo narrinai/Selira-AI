@@ -1926,13 +1926,13 @@
         let userCompanions;
 
         try {
-          userCompanions = await getUserCompanions();
+          userCompanions = await getMyCompanions();
         } catch (getUserError) {
-          console.error('❌ Error in getUserCompanions:', getUserError);
+          console.error('❌ Error in getMyCompanions:', getUserError);
           userCompanions = [];
         }
 
-        console.log('🔍 getUserCompanions returned:', userCompanions);
+        console.log('🔍 getMyCompanions returned:', userCompanions);
         console.log('🔍 Type of userCompanions:', typeof userCompanions);
         console.log('🔍 Is array:', Array.isArray(userCompanions));
 
@@ -2098,8 +2098,8 @@
     }
 
     // ===== COMPANION FETCHING =====
-    async function getUserCompanions() {
-      console.log('🔍 Starting getUserCompanions...');
+    async function getMyCompanions() {
+      console.log('🔍 Starting getMyCompanions...');
       console.log('🔍 Function called from:', new Error().stack.slice(0, 200));
 
       // Check for cached companions first
