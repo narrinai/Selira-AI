@@ -1905,27 +1905,37 @@
         console.log('📡 Loading user companions...');
         const userCompanions = await getUserCompanions();
 
-        allCharacters = userCompanions.map(companion => ({
-          id: companion.id,
-          name: companion.name || 'Unknown',
-          title: companion.title || '',
-          description: companion.description || '',
-          avatar: companion.avatar || null,
-          category: companion.category || 'Other',
-          slug: companion.slug || '',
-          creator: companion.creator || 'Selira',
-          tags: companion.tags || [],
-          chats: companion.chats || '0',
-          rating: companion.rating || '4.5',
-          character_url: companion.character_url || `https://selira.ai/chat.html?char=${companion.slug}`,
-          isUserCreated: companion.isUserCreated || false,
-          hasChats: companion.hasChats || false,
-          companion_type: companion.companion_type || 'chatted'
-        }));
+        console.log('🔍 getUserCompanions returned:', userCompanions);
+        console.log('🔍 Type of userCompanions:', typeof userCompanions);
+        console.log('🔍 Is array:', Array.isArray(userCompanions));
 
-        console.log('✅ Loaded companions:', allCharacters.length);
-        console.log('📊 User created:', allCharacters.filter(c => c.isUserCreated).length);
-        console.log('📊 Chatted with:', allCharacters.filter(c => c.hasChats).length);
+        // Ensure userCompanions is an array
+        if (!Array.isArray(userCompanions)) {
+          console.warn('⚠️ userCompanions is not an array, using empty array');
+          allCharacters = [];
+        } else {
+          allCharacters = userCompanions.map(companion => ({
+            id: companion.id,
+            name: companion.name || 'Unknown',
+            title: companion.title || '',
+            description: companion.description || '',
+            avatar: companion.avatar || null,
+            category: companion.category || 'Other',
+            slug: companion.slug || '',
+            creator: companion.creator || 'Selira',
+            tags: companion.tags || [],
+            chats: companion.chats || '0',
+            rating: companion.rating || '4.5',
+            character_url: companion.character_url || `https://selira.ai/chat.html?char=${companion.slug}`,
+            isUserCreated: companion.isUserCreated || false,
+            hasChats: companion.hasChats || false,
+            companion_type: companion.companion_type || 'chatted'
+          }));
+
+          console.log('✅ Loaded companions:', allCharacters.length);
+          console.log('📊 User created:', allCharacters.filter(c => c.isUserCreated).length);
+          console.log('📊 Chatted with:', allCharacters.filter(c => c.hasChats).length);
+        }
 
       } catch (error) {
         console.error('❌ Error loading companions:', error);
@@ -2062,12 +2072,18 @@
 
     // ===== COMPANION FETCHING =====
     async function getUserCompanions() {
+      console.log('🔍 Starting getUserCompanions...');
+
       // First, get companions from localStorage (active chats)
       const localCompanions = getActiveChatsFromLocalStorage();
       console.log('💾 Found', localCompanions.length, 'active chats in localStorage');
 
       // Try to get real companions from API
       const user = window.getCurrentUser();
+      console.log('🔍 User check:', user);
+      console.log('🔍 User email:', user?.email);
+      console.log('🔍 User sub:', user?.sub);
+
       if (!user || !user.email || !user.sub) {
         console.log('⚠️ No user info available for companions fetch');
         // Still try to enrich local companions with character data
@@ -2095,7 +2111,10 @@
             });
           }
         }
-        return enriched.length > 0 ? enriched : getSampleCompanions();
+        console.log('🔍 Returning enriched companions:', enriched.length);
+        const result = enriched.length > 0 ? enriched : getSampleCompanions();
+        console.log('🔍 Final result (no user):', result);
+        return result;
       }
 
       try {
@@ -2128,6 +2147,7 @@
 
           // Merge API companions with local companions
           const mergedCompanions = await mergeCompanions(data.companions, localCompanions);
+          console.log('🔍 Merged companions result:', mergedCompanions);
 
           // Cache the results for 5 minutes
           const cacheData = {
@@ -2170,7 +2190,10 @@
             });
           }
         }
-        return enriched.length > 0 ? enriched : getSampleCompanions();
+        console.log('🔍 Returning enriched companions (error):', enriched.length);
+        const result = enriched.length > 0 ? enriched : getSampleCompanions();
+        console.log('🔍 Final result (error):', result);
+        return result;
       }
     }
 
