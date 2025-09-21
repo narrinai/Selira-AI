@@ -355,9 +355,7 @@ BOUNDARIES:
       hair_length: hairLength || 'long',
       hair_color: hairColor || 'brown',
       Avatar_URL: avatarUrlToUse,
-      is_unfiltered: isUnfiltered,
-      // Use actual Creator field that exists in Airtable
-      Created_by: displayName
+      is_unfiltered: isUnfiltered
       // chats and rating fields don't exist in Airtable - removed
     };
 
