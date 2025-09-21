@@ -42,8 +42,8 @@ exports.handler = async (event, context) => {
 
     console.log('🎨 Generating avatar for:', characterName);
 
-    // Call the generate-avatar-replicate Netlify function instead of Make.com webhook
-    const generateUrl = `${process.env.URL || 'https://narrin.ai'}/.netlify/functions/generate-avatar-replicate`;
+    // Call the selira-generate-companion-avatar Netlify function for sensual avatars
+    const generateUrl = `${process.env.URL || 'https://selira.ai'}/.netlify/functions/selira-generate-companion-avatar`;
     
     const generatePayload = {
       characterName: characterName,
@@ -51,7 +51,7 @@ exports.handler = async (event, context) => {
       category: category || 'general'
     };
 
-    console.log('📤 Calling generate-avatar-replicate function:', generateUrl);
+    console.log('💋 Calling selira-generate-companion-avatar function:', generateUrl);
     
     const generateResponse = await fetch(generateUrl, {
       method: 'POST',

@@ -2844,7 +2844,7 @@
         const userEmail = user?.email;
         const userAuth0Id = user?.sub || user?.auth0_id;
 
-        const response = await fetch('/.netlify/functions/generate-custom-image', {
+        const response = await fetch('/.netlify/functions/selira-generate-custom-image', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

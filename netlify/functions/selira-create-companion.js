@@ -258,7 +258,7 @@ BOUNDARIES:
       // Call the generate-and-save-avatar function to create a custom avatar
       console.log('🎨 Generating custom avatar with Replicate...');
 
-      const generateUrl = `${process.env.URL || 'https://selira.ai'}/.netlify/functions/generate-and-save-avatar`;
+      const generateUrl = `${process.env.URL || 'https://selira.ai'}/.netlify/functions/selira-generate-and-save-avatar`;
 
       const avatarPayload = {
         characterName: name,

@@ -1458,7 +1458,7 @@
         console.log('💾 Creating companion...');
         createBtn.textContent = 'Creating Companion...';
 
-        const response = await fetch('/.netlify/functions/create-character', {
+        const response = await fetch('/.netlify/functions/selira-create-companion', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -1713,7 +1713,7 @@
     // Generate companion avatar using the same system as chat
     async function generateCompanionAvatar(companion) {
       try {
-        const response = await fetch('/.netlify/functions/generate-custom-image', {
+        const response = await fetch('/.netlify/functions/selira-generate-custom-image', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
