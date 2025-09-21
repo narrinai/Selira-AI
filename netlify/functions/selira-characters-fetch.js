@@ -192,11 +192,10 @@ exports.handler = async (event, context) => {
         avatarUrl = fields.avatar_url;
       }
       
-      // Convert Replicate URLs to local paths if they exist
+      // Keep Replicate URLs as is - they work directly
       if (avatarUrl && avatarUrl.includes('replicate.delivery')) {
-        // Try to use local version if available
-        const slug = fields.Slug || fields.Name?.toLowerCase().replace(/[^a-z0-9]/g, '-') || 'unknown';
-        const localPath = `/avatars/${slug}.webp`;
+        // Use the Replicate URL directly
+        console.log(`🌐 Using Replicate URL for ${fields.Name}: ${avatarUrl}`);
         // We'll use the Replicate URL for now but log it
         console.log(`⚠️ Replicate URL found for ${fields.Name}, should be replaced with local avatar`);
       }

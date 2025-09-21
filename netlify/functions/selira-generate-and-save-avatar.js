@@ -164,8 +164,8 @@ exports.handler = async (event, context) => {
         // Update the avatar URL if we have a valid record ID
         if (recordId && recordId.startsWith('rec')) {
           const updateUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_ID}/${recordId}`;
-          
-          // Initially save the Replicate URL, the download script will replace it with local path
+
+          // Use the Replicate URL directly - don't try to use local path in production
           const avatarUrl = replicateUrl;
           
           const updateResponse = await fetch(updateUrl, {
