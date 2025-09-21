@@ -2,21 +2,21 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My AI Chat History - Manage Characters | Selira AI</title>
-  <meta name="description" content="View and manage your AI chat history on Selira AI. Access conversation logs, track your favorite chatbot characters, and continue meaningful AI chats.">
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>My AI Companions - Chat History & Created Characters | Selira AI</title>
+  <meta name="description" content="View and manage your AI companions on Selira AI. Access your chat history, created characters, and continue conversations with your favorite AI chatbots.">
+
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://selira.ai/my-companions">
-  <meta property="og:title" content="My Companions - Selira AI">
-  <meta property="og:description" content="View and manage your AI companions. Access your conversation history on Selira AI.">
+  <meta property="og:url" content="https://selira.ai/my-companions-2">
+  <meta property="og:title" content="My AI Companions - Selira AI">
+  <meta property="og:description" content="View and manage your AI companions. Access your chat history and created characters on Selira AI.">
   <meta property="og:image" content="https://selira.ai/og-image.jpg">
-  
+
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:url" content="https://selira.ai/my-companions">
-  <meta property="twitter:title" content="My Companions | Selira AI">
+  <meta property="twitter:url" content="https://selira.ai/my-companions-2">
+  <meta property="twitter:title" content="My AI Companions | Selira AI">
   <meta property="twitter:description" content="View and manage your AI companions on Selira AI.">
   <meta property="twitter:image" content="https://selira.ai/og-image.jpg">
   
@@ -31,13 +31,10 @@
   
   <!-- Auth0 Authentication System -->
   <script src="/js/auth0-login.js"></script>
-  
+
   <!-- Mobile Navigation System -->
   <script src="/js/mobile-nav.js"></script>
 
-  <!-- Selira AI Popup System -->
-  <script src="/js/selira-popups.js"></script>
-  
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -77,6 +74,20 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+    }
+
+    /* Prevent mobile zoom on form inputs */
+    input, textarea, select, button {
+      font-size: 16px !important;
+    }
+
+    /* Prevent zoom on focus for mobile devices */
+    @media screen and (max-width: 768px) {
+      input, textarea, select {
+        font-size: 16px !important;
+        transform-origin: left top;
+        transform: scale(1);
+      }
     }
 
     body {
@@ -191,7 +202,7 @@
       top: 0;
       z-index: 40;
     }
-    
+
     .header-top {
       display: flex;
       justify-content: space-between;
@@ -239,15 +250,13 @@
     }
 
     .user-btn {
-      padding: 10px 20px;
-      background: var(--accent);
-      color: white;
-      border: none;
+      padding: 8px 16px;
       border-radius: var(--radius-md);
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
       text-decoration: none;
+      font-weight: 600;
+      font-size: 13px;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
     }
 
     .user-btn:hover {
@@ -256,14 +265,24 @@
     }
 
     .user-btn.secondary {
-      background: transparent;
-      color: var(--accent);
-      border: 1px solid var(--accent);
+      color: var(--text-secondary);
+      border-color: var(--border);
     }
 
     .user-btn.secondary:hover {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    .signup-btn {
       background: var(--accent);
       color: white;
+    }
+
+    .signup-btn:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(212, 165, 116, 0.3);
     }
 
     /* Tab Navigation */
@@ -319,24 +338,60 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 8px 16px;
-      background: white;
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-md);
+      padding: 6px 14px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 20px;
       cursor: pointer;
-      font-size: 14px;
-      font-weight: 500;
-      color: #333;
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--text-secondary);
       transition: all 0.2s ease;
     }
 
     .dropdown-btn:hover {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
       border-color: var(--accent);
     }
 
     .dropdown-arrow {
-      font-size: 12px;
-      color: #666;
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+      margin-top: 4px;
+    }
+
+    .dropdown-menu a {
+      display: block;
+      padding: 8px 14px;
+      color: var(--text-primary);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 400;
+      transition: all 0.2s ease;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .dropdown-menu a:last-child {
+      border-bottom: none;
+    }
+
+    .dropdown-menu a:hover {
+      background: var(--bg-tertiary);
+      color: var(--accent);
     }
 
     .toggle-switch {
@@ -381,18 +436,18 @@
     .tag-filters {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 12px;
       align-items: center;
     }
 
     .tag-pill {
-      padding: 8px 16px;
-      background: white;
-      border: none;
-      border-radius: 25px;
-      font-size: 14px;
-      font-weight: 500;
-      color: #666;
+      padding: 6px 14px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--text-secondary);
       cursor: pointer;
       transition: all 0.2s ease;
       text-decoration: none;
@@ -402,24 +457,28 @@
     }
 
     .tag-pill:hover {
-      background: #f0f0f0;
-      color: #333;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      border-color: var(--accent);
     }
 
     .tag-pill.active {
-      background: #333;
+      background: var(--accent);
       color: white;
+      border-color: var(--accent);
     }
 
     .tag-pill.special {
       background: #ec4899;
       color: white;
+      border-color: #ec4899;
     }
 
     .tag-pill.category {
       background: var(--accent);
       color: white;
-      font-weight: 600;
+      font-weight: 500;
+      border-color: var(--accent);
     }
 
     .more-tags-btn {
@@ -531,8 +590,7 @@
       gap: 4px;
     }
 
-    /* Companion type badges */
-    .companion-type-badge {
+    .companion-badge {
       position: absolute;
       top: 8px;
       left: 8px;
@@ -544,27 +602,12 @@
       z-index: 2;
     }
 
-    .user-created-badge {
-      background: linear-gradient(135deg, #10b981, #059669);
-      box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+    .companion-badge.user-created {
+      background: var(--accent);
     }
 
-    .chatted-badge {
-      background: linear-gradient(135deg, #6366f1, #4f46e5);
-      box-shadow: 0 2px 4px rgba(99, 102, 241, 0.3);
-    }
-
-    .creator-indicator {
-      color: var(--accent-primary);
-      font-weight: 600;
-    }
-
-    .character-card.user-created {
-      border: 2px solid var(--accent-primary);
-    }
-
-    .character-card.user-created:hover {
-      border-color: var(--accent-secondary);
+    .companion-badge.chatted {
+      background: rgba(34, 197, 94, 0.8);
     }
 
     .character-info {
@@ -640,11 +683,6 @@
       50% { opacity: 0.4; }
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
     .loading-grid {
       grid-column: 1 / -1;
       text-align: center;
@@ -684,12 +722,15 @@
       .mobile-header {
         display: flex;
         align-items: center;
-        padding: 12px 16px;
+        justify-content: space-between;
+        padding: 16px 20px;
         background: var(--bg-primary);
         border-bottom: 1px solid var(--border);
         position: sticky;
         top: 0;
         z-index: 100;
+        height: 60px;
+        box-sizing: border-box;
       }
 
       .mobile-menu-btn {
@@ -698,15 +739,21 @@
         font-size: 24px;
         color: var(--text-primary);
         cursor: pointer;
-        margin-right: 12px;
-        padding: 4px;
+        padding: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
       }
 
       .mobile-logo {
         font-family: 'Playfair Display', serif;
-        font-size: 18px;
+        font-size: 20px;
         font-weight: 700;
         color: var(--accent);
+        flex-grow: 1;
+        text-align: center;
+        margin: 0 16px;
       }
 
       .top-header {
@@ -1032,6 +1079,7 @@
         .profile-grid {
           grid-template-columns: 1fr !important;
           gap: 16px !important;
+          justify-items: center !important;
         }
 
         .profile-info-card,
@@ -1039,6 +1087,9 @@
         .email-settings-card {
           padding: 20px !important;
           border-radius: 12px !important;
+          width: 100% !important;
+          max-width: 400px !important;
+          margin: 0 auto !important;
         }
 
         .profile-info-card h3,
@@ -1114,8 +1165,12 @@
       }
 
       .filter-dropdown, .toggle-switch {
-        font-size: 14px;
-        padding: 8px 12px;
+        font-size: 12px;
+      }
+
+      .dropdown-btn {
+        padding: 6px 12px;
+        font-size: 12px;
       }
 
       .category-tabs {
@@ -1133,7 +1188,7 @@
       }
 
       .tag-filters {
-        gap: 6px;
+        gap: 8px;
       }
 
       .tag-pill {
@@ -1171,10 +1226,159 @@
 
       .filter-section {
         padding: 10px 12px;
+        display: none !important;
       }
 
       .mobile-header {
-        padding: 10px 12px;
+        padding: 16px 20px;
+      }
+
+      /* Mobile Search Overlay */
+      .mobile-search-content {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .mobile-search-header {
+        display: flex;
+        align-items: center;
+        padding: 16px 20px;
+        background: var(--bg-primary);
+        border-bottom: 1px solid var(--border);
+        position: relative;
+        justify-content: center;
+      }
+
+      .mobile-search-close {
+        position: absolute;
+        left: 20px;
+        background: none;
+        border: none;
+        color: var(--text-primary);
+        font-size: 18px;
+        cursor: pointer;
+        padding: 8px;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .mobile-search-header span {
+        font-weight: 600;
+        color: var(--text-primary);
+        font-size: 16px;
+      }
+
+      .mobile-search-input-container {
+        padding: 20px;
+      }
+
+      #mobileSearchInput {
+        width: 100%;
+        padding: 16px 20px;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border);
+        border-radius: 25px;
+        font-size: 16px;
+        color: var(--text-primary);
+        box-sizing: border-box;
+      }
+
+      #mobileSearchInput:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+
+      /* Mobile Filter Overlay */
+      .mobile-filter-content {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .mobile-filter-header {
+        display: flex;
+        align-items: center;
+        padding: 16px 20px;
+        background: var(--bg-primary);
+        border-bottom: 1px solid var(--border);
+        position: relative;
+        justify-content: center;
+      }
+
+      .mobile-filter-close {
+        position: absolute;
+        left: 20px;
+        background: none;
+        border: none;
+        color: var(--text-primary);
+        font-size: 18px;
+        cursor: pointer;
+        padding: 8px;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .mobile-filter-header span {
+        font-weight: 600;
+        color: var(--text-primary);
+        font-size: 16px;
+      }
+
+      .mobile-filter-body {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+      }
+
+      .mobile-filter-section {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .mobile-filter-tag {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border);
+        color: var(--text-primary);
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+      }
+
+      .mobile-filter-tag:hover {
+        border-color: var(--accent);
+        background: var(--bg-tertiary);
+      }
+
+      .mobile-filter-tag.active {
+        background: #3b82f6;
+        color: white;
+        border-color: #3b82f6;
+      }
+
+      .mobile-filter-tag.special {
+        background: #ec4899;
+        color: white;
+        border-color: #ec4899;
+      }
+
+      .loading-mobile-tags, .no-tags {
+        color: var(--text-secondary);
+        font-size: 14px;
+        padding: 16px;
+        text-align: center;
+        width: 100%;
       }
     }
 
@@ -1466,101 +1670,6 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-  
-    /* Desktop Navigation Header */
-    .desktop-header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      background: rgba(10, 10, 10, 0.95);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--border);
-      z-index: 1000;
-      padding: 16px 32px;
-      display: none;
-    }
-
-    .desktop-header-content {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .desktop-logo {
-      font-family: 'Playfair Display', serif;
-      font-size: 28px;
-      font-weight: 700;
-      color: var(--accent);
-      text-decoration: none;
-      letter-spacing: -0.5px;
-    }
-
-    .desktop-nav-links {
-      display: flex;
-      gap: 32px;
-      align-items: center;
-    }
-
-    .desktop-nav-link {
-      color: var(--text-secondary);
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.2s;
-    }
-
-    .desktop-nav-link:hover {
-      color: var(--text-primary);
-    }
-
-    .desktop-nav-btn {
-      background: var(--accent);
-      color: white;
-      padding: 10px 24px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: 600;
-      transition: background 0.2s;
-      border: none;
-      cursor: pointer;
-    }
-
-    .desktop-nav-btn:hover {
-      background: var(--accent-hover);
-    }
-
-    @media (min-width: 1024px) {
-      .desktop-header {
-        display: block;
-      }
-
-      .app-container {
-        margin-top: 72px;
-      }
-
-      /* Hide sidebar on desktop to match pricing page */
-      .sidebar {
-        display: none;
-      }
-
-      /* Make main content full width */
-      .main-content {
-        width: 100%;
-        margin-left: 0;
-      }
-
-      /* Ensure top header is always visible on desktop */
-      .top-header {
-        display: block !important;
-      }
-    }
-    
-    /* Hide filter section to match create page exactly */
-    .filter-section {
-      display: none !important;
-    }
   </style>
 </head>
 <body>
@@ -1569,7 +1678,7 @@
     <aside class="sidebar" id="sidebar">
       <!-- Logo -->
       <a href="/category" class="sidebar-logo">
-        <div class="sidebar-logo-text">Selira AI</div>
+        <div class="sidebar-logo-text">Selira</div>
       </a>
 
       <!-- Navigation -->
@@ -1578,7 +1687,7 @@
           <span class="nav-item-icon">👥</span>
           <span>Discover</span>
         </a>
-        <a href="/my-companions" class="nav-item active">
+        <a href="/my-companions-2" class="nav-item active">
           <span class="nav-item-icon">💬</span>
           <span>My Companions</span>
         </a>
@@ -1588,7 +1697,7 @@
         </a>
 
         <div class="nav-section-title">Account</div>
-
+        
         <a href="/profile" class="nav-item">
           <span class="nav-item-icon">👤</span>
           <span>Profile</span>
@@ -1618,7 +1727,7 @@
             </svg>
           </button>
           <button onclick="showMobileFilters()" class="mobile-filter-btn" style="background: #3b82f6; border: none; cursor: pointer; padding: 6px 12px; border-radius: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: white; font-size: 12px; font-weight: 500;">
-            Filters
+            Tags
           </button>
           <button class="user-btn login-btn" onclick="openLoginModal('login'); return false;" style="padding: 10px 20px; font-size: 14px; border-radius: 25px; background: var(--accent); color: white; border: none; font-weight: 600; flex-shrink: 0;">Login</button>
         </div>
@@ -1630,10 +1739,10 @@
           <!-- Search -->
           <div class="search-container">
             <div class="search-icon">🔍</div>
-            <input
-              type="text"
-              class="search-input"
-              placeholder="Search companions..."
+            <input 
+              type="text" 
+              class="search-input" 
+              placeholder="Search your companions..."
               id="searchInput"
             >
           </div>
@@ -1687,7 +1796,6 @@
 
         <!-- Tag Pills Row -->
         <div class="tag-filters" id="tagFilters">
-          <!-- Dynamic tags will be inserted here with All button first -->
           <div id="dynamicTagFilters">
             <a href="#" class="tag-pill active" onclick="setTagFilter('all')">All</a>
             <a href="#" class="tag-pill" onclick="setTagFilter('created')">👤 Created by Me</a>
@@ -1718,8 +1826,8 @@
       gender: 'all',
       category: 'all',
       tags: [],
-      animated: false,
-      unfiltered: true
+      animated: undefined, // undefined = show all, true = only animated, false = only realistic
+      unfiltered: undefined // undefined = show all, true = only unfiltered, false = only safe
     };
 
     // Global state
@@ -1728,77 +1836,139 @@
     let isLoading = false;
     const charactersPerPage = 12;
 
+    // Helper function to get working avatar based on character name and sex
+    function getWorkingAvatar(name, sex) {
+      // Map specific character names to working timestamped avatars
+      const nameMap = {
+        'aria': 'aria-1754289110066.webp',
+        'ava': 'ava-1754251730993.webp',
+        'alex': 'alex-1754251778919.webp',
+        'blake': 'blake-1754250785212.webp',
+        'anna': 'anna-1754249784269.webp',
+        'sarah': 'sarah-1754252677323.webp',
+        'emma': 'ava-1754251730993.webp', // Use ava as fallback for emma
+        'chris': 'alex-1754251778919.webp' // Use alex as fallback for chris
+      };
+
+      const nameLower = (name || '').toLowerCase();
+      for (const [key, avatar] of Object.entries(nameMap)) {
+        if (nameLower.includes(key)) {
+          return avatar;
+        }
+      }
+
+      // Gender-based fallback with confirmed working avatars
+      if (sex === 'male') {
+        const maleAvatars = [
+          'alex-1754251778919.webp',
+          'blake-1754250785212.webp',
+          'adrian-1754252368714.webp'
+        ];
+        return maleAvatars[Math.floor(Math.random() * maleAvatars.length)];
+      } else {
+        const femaleAvatars = [
+          'aria-1754289110066.webp',
+          'ava-1754251730993.webp',
+          'anna-1754249784269.webp',
+          'sarah-1754252677323.webp',
+          'amelia-1754250154314.webp'
+        ];
+        return femaleAvatars[Math.floor(Math.random() * femaleAvatars.length)];
+      }
+    }
+
     // Initialize page
     document.addEventListener('DOMContentLoaded', async function() {
-      console.log('🚀 Selira AI My Companions page loading...');
+      console.log('🚀 Selira AI Category page loading...');
 
-      // Load all characters first for global access
-      await loadCharacters();
+      // Force clear invalid cache first
+      try {
+        const cached = localStorage.getItem('userCompanions');
+        if (cached) {
+          const cacheData = JSON.parse(cached);
+          if (cacheData.timestamp > Date.now()) {
+            console.log('🗑️ Clearing invalid future-dated cache');
+            localStorage.removeItem('userCompanions');
+          }
+        }
+      } catch (e) {
+        console.log('🗑️ Clearing malformed cache');
+        localStorage.removeItem('userCompanions');
+      }
+
+      // Wait a bit for Auth0 to initialize
+      setTimeout(() => {
+        loadCharacters();
+      }, 1000);
 
       initializeFilters();
       setupTabNavigation();
       setupInfiniteScroll();
 
-      // Ensure sidebar and filters are visible on page load
-      const sidebar = document.querySelector('.sidebar');
-      const filterSection = document.querySelector('.filter-section');
+      // Close dropdowns when clicking outside
+      document.addEventListener('click', function(event) {
+        if (!event.target.closest('.filter-dropdown')) {
+          document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            menu.style.display = 'none';
+          });
+        }
+      });
+      handleInitialURL();
 
-      if (sidebar) {
-        sidebar.style.display = 'flex';
-        console.log('✅ Sidebar made visible');
-      }
-
-      if (filterSection) {
-        filterSection.style.display = 'block';
-        console.log('✅ Filter section made visible');
-      }
-
-      // Default to show My Companions immediately
-      currentTab = 'companions';
-      await showMyCompanions();
+      // Load tags for filter pills
+      await loadCreateTagsFromAirtable();
     });
 
-    // ===== CHARACTER LOADING =====
+    // ===== COMPANION LOADING =====
     async function loadCharacters() {
       try {
-        console.log('📡 Loading characters from API...');
-        const response = await fetch('/.netlify/functions/selira-characters-fetch');
-        
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+        console.log('📡 Loading user companions...');
+        let userCompanions;
+
+        try {
+          userCompanions = await getMyCompanions();
+        } catch (getUserError) {
+          console.error('❌ Error in getMyCompanions:', getUserError);
+          userCompanions = [];
         }
-        
-        const data = await response.json();
-        
-        if (data.success && data.characters) {
-          allCharacters = data.characters.map(char => ({
-            id: char.Character_ID || char.Name,
-            name: char.Name || 'Unknown',
-            title: char.Character_Title || '',
-            description: char.Character_Description || '',
-            avatar: char.Avatar_URL ? char.Avatar_URL.replace('narrin.ai', 'selira.ai') : null,
-            category: char.Category || 'Other',
-            slug: char.Slug || (char.Name ? char.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'unknown'),
-            creator: char.Created_by || 'Selira',
-            tags: Array.isArray(char.Tags) ? char.Tags : (char.Tags || '').toString().split(',').filter(Boolean),
-            chats: Math.floor(Math.random() * 100) + 'K',
-            rating: (Math.random() * 2 + 3).toFixed(1),
-            character_url: char.Character_URL ? char.Character_URL.replace('narrin.ai', 'selira.ai') : `https://selira.ai/chat.html?char=${char.Slug || (char.Name ? char.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'unknown')}`
-          }));
-          
-          console.log('✅ Loaded characters:', allCharacters.length);
+
+        console.log('🔍 getMyCompanions returned:', userCompanions);
+        console.log('🔍 Type of userCompanions:', typeof userCompanions);
+        console.log('🔍 Is array:', Array.isArray(userCompanions));
+
+        // Ensure userCompanions is an array
+        if (!Array.isArray(userCompanions)) {
+          console.warn('⚠️ userCompanions is not an array, using empty array');
+          allCharacters = [];
         } else {
-          throw new Error('Invalid API response');
+          allCharacters = userCompanions.map(companion => ({
+            id: companion.id,
+            name: companion.name || 'Unknown',
+            title: companion.title || '',
+            description: companion.description || '',
+            avatar: companion.avatar || null,
+            category: companion.category || 'Other',
+            slug: companion.slug || '',
+            creator: companion.creator || 'Selira',
+            tags: companion.tags || [],
+            chats: companion.chats || '0',
+            rating: companion.rating || '4.5',
+            character_url: companion.character_url || `https://selira.ai/chat.html?char=${companion.slug}`,
+            isUserCreated: companion.isUserCreated || false,
+            hasChats: companion.hasChats || false,
+            companion_type: companion.companion_type || 'chatted'
+          }));
+
+          console.log('✅ Loaded companions:', allCharacters.length);
+          console.log('📊 User created:', allCharacters.filter(c => c.isUserCreated).length);
+          console.log('📊 Chatted with:', allCharacters.filter(c => c.hasChats).length);
         }
-        
+
       } catch (error) {
-        console.error('❌ Error loading characters:', error);
-        // Use demo characters as fallback
-        allCharacters = getDemoCharacters();
+        console.error('❌ Error loading companions:', error);
+        allCharacters = [];
       }
 
-      // Store globally for later use
-      window.allCharacters = allCharacters;
       filteredCharacters = [...allCharacters];
       renderCharacters();
     }
@@ -1927,6 +2097,269 @@
       return [...fantasyCharacters, ...animeCharacters, ...historicalCharacters];
     }
 
+    // ===== COMPANION FETCHING =====
+    async function getMyCompanions() {
+      console.log('🔍 Starting getMyCompanions...');
+      console.log('🔍 Function called from:', new Error().stack.slice(0, 200));
+
+      // Check for cached companions first
+      try {
+        const cached = localStorage.getItem('userCompanions');
+        if (cached) {
+          const cacheData = JSON.parse(cached);
+          console.log('🔍 Found cached data:', cacheData);
+
+          // Check if cache has proper structure and is valid
+          if (cacheData && cacheData.companions && Array.isArray(cacheData.companions)) {
+            // Check if cache is still valid (5 minutes) and not from the future
+            const cacheAge = Date.now() - cacheData.timestamp;
+            const cacheValidTime = 5 * 60 * 1000; // 5 minutes
+
+            if (cacheAge >= 0 && cacheAge < cacheValidTime) {
+              console.log('✅ Using valid cached companions:', cacheData.companions.length);
+              return cacheData.companions;
+            } else {
+              console.log('⚠️ Cache expired or has invalid timestamp, clearing and fetching fresh data');
+              localStorage.removeItem('userCompanions');
+            }
+          } else {
+            console.log('⚠️ Cache has invalid structure, clearing and fetching fresh data');
+            localStorage.removeItem('userCompanions');
+          }
+        }
+      } catch (error) {
+        console.warn('⚠️ Error reading cache:', error);
+        localStorage.removeItem('userCompanions');
+      }
+
+      // First, get companions from localStorage (active chats)
+      const localCompanions = getActiveChatsFromLocalStorage();
+      console.log('💾 Found', localCompanions.length, 'active chats in localStorage');
+
+      // Try to get real companions from API
+      let user = null;
+      if (typeof window.getCurrentUser === 'function') {
+        user = window.getCurrentUser();
+      } else {
+        console.warn('⚠️ getCurrentUser function not available yet');
+      }
+      console.log('🔍 User check:', user);
+      console.log('🔍 User email:', user?.email);
+      console.log('🔍 User sub:', user?.sub);
+
+      if (!user || !user.email || !user.sub) {
+        console.log('⚠️ No user info available for companions fetch');
+        // Still try to enrich local companions with character data
+        const enriched = [];
+        for (const localComp of localCompanions) {
+          const characterData = await getCharacterData(localComp.slug);
+          if (characterData) {
+            enriched.push({
+              ...characterData,
+              isFromLocalStorage: true,
+              messageCount: localComp.messageCount,
+              lastChatTimestamp: localComp.timestamp
+            });
+          } else {
+            enriched.push({
+              slug: localComp.slug,
+              name: localComp.slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+              description: `Active chat with ${localComp.messageCount} messages`,
+              isFromLocalStorage: true,
+              messageCount: localComp.messageCount,
+              lastChatTimestamp: localComp.timestamp,
+              chats: localComp.messageCount.toString(),
+              rating: '4.5',
+              creator: 'Selira'
+            });
+          }
+        }
+        console.log('🔍 Returning enriched companions:', enriched.length);
+        const result = enriched.length > 0 ? enriched : getSampleCompanions();
+        console.log('🔍 Final result (no user):', result);
+        return result;
+      }
+
+      try {
+        console.log('🔍 Fetching user companions from API...');
+
+        const response = await fetch('/.netlify/functions/get-my-companions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            user_email: user.email,
+            user_uid: user.sub
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log('🔍 Raw API response:', data);
+
+        if (data.success && data.companions) {
+          console.log('✅ Successfully fetched', data.companions.length, 'companions from API');
+          console.log('📊 Stats:', {
+            total: data.total,
+            user_created: data.user_created_count,
+            chatted: data.chatted_count
+          });
+
+          // Merge API companions with local companions
+          const mergedCompanions = await mergeCompanions(data.companions, localCompanions);
+          console.log('🔍 Merged companions result:', mergedCompanions);
+
+          // Cache the results for 5 minutes
+          const cacheData = {
+            companions: mergedCompanions,
+            timestamp: Date.now()
+          };
+          localStorage.setItem('userCompanions', JSON.stringify(cacheData));
+
+          return mergedCompanions;
+        } else {
+          console.error('❌ API returned unsuccessful response:', data.error);
+          // On API error, still use local companions
+          const enriched = [];
+          for (const localComp of localCompanions) {
+            const characterData = await getCharacterData(localComp.slug);
+            if (characterData) {
+              enriched.push({
+                ...characterData,
+                isFromLocalStorage: true,
+                messageCount: localComp.messageCount,
+                lastChatTimestamp: localComp.timestamp
+              });
+            }
+          }
+          return enriched.length > 0 ? enriched : getSampleCompanions();
+        }
+
+      } catch (error) {
+        console.error('❌ Error fetching user companions:', error);
+        // On error, still use local companions
+        const enriched = [];
+        for (const localComp of localCompanions) {
+          const characterData = await getCharacterData(localComp.slug);
+          if (characterData) {
+            enriched.push({
+              ...characterData,
+              isFromLocalStorage: true,
+              messageCount: localComp.messageCount,
+              lastChatTimestamp: localComp.timestamp
+            });
+          }
+        }
+        console.log('🔍 Returning enriched companions (error):', enriched.length);
+        const result = enriched.length > 0 ? enriched : getSampleCompanions();
+        console.log('🔍 Final result (error):', result);
+        return result;
+      }
+    }
+
+    function getActiveChatsFromLocalStorage() {
+      const companions = [];
+      const chatKeys = Object.keys(localStorage).filter(key => key.startsWith('chatHistory_'));
+
+      chatKeys.forEach(key => {
+        const slug = key.replace('chatHistory_', '');
+        try {
+          const chatData = JSON.parse(localStorage.getItem(key));
+          if (chatData && Array.isArray(chatData) && chatData.length > 0) {
+            const lastMessage = chatData[chatData.length - 1];
+            companions.push({
+              slug: slug,
+              messageCount: chatData.length,
+              timestamp: lastMessage.timestamp || Date.now()
+            });
+          }
+        } catch (e) {
+          console.warn('Error parsing chat data for', slug, ':', e);
+        }
+      });
+
+      return companions.sort((a, b) => b.timestamp - a.timestamp);
+    }
+
+    async function getCharacterData(slug) {
+      try {
+        const response = await fetch('/.netlify/functions/selira-characters-fetch');
+        const data = await response.json();
+
+        if (data.success && data.characters) {
+          const character = data.characters.find(c => c.Slug === slug || c.Name?.toLowerCase().replace(/[^a-z0-9]+/g, '-') === slug);
+          if (character) {
+            return {
+              id: character.Character_ID || character.Name,
+              name: character.Name || 'Unknown',
+              title: character.Character_Title || '',
+              description: character.Character_Description || '',
+              avatar: character.Avatar_URL ? character.Avatar_URL.replace('narrin.ai', 'selira.ai') : null,
+              category: character.Category || 'Other',
+              slug: character.Slug || slug,
+              creator: character.Created_by || 'Selira',
+              tags: Array.isArray(character.Tags) ? character.Tags : (character.Tags || '').toString().split(',').filter(Boolean),
+              chats: '0',
+              rating: '4.5',
+              character_url: character.Character_URL ? character.Character_URL.replace('narrin.ai', 'selira.ai') : `https://selira.ai/chat.html?char=${slug}`
+            };
+          }
+        }
+      } catch (error) {
+        console.warn('Could not fetch character data for', slug, ':', error);
+      }
+      return null;
+    }
+
+    async function mergeCompanions(apiCompanions, localCompanions) {
+      const merged = [...apiCompanions];
+
+      // Add local companions that aren't in API results
+      for (const localComp of localCompanions) {
+        const existsInApi = apiCompanions.some(api => api.slug === localComp.slug);
+        if (!existsInApi) {
+          const characterData = await getCharacterData(localComp.slug);
+          if (characterData) {
+            merged.push({
+              ...characterData,
+              isFromLocalStorage: true,
+              messageCount: localComp.messageCount,
+              lastChatTimestamp: localComp.timestamp,
+              hasChats: true,
+              companion_type: 'chatted'
+            });
+          }
+        }
+      }
+
+      return merged;
+    }
+
+    function getSampleCompanions() {
+      return [
+        {
+          id: 'sample-companion',
+          name: 'Sample Companion',
+          title: 'Demo Character',
+          description: 'This is a sample companion to show the interface.',
+          avatar: null,
+          category: 'Demo',
+          slug: 'sample-companion',
+          creator: 'Selira',
+          tags: ['Demo'],
+          chats: '0',
+          rating: '4.5',
+          isUserCreated: false,
+          hasChats: false,
+          companion_type: 'sample'
+        }
+      ];
+    }
+
     // ===== CHARACTER RENDERING =====
     function renderCharacters() {
       const grid = document.getElementById('charactersGrid');
@@ -1934,7 +2367,11 @@
       if (filteredCharacters.length === 0) {
         grid.innerHTML = `
           <div class="loading-grid">
-            <p style="color: var(--text-muted);">No characters found matching your filters.</p>
+            <div style="text-align: center; padding: 40px;">
+              <div style="font-size: 48px; margin-bottom: 16px;">💬</div>
+              <h3 style="color: var(--text-primary); margin-bottom: 8px;">No companions found</h3>
+              <p style="color: var(--text-secondary); margin-bottom: 20px;">Start chatting with characters or create your own to see them here!</p>
+            </div>
           </div>
         `;
         return;
@@ -1948,9 +2385,9 @@
       
       grid.innerHTML = initialCharacters.map(character => `
         <div class="character-card" onclick="openCharacter('${character.slug}')">
-          ${character.avatar ? 
-            `<img src="${character.avatar}" alt="${character.name || character.slug}" class="character-image" loading="lazy">` :
-            `<div class="character-image-placeholder">${(character.name || character.slug || 'Unknown').charAt(0).toUpperCase()}</div>`
+          ${character.avatar ?
+            `<img src="${character.avatar}" alt="${character.name}" class="character-image" loading="lazy" onerror="this.onerror=null; this.src='https://selira.ai/avatars/${getWorkingAvatar(character.name, character.sex)}'; console.log('🔧 Fixed broken avatar for ${character.name}');">` :
+            `<div class="character-image-placeholder">${character.name.charAt(0)}</div>`
           }
           
           <!-- Favorite Button -->
@@ -1962,17 +2399,25 @@
           <div class="character-stats-overlay">
             <div class="stat-badge">
               <span>💬</span>
-              <span>${character.chats || '0'}</span>
+              <span>${character.chats}</span>
             </div>
             <div class="stat-badge">
               <span>⭐</span>
-              <span>${character.rating || '4.5'}</span>
+              <span>${character.rating}</span>
             </div>
           </div>
-          
+
+          <!-- Companion Type Badge -->
+          ${character.isUserCreated ?
+            '<div class="companion-badge user-created">Created by You</div>' :
+            character.hasChats ?
+              '<div class="companion-badge chatted">Chatted With</div>' :
+              ''
+          }
+
           <!-- Character Info -->
           <div class="character-info">
-            <h3 class="character-name">${character.name || character.slug || 'Unknown'}</h3>
+            <h3 class="character-name">${character.name}</h3>
             <div class="character-creator">
               <span>@${character.creator}</span>
             </div>
@@ -1980,8 +2425,8 @@
             
             <!-- Stats for mobile (shown in character-info, hidden overlay on mobile) -->
             <div class="character-stats">
-              <span>💬 ${character.chats || '0'}</span>
-              <span>⭐ ${character.rating || '4.5'}</span>
+              <span>💬 ${character.chats}</span>
+              <span>⭐ ${character.rating}</span>
             </div>
             
             <!-- Tags -->
@@ -2023,38 +2468,203 @@
     function applyFilters() {
       filteredCharacters = allCharacters.filter(character => {
         // Search filter
-        if (currentFilters.search && 
-            !(character.name || character.slug || '').toLowerCase().includes(currentFilters.search) &&
-            !(character.description || '').toLowerCase().includes(currentFilters.search) &&
-            !(character.tags || []).some(tag => tag.toLowerCase().includes(currentFilters.search))) {
+        if (currentFilters.search &&
+            !character.name.toLowerCase().includes(currentFilters.search) &&
+            !character.description.toLowerCase().includes(currentFilters.search) &&
+            !character.tags.some(tag => tag.toLowerCase().includes(currentFilters.search))) {
           return false;
         }
 
-        // Gender filter
-        if (currentFilters.gender !== 'all') {
-          // Implementation would depend on how gender is stored
+        // Companion type filter (for the new filter dropdown)
+        if (currentFilters.companionType && currentFilters.companionType !== 'all') {
+          if (currentFilters.companionType === 'created' && !character.isUserCreated) {
+            return false;
+          }
+          if (currentFilters.companionType === 'chatted' && !character.hasChats) {
+            return false;
+          }
         }
 
-        // Other filters would be implemented here
-        
+        // Activity filter
+        if (currentFilters.activity && currentFilters.activity !== 'all') {
+          // For now, we'll just show all companions regardless of activity
+          // This can be enhanced later with actual activity sorting
+        }
+
+        // Show empty filter
+        if (currentFilters.showEmpty !== undefined) {
+          // For now, we'll show all companions regardless of this filter
+          // This can be enhanced later based on chat history
+        }
+
+        // Category filter (keeping this for compatibility)
+        if (currentFilters.category && currentFilters.category !== 'all') {
+          if (character.category.toLowerCase() !== currentFilters.category.toLowerCase()) {
+            return false;
+          }
+        }
+
+        // Tags filter
+        if (currentFilters.tags && currentFilters.tags.length > 0) {
+          const hasMatchingTag = currentFilters.tags.some(filterTag =>
+            character.tags.some(characterTag =>
+              characterTag.toLowerCase() === filterTag.toLowerCase()
+            )
+          );
+          if (!hasMatchingTag) {
+            return false;
+          }
+        }
+
         return true;
       });
 
       renderCharacters();
-      console.log('🔍 Filtered characters:', filteredCharacters.length, '/', allCharacters.length);
+      console.log('🔍 Filtered companions:', filteredCharacters.length, '/', allCharacters.length, 'with filters:', currentFilters);
+    }
+
+    // ===== DROPDOWN FILTER FUNCTIONS =====
+    function setTypeFilter(type) {
+      console.log('Set type filter:', type);
+      currentFilters.companionType = type;
+
+      // Update dropdown button text
+      const typeBtn = document.querySelector('.filter-dropdown button span');
+      if (typeBtn) {
+        switch(type) {
+          case 'all':
+            typeBtn.textContent = 'All Companions';
+            break;
+          case 'created':
+            typeBtn.textContent = 'Created by Me';
+            break;
+          case 'chatted':
+            typeBtn.textContent = 'Chatted With';
+            break;
+        }
+      }
+
+      // Close dropdown and apply filters
+      document.getElementById('typeDropdown').style.display = 'none';
+      applyFilters();
+    }
+
+    function setActivityFilter(activity) {
+      console.log('Set activity filter:', activity);
+      currentFilters.activity = activity;
+
+      // Update dropdown button text
+      const activityBtn = document.querySelectorAll('.filter-dropdown button span')[1];
+      if (activityBtn) {
+        switch(activity) {
+          case 'recent':
+            activityBtn.textContent = 'Recent Activity';
+            break;
+          case 'most_messages':
+            activityBtn.textContent = 'Most Messages';
+            break;
+          case 'newest':
+            activityBtn.textContent = 'Newest First';
+            break;
+        }
+      }
+
+      // Close dropdown and apply filters
+      document.getElementById('activityDropdown').style.display = 'none';
+      applyFilters();
+    }
+
+    function setShowEmptyFilter(showEmpty) {
+      console.log('Set show empty filter:', showEmpty);
+      currentFilters.showEmpty = showEmpty;
+
+      // Update dropdown button text
+      const showEmptyBtn = document.querySelectorAll('.filter-dropdown button span')[2];
+      if (showEmptyBtn) {
+        showEmptyBtn.textContent = showEmpty ? 'Show Empty' : 'Hide Empty';
+      }
+
+      // Close dropdown and apply filters
+      document.getElementById('showEmptyDropdown').style.display = 'none';
+      applyFilters();
     }
 
     // ===== UI INTERACTIONS =====
     function toggleDropdown(type) {
       console.log('Toggle dropdown:', type);
-      // Implementation for dropdown menus
+
+      // Close all other dropdowns first
+      document.querySelectorAll('.dropdown-menu').forEach(menu => {
+        if (menu.id !== type + 'Dropdown') {
+          menu.style.display = 'none';
+        }
+      });
+
+      // Toggle the requested dropdown
+      const dropdown = document.getElementById(type + 'Dropdown');
+      if (dropdown) {
+        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+      }
+    }
+
+    function setGenderFilter(gender) {
+      currentFilters.gender = gender === 'all' ? undefined : gender;
+
+      // Update button text
+      const dropdownBtn = document.querySelector('.dropdown-btn[onclick*="gender"] span:first-child');
+      if (dropdownBtn) {
+        const genderLabels = {
+          'all': 'All',
+          'female': 'Female',
+          'male': 'Male'
+        };
+        dropdownBtn.textContent = genderLabels[gender] || 'All';
+      }
+
+      // Hide dropdown
+      document.getElementById('genderDropdown').style.display = 'none';
+
+      console.log('Gender filter changed to:', currentFilters.gender);
+      applyFilters();
+    }
+
+    function setStyleFilter(style) {
+      currentFilters.style = style === 'all' ? undefined : style;
+
+      // Update button text
+      const dropdownBtn = document.querySelector('.dropdown-btn[onclick*="style"] span:first-child');
+      if (dropdownBtn) {
+        const styleLabels = {
+          'all': 'All',
+          'realistic': 'Realistic',
+          'anime': 'Anime'
+        };
+        dropdownBtn.textContent = styleLabels[style] || 'Realistic';
+      }
+
+      // Hide dropdown
+      document.getElementById('styleDropdown').style.display = 'none';
+
+      console.log('Style filter changed to:', currentFilters.style);
+      applyFilters();
     }
 
     function toggleSwitch(type) {
       const toggle = document.getElementById(type + 'Toggle');
       if (toggle) {
         toggle.classList.toggle('active');
-        currentFilters[type] = toggle.classList.contains('active');
+        
+        if (type === 'animated' || type === 'unfiltered') {
+          // For switches that can be on/off/undefined, cycle through states
+          if (toggle.classList.contains('active')) {
+            currentFilters[type] = true; // Show only this type
+          } else {
+            currentFilters[type] = undefined; // Show all
+          }
+        } else {
+          currentFilters[type] = toggle.classList.contains('active');
+        }
+        
         console.log('Toggle', type, ':', currentFilters[type]);
         applyFilters();
       }
@@ -2065,25 +2675,18 @@
       const unfilteredToggle = document.getElementById('unfilteredToggle');
       
       if (animatedToggle) {
-        animatedToggle.classList.toggle('active', currentFilters.animated);
+        animatedToggle.classList.toggle('active', currentFilters.animated === true);
       }
       if (unfilteredToggle) {
-        unfilteredToggle.classList.toggle('active', currentFilters.unfiltered);
+        unfilteredToggle.classList.toggle('active', currentFilters.unfiltered === true);
       }
     }
 
     function openCharacter(slug) {
       console.log('Opening character:', slug);
       
-      // Find character to get the correct URL - check both allCharacters and userCompanions
-      let character = allCharacters.find(c => c.slug === slug);
-      
-      // If not found in allCharacters, check userCompanions
-      if (!character) {
-        const userCompanions = getUserCompanions();
-        character = userCompanions.find(c => c.slug === slug);
-      }
-      
+      // Find character to get the correct URL
+      const character = allCharacters.find(c => c.slug === slug);
       if (character && character.character_url) {
         window.location.href = character.character_url;
       } else {
@@ -2099,9 +2702,172 @@
     function toggleSidebar() {
       const sidebar = document.getElementById('sidebar');
       const overlay = document.getElementById('sidebarOverlay');
-      
+
       sidebar.classList.toggle('open');
       overlay.classList.toggle('open');
+    }
+
+    function showMobileSearch() {
+      // Create or show mobile search overlay
+      let mobileSearchOverlay = document.getElementById('mobileSearchOverlay');
+
+      if (!mobileSearchOverlay) {
+        // Create mobile search overlay
+        mobileSearchOverlay = document.createElement('div');
+        mobileSearchOverlay.id = 'mobileSearchOverlay';
+        mobileSearchOverlay.innerHTML = `
+          <div class="mobile-search-content">
+            <div class="mobile-search-header">
+              <button onclick="hideMobileSearch()" class="mobile-search-close">✕</button>
+              <span>Search Characters</span>
+            </div>
+            <div class="mobile-search-input-container">
+              <input type="text" id="mobileSearchInput" placeholder="Type to search characters..." autocomplete="off">
+            </div>
+          </div>
+        `;
+
+        // Add styles
+        mobileSearchOverlay.style.cssText = `
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: var(--bg-primary);
+          z-index: 1000;
+          display: none;
+        `;
+
+        document.body.appendChild(mobileSearchOverlay);
+
+        // Add search functionality
+        const mobileSearchInput = document.getElementById('mobileSearchInput');
+        mobileSearchInput.addEventListener('input', function() {
+          currentFilters.search = this.value.toLowerCase();
+          applyFilters();
+        });
+
+        // Hide search overlay on Enter key press
+        mobileSearchInput.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' || e.keyCode === 13) {
+            hideMobileSearch();
+          }
+        });
+      }
+
+      mobileSearchOverlay.style.display = 'block';
+      setTimeout(() => {
+        document.getElementById('mobileSearchInput').focus();
+      }, 100);
+    }
+
+    function hideMobileSearch() {
+      const mobileSearchOverlay = document.getElementById('mobileSearchOverlay');
+      if (mobileSearchOverlay) {
+        mobileSearchOverlay.style.display = 'none';
+      }
+    }
+
+    function showMobileFilters() {
+      // Create or show mobile filter overlay
+      let mobileFilterOverlay = document.getElementById('mobileFilterOverlay');
+
+      if (!mobileFilterOverlay) {
+        // Create mobile filter overlay
+        mobileFilterOverlay = document.createElement('div');
+        mobileFilterOverlay.id = 'mobileFilterOverlay';
+        mobileFilterOverlay.innerHTML = `
+          <div class="mobile-filter-content">
+            <div class="mobile-filter-header">
+              <button onclick="hideMobileFilters()" class="mobile-filter-close">✕</button>
+              <span>Filter by Tags</span>
+            </div>
+            <div class="mobile-filter-body">
+              <div class="mobile-filter-section">
+                <button class="mobile-filter-tag active" data-tag="all">All</button>
+                <div id="mobileFilterTags">
+                  <!-- Dynamic tags will be loaded here -->
+                  <span class="loading-mobile-tags">Loading tags...</span>
+                </div>
+                <button class="mobile-filter-tag special" data-tag="unfiltered">Unfiltered</button>
+              </div>
+            </div>
+          </div>
+        `;
+
+        // Add styles
+        mobileFilterOverlay.style.cssText = `
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: var(--bg-primary);
+          z-index: 1000;
+          display: none;
+        `;
+
+        document.body.appendChild(mobileFilterOverlay);
+
+        // Load and populate tags
+        populateMobileFilterTags();
+
+        // Add click handlers for filter tags
+        mobileFilterOverlay.addEventListener('click', function(e) {
+          if (e.target.classList.contains('mobile-filter-tag')) {
+            const tag = e.target.getAttribute('data-tag');
+
+            // Remove active from all tags
+            mobileFilterOverlay.querySelectorAll('.mobile-filter-tag').forEach(t => t.classList.remove('active'));
+
+            // Add active to clicked tag
+            e.target.classList.add('active');
+
+            // Apply filter
+            if (tag === 'all') {
+              currentFilters.tags = [];
+            } else if (tag === 'unfiltered') {
+              currentFilters.tags = ['Unfiltered'];
+            } else {
+              currentFilters.tags = [tag];
+            }
+
+            // Apply filters and close overlay
+            filterAndDisplayCharacters();
+            hideMobileFilters();
+          }
+        });
+      }
+
+      // Show the overlay
+      mobileFilterOverlay.style.display = 'block';
+      document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    }
+
+    function hideMobileFilters() {
+      const mobileFilterOverlay = document.getElementById('mobileFilterOverlay');
+      if (mobileFilterOverlay) {
+        mobileFilterOverlay.style.display = 'none';
+        document.body.style.overflow = ''; // Restore scrolling
+      }
+    }
+
+    function populateMobileFilterTags() {
+      const container = document.getElementById('mobileFilterTags');
+      if (!container) return;
+
+      // Use the same tags from the desktop version
+      const tags = createAvailableTags.slice(0, 20); // Show up to 20 tags on mobile
+
+      if (tags.length > 0) {
+        const tagButtons = tags.map(tag =>
+          `<button class="mobile-filter-tag" data-tag="${tag}">${tag}</button>`
+        ).join('');
+        container.innerHTML = tagButtons;
+      } else {
+        container.innerHTML = '<span class="no-tags">No tags available</span>';
+      }
     }
 
     function closeSidebarOnMobile() {
@@ -2134,6 +2900,7 @@
     window.addEventListener('resize', handleResize);
     document.addEventListener('DOMContentLoaded', handleResize);
 
+
     // ===== TAG FILTERING WITH URLS =====
     document.addEventListener('click', function(e) {
       if (e.target.classList.contains('tag-pill')) {
@@ -2145,7 +2912,7 @@
         // Update URL based on tag selection
         if (tagText === 'All') {
           // Go back to /category
-          history.pushState({section: 'my-companions', filter: null}, 'My Companions - Selira AI', '/my-companions');
+          history.pushState({section: 'category', filter: null}, 'Discover Characters - Selira AI', '/category');
           currentFilters.tags = [];
         } else {
           // Create SEO-friendly URL
@@ -2236,8 +3003,6 @@
     // ===== INITIAL URL HANDLING =====
     function handleInitialURL() {
       const currentURL = window.location.pathname + window.location.search;
-      const hash = window.location.hash;
-      
       
       if (currentURL.includes('/tags/')) {
         // Extract tag from URL
@@ -2288,48 +3053,45 @@
       const tabItems = document.querySelectorAll('.tab-item');
       
       tabItems.forEach(tab => {
-        tab.addEventListener('click', async function(e) {
+        tab.addEventListener('click', function(e) {
           e.preventDefault();
-
+          
           // Remove active from all tabs
           tabItems.forEach(t => t.classList.remove('active'));
-
+          
           // Add active to clicked tab
           this.classList.add('active');
-
+          
           const tabText = this.textContent.trim();
-
-          // Tab functionality removed - always show companions
-          currentTab = 'companions';
-          await renderMyCompanions();
+          
+          if (tabText === 'Discover') {
+            currentTab = 'discover';
+            renderCharacters();
+          } else if (tabText === 'My Companions') {
+            currentTab = 'companions';
+            renderMyCompanions();
+          } else if (tabText === 'Memories') {
+            currentTab = 'memories';
+            renderMemories();
+          }
         });
       });
     }
 
-    async function renderMyCompanions() {
+    function renderMyCompanions() {
       const grid = document.getElementById('charactersGrid');
-
-      // Show loading state first
-      grid.innerHTML = `
-        <div class="loading-grid">
-          <div style="text-align: center; padding: 40px;">
-            <div style="font-size: 48px; margin-bottom: 16px;">⏳</div>
-            <h3 style="color: var(--text-primary); margin-bottom: 8px;">Loading your companions...</h3>
-            <p style="color: var(--text-secondary);">Getting your chatted and created characters</p>
-          </div>
-        </div>
-      `;
-
-      // Get user's companions from API
-      const userCompanions = await getUserCompanions();
-
+      
+      // Get user's companions from localStorage or API
+      const userCompanions = getUserCompanions();
+      
       if (userCompanions.length === 0) {
         grid.innerHTML = `
           <div class="loading-grid">
             <div style="text-align: center; padding: 40px;">
               <div style="font-size: 48px; margin-bottom: 16px;">💬</div>
               <h3 style="color: var(--text-primary); margin-bottom: 8px;">No companions yet</h3>
-              <p style="color: var(--text-secondary); margin-bottom: 20px;">Start chatting with characters or create your own to see them here!</p>
+              <p style="color: var(--text-secondary); margin-bottom: 20px;">Start chatting with characters to add them to your companions!</p>
+              <button class="user-btn" onclick="switchToDiscoverTab()">Discover Characters</button>
             </div>
           </div>
         `;
@@ -2337,53 +3099,42 @@
       }
 
       grid.innerHTML = userCompanions.map(character => `
-        <div class="character-card ${character.isUserCreated ? 'user-created' : ''}" onclick="openCharacter('${character.slug}')">
+        <div class="character-card" onclick="openCharacter('${character.slug}')">
           ${character.avatar ?
-            `<img src="${character.avatar}" alt="${character.name || character.slug}" class="character-image" loading="lazy">` :
-            `<div class="character-image-placeholder">${(character.name || character.slug || 'Unknown').charAt(0).toUpperCase()}</div>`
+            `<img src="${character.avatar}" alt="${character.name}" class="character-image" loading="lazy" onerror="this.onerror=null; this.src='https://selira.ai/avatars/${getWorkingAvatar(character.name, character.sex)}'; console.log('🔧 Fixed broken avatar for ${character.name}');">` :
+            `<div class="character-image-placeholder">${character.name.charAt(0)}</div>`
           }
-
-          <!-- Show different icons for user-created vs. chatted companions -->
+          
           <button class="character-favorite active" onclick="event.stopPropagation(); removeFavorite('${character.id}')">
-            ${character.isUserCreated ? '👤' : '❤️'}
+            ❤️
           </button>
-
-          <!-- Badge to indicate companion type -->
-          ${character.isUserCreated ?
-            `<div class="companion-type-badge user-created-badge">Created by you</div>` :
-            (character.messageCount ?
-              `<div class="companion-type-badge chatted-badge">${character.messageCount} messages</div>` :
-              (character.hasChats ? `<div class="companion-type-badge chatted-badge">Chatted</div>` : '')
-            )
-          }
-
+          
           <div class="character-stats-overlay">
             <div class="stat-badge">
               <span>💬</span>
-              <span>${character.chats || '0'}</span>
+              <span>${character.chats}</span>
             </div>
             <div class="stat-badge">
               <span>⭐</span>
-              <span>${character.rating || '4.5'}</span>
+              <span>${character.rating}</span>
             </div>
           </div>
-
+          
           <div class="character-info">
-            <h3 class="character-name">${character.name || character.slug || 'Unknown'}</h3>
+            <h3 class="character-name">${character.name}</h3>
             <div class="character-creator">
-              <span>@${character.creator || 'Selira'}</span>
-              ${character.isUserCreated ? '<span class="creator-indicator"> (You)</span>' : ''}
+              <span>@${character.creator}</span>
             </div>
-            <p class="character-description">${character.description || 'No description available'}</p>
-
+            <p class="character-description">${character.description}</p>
+            
             <!-- Stats for mobile (shown in character-info, hidden overlay on mobile) -->
             <div class="character-stats">
-              <span>💬 ${character.chats || '0'}</span>
-              <span>⭐ ${character.rating || '4.5'}</span>
+              <span>💬 ${character.chats}</span>
+              <span>⭐ ${character.rating}</span>
             </div>
-
+            
             <div class="character-tags">
-              ${(character.tags || []).slice(0, 3).map(tag => `
+              ${character.tags.slice(0, 3).map(tag => `
                 <span class="character-tag">${tag}</span>
               `).join('')}
             </div>
@@ -2395,52 +3146,62 @@
     function renderMemories() {
       const grid = document.getElementById('charactersGrid');
       grid.innerHTML = `
-        <div class="memory-import-section" style="width: 100%; max-width: none; padding: 32px 40px; height: calc(100vh - 140px); overflow-y: auto; display: flex; flex-direction: column; animation: fadeIn 0.6s ease;">
-          <div class="memory-header" style="text-align: center; margin-bottom: 40px; flex-shrink: 0;">
-            <h1 style="font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 700; color: var(--text-primary); margin-bottom: 16px;">Import ChatGPT Memories</h1>
-            <p style="color: var(--text-secondary); font-size: 18px; max-width: 700px; margin: 0 auto; line-height: 1.6;">Transfer your ChatGPT conversations to give your AI companions deeper understanding. 100% private and secure.</p>
+        <div class="memory-import-section" style="width: 100%; max-width: none; padding: 20px 40px; height: calc(100vh - 140px); overflow-y: auto; display: flex; flex-direction: column;">
+          <div class="memory-header" style="text-align: center; margin-bottom: 30px; flex-shrink: 0;">
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 700; color: var(--text-primary); margin-bottom: 12px;">Import ChatGPT Memories</h2>
+            <p style="color: var(--text-secondary); font-size: 16px; max-width: 700px; margin: 0 auto; line-height: 1.5;">Transfer your ChatGPT conversations to give your AI companions deeper understanding. 100% private and secure.</p>
           </div>
           
           <!-- Security Badge -->
           <div style="text-align: center; margin-bottom: 40px;">
-            <div style="display: inline-flex; align-items: center; gap: 8px; background: var(--success); color: white; padding: 10px 20px; border-radius: 25px; font-size: 14px; font-weight: 600;">
+            <div style="display: inline-flex; align-items: center; gap: 8px; background: var(--success); color: white; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600;">
               <span>🔒</span>
               <span>100% Private & Secure Transfer</span>
             </div>
           </div>
           
-          <!-- 2-Step Process -->
-          <div class="import-steps" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; margin-bottom: 40px; max-width: 800px; margin-left: auto; margin-right: auto;">
-            <div class="step-card" style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px; text-align: center; position: relative; transition: transform 0.2s ease;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+          <!-- 3-Step Process -->
+          <div class="import-steps" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-bottom: 50px;">
+            <div class="step-card" style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px; text-align: center; position: relative;">
               <div style="position: absolute; top: -12px; left: 20px; background: var(--accent); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">1</div>
               <div style="font-size: 48px; margin-bottom: 16px;">📋</div>
               <h3 style="color: var(--text-primary); margin-bottom: 12px; font-size: 20px; font-weight: 700;">Copy Prompt</h3>
               <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 14px; line-height: 1.5;">Copy our specialized prompt to extract your memories from ChatGPT</p>
-              <button onclick="copyPromptToClipboard()" style="background: var(--accent); color: white; border: none; padding: 12px 24px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; font-size: 14px; transition: all 0.2s ease;" onmouseover="this.style.background='var(--accent-hover)'; this.style.transform='translateY(-1px)'" onmouseout="this.style.background='var(--accent)'; this.style.transform='translateY(0)'">
+              <button onclick="copyPromptToClipboard()" style="background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; font-size: 14px;">
                 Copy Prompt
               </button>
             </div>
             
-            <div class="step-card" style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px; text-align: center; position: relative; transition: transform 0.2s ease;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+            <div class="step-card" style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px; text-align: center; position: relative;">
               <div style="position: absolute; top: -12px; left: 20px; background: var(--accent); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">2</div>
               <div style="font-size: 48px; margin-bottom: 16px;">🤖</div>
               <h3 style="color: var(--text-primary); margin-bottom: 12px; font-size: 20px; font-weight: 700;">Get ChatGPT Response</h3>
               <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 14px; line-height: 1.5;">Paste the prompt in ChatGPT and copy the JSON response it generates</p>
-              <a href="https://chatgpt.com" target="_blank" style="background: #10a37f; color: white; border: none; padding: 12px 24px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; font-size: 14px; text-decoration: none; display: inline-block; transition: all 0.2s ease;" onmouseover="this.style.background='#0d8566'; this.style.transform='translateY(-1px)'" onmouseout="this.style.background='#10a37f'; this.style.transform='translateY(0)'">
+              <a href="https://chatgpt.com" target="_blank" style="background: #10a37f; color: white; border: none; padding: 10px 20px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; font-size: 14px; text-decoration: none; display: inline-block;">
                 Open ChatGPT
               </a>
+            </div>
+            
+            <div class="step-card" style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px; text-align: center; position: relative;">
+              <div style="position: absolute; top: -12px; left: 20px; background: var(--accent); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">3</div>
+              <div style="font-size: 48px; margin-bottom: 16px;">📥</div>
+              <h3 style="color: var(--text-primary); margin-bottom: 12px; font-size: 20px; font-weight: 700;">Import Memories</h3>
+              <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 14px; line-height: 1.5;">Paste the JSON response below to import your memories</p>
+              <button onclick="showImportForm()" style="background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; font-size: 14px;">
+                Start Import
+              </button>
             </div>
           </div>
           
           <!-- Import Form -->
           <div class="import-form" style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px; margin-bottom: 40px;">
             <h3 style="color: var(--text-primary); margin-bottom: 20px; font-size: 22px; font-weight: 700;">Paste ChatGPT Response</h3>
-            <textarea id="memoryImportText" placeholder="Paste the JSON response from ChatGPT here..." rows="8" style="width: 100%; padding: 16px; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text-primary); font-family: 'Courier New', monospace; font-size: 14px; resize: vertical; min-height: 200px; outline: none; transition: border-color 0.2s ease;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+            <textarea id="memoryImportText" placeholder="Paste the JSON response from ChatGPT here..." rows="8" style="width: 100%; padding: 16px; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text-primary); font-family: monospace; font-size: 14px; resize: vertical;"></textarea>
             <div style="margin-top: 16px; display: flex; gap: 12px;">
-              <button onclick="processMemoryImport()" style="flex: 1; background: var(--accent); color: white; border: none; padding: 12px 24px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; font-size: 16px; transition: all 0.2s ease;" onmouseover="this.style.background='var(--accent-hover)'; this.style.transform='translateY(-1px)'" onmouseout="this.style.background='var(--accent)'; this.style.transform='translateY(0)'">
+              <button onclick="processMemoryImport()" style="flex: 1; background: var(--accent); color: white; border: none; padding: 12px 24px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; font-size: 16px;">
                 Process Memories
               </button>
-              <button onclick="showManualMemoryForm()" style="background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border); padding: 12px 24px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; font-size: 16px; transition: all 0.2s ease;" onmouseover="this.style.background='var(--bg-primary)'" onmouseout="this.style.background='var(--bg-tertiary)'">
+              <button onclick="showManualMemoryForm()" style="background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border); padding: 12px 24px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; font-size: 16px;">
                 Add Manual Memory
               </button>
             </div>
@@ -2455,7 +3216,8 @@
             <div id="importHistory" style="color: var(--text-secondary);">
               <div style="text-align: center; padding: 40px;">
                 <div style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;">📊</div>
-                <p style="font-size: 16px; margin-bottom: 8px;">No recent imports. Start by copying the prompt above.</p>
+                <p style="font-size: 16px; margin-bottom: 8px;">No memory imports yet</p>
+                <p style="font-size: 14px; opacity: 0.8;">Follow the 3-step process above to import your ChatGPT memories and see your import history here</p>
               </div>
             </div>
           </div>
@@ -2463,294 +3225,61 @@
       `;
     }
 
-    // Get all active chat companions from localStorage
-    function getActiveChatsFromLocalStorage() {
-      const companions = [];
-      const keys = Object.keys(localStorage);
-
-      // Find all chat_ keys in localStorage
-      keys.forEach(key => {
-        if (key.startsWith('chat_')) {
-          const characterSlug = key.replace('chat_', '');
-          const chatHistory = JSON.parse(localStorage.getItem(key) || '[]');
-
-          // Only include if there are messages
-          if (chatHistory.length > 0) {
-            // Get last message for preview
-            const lastMessage = chatHistory[chatHistory.length - 1];
-            const messageCount = chatHistory.length;
-
-            companions.push({
-              slug: characterSlug,
-              lastMessage: lastMessage?.content || '',
-              timestamp: lastMessage?.timestamp || Date.now(),
-              messageCount: messageCount,
-              isFromLocalStorage: true
-            });
-          }
+    function getUserCompanions() {
+      // Get from localStorage or return sample companions
+      const savedCompanions = localStorage.getItem('userCompanions');
+      if (savedCompanions) {
+        return JSON.parse(savedCompanions);
+      }
+      
+      // Return some sample companions for demo
+      return [
+        {
+          id: 'aragorn',
+          name: 'Aragorn',
+          title: 'Ranger King',
+          description: 'Your trusted companion on many adventures.',
+          avatar: 'https://selira.ai/avatars/aragorn-1750067445.webp?v=1750067445',
+          category: 'Fantasy',
+          creator: 'Selira',
+          tags: ['Fantasy', 'Warrior', 'Leader'],
+          chats: '127K',
+          rating: '4.8'
+        },
+        {
+          id: 'naruto-uzumaki',
+          name: 'Naruto Uzumaki',
+          title: 'Hokage Ninja',
+          description: 'Your ninja friend who never gives up!',
+          avatar: 'https://selira.ai/avatars/naruto-uzumaki-1750068388.webp?v=1750068388',
+          category: 'Anime-Manga',
+          creator: 'Selira',
+          tags: ['Anime-Manga', 'Ninja', 'Hero'],
+          chats: '234K',
+          rating: '4.7'
         }
-      });
-
-      return companions;
+      ];
     }
 
-    // Get character data from API or cache
-    async function getCharacterData(slug) {
-      try {
-        // Check if we have this character in allCharacters cache
-        if (window.allCharacters) {
-          const found = window.allCharacters.find(c => c.slug === slug);
-          if (found) return found;
-        }
-
-        // Try to fetch from API
-        const response = await fetch(`/.netlify/functions/selira-characters-fetch?slug=${slug}`);
-        if (response.ok) {
-          const data = await response.json();
-          if (data.characters && data.characters.length > 0) {
-            return data.characters[0];
-          }
-        }
-      } catch (error) {
-        console.error('❌ Error fetching character data for', slug, error);
-      }
-      return null;
-    }
-
-    // Merge companions from API with local chat history
-    async function mergeCompanions(apiCompanions, localCompanions) {
-      const merged = [...apiCompanions];
-      const existingSlugs = new Set(apiCompanions.map(c => c.slug));
-
-      // Add local companions that aren't already in API results
-      for (const localComp of localCompanions) {
-        if (!existingSlugs.has(localComp.slug)) {
-          // Try to get character data
-          const enriched = await getCharacterData(localComp.slug);
-          if (enriched) {
-            merged.push({
-              ...enriched,
-              isFromLocalStorage: true,
-              messageCount: localComp.messageCount,
-              lastChatTimestamp: localComp.timestamp
-            });
-          } else {
-            // Even without character data, add basic info
-            merged.push({
-              slug: localComp.slug,
-              name: localComp.slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
-              description: `Active chat with ${localComp.messageCount} messages`,
-              isFromLocalStorage: true,
-              messageCount: localComp.messageCount,
-              lastChatTimestamp: localComp.timestamp,
-              chats: localComp.messageCount.toString(),
-              rating: '4.5',
-              creator: 'Selira'
-            });
-          }
-        } else {
-          // Update existing companion with local chat data
-          const existingIndex = merged.findIndex(c => c.slug === localComp.slug);
-          if (existingIndex !== -1) {
-            merged[existingIndex].messageCount = localComp.messageCount;
-            merged[existingIndex].lastChatTimestamp = localComp.timestamp;
-          }
-        }
-      }
-
-      // Sort by last activity (most recent first)
-      merged.sort((a, b) => {
-        const aTime = a.lastChatTimestamp || 0;
-        const bTime = b.lastChatTimestamp || 0;
-        return bTime - aTime;
-      });
-
-      return merged;
-    }
-
-    async function getUserCompanions() {
-      // First, get companions from localStorage (active chats)
-      const localCompanions = getActiveChatsFromLocalStorage();
-      console.log('💾 Found', localCompanions.length, 'active chats in localStorage');
-
-      // Try to get real companions from API
-      const user = window.getCurrentUser();
-      if (!user || !user.email || !user.sub) {
-        console.log('⚠️ No user info available for companions fetch');
-        // Still try to enrich local companions with character data
-        const enriched = [];
-        for (const localComp of localCompanions) {
-          const characterData = await getCharacterData(localComp.slug);
-          if (characterData) {
-            enriched.push({
-              ...characterData,
-              isFromLocalStorage: true,
-              messageCount: localComp.messageCount,
-              lastChatTimestamp: localComp.timestamp
-            });
-          } else {
-            enriched.push({
-              slug: localComp.slug,
-              name: localComp.slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
-              description: `Active chat with ${localComp.messageCount} messages`,
-              isFromLocalStorage: true,
-              messageCount: localComp.messageCount,
-              lastChatTimestamp: localComp.timestamp,
-              chats: localComp.messageCount.toString(),
-              rating: '4.5',
-              creator: 'Selira'
-            });
-          }
-        }
-        return enriched.length > 0 ? enriched : getSampleCompanions();
-      }
-
-      try {
-        console.log('🔍 Fetching user companions from API...');
-
-        const response = await fetch('/.netlify/functions/get-my-companions', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            user_email: user.email,
-            user_uid: user.sub
-          })
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-
-        if (data.success && data.companions) {
-          console.log('✅ Successfully fetched', data.companions.length, 'companions from API');
-          console.log('📊 Stats:', {
-            total: data.total,
-            user_created: data.user_created_count,
-            chatted: data.chatted_count
-          });
-
-          // Merge API companions with local companions
-          const mergedCompanions = await mergeCompanions(data.companions, localCompanions);
-
-          // Cache the results for 5 minutes
-          const cacheData = {
-            companions: mergedCompanions,
-            timestamp: Date.now()
-          };
-          localStorage.setItem('userCompanions', JSON.stringify(cacheData));
-
-          return mergedCompanions;
-        } else {
-          console.error('❌ API returned unsuccessful response:', data.error);
-          // On API error, still use local companions
-          const enriched = [];
-          for (const localComp of localCompanions) {
-            const characterData = await getCharacterData(localComp.slug);
-            if (characterData) {
-              enriched.push({
-                ...characterData,
-                isFromLocalStorage: true,
-                messageCount: localComp.messageCount,
-                lastChatTimestamp: localComp.timestamp
-              });
-            }
-          }
-          return enriched.length > 0 ? enriched : getSampleCompanions();
-        }
-
-      } catch (error) {
-        console.error('❌ Error fetching user companions:', error);
-        // On error, still use local companions
-        const enriched = [];
-        for (const localComp of localCompanions) {
-          const characterData = await getCharacterData(localComp.slug);
-          if (characterData) {
-            enriched.push({
-              ...characterData,
-              isFromLocalStorage: true,
-              messageCount: localComp.messageCount,
-              lastChatTimestamp: localComp.timestamp
-            });
-          }
-        }
-        return enriched.length > 0 ? enriched : getSampleCompanions();
-      }
-    }
-
-    async function getSampleCompanions() {
-      // Check if we have cached data that's less than 5 minutes old
-      const cached = localStorage.getItem('userCompanions');
-      if (cached) {
-        try {
-          const cacheData = JSON.parse(cached);
-          const fiveMinutesAgo = Date.now() - (5 * 60 * 1000);
-          if (cacheData.timestamp && cacheData.timestamp > fiveMinutesAgo) {
-            console.log('📦 Using cached companions data');
-            return cacheData.companions || [];
-          }
-        } catch (e) {
-          console.log('⚠️ Invalid cache data, clearing...');
-          localStorage.removeItem('userCompanions');
-        }
-      }
-
-      // Even without cache, check for local chat history
-      const localCompanions = getActiveChatsFromLocalStorage();
-      if (localCompanions.length > 0) {
-        console.log('💬 Found active chats in localStorage');
-        const enriched = [];
-        for (const localComp of localCompanions) {
-          const characterData = await getCharacterData(localComp.slug);
-          if (characterData) {
-            enriched.push({
-              ...characterData,
-              isFromLocalStorage: true,
-              messageCount: localComp.messageCount,
-              lastChatTimestamp: localComp.timestamp
-            });
-          } else {
-            enriched.push({
-              slug: localComp.slug,
-              name: localComp.slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
-              description: `Active chat with ${localComp.messageCount} messages`,
-              isFromLocalStorage: true,
-              messageCount: localComp.messageCount,
-              lastChatTimestamp: localComp.timestamp,
-              chats: localComp.messageCount.toString(),
-              rating: '4.5',
-              creator: 'Selira'
-            });
-          }
-        }
-        return enriched;
-      }
-
-      // Return empty array by default - will show "No companions yet" message
-      console.log('📝 No companions data available, showing empty state');
-      return [];
-    }
-
-    function switchToAllCompanionsTab() {
+    function switchToDiscoverTab() {
       currentTab = 'discover';
       document.querySelectorAll('.tab-item').forEach(tab => {
         tab.classList.remove('active');
-        if (tab.textContent.includes('All')) {
+        if (tab.textContent.trim() === 'Discover') {
           tab.classList.add('active');
         }
       });
       renderCharacters();
     }
 
-    async function removeFavorite(characterId) {
-      // Remove from user companions cache
-      localStorage.removeItem('userCompanions');
-
+    function removeFavorite(characterId) {
+      // Remove from user companions
+      const companions = getUserCompanions();
+      const updated = companions.filter(c => c.id !== characterId);
+      localStorage.setItem('userCompanions', JSON.stringify(updated));
+      
       if (currentTab === 'companions') {
-        await renderMyCompanions();
+        renderMyCompanions();
       }
     }
 
@@ -2998,6 +3527,7 @@
               .profile-grid {
                 grid-template-columns: 1fr !important;
                 gap: 15px !important;
+                justify-items: center !important;
               }
             }
           </style>
@@ -3150,7 +3680,7 @@
                 font-weight: 700;
                 color: var(--text-primary);
                 margin-bottom: 8px;
-              ">Engage</div>
+              ">Basic</div>
               <div class="price-wrapper" style="margin-bottom: 6px;">
                 <span class="original-price" style="
                   color: var(--text-muted);
@@ -3257,7 +3787,7 @@
                 text-align: center;
                 display: block;
                 font-size: 11px;
-              ">Choose Engage</a>
+              ">Choose Basic</a>
             </div>
 
             <!-- Premium Plan -->
@@ -3346,35 +3876,8 @@
       renderCharacters();
     }
 
-    async function showMyCompanions() {
-      // Close sidebar on mobile
-      closeSidebarOnMobile();
-
-      // Show filter section and tabs
-      const filterSection = document.querySelector('.filter-section');
-      const tabsSection = document.querySelector('.tab-nav');
-      filterSection.style.display = 'block';
-      if (tabsSection) tabsSection.style.display = 'block';
-
-      // Update active nav item
-      document.querySelectorAll('.nav-item').forEach(item => {
-        item.classList.remove('active');
-        if (item.textContent.includes('My Companions')) {
-          item.classList.add('active');
-        }
-      });
-
-      // Switch to My Companions tab
-      document.querySelectorAll('.tab-item').forEach(tab => {
-        tab.classList.remove('active');
-        if (tab.textContent.trim() === 'My Companions') {
-          tab.classList.add('active');
-        }
-      });
-
-      // Show My Companions content
-      currentTab = 'companions';
-      await renderMyCompanions();
+    function showMyCompanions() {
+      window.location.href = '/my-companions';
     }
 
     // ===== INFINITE SCROLL =====
@@ -3400,7 +3903,7 @@
       setTimeout(() => {
         const startIndex = (currentPage - 1) * charactersPerPage;
         const endIndex = startIndex + charactersPerPage;
-        const pageCharacters = allCharacters.slice(startIndex, endIndex);
+        const pageCharacters = filteredCharacters.slice(startIndex, endIndex);
         
         if (pageCharacters.length > 0) {
           appendCharacters(pageCharacters);
@@ -3414,9 +3917,9 @@
       const grid = document.getElementById('charactersGrid');
       const newCharactersHTML = characters.map(character => `
         <div class="character-card" onclick="openCharacter('${character.slug}')">
-          ${character.avatar ? 
-            `<img src="${character.avatar}" alt="${character.name || character.slug}" class="character-image" loading="lazy">` :
-            `<div class="character-image-placeholder">${(character.name || character.slug || 'Unknown').charAt(0).toUpperCase()}</div>`
+          ${character.avatar ?
+            `<img src="${character.avatar}" alt="${character.name}" class="character-image" loading="lazy" onerror="this.onerror=null; this.src='https://selira.ai/avatars/${getWorkingAvatar(character.name, character.sex)}'; console.log('🔧 Fixed broken avatar for ${character.name}');">` :
+            `<div class="character-image-placeholder">${character.name.charAt(0)}</div>`
           }
           
           <button class="character-favorite" onclick="event.stopPropagation(); toggleFavorite('${character.id}')">
@@ -3426,16 +3929,16 @@
           <div class="character-stats-overlay">
             <div class="stat-badge">
               <span>💬</span>
-              <span>${character.chats || '0'}</span>
+              <span>${character.chats}</span>
             </div>
             <div class="stat-badge">
               <span>⭐</span>
-              <span>${character.rating || '4.5'}</span>
+              <span>${character.rating}</span>
             </div>
           </div>
           
           <div class="character-info">
-            <h3 class="character-name">${character.name || character.slug || 'Unknown'}</h3>
+            <h3 class="character-name">${character.name}</h3>
             <div class="character-creator">
               <span>@${character.creator}</span>
             </div>
@@ -3443,8 +3946,8 @@
             
             <!-- Stats for mobile (shown in character-info, hidden overlay on mobile) -->
             <div class="character-stats">
-              <span>💬 ${character.chats || '0'}</span>
-              <span>⭐ ${character.rating || '4.5'}</span>
+              <span>💬 ${character.chats}</span>
+              <span>⭐ ${character.rating}</span>
             </div>
             
             <div class="character-tags">
@@ -3745,8 +4248,8 @@ Please be thorough and include important details from our conversations.`;
     function getPlanPrice(plan) {
       switch(plan) {
         case 'Free': return '$0/month';
-        case 'Engage': return '$4.99/month';
-        case 'Premium': return '$11.99/month';
+        case 'Basic': return '$4.99/month';
+        case 'Premium': return '$19.99/month';
         default: return '$0/month';
       }
     }
@@ -4124,7 +4627,8 @@ Please be thorough and include important details from our conversations.`;
       });
       
       // Initialize tags system after DOM is updated
-      setTimeout(() => {
+      setTimeout(async () => {
+        await loadCreateTagsFromAirtable();
         initializeCreateTags();
       }, 100);
     }
@@ -4294,13 +4798,127 @@ Please be thorough and include important details from our conversations.`;
     // ===== CREATE FLOW TAGS SYSTEM =====
     let createSelectedTags = [];
     const createMaxTags = 10;
-    const createAvailableTags = [
-      'Fantasy', 'Romance', 'Adventure', 'Hero', 'Mystery', 'Action', 'Magic', 'Wise', 
+    let createAvailableTags = [
+      // Fallback tags if API fails
+      'Fantasy', 'Romance', 'Adventure', 'Hero', 'Mystery', 'Action', 'Magic', 'Wise',
       'Historical', 'Anime-Manga', 'Warrior', 'Leader', 'Ninja', 'Wizard', 'Cute',
       'Funny', 'Caring', 'Helpful', 'Creative', 'Confident', 'Energetic', 'Calm',
       'Mysterious', 'Loyal', 'Brave', 'Kind', 'Smart', 'Strong', 'Gentle', 'Playful',
-      'Serious', 'Romantic', 'Friendly', 'Bold', 'Shy', 'Outgoing', 'Patient'
+      'Serious', 'Romantic', 'Friendly', 'Bold', 'Shy', 'Outgoing', 'Patient',
+      'Girlfriend', 'Boyfriend', 'Companion', 'Flirty', 'Seductive', 'Dominant', 'Submissive'
     ];
+
+    // Load tags from Airtable
+    async function loadCreateTagsFromAirtable() {
+      try {
+        console.log('🔄 Loading tags from Airtable...');
+        const response = await fetch('/.netlify/functions/tags');
+
+        if (!response.ok) {
+          console.warn('⚠️ Failed to load tags from API, using fallback');
+          populateTagFilters(createAvailableTags);
+
+          // Update mobile filter tags if overlay exists
+          const mobileFilterOverlay = document.getElementById('mobileFilterOverlay');
+          if (mobileFilterOverlay) {
+            populateMobileFilterTags();
+          }
+          return;
+        }
+
+        const data = await response.json();
+        if (data.success && data.tags && data.tags.length > 0) {
+          createAvailableTags = data.tags;
+          console.log('✅ Loaded tags from Airtable:', {
+            total: data.tags.length,
+            source: data.source,
+            sample: data.tags.slice(0, 10)
+          });
+
+          // Also populate the filter pills
+          populateTagFilters(data.tags);
+
+          // Update mobile filter tags if overlay exists
+          const mobileFilterOverlay = document.getElementById('mobileFilterOverlay');
+          if (mobileFilterOverlay) {
+            populateMobileFilterTags();
+          }
+        }
+      } catch (error) {
+        console.warn('⚠️ Error loading tags from API:', error.message);
+        console.log('📝 Using fallback tags instead');
+
+        // Use fallback tags for filters too
+        populateTagFilters(createAvailableTags);
+
+        // Update mobile filter tags if overlay exists
+        const mobileFilterOverlay = document.getElementById('mobileFilterOverlay');
+        if (mobileFilterOverlay) {
+          populateMobileFilterTags();
+        }
+      }
+    }
+
+    // Populate dynamic tag filter pills
+    function populateTagFilters(tags) {
+      const dynamicFilters = document.getElementById('dynamicTagFilters');
+      if (!dynamicFilters) return;
+
+      // Filter out basic system tags, show the actual character tags
+      const systemTags = ['All', 'Unfiltered'];
+      const filteredTags = tags
+        .filter(tag => !systemTags.includes(tag))
+        .filter(tag => tag && tag.length > 0 && tag.trim() !== '')
+        .slice(0, 15); // Show max 15 relevant tags
+
+      // Create tag pills with "All" button first
+      const allButton = '<a href="#" class="tag-pill active" data-tag="all">All</a>';
+      const tagPills = filteredTags.map(tag =>
+        `<a href="#" class="tag-pill" data-tag="${tag}">${tag}</a>`
+      ).join('');
+
+      dynamicFilters.innerHTML = allButton + tagPills;
+
+      // Add click handlers for new tag pills
+      dynamicFilters.querySelectorAll('.tag-pill').forEach(pill => {
+        pill.addEventListener('click', function(e) {
+          e.preventDefault();
+          const tag = this.getAttribute('data-tag');
+
+          if (tag === 'all') {
+            // Clear all filters and show all characters
+            currentFilters.tags = [];
+            filterAndDisplayCharacters();
+
+            // Update URL for all characters
+            history.pushState({section: 'category'}, 'All Characters - Selira AI', '/category');
+          } else {
+            filterByTag(tag);
+          }
+
+          // Update active state
+          document.querySelectorAll('.tag-pill').forEach(p => p.classList.remove('active'));
+          this.classList.add('active');
+        });
+      });
+
+      console.log('✅ Populated tag filters with', filteredTags.length, 'dynamic tags');
+    }
+
+    // Filter characters by tag
+    function filterByTag(tag) {
+      console.log('🏷️ Filtering by tag:', tag);
+
+      // Update current filters
+      currentFilters.tags = [tag];
+
+      // Filter and display characters
+      filterAndDisplayCharacters();
+
+      // Update URL
+      const tagSlug = tag.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      history.pushState({section: 'category', filter: tagSlug}, `${tag} Characters - Selira AI`, `/category?filter=${tagSlug}`);
+    }
 
     function initializeCreateTags() {
       console.log('🏷️ Initializing create tags system...');
@@ -4455,7 +5073,8 @@ Please be thorough and include important details from our conversations.`;
       originalShow();
       
       // Initialize tags after DOM is updated
-      setTimeout(() => {
+      setTimeout(async () => {
+        await loadCreateTagsFromAirtable();
         initializeCreateTags();
       }, 100);
     }
