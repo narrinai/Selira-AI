@@ -2002,7 +2002,7 @@
           history_length: chatHistory.length
         });
         
-        const response = await fetch('/.netlify/functions/openrouter-chat', {
+        const response = await fetch('/.netlify/functions/selira-openrouter-chat', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -2068,7 +2068,7 @@
 
         console.log('🧪 Testing with:', { testCharSlug, testEmail });
 
-        const response = await fetch('/.netlify/functions/openrouter-chat', {
+        const response = await fetch('/.netlify/functions/selira-openrouter-chat', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -3224,7 +3224,7 @@
       }
 
       try {
-        const response = await fetch('/.netlify/functions/check-image-limit', {
+        const response = await fetch('/.netlify/functions/selira-check-image-limit', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -3652,7 +3652,7 @@
           return;
         }
 
-        const response = await fetch('/.netlify/functions/memory', {
+        const response = await fetch('/.netlify/functions/selira-memory', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -3686,7 +3686,7 @@
           return;
         }
 
-        const response = await fetch('/.netlify/functions/analyze-memory', {
+        const response = await fetch('/.netlify/functions/selira-analyze-memory', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

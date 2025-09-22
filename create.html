@@ -1529,7 +1529,7 @@
     async function loadCreateTagsFromAirtable() {
       try {
         console.log('🔄 Loading tags from Airtable...');
-        const response = await fetch('/.netlify/functions/tags');
+        const response = await fetch('/.netlify/functions/selira-tags');
 
         if (!response.ok) {
           console.warn('⚠️ Failed to load tags from API, using fallback');
