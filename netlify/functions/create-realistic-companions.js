@@ -363,10 +363,10 @@ exports.handler = async (event, context) => {
           companion_type: companion.companion_type
         });
 
-        // Wait 10 seconds between creations for rate limiting
+        // Wait 30 seconds between creations for rate limiting
         if (i < companions.length - 1) {
-          console.log('⏱️ Waiting 10 seconds...');
-          await delay(10000);
+          console.log('⏱️ Waiting 30 seconds...');
+          await delay(30000);
         }
 
       } catch (error) {
