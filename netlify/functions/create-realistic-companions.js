@@ -334,15 +334,10 @@ exports.handler = async (event, context) => {
               Tags: companion.Tags,
               Slug: slug,
               Avatar_URL: imageData.imageUrl,
-              sex: companion.sex,
-              ethnicity: companion.ethnicity,
-              hair_length: companion.hair_length,
-              hair_color: companion.hair_color,
               companion_type: companion.companion_type, // Add realistic
               Visibility: "public"
               // Leave Created_By empty (Selira-created)
-              // Created field is auto-computed by Airtable
-              // Category field removed - let Airtable handle defaults
+              // Removed problematic select fields: sex, ethnicity, hair_length, hair_color, Category
             }
           })
         });
