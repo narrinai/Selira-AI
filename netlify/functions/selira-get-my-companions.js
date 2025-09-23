@@ -250,7 +250,6 @@ exports.handler = async (event, context) => {
         slug: fields.Slug || '',
         creator: fields.Created_by || 'Selira',
         chats: '0', // We don't calculate exact chat count here for performance
-        rating: '4.5', // Default rating
         isUserCreated: isUserCreated,
         hasChats: hasChats,
         companion_type: isUserCreated ? 'user-created' : 'chatted'

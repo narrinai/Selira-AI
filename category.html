@@ -1909,8 +1909,53 @@
     });
 
     // ===== CHARACTER LOADING =====
+    function processCharactersData(data) {
+      if (data.success && data.characters) {
+        console.log('📡 Processing characters:', data.characters.length, 'characters');
+        console.log('🔍 Sample raw characters:', data.characters.slice(-3).map(c => ({name: c.Name, category: c.Category, visibility: c.Visibility})));
+        allCharacters = data.characters.map(char => ({
+          id: char.Character_ID || char.Name,
+          name: char.Name || 'Unknown',
+          title: char.Character_Title || '',
+          description: char.Character_Description || '',
+          avatar: char.Avatar_URL ? char.Avatar_URL.replace('narrin.ai', 'selira.ai') : null,
+          category: char.Category || 'Other',
+          slug: char.Slug || (char.Name ? char.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'unknown'),
+          creator: char.Created_by || 'Selira',
+          tags: Array.isArray(char.Tags) ? char.Tags : (char.Tags || '').toString().split(',').filter(Boolean),
+          chats: Math.floor(Math.random() * 100) + 'K',
+          character_url: char.Character_URL ? char.Character_URL.replace('narrin.ai', 'selira.ai') : `https://selira.ai/chat.html?char=${char.Slug || (char.Name ? char.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'unknown')}`,
+          // Add filter fields from Airtable
+          companion_type: char.companion_type || 'realistic',
+          sex: char.sex || 'female',
+          ethnicity: char.ethnicity || 'white',
+          hair_length: char.hair_length || 'medium',
+          is_unfiltered: char.is_unfiltered || false,
+          created: char.Created || new Date().toISOString()
+        }));
+
+        console.log('✅ Loaded characters:', allCharacters.length);
+        console.log('🔍 Sample character names:', allCharacters.slice(-5).map(c => c.name));
+        console.log('🔍 New test characters:', allCharacters.filter(c => c.name.includes('Emma') || c.name.includes('Sarah') || c.name.includes('Visible')));
+      } else {
+        throw new Error('Invalid API response');
+      }
+    }
+
     async function loadCharacters() {
       try {
+        // Check cache first (5 minutes cache)
+        const cached = localStorage.getItem('selira_characters_cache');
+        const cacheTime = localStorage.getItem('selira_characters_cache_time');
+        const now = Date.now();
+
+        if (cached && cacheTime && (now - parseInt(cacheTime)) < 5 * 60 * 1000) {
+          console.log('📋 Using cached characters data');
+          const data = JSON.parse(cached);
+          processCharactersData(data);
+          return;
+        }
+
         console.log('📡 Loading characters from API...');
         const response = await fetch('/.netlify/functions/selira-characters-fetch');
         
@@ -1935,7 +1980,6 @@
             creator: char.Created_by || 'Selira',
             tags: Array.isArray(char.Tags) ? char.Tags : (char.Tags || '').toString().split(',').filter(Boolean),
             chats: Math.floor(Math.random() * 100) + 'K',
-            rating: (Math.random() * 2 + 3).toFixed(1),
             character_url: char.Character_URL ? char.Character_URL.replace('narrin.ai', 'selira.ai') : `https://selira.ai/chat.html?char=${char.Slug || (char.Name ? char.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'unknown')}`,
             // Add filter fields from Airtable
             companion_type: char.companion_type || 'realistic',
@@ -1988,7 +2032,6 @@
           creator: 'Selira',
           tags: ['Fantasy', 'Warrior', 'Leader', 'Adventure', 'Hero'],
           chats: '127K',
-          rating: '4.8'
         },
         {
           id: 'harry-potter',
@@ -2000,7 +2043,6 @@
           creator: 'Selira',
           tags: ['Fantasy', 'Wizard', 'Magic', 'Adventure', 'Hero'],
           chats: '178K',
-          rating: '4.6'
         },
         {
           id: 'edward-elric',
@@ -2012,7 +2054,6 @@
           creator: 'Selira',
           tags: ['Fantasy', 'Magic', 'Adventure', 'Hero', 'Mystery'],
           chats: '95K',
-          rating: '4.7'
         }
       ];
 
@@ -2028,7 +2069,6 @@
           creator: 'Selira',
           tags: ['Anime-Manga', 'Ninja', 'Hero', 'Adventure', 'Action'],
           chats: '234K',
-          rating: '4.7'
         },
         {
           id: 'monkey-d-luffy',
@@ -2040,7 +2080,6 @@
           creator: 'Selira',
           tags: ['Anime-Manga', 'Adventure', 'Hero', 'Action', 'Romance'],
           chats: '156K',
-          rating: '4.5'
         },
         {
           id: 'sasuke-uchiha',
@@ -2052,7 +2091,6 @@
           creator: 'Selira',
           tags: ['Anime-Manga', 'Ninja', 'Mystery', 'Action', 'Romance'],
           chats: '89K',
-          rating: '4.4'
         }
       ];
 
@@ -2068,7 +2106,6 @@
           creator: 'Selira',
           tags: ['Historical', 'Wise', 'Leader', 'Mystery', 'Adventure'],
           chats: '89K',
-          rating: '4.9'
         },
         {
           id: 'nelson-mandela',
@@ -2080,7 +2117,6 @@
           creator: 'Selira',
           tags: ['Historical', 'Leader', 'Wise', 'Adventure', 'Hero'],
           chats: '67K',
-          rating: '4.9'
         },
         {
           id: 'beethoven',
@@ -2092,7 +2128,6 @@
           creator: 'Selira',
           tags: ['Historical', 'Wise', 'Romance', 'Mystery', 'Adventure'],
           chats: '45K',
-          rating: '4.6'
         }
       ];
 
@@ -2136,10 +2171,6 @@
               <span>💬</span>
               <span>${character.chats}</span>
             </div>
-            <div class="stat-badge">
-              <span>⭐</span>
-              <span>${character.rating}</span>
-            </div>
           </div>
           
           <!-- Character Info -->
@@ -2153,7 +2184,6 @@
             <!-- Stats for mobile (shown in character-info, hidden overlay on mobile) -->
             <div class="character-stats">
               <span>💬 ${character.chats}</span>
-              <span>⭐ ${character.rating}</span>
             </div>
             
             <!-- Tags -->
@@ -2851,7 +2881,6 @@
             <!-- Stats for mobile (shown in character-info, hidden overlay on mobile) -->
             <div class="character-stats">
               <span>💬 ${character.chats}</span>
-              <span>⭐ ${character.rating}</span>
             </div>
             
             <div class="character-tags">
@@ -2981,7 +3010,6 @@
           creator: 'Selira',
           tags: ['Fantasy', 'Warrior', 'Leader'],
           chats: '127K',
-          rating: '4.8'
         },
         {
           id: 'naruto-uzumaki',
@@ -2993,7 +3021,6 @@
           creator: 'Selira',
           tags: ['Anime-Manga', 'Ninja', 'Hero'],
           chats: '234K',
-          rating: '4.7'
         }
       ];
     }
@@ -3693,10 +3720,6 @@
               <span>💬</span>
               <span>${character.chats}</span>
             </div>
-            <div class="stat-badge">
-              <span>⭐</span>
-              <span>${character.rating}</span>
-            </div>
           </div>
           
           <div class="character-info">
@@ -3709,7 +3732,6 @@
             <!-- Stats for mobile (shown in character-info, hidden overlay on mobile) -->
             <div class="character-stats">
               <span>💬 ${character.chats}</span>
-              <span>⭐ ${character.rating}</span>
             </div>
             
             <div class="character-tags">
