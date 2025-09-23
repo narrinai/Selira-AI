@@ -1650,6 +1650,21 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+
+    /* Mobile tabs responsiveness */
+    @media (max-width: 768px) {
+      .tab-nav {
+        padding: 0 20px !important;
+        gap: 24px;
+        overflow-x: auto;
+        padding-bottom: 4px;
+      }
+
+      .tab-item {
+        white-space: nowrap;
+        font-size: 14px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1667,7 +1682,7 @@
           <span class="nav-item-icon">👥</span>
           <span>Discover</span>
         </a>
-        <a href="#" class="nav-item" onclick="showMyCompanions(); return false;">
+        <a href="#" class="nav-item" onclick="switchToMyCompanionsTab(); return false;">
           <span class="nav-item-icon">💬</span>
           <span>My Companions</span>
         </a>
@@ -1784,6 +1799,12 @@
           <a href="#" class="tag-pill special">Unfiltered</a>
           <button class="more-tags-btn">All tags</button>
         </div>
+      </section>
+
+      <!-- Tab Navigation -->
+      <section class="tab-nav" style="padding: 0 40px; margin-bottom: 20px;">
+        <a href="#" class="tab-item active" onclick="switchToDiscoverTab(); return false;">Discover</a>
+        <a href="#" class="tab-item" onclick="switchToMyCompanionsTab(); return false;">My Companions</a>
       </section>
 
       <!-- Character Grid -->
@@ -2719,54 +2740,99 @@
       });
     }
 
-    function renderMyCompanions() {
+    async function renderMyCompanions() {
       const grid = document.getElementById('charactersGrid');
-      
-      // Get user's companions from localStorage or API
-      const userCompanions = getUserCompanions();
-      
-      if (userCompanions.length === 0) {
-        grid.innerHTML = `
-          <div class="loading-grid">
-            <div style="text-align: center; padding: 40px;">
-              <div style="font-size: 48px; margin-bottom: 16px;">💬</div>
-              <h3 style="color: var(--text-primary); margin-bottom: 8px;">No companions yet</h3>
-              <p style="color: var(--text-secondary); margin-bottom: 20px;">Start chatting with characters to add them to your companions!</p>
-              <button class="user-btn" onclick="switchToDiscoverTab()">Discover Characters</button>
-            </div>
-          </div>
-        `;
-        return;
-      }
 
-      grid.innerHTML = userCompanions.map(character => `
-        <div class="character-card" onclick="openCharacter('${character.slug}')">
-          ${character.avatar ?
-            `<img src="${character.avatar}" alt="${character.name}" class="character-image" loading="lazy" onerror="this.onerror=null; this.src='https://selira.ai/avatars/${getWorkingAvatar(character.name, character.sex)}'; console.log('🔧 Fixed broken avatar for ${character.name}');">` :
-            `<div class="character-image-placeholder">${character.name.charAt(0)}</div>`
-          }
-          
-          <button class="character-favorite active" onclick="event.stopPropagation(); removeFavorite('${character.id}')">
-            ❤️
-          </button>
-          
-          <div class="character-stats-overlay">
-            <div class="stat-badge">
-              <span>💬</span>
-              <span>${character.chats}</span>
-            </div>
-            <div class="stat-badge">
-              <span>⭐</span>
-              <span>${character.rating}</span>
-            </div>
+      // Show loading state
+      grid.innerHTML = `
+        <div class="loading-grid">
+          <div style="text-align: center; padding: 40px;">
+            <div style="font-size: 48px; margin-bottom: 16px;">⏳</div>
+            <h3 style="color: var(--text-primary); margin-bottom: 8px;">Loading your companions...</h3>
           </div>
-          
-          <div class="character-info">
-            <h3 class="character-name">${character.name}</h3>
-            <div class="character-creator">
-              <span>@${character.creator}</span>
+        </div>
+      `;
+
+      try {
+        // Get user email from auth
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        const userEmail = user.email;
+
+        if (!userEmail) {
+          grid.innerHTML = `
+            <div class="loading-grid">
+              <div style="text-align: center; padding: 40px;">
+                <div style="font-size: 48px; margin-bottom: 16px;">🔐</div>
+                <h3 style="color: var(--text-primary); margin-bottom: 8px;">Please login</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 20px;">Login to see your companions!</p>
+              </div>
             </div>
-            <p class="character-description">${character.description}</p>
+          `;
+          return;
+        }
+
+        console.log('🔍 Loading companions for user:', userEmail);
+
+        // Call the working API
+        const response = await fetch('/.netlify/functions/selira-get-my-companions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            user_email: userEmail
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(data.error || 'Failed to load companions');
+        }
+
+        const userCompanions = data.companions || [];
+        console.log('✅ Loaded companions:', userCompanions.length);
+
+        if (userCompanions.length === 0) {
+          grid.innerHTML = `
+            <div class="loading-grid">
+              <div style="text-align: center; padding: 40px;">
+                <div style="font-size: 48px; margin-bottom: 16px;">💬</div>
+                <h3 style="color: var(--text-primary); margin-bottom: 8px;">No companions yet</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 20px;">Create or chat with characters to add them to your companions!</p>
+                <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                  <button class="user-btn" onclick="switchToDiscoverTab()">Discover Characters</button>
+                  <a href="/create" class="user-btn" style="text-decoration: none;">Create Companion</a>
+                </div>
+              </div>
+            </div>
+          `;
+          return;
+        }
+
+        // Render companions
+        grid.innerHTML = userCompanions.map(character => `
+          <div class="character-card" onclick="openCharacter('${character.slug}')">
+            ${character.avatar ?
+              `<img src="${character.avatar}" alt="${character.name}" class="character-image" loading="lazy" onerror="this.onerror=null; this.src='https://selira.ai/avatars/${getWorkingAvatar(character.name, 'female')}'; console.log('🔧 Fixed broken avatar for ${character.name}');">` :
+              `<div class="character-image-placeholder">${character.name.charAt(0)}</div>`
+            }
+
+            ${character.isUserCreated ?
+              `<div class="character-badge" style="position: absolute; top: 8px; left: 8px; background: var(--accent); color: white; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: 600;">Created by you</div>` :
+              `<div class="character-badge" style="position: absolute; top: 8px; left: 8px; background: var(--bg-secondary); color: var(--text-primary); padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: 600;">Chatted</div>`
+            }
+
+            <div class="character-info">
+              <h3 class="character-name">${character.name}</h3>
+              <div class="character-creator">
+                <span>@${character.creator}</span>
+              </div>
+              <p class="character-description">${character.description}</p>
             
             <!-- Stats for mobile (shown in character-info, hidden overlay on mobile) -->
             <div class="character-stats">
@@ -2775,13 +2841,27 @@
             </div>
             
             <div class="character-tags">
-              ${character.tags.slice(0, 3).map(tag => `
+              ${(character.tags || []).slice(0, 3).map(tag => `
                 <span class="character-tag">${tag}</span>
               `).join('')}
             </div>
           </div>
         </div>
       `).join('');
+
+      } catch (error) {
+        console.error('❌ Error loading companions:', error);
+        grid.innerHTML = `
+          <div class="loading-grid">
+            <div style="text-align: center; padding: 40px;">
+              <div style="font-size: 48px; margin-bottom: 16px;">❌</div>
+              <h3 style="color: var(--text-primary); margin-bottom: 8px;">Error loading companions</h3>
+              <p style="color: var(--text-secondary); margin-bottom: 20px;">${error.message}</p>
+              <button class="user-btn" onclick="renderMyCompanions()">Try Again</button>
+            </div>
+          </div>
+        `;
+      }
     }
 
     function renderMemories() {
@@ -2910,7 +2990,28 @@
           tab.classList.add('active');
         }
       });
+
+      // Show filter section
+      const filterSection = document.querySelector('.filter-section');
+      if (filterSection) filterSection.style.display = 'block';
+
       renderCharacters();
+    }
+
+    function switchToMyCompanionsTab() {
+      currentTab = 'companions';
+      document.querySelectorAll('.tab-item').forEach(tab => {
+        tab.classList.remove('active');
+        if (tab.textContent.trim() === 'My Companions') {
+          tab.classList.add('active');
+        }
+      });
+
+      // Hide filter section for My Companions
+      const filterSection = document.querySelector('.filter-section');
+      if (filterSection) filterSection.style.display = 'none';
+
+      renderMyCompanions();
     }
 
     function removeFavorite(characterId) {
