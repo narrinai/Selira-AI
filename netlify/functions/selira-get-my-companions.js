@@ -1,5 +1,6 @@
 // netlify/functions/selira-get-my-companions.js
 // Gets both companions the user has chatted with AND companions they have created (Selira version)
+// Force deployment trigger
 exports.handler = async (event, context) => {
   const headers = {
     'Access-Control-Allow-Origin': '*',
