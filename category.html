@@ -3027,6 +3027,10 @@
       const filterSection = document.querySelector('.filter-section');
       if (filterSection) filterSection.style.display = 'none';
 
+      // Update URL to include tab parameter
+      const url = new URL(window.location);
+      url.searchParams.set('tab', 'companions');
+      history.pushState(null, '', url.toString());
       renderMyCompanions();
     }
 
