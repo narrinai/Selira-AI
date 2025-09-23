@@ -204,6 +204,10 @@
       color: var(--color-navy);
       margin-bottom: var(--spacing-lg);
       letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      padding-bottom: var(--spacing-sm);
+      border-bottom: 2px solid var(--color-light-gray);
     }
 
     .content-section h3 {
@@ -243,6 +247,95 @@
       margin-bottom: var(--spacing-2xl);
       text-align: center;
       line-height: 1.6;
+      background: linear-gradient(135deg, rgba(20, 184, 166, 0.1), rgba(249, 115, 22, 0.1));
+      padding: var(--spacing-xl);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(20, 184, 166, 0.2);
+    }
+
+    .terms-hero {
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-align: center;
+      padding: var(--spacing-xl) 0 var(--spacing-2xl);
+    }
+
+    .terms-hero h1 {
+      font-family: var(--font-secondary);
+      font-size: var(--font-size-4xl);
+      font-weight: 800;
+      margin-bottom: var(--spacing-md);
+      letter-spacing: -0.02em;
+    }
+
+    .terms-hero .subtitle {
+      font-size: var(--font-size-xl);
+      color: var(--color-gray);
+      font-weight: 500;
+      margin-bottom: var(--spacing-md);
+    }
+
+    .terms-hero .last-updated {
+      color: var(--color-gray);
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      background: var(--color-off-white);
+      padding: var(--spacing-sm) var(--spacing-lg);
+      border-radius: var(--radius-full);
+      display: inline-block;
+    }
+
+    .terms-nav {
+      background: var(--color-white);
+      padding: var(--spacing-lg);
+      border-radius: var(--radius-lg);
+      margin-bottom: var(--spacing-xl);
+      box-shadow: var(--shadow-md);
+      border: 2px solid var(--color-light-gray);
+      position: sticky;
+      top: 100px;
+      z-index: 10;
+    }
+
+    .terms-nav h3 {
+      font-family: var(--font-secondary);
+      font-size: var(--font-size-lg);
+      font-weight: 600;
+      color: var(--color-navy);
+      margin-bottom: var(--spacing-md);
+      text-align: center;
+    }
+
+    .nav-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: var(--spacing-sm);
+    }
+
+    .nav-item {
+      padding: var(--spacing-sm) var(--spacing-md);
+      background: var(--color-off-white);
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      color: var(--color-gray-dark);
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      transition: all var(--transition-base);
+      text-align: center;
+    }
+
+    .nav-item:hover {
+      background: var(--color-teal);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .section-icon {
+      font-size: var(--font-size-2xl);
+      margin-right: var(--spacing-sm);
+      color: var(--color-teal);
     }
 
     .contact-info {
@@ -325,9 +418,27 @@
 <body>
   <!-- Main Content -->
   <main class="container">
-    <div class="page-header">
-      <h1>Selira AI Terms of Use</h1>
+    <div class="terms-hero">
+      <h1>📋 Selira AI Terms of Use</h1>
+      <div class="subtitle">Understanding your rights and responsibilities</div>
       <div class="last-updated">Version 2.0. Last Reviewed on January 27, 2025</div>
+    </div>
+
+    <div class="terms-nav">
+      <h3>🗂️ Quick Navigation</h3>
+      <div class="nav-grid">
+        <a href="#section-1" class="nav-item">👤 Accounts</a>
+        <a href="#section-2" class="nav-item">🔑 Access Rights</a>
+        <a href="#section-3" class="nav-item">📝 User Content</a>
+        <a href="#section-4" class="nav-item">💳 Subscriptions</a>
+        <a href="#section-5" class="nav-item">⚖️ Indemnification</a>
+        <a href="#section-6" class="nav-item">⚠️ Disclaimers</a>
+        <a href="#section-7" class="nav-item">📉 Liability Limits</a>
+        <a href="#section-8" class="nav-item">⏰ Termination</a>
+        <a href="#section-9" class="nav-item">©️ Copyright</a>
+        <a href="#section-10" class="nav-item">📄 General Terms</a>
+        <a href="#section-11" class="nav-item">📞 Contact</a>
+      </div>
     </div>
 
     <div class="intro-text">
@@ -342,8 +453,8 @@
       <p><strong>Please be aware that Section 10.2 of these Terms contains provisions governing how disputes that you and we have against each other are resolved, including, without limitation, any disputes that arose or were asserted prior to the effective date of your acceptance of these Terms. In particular, it contains an Arbitration Agreement which will, with limited exceptions, require disputes between us to be submitted to binding and final arbitration.</strong> Unless you opt out of the Arbitration Agreement: (1) you will only be permitted to pursue disputes or claims and seek relief against us on an individual basis, not as a plaintiff or class member in any class or representative action or proceeding; and (2) you are waiving your right to pursue disputes or claims and seek relief in a court of law and to have a jury trial.</p>
     </div>
 
-    <div class="content-section">
-      <h2>1. Accounts</h2>
+    <div class="content-section" id="section-1">
+      <h2><span class="section-icon">👤</span>1. Accounts</h2>
       
       <h3>1.1 Account Creation</h3>
       <p>In order to use certain features of the App or Site, you must register for an account ("Account") and provide certain information about yourself as prompted by the account registration form. You represent and warrant that: (a) all required registration information you submit is truthful and accurate; (b) you will maintain the accuracy of such information. You may delete your Account at any time, for any reason, by following the instructions on the App or Site. Company may suspend or terminate your Account in accordance with Section 8.</p>
@@ -352,8 +463,8 @@
       <p>You are responsible for maintaining the confidentiality of your Account login information and are fully responsible for all activities that occur under your Account. You agree to immediately notify Company of any unauthorized use, or suspected unauthorized use of your Account or any other breach of security. Company cannot and will not be liable for any loss or damage arising from your failure to comply with the above requirements.</p>
     </div>
 
-    <div class="content-section">
-      <h2>2. Access to the App and Site</h2>
+    <div class="content-section" id="section-2">
+      <h2><span class="section-icon">🔑</span>2. Access to the App and Site</h2>
       
       <h3>2.1 License</h3>
       <p>Subject to these Terms, Company grants you a non-transferable, non-exclusive, revocable, limited license to use and access the App solely for your own personal, noncommercial use on Apple-branded products that you own or control, subject to the Usage Rules set forth in Apple's Media Services Terms and Conditions (available at https://www.apple.com/legal/internet-services/itunes/). This license includes access via Family Sharing or volume purchasing, if applicable. For the Site, Company grants you a non-transferable, non-exclusive, revocable, limited license to use and access the Site solely for your own personal, noncommercial use.</p>
@@ -368,8 +479,8 @@
       <p>Excluding any User Content that you may provide (defined below), you acknowledge that all the intellectual property rights, including copyrights, patents, trademarks, and trade secrets, in the App and Site and their content are owned by Company or Company's suppliers ("Creators"). Neither these Terms (nor your access to the App or Site) transfers to you or any third party any rights, title or interest in or to such intellectual property rights, except for the limited access rights expressly set forth in Section 2.1.</p>
     </div>
 
-    <div class="content-section">
-      <h2>3. User Content</h2>
+    <div class="content-section" id="section-3">
+      <h2><span class="section-icon">📝</span>3. User Content</h2>
       
       <h3>3.1 User Content</h3>
       <p>"User Content" means any and all information and content that a user submits to, or uses with, the App or Site (e.g., content in the user's profile or postings). You are solely responsible for your User Content. You assume all risks associated with use of your User Content, including any reliance on its accuracy, completeness or usefulness by others, or any disclosure of your User Content that personally identifies you or any third party.</p>
@@ -390,8 +501,8 @@
       <p>We reserve the right (but have no obligation) to review, refuse and/or remove any User Content in our sole discretion, and to investigate and/or take appropriate action against you in our sole discretion if you violate the Acceptable Use Policy or any other provision of these Terms or otherwise create liability for us or any other person.</p>
     </div>
 
-    <div class="content-section">
-      <h2>4. Subscriptions</h2>
+    <div class="content-section" id="section-4">
+      <h2><span class="section-icon">💳</span>4. Subscriptions</h2>
       
       <h3>4.1 Subscription Period</h3>
       <p>The App, Site, or some parts thereof are available only with a paid Subscription. You will be billed in advance on a recurring and periodic basis (such as daily, weekly, monthly or annually), depending on the type of Subscription plan you select when purchasing the Subscription. At the end of each period, your Subscription will automatically renew under the exact same conditions unless you cancel it or Selira AI cancels it.</p>
@@ -409,28 +520,28 @@
       <p>Except when required by law, paid Subscription fees are non-refundable. Certain refund requests for Subscriptions may be considered by the Company on a case-by-case basis and granted at the sole discretion of Selira AI.</p>
     </div>
 
-    <div class="content-section">
-      <h2>5. Indemnification</h2>
+    <div class="content-section" id="section-5">
+      <h2><span class="section-icon">⚖️</span>5. Indemnification</h2>
       <p>You agree to indemnify and hold Company (and its officers, employees, and agents) harmless, including costs and attorneys' fees, from any claim or demand made by any third party due to or arising out of (a) your use of the App or Site, (b) your violation of these Terms, (c) your violation of applicable laws or regulations, or (d) your User Content. Company reserves the right, at your expense, to assume the exclusive defense and control of any matter for which you are required to indemnify us, and you agree to cooperate with our defense of these claims.</p>
     </div>
 
-    <div class="content-section">
-      <h2>6. Disclaimers</h2>
+    <div class="content-section" id="section-6">
+      <h2><span class="section-icon">⚠️</span>6. Disclaimers</h2>
       <p>The App and Site are provided on an "as-is" and "as available" basis, and Company (and our suppliers) expressly disclaim any and all warranties and conditions of any kind, whether express, implied, or statutory, including all warranties or conditions of merchantability, fitness for a particular purpose, title, quiet enjoyment, accuracy, or non-infringement. We (and our suppliers) make no warranty that the App or Site will meet your requirements, will be available on an uninterrupted, timely, secure, or error-free basis, or will be accurate, reliable, free of viruses or other harmful code, complete, legal, or safe.</p>
     </div>
 
-    <div class="content-section">
-      <h2>7. Limitation on Liability</h2>
+    <div class="content-section" id="section-7">
+      <h2><span class="section-icon">📉</span>7. Limitation on Liability</h2>
       <p>To the maximum extent permitted by law, in no event shall Company (or our suppliers) be liable to you or any third party for any lost profits, lost data, costs of procurement of substitute products, or any indirect, consequential, exemplary, incidental, special or punitive damages arising from or relating to these Terms or your use of, or inability to use, the App or Site, even if Company has been advised of the possibility of such damages. To the maximum extent permitted by law, notwithstanding anything to the contrary contained herein, our liability to you for any damages arising from or related to these Terms (for any cause whatsoever and regardless of the form of the action), will at all times be limited to a maximum of fifty US dollars (U.S. $50).</p>
     </div>
 
-    <div class="content-section">
-      <h2>8. Term and Termination</h2>
+    <div class="content-section" id="section-8">
+      <h2><span class="section-icon">⏰</span>8. Term and Termination</h2>
       <p>Subject to this Section, these Terms will remain in full force and effect while you use the App or Site. We may suspend or terminate your rights to use the App or Site (including your Account) at any time for any reason at our sole discretion, including for any use of the App or Site in violation of these Terms. Upon termination of your rights under these Terms, your Account and right to access and use the App or Site will terminate immediately. You understand that any termination of your Account may involve deletion of your User Content associated with your Account from our live databases. Company will not have any liability whatsoever to you for any termination of your rights under these Terms, including for termination of your Account or deletion of your User Content.</p>
     </div>
 
-    <div class="content-section">
-      <h2>9. Copyright Policy</h2>
+    <div class="content-section" id="section-9">
+      <h2><span class="section-icon">©️</span>9. Copyright Policy</h2>
       <p>Company respects the intellectual property of others and asks that users of our App and Site do the same. In connection with our App and Site, we have adopted and implemented a policy respecting copyright law that provides for the removal of any infringing materials and for the termination, in appropriate circumstances, of users of our App or Site who are repeat infringers of intellectual property rights, including copyrights.</p>
 
       <h3>Reporting Claims of Copyright Infringement</h3>
@@ -445,8 +556,8 @@
       <p>It is Selira AI's policy to terminate or suspend membership privileges and accounts of any user or member who repeatedly infringes intellectual property rights in its use of the Services and/or to remove, delete and/or disable all content and materials posted, uploaded or provided by such user or member.</p>
     </div>
 
-    <div class="content-section">
-      <h2>10. General</h2>
+    <div class="content-section" id="section-10">
+      <h2><span class="section-icon">📄</span>10. General</h2>
       
       <h3>10.1 Changes</h3>
       <p>These Terms are subject to occasional revision, and if we make any substantial changes, we may notify you by sending you an e-mail to the last e-mail address you provided to us (if any), and/or by prominently posting notice of the changes on our App or Site. You are responsible for providing us with your most current e-mail address. Continued use of our App or Site following notice of such changes shall indicate your acknowledgement of such changes and agreement to be bound by the terms and conditions of such changes.</p>
@@ -482,8 +593,8 @@
       <p>These Terms constitute the entire agreement between you and us regarding the use of the App and Site. Our failure to exercise or enforce any right or provision of these Terms shall not operate as a waiver of such right or provision. If any provision of these Terms is, for any reason, held to be invalid or unenforceable, the other provisions of these Terms will be unimpaired and the invalid or unenforceable provision will be deemed modified so that it is valid and enforceable to the maximum extent permitted by law.</p>
     </div>
 
-    <div class="content-section">
-      <h2>11. Contact Information</h2>
+    <div class="content-section" id="section-11">
+      <h2><span class="section-icon">📞</span>11. Contact Information</h2>
       <p>If you have any questions about these Terms or need to contact us for any reason, please reach out to our support team:</p>
 
       <div class="contact-info">
