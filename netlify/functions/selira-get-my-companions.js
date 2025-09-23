@@ -55,7 +55,7 @@ exports.handler = async (event, context) => {
     };
 
     // Step 1: Get user record
-    console.log('🔍 Finding user by email and UID:', user_email, user_uid);
+    console.log('🔍 Finding user by email:', user_email);
     let allUsers = [];
     let offset = null;
 
