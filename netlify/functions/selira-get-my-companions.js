@@ -130,12 +130,12 @@ exports.handler = async (event, context) => {
     let charactersOffset = null;
 
     do {
-      // Build filter for user-created characters: ANY visibility if created by this user (using Created_By linked field with User record ID)
-      const createdByFilter = `SEARCH("${userRecordId}", ARRAYJOIN({Created_By}))`;
+      // Build filter for user-created characters: ANY visibility if created by this user (using Created_By as Auth0 ID string)
+      const createdByFilter = `{Created_By} = "${user_uid}"`;
 
       console.log('🔍 Filter for user-created characters (any visibility):', createdByFilter);
       console.log('🔍 Search parameters:', { userEmail, userRecordId, user_uid });
-      console.log('🔍 Primary matching on Created_By linked field with User record ID:', userRecordId);
+      console.log('🔍 Primary matching on Created_By field with Auth0 ID string:', user_uid);
 
       const userCreatedUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters?filterByFormula=${encodeURIComponent(createdByFilter)}${charactersOffset ? `&offset=${charactersOffset}` : ''}`;
 
