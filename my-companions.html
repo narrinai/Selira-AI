@@ -1896,10 +1896,24 @@
         localStorage.removeItem('userCompanions');
       }
 
-      // Wait a bit for Auth0 to initialize
-      setTimeout(() => {
-        loadCharacters();
-      }, 1000);
+      // Wait for Auth0 to initialize properly before loading companions
+      function waitForAuth0AndLoad() {
+        if (typeof window.getCurrentUser === 'function') {
+          const user = window.getCurrentUser();
+          if (user && user.email && user.sub) {
+            console.log('✅ Auth0 ready, loading companions...');
+            loadCharacters();
+            return;
+          }
+        }
+
+        // Check again after a short delay
+        console.log('⏳ Waiting for Auth0 to initialize...');
+        setTimeout(waitForAuth0AndLoad, 500);
+      }
+
+      // Start checking for Auth0 readiness
+      setTimeout(waitForAuth0AndLoad, 1000);
 
       initializeFilters();
       setupTabNavigation();
