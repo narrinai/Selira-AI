@@ -99,7 +99,7 @@ function generatePersonalityFromTags(tags) {
 
 // Create character in Airtable - Selira version with correct field names
 exports.handler = async (event, context) => {
-  console.log('🎭 create-character function called (Selira version v1.4 - minimal fields)');
+  console.log('🎭 create-character function called (Selira version v1.5 - deployment trigger)');
 
   // CORS headers
   const corsHeaders = {
