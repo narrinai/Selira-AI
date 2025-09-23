@@ -1,4 +1,4 @@
-// Create 20 realistic companions with AI-generated avatars
+// Create 20 realistic female companions with AI-generated avatars
 exports.handler = async (event, context) => {
   const headers = {
     'Access-Control-Allow-Origin': '*',
@@ -27,254 +27,246 @@ exports.handler = async (event, context) => {
       throw new Error('Missing Airtable credentials');
     }
 
-    // 20 realistic companion templates
+    // 20 realistic female companions with sexy names, distributed across existing tags
     const companions = [
+      // Fantasy
       {
-        Name: "Dr. Sarah Chen",
-        Character_Title: "Clinical Psychologist",
-        Character_Description: "A compassionate therapist who helps people overcome anxiety and depression through evidence-based treatments.",
-        Category: "Professional",
-        Tags: ["Psychology", "Mental Health", "Therapy", "Compassionate"],
+        Name: "Aria Moonstone",
+        Character_Title: "Fantasy Enchantress",
+        Character_Description: "A captivating woman who loves exploring magical realms and fantasy adventures.",
+        Category: "Fantasy",
+        Tags: ["Fantasy", "Magic", "Adventure"],
+        sex: "female",
+        ethnicity: "white",
+        hair_length: "long",
+        hair_color: "blonde"
+      },
+      {
+        Name: "Luna Starfire",
+        Character_Title: "Mystical Sorceress",
+        Character_Description: "An alluring woman with a mysterious aura who adores fantasy worlds.",
+        Category: "Fantasy",
+        Tags: ["Fantasy", "Magic", "Mystery"],
+        sex: "female",
+        ethnicity: "white",
+        hair_length: "medium",
+        hair_color: "red"
+      },
+      // Anime-Manga
+      {
+        Name: "Sakura Divine",
+        Character_Title: "Anime Princess",
+        Character_Description: "A beautiful and sweet woman who loves anime culture and cute things.",
+        Category: "Anime-Manga",
+        Tags: ["Anime-Manga", "Cute", "Sweet"],
+        sex: "female",
+        ethnicity: "japanese",
+        hair_length: "long",
+        hair_color: "black"
+      },
+      {
+        Name: "Yuki Angel",
+        Character_Title: "Manga Goddess",
+        Character_Description: "A stunning woman with a playful personality who adores manga and anime.",
+        Category: "Anime-Manga",
+        Tags: ["Anime-Manga", "Playful", "Cute"],
+        sex: "female",
+        ethnicity: "japanese",
+        hair_length: "medium",
+        hair_color: "brown"
+      },
+      // Historical
+      {
+        Name: "Isabella Rose",
+        Character_Title: "Renaissance Beauty",
+        Character_Description: "An elegant and sophisticated woman fascinated by historical periods.",
+        Category: "Historical",
+        Tags: ["Historical", "Elegant", "Sophisticated"],
+        sex: "female",
+        ethnicity: "white",
+        hair_length: "long",
+        hair_color: "brown"
+      },
+      {
+        Name: "Cleopatra Divine",
+        Character_Title: "Ancient Queen",
+        Character_Description: "A mesmerizing woman with regal charm who loves ancient history.",
+        Category: "Historical",
+        Tags: ["Historical", "Royal", "Ancient"],
+        sex: "female",
+        ethnicity: "middle-east",
+        hair_length: "long",
+        hair_color: "black"
+      },
+      // Romance
+      {
+        Name: "Valentina Heart",
+        Character_Title: "Romantic Soul",
+        Character_Description: "A passionate and loving woman who believes in true love and romance.",
+        Category: "Romance",
+        Tags: ["Romance", "Love", "Passionate"],
+        sex: "female",
+        ethnicity: "hispanic",
+        hair_length: "long",
+        hair_color: "brown"
+      },
+      {
+        Name: "Scarlett Kiss",
+        Character_Title: "Love Goddess",
+        Character_Description: "A seductive and romantic woman who makes every moment feel like a fairytale.",
+        Category: "Romance",
+        Tags: ["Romance", "Seductive", "Fairytale"],
+        sex: "female",
+        ethnicity: "white",
+        hair_length: "medium",
+        hair_color: "red"
+      },
+      // Adventure
+      {
+        Name: "Phoenix Wild",
+        Character_Title: "Adventure Seeker",
+        Character_Description: "A daring and adventurous woman who loves exploring new places and experiences.",
+        Category: "Adventure",
+        Tags: ["Adventure", "Daring", "Explorer"],
+        sex: "female",
+        ethnicity: "white",
+        hair_length: "medium",
+        hair_color: "blonde"
+      },
+      {
+        Name: "Raven Storm",
+        Character_Title: "Wild Explorer",
+        Character_Description: "A fearless and exciting woman who thrives on adventure and new challenges.",
+        Category: "Adventure",
+        Tags: ["Adventure", "Fearless", "Wild"],
+        sex: "female",
+        ethnicity: "black",
+        hair_length: "short",
+        hair_color: "black"
+      },
+      // Action
+      {
+        Name: "Elektra Fierce",
+        Character_Title: "Action Hero",
+        Character_Description: "A strong and confident woman who loves action movies and thrilling experiences.",
+        Category: "Action",
+        Tags: ["Action", "Strong", "Confident"],
+        sex: "female",
+        ethnicity: "white",
+        hair_length: "short",
+        hair_color: "brown"
+      },
+      {
+        Name: "Katana Steel",
+        Character_Title: "Warrior Princess",
+        Character_Description: "A fierce and beautiful woman with a warrior spirit and loving heart.",
+        Category: "Action",
+        Tags: ["Action", "Warrior", "Fierce"],
+        sex: "female",
+        ethnicity: "korean",
+        hair_length: "long",
+        hair_color: "black"
+      },
+      // Mystery
+      {
+        Name: "Raven Noir",
+        Character_Title: "Mystery Lady",
+        Character_Description: "An intriguing and mysterious woman who loves puzzles and detective stories.",
+        Category: "Mystery",
+        Tags: ["Mystery", "Intriguing", "Detective"],
+        sex: "female",
+        ethnicity: "white",
+        hair_length: "medium",
+        hair_color: "black"
+      },
+      {
+        Name: "Jade Secret",
+        Character_Title: "Enigmatic Beauty",
+        Character_Description: "A captivating woman with secrets to uncover and mysteries to solve.",
+        Category: "Mystery",
+        Tags: ["Mystery", "Secrets", "Enigmatic"],
         sex: "female",
         ethnicity: "chinese",
+        hair_length: "long",
+        hair_color: "black"
+      },
+      // Sci-Fi
+      {
+        Name: "Nova Galaxy",
+        Character_Title: "Space Princess",
+        Character_Description: "A futuristic beauty who dreams of exploring distant galaxies and alien worlds.",
+        Category: "Sci-Fi",
+        Tags: ["Sci-Fi", "Space", "Futuristic"],
+        sex: "female",
+        ethnicity: "white",
         hair_length: "medium",
-        hair_color: "black",
-        prompt: "professional therapist, warm smile, confident expression, office setting"
+        hair_color: "silver"
       },
       {
-        Name: "Marcus Johnson",
-        Character_Title: "Personal Trainer",
-        Character_Description: "An energetic fitness coach who motivates people to achieve their health and wellness goals.",
-        Category: "Fitness",
-        Tags: ["Fitness", "Health", "Motivation", "Wellness"],
-        sex: "male",
-        ethnicity: "black",
+        Name: "Cyra Neon",
+        Character_Title: "Cyber Goddess",
+        Character_Description: "A stunning woman from the future who loves technology and cyberpunk aesthetics.",
+        Category: "Sci-Fi",
+        Tags: ["Sci-Fi", "Cyber", "Technology"],
+        sex: "female",
+        ethnicity: "korean",
         hair_length: "short",
-        hair_color: "black",
-        prompt: "athletic personal trainer, encouraging smile, gym setting, fit physique"
+        hair_color: "purple"
+      },
+      // Modern/Realistic
+      {
+        Name: "Amber Sunshine",
+        Character_Title: "Modern Beauty",
+        Character_Description: "A gorgeous and down-to-earth woman who enjoys modern life and new experiences.",
+        Category: "Modern",
+        Tags: ["Modern", "Realistic", "Down-to-earth"],
+        sex: "female",
+        ethnicity: "white",
+        hair_length: "long",
+        hair_color: "blonde"
       },
       {
-        Name: "Isabella Martinez",
-        Character_Title: "Chef & Restaurant Owner",
-        Character_Description: "A passionate chef who creates authentic Latin American cuisine and shares cooking tips.",
-        Category: "Culinary",
-        Tags: ["Cooking", "Food", "Latin", "Passionate"],
+        Name: "Zara Velvet",
+        Character_Title: "City Girl",
+        Character_Description: "A sophisticated urban woman who loves fashion, culture, and city nightlife.",
+        Category: "Modern",
+        Tags: ["Modern", "Fashion", "Urban"],
+        sex: "female",
+        ethnicity: "black",
+        hair_length: "medium",
+        hair_color: "brown"
+      },
+      {
+        Name: "Mia Paradise",
+        Character_Title: "Beach Goddess",
+        Character_Description: "A stunning woman who loves the beach, sunshine, and tropical adventures.",
+        Category: "Modern",
+        Tags: ["Modern", "Beach", "Tropical"],
         sex: "female",
         ethnicity: "hispanic",
         hair_length: "long",
-        hair_color: "brown",
-        prompt: "professional chef, warm smile, kitchen setting, chef uniform"
+        hair_color: "brown"
       },
       {
-        Name: "Dr. James Wilson",
-        Character_Title: "Family Doctor",
-        Character_Description: "A caring physician who provides comprehensive healthcare and medical advice for families.",
-        Category: "Medical",
-        Tags: ["Medicine", "Healthcare", "Family", "Caring"],
-        sex: "male",
-        ethnicity: "white",
-        hair_length: "short",
-        hair_color: "brown",
-        prompt: "friendly doctor, reassuring expression, medical coat, professional"
-      },
-      {
-        Name: "Priya Patel",
-        Character_Title: "Software Engineer",
-        Character_Description: "A brilliant programmer who loves solving complex problems and teaching others to code.",
-        Category: "Technology",
-        Tags: ["Programming", "Technology", "Teaching", "Problem Solving"],
-        sex: "female",
-        ethnicity: "indian",
-        hair_length: "medium",
-        hair_color: "black",
-        prompt: "tech professional, intelligent expression, modern office, casual professional attire"
-      },
-      {
-        Name: "David Thompson",
-        Character_Title: "High School Teacher",
-        Character_Description: "An inspiring educator who makes learning fun and helps students reach their potential.",
-        Category: "Education",
-        Tags: ["Teaching", "Education", "Inspiring", "Learning"],
-        sex: "male",
-        ethnicity: "white",
-        hair_length: "medium",
-        hair_color: "blonde",
-        prompt: "friendly teacher, encouraging smile, classroom setting, approachable"
-      },
-      {
-        Name: "Maya Williams",
-        Character_Title: "Social Worker",
-        Character_Description: "A dedicated advocate who helps vulnerable communities and fights for social justice.",
-        Category: "Social Work",
-        Tags: ["Social Justice", "Advocacy", "Community", "Dedicated"],
-        sex: "female",
-        ethnicity: "black",
-        hair_length: "short",
-        hair_color: "black",
-        prompt: "compassionate social worker, caring expression, professional attire, community setting"
-      },
-      {
-        Name: "Alessandro Rossi",
-        Character_Title: "Art Therapist",
-        Character_Description: "A creative therapist who uses art and creativity to help people express emotions and heal.",
-        Category: "Therapy",
-        Tags: ["Art Therapy", "Creativity", "Healing", "Expression"],
-        sex: "male",
-        ethnicity: "white",
-        hair_length: "medium",
-        hair_color: "brown",
-        prompt: "artistic therapist, gentle expression, art studio setting, creative atmosphere"
-      },
-      {
-        Name: "Dr. Fatima Al-Rashid",
-        Character_Title: "Pediatrician",
-        Character_Description: "A gentle doctor who specializes in children's health and makes medical visits less scary.",
-        Category: "Medical",
-        Tags: ["Pediatrics", "Children", "Gentle", "Healthcare"],
-        sex: "female",
-        ethnicity: "middle-east",
-        hair_length: "long",
-        hair_color: "brown",
-        prompt: "kind pediatrician, gentle smile, medical setting, child-friendly"
-      },
-      {
-        Name: "Jake Anderson",
-        Character_Title: "Life Coach",
-        Character_Description: "An motivational coach who helps people overcome obstacles and achieve their dreams.",
-        Category: "Coaching",
-        Tags: ["Life Coaching", "Motivation", "Goals", "Success"],
-        sex: "male",
-        ethnicity: "white",
-        hair_length: "short",
-        hair_color: "brown",
-        prompt: "confident life coach, inspiring expression, modern office, motivational"
-      },
-      {
-        Name: "Dr. Lisa Kim",
-        Character_Title: "Veterinarian",
-        Character_Description: "A caring vet who loves animals and helps pet owners keep their furry friends healthy.",
-        Category: "Veterinary",
-        Tags: ["Animals", "Veterinary", "Caring", "Pets"],
-        sex: "female",
-        ethnicity: "korean",
-        hair_length: "medium",
-        hair_color: "black",
-        prompt: "friendly veterinarian, animal lover, vet clinic setting, gentle with pets"
-      },
-      {
-        Name: "Carlos Rodriguez",
-        Character_Title: "Physical Therapist",
-        Character_Description: "A skilled therapist who helps people recover from injuries and improve mobility.",
-        Category: "Healthcare",
-        Tags: ["Physical Therapy", "Recovery", "Mobility", "Rehabilitation"],
-        sex: "male",
-        ethnicity: "hispanic",
-        hair_length: "short",
-        hair_color: "black",
-        prompt: "professional physical therapist, encouraging expression, therapy gym, helping patients"
-      },
-      {
-        Name: "Emma Thompson",
-        Character_Title: "Nutritionist",
-        Character_Description: "A health expert who creates personalized meal plans and promotes healthy eating habits.",
-        Category: "Health",
-        Tags: ["Nutrition", "Health", "Wellness", "Diet"],
-        sex: "female",
-        ethnicity: "white",
-        hair_length: "long",
-        hair_color: "blonde",
-        prompt: "health nutritionist, bright smile, healthy food setting, professional"
-      },
-      {
-        Name: "Dr. Michael Brown",
-        Character_Title: "Dentist",
-        Character_Description: "A gentle dentist who makes dental care comfortable and educates about oral health.",
-        Category: "Dental",
-        Tags: ["Dentistry", "Oral Health", "Gentle", "Education"],
-        sex: "male",
-        ethnicity: "white",
-        hair_length: "short",
-        hair_color: "brown",
-        prompt: "friendly dentist, reassuring smile, dental office, professional medical attire"
-      },
-      {
-        Name: "Aisha Hassan",
-        Character_Title: "Nurse Practitioner",
-        Character_Description: "A compassionate nurse who provides primary care and health education to patients.",
-        Category: "Medical",
-        Tags: ["Nursing", "Primary Care", "Compassionate", "Health Education"],
-        sex: "female",
-        ethnicity: "black",
-        hair_length: "medium",
-        hair_color: "black",
-        prompt: "caring nurse practitioner, professional smile, medical setting, scrubs"
-      },
-      {
-        Name: "Robert Lee",
-        Character_Title: "Financial Advisor",
-        Character_Description: "A trustworthy advisor who helps people manage their finances and plan for the future.",
-        Category: "Finance",
-        Tags: ["Finance", "Investment", "Planning", "Trustworthy"],
-        sex: "male",
-        ethnicity: "white",
-        hair_length: "short",
-        hair_color: "gray",
-        prompt: "professional financial advisor, trustworthy expression, office setting, business attire"
-      },
-      {
-        Name: "Dr. Jennifer Walsh",
-        Character_Title: "Psychiatrist",
-        Character_Description: "A caring mental health professional who helps people with depression, anxiety, and other conditions.",
-        Category: "Mental Health",
-        Tags: ["Psychiatry", "Mental Health", "Therapy", "Caring"],
+        Name: "Stella Diamond",
+        Character_Title: "Glamour Queen",
+        Character_Description: "A dazzling woman who loves luxury, glamour, and the finer things in life.",
+        Category: "Modern",
+        Tags: ["Modern", "Glamour", "Luxury"],
         sex: "female",
         ethnicity: "white",
         hair_length: "medium",
-        hair_color: "red",
-        prompt: "compassionate psychiatrist, understanding expression, therapy office, professional"
-      },
-      {
-        Name: "Omar Al-Mansouri",
-        Character_Title: "Career Counselor",
-        Character_Description: "A wise counselor who helps people discover their career path and achieve professional goals.",
-        Category: "Career",
-        Tags: ["Career", "Counseling", "Professional", "Guidance"],
-        sex: "male",
-        ethnicity: "middle-east",
-        hair_length: "short",
-        hair_color: "black",
-        prompt: "professional career counselor, wise expression, office setting, business casual"
-      },
-      {
-        Name: "Sophie Laurent",
-        Character_Title: "Speech Therapist",
-        Character_Description: "A patient therapist who helps children and adults improve their communication skills.",
-        Category: "Therapy",
-        Tags: ["Speech Therapy", "Communication", "Patient", "Helpful"],
-        sex: "female",
-        ethnicity: "white",
-        hair_length: "long",
-        hair_color: "blonde",
-        prompt: "gentle speech therapist, patient expression, therapy room, working with clients"
-      },
-      {
-        Name: "Dr. Kevin Park",
-        Character_Title: "Pharmacist",
-        Character_Description: "A knowledgeable pharmacist who provides medication guidance and health consultations.",
-        Category: "Pharmacy",
-        Tags: ["Pharmacy", "Medication", "Health", "Guidance"],
-        sex: "male",
-        ethnicity: "korean",
-        hair_length: "short",
-        hair_color: "black",
-        prompt: "professional pharmacist, helpful expression, pharmacy setting, white coat"
+        hair_color: "blonde"
       }
     ];
 
-    console.log(`🎨 Creating ${companions.length} realistic companions with AI avatars...`);
+    console.log(`🎨 Creating ${companions.length} female companions with AI avatars...`);
 
     const results = [];
     const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+    // Base prompt - same for all
+    const basePrompt = "beautiful woman, attractive, charming smile, friendly expression";
 
     for (let i = 0; i < companions.length; i++) {
       const companion = companions[i];
@@ -282,22 +274,22 @@ exports.handler = async (event, context) => {
       try {
         console.log(`\n🎨 Creating ${i + 1}/${companions.length}: ${companion.Name}`);
 
-        // Generate avatar using the same function as /create
+        // Generate avatar using same base prompt for all
         const imageGenResponse = await fetch(`${process.env.NETLIFY_FUNCTIONS_URL || 'https://selira.ai/.netlify/functions'}/selira-generate-custom-image`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            customPrompt: companion.prompt,
+            customPrompt: basePrompt,
             characterName: companion.Name,
             category: companion.Category,
-            style: 'realistic', // All realistic
+            style: 'realistic',
             shotType: 'portrait',
             sex: companion.sex,
             ethnicity: companion.ethnicity,
             hairLength: companion.hair_length,
             hairColor: companion.hair_color,
             email: 'system@selira.ai',
-            auth0_id: 'realistic_companion_creation'
+            auth0_id: 'female_companion_creation'
           })
         });
 
@@ -385,14 +377,14 @@ exports.handler = async (event, context) => {
       headers,
       body: JSON.stringify({
         success: true,
-        message: `Created ${successful} realistic companions`,
+        message: `Created ${successful} female companions`,
         summary: { total: results.length, successful, failed },
         results
       })
     };
 
   } catch (error) {
-    console.error('❌ Create realistic companions error:', error);
+    console.error('❌ Create female companions error:', error);
     return {
       statusCode: 500,
       headers,
