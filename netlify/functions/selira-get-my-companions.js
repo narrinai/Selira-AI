@@ -138,6 +138,8 @@ exports.handler = async (event, context) => {
       console.log('🔍 Primary matching on Created_By linked field with Users record ID:', userRecordId);
 
       const userCreatedUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters?filterByFormula=${encodeURIComponent(createdByFilter)}${charactersOffset ? `&offset=${charactersOffset}` : ''}`;
+      console.log('🔍 Full Airtable URL:', userCreatedUrl);
+      console.log('🔍 Using base ID:', AIRTABLE_BASE_ID);
 
       const userCreatedResponse = await fetch(userCreatedUrl, {
         method: 'GET',
