@@ -331,7 +331,6 @@ exports.handler = async (event, context) => {
               Name: companion.Name,
               Character_Title: companion.Character_Title,
               Character_Description: companion.Character_Description,
-              Category: companion.Category,
               Tags: companion.Tags,
               Slug: slug,
               Avatar_URL: imageData.imageUrl,
@@ -343,6 +342,7 @@ exports.handler = async (event, context) => {
               Visibility: "public"
               // Leave Created_By empty (Selira-created)
               // Created field is auto-computed by Airtable
+              // Category field removed - let Airtable handle defaults
             }
           })
         });
