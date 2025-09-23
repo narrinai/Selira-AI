@@ -97,16 +97,24 @@ exports.handler = async (event, context) => {
     const userAuth0ID = targetUser.fields.Auth0ID;
     console.log('✅ Found user:', userRecordId, userEmail, 'Auth0ID:', userAuth0ID);
 
-    // Step 2: Get companions from chat history - use Auth0ID, email and record ID for matching
-    let userFilter;
-    if (userAuth0ID) {
-      userFilter = `OR({User}='${userAuth0ID}',{User}='${userEmail}',SEARCH('${userRecordId}',ARRAYJOIN({User})))`;
-    } else {
-      userFilter = `OR({User}='${userEmail}',SEARCH('${userRecordId}',ARRAYJOIN({User})))`;
+    // Step 2: Get companions from chat history - use the working approach (Auth0ID primarily)
+    if (!userAuth0ID) {
+      console.log('⚠️ User has no Auth0ID, cannot find chat history');
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({
+          success: true,
+          companions: [],
+          message: 'No Auth0ID found - please re-login to see your companions'
+        })
+      };
     }
+
+    const userFilter = `{User}='${userAuth0ID}'`;
     const chatHistoryUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/ChatHistory?filterByFormula=${userFilter}&sort[0][field]=CreatedTime&sort[0][direction]=desc`;
 
-    console.log('🔍 Chat history filter (Auth0ID + email):', userFilter);
+    console.log('🔍 Chat history filter (Auth0ID - working approach):', userFilter);
 
     const chatResponse = await fetch(chatHistoryUrl, {
       method: 'GET',
