@@ -59,6 +59,13 @@
       box-sizing: border-box;
     }
 
+    html, body {
+      margin: 0 !important;
+      padding: 0 !important;
+      border: none !important;
+      outline: none !important;
+    }
+
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background-color: var(--bg-primary);
@@ -1378,7 +1385,7 @@
         </div>
         <div class="image-upgrade-feature">
           <div class="image-upgrade-feature-icon">⚡</div>
-          <div>Fast generation with Flux AI</div>
+          <div>Fast image generation</div>
         </div>
         <div class="image-upgrade-feature">
           <div class="image-upgrade-feature-icon">🔄</div>
@@ -1508,12 +1515,8 @@
         
         <div class="character-stats">
           <div class="stat-item">
-            <div class="stat-number" id="sidebarCharacterChats">51.4K</div>
+            <div class="stat-number" id="sidebarCharacterChats">0</div>
             <div class="stat-label">Chats</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-number" id="sidebarCharacterRating">4.7</div>
-            <div class="stat-label">Rating</div>
           </div>
         </div>
         
@@ -1896,8 +1899,7 @@
       } else {
         sidebarImage.style.display = 'none';
       }
-      document.getElementById('sidebarCharacterChats').textContent = currentCharacter.chats;
-      document.getElementById('sidebarCharacterRating').textContent = currentCharacter.rating;
+      document.getElementById('sidebarCharacterChats').textContent = '0';
       
       // Update tags
       const tagsContainer = document.getElementById('sidebarCharacterTags');
@@ -2829,8 +2831,18 @@
 
         // Add the greeting message as the first message
         setTimeout(() => {
+          // First send the avatar as an image message
+          if (currentCharacter.avatar && currentCharacter.avatar !== '/avatars/placeholder.webp') {
+            addAvatarMessage(currentCharacter.avatar);
+          }
+
+          // Then send the greeting message
           if (currentCharacter.greeting) {
-            addMessage('character', currentCharacter.greeting);
+            addMessage(currentCharacter.greeting, 'character');
+          } else {
+            // Generate a default greeting based on character name and prompt
+            const defaultGreeting = `*smiles warmly* Hello! I'm ${currentCharacter.name}. I'm excited to chat with you! How are you doing today?`;
+            addMessage(defaultGreeting, 'character');
           }
         }, 500);
       } else {
@@ -3523,6 +3535,35 @@
         // Update sidebar to reflect new activity
         updateActiveChatsSidebar();
       }
+    }
+
+    // Add avatar message for new companions
+    function addAvatarMessage(avatarUrl) {
+      const messagesContainer = document.getElementById('chatMessages');
+      const welcomeMessage = messagesContainer.querySelector('.welcome-message');
+
+      if (welcomeMessage) {
+        welcomeMessage.remove();
+      }
+
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'message ai';
+      messageDiv.innerHTML = `
+        <div class="message-avatar">
+          <img src="${fixAvatarUrl(currentCharacter.avatar)}" alt="${currentCharacter.name}" onerror="this.style.display='none'">
+        </div>
+        <div class="message-content">
+          <div style="text-align: center; margin: 8px 0;">
+            <img src="${fixAvatarUrl(avatarUrl)}" alt="${currentCharacter.name}"
+                 style="max-width: 200px; max-height: 200px; border-radius: 12px; cursor: pointer;"
+                 onclick="openAvatarModal('${fixAvatarUrl(avatarUrl)}', '${currentCharacter.name}')"
+                 onerror="this.style.display='none'">
+          </div>
+        </div>
+      `;
+
+      messagesContainer.appendChild(messageDiv);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 
     function openImageFullscreen(imageUrl, prompt) {
