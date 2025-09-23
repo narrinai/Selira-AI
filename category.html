@@ -1909,53 +1909,8 @@
     });
 
     // ===== CHARACTER LOADING =====
-    function processCharactersData(data) {
-      if (data.success && data.characters) {
-        console.log('📡 Processing characters:', data.characters.length, 'characters');
-        console.log('🔍 Sample raw characters:', data.characters.slice(-3).map(c => ({name: c.Name, category: c.Category, visibility: c.Visibility})));
-        allCharacters = data.characters.map(char => ({
-          id: char.Character_ID || char.Name,
-          name: char.Name || 'Unknown',
-          title: char.Character_Title || '',
-          description: char.Character_Description || '',
-          avatar: char.Avatar_URL ? char.Avatar_URL.replace('narrin.ai', 'selira.ai') : null,
-          category: char.Category || 'Other',
-          slug: char.Slug || (char.Name ? char.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'unknown'),
-          creator: char.Created_by || 'Selira',
-          tags: Array.isArray(char.Tags) ? char.Tags : (char.Tags || '').toString().split(',').filter(Boolean),
-          chats: Math.floor(Math.random() * 100) + 'K',
-          character_url: char.Character_URL ? char.Character_URL.replace('narrin.ai', 'selira.ai') : `https://selira.ai/chat.html?char=${char.Slug || (char.Name ? char.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'unknown')}`,
-          // Add filter fields from Airtable
-          companion_type: char.companion_type || 'realistic',
-          sex: char.sex || 'female',
-          ethnicity: char.ethnicity || 'white',
-          hair_length: char.hair_length || 'medium',
-          is_unfiltered: char.is_unfiltered || false,
-          created: char.Created || new Date().toISOString()
-        }));
-
-        console.log('✅ Loaded characters:', allCharacters.length);
-        console.log('🔍 Sample character names:', allCharacters.slice(-5).map(c => c.name));
-        console.log('🔍 New test characters:', allCharacters.filter(c => c.name.includes('Emma') || c.name.includes('Sarah') || c.name.includes('Visible')));
-      } else {
-        throw new Error('Invalid API response');
-      }
-    }
-
     async function loadCharacters() {
       try {
-        // Check cache first (5 minutes cache)
-        const cached = localStorage.getItem('selira_characters_cache');
-        const cacheTime = localStorage.getItem('selira_characters_cache_time');
-        const now = Date.now();
-
-        if (cached && cacheTime && (now - parseInt(cacheTime)) < 5 * 60 * 1000) {
-          console.log('📋 Using cached characters data');
-          const data = JSON.parse(cached);
-          processCharactersData(data);
-          return;
-        }
-
         console.log('📡 Loading characters from API...');
         const response = await fetch('/.netlify/functions/selira-characters-fetch');
         
