@@ -1682,7 +1682,7 @@
           <span class="nav-item-icon">👥</span>
           <span>Discover</span>
         </a>
-        <a href="#" class="nav-item" onclick="switchToMyCompanionsTab(); return false;">
+        <a href="/category?tab=companions" class="nav-item">
           <span class="nav-item-icon">💬</span>
           <span>My Companions</span>
         </a>
@@ -1899,6 +1899,13 @@
 
       // Load tags for filter pills
       await loadCreateTagsFromAirtable();
+
+      // Check URL for tab parameter
+      const urlParams = new URLSearchParams(window.location.search);
+      const tabParam = urlParams.get('tab');
+      if (tabParam === 'companions') {
+        setTimeout(() => switchToMyCompanionsTab(), 500);
+      }
     });
 
     // ===== CHARACTER LOADING =====
@@ -2743,6 +2750,13 @@
     async function renderMyCompanions() {
       const grid = document.getElementById('charactersGrid');
 
+      // Prevent multiple simultaneous calls
+      if (window.loadingCompanions) {
+        console.log('🔄 Already loading companions, skipping...');
+        return;
+      }
+      window.loadingCompanions = true;
+
       // Show loading state
       grid.innerHTML = `
         <div class="loading-grid">
@@ -2857,10 +2871,12 @@
               <div style="font-size: 48px; margin-bottom: 16px;">❌</div>
               <h3 style="color: var(--text-primary); margin-bottom: 8px;">Error loading companions</h3>
               <p style="color: var(--text-secondary); margin-bottom: 20px;">${error.message}</p>
-              <button class="user-btn" onclick="renderMyCompanions()">Try Again</button>
+              <button class="user-btn" onclick="window.loadingCompanions = false; renderMyCompanions()">Try Again</button>
             </div>
           </div>
         `;
+      } finally {
+        window.loadingCompanions = false;
       }
     }
 
