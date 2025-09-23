@@ -339,9 +339,9 @@ exports.handler = async (event, context) => {
               hair_length: companion.hair_length,
               hair_color: companion.hair_color,
               companion_type: companion.companion_type, // Add realistic
-              Visibility: "public",
-              Created: new Date().toISOString()
+              Visibility: "public"
               // Leave Created_By empty (Selira-created)
+              // Created field is auto-computed by Airtable
             }
           })
         });
@@ -363,10 +363,10 @@ exports.handler = async (event, context) => {
           companion_type: companion.companion_type
         });
 
-        // Wait 30 seconds between creations for rate limiting
+        // Wait 60 seconds between creations for rate limiting
         if (i < companions.length - 1) {
-          console.log('⏱️ Waiting 30 seconds...');
-          await delay(30000);
+          console.log('⏱️ Waiting 60 seconds...');
+          await delay(60000);
         }
 
       } catch (error) {
