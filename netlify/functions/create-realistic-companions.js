@@ -27,9 +27,8 @@ exports.handler = async (event, context) => {
       throw new Error('Missing Airtable credentials');
     }
 
-    // 20 realistic female companions with sexy names, distributed across existing tags
+    // 20 realistic female companions using only existing Airtable tags
     const companions = [
-      // Fantasy
       {
         Name: "Aria Moonstone",
         Character_Title: "Fantasy Enchantress",
@@ -39,30 +38,32 @@ exports.handler = async (event, context) => {
         sex: "female",
         ethnicity: "white",
         hair_length: "long",
-        hair_color: "blonde"
+        hair_color: "blonde",
+        companion_type: "realistic"
       },
       {
         Name: "Luna Starfire",
         Character_Title: "Mystical Sorceress",
         Character_Description: "An alluring woman with a mysterious aura who adores fantasy worlds.",
         Category: "Fantasy",
-        Tags: ["Fantasy", "Magic", "Mystery"],
+        Tags: ["Fantasy", "Magic", "Mysterious"],
         sex: "female",
         ethnicity: "white",
         hair_length: "medium",
-        hair_color: "red"
+        hair_color: "red",
+        companion_type: "realistic"
       },
-      // Anime-Manga
       {
         Name: "Sakura Divine",
         Character_Title: "Anime Princess",
         Character_Description: "A beautiful and sweet woman who loves anime culture and cute things.",
         Category: "Anime-Manga",
-        Tags: ["Anime-Manga", "Cute", "Sweet"],
+        Tags: ["Anime-Manga", "Cute", "Kind"],
         sex: "female",
         ethnicity: "japanese",
         hair_length: "long",
-        hair_color: "black"
+        hair_color: "black",
+        companion_type: "realistic"
       },
       {
         Name: "Yuki Angel",
@@ -73,78 +74,81 @@ exports.handler = async (event, context) => {
         sex: "female",
         ethnicity: "japanese",
         hair_length: "medium",
-        hair_color: "brown"
+        hair_color: "brown",
+        companion_type: "realistic"
       },
-      // Historical
       {
         Name: "Isabella Rose",
         Character_Title: "Renaissance Beauty",
         Character_Description: "An elegant and sophisticated woman fascinated by historical periods.",
         Category: "Historical",
-        Tags: ["Historical", "Elegant", "Sophisticated"],
+        Tags: ["Historical", "Wise", "Creative"],
         sex: "female",
         ethnicity: "white",
         hair_length: "long",
-        hair_color: "brown"
+        hair_color: "brown",
+        companion_type: "realistic"
       },
       {
         Name: "Cleopatra Divine",
         Character_Title: "Ancient Queen",
         Character_Description: "A mesmerizing woman with regal charm who loves ancient history.",
         Category: "Historical",
-        Tags: ["Historical", "Royal", "Ancient"],
+        Tags: ["Historical", "Leader", "Confident"],
         sex: "female",
         ethnicity: "middle-east",
         hair_length: "long",
-        hair_color: "black"
+        hair_color: "black",
+        companion_type: "realistic"
       },
-      // Romance
       {
         Name: "Valentina Heart",
         Character_Title: "Romantic Soul",
         Character_Description: "A passionate and loving woman who believes in true love and romance.",
         Category: "Romance",
-        Tags: ["Romance", "Love", "Passionate"],
+        Tags: ["Romance", "Caring", "Kind"],
         sex: "female",
         ethnicity: "hispanic",
         hair_length: "long",
-        hair_color: "brown"
+        hair_color: "brown",
+        companion_type: "realistic"
       },
       {
         Name: "Scarlett Kiss",
         Character_Title: "Love Goddess",
         Character_Description: "A seductive and romantic woman who makes every moment feel like a fairytale.",
         Category: "Romance",
-        Tags: ["Romance", "Seductive", "Fairytale"],
+        Tags: ["Romance", "Romantic", "Confident"],
         sex: "female",
         ethnicity: "white",
         hair_length: "medium",
-        hair_color: "red"
+        hair_color: "red",
+        companion_type: "realistic"
       },
-      // Adventure
       {
         Name: "Phoenix Wild",
         Character_Title: "Adventure Seeker",
         Character_Description: "A daring and adventurous woman who loves exploring new places and experiences.",
         Category: "Adventure",
-        Tags: ["Adventure", "Daring", "Explorer"],
+        Tags: ["Adventure", "Brave", "Energetic"],
         sex: "female",
         ethnicity: "white",
         hair_length: "medium",
-        hair_color: "blonde"
+        hair_color: "blonde",
+        companion_type: "realistic"
       },
       {
         Name: "Raven Storm",
         Character_Title: "Wild Explorer",
         Character_Description: "A fearless and exciting woman who thrives on adventure and new challenges.",
         Category: "Adventure",
-        Tags: ["Adventure", "Fearless", "Wild"],
+        Tags: ["Adventure", "Bold", "Strong"],
         sex: "female",
         ethnicity: "black",
         hair_length: "short",
-        hair_color: "black"
+        hair_color: "black",
+        companion_type: "realistic"
       },
-      // Action
       {
         Name: "Elektra Fierce",
         Character_Title: "Action Hero",
@@ -154,113 +158,120 @@ exports.handler = async (event, context) => {
         sex: "female",
         ethnicity: "white",
         hair_length: "short",
-        hair_color: "brown"
+        hair_color: "brown",
+        companion_type: "realistic"
       },
       {
         Name: "Katana Steel",
         Character_Title: "Warrior Princess",
         Character_Description: "A fierce and beautiful woman with a warrior spirit and loving heart.",
         Category: "Action",
-        Tags: ["Action", "Warrior", "Fierce"],
+        Tags: ["Action", "Warrior", "Brave"],
         sex: "female",
         ethnicity: "korean",
         hair_length: "long",
-        hair_color: "black"
+        hair_color: "black",
+        companion_type: "realistic"
       },
-      // Mystery
       {
         Name: "Raven Noir",
         Character_Title: "Mystery Lady",
         Character_Description: "An intriguing and mysterious woman who loves puzzles and detective stories.",
         Category: "Mystery",
-        Tags: ["Mystery", "Intriguing", "Detective"],
+        Tags: ["Mystery", "Mysterious", "Smart"],
         sex: "female",
         ethnicity: "white",
         hair_length: "medium",
-        hair_color: "black"
+        hair_color: "black",
+        companion_type: "realistic"
       },
       {
         Name: "Jade Secret",
         Character_Title: "Enigmatic Beauty",
         Character_Description: "A captivating woman with secrets to uncover and mysteries to solve.",
         Category: "Mystery",
-        Tags: ["Mystery", "Secrets", "Enigmatic"],
+        Tags: ["Mystery", "Mysterious", "Wise"],
         sex: "female",
         ethnicity: "chinese",
         hair_length: "long",
-        hair_color: "black"
+        hair_color: "black",
+        companion_type: "realistic"
       },
-      // Sci-Fi
-      {
-        Name: "Nova Galaxy",
-        Character_Title: "Space Princess",
-        Character_Description: "A futuristic beauty who dreams of exploring distant galaxies and alien worlds.",
-        Category: "Sci-Fi",
-        Tags: ["Sci-Fi", "Space", "Futuristic"],
-        sex: "female",
-        ethnicity: "white",
-        hair_length: "medium",
-        hair_color: "silver"
-      },
-      {
-        Name: "Cyra Neon",
-        Character_Title: "Cyber Goddess",
-        Character_Description: "A stunning woman from the future who loves technology and cyberpunk aesthetics.",
-        Category: "Sci-Fi",
-        Tags: ["Sci-Fi", "Cyber", "Technology"],
-        sex: "female",
-        ethnicity: "korean",
-        hair_length: "short",
-        hair_color: "purple"
-      },
-      // Modern/Realistic
       {
         Name: "Amber Sunshine",
         Character_Title: "Modern Beauty",
         Character_Description: "A gorgeous and down-to-earth woman who enjoys modern life and new experiences.",
         Category: "Modern",
-        Tags: ["Modern", "Realistic", "Down-to-earth"],
+        Tags: ["Friendly", "Outgoing", "Helpful"],
         sex: "female",
         ethnicity: "white",
         hair_length: "long",
-        hair_color: "blonde"
+        hair_color: "blonde",
+        companion_type: "realistic"
       },
       {
         Name: "Zara Velvet",
         Character_Title: "City Girl",
         Character_Description: "A sophisticated urban woman who loves fashion, culture, and city nightlife.",
         Category: "Modern",
-        Tags: ["Modern", "Fashion", "Urban"],
+        Tags: ["Confident", "Creative", "Outgoing"],
         sex: "female",
         ethnicity: "black",
         hair_length: "medium",
-        hair_color: "brown"
+        hair_color: "brown",
+        companion_type: "realistic"
       },
       {
         Name: "Mia Paradise",
         Character_Title: "Beach Goddess",
         Character_Description: "A stunning woman who loves the beach, sunshine, and tropical adventures.",
         Category: "Modern",
-        Tags: ["Modern", "Beach", "Tropical"],
+        Tags: ["Energetic", "Playful", "Caring"],
         sex: "female",
         ethnicity: "hispanic",
         hair_length: "long",
-        hair_color: "brown"
+        hair_color: "brown",
+        companion_type: "realistic"
       },
       {
         Name: "Stella Diamond",
         Character_Title: "Glamour Queen",
         Character_Description: "A dazzling woman who loves luxury, glamour, and the finer things in life.",
         Category: "Modern",
-        Tags: ["Modern", "Glamour", "Luxury"],
+        Tags: ["Confident", "Bold", "Creative"],
         sex: "female",
         ethnicity: "white",
         hair_length: "medium",
-        hair_color: "blonde"
+        hair_color: "blonde",
+        companion_type: "realistic"
+      },
+      {
+        Name: "Sophia Grace",
+        Character_Title: "Gentle Soul",
+        Character_Description: "A kind and caring woman who loves helping others and spreading positivity.",
+        Category: "Modern",
+        Tags: ["Kind", "Caring", "Gentle"],
+        sex: "female",
+        ethnicity: "white",
+        hair_length: "long",
+        hair_color: "brown",
+        companion_type: "realistic"
+      },
+      {
+        Name: "Maya Serenity",
+        Character_Title: "Peaceful Heart",
+        Character_Description: "A calm and wise woman who brings peace and tranquility to everyone she meets.",
+        Category: "Modern",
+        Tags: ["Calm", "Wise", "Patient"],
+        sex: "female",
+        ethnicity: "indian",
+        hair_length: "long",
+        hair_color: "black",
+        companion_type: "realistic"
       }
     ];
 
-    console.log(`🎨 Creating ${companions.length} female companions with AI avatars...`);
+    console.log(`🎨 Creating ${companions.length} realistic female companions with AI avatars...`);
 
     const results = [];
     const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -289,7 +300,7 @@ exports.handler = async (event, context) => {
             hairLength: companion.hair_length,
             hairColor: companion.hair_color,
             email: 'system@selira.ai',
-            auth0_id: 'female_companion_creation'
+            auth0_id: 'realistic_female_companions'
           })
         });
 
@@ -307,7 +318,7 @@ exports.handler = async (event, context) => {
         // Create slug
         const slug = companion.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 
-        // Create in Airtable
+        // Create in Airtable with companion_type
         const airtableResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters`, {
           method: 'POST',
           headers: {
@@ -328,6 +339,7 @@ exports.handler = async (event, context) => {
               ethnicity: companion.ethnicity,
               hair_length: companion.hair_length,
               hair_color: companion.hair_color,
+              companion_type: companion.companion_type, // Add realistic
               Visibility: "public",
               Created: new Date().toISOString()
               // Leave Created_By empty (Selira-created)
@@ -348,7 +360,8 @@ exports.handler = async (event, context) => {
           status: 'success',
           companionId: airtableData.id,
           imageUrl: imageData.imageUrl,
-          slug: slug
+          slug: slug,
+          companion_type: companion.companion_type
         });
 
         // Wait 6 seconds between creations for rate limiting
@@ -370,21 +383,21 @@ exports.handler = async (event, context) => {
     const successful = results.filter(r => r.status === 'success').length;
     const failed = results.filter(r => r.status === 'failed').length;
 
-    console.log(`\n📊 Summary: ${successful} created, ${failed} failed`);
+    console.log(`\n📊 Summary: ${successful} realistic female companions created, ${failed} failed`);
 
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
         success: true,
-        message: `Created ${successful} female companions`,
+        message: `Created ${successful} realistic female companions`,
         summary: { total: results.length, successful, failed },
         results
       })
     };
 
   } catch (error) {
-    console.error('❌ Create female companions error:', error);
+    console.error('❌ Create realistic female companions error:', error);
     return {
       statusCode: 500,
       headers,
