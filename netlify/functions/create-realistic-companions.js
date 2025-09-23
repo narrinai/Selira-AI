@@ -279,7 +279,8 @@ exports.handler = async (event, context) => {
     // Base prompt - same for all
     const basePrompt = "beautiful woman, attractive, charming smile, friendly expression";
 
-    for (let i = 0; i < companions.length; i++) {
+    // Test with just 1 companion first
+    for (let i = 0; i < 1; i++) {
       const companion = companions[i];
 
       try {
@@ -339,9 +340,9 @@ exports.handler = async (event, context) => {
               hair_length: companion.hair_length,
               hair_color: companion.hair_color,
               companion_type: companion.companion_type, // Add realistic
-              Visibility: "public",
-              Created: new Date().toISOString()
+              Visibility: "public"
               // Leave Created_By empty (Selira-created)
+              // Created field is auto-computed by Airtable
             }
           })
         });
