@@ -339,9 +339,9 @@ exports.handler = async (event, context) => {
               hair_length: companion.hair_length,
               hair_color: companion.hair_color,
               companion_type: companion.companion_type, // Add realistic
-              Visibility: "public"
+              Visibility: "public",
+              Created: new Date().toISOString()
               // Leave Created_By empty (Selira-created)
-              // Created field is auto-computed by Airtable
             }
           })
         });
