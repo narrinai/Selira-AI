@@ -22,15 +22,15 @@ exports.handler = async (event, context) => {
 
   try {
     const requestData = JSON.parse(event.body || '{}');
-    const { user_email, user_uid } = requestData;
+    const { user_email } = requestData;
 
-    if (!user_email || !user_uid) {
+    if (!user_email) {
       return {
         statusCode: 400,
         headers,
         body: JSON.stringify({
           success: false,
-          error: 'Missing required parameters: user_email and user_uid'
+          error: 'Missing required parameter: user_email (Selira uses email-only identification)'
         })
       };
     }
@@ -135,7 +135,7 @@ exports.handler = async (event, context) => {
       const createdByFilter = `SEARCH("${userRecordId}", ARRAYJOIN({Created_By}))`;
 
       console.log('🔍 Filter for user-created characters (any visibility):', createdByFilter);
-      console.log('🔍 Search parameters:', { userEmail, userRecordId, user_uid });
+      console.log('🔍 Search parameters:', { userEmail, userRecordId });
       console.log('🔍 Primary matching on Created_By linked field with Users record ID:', userRecordId);
 
       const userCreatedUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters?filterByFormula=${encodeURIComponent(createdByFilter)}${charactersOffset ? `&offset=${charactersOffset}` : ''}`;
