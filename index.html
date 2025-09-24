@@ -260,45 +260,61 @@
       position: relative;
     }
 
-    .hero-cards {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
+    .hero-subtitle-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
       height: 400px;
+      text-align: center;
+      padding: 40px;
     }
 
-    .hero-card {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      overflow: hidden;
-      position: relative;
-      transition: all 0.3s ease;
-      cursor: pointer;
-    }
-
-    .hero-card:hover {
-      transform: translateY(-5px);
-      border-color: var(--accent);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-    }
-
-    .hero-card img {
-      width: 100%;
-      height: 120px;
-      object-fit: cover;
-    }
-
-    .hero-card h3 {
-      padding: 12px 16px 0;
-      font-size: 16px;
+    .hero-subtitle {
+      font-family: 'Playfair Display', serif;
+      font-size: 36px;
       font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+      line-height: 1.2;
     }
 
-    .hero-card p {
-      padding: 4px 16px 16px;
+    .hero-description {
+      font-size: 16px;
       color: var(--text-secondary);
-      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 32px;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero-features {
+      display: flex;
+      justify-content: space-around;
+      gap: 20px;
+    }
+
+    .hero-feature {
+      text-align: center;
+      padding: 12px;
+      background: rgba(212, 165, 116, 0.1);
+      border-radius: 12px;
+      border: 1px solid rgba(212, 165, 116, 0.2);
+      flex: 1;
+    }
+
+    .feature-number {
+      display: block;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+
+    .feature-text {
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-weight: 500;
     }
 
     /* Tags Section */
@@ -328,136 +344,45 @@
     }
 
     .tags-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
       margin: 40px 0;
+      justify-content: center;
     }
 
     .tag-card {
       background: var(--bg-secondary);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px;
-      text-align: center;
+      border-radius: 20px;
+      padding: 6px 12px;
       text-decoration: none;
       color: inherit;
-      transition: all 0.3s ease;
+      transition: all 0.2s ease;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
     }
 
     .tag-card:hover {
-      transform: translateY(-5px);
       border-color: var(--accent);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      background: rgba(212, 165, 116, 0.1);
       text-decoration: none;
       color: inherit;
     }
 
-    .tag-card h3 {
+    .tag-emoji {
       font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 8px;
-      color: var(--text-primary);
     }
 
-    .tag-card p {
-      color: var(--text-secondary);
-      font-size: 12px;
-      line-height: 1.4;
+    .tag-name {
+      font-size: 14px;
+      font-weight: 500;
     }
 
-    /* Features Section */
-    .features-section {
-      padding: 100px 32px;
-      background: var(--bg-secondary);
-    }
-
-    .features-container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 40px;
-      margin-top: 60px;
-    }
-
-    .feature-card {
-      background: var(--bg-primary);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 40px;
-      text-align: center;
-    }
-
-    .feature-icon {
-      font-size: 48px;
-      margin-bottom: 24px;
-      display: block;
-    }
-
-    .feature-title {
-      font-size: 24px;
-      font-weight: 600;
-      margin-bottom: 16px;
-    }
-
-    .feature-description {
-      color: var(--text-secondary);
-      font-size: 16px;
-      line-height: 1.6;
-    }
-
-    /* CTA Section */
-    .cta-section {
-      padding: 100px 32px;
-      text-align: center;
-      background: var(--gradient-hero);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .cta-section::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background:
-        radial-gradient(circle at 30% 40%, rgba(212, 165, 116, 0.15) 0%, transparent 50%),
-        radial-gradient(circle at 70% 60%, rgba(236, 72, 153, 0.15) 0%, transparent 50%);
-      pointer-events: none;
-    }
-
-    .cta-container {
-      max-width: 800px;
-      margin: 0 auto;
-      position: relative;
-      z-index: 1;
-    }
-
-    .cta-section h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: 48px;
-      font-weight: 700;
-      margin-bottom: 24px;
-    }
-
-    .cta-section p {
-      font-size: 20px;
-      color: var(--text-secondary);
-      margin-bottom: 40px;
-    }
-
-    .cta-actions {
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
 
     /* Footer - Restored from old design */
     .footer {
@@ -712,25 +637,23 @@
       }
 
       .tags-grid {
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-        gap: 12px;
+        justify-content: center;
+        gap: 6px;
       }
 
       .tag-card {
-        padding: 16px;
+        padding: 4px 10px;
+        font-size: 12px;
       }
 
-      .tag-card h3 {
+      .tag-emoji {
         font-size: 14px;
       }
 
-      .tag-card p {
-        font-size: 11px;
+      .tag-name {
+        font-size: 12px;
       }
 
-      .features-grid {
-        grid-template-columns: 1fr;
-      }
 
       .footer-content {
         grid-template-columns: 1fr;
@@ -845,21 +768,22 @@
       </div>
 
       <div class="hero-visual">
-        <div class="hero-cards">
-          <div class="hero-card" onclick="window.location.href='/category?filter=Romantic'">
-            <img src="https://replicate.delivery/czjl/cDhOzL6LLXrKnwT6wJDDkk5XkJgKQlWnuHqmKlnLNb0dJYcKA/out-0.webp" alt="Romantic companion" onerror="this.src='/avatars/placeholder.webp'">
-            <h3>Emma</h3>
-            <p>Romantic</p>
-          </div>
-          <div class="hero-card" onclick="window.location.href='/category?filter=Fantasy'">
-            <img src="https://replicate.delivery/czjl/yUXbGNgJNrCsJIBE8Kff3JzVnXtd1TXvEuJ8m3VFgvn6pYcKA/out-0.webp" alt="Fantasy companion" onerror="this.src='/avatars/placeholder.webp'">
-            <h3>Aria</h3>
-            <p>Fantasy</p>
-          </div>
-          <div class="hero-card" onclick="window.location.href='/category?filter=Anime'">
-            <img src="https://replicate.delivery/czjl/9rBHMKxLdwVnbA8XvUqhE2BKhYXK4JuZ6gVFmb9MmQjLpYcKA/out-0.webp" alt="Anime companion" onerror="this.src='/avatars/placeholder.webp'">
-            <h3>Sakura</h3>
-            <p>Anime</p>
+        <div class="hero-subtitle-container">
+          <h2 class="hero-subtitle">Experience Next-Level AI Conversations</h2>
+          <p class="hero-description">Join thousands of users discovering meaningful connections with AI companions who understand, remember, and evolve with every conversation.</p>
+          <div class="hero-features">
+            <div class="hero-feature">
+              <span class="feature-number">1000+</span>
+              <span class="feature-text">Unique Characters</span>
+            </div>
+            <div class="hero-feature">
+              <span class="feature-number">24/7</span>
+              <span class="feature-text">Always Available</span>
+            </div>
+            <div class="hero-feature">
+              <span class="feature-number">∞</span>
+              <span class="feature-text">Free Messages</span>
+            </div>
           </div>
         </div>
       </div>
@@ -875,95 +799,79 @@
 
     <div class="tags-grid">
       <a href="/category?filter=girlfriend" class="tag-card">
-        <h3>Girlfriend</h3>
-        <p>Sweet, loving companions who want to be your devoted girlfriend</p>
+        <span class="tag-emoji">💕</span>
+        <span class="tag-name">Girlfriend</span>
       </a>
 
       <a href="/category?filter=boyfriend" class="tag-card">
-        <h3>Boyfriend</h3>
-        <p>Caring, protective partners who will be your ideal boyfriend</p>
+        <span class="tag-emoji">💪</span>
+        <span class="tag-name">Boyfriend</span>
       </a>
 
       <a href="/category?filter=seductive" class="tag-card">
-        <h3>Seductive</h3>
-        <p>Alluring and captivating personalities that know how to charm</p>
+        <span class="tag-emoji">🔥</span>
+        <span class="tag-name">Seductive</span>
       </a>
 
       <a href="/category?filter=tsundere" class="tag-card">
-        <h3>Tsundere</h3>
-        <p>Tough on the outside, soft on the inside - classic anime personality</p>
+        <span class="tag-emoji">😤</span>
+        <span class="tag-name">Tsundere</span>
       </a>
 
       <a href="/category?filter=yandere" class="tag-card">
-        <h3>Yandere</h3>
-        <p>Obsessively devoted characters who love you completely</p>
+        <span class="tag-emoji">💖</span>
+        <span class="tag-name">Yandere</span>
       </a>
 
       <a href="/category?filter=maid" class="tag-card">
-        <h3>Maid</h3>
-        <p>Dedicated servants who love taking care of their master</p>
+        <span class="tag-emoji">👗</span>
+        <span class="tag-name">Maid</span>
       </a>
 
       <a href="/category?filter=elf" class="tag-card">
-        <h3>Elf</h3>
-        <p>Mystical elven beauties with otherworldly charm</p>
+        <span class="tag-emoji">🧝‍♀️</span>
+        <span class="tag-name">Elf</span>
       </a>
 
       <a href="/category?filter=angel" class="tag-card">
-        <h3>Angel</h3>
-        <p>Divine beings with pure hearts and angelic presence</p>
+        <span class="tag-emoji">😇</span>
+        <span class="tag-name">Angel</span>
       </a>
 
       <a href="/category?filter=monster" class="tag-card">
-        <h3>Monster</h3>
-        <p>Exotic and mysterious creatures with unique appeal</p>
+        <span class="tag-emoji">👹</span>
+        <span class="tag-name">Monster</span>
       </a>
-    </div>
-  </section>
 
-  <!-- Features Section -->
-  <section class="features-section" id="features">
-    <div class="features-container">
-      <div class="section-header">
-        <h2 class="section-title">Why Choose Selira?</h2>
-        <p class="section-subtitle">Experience the most advanced AI companion platform with features designed for meaningful connections</p>
-      </div>
+      <a href="/category?filter=vampire" class="tag-card">
+        <span class="tag-emoji">🧛‍♀️</span>
+        <span class="tag-name">Vampire</span>
+      </a>
 
-      <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon"></div>
-          <h3 class="feature-title">Advanced AI Technology</h3>
-          <p class="feature-description">Powered by cutting-edge AI models for realistic and engaging conversations.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon"></div>
-          <h3 class="feature-title">Natural Conversations</h3>
-          <p class="feature-description">Experience fluid, contextual dialogues that feel genuinely human.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon"></div>
-          <h3 class="feature-title">Diverse Personalities</h3>
-          <p class="feature-description">Choose from thousands of unique characters with distinct backgrounds and traits.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon"></div>
-          <h3 class="feature-title">Private & Secure</h3>
-          <p class="feature-description">Your conversations are protected with enterprise-grade security and privacy.</p>
-        </div>
-      </div>
-    </div>
-  </section>
+      <a href="/category?filter=anime" class="tag-card">
+        <span class="tag-emoji">⭐</span>
+        <span class="tag-name">Anime</span>
+      </a>
 
-  <!-- Final CTA Section -->
-  <section class="cta-section">
-    <div class="cta-container">
-      <h2>Your Adventure Begins Now</h2>
-      <p>Join thousands of users who have found their perfect AI companion. Start chatting today and discover meaningful connections that last.</p>
+      <a href="/category?filter=fantasy" class="tag-card">
+        <span class="tag-emoji">🎭</span>
+        <span class="tag-name">Fantasy</span>
+      </a>
 
-      <div class="cta-actions">
-        <a href="/category" class="primary-btn">Start Your Journey</a>
-        <a href="/create-character.html" class="secondary-btn">Create Your Character</a>
-      </div>
+      <a href="/category?filter=romance" class="tag-card">
+        <span class="tag-emoji">💝</span>
+        <span class="tag-name">Romance</span>
+      </a>
+
+      <a href="/category?filter=cute" class="tag-card">
+        <span class="tag-emoji">🥰</span>
+        <span class="tag-name">Cute</span>
+      </a>
+
+      <a href="/category?filter=flirty" class="tag-card">
+        <span class="tag-emoji">😏</span>
+        <span class="tag-name">Flirty</span>
+      </a>
     </div>
   </section>
 

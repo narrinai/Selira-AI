@@ -289,52 +289,76 @@
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     }
 
-    .character-avatar {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      margin: 0 auto 16px;
-      display: block;
+    .character-image {
+      width: 100%;
+      height: 200px;
       object-fit: cover;
-      border: 2px solid var(--accent);
+      position: relative;
+    }
+
+    .character-image-placeholder {
+      width: 100%;
+      height: 200px;
+      background: var(--bg-tertiary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      color: var(--text-muted);
+    }
+
+    .character-info {
+      padding: 16px;
+    }
+
+    /* Hide stats in character-info on desktop (shown in overlay) */
+    .character-stats {
+      display: none;
     }
 
     .character-name {
-      font-size: 18px;
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
       font-weight: 600;
       color: var(--text-primary);
-      text-align: center;
-      margin-bottom: 8px;
+      margin-bottom: 4px;
+      line-height: 1.2;
     }
 
-    .character-title {
-      font-size: 14px;
-      color: var(--accent);
-      text-align: center;
-      margin-bottom: 12px;
-      font-weight: 500;
+    .character-creator {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
 
     .character-description {
-      font-size: 14px;
       color: var(--text-secondary);
-      text-align: center;
+      font-size: 13px;
       line-height: 1.4;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
       display: -webkit-box;
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
 
-    .character-category {
-      display: inline-block;
-      padding: 4px 8px;
-      background: var(--accent);
-      color: white;
-      font-size: 12px;
-      border-radius: 12px;
-      margin-bottom: 12px;
+    .character-tags {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+
+    .character-tag {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 500;
     }
 
     .loading-grid {
@@ -534,15 +558,15 @@
   </div>
 
   <script>
-    // Global variables
-    let userCompanions = [];
+    // Global variables (matching category.html)
+    let allCharacters = [];
     let isAuthenticated = false;
     let userId = null;
 
     // Initialize page
     document.addEventListener('DOMContentLoaded', function() {
       checkAuthState();
-      loadUserCompanions();
+      renderMyCompanions();
     });
 
     // Check authentication state
@@ -570,7 +594,6 @@
       isAuthenticated = false;
       userId = null;
       updateUserActions(null);
-      showEmptyState('Please log in to view your companions');
     }
 
     // Update user actions in header
@@ -596,104 +619,171 @@
       if (mobileUserActions) mobileUserActions.innerHTML = actionsHTML;
     }
 
-    // Load user companions
-    async function loadUserCompanions() {
-      if (!isAuthenticated || !userId) {
-        showEmptyState('Please log in to view your companions');
-        return;
-      }
-
-      try {
-        // Get companions from localStorage or API
-        const companions = getUserCompanions();
-
-        if (companions && companions.length > 0) {
-          userCompanions = companions;
-          renderCompanions();
-        } else {
-          showEmptyState('You haven\'t added any companions yet');
-        }
-      } catch (error) {
-        console.error('Error loading companions:', error);
-        showErrorState('Failed to load companions');
-      }
-    }
-
-    // Get user companions from localStorage
-    function getUserCompanions() {
-      try {
-        const companionsStr = localStorage.getItem('userCompanions');
-        return companionsStr ? JSON.parse(companionsStr) : [];
-      } catch (error) {
-        console.error('Error getting user companions:', error);
-        return [];
-      }
-    }
-
-    // Render companions
-    function renderCompanions() {
+    // EXACT copy of renderMyCompanions from category.html
+    async function renderMyCompanions() {
       const grid = document.getElementById('charactersGrid');
-
-      if (!userCompanions || userCompanions.length === 0) {
-        showEmptyState('You haven\'t added any companions yet');
+      // Prevent multiple simultaneous calls
+      if (window.loadingCompanions) {
+        console.log('🔄 Already loading companions, skipping...');
         return;
       }
+      window.loadingCompanions = true;
+      // Show loading state
+      grid.innerHTML = `
+        <div class="loading-grid">
+          <div style="text-align: center; padding: 40px;">
+            <div style="font-size: 48px; margin-bottom: 16px;">⏳</div>
+            <h3 style="color: var(--text-primary); margin-bottom: 8px;">Loading your companions...</h3>
+          </div>
+        </div>
+      `;
+      try {
+        // Get user email from auth
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        const userEmail = user.email;
+        if (!userEmail) {
+          grid.innerHTML = `
+            <div class="loading-grid">
+              <div style="text-align: center; padding: 40px;">
+                <div style="font-size: 48px; margin-bottom: 16px;">🔐</div>
+                <h3 style="color: var(--text-primary); margin-bottom: 8px;">Please login</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 20px;">Login to see your companions!</p>
+              </div>
+            </div>
+          `;
+          return;
+        }
+        console.log('🔍 Loading companions for user:', userEmail);
+        // Call the working API
+        const response = await fetch('/.netlify/functions/selira-get-my-companions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            user_email: userEmail
+          })
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        const data = await response.json();
+        if (!data.success) {
+          throw new Error(data.error || 'Failed to load companions');
+        }
+        const userCompanions = data.companions || [];
+        console.log('✅ Loaded companions:', userCompanions.length);
+        if (userCompanions.length === 0) {
+          grid.innerHTML = `
+            <div class="loading-grid">
+              <div style="text-align: center; padding: 40px;">
+                <div style="font-size: 48px; margin-bottom: 16px;">💬</div>
+                <h3 style="color: var(--text-primary); margin-bottom: 8px;">No companions yet</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 20px;">Create or chat with characters to add them to your companions!</p>
+                <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                  <a href="/category" class="user-btn" style="text-decoration: none;">Discover Characters</a>
+                  <a href="/create" class="user-btn" style="text-decoration: none;">Create Companion</a>
+                </div>
+              </div>
+            </div>
+          `;
+          return;
+        }
 
-      const companionsHTML = userCompanions.map(companion => `
-        <div class="character-card" onclick="openChat('${companion.id}', '${companion.slug}')">
-          <img src="${companion.avatar || '/avatars/default.jpg'}" alt="${companion.name}" class="character-avatar" onerror="this.src='/avatars/default.jpg'">
-          <div class="character-category">${companion.category || 'General'}</div>
-          <h3 class="character-name">${companion.name}</h3>
-          <p class="character-title">${companion.title || ''}</p>
-          <p class="character-description">${companion.description || ''}</p>
+        // Render companions
+        grid.innerHTML = userCompanions.map(character => `
+          <div class="character-card" onclick="openCharacter('${character.slug}')">
+            ${character.avatar ?
+              `<img src="${character.avatar}" alt="${character.name}" class="character-image" loading="lazy" onerror="this.onerror=null; this.src='https://selira.ai/avatars/${getWorkingAvatar(character.name, 'female')}'; console.log('🔧 Fixed broken avatar for ${character.name}');">` :
+              `<div class="character-image-placeholder">${character.name.charAt(0)}</div>`
+            }
+            ${character.isUserCreated ?
+              `<div class="character-badge" style="position: absolute; top: 8px; left: 8px; background: var(--accent); color: white; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: 600;">Created by you</div>` :
+              `<div class="character-badge" style="position: absolute; top: 8px; left: 8px; background: var(--bg-secondary); color: var(--text-primary); padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: 600;">Chatted</div>`
+            }
+            <div class="character-info">
+              <h3 class="character-name">${character.name}</h3>
+              <div class="character-creator">
+                <span>@${character.creator}</span>
+              </div>
+              <p class="character-description">${character.description}</p>
+
+            <!-- Stats for mobile (shown in character-info, hidden overlay on mobile) -->
+            <div class="character-stats">
+              <span>💬 ${character.chats}</span>
+            </div>
+
+            <div class="character-tags">
+              ${(character.tags || []).slice(0, 3).map(tag => `
+                <span class="character-tag">${tag}</span>
+              `).join('')}
+            </div>
+          </div>
         </div>
       `).join('');
-
-      grid.innerHTML = companionsHTML;
+      } catch (error) {
+        console.error('❌ Error loading companions:', error);
+        grid.innerHTML = `
+          <div class="loading-grid">
+            <div style="text-align: center; padding: 40px;">
+              <div style="font-size: 48px; margin-bottom: 16px;">❌</div>
+              <h3 style="color: var(--text-primary); margin-bottom: 8px;">Error loading companions</h3>
+              <p style="color: var(--text-secondary); margin-bottom: 20px;">${error.message}</p>
+              <button class="user-btn" onclick="window.loadingCompanions = false; renderMyCompanions()">Try Again</button>
+            </div>
+          </div>
+        `;
+      } finally {
+        window.loadingCompanions = false;
+      }
     }
 
-    // Show empty state
-    function showEmptyState(message) {
-      const grid = document.getElementById('charactersGrid');
-      grid.innerHTML = `
-        <div class="empty-state">
-          <div style="font-size: 48px; margin-bottom: 16px;">💬</div>
-          <h3>No Companions Yet</h3>
-          <p>${message}</p>
-          <a href="/category" class="empty-state-btn">Discover Companions</a>
-        </div>
-      `;
-    }
+    // Helper function to get working avatar based on character name and sex
+    function getWorkingAvatar(name, sex) {
+      // Map specific character names to working timestamped avatars
+      const nameMap = {
+        'aria': 'aria-1754289110066.webp',
+        'ava': 'ava-1754251730993.webp',
+        'alex': 'alex-1754251778919.webp',
+        'blake': 'blake-1754250785212.webp',
+        'anna': 'anna-1754249784269.webp',
+        'sarah': 'sarah-1754252677323.webp',
+        'emma': 'ava-1754251730993.webp', // Use ava as fallback for emma
+        'chris': 'alex-1754251778919.webp' // Use alex as fallback for chris
+      };
 
-    // Show error state
-    function showErrorState(message) {
-      const grid = document.getElementById('charactersGrid');
-      grid.innerHTML = `
-        <div class="empty-state">
-          <div style="font-size: 48px; margin-bottom: 16px;">❌</div>
-          <h3>Error</h3>
-          <p>${message}</p>
-          <button onclick="loadUserCompanions()" class="empty-state-btn">Try Again</button>
-        </div>
-      `;
-    }
-
-    // Open chat with companion
-    function openChat(characterId, characterSlug) {
-      if (!isAuthenticated) {
-        alert('Please log in to chat with companions');
-        window.location.href = '/login';
-        return;
+      const normalizedName = name.toLowerCase();
+      if (nameMap[normalizedName]) {
+        return nameMap[normalizedName];
       }
 
-      window.location.href = `/chat?character=${characterSlug || characterId}`;
+      // Generate random avatar based on sex if not found
+      if (sex === 'male') {
+        const maleAvatars = ['alex-1754251778919.webp', 'blake-1754250785212.webp'];
+        return maleAvatars[Math.floor(Math.random() * maleAvatars.length)];
+      } else {
+        const femaleAvatars = ['aria-1754289110066.webp', 'ava-1754251730993.webp', 'anna-1754249784269.webp', 'sarah-1754252677323.webp'];
+        return femaleAvatars[Math.floor(Math.random() * femaleAvatars.length)];
+      }
+    }
+
+    function openCharacter(slug) {
+      console.log('Opening character:', slug);
+
+      // Find character to get the correct URL
+      const character = allCharacters.find(c => c.slug === slug);
+      if (character && character.character_url) {
+        window.location.href = character.character_url;
+      } else {
+        window.location.href = `https://selira.ai/chat.html?char=${slug}`;
+      }
     }
 
     // Logout function
     function logout() {
       localStorage.removeItem('auth_token');
       localStorage.removeItem('userData');
-      localStorage.removeItem('userCompanions');
+      localStorage.removeItem('user');
       window.location.href = '/';
     }
 
