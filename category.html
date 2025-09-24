@@ -1713,17 +1713,6 @@
       <section class="filter-section">
         <!-- Filter Dropdowns Row -->
         <div class="filter-row">
-          <div class="filter-dropdown">
-            <button class="dropdown-btn" onclick="toggleDropdown('gender')">
-              <span>Female</span>
-              <span class="dropdown-arrow">▼</span>
-            </button>
-            <div class="dropdown-menu" id="genderDropdown">
-              <a href="#" onclick="setGenderFilter('all')">All</a>
-              <a href="#" onclick="setGenderFilter('female')">Female</a>
-              <a href="#" onclick="setGenderFilter('male')">Male</a>
-            </div>
-          </div>
 
           <div class="filter-dropdown">
             <button class="dropdown-btn" onclick="toggleDropdown('style')">
@@ -1776,7 +1765,6 @@
     let filteredCharacters = [];
     let currentFilters = {
       search: '',
-      gender: 'all',
       category: 'all',
       tags: [],
       animated: undefined, // undefined = show all, true = only animated, false = only realistic
@@ -1788,6 +1776,133 @@
     let currentPage = 1;
     let isLoading = false;
     const charactersPerPage = 12;
+
+    // Emoji mapping for tags (matching index.html)
+    function getTagEmoji(tag) {
+      const emojiMap = {
+        // Relationship types
+        'girlfriend': '💕',
+        'boyfriend': '💪',
+        'romance': '💝',
+        'romantic': '💝',
+        'love': '💖',
+
+        // Personality traits
+        'seductive': '🔥',
+        'flirty': '😏',
+        'tsundere': '😤',
+        'yandere': '💖',
+        'cute': '🥰',
+        'adorable': '🥰',
+        'sweet': '😊',
+        'caring': '🤗',
+        'dominant': '👑',
+        'submissive': '🥺',
+        'confident': '😎',
+        'shy': '😳',
+        'funny': '😄',
+        'witty': '🤭',
+        'sarcastic': '🙄',
+        'mysterious': '🌙',
+        'playful': '😜',
+
+        // Roles/occupations
+        'maid': '👗',
+        'teacher': '📚',
+        'student': '🎓',
+        'nurse': '💉',
+        'doctor': '👩‍⚕️',
+        'scientist': '🧪',
+        'artist': '🎨',
+        'musician': '🎵',
+        'warrior': '⚔️',
+        'knight': '🛡️',
+        'assassin': '🗡️',
+        'spy': '🕵️',
+        'detective': '🔍',
+        'police': '👮',
+        'chef': '👨‍🍳',
+        'bartender': '🍸',
+        'librarian': '📖',
+
+        // Fantasy/supernatural
+        'elf': '🧝‍♀️',
+        'angel': '😇',
+        'demon': '😈',
+        'vampire': '🧛‍♀️',
+        'witch': '🧙‍♀️',
+        'fairy': '🧚‍♀️',
+        'dragon': '🐉',
+        'monster': '👹',
+        'ghost': '👻',
+        'zombie': '🧟',
+        'werewolf': '🐺',
+        'mermaid': '🧜‍♀️',
+        'goddess': '✨',
+        'princess': '👸',
+        'queen': '👑',
+
+        // Categories
+        'fantasy': '🎭',
+        'anime': '⭐',
+        'manga': '📚',
+        'historical': '🏛️',
+        'medieval': '🏰',
+        'modern': '🏙️',
+        'futuristic': '🚀',
+        'sci-fi': '👽',
+        'cyberpunk': '🤖',
+        'steampunk': '⚙️',
+        'post-apocalyptic': '☢️',
+
+        // Emotions/moods
+        'happy': '😊',
+        'sad': '😢',
+        'angry': '😡',
+        'excited': '🤩',
+        'calm': '😌',
+        'energetic': '⚡',
+        'lazy': '😴',
+        'cheerful': '😄',
+        'grumpy': '😤',
+
+        // Physical traits
+        'tall': '📏',
+        'short': '🤏',
+        'athletic': '💪',
+        'curvy': '⏳',
+        'muscular': '💪',
+        'elegant': '💃',
+
+        // Hobbies/interests
+        'gaming': '🎮',
+        'reading': '📚',
+        'cooking': '👨‍🍳',
+        'dancing': '💃',
+        'singing': '🎤',
+        'sports': '⚽',
+        'travel': '✈️',
+        'nature': '🌿',
+        'art': '🎨',
+        'music': '🎵',
+
+        // Misc
+        'adventure': '🗺️',
+        'mystery': '🔍',
+        'action': '💥',
+        'comedy': '😄',
+        'drama': '🎭',
+        'horror': '👻',
+        'thriller': '😱',
+        'slice-of-life': '☕',
+        'school': '🏫',
+        'work': '💼',
+        'family': '👨‍👩‍👧‍👦',
+        'friendship': '👫'
+      };
+
+      return emojiMap[tag.toLowerCase()] || '';
+    }
 
     // Helper function to get working avatar based on character name and sex
     function getWorkingAvatar(name, sex) {
@@ -2131,12 +2246,6 @@
           return false;
         }
 
-        // Gender filter (sex field from Airtable)
-        if (currentFilters.gender && currentFilters.gender !== 'all') {
-          if (character.sex && character.sex.toLowerCase() !== currentFilters.gender.toLowerCase()) {
-            return false;
-          }
-        }
 
         // Style filter (companion_type field from Airtable)
         if (currentFilters.style) {
@@ -2205,26 +2314,6 @@
       }
     }
 
-    function setGenderFilter(gender) {
-      currentFilters.gender = gender === 'all' ? undefined : gender;
-
-      // Update button text
-      const dropdownBtn = document.querySelector('.dropdown-btn[onclick*="gender"] span:first-child');
-      if (dropdownBtn) {
-        const genderLabels = {
-          'all': 'All',
-          'female': 'Female',
-          'male': 'Male'
-        };
-        dropdownBtn.textContent = genderLabels[gender] || 'All';
-      }
-
-      // Hide dropdown
-      document.getElementById('genderDropdown').style.display = 'none';
-
-      console.log('Gender filter changed to:', currentFilters.gender);
-      applyFilters();
-    }
 
     function setStyleFilter(style) {
       currentFilters.style = style === 'all' ? undefined : style;
@@ -2459,9 +2548,10 @@
       const tags = createAvailableTags.slice(0, 20); // Show up to 20 tags on mobile
 
       if (tags.length > 0) {
-        const tagButtons = tags.map(tag =>
-          `<button class="mobile-filter-tag" data-tag="${tag}">${tag}</button>`
-        ).join('');
+        const tagButtons = tags.map(tag => {
+          const emoji = getTagEmoji(tag);
+          return `<button class="mobile-filter-tag" data-tag="${tag}">${emoji ? emoji + ' ' : ''}${tag}</button>`;
+        }).join('');
         container.innerHTML = tagButtons;
       } else {
         container.innerHTML = '<span class="no-tags">No tags available</span>';
@@ -4483,9 +4573,10 @@ Please be thorough and include important details from our conversations.`;
 
       // Create tag pills with "All" button first
       const allButton = '<a href="#" class="tag-pill active" data-tag="all">All</a>';
-      const tagPills = filteredTags.map(tag =>
-        `<a href="#" class="tag-pill" data-tag="${tag}">${tag}</a>`
-      ).join('');
+      const tagPills = filteredTags.map(tag => {
+        const emoji = getTagEmoji(tag);
+        return `<a href="#" class="tag-pill" data-tag="${tag}">${emoji ? emoji + ' ' : ''}${tag}</a>`;
+      }).join('');
 
       dynamicFilters.innerHTML = allButton + tagPills;
 
