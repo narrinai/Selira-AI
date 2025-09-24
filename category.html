@@ -285,36 +285,6 @@
       box-shadow: 0 4px 12px rgba(212, 165, 116, 0.3);
     }
 
-    /* Tab Navigation */
-    .tab-nav {
-      display: flex;
-      gap: 48px;
-      border-bottom: 1px solid var(--border-light);
-    }
-
-    .tab-item {
-      padding: 12px 0;
-      color: var(--text-secondary);
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 16px;
-      position: relative;
-      transition: color 0.2s ease;
-    }
-
-    .tab-item.active {
-      color: var(--accent);
-    }
-
-    .tab-item.active::after {
-      content: '';
-      position: absolute;
-      bottom: -1px;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: var(--accent);
-    }
 
     /* Filter Section */
     .filter-section {
@@ -1651,20 +1621,6 @@
       100% { transform: rotate(360deg); }
     }
 
-    /* Mobile tabs responsiveness */
-    @media (max-width: 768px) {
-      .tab-nav {
-        padding: 0 20px !important;
-        gap: 24px;
-        overflow-x: auto;
-        padding-bottom: 4px;
-      }
-
-      .tab-item {
-        white-space: nowrap;
-        font-size: 14px;
-      }
-    }
   </style>
 </head>
 <body>
@@ -1801,11 +1757,6 @@
         </div>
       </section>
 
-      <!-- Tab Navigation -->
-      <section class="tab-nav" style="padding: 0 40px; margin-bottom: 20px;">
-        <a href="#" class="tab-item active" onclick="switchToDiscoverTab(); return false;">Discover</a>
-        <a href="#" class="tab-item" onclick="switchToMyCompanionsTab(); return false;">My Companions</a>
-      </section>
 
       <!-- Character Grid -->
       <section class="content-area">
@@ -1884,7 +1835,6 @@
       console.log('🚀 Selira AI Category page loading...');
       loadCharacters();
       initializeFilters();
-      setupTabNavigation();
       setupInfiniteScroll();
 
       // Close dropdowns when clicking outside
@@ -1900,12 +1850,6 @@
       // Load tags for filter pills
       await loadCreateTagsFromAirtable();
 
-      // Check URL for tab parameter
-      const urlParams = new URLSearchParams(window.location.search);
-      const tabParam = urlParams.get('tab');
-      if (tabParam === 'companions') {
-        setTimeout(() => switchToMyCompanionsTab(), 500);
-      }
     });
 
     // ===== CHARACTER LOADING =====
@@ -2702,35 +2646,6 @@
       }
     }
 
-    // ===== TAB NAVIGATION =====
-    function setupTabNavigation() {
-      const tabItems = document.querySelectorAll('.tab-item');
-      
-      tabItems.forEach(tab => {
-        tab.addEventListener('click', function(e) {
-          e.preventDefault();
-          
-          // Remove active from all tabs
-          tabItems.forEach(t => t.classList.remove('active'));
-          
-          // Add active to clicked tab
-          this.classList.add('active');
-          
-          const tabText = this.textContent.trim();
-          
-          if (tabText === 'Discover') {
-            currentTab = 'discover';
-            renderCharacters();
-          } else if (tabText === 'My Companions') {
-            currentTab = 'companions';
-            renderMyCompanions();
-          } else if (tabText === 'Memories') {
-            currentTab = 'memories';
-            renderMemories();
-          }
-        });
-      });
-    }
 
     async function renderMyCompanions() {
       const grid = document.getElementById('charactersGrid');
@@ -2804,7 +2719,7 @@
                 <h3 style="color: var(--text-primary); margin-bottom: 8px;">No companions yet</h3>
                 <p style="color: var(--text-secondary); margin-bottom: 20px;">Create or chat with characters to add them to your companions!</p>
                 <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-                  <button class="user-btn" onclick="switchToDiscoverTab()">Discover Characters</button>
+                  <a href="/category" class="user-btn" style="text-decoration: none;">Discover Characters</a>
                   <a href="/create" class="user-btn" style="text-decoration: none;">Create Companion</a>
                 </div>
               </div>
@@ -2980,41 +2895,7 @@
       ];
     }
 
-    function switchToDiscoverTab() {
-      currentTab = 'discover';
-      document.querySelectorAll('.tab-item').forEach(tab => {
-        tab.classList.remove('active');
-        if (tab.textContent.trim() === 'Discover') {
-          tab.classList.add('active');
-        }
-      });
 
-      // Show filter section
-      const filterSection = document.querySelector('.filter-section');
-      if (filterSection) filterSection.style.display = 'block';
-
-      renderCharacters();
-    }
-
-    function switchToMyCompanionsTab() {
-      currentTab = 'companions';
-      document.querySelectorAll('.tab-item').forEach(tab => {
-        tab.classList.remove('active');
-        if (tab.textContent.trim() === 'My Companions') {
-          tab.classList.add('active');
-        }
-      });
-
-      // Hide filter section for My Companions
-      const filterSection = document.querySelector('.filter-section');
-      if (filterSection) filterSection.style.display = 'none';
-
-      // Update URL to include tab parameter
-      const url = new URL(window.location);
-      url.searchParams.set('tab', 'companions');
-      history.pushState(null, '', url.toString());
-      renderMyCompanions();
-    }
 
     function removeFavorite(characterId) {
       // Remove from user companions
@@ -3022,22 +2903,17 @@
       const updated = companions.filter(c => c.id !== characterId);
       localStorage.setItem('userCompanions', JSON.stringify(updated));
       
-      if (currentTab === 'companions') {
-        renderMyCompanions();
-      }
     }
 
     function showProfile() {
       // Close sidebar on mobile
       closeSidebarOnMobile();
       
-      // Hide filter section and tabs, show profile using full content area
+      // Hide filter section, show profile using full content area
       const filterSection = document.querySelector('.filter-section');
-      const tabsSection = document.querySelector('.tab-nav');
       const grid = document.getElementById('charactersGrid');
-      
+
       filterSection.style.display = 'none';
-      if (tabsSection) tabsSection.style.display = 'none';
       
       grid.innerHTML = `
         <div class="profile-section" style="
@@ -3294,13 +3170,11 @@
       // Close sidebar on mobile
       closeSidebarOnMobile();
       
-      // Hide filter section and tabs, show pricing using full content area
+      // Hide filter section, show pricing using full content area
       const filterSection = document.querySelector('.filter-section');
-      const tabsSection = document.querySelector('.tab-nav');
       const grid = document.getElementById('charactersGrid');
-      
+
       filterSection.style.display = 'none';
-      if (tabsSection) tabsSection.style.display = 'none';
       
       grid.innerHTML = `
         <div class="pricing-section" style="
@@ -3601,11 +3475,9 @@
       // Close sidebar on mobile
       closeSidebarOnMobile();
       
-      // Show filter section and tabs
+      // Show filter section
       const filterSection = document.querySelector('.filter-section');
-      const tabsSection = document.querySelector('.tab-nav');
       filterSection.style.display = 'block';
-      if (tabsSection) tabsSection.style.display = 'block';
       
       // Update active nav item
       document.querySelectorAll('.nav-item').forEach(item => {
@@ -3616,7 +3488,6 @@
       });
       
       // Show characters
-      currentTab = 'discover';
       renderCharacters();
     }
 
@@ -3636,7 +3507,7 @@
     }
 
     function loadMoreCharacters() {
-      if (isLoading || currentTab !== 'discover') return;
+      if (isLoading) return;
       
       isLoading = true;
       currentPage++;
