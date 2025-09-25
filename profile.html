@@ -1059,16 +1059,43 @@
       const planNameElement = document.getElementById('currentPlanName');
       const planPriceElement = document.getElementById('currentPlanPrice');
 
+      const currentPlan = (subscription.plan || 'Free').toLowerCase();
+
       if (planNameElement) {
-        planNameElement.textContent = subscription.plan || 'Free Trial';
+        if (currentPlan === 'free') {
+          planNameElement.textContent = 'Free Trial';
+        } else if (currentPlan === 'basic') {
+          planNameElement.textContent = 'Basic';
+        } else if (currentPlan === 'premium') {
+          planNameElement.textContent = 'Premium';
+        } else {
+          planNameElement.textContent = subscription.plan || 'Free Trial';
+        }
       }
 
       if (planPriceElement) {
-        if (subscription.amount && subscription.currency) {
-          planPriceElement.textContent = `€${subscription.amount}/month`;
+        if (currentPlan === 'basic') {
+          planPriceElement.textContent = '$9.99/month';
+        } else if (currentPlan === 'premium') {
+          planPriceElement.textContent = '$19.99/month';
         } else {
           planPriceElement.textContent = '$0/month';
         }
+      }
+
+      // Update usage label and benefits
+      const usageLabel = document.querySelector('.usage-label');
+      const usageValue = document.getElementById('currentUsage');
+
+      if (currentPlan === 'free') {
+        if (usageLabel) usageLabel.textContent = 'Key Benefits';
+        if (usageValue) usageValue.textContent = 'Unlimited Chats, Unlimited Companions, No Ads';
+      } else if (currentPlan === 'basic') {
+        if (usageLabel) usageLabel.textContent = 'Key Benefits';
+        if (usageValue) usageValue.textContent = 'Everything in Free + AI Image Generation';
+      } else if (currentPlan === 'premium') {
+        if (usageLabel) usageLabel.textContent = 'Key Benefits';
+        if (usageValue) usageValue.textContent = 'Everything in Basic + Priority Support + Advanced Memory';
       }
 
       // Add/Update subscription status
@@ -1090,10 +1117,10 @@
         statusText = `Cancels on ${new Date(subscription.current_period_end).toLocaleDateString()}`;
       } else if (subscription.subscription_status === 'canceled') {
         statusText = 'Canceled';
-      } else if (subscription.plan !== 'Free') {
+      } else if (currentPlan !== 'free') {
         statusText = 'Active subscription';
       } else {
-        statusText = 'Free plan';
+        statusText = 'Free plan - unlimited access';
       }
 
       if (statusDiv) {
