@@ -45,18 +45,27 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Initialize Stripe
-    const stripeKey = process.env.STRIPE_SECRET_KEY_SELIRA || process.env.STRIPE_SECRET_KEY;
-    const stripe = new Stripe(stripeKey);
+    // Initialize Stripe - try multiple possible environment variable names
+    const stripeKey = process.env.STRIPE_SECRET_KEY_SELIRA ||
+                     process.env.STRIPE_SECRET_KEY ||
+                     process.env.STRIPE_SELIRA_SECRET;
+
+    console.log('🔍 Checking Stripe keys:', {
+      hasSeliraKey: !!process.env.STRIPE_SECRET_KEY_SELIRA,
+      hasStandardKey: !!process.env.STRIPE_SECRET_KEY,
+      hasSeliraSecret: !!process.env.STRIPE_SELIRA_SECRET
+    });
 
     if (!stripeKey) {
-      console.error('❌ Missing Stripe configuration');
+      console.error('❌ Missing Stripe configuration - no valid key found');
       return {
         statusCode: 500,
         headers,
         body: JSON.stringify({ error: 'Stripe configuration missing' })
       };
     }
+
+    const stripe = new Stripe(stripeKey);
 
     console.log('🔄 Creating checkout session for:', { userEmail, planName, priceId });
 
