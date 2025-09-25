@@ -3,8 +3,8 @@ const Airtable = require('airtable');
 
 // Initialize Airtable
 const base = new Airtable({
-  apiKey: process.env.AIRTABLE_API_KEY || process.env.AIRTABLE_TOKEN
-}).base(process.env.AIRTABLE_BASE_ID);
+  apiKey: process.env.AIRTABLE_TOKEN_SELIRA || process.env.AIRTABLE_API_KEY || process.env.AIRTABLE_TOKEN
+}).base(process.env.AIRTABLE_BASE_ID_SELIRA || process.env.AIRTABLE_BASE_ID);
 
 exports.handler = async (event, context) => {
   const headers = {

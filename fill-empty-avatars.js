@@ -16,8 +16,8 @@ if (!AIRTABLE_BASE_ID || !AIRTABLE_TOKEN) {
   process.exit(1);
 }
 
-const BATCH_SIZE = 10; // Process in batches to avoid rate limiting
-const DELAY_BETWEEN_REQUESTS = 2000; // 2 seconds between API calls
+const BATCH_SIZE = 5; // Process in batches to avoid rate limiting
+const DELAY_BETWEEN_REQUESTS = 4000; // 4 seconds between API calls
 
 // Console colors
 const Colors = {
@@ -48,7 +48,7 @@ async function getCharactersWithEmptyAvatars() {
 
   try {
     while (true) {
-      const filterFormula = encodeURIComponent("AND({avatar_url} = BLANK(), {Name} != BLANK())");
+      const filterFormula = encodeURIComponent("AND({Avatar_URL} = BLANK(), {Name} != BLANK())");
       let url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters?filterByFormula=${filterFormula}&maxRecords=100`;
 
       if (offset) {
@@ -157,7 +157,7 @@ async function updateCharacterAvatar(characterId, avatarUrl) {
       },
       body: JSON.stringify({
         fields: {
-          avatar_url: avatarUrl
+          Avatar_URL: avatarUrl
         }
       })
     });

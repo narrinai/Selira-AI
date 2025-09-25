@@ -2237,15 +2237,15 @@
               // Clear any existing messages first
               const messagesContainer = document.getElementById('chatMessages');
               messagesContainer.innerHTML = '';
-              // Add the greeting message first
-              addMessage(greeting, 'ai', false);
-
-              // Then add avatar image message
+              // First add avatar image message
               if (character.avatar && character.avatar !== '/avatars/placeholder.webp') {
-                setTimeout(() => {
-                  addAvatarMessage(character.avatar);
-                }, 100);
+                addAvatarMessage(character.avatar);
               }
+
+              // Then add the greeting message after a short delay
+              setTimeout(() => {
+                addMessage(greeting, 'ai', false);
+              }, 200);
 
               // Save greeting to localStorage so it doesn't reappear
               const storageKey = `chat_${characterSlug}`;
