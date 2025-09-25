@@ -44,7 +44,7 @@ exports.handler = async (event, context) => {
 
     const stripe = new Stripe(stripeKey);
     const sig = event.headers['stripe-signature'];
-    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET_SELIRA || process.env.STRIPE_WEBHOOK_SECRET;
 
     if (!webhookSecret) {
       console.error('❌ Missing Stripe webhook secret');
