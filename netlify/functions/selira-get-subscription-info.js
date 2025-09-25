@@ -28,17 +28,24 @@ exports.handler = async (event, context) => {
   }
 
   try {
+    console.log('🔄 Starting subscription info request...');
+
     // Get user email from query parameters
     const userEmail = event.queryStringParameters?.email;
     const auth0Id = event.queryStringParameters?.auth0_id;
 
+    console.log('📧 Request parameters:', { userEmail, auth0Id });
+
     if (!userEmail && !auth0Id) {
+      console.log('❌ Missing required parameters');
       return {
         statusCode: 400,
         headers,
         body: JSON.stringify({ error: 'Email or auth0_id parameter required' })
       };
     }
+
+    console.log('🔍 Searching for user in Airtable...');
 
     // Find user in Airtable
     let filterFormula = '';
@@ -50,9 +57,13 @@ exports.handler = async (event, context) => {
       filterFormula = `{auth0_id} = '${auth0Id}'`;
     }
 
+    console.log('🔍 Filter formula:', filterFormula);
+
     const users = await base('Users').select({
       filterByFormula: filterFormula
     }).firstPage();
+
+    console.log('👥 Users found:', users.length);
 
     if (users.length === 0) {
       return {
@@ -65,6 +76,14 @@ exports.handler = async (event, context) => {
     const user = users[0];
     const userData = user.fields;
 
+    console.log('👤 User found:', {
+      email: userData.Email,
+      plan: userData.Plan,
+      subscription_status: userData.subscription_status,
+      stripe_customer_id: userData.stripe_customer_id ? 'present' : 'missing',
+      stripe_subscription_id: userData.stripe_subscription_id ? 'present' : 'missing'
+    });
+
     // Basic subscription info from Airtable
     let subscriptionInfo = {
       plan: userData.Plan || 'Free',
@@ -75,16 +94,26 @@ exports.handler = async (event, context) => {
       stripe_subscription_id: userData.stripe_subscription_id
     };
 
+    console.log('📋 Basic subscription info built:', subscriptionInfo);
+
     // If user has a Stripe subscription, get detailed info from Stripe
     if (userData.stripe_subscription_id) {
+      console.log('💳 User has Stripe subscription, fetching from Stripe API...');
       try {
         const stripeKey = process.env.STRIPE_SECRET_KEY_SELIRA ||
                          process.env.STRIPE_SECRET_KEY ||
                          process.env.STRIPE_SELIRA_SECRET;
 
+        console.log('🔑 Stripe key available:', stripeKey ? 'yes' : 'no');
+
         if (stripeKey) {
           const stripe = new Stripe(stripeKey);
+          console.log('🔄 Retrieving subscription from Stripe...');
           const subscription = await stripe.subscriptions.retrieve(userData.stripe_subscription_id);
+          console.log('✅ Stripe subscription retrieved:', {
+            status: subscription.status,
+            current_period_end: subscription.current_period_end
+          });
 
           subscriptionInfo = {
             ...subscriptionInfo,

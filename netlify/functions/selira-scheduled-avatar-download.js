@@ -1,50 +1,80 @@
 // Scheduled function to automatically download Replicate avatars
-// Runs every hour to check for new Replicate URLs and download them
+// Runs every 2 hours to check for new Replicate URLs and download them
 
 const { schedule } = require('@netlify/functions');
+const fetch = require('node-fetch');
 
 const downloadAvatars = async () => {
-  console.log('⏰ Scheduled avatar download started');
+  console.log('⏰ Scheduled avatar download started at:', new Date().toISOString());
 
   try {
-    // Call our main download function
-    const downloadUrl = `${process.env.URL || 'https://selira.ai'}/.netlify/functions/selira-auto-download-avatars`;
+    // Call our main download function internally (same logic)
+    const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA || process.env.AIRTABLE_BASE_ID || process.env.AIRTABLE_BASE;
+    const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA || process.env.AIRTABLE_TOKEN;
 
-    const response = await fetch(downloadUrl, {
-      method: 'GET',
+    if (!AIRTABLE_BASE_ID || !AIRTABLE_TOKEN) {
+      throw new Error('Missing Airtable configuration');
+    }
+
+    // Find all characters with Replicate URLs
+    console.log('🔍 Checking for Replicate URLs...');
+    const filterFormula = encodeURIComponent("FIND('replicate.delivery', {Avatar_URL})");
+
+    const response = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters?filterByFormula=${filterFormula}&fields[]=Name&fields[]=Slug&fields[]=Avatar_URL&maxRecords=10`, {
       headers: {
-        'Content-Type': 'application/json',
-        // Add auth header if needed for internal calls
-        'User-Agent': 'Netlify-Scheduled-Function'
+        'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+        'Content-Type': 'application/json'
       }
     });
 
-    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(`Airtable fetch failed: ${response.statusText}`);
+    }
 
-    console.log('📊 Scheduled download result:', result);
+    const data = await response.json();
+    const charactersFound = data.records.length;
 
-    if (!result.success) {
-      console.error('❌ Scheduled download failed:', result.error);
+    console.log(`📊 Found ${charactersFound} characters with Replicate URLs`);
+
+    if (charactersFound > 0) {
+      // Trigger the download function if we found any
+      console.log('🚀 Triggering avatar download process...');
+
+      const downloadUrl = `${process.env.URL || 'https://selira.ai'}/.netlify/functions/selira-auto-download-avatars`;
+
+      const downloadResponse = await fetch(downloadUrl, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'User-Agent': 'Netlify-Scheduled-Function'
+        }
+      });
+
+      const downloadResult = await downloadResponse.json();
+
+      console.log('📊 Download process result:', downloadResult.stats);
+
       return {
-        statusCode: 500,
+        statusCode: 200,
         body: JSON.stringify({
-          success: false,
-          error: 'Scheduled download failed',
-          details: result.error
+          success: true,
+          message: `Scheduled avatar download completed - processed ${downloadResult.stats?.successful || 0} avatars`,
+          stats: downloadResult.stats,
+          timestamp: new Date().toISOString()
+        })
+      };
+    } else {
+      console.log('✅ No Replicate URLs found - nothing to download');
+      return {
+        statusCode: 200,
+        body: JSON.stringify({
+          success: true,
+          message: 'No new avatars to download',
+          stats: { total: 0, successful: 0, failed: 0 },
+          timestamp: new Date().toISOString()
         })
       };
     }
-
-    console.log(`✅ Scheduled download completed: ${result.stats?.successful || 0} avatars processed`);
-
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        success: true,
-        message: 'Scheduled avatar download completed',
-        stats: result.stats
-      })
-    };
 
   } catch (error) {
     console.error('❌ Scheduled avatar download error:', error);
@@ -53,14 +83,15 @@ const downloadAvatars = async () => {
       body: JSON.stringify({
         success: false,
         error: 'Scheduled function failed',
-        details: error.message
+        details: error.message,
+        timestamp: new Date().toISOString()
       })
     };
   }
 };
 
-// Schedule to run every hour (0 * * * *)
-// For testing, you could use every 5 minutes: */5 * * * *
-const handler = schedule('0 * * * *', downloadAvatars);
+// Schedule to run every 2 hours (0 */2 * * *)
+// This will automatically check for and download new avatars
+const handler = schedule('0 */2 * * *', downloadAvatars);
 
 module.exports = { handler };
