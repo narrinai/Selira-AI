@@ -1032,69 +1032,69 @@
 
     // Update subscription display
     function updateSubscriptionDisplay(subscription) {
-      const planElement = document.querySelector('input[placeholder="Current Plan"]');
-      const planCard = document.querySelector('.current-plan-card');
-
-      if (planElement) {
-        planElement.value = subscription.plan || 'Free';
+      // Update the Current Plan input field
+      const planInput = document.querySelector('.form-input[value="Free"]');
+      if (planInput) {
+        planInput.value = subscription.plan || 'Free';
       }
 
       // Update the Current Plan card
-      if (planCard) {
-        const planTitle = planCard.querySelector('h3');
-        const planPrice = planCard.querySelector('.plan-price');
-        const planStatus = planCard.querySelector('.plan-status');
-        const manageButton = planCard.querySelector('.manage-subscription-btn');
+      const planNameElement = document.getElementById('currentPlanName');
+      const planPriceElement = document.getElementById('currentPlanPrice');
 
-        if (planTitle) {
-          planTitle.textContent = subscription.plan || 'Free Trial';
-        }
+      if (planNameElement) {
+        planNameElement.textContent = subscription.plan || 'Free Trial';
+      }
 
-        if (planPrice) {
-          if (subscription.amount && subscription.currency) {
-            planPrice.textContent = `€${subscription.amount}/${subscription.currency === 'eur' ? 'month' : 'month'}`;
-          } else {
-            planPrice.textContent = '$0/month';
-          }
-        }
-
-        // Add subscription status info
-        if (!planStatus) {
-          const statusDiv = document.createElement('div');
-          statusDiv.className = 'plan-status';
-          statusDiv.style.cssText = 'margin: 10px 0; font-size: 0.9rem; color: var(--text-secondary);';
-          planCard.insertBefore(statusDiv, manageButton);
-        }
-
-        const statusDiv = planCard.querySelector('.plan-status');
-        let statusText = '';
-
-        if (subscription.subscription_status === 'active' && subscription.current_period_end) {
-          statusText = `Active until ${new Date(subscription.current_period_end).toLocaleDateString()}`;
-        } else if (subscription.subscription_status === 'canceling' && subscription.current_period_end) {
-          statusText = `Cancels on ${new Date(subscription.current_period_end).toLocaleDateString()}`;
-        } else if (subscription.subscription_status === 'canceled') {
-          statusText = 'Canceled';
+      if (planPriceElement) {
+        if (subscription.amount && subscription.currency) {
+          planPriceElement.textContent = `€${subscription.amount}/month`;
         } else {
-          statusText = 'Free plan';
+          planPriceElement.textContent = '$0/month';
         }
+      }
 
-        if (statusDiv) {
-          statusDiv.textContent = statusText;
+      // Add/Update subscription status
+      let statusDiv = document.querySelector('.plan-status');
+      if (!statusDiv) {
+        statusDiv = document.createElement('div');
+        statusDiv.className = 'plan-status';
+        statusDiv.style.cssText = 'margin: 10px 0; font-size: 0.9rem; color: var(--text-secondary); text-align: center;';
+        const planDisplay = document.querySelector('.current-plan-display');
+        if (planDisplay) {
+          planDisplay.appendChild(statusDiv);
         }
+      }
 
-        // Update button text based on status
-        if (manageButton) {
-          if (subscription.plan === 'Free') {
-            manageButton.textContent = 'Upgrade Plan';
-            manageButton.onclick = () => window.location.href = '/pricing';
-          } else if (subscription.subscription_status === 'canceling') {
-            manageButton.textContent = 'Reactivate';
-            manageButton.onclick = () => reactivateSubscription();
-          } else {
-            manageButton.textContent = 'Manage Subscription';
-            manageButton.onclick = () => openStripePortal();
-          }
+      let statusText = '';
+      if (subscription.subscription_status === 'active' && subscription.current_period_end) {
+        statusText = `Active until ${new Date(subscription.current_period_end).toLocaleDateString()}`;
+      } else if (subscription.subscription_status === 'canceling' && subscription.current_period_end) {
+        statusText = `Cancels on ${new Date(subscription.current_period_end).toLocaleDateString()}`;
+      } else if (subscription.subscription_status === 'canceled') {
+        statusText = 'Canceled';
+      } else if (subscription.plan !== 'Free') {
+        statusText = 'Active subscription';
+      } else {
+        statusText = 'Free plan';
+      }
+
+      if (statusDiv) {
+        statusDiv.textContent = statusText;
+      }
+
+      // Update the "Manage Subscription" button
+      const manageButton = document.querySelector('.btn[onclick="managePlan()"]');
+      if (manageButton) {
+        if (subscription.plan === 'Free') {
+          manageButton.textContent = 'Upgrade Plan';
+          manageButton.onclick = () => window.location.href = '/pricing';
+        } else if (subscription.subscription_status === 'canceling') {
+          manageButton.textContent = 'Reactivate';
+          manageButton.onclick = () => reactivateSubscription();
+        } else {
+          manageButton.textContent = 'Manage Subscription';
+          manageButton.onclick = () => openStripePortal();
         }
       }
     }
@@ -1262,8 +1262,10 @@
     }
 
     // Initialize profile on page load
-    document.addEventListener('DOMContentLoaded', function() {
-      loadUserProfile();
+    document.addEventListener('DOMContentLoaded', async function() {
+      await loadUserProfile();
+      // Load subscription info after Auth0 is initialized
+      setTimeout(loadSubscriptionInfo, 1000);
     });
 
     // TODO: Add authentication integration
