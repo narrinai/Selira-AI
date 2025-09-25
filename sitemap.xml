@@ -91,15 +91,121 @@
   <!-- Content Pages -->
   <url>
     <loc>https://selira.ai/news.html</loc>
-    <lastmod>2025-01-08T12:00:00+00:00</lastmod>
+    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+  </url>
+
+  <!-- News Articles -->
+  <url>
+    <loc>https://selira.ai/news/adult-ai-conversations-ethics.html</loc>
+    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/news/ai-chatbot-personalization.html</loc>
+    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/news/ai-companions-emotional-intelligence.html</loc>
+    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/news/character-chat-psychology.html</loc>
+    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/news/chatbot-revolution-2025.html</loc>
+    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/news/my-ai-companion-journey.html</loc>
+    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/news/rise-of-ai-companions-selira.html</loc>
+    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/news/ai-companions-mental-clarity.html</loc>
+    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/news/digital-minimalism-mental-clarity.html</loc>
+    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/news/companionguide-ai-platform-review.html</loc>
+    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/news/future-ai-companions-mental-wellness.html</loc>
+    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/news/from-anxiety-to-clarity-user-journey.html</loc>
+    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/news/science-behind-thought-organization.html</loc>
+    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/news/daily-habits-mental-clarity.html</loc>
+    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/news/research-ai-conversations-emotional-processing.html</loc>
+    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
 
   <!-- Support Pages -->
   <url>
     <loc>https://selira.ai/contact.html</loc>
-    <lastmod>2025-01-08T12:00:00+00:00</lastmod>
+    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -107,14 +213,14 @@
   <!-- Legal Pages -->
   <url>
     <loc>https://selira.ai/privacy-policy.html</loc>
-    <lastmod>2025-01-08T12:00:00+00:00</lastmod>
+    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
 
   <url>
     <loc>https://selira.ai/terms-and-conditions.html</loc>
-    <lastmod>2025-01-08T12:00:00+00:00</lastmod>
+    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
@@ -122,14 +228,14 @@
   <!-- Utility Pages -->
   <url>
     <loc>https://selira.ai/recovery.html</loc>
-    <lastmod>2025-01-08T12:00:00+00:00</lastmod>
+    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.2</priority>
   </url>
 
   <url>
     <loc>https://selira.ai/confirm.html</loc>
-    <lastmod>2025-01-08T12:00:00+00:00</lastmod>
+    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.2</priority>
   </url>

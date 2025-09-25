@@ -2196,6 +2196,9 @@
       console.log('⚠️ Legacy save function called - use saveBothMessagesToStorage instead');
     }
 
+    // Track which characters have had their greeting added in this session
+    let greetingAddedFor = new Set();
+
     // Load chat history from localStorage
     function loadChatHistoryFromStorage(characterSlug) {
       try {
@@ -2228,12 +2231,13 @@
           console.log('💭 No chat history in localStorage for:', characterSlug);
           console.log('🔍 Checking localStorage keys:', Object.keys(localStorage).filter(k => k.startsWith('chat_')));
 
-          // Add automatic greeting message for new chats
+          // Add automatic greeting message for new chats (only once per session)
           const character = allCharacters.find(c => c.slug === characterSlug);
-          if (character && character.description) {
+          if (character && character.description && !greetingAddedFor.has(characterSlug)) {
             const greeting = extractGreetingFromDescription(character.description);
             if (greeting) {
               console.log('👋 Adding automatic greeting for new chat with:', character.name);
+              greetingAddedFor.add(characterSlug);
               // Clear any existing messages first
               const messagesContainer = document.getElementById('chatMessages');
               messagesContainer.innerHTML = '';
@@ -2618,6 +2622,9 @@
 
     // Switch to a companion from the sidebar
     async function switchToCompanion(slug) {
+      // Reset greeting flag when switching characters
+      greetingAddedFor.clear();
+
       // Find character in loaded data
       let character = loadedCharacters.find(c => c.slug === slug);
 
