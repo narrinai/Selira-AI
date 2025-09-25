@@ -11,8 +11,8 @@
 /search-results    /search-results.html    200
 
 # Tag redirects - clean URLs to query params
-/tags/:tag         /tags.html?tag=:tag     200
-/tag/:tag          /tags.html?tag=:tag     301
+/tags/:tag         /tags?tag=:tag          200
+/tag/:tag          /tags?tag=:tag          301
 
 # Catch-all for other clean URLs
 /:path.html        /:path.html             200

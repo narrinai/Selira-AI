@@ -2603,7 +2603,7 @@
 
       selectedTags.forEach(tag => {
         const button = document.createElement('a');
-        button.href = `tags.html?tag=${tag}`;
+        button.href = `tags?tag=${tag}`;
         button.className = 'tag-btn';
         const icon = getTagIcon(tag);
         button.textContent = `${icon} ${tag.charAt(0).toUpperCase() + tag.slice(1)}`;
