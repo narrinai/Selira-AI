@@ -45,6 +45,56 @@
     <priority>0.7</priority>
   </url>
 
+  <!-- Popular Tag Pages -->
+  <url>
+    <loc>https://selira.ai/tags/boyfriend</loc>
+    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/girlfriend</loc>
+    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/vampire</loc>
+    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/anime</loc>
+    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/fantasy</loc>
+    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/romance</loc>
+    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/historical</loc>
+    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
   <url>
     <loc>https://selira.ai/pricing.html</loc>
     <lastmod>2025-09-25T12:00:00+00:00</lastmod>
