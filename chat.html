@@ -1890,7 +1890,8 @@
       // Update sidebar
       document.getElementById('sidebarCharacterName').textContent = currentCharacter.name;
       document.getElementById('sidebarCharacterCreator').textContent = currentCharacter.creator;
-      document.getElementById('sidebarCharacterDescription').innerHTML = currentCharacter.description.replace(/\\n\\n/g, '<br><br>').replace(/\\n/g, '<br>');
+      const greeting = extractGreetingFromDescription(currentCharacter.description) || currentCharacter.description || '';
+      document.getElementById('sidebarCharacterDescription').innerHTML = greeting.replace(/\\n\\n/g, '<br><br>').replace(/\\n/g, '<br>');
       const sidebarImage = document.getElementById('sidebarCharacterImage');
       if (currentCharacter.avatar && currentCharacter.avatar !== '/avatars/placeholder.webp') {
         sidebarImage.src = fixAvatarUrl(currentCharacter.avatar);
@@ -3671,7 +3672,7 @@
           </div>
           
           <p style="color: var(--text-secondary); line-height: 1.6; margin: 0;">
-            ${(currentCharacter.description || 'An amazing AI companion ready for conversation.').replace(/\\n\\n/g, '<br><br>').replace(/\\n/g, '<br>')}
+            ${(extractGreetingFromDescription(currentCharacter.description) || 'An amazing AI companion ready for conversation.').replace(/\\n\\n/g, '<br><br>').replace(/\\n/g, '<br>')}
           </p>
         </div>
       `;
