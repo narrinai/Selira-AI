@@ -2227,6 +2227,30 @@
         } else {
           console.log('💭 No chat history in localStorage for:', characterSlug);
           console.log('🔍 Checking localStorage keys:', Object.keys(localStorage).filter(k => k.startsWith('chat_')));
+
+          // Add automatic greeting message for new chats
+          const character = allCharacters.find(c => c.slug === characterSlug);
+          if (character && character.description) {
+            const greeting = extractGreetingFromDescription(character.description);
+            if (greeting) {
+              console.log('👋 Adding automatic greeting for new chat with:', character.name);
+              // Clear any existing messages first
+              const messagesContainer = document.getElementById('chatMessages');
+              messagesContainer.innerHTML = '';
+              // Add the greeting message
+              addMessage(greeting, 'ai', false);
+
+              // Save greeting to localStorage so it doesn't reappear
+              const storageKey = `chat_${characterSlug}`;
+              let chatHistory = JSON.parse(localStorage.getItem(storageKey) || '[]');
+              chatHistory.push({
+                type: 'ai',
+                content: greeting,
+                timestamp: Date.now()
+              });
+              localStorage.setItem(storageKey, JSON.stringify(chatHistory));
+            }
+          }
         }
         
       } catch (error) {
