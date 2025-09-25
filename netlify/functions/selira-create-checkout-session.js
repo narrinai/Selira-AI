@@ -46,9 +46,10 @@ exports.handler = async (event, context) => {
     }
 
     // Initialize Stripe
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+    const stripeKey = process.env.STRIPE_SECRET_KEY_SELIRA || process.env.STRIPE_SECRET_KEY;
+    const stripe = new Stripe(stripeKey);
 
-    if (!process.env.STRIPE_SECRET_KEY) {
+    if (!stripeKey) {
       console.error('❌ Missing Stripe configuration');
       return {
         statusCode: 500,
