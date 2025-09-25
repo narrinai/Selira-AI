@@ -2862,19 +2862,19 @@
         localStorage.removeItem(storageKey);
         console.log('🧹 Cleared chat history for new character:', slug);
 
-        // Add the greeting message as the first message
+        // Add the avatar and greeting message
         setTimeout(() => {
-          // First send the greeting message
-          if (currentCharacter.greeting) {
-            addMessage(currentCharacter.greeting, 'ai');
+          // First send the avatar as an image message
+          if (currentCharacter.avatar && currentCharacter.avatar !== '/avatars/placeholder.webp') {
+            addAvatarMessage(currentCharacter.avatar);
           }
 
-          // Then send the avatar as an image message
+          // Then send the greeting message after a delay
           setTimeout(() => {
-            if (currentCharacter.avatar && currentCharacter.avatar !== '/avatars/placeholder.webp') {
-              addAvatarMessage(currentCharacter.avatar);
+            if (currentCharacter.greeting) {
+              addMessage(currentCharacter.greeting, 'ai');
             }
-          }, 100);
+          }, 200);
         }, 500);
       } else {
         // Load existing chat history for this character
