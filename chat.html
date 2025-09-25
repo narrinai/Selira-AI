@@ -1566,6 +1566,26 @@
         </div>
       </div>
     </div>
+
+    <!-- Delete Companion Modal -->
+    <div class="delete-modal" id="deleteModal" style="display: none;">
+      <div class="delete-modal-content">
+        <div class="delete-modal-header">
+          <h3>Delete Companion</h3>
+          <button class="delete-modal-close" onclick="closeDeleteModal()">×</button>
+        </div>
+        <div class="delete-modal-body">
+          <div class="delete-option" onclick="deleteCompanion()">
+            <div class="delete-option-icon">👋</div>
+            <div class="delete-option-content">
+              <h4>Delete Companion</h4>
+              <p>Remove this companion and clear all chat history</p>
+              <small style="color: var(--text-secondary);">This action will clear your chat but the companion remains available</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -2353,6 +2373,41 @@
         updateActiveChatsSidebar();
       }
     }
+
+    // Delete modal functions
+    function showDeleteOptions() {
+      const modal = document.getElementById('deleteModal');
+      if (modal) {
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+      }
+    }
+
+    function closeDeleteModal() {
+      const modal = document.getElementById('deleteModal');
+      if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = ''; // Restore scrolling
+      }
+    }
+
+    function deleteCompanion() {
+      // Use the existing clearChat function
+      clearChat();
+      closeDeleteModal();
+    }
+
+    // Close modal when clicking outside of it
+    document.addEventListener('DOMContentLoaded', function() {
+      const modal = document.getElementById('deleteModal');
+      if (modal) {
+        modal.addEventListener('click', function(e) {
+          if (e.target === modal) {
+            closeDeleteModal();
+          }
+        });
+      }
+    });
 
     // Clean up duplicate messages in localStorage
     function cleanupChatHistory(characterSlug) {
