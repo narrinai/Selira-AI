@@ -131,7 +131,11 @@ exports.handler = async (event, context) => {
         console.error('❌ Error fetching Stripe subscription:', stripeError);
         // Continue with Airtable data only
       }
+    } else {
+      console.log('ℹ️ No Stripe subscription ID, using Airtable data only');
     }
+
+    console.log('✅ Final subscription info:', subscriptionInfo);
 
     return {
       statusCode: 200,
