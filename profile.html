@@ -1018,12 +1018,31 @@
     // Load subscription info
     async function loadSubscriptionInfo() {
       try {
+        // Wait for Auth0 to be initialized
+        if (!window.auth0Client) {
+          console.log('🔄 Waiting for Auth0 to initialize...');
+          setTimeout(loadSubscriptionInfo, 500);
+          return;
+        }
+
+        // Check if user is authenticated
+        const isAuthenticated = await window.auth0Client.isAuthenticated();
+        if (!isAuthenticated) {
+          console.log('🔄 User not authenticated, skipping subscription info load');
+          return;
+        }
+
         const user = await window.auth0Client.getUser();
+        console.log('🔄 Loading subscription info for user:', user.email);
+
         const response = await fetch(`/.netlify/functions/selira-get-subscription-info?email=${encodeURIComponent(user.email)}&auth0_id=${encodeURIComponent(user.sub)}`);
         const data = await response.json();
 
         if (data.success) {
+          console.log('✅ Subscription info loaded:', data.subscription);
           updateSubscriptionDisplay(data.subscription);
+        } else {
+          console.log('❌ Failed to load subscription info:', data);
         }
       } catch (error) {
         console.error('❌ Error loading subscription info:', error);

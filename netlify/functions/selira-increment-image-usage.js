@@ -160,6 +160,103 @@ exports.handler = async (event, context) => {
 
     console.log('✅ Image usage incremented successfully');
 
+    // Also update the total images_generated count in the Users table
+    try {
+      console.log('📊 Updating total images_generated in Users table for userId:', userId);
+
+      // First, get the current images_generated count from Users table
+      const getUserRecord = () => {
+        return new Promise((resolve, reject) => {
+          const options = {
+            hostname: 'api.airtable.com',
+            port: 443,
+            path: `/v0/${AIRTABLE_BASE_ID}/Users/${userId}`,
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+              'Content-Type': 'application/json'
+            }
+          };
+
+          const req = https.request(options, (res) => {
+            let data = '';
+            res.on('data', (chunk) => { data += chunk; });
+            res.on('end', () => {
+              try {
+                const response = JSON.parse(data);
+                resolve({ statusCode: res.statusCode, data: response });
+              } catch (error) {
+                reject(error);
+              }
+            });
+          });
+
+          req.on('error', reject);
+          req.end();
+        });
+      };
+
+      const userRecord = await getUserRecord();
+      if (userRecord.statusCode === 200) {
+        const currentImagesGenerated = userRecord.data.fields?.images_generated || 0;
+        const newImagesGenerated = currentImagesGenerated + 1;
+
+        console.log(`📊 Updating Users table: ${currentImagesGenerated} → ${newImagesGenerated}`);
+
+        // Update the Users table with the new total
+        const updateUserRecord = () => {
+          return new Promise((resolve, reject) => {
+            const data = JSON.stringify({
+              fields: {
+                images_generated: newImagesGenerated
+              }
+            });
+
+            const options = {
+              hostname: 'api.airtable.com',
+              port: 443,
+              path: `/v0/${AIRTABLE_BASE_ID}/Users/${userId}`,
+              method: 'PATCH',
+              headers: {
+                'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+                'Content-Type': 'application/json',
+                'Content-Length': data.length
+              }
+            };
+
+            const req = https.request(options, (res) => {
+              let responseData = '';
+              res.on('data', (chunk) => { responseData += chunk; });
+              res.on('end', () => {
+                try {
+                  const response = JSON.parse(responseData);
+                  resolve({ statusCode: res.statusCode, data: response });
+                } catch (error) {
+                  reject(error);
+                }
+              });
+            });
+
+            req.on('error', reject);
+            req.write(data);
+            req.end();
+          });
+        };
+
+        const userUpdateResult = await updateUserRecord();
+        if (userUpdateResult.statusCode === 200) {
+          console.log(`✅ Successfully updated Users table images_generated to: ${newImagesGenerated}`);
+        } else {
+          console.warn('⚠️ Failed to update Users table images_generated:', userUpdateResult.data);
+        }
+      } else {
+        console.warn('⚠️ Could not fetch user record to update images_generated:', userRecord.data);
+      }
+    } catch (userUpdateError) {
+      console.warn('⚠️ Error updating Users table images_generated:', userUpdateError.message);
+      // Don't fail the whole request if this fails
+    }
+
     return {
       statusCode: 200,
       headers: {

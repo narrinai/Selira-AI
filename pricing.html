@@ -417,6 +417,25 @@
     .pricing-card.featured:hover {
       transform: scale(1.02) translateY(-4px);
     }
+
+    .pricing-card.current-plan {
+      border-color: #10b981;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, var(--bg-secondary) 100%);
+    }
+
+    .current-plan-badge {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 12px;
+      position: absolute;
+      top: -8px;
+      right: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
     
     .card-badge {
       position: absolute;
@@ -1062,6 +1081,121 @@
         alert('An error occurred. Please try again later.');
       }
     }
+
+    // Load current subscription info
+    async function loadCurrentPlan() {
+      try {
+        if (!window.auth0Client) {
+          console.log('🔄 Waiting for Auth0 to initialize...');
+          setTimeout(loadCurrentPlan, 500);
+          return;
+        }
+
+        const isAuthenticated = await window.auth0Client.isAuthenticated();
+        if (!isAuthenticated) {
+          console.log('🔄 User not authenticated, skipping plan load');
+          return;
+        }
+
+        const user = await window.auth0Client.getUser();
+        console.log('🔄 Loading current plan for user:', user.email);
+
+        const response = await fetch(`/.netlify/functions/selira-get-subscription-info?email=${encodeURIComponent(user.email)}&auth0_id=${encodeURIComponent(user.sub)}`);
+        const data = await response.json();
+
+        if (data.success && data.subscription) {
+          console.log('✅ Current plan loaded:', data.subscription.plan);
+          updatePricingDisplay(data.subscription);
+        }
+      } catch (error) {
+        console.error('❌ Error loading current plan:', error);
+      }
+    }
+
+    // Update pricing cards to show current plan
+    function updatePricingDisplay(subscription) {
+      // Remove all current plan indicators
+      document.querySelectorAll('.pricing-card').forEach(card => {
+        card.classList.remove('current-plan');
+        const badge = card.querySelector('.current-plan-badge');
+        if (badge) badge.remove();
+      });
+
+      // Find and highlight the current plan
+      const currentPlan = (subscription.plan || 'Free').toLowerCase();
+      let cardSelector = '';
+
+      if (currentPlan === 'free') {
+        cardSelector = '.pricing-card:nth-child(1)'; // First card (Free)
+      } else if (currentPlan === 'basic') {
+        cardSelector = '.pricing-card:nth-child(2)'; // Second card (Basic)
+      } else if (currentPlan === 'premium') {
+        cardSelector = '.pricing-card:nth-child(3)'; // Third card (Premium)
+      }
+
+      if (cardSelector) {
+        const currentCard = document.querySelector(cardSelector);
+        if (currentCard) {
+          currentCard.classList.add('current-plan');
+
+          // Add current plan badge
+          const badge = document.createElement('div');
+          badge.className = 'current-plan-badge';
+          badge.textContent = 'Current Plan';
+          currentCard.style.position = 'relative';
+          currentCard.appendChild(badge);
+
+          // Update button text for current plan
+          const button = currentCard.querySelector('.plan-button');
+          if (button) {
+            if (currentPlan === 'free') {
+              button.textContent = 'Current Plan';
+              button.style.opacity = '0.7';
+            } else {
+              button.textContent = 'Manage Plan';
+              button.onclick = function() {
+                window.location.href = '/profile';
+                return false;
+              };
+            }
+          }
+        }
+      }
+
+      // Update other plan buttons for upgrades/downgrades
+      updatePlanButtons(currentPlan);
+    }
+
+    // Update plan button texts based on current subscription
+    function updatePlanButtons(currentPlan) {
+      const cards = document.querySelectorAll('.pricing-card');
+
+      cards.forEach((card, index) => {
+        const button = card.querySelector('.plan-button');
+        if (!button || card.classList.contains('current-plan')) return;
+
+        if (index === 0) { // Free
+          if (currentPlan !== 'free') {
+            button.textContent = 'Downgrade to Free';
+          }
+        } else if (index === 1) { // Basic
+          if (currentPlan === 'free') {
+            button.textContent = 'Upgrade to Basic';
+          } else if (currentPlan === 'premium') {
+            button.textContent = 'Downgrade to Basic';
+          }
+        } else if (index === 2) { // Premium
+          if (currentPlan === 'free' || currentPlan === 'basic') {
+            button.textContent = 'Upgrade to Premium';
+          }
+        }
+      });
+    }
+
+    // Initialize current plan loading when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(loadCurrentPlan, 1000);
+    });
   </script>
 </body>
 </html>

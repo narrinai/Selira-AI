@@ -456,7 +456,7 @@ exports.handler = async (event, context) => {
     if (body.limitData && (email || auth0_id)) {
       console.log(`📈 [${requestId}] Incrementing usage counter`);
       try {
-        const incrementResponse = await fetch(`${process.env.NETLIFY_FUNCTIONS_URL || 'https://selira.ai/.netlify/functions'}/increment-image-usage`, {
+        const incrementResponse = await fetch(`${process.env.NETLIFY_FUNCTIONS_URL || 'https://selira.ai/.netlify/functions'}/selira-increment-image-usage`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
