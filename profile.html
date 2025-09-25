@@ -1019,7 +1019,7 @@
     async function loadSubscriptionInfo() {
       try {
         const user = await window.auth0Client.getUser();
-        const response = await fetch(`/.netlify/functions/get-subscription-info?email=${encodeURIComponent(user.email)}&auth0_id=${encodeURIComponent(user.sub)}`);
+        const response = await fetch(`/.netlify/functions/selira-get-subscription-info?email=${encodeURIComponent(user.email)}&auth0_id=${encodeURIComponent(user.sub)}`);
         const data = await response.json();
 
         if (data.success) {
@@ -1108,7 +1108,7 @@
     async function openStripePortal() {
       try {
         const user = await window.auth0Client.getUser();
-        const response = await fetch('/.netlify/functions/manage-subscription', {
+        const response = await fetch('/.netlify/functions/selira-manage-subscription', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -1136,7 +1136,7 @@
     async function reactivateSubscription() {
       try {
         const user = await window.auth0Client.getUser();
-        const response = await fetch('/.netlify/functions/manage-subscription', {
+        const response = await fetch('/.netlify/functions/selira-manage-subscription', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
