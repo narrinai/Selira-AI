@@ -452,6 +452,26 @@ exports.handler = async (event, context) => {
     
     console.log(`✅ [${requestId}] Custom image generated successfully:`, imageUrl);
 
+    // Trigger automatic download to /avatars/ (fire and forget)
+    try {
+      const downloadUrl = `${process.env.NETLIFY_FUNCTIONS_URL || 'https://selira.ai/.netlify/functions'}/selira-auto-download-avatars`;
+
+      // Fire and forget - don't await to avoid blocking the response
+      fetch(downloadUrl, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'User-Agent': 'Auto-Avatar-Download-Trigger'
+        }
+      }).catch(error => {
+        console.warn(`⚠️ [${requestId}] Avatar auto-download trigger failed (non-blocking):`, error.message);
+      });
+
+      console.log(`🚀 [${requestId}] Triggered automatic avatar download process`);
+    } catch (error) {
+      console.warn(`⚠️ [${requestId}] Error triggering avatar download (non-blocking):`, error.message);
+    }
+
     // Increment usage counter for authenticated users
     if (body.limitData && (email || auth0_id)) {
       console.log(`📈 [${requestId}] Incrementing usage counter`);

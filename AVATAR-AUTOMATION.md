@@ -34,11 +34,21 @@ De scheduled function draait automatisch elk uur en controleert op nieuwe Replic
 
 ## 🔄 Workflow
 
-1. **Detectie**: Script zoekt naar `Avatar_URL` velden die `replicate.delivery` bevatten
-2. **Download**: Elke Replicate URL wordt gedownload als `.webp` bestand
-3. **Opslag**: Bestanden worden opgeslagen in `/avatars/` met unieke namen
-4. **Update**: Airtable record wordt bijgewerkt naar lokale pad (`/avatars/filename.webp`)
-5. **Verificatie**: Success/failure wordt gelogd
+1. **Avatar Generatie**: Wanneer een nieuwe avatar wordt gegenereerd (via `selira-generate-companion-avatar.js` of `selira-generate-custom-image.js`)
+2. **Auto-trigger**: Avatar generatie functies triggeren automatisch de download functie
+3. **Detectie**: Script zoekt naar `Avatar_URL` velden die `replicate.delivery` bevatten
+4. **Download**: Elke Replicate URL wordt gedownload als `.webp` bestand
+5. **Opslag**: Bestanden worden opgeslagen in `/avatars/` met unieke namen
+6. **Update**: Airtable record wordt bijgewerkt naar lokale pad (`/avatars/filename.webp`)
+7. **Verificatie**: Success/failure wordt gelogd
+
+## 🔄 Automatische Triggers
+
+Het systeem heeft **3 automatische triggers**:
+
+1. **Immediate**: Avatar generation functions triggeren direct na succesvolle generatie
+2. **Scheduled**: Elke 2 uur draait scheduled function om gemiste avatars op te halen
+3. **Manual**: Handmatig uitvoeren voor bulk processing
 
 ## 📊 Bestandsnaming
 

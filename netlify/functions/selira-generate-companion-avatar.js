@@ -1,6 +1,8 @@
 // netlify/functions/selira-generate-companion-avatar.js
 // Generates sensual companion avatars for Selira AI dating/companion app
 
+const fetch = require('node-fetch');
+
 exports.handler = async (event, context) => {
   console.log('💋 selira-generate-companion-avatar function called');
   

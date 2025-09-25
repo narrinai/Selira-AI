@@ -4,7 +4,7 @@
   <!-- Homepage -->
   <url>
     <loc>https://selira.ai/</loc>
-    <lastmod>2025-01-08T12:00:00+00:00</lastmod>
+    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -12,63 +12,63 @@
   <!-- Main Pages -->
   <url>
     <loc>https://selira.ai/chat.html</loc>
-    <lastmod>2025-09-12T12:00:00+00:00</lastmod>
+    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
     <loc>https://selira.ai/category.html</loc>
-    <lastmod>2025-09-12T12:00:00+00:00</lastmod>
+    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://selira.ai/create</loc>
-    <lastmod>2025-09-12T12:00:00+00:00</lastmod>
+    <loc>https://selira.ai/create.html</loc>
+    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://selira.ai/search-results.html</loc>
-    <lastmod>2025-01-08T12:00:00+00:00</lastmod>
+    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://selira.ai/tags.html</loc>
-    <lastmod>2025-01-08T12:00:00+00:00</lastmod>
+    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://selira.ai/pricing.html</loc>
-    <lastmod>2025-01-08T12:00:00+00:00</lastmod>
+    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://selira.ai/profile.html</loc>
-    <lastmod>2025-09-12T12:00:00+00:00</lastmod>
+    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
-    <loc>https://selira.ai/my-companions</loc>
-    <lastmod>2025-09-12T12:00:00+00:00</lastmod>
+    <loc>https://selira.ai/my-companions.html</loc>
+    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://selira.ai/memory-import</loc>
-    <lastmod>2025-09-12T12:00:00+00:00</lastmod>
+    <loc>https://selira.ai/memory-import.html</loc>
+    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
