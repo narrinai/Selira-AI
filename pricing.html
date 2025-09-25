@@ -1085,19 +1085,19 @@
     // Load current subscription info
     async function loadCurrentPlan() {
       try {
-        if (!window.auth0Client) {
-          console.log('🔄 Waiting for Auth0 to initialize...');
-          setTimeout(loadCurrentPlan, 500);
-          return;
-        }
-
-        const isAuthenticated = await window.auth0Client.isAuthenticated();
-        if (!isAuthenticated) {
+        // Check if user is authenticated using the existing window functions
+        if (!window.isUserAuthenticated || !window.isUserAuthenticated()) {
           console.log('🔄 User not authenticated, skipping plan load');
           return;
         }
 
-        const user = await window.auth0Client.getUser();
+        const user = window.getCurrentUser();
+        if (!user) {
+          console.log('🔄 No user data available, retrying in 500ms...');
+          setTimeout(loadCurrentPlan, 500);
+          return;
+        }
+
         console.log('🔄 Loading current plan for user:', user.email);
 
         const response = await fetch(`/.netlify/functions/selira-get-subscription-info?email=${encodeURIComponent(user.email)}&auth0_id=${encodeURIComponent(user.sub)}`);

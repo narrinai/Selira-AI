@@ -1018,21 +1018,19 @@
     // Load subscription info
     async function loadSubscriptionInfo() {
       try {
-        // Wait for Auth0 to be initialized
-        if (!window.auth0Client) {
-          console.log('🔄 Waiting for Auth0 to initialize...');
-          setTimeout(loadSubscriptionInfo, 500);
-          return;
-        }
-
-        // Check if user is authenticated
-        const isAuthenticated = await window.auth0Client.isAuthenticated();
-        if (!isAuthenticated) {
+        // Check if user is authenticated using the existing window functions
+        if (!window.isUserAuthenticated || !window.isUserAuthenticated()) {
           console.log('🔄 User not authenticated, skipping subscription info load');
           return;
         }
 
-        const user = await window.auth0Client.getUser();
+        const user = window.getCurrentUser();
+        if (!user) {
+          console.log('🔄 No user data available, retrying in 500ms...');
+          setTimeout(loadSubscriptionInfo, 500);
+          return;
+        }
+
         console.log('🔄 Loading subscription info for user:', user.email);
 
         const response = await fetch(`/.netlify/functions/selira-get-subscription-info?email=${encodeURIComponent(user.email)}&auth0_id=${encodeURIComponent(user.sub)}`);
@@ -1126,7 +1124,7 @@
     // Open Stripe Customer Portal
     async function openStripePortal() {
       try {
-        const user = await window.auth0Client.getUser();
+        const user = window.getCurrentUser();
         const response = await fetch('/.netlify/functions/selira-manage-subscription', {
           method: 'POST',
           headers: {
@@ -1154,7 +1152,7 @@
     // Reactivate subscription
     async function reactivateSubscription() {
       try {
-        const user = await window.auth0Client.getUser();
+        const user = window.getCurrentUser();
         const response = await fetch('/.netlify/functions/selira-manage-subscription', {
           method: 'POST',
           headers: {
