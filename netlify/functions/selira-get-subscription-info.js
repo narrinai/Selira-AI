@@ -47,14 +47,17 @@ exports.handler = async (event, context) => {
 
     console.log('🔍 Searching for user in Airtable...');
 
-    // Find user in Airtable
+    // Find user in Airtable - use Email field only for now
     let filterFormula = '';
-    if (userEmail && auth0Id) {
-      filterFormula = `OR({Email} = '${userEmail}', {auth0_id} = '${auth0Id}')`;
-    } else if (userEmail) {
+    if (userEmail) {
       filterFormula = `{Email} = '${userEmail}'`;
     } else {
-      filterFormula = `{auth0_id} = '${auth0Id}'`;
+      console.log('❌ No email provided, cannot search user');
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({ error: 'Email parameter required for Selira AI' })
+      };
     }
 
     console.log('🔍 Filter formula:', filterFormula);
