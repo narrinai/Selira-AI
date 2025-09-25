@@ -148,10 +148,15 @@ exports.handler = async (event, context) => {
 
   } catch (error) {
     console.error('❌ Get subscription info error:', error);
+    console.error('Error stack:', error.stack);
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ error: 'Failed to get subscription info' })
+      body: JSON.stringify({
+        error: 'Failed to get subscription info',
+        details: error.message,
+        type: error.name || 'Unknown error'
+      })
     };
   }
 };
