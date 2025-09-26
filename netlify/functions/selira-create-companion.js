@@ -336,8 +336,9 @@ BOUNDARIES:
 
     console.log('🎨 Setting up avatar for character...');
 
-    // Start with placeholder - avatar will be generated asynchronously after companion creation
-    let avatarUrlToUse = 'https://selira.ai/avatars/placeholder.webp';
+    // Start with empty avatar URL - will be populated by async generation
+    // Never use placeholder URLs for production
+    let avatarUrlToUse = null;
 
     // Store avatar generation parameters for async processing
     const avatarGenerationNeeded = {
@@ -425,7 +426,7 @@ BOUNDARIES:
       ethnicity: ethnicity || 'white',
       hair_length: hairLength || 'long',
       hair_color: hairColor || 'brown',
-      Avatar_URL: avatarUrlToUse,
+      // Avatar_URL will be added by async generation - don't create empty field
       is_unfiltered: isUnfiltered
       // chats and rating fields don't exist in Airtable - removed
     };
@@ -530,7 +531,15 @@ BOUNDARIES:
     // Trigger async avatar generation after character is created
     if (generateAvatar) {
       console.log('🎨 Triggering async avatar generation...');
-      generateAvatarAsync(result.id, avatarGenerationNeeded);
+
+      // Prepare parameters for avatar generation API
+      const avatarApiParams = {
+        characterName: name,
+        characterTitle: title,
+        category: category || 'Romance'
+      };
+
+      generateAvatarAsync(result.id, result.fields.Slug, avatarApiParams);
     }
 
     return {
@@ -556,7 +565,7 @@ BOUNDARIES:
           hairLength: result.fields.hair_length,
           hairColor: result.fields.hair_color,
           tags: result.fields.Tags,
-          avatarUrl: result.fields.Avatar_URL,
+          avatarUrl: result.fields.Avatar_URL || null, // Will be populated by async generation
           isUnfiltered: result.fields.is_unfiltered,
           visibility: result.fields.Visibility,
           chats: '0', // Default for new characters

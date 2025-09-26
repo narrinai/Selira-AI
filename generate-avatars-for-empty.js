@@ -183,7 +183,7 @@ async function main() {
           name: companion.Name,
           id: companion.id,
           status: 'success',
-          avatarUrl: avatarUrl
+          avatarUrl: result.avatarUrl
         });
       } else {
         failed++;

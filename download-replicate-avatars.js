@@ -1,191 +1,185 @@
 #!/usr/bin/env node
-// download-replicate-avatars.js
-// Downloads all Replicate avatar URLs and saves them locally
 
+// Local script to download Replicate avatars to /avatars/ folder
+// and update Avatar_URL fields in Airtable to point to local files
+
+const fetch = require('node-fetch');
 const fs = require('fs').promises;
 const path = require('path');
-const https = require('https');
 
-async function downloadImage(url, filepath) {
-  return new Promise((resolve, reject) => {
-    const file = require('fs').createWriteStream(filepath);
-    https.get(url, (response) => {
-      response.pipe(file);
-      file.on('finish', () => {
-        file.close();
-        resolve();
-      });
-    }).on('error', (err) => {
-      require('fs').unlink(filepath, () => {}); // Delete incomplete file
-      reject(err);
-    });
-  });
-}
+const API_BASE = 'https://selira.ai/.netlify/functions';
 
-async function getAllCharacters() {
-  const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN || process.env.AIRTABLE_API_KEY;
-  const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
-  const AIRTABLE_TABLE_ID = process.env.AIRTABLE_TABLE_ID || 'Characters';
-  
-  if (!AIRTABLE_TOKEN || !AIRTABLE_BASE_ID) {
-    throw new Error('Missing Airtable credentials in environment variables');
-  }
-  
-  let allRecords = [];
-  let offset = null;
-  
-  do {
-    const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_ID}${offset ? `?offset=${offset}` : ''}`;
-    
-    const response = await fetch(url, {
-      headers: {
-        'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
-        'Content-Type': 'application/json'
-      }
-    });
-    
-    if (!response.ok) {
-      throw new Error(`Airtable API error: ${response.status}`);
-    }
-    
-    const data = await response.json();
-    allRecords = allRecords.concat(data.records || []);
-    offset = data.offset;
-    
-  } while (offset);
-  
-  return allRecords;
-}
-
-async function updateCharacterAvatar(characterId, localPath) {
-  const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN || process.env.AIRTABLE_API_KEY;
-  const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
-  const AIRTABLE_TABLE_ID = process.env.AIRTABLE_TABLE_ID || 'Characters';
-  
-  const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_ID}/${characterId}`;
-  
-  const response = await fetch(url, {
-    method: 'PATCH',
-    headers: {
-      'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      fields: {
-        Local_Avatar_Path: localPath,
-        Avatar_Updated: new Date().toISOString()
-      }
-    })
-  });
-  
-  if (!response.ok) {
-    const error = await response.text();
-    throw new Error(`Failed to update Airtable: ${error}`);
-  }
-  
-  return response.json();
-}
-
-async function main() {
-  console.log('🚀 Starting Replicate avatar download process...');
-  
+// Find all characters with Replicate URLs
+async function findReplicateAvatars() {
   try {
-    // Get all characters from Airtable
-    console.log('📋 Fetching all characters from Airtable...');
-    const characters = await getAllCharacters();
-    console.log(`✅ Found ${characters.length} characters`);
-    
-    // Filter characters with Replicate URLs
-    const charactersWithReplicateAvatars = characters.filter(record => {
-      const fields = record.fields || {};
-      let avatarUrl = '';
-      
-      if (fields.Avatar_URL) {
-        if (Array.isArray(fields.Avatar_URL) && fields.Avatar_URL.length > 0) {
-          avatarUrl = fields.Avatar_URL[0].url || '';
-        } else if (typeof fields.Avatar_URL === 'string') {
-          avatarUrl = fields.Avatar_URL;
-        }
+    console.log('🔍 Finding characters with Replicate URLs...');
+
+    const response = await fetch(`${API_BASE}/selira-characters-fetch`);
+    const data = await response.json();
+
+    if (data.success && data.characters) {
+      const replicateCharacters = data.characters.filter(char =>
+        char.Avatar_URL && char.Avatar_URL.includes('replicate.delivery')
+      );
+
+      console.log(`📊 Found ${replicateCharacters.length} characters with Replicate URLs`);
+
+      if (replicateCharacters.length > 0) {
+        console.log('\n📋 First 10 characters with Replicate avatars:');
+        replicateCharacters.slice(0, 10).forEach((char, index) => {
+          console.log(`   ${index + 1}. ${char.Name} (${char.sex || 'unknown'})`);
+          console.log(`      URL: ${char.Avatar_URL.substring(0, 60)}...`);
+        });
       }
-      
-      // Check if it's a Replicate URL
-      return avatarUrl.includes('replicate.delivery');
-    });
-    
-    console.log(`🔍 Found ${charactersWithReplicateAvatars.length} characters with Replicate avatar URLs`);
-    
-    if (charactersWithReplicateAvatars.length === 0) {
-      console.log('✨ No Replicate avatars to download!');
-      return;
+
+      return replicateCharacters;
     }
-    
-    // Create avatars directory if it doesn't exist
-    const avatarsDir = path.join(__dirname, 'avatars');
-    await fs.mkdir(avatarsDir, { recursive: true });
-    
-    // Process each character
-    let successCount = 0;
-    let failCount = 0;
-    
-    for (const record of charactersWithReplicateAvatars) {
-      const fields = record.fields || {};
-      const characterName = fields.Name || 'unknown';
-      const characterSlug = fields.Slug || characterName.toLowerCase().replace(/[^a-z0-9]/g, '-');
-      
-      // Get avatar URL
-      let avatarUrl = '';
-      if (fields.Avatar_URL) {
-        if (Array.isArray(fields.Avatar_URL) && fields.Avatar_URL.length > 0) {
-          avatarUrl = fields.Avatar_URL[0].url || '';
-        } else if (typeof fields.Avatar_URL === 'string') {
-          avatarUrl = fields.Avatar_URL;
-        }
-      }
-      
-      if (!avatarUrl) {
-        console.log(`⚠️ No avatar URL for ${characterName}`);
-        continue;
-      }
-      
-      try {
-        // Generate local filename
-        const timestamp = Date.now();
-        const filename = `${characterSlug}-${timestamp}.webp`;
-        const filepath = path.join(avatarsDir, filename);
-        const publicPath = `/avatars/${filename}`;
-        
-        console.log(`⬇️ Downloading avatar for ${characterName}...`);
-        console.log(`   From: ${avatarUrl.substring(0, 50)}...`);
-        console.log(`   To: ${publicPath}`);
-        
-        // Download the image
-        await downloadImage(avatarUrl, filepath);
-        
-        // Update Airtable with local path
-        await updateCharacterAvatar(record.id, publicPath);
-        
-        console.log(`✅ Successfully downloaded and saved avatar for ${characterName}`);
-        successCount++;
-        
-      } catch (error) {
-        console.error(`❌ Failed to process ${characterName}:`, error.message);
-        failCount++;
-      }
-      
-      // Add a small delay to avoid rate limiting
-      await new Promise(resolve => setTimeout(resolve, 500));
-    }
-    
-    console.log('\n📊 Download Summary:');
-    console.log(`✅ Success: ${successCount}`);
-    console.log(`❌ Failed: ${failCount}`);
-    console.log(`📁 Avatars saved to: ${avatarsDir}`);
-    
+
+    return [];
   } catch (error) {
-    console.error('💥 Fatal error:', error);
-    process.exit(1);
+    console.error('❌ Error finding characters:', error.message);
+    return [];
   }
 }
+
+// Download avatar and update Airtable
+async function downloadAndUpdateAvatar(character, index, total) {
+  try {
+    const { Name, Avatar_URL, id } = character;
+    console.log(`\n📥 [${index + 1}/${total}] Processing: ${Name}`);
+    console.log(`   URL: ${Avatar_URL.substring(0, 60)}...`);
+
+    // Generate local filename
+    const timestamp = Date.now();
+    const slug = Name.toLowerCase().replace(/[^a-z0-9]/g, '-');
+    const filename = `${slug}-${timestamp}.webp`;
+    const localPath = `/avatars/${filename}`;
+    const fullLocalPath = path.join(process.cwd(), 'avatars', filename);
+
+    // Ensure avatars directory exists
+    const avatarsDir = path.join(process.cwd(), 'avatars');
+    try {
+      await fs.access(avatarsDir);
+    } catch (error) {
+      await fs.mkdir(avatarsDir, { recursive: true });
+      console.log('📁 Created avatars directory');
+    }
+
+    // Download the image from Replicate
+    console.log(`🌐 Downloading image...`);
+    const imageResponse = await fetch(Avatar_URL);
+
+    if (!imageResponse.ok) {
+      throw new Error(`Failed to download: ${imageResponse.status} ${imageResponse.statusText}`);
+    }
+
+    const buffer = await imageResponse.buffer();
+
+    // Save the image locally
+    await fs.writeFile(fullLocalPath, buffer);
+    console.log(`💾 Saved to: ${fullLocalPath}`);
+
+    // Update Airtable record with local URL
+    const updateResult = await updateCharacterAvatar(id, localPath);
+
+    if (updateResult.success) {
+      console.log(`✅ Updated ${Name} with local avatar URL`);
+      return { success: true, localPath: localPath };
+    } else {
+      console.error(`❌ Failed to update ${Name}: ${updateResult.error}`);
+      return { success: false, error: `Update failed: ${updateResult.error}` };
+    }
+
+  } catch (error) {
+    console.error(`❌ Error processing ${character.Name}:`, error.message);
+    return { success: false, error: error.message };
+  }
+}
+
+// Update companion's Avatar_URL in Airtable
+async function updateCharacterAvatar(recordId, avatarUrl) {
+  try {
+    const response = await fetch(`${API_BASE}/selira-update-avatar`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        recordId: recordId,
+        avatarUrl: avatarUrl
+      })
+    });
+
+    if (response.ok) {
+      const result = await response.json();
+      return { success: true, data: result };
+    } else {
+      const errorText = await response.text();
+      return { success: false, error: errorText };
+    }
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+
+// Sleep function
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// Main execution
+async function main() {
+  console.log('🚀 Starting Replicate avatar download and localization');
+
+  const replicateCharacters = await findReplicateAvatars();
+
+  if (replicateCharacters.length === 0) {
+    console.log('✅ No characters found with Replicate URLs!');
+    return;
+  }
+
+  console.log(`\n🔧 Will download ${replicateCharacters.length} Replicate avatars...`);
+
+  let processed = 0;
+  let successful = 0;
+  let failed = 0;
+
+  for (const character of replicateCharacters) {
+    const result = await downloadAndUpdateAvatar(character, processed, replicateCharacters.length);
+    processed++;
+
+    if (result.success) {
+      successful++;
+    } else {
+      failed++;
+    }
+
+    // Small delay between downloads
+    if (processed < replicateCharacters.length) {
+      console.log(`⏳ Waiting 1s before next download...`);
+      await sleep(1000);
+    }
+  }
+
+  console.log('\n' + '='.repeat(60));
+  console.log('📊 DOWNLOAD COMPLETE');
+  console.log('='.repeat(60));
+  console.log(`✅ Successfully downloaded: ${successful} avatars`);
+  console.log(`❌ Failed to download: ${failed} avatars`);
+  console.log(`📈 Success rate: ${processed > 0 ? ((successful / processed) * 100).toFixed(1) : 0}%`);
+
+  console.log('\n🎉 Avatar localization process completed!');
+  console.log('💡 All Replicate URLs have been downloaded to local /avatars/ folder.');
+}
+
+// Handle process termination gracefully
+process.on('SIGINT', () => {
+  console.log('\n🛑 Process interrupted by user');
+  process.exit(0);
+});
 
 // Run the script
-main().catch(console.error);
+main().catch(error => {
+  console.error('💥 Fatal error:', error);
+  process.exit(1);
+});
