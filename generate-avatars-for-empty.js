@@ -83,15 +83,16 @@ async function generateAvatarForCompanion(companion, index, total) {
     if (response.ok) {
       const result = await response.json();
 
-      if (result.success && result.avatarUrl) {
-        console.log(`✅ Avatar generated: ${result.avatarUrl.substring(0, 60)}...`);
+      if (result.success && (result.avatarUrl || result.imageUrl)) {
+        const avatarUrl = result.avatarUrl || result.imageUrl;
+        console.log(`✅ Avatar generated: ${avatarUrl.substring(0, 60)}...`);
 
         // Update the companion's Avatar_URL in Airtable
-        const updateResult = await updateCompanionAvatar(companion.id, result.avatarUrl);
+        const updateResult = await updateCompanionAvatar(companion.id, avatarUrl);
 
         if (updateResult.success) {
           console.log(`✅ Updated ${companion.Name} with new avatar URL`);
-          return { success: true, avatarUrl: result.avatarUrl };
+          return { success: true, avatarUrl: avatarUrl };
         } else {
           console.error(`❌ Failed to update ${companion.Name}: ${updateResult.error}`);
           return { success: false, error: `Update failed: ${updateResult.error}` };
@@ -182,7 +183,7 @@ async function main() {
           name: companion.Name,
           id: companion.id,
           status: 'success',
-          avatarUrl: result.avatarUrl
+          avatarUrl: avatarUrl
         });
       } else {
         failed++;

@@ -1,69 +1,54 @@
 #!/usr/bin/env node
 
-// Test script for avatar generation with local saving
-const https = require('https');
+// Simple test script to verify avatar generation API is working
 
-const testCharacter = {
-  characterName: "Test Avatar Hero",
-  characterTitle: "Digital Test Master",
-  category: "technology",
-  characterId: null,
-  characterSlug: "test-avatar-hero"
-};
+const fetch = require('node-fetch');
 
-// Test the generate-and-save-avatar function locally
-const data = JSON.stringify(testCharacter);
+const API_BASE = 'https://selira.ai/.netlify/functions';
 
-const options = {
-  hostname: 'narrin.ai',
-  path: '/.netlify/functions/generate-and-save-avatar',
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    'Content-Length': data.length
-  }
-};
+async function testAvatarGeneration() {
+  try {
+    console.log('🧪 Testing avatar generation API...');
 
-console.log('🧪 Testing avatar generation with local saving...');
-console.log('📦 Payload:', testCharacter);
+    const testPayload = {
+      characterName: 'Sophia Chen',
+      characterTitle: 'Beautiful Chinese Realistic Companion',
+      category: 'Romance'
+    };
 
-const req = https.request(options, (res) => {
-  let responseData = '';
+    console.log('📤 Sending test request:', testPayload);
 
-  res.on('data', (chunk) => {
-    responseData += chunk;
-  });
+    const response = await fetch(`${API_BASE}/selira-generate-companion-avatar`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(testPayload),
+      timeout: 120000 // 2 minute timeout
+    });
 
-  res.on('end', () => {
-    console.log('📊 Status Code:', res.statusCode);
-    try {
-      const result = JSON.parse(responseData);
-      console.log('✅ Response:', JSON.stringify(result, null, 2));
-      
-      if (result.success) {
-        console.log('\n🎉 Avatar generation successful!');
-        console.log('🖼️  Avatar URL:', result.avatarUrl);
-        console.log('📁 Local Path:', result.localPath);
-        console.log('🔗 Replicate URL:', result.replicateUrl);
-        
-        if (result.localPath) {
-          console.log('\n✨ Avatar saved locally! Check:', result.localPath);
-        } else {
-          console.log('\n⚠️  Avatar not saved locally, using Replicate URL');
-        }
+    console.log('📡 Response status:', response.status);
+
+    if (response.ok) {
+      const result = await response.json();
+      console.log('✅ Success:', result);
+
+      if (result.success && result.avatarUrl) {
+        console.log('🎨 Avatar URL:', result.avatarUrl);
+        console.log('✅ Avatar generation API is working!');
       } else {
-        console.log('\n❌ Avatar generation failed:', result.error);
+        console.log('❌ API response missing avatar URL:', result);
       }
-    } catch (e) {
-      console.error('❌ Failed to parse response:', e);
-      console.log('Raw response:', responseData);
+    } else {
+      const errorText = await response.text();
+      console.error('❌ API Error:', errorText);
     }
-  });
-});
 
-req.on('error', (error) => {
-  console.error('❌ Request error:', error);
-});
+  } catch (error) {
+    console.error('💥 Test failed:', error.message);
+  }
+}
 
-req.write(data);
-req.end();
+// Run the test
+console.log('🚀 Starting avatar generation API test\n');
+testAvatarGeneration();

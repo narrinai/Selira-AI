@@ -62,7 +62,7 @@ exports.handler = async (event, context) => {
     console.log('👤 Detected gender:', gender);
     
     // Use Flux Schnell for faster generation (3-8 seconds)
-    const model = "black-forest-labs/flux-schnell";
+    const modelVersion = "f2ab8a5e03de41b676ae08fdd8d415e95b4c6a9ac5b2c49bdfdc2e10117e6b5f";
     
     // Call Replicate API
     const replicateResponse = await fetch('https://api.replicate.com/v1/predictions', {
@@ -72,7 +72,7 @@ exports.handler = async (event, context) => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        version: model,
+        version: modelVersion,
         input: {
           prompt: prompt,
           width: 768,
@@ -121,7 +121,9 @@ exports.handler = async (event, context) => {
     }
     
     if (result.status === 'failed') {
-      throw new Error('Image generation failed');
+      console.error('❌ Replicate generation failed:', result);
+      console.error('❌ Error details:', result.error);
+      throw new Error(`Image generation failed: ${result.error || 'Unknown error'}`);
     }
     
     const imageUrl = result.output?.[0];
