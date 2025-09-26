@@ -209,11 +209,36 @@
       gap: 24px;
     }
 
-    .page-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 24px;
-      font-weight: 600;
+    .search-container {
+      flex: 1;
+      max-width: 600px;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 12px 20px 12px 45px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 25px;
+      font-size: 16px;
       color: var(--text-primary);
+      transition: all 0.2s ease;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.1);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 18px;
     }
 
     .user-actions {
@@ -535,12 +560,27 @@
         </div>
       </div>
 
-      <!-- Top Header -->
+      <!-- Top Header with Search -->
       <header class="top-header">
         <div class="header-top">
-          <h1 class="page-title">My Companions</h1>
-          <div class="user-actions" id="userActions">
-            <!-- Dynamic content based on auth state -->
+          <!-- Search -->
+          <div class="search-container">
+            <div class="search-icon">🔍</div>
+            <input
+              type="text"
+              class="search-input"
+              placeholder="Search characters..."
+              id="searchInput"
+            >
+          </div>
+
+          <!-- User Actions -->
+          <div class="user-actions">
+            <select class="dropdown-btn" style="border: none; background: none; color: var(--text-secondary);">
+              <option>English</option>
+            </select>
+            <a href="#" class="user-btn secondary login-btn" onclick="openLoginModal('login'); return false;">Sign In</a>
+            <a href="#" class="user-btn signup-btn" onclick="openLoginModal('signup'); return false;">Register</a>
           </div>
         </div>
       </header>
@@ -567,7 +607,36 @@
     document.addEventListener('DOMContentLoaded', function() {
       checkAuthState();
       renderMyCompanions();
+      initializeSearch();
     });
+
+    // Initialize search functionality
+    function initializeSearch() {
+      const searchInput = document.getElementById('searchInput');
+      if (searchInput) {
+        searchInput.addEventListener('input', function() {
+          const searchTerm = this.value.toLowerCase();
+          filterCharacters(searchTerm);
+        });
+      }
+    }
+
+    // Filter characters based on search term
+    function filterCharacters(searchTerm) {
+      const characterCards = document.querySelectorAll('.character-card');
+
+      characterCards.forEach(card => {
+        const name = card.querySelector('.character-name')?.textContent?.toLowerCase() || '';
+        const title = card.querySelector('.character-title')?.textContent?.toLowerCase() || '';
+        const description = card.querySelector('.character-description')?.textContent?.toLowerCase() || '';
+
+        const matches = name.includes(searchTerm) ||
+                       title.includes(searchTerm) ||
+                       description.includes(searchTerm);
+
+        card.style.display = matches ? 'block' : 'none';
+      });
+    }
 
     // Check authentication state
     function checkAuthState() {
@@ -598,25 +667,40 @@
 
     // Update user actions in header
     function updateUserActions(userData) {
-      const userActions = document.getElementById('userActions');
+      const userActions = document.querySelector('.user-actions');
       const mobileUserActions = document.getElementById('mobileUserActions');
 
-      let actionsHTML = '';
-
       if (userData) {
-        actionsHTML = `
+        const actionsHTML = `
+          <select class="dropdown-btn" style="border: none; background: none; color: var(--text-secondary);">
+            <option>English</option>
+          </select>
           <a href="/profile" class="user-btn secondary">Profile</a>
           <button onclick="logout()" class="user-btn secondary">Logout</button>
         `;
-      } else {
-        actionsHTML = `
-          <a href="/login" class="user-btn secondary">Login</a>
-          <a href="/signup" class="user-btn signup-btn">Sign Up</a>
-        `;
-      }
+        if (userActions) userActions.innerHTML = actionsHTML;
 
-      if (userActions) userActions.innerHTML = actionsHTML;
-      if (mobileUserActions) mobileUserActions.innerHTML = actionsHTML;
+        const mobileHTML = `
+          <a href="/profile" class="user-btn secondary">Profile</a>
+          <button onclick="logout()" class="user-btn secondary">Logout</button>
+        `;
+        if (mobileUserActions) mobileUserActions.innerHTML = mobileHTML;
+      } else {
+        const actionsHTML = `
+          <select class="dropdown-btn" style="border: none; background: none; color: var(--text-secondary);">
+            <option>English</option>
+          </select>
+          <a href="#" class="user-btn secondary login-btn" onclick="openLoginModal('login'); return false;">Sign In</a>
+          <a href="#" class="user-btn signup-btn" onclick="openLoginModal('signup'); return false;">Register</a>
+        `;
+        if (userActions) userActions.innerHTML = actionsHTML;
+
+        const mobileHTML = `
+          <a href="#" class="user-btn secondary login-btn" onclick="openLoginModal('login'); return false;">Sign In</a>
+          <a href="#" class="user-btn signup-btn" onclick="openLoginModal('signup'); return false;">Register</a>
+        `;
+        if (mobileUserActions) mobileUserActions.innerHTML = mobileHTML;
+      }
     }
 
     // EXACT copy of renderMyCompanions from category.html
