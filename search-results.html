@@ -1,1038 +1,548 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
- <meta charset="UTF-8" />
- <meta name="viewport" content="width=device-width, initial-scale=1.0" />
- <title>Search AI Companions - Narrin AI Platform</title>
- <meta name="description" content="Search and discover from 1000+ AI companions. Find the perfect AI character for private conversations on Narrin AI.">
- 
- <!-- Open Graph / Facebook -->
- <meta property="og:type" content="website">
- <meta property="og:url" content="https://selira.ai/search-results">
- <meta property="og:title" content="Search AI Companions - Narrin AI Platform">
- <meta property="og:description" content="Search and discover from 1000+ AI companions. Find the perfect AI character for private conversations on Narrin AI.">
- <meta property="og:image" content="https://selira.ai/og-image.jpg">
- 
- <!-- Twitter -->
- <meta property="twitter:card" content="summary_large_image">
- <meta property="twitter:url" content="https://selira.ai/search-results">
- <meta property="twitter:title" content="Search AI Characters - Find Your Perfect Chat | Narrin AI">
- <meta property="twitter:description" content="Search 1000+ AI characters on Narrin AI. Find historical figures, fictional heroes, celebrities & more. Start chatting with your favorite AI personalities now.">
- <meta property="twitter:image" content="https://selira.ai/og-image.jpg">
- 
- <!-- Favicon -->
- 
- <!-- Import Modern Google Fonts -->
- <link rel="preconnect" href="https://fonts.googleapis.com">
- <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
- <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="page-title">Search Results - Selira AI</title>
+  <meta name="description" content="Search results for AI companions on Selira AI. Find characters by name, appearance, personality, tags and more.">
 
- <style>
-   /* ===== CSS CUSTOM PROPERTIES ===== */
-   :root {
-     /* Primary Colors */
-     --color-white: #ffffff;
-     --color-off-white: #fafafa;
-     --color-light-gray: #f5f5f5;
-     
-     /* Accent Colors */
-     --color-teal: #14b8a6;
-     --color-teal-light: #5eead4;
-     --color-teal-dark: #0f766e;
-     --color-teal-alt: #10a394;
-     --color-coral: #f97316;
-     --color-coral-light: #fb923c;
-     --color-coral-dark: #ea580c;
-     
-     /* Supporting Colors */
-     --color-navy: #1e293b;
-     --color-navy-light: #334155;
-     --color-gray: #64748b;
-     --color-gray-light: #94a3b8;
-     --color-gray-dark: #475569;
-     
-     /* Gradients */
-     --gradient-primary: linear-gradient(135deg, var(--color-teal) 0%, var(--color-coral) 100%);
-     --gradient-subtle: linear-gradient(135deg, var(--color-teal-light) 0%, var(--color-coral-light) 100%);
-     --gradient-tags: linear-gradient(135deg, var(--color-teal-alt) 0%, var(--color-coral) 100%);
-     
-     /* Shadows */
-     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-     --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-     --shadow-colored: 0 10px 25px -5px rgba(20, 184, 166, 0.2);
-     
-     /* Spacing */
-     --spacing-xs: 0.5rem;
-     --spacing-sm: 0.75rem;
-     --spacing-md: 1rem;
-     --spacing-lg: 1.5rem;
-     --spacing-xl: 2rem;
-     --spacing-2xl: 3rem;
-     --spacing-3xl: 4rem;
-     
-     /* Typography */
-     --font-primary: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-     --font-secondary: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
-     
-     /* Font Sizes */
-     --font-size-xs: 0.75rem;
-     --font-size-sm: 0.875rem;
-     --font-size-base: 1rem;
-     --font-size-lg: 1.125rem;
-     --font-size-xl: 1.25rem;
-     --font-size-2xl: 1.5rem;
-     --font-size-3xl: 1.875rem;
-     --font-size-4xl: 2.25rem;
-     
-     /* Border Radius */
-     --radius-sm: 6px;
-     --radius-md: 12px;
-     --radius-lg: 16px;
-     --radius-xl: 24px;
-     --radius-full: 9999px;
-     
-     /* Transitions */
-     --transition-fast: 150ms ease-out;
-     --transition-base: 300ms ease-out;
-     --transition-slow: 500ms ease-out;
-     
-     /* Touch Target Size */
-     --touch-target: 44px;
-     
-     /* Z-index Scale */
-     --z-dropdown: 100;
-     --z-sticky: 200;
-     --z-overlay: 300;
-     --z-modal: 400;
-     --z-menu-overlay: 500;
-   }
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://selira.ai/search-results">
+  <meta property="og:title" content="Search AI Characters - Selira AI">
+  <meta property="og:description" content="Search results for AI companions on Selira AI. Find characters by name, appearance, personality, tags and more.">
+  <meta property="og:image" content="https://selira.ai/og-image.jpg">
 
-   /* ===== RESET & BASE STYLES ===== */
-   * {
-     box-sizing: border-box;
-     margin: 0;
-     padding: 0;
-   }
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://selira.ai/search-results">
+  <meta property="twitter:title" content="Search AI Characters - Selira AI">
+  <meta property="twitter:description" content="Search results for AI companions on Selira AI. Find characters by name, appearance, personality, tags and more.">
+  <meta property="twitter:image" content="https://selira.ai/og-image.jpg">
 
-   html {
-     overflow-x: hidden;
-   }
+  <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
-   body {
-     font-family: var(--font-primary);
-     background: var(--color-off-white);
-     color: var(--color-navy);
-     line-height: 1.6;
-     font-size: var(--font-size-base);
-     -webkit-font-smoothing: antialiased;
-     -moz-osx-font-smoothing: grayscale;
-     min-height: 100vh;
-     overflow-x: hidden;
-     position: relative;
-     width: 100%;
-   }
+  <!-- Favicon -->
 
-   /* ===== ACCESSIBILITY ===== */
-   :focus {
-     outline: 2px solid var(--color-teal);
-     outline-offset: 2px;
-   }
+  <!-- Import Modern Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-   :focus:not(:focus-visible) {
-     outline: none;
-   }
+  <!-- Import Modern Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-   /* ===== HEADER NAVIGATION ===== */
-   .header {
-     position: sticky;
-     top: 0;
-     z-index: var(--z-sticky);
-     background: rgba(255, 255, 255, 0.95);
-     backdrop-filter: blur(20px);
-     -webkit-backdrop-filter: blur(20px);
-     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-     transition: all var(--transition-base);
-   }
+  <style>
+    /* ===== CSS CUSTOM PROPERTIES ===== */
+    :root {
+      /* Selira dark theme - matching index.html */
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #1a1a1a;
+      --bg-tertiary: #2a2a2a;
+      --bg-sidebar: #1a1a1a;
+      --text-primary: #ffffff;
+      --text-secondary: #b3b3b3;
+      --text-muted: #888888;
+      --accent: #d4a574;
+      --accent-hover: #c19456;
+      --border-color: #333333;
+      --card-bg: #1e1e1e;
+      --card-border: #333333;
+      --input-bg: #2a2a2a;
+      --input-border: #404040;
+      --button-primary: #d4a574;
+      --button-primary-hover: #c19456;
+      --shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
 
-   .header-container {
-     max-width: 1400px;
-     margin: 0 auto;
-     padding: 0 var(--spacing-lg);
-     width: 100%;
-     overflow: hidden;
-   }
+    /* ===== RESET & BASE STYLES ===== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-   .header-content {
-     display: flex;
-     align-items: center;
-     justify-content: space-between;
-     min-height: 72px;
-     gap: var(--spacing-lg);
-     width: 100%;
-   }
+    html {
+      overflow-x: hidden;
+    }
 
-   /* Logo */
-   .logo {
-     font-family: var(--font-secondary);
-     font-size: var(--font-size-xl);
-     font-weight: 800;
-     text-decoration: none;
-     letter-spacing: -0.02em;
-     background: var(--gradient-primary);
-     -webkit-background-clip: text;
-     -webkit-text-fill-color: transparent;
-     background-clip: text;
-     transition: transform var(--transition-base);
-     flex-shrink: 0;
-   }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      font-size: 14px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      min-height: 100vh;
+    }
 
-   .logo:hover {
-     transform: scale(1.05);
-   }
+    .app-container {
+      display: flex;
+      min-height: 100vh;
+    }
 
-   /* Desktop Navigation Center */
-   .nav-center {
-     display: none;
-     align-items: center;
-     flex: 1;
-     justify-content: center;
-     position: relative;
-     gap: var(--spacing-lg);
-   }
+    /* ===== ACCESSIBILITY ===== */
+    :focus {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
 
-   /* USPs Container - Desktop - Single Random USP */
-   .nav-usps {
-     display: flex;
-     align-items: center;
-     gap: var(--spacing-xl);
-     height: 44px;
-     overflow: hidden;
-     position: absolute;
-     left: 50%;
-     transform: translateX(-50%);
-   }
+    :focus:not(:focus-visible) {
+      outline: none;
+    }
 
-   .usp-item {
-     display: flex;
-     align-items: center;
-     gap: var(--spacing-xs);
-     color: var(--color-gray-dark);
-     font-size: var(--font-size-xs);
-     font-weight: 500;
-     white-space: nowrap;
-   }
+    /* Left Sidebar Navigation (Character.AI style) */
+    .sidebar {
+      width: 220px;
+      background: var(--bg-sidebar);
+      border-right: none;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      left: 0;
+      height: 100vh;
+      top: 0;
+      z-index: 100;
+      overflow-y: auto;
+    }
 
-   .usp-icon {
-     font-size: var(--font-size-lg);
-     color: var(--color-teal);
-   }
-   /* Mobile USP Carousel adjustments */
-   @media (max-width: 768px) {
-     .nav-usps {
-       height: 32px;
-     }
-     .usp-item {
-       font-size: var(--font-size-xs);
-       gap: var(--spacing-xs);
-     }
-     .usp-icon {
-       font-size: var(--font-size-sm);
-     }
-   }
-
-   .nav-search {
-     position: relative;
-     width: 100%;
-     max-width: 700px;
-     margin-left: var(--spacing-xl);
-   }
-
-   .nav-search-input {
-     width: 100%;
-     padding: var(--spacing-sm) var(--spacing-lg);
-     padding-right: calc(var(--spacing-lg) * 2.5);
-     font-size: var(--font-size-sm);
-     font-family: inherit;
-     border: 2px solid var(--color-light-gray);
-     border-radius: var(--radius-full);
-     background: var(--color-white);
-     color: var(--color-navy);
-     transition: all var(--transition-base);
-   }
-
-   .nav-search-input:hover {
-     border-color: var(--color-gray-light);
-   }
-
-   .nav-search-input:focus {
-     border-color: var(--color-teal);
-     box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
-   }
-
-   .nav-search-input::placeholder {
-     color: var(--color-gray-light);
-   }
-
-   .search-submit {
-     position: absolute;
-     right: 6px;
-     top: 50%;
-     transform: translateY(-50%);
-     background: var(--gradient-primary);
-     border: none;
-     border-radius: var(--radius-full);
-     width: 36px;
-     height: 36px;
-     display: flex;
-     align-items: center;
-     justify-content: center;
-     cursor: pointer;
-     transition: all var(--transition-base);
-   }
-
-   .search-submit:hover {
-     transform: translateY(-50%) scale(1.1);
-   }
-
-   .search-submit svg {
-     width: 18px;
-     height: 18px;
-     color: var(--color-white);
-   }
-
-   /* Navigation Links - Desktop */
-   .nav-links {
-     display: none;
-     align-items: center;
-     gap: var(--spacing-xl);
-   }
-
-   .nav-link {
-     color: var(--color-navy);
-     text-decoration: none;
-     font-weight: 500;
-     font-size: var(--font-size-sm);
-     transition: color var(--transition-base);
-     position: relative;
-     padding: var(--spacing-xs) 0;
-   }
-
-   .nav-link::after {
-     content: '';
-     position: absolute;
-     bottom: 0;
-     left: 0;
-     width: 0;
-     height: 2px;
-     background: var(--gradient-primary);
-     transition: width var(--transition-base);
-   }
-
-   .nav-link:hover {
-     color: var(--color-teal);
-   }
-
-   .nav-link:hover::after {
-     width: 100%;
-   }
-
-   /* Buttons */
-   .btn {
-     display: inline-flex;
-     align-items: center;
-     justify-content: center;
-     padding: var(--spacing-sm) var(--spacing-lg);
-     font-size: var(--font-size-sm);
-     font-weight: 600;
-     text-decoration: none;
-     border: none;
-     border-radius: var(--radius-md);
-     cursor: pointer;
-     transition: all var(--transition-base);
-     min-height: var(--touch-target);
-     white-space: nowrap;
-   }
-
-   .btn-primary {
-     background: var(--gradient-primary);
-     color: var(--color-white);
-     box-shadow: var(--shadow-colored);
-   }
-
-   .btn-primary:hover {
-     transform: translateY(-2px);
-     box-shadow: var(--shadow-lg);
-   }
-
-   /* Mobile Navigation Container */
-   .mobile-nav-container {
-     display: flex;
-     align-items: center;
-     gap: var(--spacing-sm);
-     flex-shrink: 0;
-   }
-
-   /* Mobile Chat Button */
-    .mobile-chat-btn {
-      display: none;
+    .sidebar-logo {
+      display: flex;
       align-items: center;
-      justify-content: center;
-      width: var(--touch-target);
-      height: var(--touch-target);
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      color: var(--color-navy);
-      transition: all var(--transition-base);
-      border-radius: var(--radius-md);
-      flex-shrink: 0;
+      gap: 8px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-color);
+      text-decoration: none;
+      color: inherit;
+      transition: opacity 0.2s ease;
+    }
+
+    .sidebar-logo:hover {
+      opacity: 0.8;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .sidebar-logo-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .sidebar-nav {
+      flex: 1;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      border-radius: 8px;
+      margin-bottom: 4px;
+      transition: all 0.2s ease;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .nav-item:hover {
+      background: rgba(212, 165, 116, 0.1);
+      color: var(--accent);
       text-decoration: none;
     }
 
-    .mobile-chat-btn:hover {
-      background: var(--color-light-gray);
+    .nav-item.active {
+      background: rgba(212, 165, 116, 0.15);
+      color: var(--accent);
     }
 
-    .mobile-chat-btn svg {
-      width: 24px;
-      height: 24px;
+    .nav-item-icon {
+      font-size: 16px;
+      width: 20px;
+      text-align: center;
     }
 
-   /* Mobile Search Button - DISABLED */
-   .mobile-search-btn {
-     display: none !important;
-     align-items: center;
-     justify-content: center;
-     width: var(--touch-target);
-     height: var(--touch-target);
-     background: transparent;
-     border: none;
-     cursor: pointer;
-     color: var(--color-navy);
-     transition: all var(--transition-base);
-     border-radius: var(--radius-md);
-     flex-shrink: 0;
-   }
+    /* Main Content Area */
+    .main-content {
+      flex: 1;
+      margin-left: 220px;
+      background: var(--bg-primary);
+      min-height: 100vh;
+    }
 
-   .mobile-search-btn:hover {
-     background: var(--color-light-gray);
-   }
+    /* Mobile Header (hidden on desktop) */
+    .mobile-header {
+      display: none;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
 
-   .mobile-search-btn svg {
-     width: 24px;
-     height: 24px;
-   }
+    .mobile-menu-btn {
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 20px;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 4px;
+      transition: background 0.2s ease;
+    }
 
-   /* Mobile Hamburger Menu */
-   .mobile-menu-btn {
-     display: none;
-     align-items: center;
-     justify-content: center;
-     width: var(--touch-target);
-     height: var(--touch-target);
-     background: transparent;
-     border: none;
-     cursor: pointer;
-     color: var(--color-navy);
-     transition: all var(--transition-base);
-     border-radius: var(--radius-md);
-     position: relative;
-     flex-shrink: 0;
-     z-index: var(--z-menu-overlay);
-   }
+    .mobile-menu-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
 
-   .mobile-menu-btn:hover {
-     background: var(--color-light-gray);
-   }
+    .mobile-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--accent);
+    }
 
-   .hamburger {
-     width: 24px;
-     height: 18px;
-     position: relative;
-     display: flex;
-     flex-direction: column;
-     justify-content: space-between;
-   }
+    /* Top Header (Character.AI style) */
+    .top-header {
+      background: var(--bg-primary);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
 
-   .hamburger span {
-     display: block;
-     height: 2px;
-     width: 100%;
-     background: var(--color-navy);
-     border-radius: 1px;
-     transition: all var(--transition-base);
-   }
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 32px;
+      gap: 24px;
+    }
 
-   .mobile-menu-btn.active .hamburger span:nth-child(1) {
-     transform: rotate(45deg) translate(6px, 6px);
-   }
+    /* Search Container */
+    .search-container {
+      display: flex;
+      align-items: center;
+      flex: 1;
+      max-width: 500px;
+      position: relative;
+    }
 
-   .mobile-menu-btn.active .hamburger span:nth-child(2) {
-     opacity: 0;
-   }
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      z-index: 10;
+      font-size: 16px;
+      color: var(--text-muted);
+    }
 
-   .mobile-menu-btn.active .hamburger span:nth-child(3) {
-     transform: rotate(-45deg) translate(6px, -6px);
-   }
+    .search-input {
+      width: 100%;
+      padding: 12px 16px 12px 48px;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 24px;
+      color: var(--text-primary);
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
 
-   /* Mobile Menu Overlay - Full Screen */
-   .mobile-menu-overlay {
-     position: fixed;
-     top: 0;
-     left: 0;
-     right: 0;
-     bottom: 0;
-     background: rgba(30, 41, 59, 0.95);
-     backdrop-filter: blur(20px);
-     -webkit-backdrop-filter: blur(20px);
-     z-index: var(--z-overlay);
-     opacity: 0;
-     visibility: hidden;
-     transition: all var(--transition-base);
-     display: flex;
-     align-items: center;
-     justify-content: center;
-   }
+    .search-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 165, 116, 0.2);
+    }
 
-   .mobile-menu-overlay.active {
-     opacity: 1;
-     visibility: visible;
-   }
+    .search-input::placeholder {
+      color: var(--text-muted);
+    }
 
-   .mobile-menu-content {
-     background: var(--color-white);
-     border-radius: var(--radius-xl);
-     padding: var(--spacing-3xl) var(--spacing-xl);
-     box-shadow: var(--shadow-xl);
-     max-width: 90vw;
-     width: 100%;
-     max-width: 400px;
-     transform: scale(0.9) translateY(20px);
-     transition: all var(--transition-base);
-   }
+    /* User Controls */
+    .user-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
 
-   .mobile-menu-overlay.active .mobile-menu-content {
-     transform: scale(1) translateY(0);
-   }
+    .user-btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      border: none;
+      cursor: pointer;
+    }
 
-   .mobile-menu-header {
-     text-align: center;
-     margin-bottom: var(--spacing-2xl);
-   }
+    .user-btn.login-btn {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border-color);
+    }
 
-   .mobile-menu-logo {
-     font-family: var(--font-secondary);
-     font-size: var(--font-size-2xl);
-     font-weight: 800;
-     background: var(--gradient-primary);
-     -webkit-background-clip: text;
-     -webkit-text-fill-color: transparent;
-     background-clip: text;
-     margin-bottom: var(--spacing-sm);
-   }
+    .user-btn.login-btn:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-primary);
+      text-decoration: none;
+    }
 
-   .mobile-menu-subtitle {
-     color: var(--color-gray);
-     font-size: var(--font-size-sm);
-   }
+    .user-btn.signup-btn {
+      background: var(--button-primary);
+      color: #000;
+    }
 
-   .mobile-menu-nav {
-     display: flex;
-     flex-direction: column;
-     gap: var(--spacing-md);
-   }
+    .user-btn.signup-btn:hover {
+      background: var(--button-primary-hover);
+      text-decoration: none;
+      color: #000;
+    }
 
-   .mobile-menu-link {
-     display: flex;
-     align-items: center;
-     padding: var(--spacing-md) var(--spacing-lg);
-     color: var(--color-navy);
-     text-decoration: none;
-     font-weight: 500;
-     font-size: var(--font-size-base);
-     transition: all var(--transition-base);
-     border-radius: var(--radius-md);
-     background: var(--color-off-white);
-   }
+    /* Content */
+    .content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
 
-   .mobile-menu-link:hover {
-     background: var(--color-light-gray);
-     color: var(--color-teal);
-     transform: translateX(4px);
-   }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
 
-   .mobile-menu-link.btn-primary {
-     background: var(--gradient-primary);
-     color: var(--color-white);
-     justify-content: center;
-     font-weight: 700;
-     margin-top: var(--spacing-lg);
-   }
+    .results-count {
+      font-size: 16px;
+      color: var(--text-secondary);
+    }
 
-   .mobile-menu-link.btn-primary:hover {
-     background: var(--gradient-primary);
-     transform: translateY(-2px);
-     box-shadow: var(--shadow-lg);
-   }
+    .search-query {
+      color: var(--accent);
+      font-weight: 600;
+    }
 
-   .mobile-menu-link-icon {
-     margin-right: var(--spacing-sm);
-     font-size: var(--font-size-lg);
-   }
+    /* Character Grid */
+    .character-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
 
-   /* Mobile Search Overlay */
-   .mobile-search-overlay {
-     position: fixed;
-     top: 72px;
-     left: 0;
-     right: 0;
-     background: var(--color-white);
-     padding: var(--spacing-lg);
-     box-shadow: var(--shadow-lg);
-     transform: translateY(-100%);
-     opacity: 0;
-     visibility: hidden;
-     transition: all var(--transition-base);
-     z-index: var(--z-dropdown);
-   }
+    .character-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+    }
 
-   .mobile-search-overlay.active {
-     transform: translateY(0);
-     opacity: 1;
-     visibility: visible;
-   }
+    .character-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+      text-decoration: none;
+      color: inherit;
+    }
 
-   .mobile-search-form {
-     display: flex;
-     gap: var(--spacing-sm);
-   }
+    .character-avatar {
+      width: 80px;
+      height: 80px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background: var(--bg-tertiary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      border: 2px solid var(--card-border);
+      overflow: hidden;
+      margin: 0 auto 16px;
+    }
 
-   .mobile-search-input {
-     flex: 1;
-     padding: var(--spacing-md);
-     font-size: var(--font-size-base);
-     font-family: inherit;
-     border: 2px solid var(--color-light-gray);
-     border-radius: var(--radius-md);
-     background: var(--color-white);
-     color: var(--color-navy);
-     transition: all var(--transition-base);
-   }
+    .character-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
 
-   .mobile-search-input:focus {
-     border-color: var(--color-teal);
-     box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
-   }
+    .character-name {
+      font-weight: 600;
+      margin: 0 0 6px 0;
+      font-size: 16px;
+      color: var(--text-primary);
+    }
 
-   /* Desktop Styles */
-   @media (min-width: 769px) {
-     .nav-center {
-       display: flex;
-     }
+    .character-title {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin: 0 0 8px 0;
+      line-height: 1.3;
+    }
 
-     .nav-links {
-       display: flex;
-     }
+    .character-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      justify-content: center;
+      margin-top: auto;
+    }
 
-     .mobile-nav-container {
-       display: none;
-     }
+    .character-tag {
+      display: inline-block;
+      padding: 2px 6px;
+      background: var(--accent);
+      color: #000;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 500;
+    }
 
-     .mobile-chat-btn {
-        display: none !important;
+    /* Loading Animation */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid var(--bg-tertiary);
+      border-top: 3px solid var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 40px auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loading-grid {
+      text-align: center;
+      grid-column: 1 / -1;
+      padding: 40px;
+    }
+
+    /* Empty/Error States */
+    .empty-state, .error-state {
+      text-align: center;
+      padding: 80px 20px;
+      grid-column: 1 / -1;
+      color: var(--text-secondary);
+    }
+
+    .empty-state-icon, .error-state-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    .empty-state h3, .error-state h3 {
+      font-size: 20px;
+      margin: 0 0 8px 0;
+      color: var(--text-primary);
+    }
+
+    /* User-created badge */
+    .user-created-badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(59, 130, 246, 0.9);
+      color: white;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
       }
 
-     .mobile-search-btn {
-       display: none !important;
-     }
+      .sidebar.open {
+        transform: translateX(0);
+      }
 
-     .mobile-menu-btn {
-       display: none !important;
-     }
+      .main-content {
+        margin-left: 0;
+        width: 100%;
+      }
 
-     .mobile-menu-overlay {
-       display: none !important;
-     }
-   }
+      .mobile-header {
+        display: flex;
+      }
 
-   /* Mobile Styles */
-   @media (max-width: 768px) {
-     .header-container {
-       padding: 0 var(--spacing-md);
-     }
+      .header-top {
+        padding: 16px 20px;
+        flex-direction: column;
+        gap: 16px;
+        align-items: stretch;
+      }
 
-     .header-content {
-       min-height: 60px;
-       gap: var(--spacing-sm);
-       padding: 0;
-       display: grid;
-       grid-template-columns: auto 1fr auto auto auto;
-       align-items: center;
-     }
+      .search-container {
+        max-width: none;
+      }
 
-     .logo {
-       font-size: var(--font-size-lg);
-       flex-shrink: 0;
-       min-width: fit-content;
-       grid-column: 1;
-     }
+      .user-controls {
+        justify-content: center;
+      }
 
-     .mobile-nav-container {
-       flex-shrink: 0;
-       min-width: fit-content;
-       display: flex !important;
-       gap: var(--spacing-xs);
-       grid-column: 3 / 6;
-       justify-self: end;
-     }
+      .character-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 16px;
+      }
 
-     .nav-center {
-       display: none !important;
-     }
-
-     .nav-links {
-       display: none !important;
-     }
-
-     .mobile-chat-btn {
-       display: flex;
-       flex-shrink: 0;
-     }
-
-     .mobile-search-btn {
-       display: flex;
-       flex-shrink: 0;
-     }
-
-     .mobile-menu-btn {
-       display: flex;
-       flex-shrink: 0;
-     }
-
-     .mobile-search-overlay {
-       top: 60px;
-     }
-   }
-
-   /* Extra small mobile devices */
-   @media (max-width: 480px) {
-     .header-content {
-       gap: var(--spacing-xs);
-       grid-template-columns: auto 1fr auto auto auto;
-     }
-     
-     .logo {
-       font-size: var(--font-size-base);
-     }
-   }
-
-   /* ===== MAIN CONTENT ===== */
-   .container {
-     max-width: 1200px;
-     margin: 0 auto;
-     padding: var(--spacing-xl) var(--spacing-lg);
-   }
-
-   .search-header {
-     text-align: center;
-     margin-bottom: var(--spacing-2xl);
-   }
-
-   .search-header h1 {
-     font-family: var(--font-secondary);
-     font-size: var(--font-size-3xl);
-     font-weight: 700;
-     color: var(--color-navy);
-     margin-bottom: var(--spacing-sm);
-   }
-
-   .search-query {
-     color: var(--color-teal);
-     font-weight: 600;
-   }
-
-   .search-meta {
-     color: var(--color-gray);
-     font-size: var(--font-size-sm);
-     margin-bottom: var(--spacing-lg);
-   }
-
-   /* Search Results */
-   .search-results {
-     display: grid;
-     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-     gap: var(--spacing-lg);
-     margin-bottom: var(--spacing-2xl);
-   }
-
-   .character-card {
-     background: var(--color-white);
-     border: 2px solid var(--color-light-gray);
-     border-radius: var(--radius-lg);
-     padding: var(--spacing-lg);
-     text-decoration: none;
-     color: inherit;
-     transition: all var(--transition-base);
-     text-align: center;
-     padding-top: var(--spacing-2xl);
-     position: relative;
-   }
-
-   .character-card:hover {
-     border-color: var(--color-teal);
-     transform: translateY(-6px);
-     box-shadow: var(--shadow-xl);
-   }
-
-   .character-avatar {
-     width: 160px;
-     height: 160px;
-     border-radius: var(--radius-full);
-     margin: 0 auto var(--spacing-md);
-     background: var(--color-off-white);
-     display: flex;
-     align-items: center;
-     justify-content: center;
-     font-size: var(--font-size-3xl);
-     border: 3px solid var(--color-light-gray);
-     overflow: hidden;
-     transition: all var(--transition-base);
-     position: relative;
-   }
-
-   .character-card:hover .character-avatar {
-     border-color: var(--color-teal);
-     transform: scale(1.05);
-   }
-
-   .character-avatar img {
-     width: 100%;
-     height: 100%;
-     object-fit: cover;
-     position: absolute;
-     top: 0;
-     left: 0;
-   }
-
-   .character-avatar .avatar-fallback {
-     color: var(--color-gray-light);
-     font-size: 4rem;
-     z-index: 1;
-   }
-
-   .character-name {
-     font-weight: 700;
-     font-size: var(--font-size-base);
-     color: var(--color-navy);
-     margin-bottom: var(--spacing-xs);
-   }
-
-   .character-title {
-     font-size: var(--font-size-sm);
-     color: var(--color-gray);
-   }
-   
-   /* User-created badge */
-   .user-created-badge {
-     position: absolute;
-     top: 8px;
-     right: 8px;
-     background: rgba(59, 130, 246, 0.9);
-     color: white;
-     padding: 4px 8px;
-     border-radius: 12px;
-     font-size: 11px;
-     font-weight: 600;
-     display: flex;
-     align-items: center;
-     gap: 4px;
-     backdrop-filter: blur(4px);
-     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-     max-width: calc(100% - 16px);
-     overflow: hidden;
-     text-overflow: ellipsis;
-     white-space: nowrap;
-   }
-   
-   .user-created-badge .badge-icon {
-     font-size: 12px;
-     flex-shrink: 0;
-   }
-
-   /* Loading State */
-   .loading {
-     display: flex;
-     justify-content: center;
-     align-items: center;
-     padding: var(--spacing-3xl);
-   }
-
-   .loading-spinner {
-     width: 32px;
-     height: 32px;
-     border: 3px solid var(--color-light-gray);
-     border-top-color: var(--color-teal);
-     border-radius: 50%;
-     animation: spin 1s linear infinite;
-   }
-
-   @keyframes spin {
-     to { transform: rotate(360deg); }
-   }
-
-   /* No Results State */
-   .no-results {
-     text-align: center;
-     padding: var(--spacing-3xl);
-     color: var(--color-gray);
-   }
-
-   .no-results h3 {
-     font-family: var(--font-secondary);
-     font-size: var(--font-size-2xl);
-     margin-bottom: var(--spacing-md);
-     color: var(--color-navy);
-   }
-
-   .no-results p {
-     font-size: var(--font-size-base);
-     margin-bottom: var(--spacing-lg);
-   }
-
-   .no-results .btn {
-     margin-top: var(--spacing-md);
-   }
-
-   /* Mobile Adjustments */
-   @media (max-width: 768px) {
-     .container {
-       padding: var(--spacing-lg) var(--spacing-md);
-     }
-
-     .search-header h1 {
-       font-size: var(--font-size-2xl);
-     }
-
-     .search-results {
-       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-       gap: var(--spacing-md);
-     }
-
-     .character-avatar {
-       width: 140px;
-       height: 140px;
-     }
-   }
-
-   /* Accessibility - Reduced Motion */
-   @media (prefers-reduced-motion: reduce) {
-     *,
-     *::before,
-     *::after {
-       animation-duration: 0.01ms !important;
-       animation-iteration-count: 1 !important;
-       transition-duration: 0.01ms !important;
-     }
-   }
-
-   /* ===== FOOTER STYLES ===== */
-   .footer {
-     background: var(--color-white);
-     border-top: 1px solid var(--color-light-gray);
-     padding: var(--spacing-xl) 0;
-     margin-top: var(--spacing-3xl);
-   }
-
-   .footer-container {
-     max-width: 1400px;
-     margin: 0 auto;
-     padding: 0 var(--spacing-lg);
-     text-align: center;
-   }
-
-   .footer-links {
-     display: flex;
-     align-items: center;
-     justify-content: center;
-     gap: var(--spacing-lg);
-     margin-bottom: var(--spacing-md);
-     flex-wrap: wrap;
-   }
-
-   .footer-link {
-     color: var(--color-gray);
-     text-decoration: none;
-     font-size: var(--font-size-sm);
-     font-weight: 500;
-     transition: color var(--transition-base);
-   }
-
-   .footer-link:hover {
-     color: var(--color-teal);
-   }
-
-   .footer-separator {
-     color: var(--color-gray-light);
-     font-size: var(--font-size-sm);
-   }
-
-   .footer-copyright {
-     color: var(--color-gray-light);
-     font-size: var(--font-size-xs);
-     margin: 0;
-   }
-
-   /* Mobile footer adjustments */
-   @media (max-width: 768px) {
-     .footer {
-       padding: var(--spacing-lg) 0;
-       margin-top: var(--spacing-2xl);
-     }
-
-     .footer-container {
-       padding: 0 var(--spacing-md);
-     }
-
-     .footer-links {
-       gap: var(--spacing-md);
-     }
-   }
-     /* Netlify Identity Widget Styling */
-    .netlify-identity-widget,
-    .netlify-identity-widget *,
-    .netlify-identity-widget iframe {
-      z-index: 999999999 !important;
+      .character-avatar {
+        width: 60px;
+        height: 60px;
+        margin-bottom: 12px;
+      }
     }
-    
-    /* Add "by signing up" disclaimer to signup form */
-    .netlify-identity-widget .form[data-goatcounter-click="signup"]::after,
-    .netlify-identity-widget .form.signup::after,
-    .netlify-identity-widget .signUp::after {
-      content: "By signing up, you agree to our Terms and Conditions and Privacy Policy.";
+
+    /* Sidebar Overlay for Mobile */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 99;
+    }
+
+    .sidebar-overlay.open {
       display: block;
-      font-size: 12px;
-      color: #666;
-      margin-top: 12px;
-      text-align: center;
-      line-height: 1.4;
     }
+
   </style>
 
- <!-- Netlify Identity Widget -->
- <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
- 
- <!-- Microsoft Clarity Analytics -->
- <script type="text/javascript">
-   (function(c,l,a,r,i,t,y){
-       c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-       t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-       y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-   })(window, document, "clarity", "script", "svaxez2fed");
- </script>
- 
-   <!-- Google Analytics -->
+  <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-XZXX201WKD"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -1040,11 +550,12 @@
     gtag('js', new Date());
     gtag('config', 'G-XZXX201WKD');
   </script>
+
+  <!-- Netlify Identity Widget -->
+  <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
   <!-- Mobile Navigation System -->
   <script src="/js/mobile-nav.js"></script>
-
-  <!-- Global Upgrade Popups -->
-  <!-- DISABLED: <script src="js/upgrade-popups.js"></script> -->
 
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -1053,502 +564,400 @@
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 </head>
-
 <body>
- <!-- Header -->
- <header class="header" role="banner">
-   <div class="header-container">
-     <div class="header-content">
-       <!-- Logo -->
-       <a href="/" class="logo" aria-label="Narrin AI Home">Narrin AI</a>
+  <div class="app-container">
+    <!-- Left Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+      <!-- Logo -->
+      <a href="/category" class="sidebar-logo">
+        <div class="sidebar-logo-text">Selira</div>
+      </a>
 
-       <!-- Desktop Navigation Center (hidden on mobile) -->
-       <nav class="nav-center" role="navigation" aria-label="Main navigation">
-         <!-- USPs Carousel -->
-         <div class="nav-usps">
-           <div class="usp-item" style="display: none;">
-             <span class="usp-icon">▶️</span>
-             <span>Voice Chat</span>
-           </div>
-           <div class="usp-item" style="display: none;">
-             <span class="usp-icon">🧠</span>
-             <span>Character Memory</span>
-           </div>
-           <div class="usp-item" style="display: none;">
-             <span class="usp-icon">🔐</span>
-             <span>Private Data</span>
-           </div>
-         </div>
-         
-       </nav>
+      <!-- Navigation -->
+      <nav class="sidebar-nav">
+        <a href="/category" class="nav-item">
+          <span class="nav-item-icon">👥</span>
+          <span>Discover</span>
+        </a>
+        <a href="/search-results" class="nav-item active">
+          <span class="nav-item-icon">🔍</span>
+          <span>Search</span>
+        </a>
+        <a href="/my-companions" class="nav-item">
+          <span class="nav-item-icon">💬</span>
+          <span>My Companions</span>
+        </a>
+        <a href="/create" class="nav-item">
+          <span class="nav-item-icon">✨</span>
+          <span>Create</span>
+        </a>
+        <a href="/pricing" class="nav-item">
+          <span class="nav-item-icon">💎</span>
+          <span>Pricing</span>
+        </a>
+      </nav>
+    </aside>
 
-       <!-- Desktop Navigation Links (hidden on mobile) -->
-       <nav class="nav-links" role="navigation" aria-label="Main navigation">
-         <a href="/pricing" class="nav-link">Plans</a>
-         <a href="/my-companions" class="nav-link">My Companions</a>
-         <a href="/news" class="nav-link">News & Insights</a>
-         <a href="#" class="nav-link login-btn" onclick="openLoginModal('login'); return false;">Login</a>
-         <a href="#" class="nav-link signup-btn" onclick="openLoginModal('signup'); return false;">Sign Up</a>
-         <a href="/create" class="btn btn-primary">✨ Create Companion</a>
-       </nav>
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-       <!-- Mobile Navigation Container -->
-       <div class="mobile-nav-container">
-         <!-- Mobile Chat Button -->
-         <a 
-           href="/my-companions" 
-           class="mobile-chat-btn"
-           aria-label="Go to chats"
-         >
-           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-           </svg>
-         </a>
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Mobile Header -->
+      <div class="mobile-header">
+        <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+        <div class="mobile-logo">Selira AI</div>
+      </div>
 
-         <button 
-           class="mobile-search-btn" 
-           id="mobileSearchBtn"
-           aria-label="Open search"
-           aria-expanded="false"
-         >
-           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-             <circle cx="11" cy="11" r="8"></circle>
-             <path d="m21 21-4.35-4.35"></path>
-           </svg>
-         </button>
+      <!-- Top Header -->
+      <header class="top-header">
+        <div class="header-top">
+          <!-- Search -->
+          <div class="search-container">
+            <div class="search-icon">🔍</div>
+            <input
+              type="search"
+              class="search-input"
+              id="mainSearchInput"
+              placeholder="Search by name, hair color, personality, tags..."
+              aria-label="Search characters"
+            >
+          </div>
 
-         <!-- Mobile Hamburger Menu -->
-         <button
-           class="mobile-menu-btn"
-           id="mobileMenuBtn"
-           aria-label="Open navigation menu"
-           aria-expanded="false"
-         >
-           <div class="hamburger">
-             <span></span>
-             <span></span>
-             <span></span>
-           </div>
-         </button>
-       </div>
-     </div>
-   </div>
- </header>
+          <!-- User Controls -->
+          <div class="user-controls">
+            <a href="#" class="user-btn login-btn" onclick="openLoginModal('login'); return false;">Login</a>
+            <a href="#" class="user-btn signup-btn" onclick="openLoginModal('signup'); return false;">Register</a>
+          </div>
+        </div>
+      </header>
 
+      <!-- Content -->
+      <div class="content">
+        <div class="results-header">
+          <div class="results-count" id="resultsCount">Loading characters...</div>
+        </div>
 
- <!-- Mobile Menu Overlay -->
- <div class="mobile-menu-overlay" id="mobileMenuOverlay">
-   <div class="mobile-menu-content">
-     <div class="mobile-menu-header">
-       <div class="mobile-menu-logo">Narrin AI</div>
-       <div class="mobile-menu-subtitle">AI Companion Platform</div>
-     </div>
-     <nav class="mobile-menu-nav" role="navigation" aria-label="Mobile navigation">
-       <a href="/my-companions" class="mobile-menu-link">
-         <span class="mobile-menu-link-icon">💬</span>
-         My Companions
-       </a>
-       <a href="/pricing" class="mobile-menu-link">
-         <span class="mobile-menu-link-icon">💎</span>
-         Plans
-       </a>
-       <a href="/news" class="mobile-menu-link">
-         <span class="mobile-menu-link-icon">📰</span>
-         News & Insights
-       </a>
-       <a href="#" class="mobile-menu-link mobile-login-link" onclick="openLoginModal('login'); return false;">
-         <span class="mobile-menu-link-icon">🔑</span>
-         Login
-       </a>
-       <a href="#" class="mobile-menu-link mobile-signup-link" onclick="openLoginModal('signup'); return false;">
-         <span class="mobile-menu-link-icon">✨</span>
-         Sign Up
-       </a>
-       <a href="/create" class="mobile-menu-link btn-primary">
-         <span class="mobile-menu-link-icon">✨</span>
-         Create Companion
-       </a>
-     </nav>
-   </div>
- </div>
+        <div class="character-grid" id="characterGrid">
+          <div class="loading-grid">
+            <div class="loading"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
 
+  <script>
+    console.log('🔍 SEARCH-RESULTS.HTML SCRIPT LOADED!');
 
- <!-- Main Content -->
- <main class="container">
-   <div class="search-header">
-     <h1>Search Results</h1>
-     <div class="search-meta">
-       <span id="searchQuery" class="search-query"></span>
-       <span id="resultCount"></span>
-     </div>
-   </div>
+    // ===== GLOBAL VARIABLES =====
+    let currentPage = 1;
+    let allCharacters = [];
+    let filteredCharacters = [];
+    let currentSearchQuery = '';
+    const charactersPerPage = 20;
 
-   <div id="loadingState" class="loading">
-     <div class="loading-spinner"></div>
-   </div>
+    // ===== SIDEBAR FUNCTIONALITY =====
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebarOverlay');
 
-   <div id="searchResults" class="search-results" style="display: none;"></div>
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('open');
+    }
 
-   <div id="noResults" class="no-results" style="display: none;">
-     <h3>No characters found</h3>
-     <p>We couldn't find any characters matching your search.</p>
-     <p>Try searching with different keywords or browse our categories.</p>
-     <a href="/" class="btn btn-primary">Browse All Characters</a>
-   </div>
- </main>
+    // Close sidebar when clicking overlay
+    document.getElementById('sidebarOverlay')?.addEventListener('click', function() {
+      toggleSidebar();
+    });
 
- <script>
-  // ===== SEARCH FUNCTIONALITY =====
-   const CHARACTERS_API = '/.netlify/functions/characters';
-   
-   // Get search query from URL parameters
-   const urlParams = new URLSearchParams(window.location.search);
-   const searchQuery = urlParams.get('q') || '';
-
-   // Initialize search on page load
-   document.addEventListener('DOMContentLoaded', () => {
-     if (searchQuery) {
-       document.getElementById('searchQuery').textContent = `"${searchQuery}"`;
-       document.getElementById('navSearchInput').value = searchQuery;
-       performSearch(searchQuery);
-     } else {
-       showNoResults();
-     }
-   });
-
-   // Perform search via Netlify Function
-   async function performSearch(query) {
-     console.log('🔍 Performing search for:', query);
-     
-     try {
-       await searchCharactersViaNetlify(query);
-     } catch (error) {
-       console.error('❌ Search failed:', error);
-       showNoResults();
-     }
-   }
-
-   // Search characters via Netlify Function - SAME AS CATEGORY.HTML
-   async function searchCharactersViaNetlify(query) {
-     // Build API URL to get ALL characters
-     const url = new URL(CHARACTERS_API, window.location.origin);
-     url.searchParams.set('limit', '3000'); // Get ALL characters for searching
-     
-     console.log(`📡 Fetching all characters from Netlify Function for search:`, url.toString());
-     
-     const response = await fetch(url.toString());
-     
-     if (!response.ok) {
-       throw new Error(`HTTP error! status: ${response.status}`);
-     }
-     
-     const data = await response.json();
-     console.log('✅ Netlify Function response:', data);
-     
-     if (!data.success) {
-       throw new Error(data.error || 'Unknown API error');
-     }
-     
-     // Search through all characters
-     const allCharacters = data.characters || [];
-     console.log(`🔍 Searching through ${allCharacters.length} characters for: "${query}"`);
-     
-     // Filter characters based on search query
-     const lowerQuery = query.toLowerCase();
-     const searchResults = allCharacters.filter(character => {
-       const name = (character.Name || '').toLowerCase();
-       const title = (character.Character_Title || '').toLowerCase();
-       const description = (character.Character_Description || '').toLowerCase();
-       const category = (character.Category || '').toLowerCase();
-       
-       return name.includes(lowerQuery) || 
-              title.includes(lowerQuery) || 
-              description.includes(lowerQuery) ||
-              category.includes(lowerQuery);
-     });
-     
-     console.log(`✅ Found ${searchResults.length} matching characters`);
-     displaySearchResults(searchResults, query);
-   }
-
-   // Display search results - UPDATED TO USE SAME AVATAR LOGIC AS CATEGORY.HTML
-   function displaySearchResults(results, query) {
-     const loadingState = document.getElementById('loadingState');
-     const searchResults = document.getElementById('searchResults');
-     const noResults = document.getElementById('noResults');
-     const resultCount = document.getElementById('resultCount');
-     
-     loadingState.style.display = 'none';
-     
-     if (!results || results.length === 0) {
-       showNoResults();
-       return;
-     }
-     
-     // Update result count
-     const count = results.length;
-     resultCount.textContent = `- ${count} character${count !== 1 ? 's' : ''} found`;
-     
-     // Clear previous results
-     searchResults.innerHTML = '';
-     
-     // Create character cards using SAME LOGIC AS CATEGORY.HTML
-     results.forEach((character, index) => {
-       console.log(`🔍 Processing search result ${index + 1}:`, character);
-       const card = createCharacterCard(character);
-       searchResults.appendChild(card);
-     });
-     
-     searchResults.style.display = 'grid';
-     noResults.style.display = 'none';
-     
-     console.log(`✅ Displayed ${results.length} search results`);
-   }
-
-   // Show no results state
-   function showNoResults() {
-     document.getElementById('loadingState').style.display = 'none';
-     document.getElementById('searchResults').style.display = 'none';
-     document.getElementById('noResults').style.display = 'block';
-     document.getElementById('resultCount').textContent = '- 0 characters found';
-   }
-
-   // Avatar URL extraction - EXACT SAME AS CATEGORY.HTML
-   function getAvatarUrl(fields) {
-     // Method 1: Avatar_File (Airtable attachment field) - array format
-     if (fields.Avatar_File && Array.isArray(fields.Avatar_File) && fields.Avatar_File.length > 0) {
-       if (fields.Avatar_File[0] && fields.Avatar_File[0].url) {
-         console.log(`✅ Using Avatar_File attachment for ${fields.Name}:`, fields.Avatar_File[0].url);
-         return fields.Avatar_File[0].url;
-       }
-     }
-     
-     // Method 2: Avatar_URL (Airtable attachment field) - array format
-     if (fields.Avatar_URL && Array.isArray(fields.Avatar_URL) && fields.Avatar_URL.length > 0) {
-       if (fields.Avatar_URL[0] && fields.Avatar_URL[0].url) {
-         console.log(`✅ Using Avatar_URL attachment for ${fields.Name}:`, fields.Avatar_URL[0].url);
-         return fields.Avatar_URL[0].url;
-       }
-     }
-     
-     // Method 3: Direct string Avatar_URL (if Make.com flattens it)
-     if (fields.Avatar_URL && typeof fields.Avatar_URL === 'string' && fields.Avatar_URL.startsWith('http')) {
-       console.log(`✅ Using direct Avatar_URL string for ${fields.Name}:`, fields.Avatar_URL);
-       return fields.Avatar_URL;
-     }
-     
-     // Method 4: Direct string Avatar_File (fallback)
-     if (fields.Avatar_File && typeof fields.Avatar_File === 'string' && fields.Avatar_File.startsWith('http')) {
-       console.log(`✅ Using direct Avatar_File string for ${fields.Name}:`, fields.Avatar_File);
-       return fields.Avatar_File;
-     }
-     
-     console.log(`⚠️ No valid avatar URL found for ${fields.Name}, using fallback`);
-     return null;
-   }
-
-   // Character URL generation - SAME AS CATEGORY.HTML
-   function getCharacterUrl(fields) {
-     if (fields.Character_URL) {
-       return fields.Character_URL;
-     }
-     
-     const slug = fields.Slug || (fields.Name || 'unknown').toLowerCase().replace(/\s+/g, '-');
-     return `chat.html?char=${slug}`;
-   }
-
-   // Create character card - EXACT SAME AS CATEGORY.HTML
-   function createCharacterCard(character) {
-     const card = document.createElement('a');
-     card.className = 'character-card';
-     
-     // Process character data
-     const processedCharacter = {
-       id: character.Character_ID || character.Name || 'unknown',
-       name: character.Name || 'Unknown',
-       title: character.Character_Title || character.title || '',
-       description: character.Character_Description || character.description || '',
-       avatarUrl: getAvatarUrl(character),
-       characterUrl: character.Character_URL || getCharacterUrl(character),
-       createdBy: character.Created_by || null
-     };
-     
-     card.href = processedCharacter.characterUrl;
-     
-     // Add companion limit protection for character cards
-     card.setAttribute('data-original-href', processedCharacter.characterUrl);
-     card.removeAttribute('href');
-     card.style.cursor = 'pointer';
-     
-     // Add user-created badge if Created_by field is not empty
-     let userBadgeHTML = '';
-     if (processedCharacter.createdBy) {
-       userBadgeHTML = `
-         <div class="user-created-badge" title="Created by ${processedCharacter.createdBy}">
-           <span class="badge-icon">👤</span> ${processedCharacter.createdBy}
-         </div>
-       `;
-     }
-     
-     // Create card HTML with proper avatar handling - SAME AS CATEGORY.HTML
-     if (processedCharacter.avatarUrl && processedCharacter.avatarUrl.startsWith('http')) {
-       card.innerHTML = `
-         ${userBadgeHTML}
-         <div class="character-avatar">
-           <img src="${processedCharacter.avatarUrl}" 
-                alt="${processedCharacter.name}" 
-                loading="lazy"
-                onload="console.log('✅ Avatar loaded for ${processedCharacter.name}');"
-                onerror="console.error('❌ Avatar failed for ${processedCharacter.name}'); this.style.display='none'; this.parentNode.innerHTML='👤';">
-         </div>
-         <div class="character-name">${processedCharacter.name}</div>
-         <div class="character-title">${processedCharacter.title}</div>
-       `;
-     } else {
-       card.innerHTML = `
-         ${userBadgeHTML}
-         <div class="character-avatar">👤</div>
-         <div class="character-name">${processedCharacter.name}</div>
-         <div class="character-title">${processedCharacter.title}</div>
-       `;
-       console.log(`⚠️ No valid avatar URL found for ${processedCharacter.name}, using fallback icon`);
-     }
-     
-     // Add click event listener for companion limit protection
-     card.addEventListener('click', function(e) {
-       // Use the global checkCompanionLimitBeforeNavigation function
-       if (window.checkCompanionLimitBeforeNavigation) {
-         window.checkCompanionLimitBeforeNavigation(e);
-       } else {
-         // Fallback if function not loaded yet
-         console.warn('⚠️ Companion limit check function not loaded, allowing navigation');
-         window.location.href = processedCharacter.characterUrl;
-       }
-     });
-     
-     return card;
-   }
-
-   // Handle search form submission
-   document.querySelector('.nav-search')?.addEventListener('submit', (e) => {
-     e.preventDefault();
-     const searchInput = e.target.querySelector('.nav-search-input');
-     const query = searchInput.value.trim();
-     if (query) {
-       window.location.href = `search-results.html?q=${encodeURIComponent(query)}`;
-     }
-   });
-
-   // ===== MOBILE USP CAROUSEL =====
-   let currentUspIndex = 0;
-   const uspTrack = document.getElementById('mobileUspTrack');
-
-   function startUspCarousel() {
-     if (!uspTrack) return;
-     
-     setInterval(() => {
-       currentUspIndex = (currentUspIndex + 1) % 3;
-       uspTrack.style.transform = `translateY(-${currentUspIndex * 33.333}%)`;
-     }, 3000);
-   }
-
-   // ===== MOBILE NAVIGATION =====
-   const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-   const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
-   const mobileSearchBtn = document.getElementById('mobileSearchBtn');
-   const mobileSearchOverlay = document.getElementById('mobileSearchOverlay');
-
-   // Mobile menu toggle
-   if (mobileMenuBtn && mobileMenuOverlay) {
-     mobileMenuBtn.addEventListener('click', () => {
-       mobileMenuBtn.classList.toggle('active');
-       mobileMenuOverlay.classList.toggle('active');
-       document.body.style.overflow = mobileMenuOverlay.classList.contains('active') ? 'hidden' : '';
-     });
-
-     // Close menu when clicking overlay
-     mobileMenuOverlay.addEventListener('click', (e) => {
-       if (e.target === mobileMenuOverlay) {
-         mobileMenuBtn.classList.remove('active');
-         mobileMenuOverlay.classList.remove('active');
-         document.body.style.overflow = '';
-       }
-     });
-   }
-
-   // Mobile search toggle
-   if (mobileSearchBtn && mobileSearchOverlay) {
-     mobileSearchBtn.addEventListener('click', () => {
-       mobileSearchOverlay.classList.toggle('active');
-     });
-
-     // Close search when clicking outside
-     document.addEventListener('click', (e) => {
-       if (!mobileSearchBtn.contains(e.target) && !mobileSearchOverlay.contains(e.target)) {
-         mobileSearchOverlay.classList.remove('active');
-       }
-     });
-   }
-
-   // Mobile search form submission
-   const mobileSearchForm = document.getElementById('mobileSearchForm');
-   if (mobileSearchForm) {
-     mobileSearchForm.addEventListener('submit', (e) => {
-       e.preventDefault();
-       const searchInput = document.getElementById('mobileSearchInput');
-       const query = searchInput.value.trim();
-       if (query) {
-         window.location.href = `search-results.html?q=${encodeURIComponent(query)}`;
-       }
-     });
-   }
-
-   // Initialize mobile features
-   document.addEventListener('DOMContentLoaded', () => {
-     startUspCarousel();
-    
-    // Check login status  
-    const userEmail = localStorage.getItem('user_email');
-    if (userEmail) {
-      const loginBtn = document.getElementById('loginBtn');
-      if (loginBtn) {
-        loginBtn.textContent = 'Profile';
+    // ===== SEARCH FUNCTIONALITY =====
+    function performComprehensiveSearch(characters, query) {
+      if (!query || query.trim() === '') {
+        return characters;
       }
-      const mobileLoginBtn = document.getElementById('mobileLoginBtn');
-      if (mobileLoginBtn) {
-        mobileLoginBtn.innerHTML = '<span class="mobile-menu-link-icon">👤</span>Profile';
+
+      const searchTerms = query.toLowerCase().trim().split(' ').filter(term => term.length > 0);
+      console.log('🔍 Search terms:', searchTerms);
+
+      return characters.filter(character => {
+        const searchableFields = [
+          character.Name || '',
+          character.Character_Title || '',
+          character.Character_Description || '',
+          character.Category || '',
+          character.Hair_Color || '',
+          character.Skin_Tone || '',
+          character.Eye_Color || '',
+          character.Personality || '',
+          character.Occupation || '',
+          character.Age || '',
+          character.Location || '',
+          character.Background || '',
+          character.Style || '',
+          character.Interests || '',
+          character.Relationship_Status || '',
+          character.Created_by || '',
+          ...(Array.isArray(character.Tags) ? character.Tags : []),
+          ...(typeof character.Tags === 'string' ? character.Tags.split(',').map(tag => tag.trim()) : [])
+        ];
+
+        const searchText = searchableFields.join(' ').toLowerCase();
+        return searchTerms.every(term => searchText.includes(term));
+      });
+    }
+
+    // ===== CHARACTER LOADING =====
+    async function loadCharacters() {
+      try {
+        console.log('🚀 Loading all characters for search page...');
+
+        const response = await fetch('/.netlify/functions/characters');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        if (!data.success) {
+          throw new Error(data.error || 'Unknown API error');
+        }
+
+        processCharacterData(data.characters);
+      } catch (error) {
+        console.error('❌ Error loading characters:', error);
+        showErrorState('Failed to load characters. Please try again.', error.message);
       }
     }
-     
-     // Show random USP on page load
-     const uspItems = document.querySelectorAll('.nav-usps .usp-item');
-     if (uspItems.length > 0) {
-       const randomIndex = Math.floor(Math.random() * uspItems.length);
-       uspItems[randomIndex].style.display = 'flex';
-     }
-   });
- </script>
 
- <!-- Footer -->
- <footer class="footer">
-   <div class="footer-container">
-     <div class="footer-links">
-       <a href="/" class="footer-link">Home</a>
-       <span class="footer-separator">•</span>
-       <a href="/my-companions" class="footer-link">My Companions</a>
-       <span class="footer-separator">•</span>
-       <a href="/create" class="footer-link">Create Companion</a>
-       <span class="footer-separator">•</span>
-       <a href="/contact" class="footer-link">Contact</a>
-       <span class="footer-separator">•</span>
-       <a href="/profile" class="footer-link">Profile</a>
-       <span class="footer-separator">•</span>
-       <a href="/privacy-policy" class="footer-link">Privacy Policy</a>
-       <span class="footer-separator">•</span>
-       <a href="/terms-and-conditions" class="footer-link">Terms and Conditions</a>
-     </div>
-     <p class="footer-copyright">© 2025 Narrin AI. All rights reserved.</p>
-   </div>
- </footer>
+    function processCharacterData(data) {
+      let characters = Array.isArray(data) ? data : [];
+      console.log('📦 Processing characters:', characters.length);
+
+      allCharacters = characters.map(character => ({
+        id: character.Character_ID || character.Name || 'unknown',
+        name: character.Name || 'Unknown',
+        title: character.Character_Title || '',
+        description: character.Character_Description || '',
+        avatarUrl: getAvatarUrl(character),
+        characterUrl: character.Character_URL || getCharacterUrl(character),
+        category: character.Category || 'unknown',
+        tags: processTags(character.Tags),
+        createdBy: character.Created_by || null,
+        _original: character
+      }));
+
+      applySearch();
+      updateResultsCount();
+      renderCharacters();
+    }
+
+    function processTags(tagsField) {
+      if (!tagsField) return [];
+      if (Array.isArray(tagsField)) return tagsField;
+      if (typeof tagsField === 'string') {
+        return tagsField.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
+      }
+      return [];
+    }
+
+    function applySearch() {
+      if (!currentSearchQuery || currentSearchQuery.trim() === '') {
+        filteredCharacters = [...allCharacters];
+      } else {
+        const originalCharacters = allCharacters.map(char => char._original);
+        const searchResults = performComprehensiveSearch(originalCharacters, currentSearchQuery);
+        filteredCharacters = allCharacters.filter(char =>
+          searchResults.some(result =>
+            (result.Character_ID && result.Character_ID === char.id) ||
+            (result.Name && result.Name === char.name)
+          )
+        );
+      }
+      filteredCharacters.sort((a, b) => a.name.localeCompare(b.name));
+      currentPage = 1;
+    }
+
+    // ===== AVATAR & URL HELPERS =====
+    function getAvatarUrl(fields) {
+      if (fields.Avatar_URL && Array.isArray(fields.Avatar_URL) && fields.Avatar_URL.length > 0) {
+        if (fields.Avatar_URL[0] && fields.Avatar_URL[0].url) {
+          return fields.Avatar_URL[0].url;
+        }
+      }
+      if (fields.Avatar_URL && typeof fields.Avatar_URL === 'string' && fields.Avatar_URL.startsWith('http')) {
+        return fields.Avatar_URL;
+      }
+      return null;
+    }
+
+    function getCharacterUrl(fields) {
+      if (fields.Character_URL) return fields.Character_URL;
+      const slug = fields.Slug || (fields.Name || 'unknown').toLowerCase().replace(/\s+/g, '-');
+      return `chat.html?char=${slug}`;
+    }
+
+    // ===== CHARACTER CARD CREATION =====
+    function createCharacterCard(character) {
+      const card = document.createElement('a');
+      card.className = 'character-card';
+      card.href = character.characterUrl;
+
+      let userBadgeHTML = '';
+      if (character.createdBy) {
+        userBadgeHTML = `
+          <div class="user-created-badge" title="Created by ${character.createdBy}">
+            <span class="badge-icon">👤</span> ${character.createdBy}
+          </div>
+        `;
+      }
+
+      const tagsHtml = character.tags.length > 0 ? `
+        <div class="character-tags">
+          ${character.tags.slice(0, 3).map(tag => `<span class="character-tag">${tag}</span>`).join('')}
+          ${character.tags.length > 3 ? `<span class="character-tag">+${character.tags.length - 3}</span>` : ''}
+        </div>
+      ` : '';
+
+      if (character.avatarUrl && character.avatarUrl.startsWith('http')) {
+        card.innerHTML = `
+          ${userBadgeHTML}
+          <div class="character-avatar">
+            <img src="${character.avatarUrl}" alt="${character.name}" onerror="this.style.display='none'; this.parentNode.innerHTML='👤';">
+          </div>
+          <div class="character-name">${character.name}</div>
+          <div class="character-title">${character.title}</div>
+          ${tagsHtml}
+        `;
+      } else {
+        card.innerHTML = `
+          ${userBadgeHTML}
+          <div class="character-avatar">👤</div>
+          <div class="character-name">${character.name}</div>
+          <div class="character-title">${character.title}</div>
+          ${tagsHtml}
+        `;
+      }
+
+      return card;
+    }
+
+    // ===== SEARCH EVENT HANDLING =====
+    function setupEventListeners() {
+      const mainSearchInput = document.getElementById('mainSearchInput');
+
+      function handleSearch(query) {
+        if (query && query.trim() !== '') {
+          const newUrl = new URL(window.location);
+          newUrl.searchParams.set('q', query.trim());
+          window.history.pushState({}, '', newUrl);
+
+          currentSearchQuery = query.trim();
+          mainSearchInput.value = currentSearchQuery;
+
+          applySearch();
+          updateResultsCount();
+          renderCharacters();
+        }
+      }
+
+      if (mainSearchInput) {
+        mainSearchInput.addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            const query = mainSearchInput.value.trim();
+            handleSearch(query);
+          }
+        });
+      }
+    }
+
+    function updateResultsCount() {
+      const count = filteredCharacters.length;
+      let countText = '';
+      if (currentSearchQuery) {
+        countText = `${count} characters found for "${currentSearchQuery}"`;
+      } else {
+        countText = `${count} characters available`;
+      }
+
+      const resultsCountElement = document.getElementById('resultsCount');
+      if (resultsCountElement) {
+        resultsCountElement.textContent = countText;
+      }
+    }
+
+    // ===== RENDERING =====
+    function renderCharacters() {
+      const grid = document.getElementById('characterGrid');
+
+      if (filteredCharacters.length === 0) {
+        showEmptyState(currentSearchQuery ?
+          'No characters found matching your search criteria.' :
+          'No characters available.');
+        return;
+      }
+
+      grid.innerHTML = '';
+      filteredCharacters.forEach(character => {
+        const card = createCharacterCard(character);
+        grid.appendChild(card);
+      });
+    }
+
+    function showEmptyState(message) {
+      const grid = document.getElementById('characterGrid');
+      grid.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">🔍</div>
+          <h3>No Characters Found</h3>
+          <p>${message}</p>
+          ${currentSearchQuery ? '<p>Try adjusting your search terms or browse all characters.</p>' : ''}
+        </div>
+      `;
+    }
+
+    function showErrorState(message, details = '') {
+      const grid = document.getElementById('characterGrid');
+      grid.innerHTML = `
+        <div class="error-state">
+          <div class="error-state-icon">⚠️</div>
+          <h3>Error Loading Characters</h3>
+          <p>${message}</p>
+          ${details ? `<p style="font-size: 12px; color: #999; margin-top: 8px;">Details: ${details}</p>` : ''}
+        </div>
+      `;
+    }
+
+    // ===== NETLIFY IDENTITY =====
+    window.openLoginModal = function(mode) {
+      if (window.netlifyIdentity) {
+        if (mode === 'signup') {
+          window.netlifyIdentity.open('signup');
+        } else {
+          window.netlifyIdentity.open('login');
+        }
+      }
+    };
+
+    // ===== INITIALIZATION =====
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('🚀 Search page initializing...');
+
+      // Get search query from URL parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const searchQuery = urlParams.get('q') || '';
+
+      if (searchQuery) {
+        currentSearchQuery = searchQuery;
+        const mainSearchInput = document.getElementById('mainSearchInput');
+        if (mainSearchInput) mainSearchInput.value = searchQuery;
+      }
+
+      setupEventListeners();
+      loadCharacters();
+
+      console.log('✅ Search page initialization complete');
+    });
+  </script>
 </body>
 </html>
