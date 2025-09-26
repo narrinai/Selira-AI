@@ -82,6 +82,9 @@ function getSexyClothing(style, category = 'default') {
     anime: {
       female: ['sexy school uniform', 'revealing outfit', 'short kimono', 'bikini top', 'sexy maid outfit', 'revealing anime clothes']
     },
+    manga: {
+      female: ['sexy manga outfit', 'revealing uniform', 'bikini', 'lingerie style outfit']
+    },
 
     // Cooking & Food - sexy versions
     cooking: {
