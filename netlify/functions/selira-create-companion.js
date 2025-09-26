@@ -282,51 +282,12 @@ BOUNDARIES:
     console.log('🎨 Setting up avatar for character...');
 
     // Generate avatar using existing avatar generation system
-    let avatarUrlToUse = 'https://selira.ai/avatars/placeholder.webp'; // Fallback
+    let avatarUrlToUse = ''; // Empty for now, will be filled later by avatar generation system
 
     try {
-      // Call the generate-companion-avatar function to create a custom avatar
-      console.log('🎨 Generating custom avatar with Replicate...');
-
-      const generateUrl = `${process.env.URL || 'https://selira.ai'}/.netlify/functions/selira-generate-companion-avatar`;
-
-      const avatarPayload = {
-        characterName: name,
-        artStyle: artStyle || 'realistic',
-        sex: sex || 'female',
-        ethnicity: ethnicity || 'white',
-        hairLength: hairLength || 'long',
-        hairColor: hairColor || 'brown',
-        tags: tags || []
-      };
-
-      console.log('📤 Calling selira-generate-companion-avatar with:', avatarPayload);
-
-      const avatarResponse = await fetch(generateUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(avatarPayload),
-        timeout: 120000 // 2 minute timeout for Replicate generation
-      });
-
-      if (avatarResponse.ok) {
-        const avatarResult = await avatarResponse.json();
-        console.log('🎨 Avatar generation response:', avatarResult);
-
-        if (avatarResult.success && avatarResult.imageUrl) {
-          avatarUrlToUse = avatarResult.imageUrl;
-          console.log('✅ Custom avatar generated:', avatarUrlToUse);
-        } else {
-          console.log('⚠️ Avatar generation returned success=false, using fallback');
-          console.log('⚠️ Response details:', avatarResult);
-        }
-      } else {
-        const errorText = await avatarResponse.text();
-        console.log('⚠️ Avatar generation failed with HTTP', avatarResponse.status);
-        console.log('⚠️ Error response:', errorText);
-      }
+      // Temporarily disable avatar generation to fix create flow
+      console.log('⚠️ Avatar generation temporarily disabled - using fallback placeholder');
+      console.log('⚠️ Character will be created without avatar, can be added later');
     } catch (error) {
       console.log('⚠️ Avatar generation error:', error.message, ', using fallback');
     }
