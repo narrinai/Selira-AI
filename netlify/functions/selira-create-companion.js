@@ -531,6 +531,9 @@ BOUNDARIES:
     // Trigger async avatar generation after character is created
     console.log('🎨 Triggering async avatar generation...');
 
+    // Generate title for avatar generation
+    const title = `${appearance.ethnicity || 'Beautiful'} ${appearance.style || 'Realistic'} Companion`;
+
     // Prepare parameters for avatar generation API
     const avatarApiParams = {
       characterName: name,
