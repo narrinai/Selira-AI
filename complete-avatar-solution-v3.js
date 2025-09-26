@@ -194,6 +194,43 @@ async function generateAndDownloadAvatar(companion) {
       const errorText = await avatarResponse.text();
       console.log(`⚠️ Avatar generation failed: ${avatarResponse.status} - ${errorText}`);
 
+      // Handle 503 Service Busy with longer wait
+      if (avatarResponse.status === 503) {
+        console.log(`   🔄 Service busy, waiting 30 seconds before retrying...`);
+        await new Promise(resolve => setTimeout(resolve, 30000));
+
+        const retryResponse = await fetch('https://selira.ai/.netlify/functions/selira-generate-custom-image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            customPrompt: explicitPrompt,
+            characterName: name,
+            category: traits.style === 'anime' ? 'anime-manga' : 'realistic',
+            style: traits.style,
+            shotType: 'portrait',
+            sex: traits.sex,
+            ethnicity: traits.ethnicity,
+            hairLength: traits.hairLength,
+            hairColor: traits.hairColor
+          })
+        });
+
+        if (retryResponse.ok) {
+          const retryResult = await retryResponse.json();
+          if (retryResult.imageUrl) {
+            console.log(`✅ Generated on retry: ${retryResult.imageUrl}`);
+            const filename = `${nameToFilename(name)}-explicit-retry-${Date.now()}.webp`;
+            const downloaded = await downloadImage(retryResult.imageUrl, filename);
+
+            if (downloaded) {
+              const localUrl = `https://selira.ai/avatars/${filename}`;
+              console.log(`🔗 Local URL: ${localUrl}`);
+              return localUrl;
+            }
+          }
+        }
+      }
+
       // Try slightly less explicit prompt for NSFW errors
       if (errorText.includes('NSFW content detected')) {
         console.log(`   🔄 Trying with moderate explicit prompt...`);
@@ -322,16 +359,16 @@ async function main() {
         failCount++;
       }
 
-      // Add delay between requests
+      // Add longer delay between requests due to API rate limits
       if (i < companionsNeedingAvatars.length - 1) {
-        console.log('⏳ Waiting 8 seconds...');
-        await new Promise(resolve => setTimeout(resolve, 8000));
+        console.log('⏳ Waiting 15 seconds...');
+        await new Promise(resolve => setTimeout(resolve, 15000));
       }
 
-      // Take longer break every 5 companions
-      if ((i + 1) % 5 === 0 && i < companionsNeedingAvatars.length - 1) {
-        console.log('☕ Taking a 30 second break...');
-        await new Promise(resolve => setTimeout(resolve, 30000));
+      // Take longer break every 3 companions
+      if ((i + 1) % 3 === 0 && i < companionsNeedingAvatars.length - 1) {
+        console.log('☕ Taking a 60 second break...');
+        await new Promise(resolve => setTimeout(resolve, 60000));
       }
     }
 
