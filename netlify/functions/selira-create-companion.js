@@ -1,3 +1,58 @@
+// Async function to generate avatar in background
+async function generateAvatarAsync(recordId, slug, avatarParams) {
+  console.log('🎨 Background avatar generation started for:', slug);
+
+  try {
+    // Call the avatar generation function
+    const generateUrl = `${process.env.URL || 'https://selira.ai'}/.netlify/functions/selira-generate-companion-avatar`;
+
+    const response = await fetch(generateUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(avatarParams)
+    });
+
+    if (response.ok) {
+      const avatarResult = await response.json();
+
+      if (avatarResult.success && avatarResult.imageUrl) {
+        console.log('✅ Background avatar generated, updating record:', avatarResult.imageUrl);
+
+        // Update the character record with the new avatar
+        const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA || process.env.AIRTABLE_BASE_ID || process.env.AIRTABLE_BASE;
+        const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA || process.env.AIRTABLE_TOKEN;
+
+        const updateResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters/${recordId}`, {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            fields: {
+              Avatar_URL: avatarResult.imageUrl
+            }
+          })
+        });
+
+        if (updateResponse.ok) {
+          console.log('✅ Avatar updated successfully for:', slug);
+        } else {
+          console.error('❌ Failed to update avatar in Airtable:', updateResponse.status);
+        }
+      } else {
+        console.log('⚠️ Background avatar generation failed:', avatarResult);
+      }
+    } else {
+      console.error('❌ Background avatar generation HTTP error:', response.status);
+    }
+  } catch (error) {
+    console.error('❌ Background avatar generation error:', error.message);
+  }
+}
+
 // Helper function to escape strings for JSON safety
 function escapeForJson(str) {
   if (!str) return str;
@@ -281,9 +336,20 @@ BOUNDARIES:
 
     console.log('🎨 Setting up avatar for character...');
 
-    // Generate avatar using existing avatar generation system
-    let avatarUrlToUse = 'https://selira.ai/avatars/placeholder.webp'; // Fallback
+    // Start with placeholder - avatar will be generated asynchronously after companion creation
+    let avatarUrlToUse = 'https://selira.ai/avatars/placeholder.webp';
 
+    // Store avatar generation parameters for async processing
+    const avatarGenerationNeeded = {
+      name: name,
+      sex: sex,
+      description: description,
+      style: style || 'realistic',
+      tags: tags || []
+    };
+
+    // Skip synchronous avatar generation to avoid timeouts
+    /*
     try {
       // Call the generate-companion-avatar function to create a custom avatar
       console.log('🎨 Generating custom avatar with Replicate...');
@@ -302,14 +368,18 @@ BOUNDARIES:
 
       console.log('📤 Calling selira-generate-companion-avatar with:', avatarPayload);
 
+      // Create fetch with proper timeout implementation
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 120000); // 2 minute timeout
+
       const avatarResponse = await fetch(generateUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(avatarPayload),
-        timeout: 120000 // 2 minute timeout for Replicate generation
-      });
+        signal: controller.signal
+      }).finally(() => clearTimeout(timeoutId));
 
       if (avatarResponse.ok) {
         const avatarResult = await avatarResponse.json();
@@ -330,6 +400,7 @@ BOUNDARIES:
     } catch (error) {
       console.log('⚠️ Avatar generation error:', error.message, ', using fallback');
     }
+    */
 
     // Greeting is now stored in description, no need to generate again
 
@@ -487,6 +558,14 @@ BOUNDARIES:
         }
       })
     };
+
+    // Start async avatar generation in background (don't await - fire and forget)
+    if (avatarGenerationNeeded) {
+      console.log('🚀 Starting async avatar generation for:', result.fields.Name);
+      generateAvatarAsync(result.id, result.fields.Slug, avatarGenerationNeeded).catch(error => {
+        console.error('❌ Async avatar generation failed:', error.message);
+      });
+    }
 
   } catch (error) {
     console.error('❌ Create character error:', error);
