@@ -1011,18 +1011,29 @@
     // Load subscription info
     async function loadSubscriptionInfo() {
       try {
-        // Check if user is authenticated using the existing window functions
-        if (!window.isUserAuthenticated || !window.isUserAuthenticated()) {
-          console.log('🔄 User not authenticated, skipping subscription info load');
-          return;
+        // Quick retry logic - check up to 10 times with 100ms intervals (max 1 second wait)
+        let retryCount = 0;
+        const maxRetries = 10;
+
+        while (retryCount < maxRetries) {
+          if (window.isUserAuthenticated && window.isUserAuthenticated()) {
+            const user = window.getCurrentUser();
+            if (user && user.email) {
+              break; // Success, proceed with loading
+            }
+          }
+
+          if (retryCount === maxRetries - 1) {
+            console.log('🔄 Auth0 not ready after retries, skipping subscription info load');
+            return;
+          }
+
+          console.log(`🔄 Auth0 not ready, retry ${retryCount + 1}/${maxRetries}...`);
+          await new Promise(resolve => setTimeout(resolve, 100));
+          retryCount++;
         }
 
         const user = window.getCurrentUser();
-        if (!user) {
-          console.log('🔄 No user data available, retrying in 500ms...');
-          setTimeout(loadSubscriptionInfo, 500);
-          return;
-        }
 
         console.log('🔄 Loading subscription info for user:', user.email);
 
@@ -1300,9 +1311,12 @@
 
     // Initialize profile on page load
     document.addEventListener('DOMContentLoaded', async function() {
-      await loadUserProfile();
-      // Load subscription info after Auth0 is initialized
-      setTimeout(loadSubscriptionInfo, 1000);
+      // Load profile and subscription info in parallel for better performance
+      const profilePromise = loadUserProfile();
+      const subscriptionPromise = loadSubscriptionInfo();
+
+      // Wait for both to complete
+      await Promise.all([profilePromise, subscriptionPromise]);
     });
 
     // TODO: Add authentication integration
