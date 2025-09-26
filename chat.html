@@ -2733,7 +2733,14 @@
           chats: character.chats || '0',
           rating: character.rating || '4.5',
           tags: character.tags || [],
-          voice: character.voice || ''
+          voice: character.voice || '',
+          // Include appearance properties for image generation
+          category: character.category,
+          companion_type: character.companion_type,
+          sex: character.sex,
+          ethnicity: character.ethnicity,
+          hair_length: character.hair_length,
+          hair_color: character.hair_color
         };
 
         // Update UI
@@ -2780,7 +2787,14 @@
         description: character.description || 'Start a conversation with ' + name,
         chats: Math.floor(Math.random() * 100) + 'K',
         rating: (Math.random() * 2 + 3).toFixed(1),
-        tags: character.tags || ['Fantasy', 'Adventure', 'Hero']
+        tags: character.tags || ['Fantasy', 'Adventure', 'Hero'],
+        // Include appearance properties for image generation
+        category: character.category,
+        companion_type: character.companion_type,
+        sex: character.sex,
+        ethnicity: character.ethnicity,
+        hair_length: character.hair_length,
+        hair_color: character.hair_color
       };
       
       updateCharacterDisplay();
@@ -2807,16 +2821,28 @@
     }
 
     function selectCharacter(slug, name, avatar, title) {
+      // Find the full character data from loadedCharacters
+      const fullCharacterData = loadedCharacters.find(char => char.slug === slug) || {};
+
       // Update character and close modal
       currentCharacter = {
         name: name,
         slug: slug,
         avatar: fixAvatarUrl(avatar),
-        creator: '@Selira',
-        description: 'Start a conversation with ' + name,
+        title: title || fullCharacterData.title || '',
+        description: fullCharacterData.description || 'Start a conversation with ' + name,
+        category: fullCharacterData.category || 'Other',
+        creator: fullCharacterData.creator || '@Selira',
         chats: Math.floor(Math.random() * 100) + 'K',
         rating: (Math.random() * 2 + 3).toFixed(1),
-        tags: ['Fantasy', 'Adventure', 'Hero']
+        tags: fullCharacterData.tags || ['Fantasy', 'Adventure', 'Hero'],
+        character_url: fullCharacterData.character_url,
+        // Include appearance properties for image generation
+        companion_type: fullCharacterData.companion_type,
+        sex: fullCharacterData.sex,
+        ethnicity: fullCharacterData.ethnicity,
+        hair_length: fullCharacterData.hair_length,
+        hair_color: fullCharacterData.hair_color
       };
       
       updateCharacterDisplay();
