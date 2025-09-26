@@ -306,8 +306,8 @@ exports.handler = async (event, context) => {
     console.log(`🎨 [${requestId}] Full prompt:`, fullPrompt);
     console.log(`🎌 [${requestId}] Anime style:`, isAnimeStyle);
     
-    // Use Flux Schnell for fast generation with the correct version ID
-    const modelVersion = "5599ed30703defd1d160a25a63321b4dec97101d98b4674bcc56e41f62f35637";
+    // Use Absolute Reality v1.8.1 for uncensored generation
+    const modelVersion = "asiryan/absolutereality-v1.8.1";
 
     // Add progressive delay to prevent rate limiting
     // More requests = longer delay
@@ -337,10 +337,12 @@ exports.handler = async (event, context) => {
           version: modelVersion,
           input: {
             prompt: fullPrompt,
+            negative_prompt: 'low quality, blurry, bad anatomy, multiple people, crowd, group',
             width: 768,
             height: 768,
             num_outputs: 1,
-            num_inference_steps: 4
+            num_inference_steps: 25,
+            guidance_scale: 7.5
           }
         })
       });
