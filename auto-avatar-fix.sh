@@ -18,9 +18,9 @@ if ! command -v node &> /dev/null; then
     exit 1
 fi
 
-# Run the avatar fix script (V2 with adult prompts)
-echo "🎨 Running complete avatar solution V2..." >> "$LOG_FILE"
-node complete-avatar-solution-v2.js >> "$LOG_FILE" 2>&1
+# Run the avatar fix script (V3 with EXPLICIT prompts)
+echo "🔥 Running complete avatar solution V3..." >> "$LOG_FILE"
+node complete-avatar-solution-v3.js >> "$LOG_FILE" 2>&1
 
 # Check if there are new avatar files to commit
 if [ -n "$(git status --porcelain avatars/)" ]; then
