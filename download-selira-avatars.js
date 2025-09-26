@@ -44,7 +44,7 @@ async function downloadSeliraAvatars() {
     // Fetch all characters from Selira AI
     console.log('📋 Fetching characters with Replicate URLs...');
 
-    const response = await fetch('https://selira.ai/.netlify/functions/selira-characters?limit=100');
+    const response = await fetch('https://selira.ai/.netlify/functions/selira-characters?limit=500');
 
     if (!response.ok) {
       throw new Error(`Failed to fetch characters: ${response.status}`);

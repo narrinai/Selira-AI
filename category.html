@@ -3588,68 +3588,96 @@
     // ===== INFINITE SCROLL =====
     function setupInfiniteScroll() {
       const contentArea = document.querySelector('.content-area');
+      console.log('🔄 Setting up infinite scroll, contentArea:', contentArea);
       
       contentArea.addEventListener('scroll', function() {
-        if (this.scrollTop + this.clientHeight >= this.scrollHeight - 100) {
+        const scrollTop = this.scrollTop;
+        const clientHeight = this.clientHeight;
+        const scrollHeight = this.scrollHeight;
+        const threshold = scrollHeight - 100;
+
+        console.log('📏 Scroll event - scrollTop:', scrollTop, 'clientHeight:', clientHeight, 'scrollHeight:', scrollHeight, 'threshold:', threshold);
+
+        if (scrollTop + clientHeight >= threshold) {
+          console.log('🔄 Scroll threshold reached, calling loadMoreCharacters()');
           loadMoreCharacters();
         }
       });
     }
 
     function loadMoreCharacters() {
-      if (isLoading) return;
-      
+      if (isLoading) {
+        console.log('🔄 Already loading, skipping...');
+        return;
+      }
+
       isLoading = true;
       currentPage++;
-      
+
       console.log('📄 Loading page:', currentPage);
-      
+      console.log('📊 Total characters:', filteredCharacters.length);
+      console.log('📊 Characters per page:', charactersPerPage);
+      console.log('📊 Expected start index:', (currentPage - 1) * charactersPerPage);
+
       // Simulate API call delay
       setTimeout(() => {
         const startIndex = (currentPage - 1) * charactersPerPage;
         const endIndex = startIndex + charactersPerPage;
         const pageCharacters = filteredCharacters.slice(startIndex, endIndex);
-        
+
+        console.log('📊 Page characters length:', pageCharacters.length);
+        console.log('📊 Page characters:', pageCharacters.map(c => c.name).slice(0, 3));
+
         if (pageCharacters.length > 0) {
           appendCharacters(pageCharacters);
+          console.log('✅ Appended characters for page:', currentPage);
+        } else {
+          console.log('❌ No more characters to load');
         }
-        
+
         isLoading = false;
       }, 500);
     }
 
     function appendCharacters(characters) {
       const grid = document.getElementById('charactersGrid');
+
+      // Remove existing loading indicator
+      const existingLoader = document.getElementById('loadingMore');
+      if (existingLoader) {
+        existingLoader.remove();
+      }
+
       const newCharactersHTML = characters.map(character => `
         <div class="character-card" onclick="openCharacter('${character.slug}')">
           ${character.avatar ?
             `<img src="${character.avatar}" alt="${character.name}" class="character-image" loading="lazy" onerror="this.onerror=null; this.src='https://selira.ai/avatars/${getWorkingAvatar(character.name, character.sex)}'; console.log('🔧 Fixed broken avatar for ${character.name}');">` :
             `<div class="character-image-placeholder">${character.name.charAt(0)}</div>`
           }
-          
+
           <button class="character-favorite" onclick="event.stopPropagation(); toggleFavorite('${character.id}')">
             ⭐
           </button>
-          
+
           <div class="character-stats-overlay">
             <div class="stat-badge">
               <span>💬</span>
               <span>${character.chats}</span>
             </div>
           </div>
-          
+
           <div class="character-info">
             <h3 class="character-name">${character.name}</h3>
             <div class="character-creator">
               <span>@${character.creator}</span>
             </div>
             <p class="character-description">${character.description}</p>
-            
+
             <!-- Stats for mobile (shown in character-info, hidden overlay on mobile) -->
             <div class="character-stats">
               <span>💬 ${character.chats}</span>
             </div>
-            
+
             <div class="character-tags">
               ${character.tags.slice(0, 3).map(tag => `
                 <span class="character-tag">${tag}</span>
@@ -3658,8 +3686,19 @@
           </div>
         </div>
       `).join('');
-      
+
       grid.insertAdjacentHTML('beforeend', newCharactersHTML);
+
+      // Check if there are more characters to load and add loading indicator
+      const totalLoaded = currentPage * charactersPerPage;
+      if (totalLoaded < filteredCharacters.length) {
+        grid.insertAdjacentHTML('beforeend', `
+          <div class="loading-more" id="loadingMore" style="grid-column: 1 / -1; text-align: center; padding: 20px;">
+            <div class="spinner"></div>
+            <p style="color: var(--text-secondary); margin-top: 10px;">Scroll down to load more...</p>
+          </div>
+        `);
+      }
     }
 
     // ===== MEMORY IMPORT FUNCTIONALITY =====
