@@ -2610,7 +2610,8 @@
             .replace('🏛️ ', '')
             .replace(/[^\w\s-]/g, '') // Remove special chars
             .replace(/\s+/g, '-') // Replace spaces with hyphens
-            .replace(/-+/g, '-'); // Remove duplicate hyphens
+            .replace(/-+/g, '-') // Remove duplicate hyphens
+            .replace(/^-+|-+$/g, ''); // Remove leading and trailing hyphens
           
           // For categories, use /category?filter=, for tags use /tags/
           if (['fantasy', 'anime-manga', 'historical'].includes(tagSlug)) {
@@ -4656,7 +4657,7 @@ Please be thorough and include important details from our conversations.`;
       filterAndDisplayCharacters();
 
       // Update URL
-      const tagSlug = tag.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      const tagSlug = tag.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
       history.pushState({section: 'category', filter: tagSlug}, `${tag} Characters - Selira AI`, `/category?filter=${tagSlug}`);
     }
 
