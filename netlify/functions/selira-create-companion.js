@@ -575,14 +575,6 @@ BOUNDARIES:
       })
     };
 
-    // Start async avatar generation in background (don't await - fire and forget)
-    if (avatarGenerationNeeded) {
-      console.log('🚀 Starting async avatar generation for:', result.fields.Name);
-      generateAvatarAsync(result.id, result.fields.Slug, avatarGenerationNeeded).catch(error => {
-        console.error('❌ Async avatar generation failed:', error.message);
-      });
-    }
-
   } catch (error) {
     console.error('❌ Create character error:', error);
     console.error('❌ Error stack:', error.stack);
