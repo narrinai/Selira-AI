@@ -344,7 +344,7 @@ BOUNDARIES:
       name: name,
       sex: sex,
       description: description,
-      style: artStyle || 'realistic',
+      artStyle: artStyle || 'realistic',
       tags: tags || []
     };
 
@@ -525,6 +525,12 @@ BOUNDARIES:
         console.log('⚠️ Error linking character to user:', error.message);
         // Don't fail the whole operation if user linking fails
       }
+    }
+
+    // Trigger async avatar generation after character is created
+    if (generateAvatar) {
+      console.log('🎨 Triggering async avatar generation...');
+      generateAvatarAsync(result.id, avatarGenerationNeeded);
     }
 
     return {

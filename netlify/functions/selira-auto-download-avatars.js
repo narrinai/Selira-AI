@@ -87,64 +87,40 @@ exports.handler = async (event, context) => {
 
         console.log(`📥 Processing: ${Name} (${Slug})`);
 
-        // Generate local filename
-        const timestamp = Date.now();
-        const filename = `${Slug || Name.toLowerCase().replace(/[^a-z0-9]/g, '-')}-${timestamp}.webp`;
-        const localPath = `/avatars/${filename}`;
-        const fullLocalPath = path.join(process.cwd(), 'avatars', filename);
+        // For now, since Netlify functions can't write to persistent filesystem,
+        // we'll update the Avatar_URL to use a proxy approach or keep the Replicate URL
+        // but mark it as processed by adding a flag or using a different approach
 
-        // Download the image from Replicate
-        console.log(`🌐 Downloading: ${Avatar_URL}`);
-        const imageResponse = await fetch(Avatar_URL);
+        console.log(`🔄 Processing avatar URL for: ${Name}`);
+
+        // Verify the Replicate URL is still valid
+        console.log(`🌐 Verifying: ${Avatar_URL}`);
+        const imageResponse = await fetch(Avatar_URL, { method: 'HEAD' });
 
         if (!imageResponse.ok) {
-          throw new Error(`Failed to download image: ${imageResponse.status} ${imageResponse.statusText}`);
+          throw new Error(`Replicate URL no longer accessible: ${imageResponse.status} ${imageResponse.statusText}`);
         }
 
-        const buffer = await imageResponse.buffer();
+        console.log(`✅ Replicate URL verified and accessible`);
 
-        // Ensure avatars directory exists
-        const avatarsDir = path.join(process.cwd(), 'avatars');
-        try {
-          await fs.access(avatarsDir);
-        } catch (error) {
-          await fs.mkdir(avatarsDir, { recursive: true });
-          console.log('📁 Created avatars directory');
-        }
+        // Since we can't save to local filesystem in Netlify functions,
+        // we'll keep the Replicate URL but could add a flag to track it's been processed
+        // For now, let's just keep the working Replicate URL
+        const processedUrl = Avatar_URL; // Keep the working Replicate URL
 
-        // Save the image locally
-        await fs.writeFile(fullLocalPath, buffer);
-        console.log(`💾 Saved to: ${fullLocalPath}`);
+        // Update Airtable record - for now just verify the URL works
+        // For now, we're not updating the Airtable record since the Replicate URL works
+        // In the future, we could implement a proxy or different storage solution
 
-        // Update Airtable record with local URL
-        const updateUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters/${record.id}`;
-        const updateResponse = await fetch(updateUrl, {
-          method: 'PATCH',
-          headers: {
-            'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            fields: {
-              Avatar_URL: localPath
-            }
-          })
-        });
-
-        if (!updateResponse.ok) {
-          const errorText = await updateResponse.text();
-          throw new Error(`Failed to update Airtable: ${updateResponse.status} ${errorText}`);
-        }
-
-        console.log(`✅ Updated Airtable record for ${Name}`);
+        console.log(`✅ Verified avatar URL for ${Name} - keeping Replicate URL`);
         processed++;
 
         results.push({
           name: Name,
           slug: Slug,
-          localPath: localPath,
           originalUrl: Avatar_URL,
-          status: 'success'
+          status: 'verified',
+          message: 'Replicate URL verified and working'
         });
 
         // Small delay to avoid overwhelming the system
