@@ -578,7 +578,10 @@ BOUNDARIES:
 
   } catch (error) {
     console.error('❌ Create character error:', error);
+    console.error('❌ Error message:', error.message);
     console.error('❌ Error stack:', error.stack);
+    console.error('❌ Error name:', error.name);
+    console.error('❌ Error occurred at line:', error.stack ? error.stack.split('\n')[1] : 'Unknown');
 
     return {
       statusCode: 500,
@@ -589,7 +592,9 @@ BOUNDARIES:
       body: JSON.stringify({
         error: 'Character creation failed',
         details: error.message,
-        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        errorName: error.name,
+        stack: error.stack,
+        fullError: String(error)
       })
     };
   }
