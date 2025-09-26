@@ -528,20 +528,21 @@ BOUNDARIES:
       }
     }
 
+    // TODO: Re-enable async avatar generation after fixing appearance error
     // Trigger async avatar generation after character is created
-    console.log('🎨 Triggering async avatar generation...');
+    console.log('🎨 Skipping async avatar generation temporarily...');
 
     // Generate title for avatar generation
-    const title = `${ethnicity || 'Beautiful'} ${artStyle || 'Realistic'} Companion`;
+    // const title = `${ethnicity || 'Beautiful'} ${artStyle || 'Realistic'} Companion`;
 
     // Prepare parameters for avatar generation API
-    const avatarApiParams = {
-      characterName: name,
-      characterTitle: title,
-      category: 'Romance'
-    };
+    // const avatarApiParams = {
+    //   characterName: name,
+    //   characterTitle: title,
+    //   category: 'Romance'
+    // };
 
-    generateAvatarAsync(result.id, result.fields.Slug, avatarApiParams);
+    // generateAvatarAsync(result.id, result.fields.Slug, avatarApiParams);
 
     return {
       statusCode: 200,
