@@ -72,24 +72,62 @@ function extractTraitsFromDescription(description) {
   };
 }
 
-function getSexyClothing(style) {
-  // From selira-generate-companion-avatar.js - the real explicit prompts
-  const sexyClothing = {
-    anime: [
-      'sexy school uniform', 'revealing magical girl outfit', 'short kimono',
-      'crop top sailor uniform', 'sexy maid outfit', 'revealing anime outfit',
-      'mini skirt and crop top', 'bikini armor', 'bikini top', 'revealing outfit'
-    ],
-    realistic: [
-      'sexy secretary outfit', 'revealing business dress', 'short skirt suit',
-      'unbuttoned blouse', 'sexy office wear', 'revealing clothing', 'sensual pose',
-      'sports bra and short shorts', 'yoga pants and sports bra', 'revealing gym wear',
-      'bikini', 'lingerie style outfit', 'sexy apron only', 'revealing chef outfit'
-    ]
+// Exact clothing options from selira-generate-companion-avatar.js
+function getSexyClothing(style, category = 'default') {
+  const categoryClothing = {
+    // Anime & Manga specific - more revealing
+    'anime-manga': {
+      female: ['sexy school uniform', 'revealing magical girl outfit', 'short kimono', 'crop top sailor uniform', 'sexy maid outfit', 'revealing anime outfit', 'mini skirt and crop top', 'bikini armor']
+    },
+    anime: {
+      female: ['sexy school uniform', 'revealing outfit', 'short kimono', 'bikini top', 'sexy maid outfit', 'revealing anime clothes']
+    },
+
+    // Cooking & Food - sexy versions
+    cooking: {
+      female: ['sexy apron only', 'revealing chef outfit', 'apron over lingerie', 'crop top chef outfit', 'bikini with apron']
+    },
+    food: {
+      female: ['sexy waitress outfit', 'revealing server uniform', 'mini skirt uniform', 'crop top and shorts']
+    },
+
+    // Fitness & Sports - already revealing
+    fitness: {
+      female: ['sports bra and short shorts', 'yoga pants and sports bra', 'revealing gym wear', 'sexy workout outfit', 'bikini fitness wear', 'tight athletic wear']
+    },
+    sports: {
+      female: ['cheerleader outfit', 'volleyball bikini', 'tennis skirt', 'athletic bikini', 'sexy sports uniform']
+    },
+
+    // Professional & Business - sexy professional
+    business: {
+      female: ['sexy secretary outfit', 'revealing business dress', 'short skirt suit', 'unbuttoned blouse', 'sexy office wear']
+    },
+
+    // Default fallback - sexy companions
+    default: {
+      female: ['sexy lingerie', 'revealing dress', 'bikini', 'crop top and mini skirt', 'sexy outfit', 'revealing top', 'sensual clothing']
+    }
   };
 
-  const clothingOptions = sexyClothing[style] || sexyClothing.realistic;
-  return clothingOptions[Math.floor(Math.random() * clothingOptions.length)];
+  // Find matching category or use default
+  let clothingOptions = categoryClothing.default;
+
+  const categoryLower = (category || 'default').toLowerCase();
+  if (categoryClothing[categoryLower]) {
+    clothingOptions = categoryClothing[categoryLower];
+  } else {
+    for (const [key, value] of Object.entries(categoryClothing)) {
+      if (categoryLower.includes(key) || key.includes(categoryLower)) {
+        clothingOptions = value;
+        break;
+      }
+    }
+  }
+
+  // Select female clothing (since all companions are female)
+  const femaleClothing = clothingOptions.female || categoryClothing.default.female;
+  return femaleClothing[Math.floor(Math.random() * femaleClothing.length)];
 }
 
 async function generateAndDownloadAvatar(companion) {
@@ -100,16 +138,23 @@ async function generateAndDownloadAvatar(companion) {
     const traits = extractTraitsFromDescription(companion.description);
     console.log(`   Traits: ${traits.style}, ${traits.sex}, ${traits.ethnicity}, ${traits.hairLength} ${traits.hairColor} hair`);
 
-    // Get random sexy clothing
-    const sexyClothing = getSexyClothing(traits.style);
+    // Get random sexy clothing based on companion description (extract category)
+    const category = companion.description.toLowerCase().includes('cooking') ? 'cooking' :
+                     companion.description.toLowerCase().includes('fitness') ? 'fitness' :
+                     companion.description.toLowerCase().includes('business') ? 'business' : 'default';
+
+    const sexyClothing = getSexyClothing(traits.style, category);
     console.log(`   Clothing: ${sexyClothing}`);
 
-    // EXPLICIT prompts from the real /create flow - SINGLE PERSON ONLY
+    // EXACT prompts from selira-generate-companion-avatar.js createRealisticPortraitPrompt()
     let explicitPrompt;
-    if (traits.style === 'anime') {
-      explicitPrompt = `single sexy anime girl, ${traits.ethnicity} ${traits.sex}, seductive pose, ${sexyClothing}, revealing outfit, detailed anime art, attractive, sensual expression, alluring, exposed skin, sexy pose, solo character, one person only, single woman`;
+    const isAnimeCategory = traits.style === 'anime';
+    const ethnicGender = `${traits.ethnicity} ${traits.sex}`;
+
+    if (isAnimeCategory) {
+      explicitPrompt = `Sexy anime girl, ${ethnicGender}, seductive pose, revealing outfit, detailed anime art, attractive, flirtatious expression, seductive pose, wearing ${sexyClothing}, attractive body, bedroom background, anime art style, sexy anime character, vibrant colors, attractive body, sensual lighting, digital anime art, ecchi style, full body or upper body, seductive composition, high quality anime artwork, detailed facial features, anime eyes, perfect anime anatomy, suggestive pose, single character, solo, one person only`;
     } else {
-      explicitPrompt = `single beautiful sexy ${traits.ethnicity} ${traits.sex}, seductive expression, ${sexyClothing}, revealing clothing, sensual pose, attractive, photorealistic, exposed skin, alluring gaze, sexy confident look, seductive body language, solo person, one woman only, single character`;
+      explicitPrompt = `Beautiful sexy ${ethnicGender}, seductive expression, revealing clothing, sensual pose, attractive, photorealistic, flirtatious expression, seductive pose, wearing ${sexyClothing}, attractive body, bedroom or intimate setting, full body or upper body shot, sensual photography, attractive model, soft romantic lighting, glamour photography style, alluring pose, eye contact, sharp focus, professional photography, shallow depth of field, sexy photoshoot, single person, solo, one woman only`;
     }
 
     console.log(`   🔥 EXPLICIT PROMPT: ${explicitPrompt}`);
@@ -154,7 +199,13 @@ async function generateAndDownloadAvatar(companion) {
         console.log(`   🔄 Trying with moderate explicit prompt...`);
         await new Promise(resolve => setTimeout(resolve, 5000));
 
-        const moderatePrompt = `attractive ${traits.ethnicity} ${traits.sex}, seductive pose, revealing clothing, sensual expression, appealing look, confident pose, attractive features, alluring gaze`;
+        // Use more conservative version of real /create prompts
+        let moderatePrompt;
+        if (isAnimeCategory) {
+          moderatePrompt = `anime girl, ${ethnicGender}, attractive pose, anime art style, detailed anime art, appealing expression, anime character, vibrant colors, attractive body, digital anime art, upper body, anime artwork, detailed facial features, anime eyes, single character, solo`;
+        } else {
+          moderatePrompt = `Beautiful ${ethnicGender}, attractive expression, appealing clothing, confident pose, attractive, photorealistic, professional pose, attractive body, portrait photography, attractive model, professional photography, single person, solo, one woman only`;
+        }
 
         const conservativeResponse = await fetch('https://selira.ai/.netlify/functions/selira-generate-custom-image', {
           method: 'POST',
