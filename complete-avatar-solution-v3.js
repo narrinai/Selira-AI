@@ -162,7 +162,7 @@ async function generateAndDownloadAvatar(companion) {
 
     console.log(`   🔥 EXPLICIT PROMPT: ${explicitPrompt}`);
 
-    const avatarResponse = await fetch('https://selira.ai/.netlify/functions/generate-custom-image', {
+    const avatarResponse = await fetch('https://selira.ai/.netlify/functions/generate-avatar-replicate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -202,7 +202,7 @@ async function generateAndDownloadAvatar(companion) {
         console.log(`   🔄 Service busy, waiting 30 seconds before retrying...`);
         await new Promise(resolve => setTimeout(resolve, 30000));
 
-        const retryResponse = await fetch('https://selira.ai/.netlify/functions/generate-custom-image', {
+        const retryResponse = await fetch('https://selira.ai/.netlify/functions/generate-avatar-replicate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -247,7 +247,7 @@ async function generateAndDownloadAvatar(companion) {
           moderatePrompt = `Beautiful ${ethnicGender}, attractive expression, appealing clothing, confident pose, attractive, photorealistic, professional pose, attractive body, portrait photography, attractive model, professional photography, single person, solo, one woman only`;
         }
 
-        const conservativeResponse = await fetch('https://selira.ai/.netlify/functions/generate-custom-image', {
+        const conservativeResponse = await fetch('https://selira.ai/.netlify/functions/generate-avatar-replicate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
