@@ -104,12 +104,12 @@ async function generateAndDownloadAvatar(companion) {
     const sexyClothing = getSexyClothing(traits.style);
     console.log(`   Clothing: ${sexyClothing}`);
 
-    // EXPLICIT prompts from the real /create flow
+    // EXPLICIT prompts from the real /create flow - SINGLE PERSON ONLY
     let explicitPrompt;
     if (traits.style === 'anime') {
-      explicitPrompt = `Sexy anime girl, ${traits.ethnicity} ${traits.sex}, seductive pose, ${sexyClothing}, revealing outfit, detailed anime art, attractive, sensual expression, alluring, exposed skin, sexy pose`;
+      explicitPrompt = `single sexy anime girl, ${traits.ethnicity} ${traits.sex}, seductive pose, ${sexyClothing}, revealing outfit, detailed anime art, attractive, sensual expression, alluring, exposed skin, sexy pose, solo character, one person only, single woman`;
     } else {
-      explicitPrompt = `Beautiful sexy ${traits.ethnicity} ${traits.sex}, seductive expression, ${sexyClothing}, revealing clothing, sensual pose, attractive, photorealistic, exposed skin, alluring gaze, sexy confident look, seductive body language`;
+      explicitPrompt = `single beautiful sexy ${traits.ethnicity} ${traits.sex}, seductive expression, ${sexyClothing}, revealing clothing, sensual pose, attractive, photorealistic, exposed skin, alluring gaze, sexy confident look, seductive body language, solo person, one woman only, single character`;
     }
 
     console.log(`   🔥 EXPLICIT PROMPT: ${explicitPrompt}`);
