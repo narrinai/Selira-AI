@@ -344,7 +344,7 @@ BOUNDARIES:
       name: name,
       sex: sex,
       description: description,
-      style: style || 'realistic',
+      style: artStyle || 'realistic',
       tags: tags || []
     };
 
