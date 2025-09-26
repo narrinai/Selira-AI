@@ -63,7 +63,7 @@ exports.handler = async (event, context) => {
       },
       body: JSON.stringify({
         fields: {
-          avatar_url: avatarUrl
+          Avatar_URL: avatarUrl
         }
       })
     });
