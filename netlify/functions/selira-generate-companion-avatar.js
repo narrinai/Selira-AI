@@ -61,8 +61,8 @@ exports.handler = async (event, context) => {
     console.log('🎨 Generated prompt:', prompt);
     console.log('👤 Detected gender:', gender);
     
-    // Use latest FLUX.1 [schnell] for fast generation
-    const modelVersion = "5599ed30703defd1d160a25a63321b4dec97101d98b4674bcc56e41f62f35637";
+    // Use stable FLUX.1 dev model for reliable generation
+    const modelVersion = "5ceffeeba8edcc1ea8bc0bb6b3cc4b6a7fb44d8c305c4af33a7c8b4aa8a6ff34";
     
     // Call Replicate API
     const replicateResponse = await fetch('https://api.replicate.com/v1/predictions', {
@@ -78,7 +78,8 @@ exports.handler = async (event, context) => {
           width: 768,
           height: 768,
           num_outputs: 1,
-          num_inference_steps: 4
+          num_inference_steps: 25,
+          guidance_scale: 3.5
         }
       })
     });
@@ -92,10 +93,10 @@ exports.handler = async (event, context) => {
     const prediction = await replicateResponse.json();
     console.log('📊 Prediction created:', prediction.id);
     
-    // Wait for the prediction to complete (max 10 seconds for Flux Schnell)
+    // Wait for the prediction to complete (max 45 seconds for FLUX dev)
     let result = prediction;
     let attempts = 0;
-    const maxAttempts = 10;
+    const maxAttempts = 45;
     
     while (result.status !== 'succeeded' && result.status !== 'failed' && attempts < maxAttempts) {
       await new Promise(resolve => setTimeout(resolve, 1000));
