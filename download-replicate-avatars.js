@@ -79,8 +79,9 @@ async function downloadAndUpdateAvatar(character, index, total) {
     await fs.writeFile(fullLocalPath, buffer);
     console.log(`💾 Saved to: ${fullLocalPath}`);
 
-    // Update Airtable record with local URL
-    const updateResult = await updateCharacterAvatar(id, localPath);
+    // Update Airtable record with full URL
+    const fullUrl = `https://selira.ai${localPath}`;
+    const updateResult = await updateCharacterAvatar(id, fullUrl);
 
     if (updateResult.success) {
       console.log(`✅ Updated ${Name} with local avatar URL`);

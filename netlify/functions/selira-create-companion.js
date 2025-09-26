@@ -529,18 +529,16 @@ BOUNDARIES:
     }
 
     // Trigger async avatar generation after character is created
-    if (generateAvatar) {
-      console.log('🎨 Triggering async avatar generation...');
+    console.log('🎨 Triggering async avatar generation...');
 
-      // Prepare parameters for avatar generation API
-      const avatarApiParams = {
-        characterName: name,
-        characterTitle: title,
-        category: category || 'Romance'
-      };
+    // Prepare parameters for avatar generation API
+    const avatarApiParams = {
+      characterName: name,
+      characterTitle: title,
+      category: category || 'Romance'
+    };
 
-      generateAvatarAsync(result.id, result.fields.Slug, avatarApiParams);
-    }
+    generateAvatarAsync(result.id, result.fields.Slug, avatarApiParams);
 
     return {
       statusCode: 200,
