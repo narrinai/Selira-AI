@@ -1900,12 +1900,21 @@
       document.getElementById('currentCharacterName').textContent = currentCharacter.name;
       document.getElementById('currentCharacterStatus').textContent = currentCharacter.creator;
       const headerImage = document.getElementById('characterImage');
-      if (currentCharacter.avatar && currentCharacter.avatar !== '/avatars/placeholder.webp') {
-        headerImage.src = fixAvatarUrl(currentCharacter.avatar);
-        headerImage.style.display = 'block';
-        headerImage.onerror = function() { this.style.display = 'none'; };
-      } else {
-        headerImage.style.display = 'none';
+      if (headerImage) {
+        if (currentCharacter.avatar && currentCharacter.avatar !== '/avatars/placeholder.webp') {
+          console.log('🖼️ Setting header avatar:', currentCharacter.avatar);
+          headerImage.src = fixAvatarUrl(currentCharacter.avatar);
+          headerImage.style.display = 'block';
+          headerImage.onerror = function() {
+            console.warn('❌ Header avatar failed to load:', currentCharacter.avatar);
+            this.src = '/avatars/default-avatar.webp';
+            this.style.display = 'block';
+          };
+        } else {
+          console.warn('⚠️ No header avatar URL, using default');
+          headerImage.src = '/avatars/default-avatar.webp';
+          headerImage.style.display = 'block';
+        }
       }
       
       // Update sidebar
@@ -1914,12 +1923,21 @@
       const greeting = extractGreetingFromDescription(currentCharacter.description) || currentCharacter.description || '';
       document.getElementById('sidebarCharacterDescription').innerHTML = greeting.replace(/\\n\\n/g, '<br><br>').replace(/\\n/g, '<br>');
       const sidebarImage = document.getElementById('sidebarCharacterImage');
-      if (currentCharacter.avatar && currentCharacter.avatar !== '/avatars/placeholder.webp') {
-        sidebarImage.src = fixAvatarUrl(currentCharacter.avatar);
-        sidebarImage.style.display = 'block';
-        sidebarImage.onerror = function() { this.style.display = 'none'; };
-      } else {
-        sidebarImage.style.display = 'none';
+      if (sidebarImage) {
+        if (currentCharacter.avatar && currentCharacter.avatar !== '/avatars/placeholder.webp') {
+          console.log('🖼️ Setting sidebar avatar:', currentCharacter.avatar);
+          sidebarImage.src = fixAvatarUrl(currentCharacter.avatar);
+          sidebarImage.style.display = 'block';
+          sidebarImage.onerror = function() {
+            console.warn('❌ Sidebar avatar failed to load:', currentCharacter.avatar);
+            this.src = '/avatars/default-avatar.webp';
+            this.style.display = 'block';
+          };
+        } else {
+          console.warn('⚠️ No sidebar avatar URL, using default');
+          sidebarImage.src = '/avatars/default-avatar.webp';
+          sidebarImage.style.display = 'block';
+        }
       }
       document.getElementById('sidebarCharacterChats').textContent = '0';
       
