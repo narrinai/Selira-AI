@@ -59,8 +59,8 @@ exports.handler = async (event, context) => {
     console.log('🎨 Generated prompt:', prompt);
     console.log('👤 Detected gender:', gender);
     
-    // Use Flux Schnell for faster generation (3-8 seconds)
-    const model = "black-forest-labs/flux-schnell";
+    // Use RealVisXL for uncensored explicit content generation
+    const model = "lucataco/realvisxl-v3.0:fbac55e5209ea15540a64f5c77ed77f14fe5b66b7e5648df8ecec80ea8c8b9dd9";
     
     // Call Replicate API
     const replicateResponse = await fetch('https://api.replicate.com/v1/predictions', {
@@ -73,10 +73,12 @@ exports.handler = async (event, context) => {
         version: model,
         input: {
           prompt: prompt,
+          negative_prompt: 'low quality, blurry, bad anatomy, multiple people, crowd, group, deformed, extra limbs',
           width: 768,
           height: 768,
           num_outputs: 1,
-          num_inference_steps: 4
+          num_inference_steps: 25,
+          guidance_scale: 7.5
         }
       })
     });
