@@ -241,6 +241,12 @@
       transform: translateY(-50%);
       color: var(--text-muted);
       font-size: 18px;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    .search-icon:hover {
+      color: var(--accent);
     }
 
     .user-actions {
@@ -2226,10 +2232,22 @@
       // Search functionality
       const searchInput = document.getElementById('searchInput');
       if (searchInput) {
-        searchInput.addEventListener('input', function() {
-          currentFilters.search = this.value.toLowerCase();
-          applyFilters();
+        searchInput.addEventListener('keyup', function(e) {
+          if (e.key === 'Enter' && this.value.trim()) {
+            window.location.href = `/search-results?q=${encodeURIComponent(this.value.trim())}`;
+          }
         });
+
+        // Also add click listener to search icon
+        const searchIcon = document.querySelector('.search-icon');
+        if (searchIcon) {
+          searchIcon.addEventListener('click', function() {
+            const query = searchInput.value.trim();
+            if (query) {
+              window.location.href = `/search-results?q=${encodeURIComponent(query)}`;
+            }
+          });
+        }
       }
 
       // Initialize toggles

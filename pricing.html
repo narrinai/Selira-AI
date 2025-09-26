@@ -252,6 +252,12 @@
       transform: translateY(-50%);
       color: var(--text-muted);
       font-size: 16px;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    .search-icon:hover {
+      color: var(--accent);
     }
     
     .search-input {
@@ -968,10 +974,33 @@
     function toggleSidebar() {
       const sidebar = document.getElementById('sidebar');
       const overlay = document.getElementById('sidebarOverlay');
-      
+
       sidebar.classList.toggle('open');
       overlay.classList.toggle('open');
     }
+
+    // Initialize search functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const searchInput = document.getElementById('searchInput');
+      if (searchInput) {
+        searchInput.addEventListener('keyup', function(e) {
+          if (e.key === 'Enter' && this.value.trim()) {
+            window.location.href = `/search-results?q=${encodeURIComponent(this.value.trim())}`;
+          }
+        });
+
+        // Also add click listener to search icon
+        const searchIcon = document.querySelector('.search-icon');
+        if (searchIcon) {
+          searchIcon.addEventListener('click', function() {
+            const query = searchInput.value.trim();
+            if (query) {
+              window.location.href = `/search-results?q=${encodeURIComponent(query)}`;
+            }
+          });
+        }
+      }
+    });
     
     // Close sidebar when clicking overlay
     document.getElementById('sidebarOverlay').addEventListener('click', function() {
