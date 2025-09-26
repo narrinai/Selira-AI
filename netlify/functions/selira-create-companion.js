@@ -532,13 +532,13 @@ BOUNDARIES:
     console.log('🎨 Triggering async avatar generation...');
 
     // Generate title for avatar generation
-    const title = `${appearance.ethnicity || 'Beautiful'} ${appearance.style || 'Realistic'} Companion`;
+    const title = `${ethnicity || 'Beautiful'} ${artStyle || 'Realistic'} Companion`;
 
     // Prepare parameters for avatar generation API
     const avatarApiParams = {
       characterName: name,
       characterTitle: title,
-      category: category || 'Romance'
+      category: 'Romance'
     };
 
     generateAvatarAsync(result.id, result.fields.Slug, avatarApiParams);
