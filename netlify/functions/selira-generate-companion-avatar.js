@@ -61,8 +61,8 @@ exports.handler = async (event, context) => {
     console.log('🎨 Generated prompt:', prompt);
     console.log('👤 Detected gender:', gender);
     
-    // Use Flux Schnell for faster generation (3-8 seconds)
-    const modelVersion = "f2ab8a5e03de41b676ae08fdd8d415e95b4c6a9ac5b2c49bdfdc2e10117e6b5f";
+    // Use latest FLUX.1 [schnell] for fast generation
+    const modelVersion = "5599ed30703defd1d160a25a63321b4dec97101d98b4674bcc56e41f62f35637";
     
     // Call Replicate API
     const replicateResponse = await fetch('https://api.replicate.com/v1/predictions', {
