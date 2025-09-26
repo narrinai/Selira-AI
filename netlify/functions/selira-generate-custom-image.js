@@ -3,7 +3,7 @@
 
 // Track recent requests to prevent rapid-fire calls
 const recentRequests = new Map();
-const REQUEST_COOLDOWN_MS = 5000; // 5 second cooldown between requests
+const REQUEST_COOLDOWN_MS = 1000; // 1 second cooldown between requests
 let globalRequestCount = 0; // Track total requests in this instance
 let activeReplicateRequests = 0; // Track concurrent Replicate API calls
 
@@ -316,22 +316,8 @@ exports.handler = async (event, context) => {
     console.log(`⏱️ [${requestId}] Waiting ${progressiveDelay}ms before API call (request #${globalRequestCount})`);
     await new Promise(resolve => setTimeout(resolve, progressiveDelay));
 
-    // Check if too many concurrent Replicate requests
-    if (activeReplicateRequests >= 2) {
-      console.error(`❌ [${requestId}] Too many concurrent Replicate requests (${activeReplicateRequests})`);
-      return {
-        statusCode: 503,
-        headers: {
-          ...corsHeaders,
-          'Content-Type': 'application/json',
-          'Retry-After': '5'
-        },
-        body: JSON.stringify({
-          error: 'Service temporarily busy. Please try again in a few seconds.',
-          retryAfter: 5
-        })
-      };
-    }
+    // Remove concurrent request limit for better throughput
+    console.log(`📊 [${requestId}] Current active Replicate requests: ${activeReplicateRequests}`);
 
     // Call Replicate API
     console.log(`📡 [${requestId}] Calling Replicate API with model version:`, modelVersion);
