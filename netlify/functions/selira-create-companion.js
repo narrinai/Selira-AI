@@ -285,11 +285,37 @@ BOUNDARIES:
     let avatarUrlToUse = ''; // Empty for now, will be filled later by avatar generation system
 
     try {
-      // Temporarily disable avatar generation to fix create flow
-      console.log('⚠️ Avatar generation temporarily disabled - using fallback placeholder');
-      console.log('⚠️ Character will be created without avatar, can be added later');
+      console.log('🖼️ Generating companion avatar using companion traits...');
+
+      // Call the avatar generation function with companion traits
+      const avatarResponse = await fetch('https://selira.ai/.netlify/functions/selira-generate-custom-image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customPrompt: 'professional headshot portrait, looking at camera, neutral expression',
+          characterName: name,
+          category: artStyle === 'anime' ? 'anime-manga' : 'realistic',
+          style: artStyle,
+          shotType: 'portrait',
+          sex: sex,
+          ethnicity: ethnicity,
+          hairLength: hairLength,
+          hairColor: hairColor
+        })
+      });
+
+      if (avatarResponse.ok) {
+        const avatarResult = await avatarResponse.json();
+        if (avatarResult.imageUrl) {
+          avatarUrlToUse = avatarResult.imageUrl;
+          console.log('✅ Generated companion avatar:', avatarUrlToUse);
+        }
+      } else {
+        console.log('⚠️ Avatar generation failed, companion will be created without avatar');
+      }
+
     } catch (error) {
-      console.log('⚠️ Avatar generation error:', error.message, ', using fallback');
+      console.log('⚠️ Avatar generation error:', error.message, ', creating companion without avatar');
     }
 
     // Greeting is now stored in description, no need to generate again
