@@ -3587,16 +3587,16 @@
 
     // ===== INFINITE SCROLL =====
     function setupInfiniteScroll() {
-      const contentArea = document.querySelector('.content-area');
-      console.log('🔄 Setting up infinite scroll, contentArea:', contentArea);
-      
-      contentArea.addEventListener('scroll', function() {
-        const scrollTop = this.scrollTop;
-        const clientHeight = this.clientHeight;
-        const scrollHeight = this.scrollHeight;
-        const threshold = scrollHeight - 100;
+      // Try different scroll containers - window is most reliable
+      console.log('🔄 Setting up infinite scroll on window');
 
-        console.log('📏 Scroll event - scrollTop:', scrollTop, 'clientHeight:', clientHeight, 'scrollHeight:', scrollHeight, 'threshold:', threshold);
+      window.addEventListener('scroll', function() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const clientHeight = window.innerHeight;
+        const scrollHeight = document.documentElement.scrollHeight;
+        const threshold = scrollHeight - 200; // Increased threshold
+
+        console.log('📏 Window scroll event - scrollTop:', scrollTop, 'clientHeight:', clientHeight, 'scrollHeight:', scrollHeight, 'threshold:', threshold);
 
         if (scrollTop + clientHeight >= threshold) {
           console.log('🔄 Scroll threshold reached, calling loadMoreCharacters()');
