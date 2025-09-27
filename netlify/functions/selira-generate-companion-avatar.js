@@ -61,8 +61,8 @@ exports.handler = async (event, context) => {
     console.log('🎨 Generated prompt:', prompt);
     console.log('👤 Detected gender:', gender);
     
-    // Use latest FLUX.1 dev model for reliable generation
-    const modelVersion = "6e4a938f85952bdabcc15aa329178c4d681c52bf25a0342403287dc26944661d";
+    // Use uncensored FLUX model for sexy companion content
+    const modelVersion = "aisha-ai-official/flux.1dev-uncensored-msfluxnsfw-v3:b477d8fc3a62e591c6224e10020538c4a9c340fb1f494891aff60019ffd5bc48";
     
     // Call Replicate API
     const replicateResponse = await fetch('https://api.replicate.com/v1/predictions', {
@@ -77,9 +77,8 @@ exports.handler = async (event, context) => {
           prompt: prompt,
           width: 768,
           height: 768,
-          num_outputs: 1,
-          num_inference_steps: 25,
-          guidance_scale: 3.5
+          steps: 20,
+          cfg_scale: 5
         }
       })
     });
