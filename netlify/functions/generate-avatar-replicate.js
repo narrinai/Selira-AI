@@ -59,8 +59,8 @@ exports.handler = async (event, context) => {
     console.log('🎨 Generated prompt:', prompt);
     console.log('👤 Detected gender:', gender);
     
-    // Use stable FLUX.1 dev model for reliable generation
-    const model = "5ceffeeba8edcc1ea8bc0bb6b3cc4b6a7fb44d8c305c4af33a7c8b4aa8a6ff34";
+    // Use latest FLUX.1 dev model for reliable generation
+    const model = "6e4a938f85952bdabcc15aa329178c4d681c52bf25a0342403287dc26944661d";
     
     // Call Replicate API
     const replicateResponse = await fetch('https://api.replicate.com/v1/predictions', {

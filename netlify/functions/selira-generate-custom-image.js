@@ -306,8 +306,8 @@ exports.handler = async (event, context) => {
     console.log(`🎨 [${requestId}] Full prompt:`, fullPrompt);
     console.log(`🎌 [${requestId}] Anime style:`, isAnimeStyle);
     
-    // Use stable FLUX.1 dev model for reliable generation
-    const modelVersion = "5ceffeeba8edcc1ea8bc0bb6b3cc4b6a7fb44d8c305c4af33a7c8b4aa8a6ff34";
+    // Use latest FLUX.1 dev model for reliable generation
+    const modelVersion = "6e4a938f85952bdabcc15aa329178c4d681c52bf25a0342403287dc26944661d";
 
     // Add progressive delay to prevent rate limiting
     // More requests = longer delay
