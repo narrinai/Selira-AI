@@ -61,8 +61,8 @@ exports.handler = async (event, context) => {
     console.log('🎨 Generated prompt:', prompt);
     console.log('👤 Detected gender:', gender);
     
-    // Use Absolute Reality v1.8.1 for uncensored explicit generation
-    const modelVersion = "asiryan/absolutereality-v1.8.1:e7ed05b327c0132e22c0818591d8ac63edf5ea9fc6929b4d6841713de24eb146";
+    // Use stable FLUX.1 dev model for reliable generation
+    const modelVersion = "5ceffeeba8edcc1ea8bc0bb6b3cc4b6a7fb44d8c305c4af33a7c8b4aa8a6ff34";
     
     // Call Replicate API
     const replicateResponse = await fetch('https://api.replicate.com/v1/predictions', {
@@ -75,12 +75,11 @@ exports.handler = async (event, context) => {
         version: modelVersion,
         input: {
           prompt: prompt,
-          negative_prompt: 'low quality, blurry, bad anatomy, multiple people, crowd, group, deformed, extra limbs, extra arms, extra legs',
           width: 768,
           height: 768,
           num_outputs: 1,
           num_inference_steps: 25,
-          guidance_scale: 7.5
+          guidance_scale: 3.5
         }
       })
     });

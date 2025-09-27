@@ -306,8 +306,8 @@ exports.handler = async (event, context) => {
     console.log(`🎨 [${requestId}] Full prompt:`, fullPrompt);
     console.log(`🎌 [${requestId}] Anime style:`, isAnimeStyle);
     
-    // Use Absolute Reality v1.8.1 for uncensored generation
-    const modelVersion = "asiryan/absolutereality-v1.8.1:e7ed05b327c0132e22c0818591d8ac63edf5ea9fc6929b4d6841713de24eb146";
+    // Use stable FLUX.1 dev model for reliable generation
+    const modelVersion = "5ceffeeba8edcc1ea8bc0bb6b3cc4b6a7fb44d8c305c4af33a7c8b4aa8a6ff34";
 
     // Add progressive delay to prevent rate limiting
     // More requests = longer delay
@@ -337,12 +337,11 @@ exports.handler = async (event, context) => {
           version: modelVersion,
           input: {
             prompt: fullPrompt,
-            negative_prompt: 'low quality, blurry, bad anatomy, multiple people, crowd, group',
             width: 768,
             height: 768,
             num_outputs: 1,
             num_inference_steps: 25,
-            guidance_scale: 7.5
+            guidance_scale: 3.5
           }
         })
       });
