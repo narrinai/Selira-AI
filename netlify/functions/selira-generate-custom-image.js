@@ -307,7 +307,7 @@ exports.handler = async (event, context) => {
     console.log(`🎌 [${requestId}] Anime style:`, isAnimeStyle);
     
     // Use Absolute Reality v1.8.1 for uncensored generation
-    const modelVersion = "asiryan/absolutereality-v1.8.1";
+    const modelVersion = "asiryan/absolutereality-v1.8.1:e7ed05b327c0132e22c0818591d8ac63edf5ea9fc6929b4d6841713de24eb146";
 
     // Add progressive delay to prevent rate limiting
     // More requests = longer delay

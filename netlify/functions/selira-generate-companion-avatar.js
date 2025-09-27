@@ -62,7 +62,7 @@ exports.handler = async (event, context) => {
     console.log('👤 Detected gender:', gender);
     
     // Use Absolute Reality v1.8.1 for uncensored explicit generation
-    const modelVersion = "asiryan/absolutereality-v1.8.1";
+    const modelVersion = "asiryan/absolutereality-v1.8.1:e7ed05b327c0132e22c0818591d8ac63edf5ea9fc6929b4d6841713de24eb146";
     
     // Call Replicate API
     const replicateResponse = await fetch('https://api.replicate.com/v1/predictions', {
