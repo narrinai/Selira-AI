@@ -59,8 +59,8 @@ exports.handler = async (event, context) => {
     console.log('🎨 Generated prompt:', prompt);
     console.log('👤 Detected gender:', gender);
     
-    // Use Stable Diffusion XL for uncensored explicit content generation
-    const model = "stability-ai/sdxl:39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b";
+    // Use Absolute Reality v1.8.1 for uncensored explicit content generation
+    const model = "asiryan/absolutereality-v1.8.1:e7ed05b327c0132e22c0818591d8ac63edf5ea9fc6929b4d6841713de24eb146";
     
     // Call Replicate API
     const replicateResponse = await fetch('https://api.replicate.com/v1/predictions', {
