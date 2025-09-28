@@ -224,15 +224,14 @@ async function cancelAtPeriodEnd(stripe, user, userData) {
       console.log('✅ Downgrading manual plan from', userData.Plan, 'to Free');
 
       // Update user directly in Airtable since there's no Stripe subscription
+      // Only update the Plan field to avoid issues with other field types
       await base('Users').update(user.id, {
-        'Plan': 'Free',
-        'subscription_status': 'free',
-        'plan_end_date': new Date().toISOString().split('T')[0]
+        'Plan': 'Free'
       });
 
       return {
         message: 'Plan downgraded successfully',
-        subscription_status: 'free',
+        subscription_status: 'canceled',
         note: 'Manual plan downgrade (no Stripe subscription found)',
         previousPlan: userData.Plan
       };
@@ -240,7 +239,7 @@ async function cancelAtPeriodEnd(stripe, user, userData) {
       // User is already on free plan
       return {
         message: 'User is already on free plan',
-        subscription_status: 'free',
+        subscription_status: 'canceled',
         currentPlan: userData.Plan || 'Free'
       };
     }
