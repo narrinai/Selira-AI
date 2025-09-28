@@ -23,7 +23,16 @@ exports.handler = async (event, context) => {
       hasAirtableKey: !!airtableKey,
       hasAirtableBase: !!airtableBase,
       keyLength: airtableKey ? airtableKey.length : 0,
-      baseLength: airtableBase ? airtableBase.length : 0
+      baseLength: airtableBase ? airtableBase.length : 0,
+      keyPrefix: airtableKey ? airtableKey.substring(0, 8) + '...' : 'none',
+      basePrefix: airtableBase ? airtableBase.substring(0, 8) + '...' : 'none',
+      envVarNames: {
+        hasSeliraToken: !!process.env.AIRTABLE_TOKEN_SELIRA,
+        hasGeneralToken: !!process.env.AIRTABLE_API_KEY,
+        hasToken: !!process.env.AIRTABLE_TOKEN,
+        hasSeliraBase: !!process.env.AIRTABLE_BASE_ID_SELIRA,
+        hasGeneralBase: !!process.env.AIRTABLE_BASE_ID
+      }
     });
 
     if (!airtableKey || !airtableBase) {
