@@ -1496,12 +1496,6 @@
       const visibilityToggle = document.getElementById('visibilityToggle');
       const visibility = visibilityToggle && visibilityToggle.checked ? 'private' : 'public';
 
-      // Show loading state
-      const createBtn = document.getElementById('createFinalBtn');
-      const originalText = createBtn.textContent;
-      createBtn.textContent = 'Creating Companion...';
-      createBtn.disabled = true;
-
       console.log('🎭 Creating character:', {
         name,
         selectedTags: createSelectedTags,
@@ -1568,6 +1562,7 @@
         // Restore button state
         createBtn.textContent = originalText;
         createBtn.disabled = false;
+        createBtn.style.opacity = '1';
         
         // Show error message
         alert(`❌ Failed to create ${name}: ${error.message}\n\nPlease try again or check your connection.`);
