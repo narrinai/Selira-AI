@@ -3913,8 +3913,9 @@
 
     // Avatar Modal Functions
     function openAvatarModal(avatarUrl, characterName) {
+      console.log('🖼️ Opening avatar modal:', { avatarUrl, characterName });
       if (!avatarUrl || avatarUrl === '/avatars/placeholder.webp') {
-        console.log('⚠️ No avatar to display');
+        console.log('⚠️ No avatar to display - avatarUrl:', avatarUrl);
         return;
       }
 
@@ -3948,13 +3949,18 @@
 
     // Make avatars clickable
     function makeAvatarsClickable() {
+      console.log('🖱️ Making avatars clickable. Current character:', { name: currentCharacter.name, avatar: currentCharacter.avatar });
       // Header avatar
       const headerAvatar = document.getElementById('characterImage');
       if (headerAvatar) {
         headerAvatar.classList.add('clickable-avatar');
         headerAvatar.onclick = function() {
+          console.log('🖱️ Header avatar clicked');
           openAvatarModal(currentCharacter.avatar, currentCharacter.name);
         };
+        console.log('✅ Header avatar click handler added');
+      } else {
+        console.log('❌ Header avatar element not found');
       }
 
       // Sidebar avatar

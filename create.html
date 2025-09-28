@@ -1387,6 +1387,8 @@
       setTimeout(() => {
         nextStep();
         // Start avatar generation once we have all appearance data
+        console.log('🔄 About to start avatar generation after hair color selection');
+        console.log('🔍 Character state:', characterCreationState);
         generateAvatarPreview();
       }, 500);
     }

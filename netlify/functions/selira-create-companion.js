@@ -128,9 +128,9 @@ exports.handler = async (event, context) => {
     };
   }
 
-  // Use Selira-specific environment variables only
-  const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA;
-  const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA;
+  // Use Selira-specific environment variables with fallback to general ones
+  const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA || process.env.AIRTABLE_BASE_ID;
+  const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA || process.env.AIRTABLE_TOKEN || process.env.AIRTABLE_API_KEY;
 
   console.log('🔑 Environment check (Selira):', {
     hasBaseId: !!AIRTABLE_BASE_ID,
@@ -293,8 +293,8 @@ BOUNDARIES:
       console.log('✅ Using pre-generated avatar URL:', preGeneratedAvatarUrl);
     }
 
-    // Disable backend avatar generation to force frontend generation
-    if (false && !preGeneratedAvatarUrl) {
+    // Enable backend avatar generation as fallback when frontend fails
+    if (!preGeneratedAvatarUrl) {
       try {
         console.log('🖼️ Generating companion avatar using companion traits...');
 
