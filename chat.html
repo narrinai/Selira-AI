@@ -3347,8 +3347,18 @@
           }
         }, 500);
       } else {
-        console.log('❌ No direct match, using first character');
-        loadFallbackCharacter();
+        // Check if this might be a newly created character
+        const newCharacterKey = `new_character_${characterSlug}`;
+        const isNewCharacter = localStorage.getItem(newCharacterKey);
+
+        if (isNewCharacter) {
+          console.log('⏳ This is a newly created character, waiting for API to load it...');
+          // Don't load fallback immediately for new characters, let the API loading handle it
+          return;
+        } else {
+          console.log('❌ No direct match, using first character');
+          loadFallbackCharacter();
+        }
       }
     }
     
