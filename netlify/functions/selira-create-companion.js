@@ -287,12 +287,36 @@ BOUNDARIES:
     try {
       console.log('🖼️ Generating companion avatar using companion traits...');
 
-      // Call the avatar generation function with companion traits
+      // Generate attractive avatar with enhanced prompt based on art style and tags
+      let attractivePrompt;
+      let clothingStyle = 'stylish outfit';
+
+      // Customize clothing/style based on tags
+      if (tags && tags.length > 0) {
+        if (tags.includes('Seductive')) clothingStyle = 'revealing dress, sexy outfit';
+        else if (tags.includes('Maid')) clothingStyle = 'sexy maid outfit';
+        else if (tags.includes('Boss')) clothingStyle = 'professional business attire, elegant suit';
+        else if (tags.includes('Secretary')) clothingStyle = 'office attire, professional blouse';
+        else if (tags.includes('Teacher')) clothingStyle = 'professional teacher outfit';
+        else if (tags.includes('Student')) clothingStyle = 'casual student outfit';
+        else if (tags.includes('Angel')) clothingStyle = 'ethereal white clothing';
+        else if (tags.includes('Cute')) clothingStyle = 'adorable casual outfit';
+        else if (tags.includes('Girlfriend') || tags.includes('Romance')) clothingStyle = 'romantic dress, attractive clothing';
+        else clothingStyle = 'stylish attractive outfit';
+      }
+
+      if (artStyle === 'anime') {
+        attractivePrompt = `beautiful anime girl, attractive face, seductive expression, detailed anime art, flirtatious pose, wearing ${clothingStyle}, anime style, vibrant colors, attractive body, high quality anime artwork, detailed facial features, anime eyes, perfect anime anatomy, alluring pose, single character, solo`;
+      } else {
+        attractivePrompt = `beautiful woman, attractive face, seductive expression, alluring pose, wearing ${clothingStyle}, photorealistic, professional photography, soft romantic lighting, glamour photography style, eye contact, sharp focus, attractive model, confident pose, single person, solo`;
+      }
+
+      // Call the avatar generation function with enhanced attractive traits
       const avatarResponse = await fetch('https://selira.ai/.netlify/functions/selira-generate-custom-image', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          customPrompt: 'professional headshot portrait, looking at camera, neutral expression',
+          customPrompt: attractivePrompt,
           characterName: name,
           category: artStyle === 'anime' ? 'anime-manga' : 'realistic',
           style: artStyle,

@@ -1050,7 +1050,22 @@
       // User is logged in - handle based on plan type
       if (planType === 'free') {
         // Free plan - check if it's a downgrade
-        if (window.currentUserPlan && window.currentUserPlan !== 'free') {
+        // First check if we have current plan info, if not, try to load it
+        if (window.currentUserPlan === undefined) {
+          // Plan not loaded yet - load it first then handle the click
+          loadCurrentPlan().then(() => {
+            // After loading, check again
+            if (window.currentUserPlan && window.currentUserPlan !== 'free') {
+              downgradeToFree();
+            } else {
+              // Already free or couldn't determine plan - redirect to category page
+              window.location.href = '/category';
+            }
+          }).catch(() => {
+            // If loading fails, assume they want to downgrade and show the process
+            downgradeToFree();
+          });
+        } else if (window.currentUserPlan && window.currentUserPlan !== 'free') {
           downgradeToFree();
         } else {
           // Already free or new user - redirect to category page
@@ -1224,9 +1239,15 @@
         if (data.success && data.subscription) {
           console.log('✅ Current plan loaded:', data.subscription.plan);
           updatePricingDisplay(data.subscription);
+        } else {
+          // No subscription found - user is on free plan
+          console.log('✅ No subscription found - user is on free plan');
+          window.currentUserPlan = 'free';
         }
       } catch (error) {
         console.error('❌ Error loading current plan:', error);
+        // Set to free plan as fallback
+        window.currentUserPlan = 'free';
       }
     }
 
