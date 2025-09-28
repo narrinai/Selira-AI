@@ -179,35 +179,25 @@ async function cancelAtPeriodEnd(stripe, user, userData) {
     userId: user.id
   });
 
-  console.log('🔍 All user fields for debugging:', userData);
+  // Check for Stripe subscription ID - most likely field names first
+  const subscriptionId = userData.stripe_subscription_id ||
+                         userData.StripeSubscriptionID ||
+                         userData['Stripe Subscription ID'] ||
+                         userData.subscription_id;
 
-  // Check different possible field names for Stripe subscription ID
-  const possibleSubIdFields = [
-    'stripe_subscription_id',
-    'Stripe_Subscription_ID',
-    'stripe_sub_id',
-    'subscription_id',
-    'StripeSubscriptionID'
-  ];
+  console.log('🔍 Subscription ID check:', {
+    stripe_subscription_id: userData.stripe_subscription_id,
+    StripeSubscriptionID: userData.StripeSubscriptionID,
+    'Stripe Subscription ID': userData['Stripe Subscription ID'],
+    subscription_id: userData.subscription_id,
+    finalSubscriptionId: subscriptionId
+  });
 
-  let foundSubId = null;
-  for (const fieldName of possibleSubIdFields) {
-    if (userData[fieldName]) {
-      console.log(`✅ Found subscription ID in field '${fieldName}':`, userData[fieldName]);
-      foundSubId = userData[fieldName];
-      break;
-    }
-  }
-
-  if (!foundSubId && !userData.stripe_subscription_id) {
-    console.error('❌ No stripe_subscription_id found for user:', userData.Email);
-    console.error('❌ Checked fields:', possibleSubIdFields);
-    console.error('❌ Available fields:', Object.keys(userData));
+  if (!subscriptionId) {
+    console.error('❌ No stripe subscription ID found for user:', userData.Email);
+    console.error('❌ Available fields:', Object.keys(userData).filter(key => key.toLowerCase().includes('stripe') || key.toLowerCase().includes('subscription')));
     throw new Error('No active subscription found');
   }
-
-  // Use found subscription ID or fallback to original field name
-  const subscriptionId = foundSubId || userData.stripe_subscription_id;
 
   try {
     console.log('🔄 Calling Stripe to cancel subscription at period end:', subscriptionId);
