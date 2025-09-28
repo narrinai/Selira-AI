@@ -1169,19 +1169,37 @@
         }
 
         // Call the manage subscription function with cancel_at_period_end action
+        const requestData = {
+          action: 'cancel_at_period_end',
+          userEmail: user.email,
+          auth0Id: user.sub
+        };
+
+        console.log('🔄 Sending downgrade request:', requestData);
+
         const response = await fetch('/.netlify/functions/selira-manage-subscription', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({
-            action: 'cancel_at_period_end',
-            userEmail: user.email,
-            auth0Id: user.sub
-          })
+          body: JSON.stringify(requestData)
         });
 
-        const result = await response.json();
+        console.log('📊 Response status:', response.status);
+        console.log('📊 Response ok:', response.ok);
+
+        let result;
+        try {
+          result = await response.json();
+        } catch (jsonError) {
+          console.error('❌ Failed to parse response as JSON:', jsonError);
+          const textResponse = await response.text();
+          console.error('❌ Raw response:', textResponse);
+          alert(`Server error: Unable to parse response. Status: ${response.status}`);
+          return;
+        }
+
+        console.log('📋 Parsed result:', result);
 
         if (response.ok && result.success) {
           console.log('✅ Subscription downgrade successful:', result);
@@ -1193,7 +1211,7 @@
 
         } else {
           console.error('❌ Downgrade failed:', result);
-          alert(`Failed to downgrade subscription: ${result.error || 'Unknown error'}`);
+          alert(`Failed to downgrade subscription: ${result.error || 'Unknown error'}\n\nDetails: ${result.details || 'No additional details'}`);
         }
 
         // Restore button state

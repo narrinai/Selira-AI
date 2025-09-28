@@ -30,6 +30,12 @@ exports.handler = async (event, context) => {
   try {
     const { action, userEmail, auth0Id } = JSON.parse(event.body || '{}');
 
+    console.log('🔄 Manage subscription called with:', {
+      action,
+      userEmail,
+      hasAuth0Id: !!auth0Id
+    });
+
     if (!action || (!userEmail && !auth0Id)) {
       return {
         statusCode: 400,
@@ -116,10 +122,18 @@ exports.handler = async (event, context) => {
 
   } catch (error) {
     console.error('❌ Manage subscription error:', error);
+    console.error('❌ Error details:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    });
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ error: 'Failed to manage subscription' })
+      body: JSON.stringify({
+        error: 'Failed to manage subscription',
+        details: error.message
+      })
     };
   }
 };
@@ -146,26 +160,56 @@ async function cancelSubscription(stripe, user, userData) {
 }
 
 async function cancelAtPeriodEnd(stripe, user, userData) {
+  console.log('🔄 cancelAtPeriodEnd called for user:', userData.Email);
+  console.log('🔍 User data:', {
+    hasStripeSubId: !!userData.stripe_subscription_id,
+    stripeSubId: userData.stripe_subscription_id,
+    plan: userData.Plan,
+    userId: user.id
+  });
+
   if (!userData.stripe_subscription_id) {
+    console.error('❌ No stripe_subscription_id found for user:', userData.Email);
     throw new Error('No active subscription found');
   }
 
-  // Cancel subscription at period end
-  const subscription = await stripe.subscriptions.update(userData.stripe_subscription_id, {
-    cancel_at_period_end: true
-  });
+  try {
+    console.log('🔄 Calling Stripe to cancel subscription at period end:', userData.stripe_subscription_id);
 
-  // Update user in Airtable
-  await base('Users').update(user.id, {
-    'subscription_status': 'canceling',
-    'plan_end_date': new Date(subscription.current_period_end * 1000).toISOString().split('T')[0]
-  });
+    // Cancel subscription at period end
+    const subscription = await stripe.subscriptions.update(userData.stripe_subscription_id, {
+      cancel_at_period_end: true
+    });
 
-  return {
-    message: 'Subscription will be canceled at the end of the current period',
-    subscription_status: 'canceling',
-    cancels_at: new Date(subscription.current_period_end * 1000).toISOString().split('T')[0]
-  };
+    console.log('✅ Stripe subscription updated successfully:', {
+      id: subscription.id,
+      status: subscription.status,
+      cancel_at_period_end: subscription.cancel_at_period_end,
+      current_period_end: subscription.current_period_end
+    });
+
+    // Update user in Airtable
+    const airtableUpdate = {
+      'subscription_status': 'canceling',
+      'plan_end_date': new Date(subscription.current_period_end * 1000).toISOString().split('T')[0]
+    };
+
+    console.log('🔄 Updating Airtable with:', airtableUpdate);
+
+    await base('Users').update(user.id, airtableUpdate);
+
+    console.log('✅ Airtable updated successfully');
+
+    return {
+      message: 'Subscription will be canceled at the end of the current period',
+      subscription_status: 'canceling',
+      cancels_at: new Date(subscription.current_period_end * 1000).toISOString().split('T')[0]
+    };
+
+  } catch (error) {
+    console.error('❌ Error in cancelAtPeriodEnd:', error);
+    throw error;
+  }
 }
 
 async function reactivateSubscription(stripe, user, userData) {
