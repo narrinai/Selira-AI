@@ -136,14 +136,16 @@ exports.handler = async (event, context) => {
     console.error('❌ Error details:', {
       message: error.message,
       stack: error.stack,
-      name: error.name
+      name: error.name,
+      details: error.details
     });
     return {
       statusCode: 500,
       headers,
       body: JSON.stringify({
         error: 'Failed to manage subscription',
-        details: error.message
+        details: error.message,
+        debugInfo: error.details || null
       })
     };
   }
@@ -195,8 +197,24 @@ async function cancelAtPeriodEnd(stripe, user, userData) {
 
   if (!subscriptionId) {
     console.error('❌ No stripe subscription ID found for user:', userData.Email);
-    console.error('❌ Available fields:', Object.keys(userData).filter(key => key.toLowerCase().includes('stripe') || key.toLowerCase().includes('subscription')));
-    throw new Error('No active subscription found');
+    console.error('❌ Available Stripe/subscription related fields:', Object.keys(userData).filter(key =>
+      key.toLowerCase().includes('stripe') ||
+      key.toLowerCase().includes('subscription') ||
+      key.toLowerCase().includes('plan')
+    ));
+    console.error('❌ All user fields:', Object.keys(userData));
+
+    // Throw detailed error that will be caught by main handler
+    const error = new Error('No active subscription found');
+    error.details = {
+      userPlan: userData.Plan,
+      availableFields: Object.keys(userData),
+      stripeFields: Object.keys(userData).filter(key =>
+        key.toLowerCase().includes('stripe') ||
+        key.toLowerCase().includes('subscription')
+      )
+    };
+    throw error;
   }
 
   try {

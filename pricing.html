@@ -1211,7 +1211,14 @@
 
         } else {
           console.error('❌ Downgrade failed:', result);
-          alert(`Failed to downgrade subscription: ${result.error || 'Unknown error'}\n\nDetails: ${result.details || 'No additional details'}`);
+          let alertMessage = `Failed to downgrade subscription: ${result.error || 'Unknown error'}\n\nDetails: ${result.details || 'No additional details'}`;
+
+          if (result.debugInfo) {
+            console.log('🔍 Debug info:', result.debugInfo);
+            alertMessage += `\n\nDebug Info:\nUser Plan: ${result.debugInfo.userPlan || 'Unknown'}\nAvailable Fields: ${result.debugInfo.availableFields ? result.debugInfo.availableFields.join(', ') : 'None'}\nStripe Fields: ${result.debugInfo.stripeFields ? result.debugInfo.stripeFields.join(', ') : 'None'}`;
+          }
+
+          alert(alertMessage);
         }
 
         // Restore button state
