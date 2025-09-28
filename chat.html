@@ -2577,9 +2577,19 @@
           
           // Now load character from URL parameter
           loadCharacterFromURL();
-          
-          // Also try to load a specific character directly from URL if available
-          loadCharacterDirectly();
+
+          // Only try direct loading if no new character flag exists
+          const urlParams = new URLSearchParams(window.location.search);
+          const characterSlug = urlParams.get('char');
+          const newCharacterKey = `new_character_${characterSlug}`;
+          const isNewCharacter = localStorage.getItem(newCharacterKey);
+
+          if (!isNewCharacter) {
+            // Also try to load a specific character directly from URL if available
+            loadCharacterDirectly();
+          } else {
+            console.log('⏳ Skipping direct load for new character, waiting for API...');
+          }
         }
       } catch (error) {
         console.error('❌ Error loading characters:', error);

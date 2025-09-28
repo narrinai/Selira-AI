@@ -1429,15 +1429,18 @@
             category: style === 'anime' ? 'anime-manga' : 'realistic',
             style: style,
             shotType: 'portrait',
-            sex: 'female',
+            sex: characterCreationState.sex || 'female',
             ethnicity: ethnicity,
             hairLength: hairLength,
             hairColor: hairColor
           })
         });
 
+        console.log('📊 Avatar generation response status:', avatarResponse.status);
+
         if (avatarResponse.ok) {
           const avatarResult = await avatarResponse.json();
+          console.log('📋 Avatar generation full result:', avatarResult);
           if (avatarResult.success && avatarResult.imageUrl) {
             preGeneratedAvatarUrl = avatarResult.imageUrl;
             console.log('✅ Avatar pre-generated successfully:', preGeneratedAvatarUrl);
@@ -1446,7 +1449,8 @@
           }
         } else {
           const errorText = await avatarResponse.text();
-          console.log('❌ Avatar generation failed:', avatarResponse.status, errorText);
+          console.log('❌ Avatar generation failed with status:', avatarResponse.status);
+          console.log('❌ Avatar generation error response:', errorText);
         }
 
       } catch (error) {
