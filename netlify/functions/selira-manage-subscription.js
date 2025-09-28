@@ -240,7 +240,8 @@ async function cancelAtPeriodEnd(stripe, user, userData) {
         message: 'Plan downgraded successfully',
         subscription_status: 'canceled',
         note: 'Manual plan downgrade (no Stripe subscription found)',
-        previousPlan: userData.Plan
+        previousPlan: userData.Plan,
+        cancels_at: planEndDateString
       };
     } else {
       // User is already on free plan
