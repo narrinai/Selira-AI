@@ -216,25 +216,34 @@ async function cancelAtPeriodEnd(stripe, user, userData) {
   });
 
   if (!subscriptionId) {
-    console.error('❌ No stripe subscription ID found for user:', userData.Email);
-    console.error('❌ Available Stripe/subscription related fields:', Object.keys(userData).filter(key =>
-      key.toLowerCase().includes('stripe') ||
-      key.toLowerCase().includes('subscription') ||
-      key.toLowerCase().includes('plan')
-    ));
-    console.error('❌ All user fields:', Object.keys(userData));
+    console.log('⚠️ No Stripe subscription found, but user has plan:', userData.Plan);
+    console.log('🔄 This appears to be a manually assigned plan - downgrading directly in Airtable');
 
-    // Throw detailed error that will be caught by main handler
-    const error = new Error('No active subscription found');
-    error.details = {
-      userPlan: userData.Plan,
-      availableFields: Object.keys(userData),
-      stripeFields: Object.keys(userData).filter(key =>
-        key.toLowerCase().includes('stripe') ||
-        key.toLowerCase().includes('subscription')
-      )
-    };
-    throw error;
+    // Check if user actually has a paid plan that needs downgrading
+    if (userData.Plan && userData.Plan.toLowerCase() !== 'free') {
+      console.log('✅ Downgrading manual plan from', userData.Plan, 'to Free');
+
+      // Update user directly in Airtable since there's no Stripe subscription
+      await base('Users').update(user.id, {
+        'Plan': 'Free',
+        'subscription_status': 'free',
+        'plan_end_date': new Date().toISOString().split('T')[0]
+      });
+
+      return {
+        message: 'Plan downgraded successfully',
+        subscription_status: 'free',
+        note: 'Manual plan downgrade (no Stripe subscription found)',
+        previousPlan: userData.Plan
+      };
+    } else {
+      // User is already on free plan
+      return {
+        message: 'User is already on free plan',
+        subscription_status: 'free',
+        currentPlan: userData.Plan || 'Free'
+      };
+    }
   }
 
   try {

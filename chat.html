@@ -3187,7 +3187,8 @@
         if (response.ok) {
           const data = await response.json();
           if (data.success && data.characters && data.characters.length > 0) {
-            const character = data.characters[0];
+            // Prefer character with Avatar_URL if multiple exist
+            const character = data.characters.find(c => c.Avatar_URL && c.Avatar_URL.trim() !== '') || data.characters[0];
             const processedChar = {
               id: character.Character_ID || character.Name,
               name: character.Name || 'Unknown',
