@@ -631,6 +631,7 @@
       
       .profile-card h3 {
         font-size: 20px;
+        text-align: center;
       }
     }
     
@@ -1092,8 +1093,8 @@
       const usageValue = document.getElementById('currentUsage');
 
       if (currentPlan === 'free') {
-        if (usageLabel) usageLabel.textContent = 'Key Benefits';
-        if (usageValue) usageValue.textContent = 'Unlimited Chats, Unlimited Companions, No Ads';
+        if (usageLabel) usageLabel.textContent = 'Plan Status';
+        if (usageValue) usageValue.textContent = 'Active';
       } else if (currentPlan === 'basic') {
         if (usageLabel) usageLabel.textContent = 'Key Benefits';
         if (usageValue) usageValue.textContent = 'Enhanced Experience';
