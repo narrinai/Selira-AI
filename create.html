@@ -1066,6 +1066,7 @@
                 <label style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 8px;">Character Name</label>
                 <input type="text" id="characterName" placeholder="e.g., Luna, Aria, Kai..." class="form-input">
               </div>
+
               
               
               <div style="margin-bottom: 24px;">
@@ -1382,9 +1383,11 @@
 
       console.log('Selected hair color:', hairColor);
 
-      // Auto-advance to next step
+      // Auto-advance to next step and start avatar generation
       setTimeout(() => {
         nextStep();
+        // Start avatar generation once we have all appearance data
+        generateAvatarPreview();
       }, 500);
     }
 
@@ -1393,6 +1396,61 @@
       const traitsEl = document.getElementById('selectedTraits');
       if (traitsEl) {
         traitsEl.textContent = `Selected: ${traits}`;
+      }
+    }
+
+    // Global variable to store the pre-generated avatar URL
+    let preGeneratedAvatarUrl = null;
+
+    async function generateAvatarPreview() {
+      console.log('🎨 Starting background avatar generation...');
+
+      try {
+        const { style, ethnicity, hairLength, hairColor } = characterCreationState;
+
+        // Generate attractive prompt based on appearance choices and potential tags
+        let attractivePrompt;
+        let clothingStyle = 'stylish attractive outfit';
+
+        if (style === 'anime') {
+          attractivePrompt = `beautiful anime girl, attractive face, seductive expression, detailed anime art, flirtatious pose, wearing ${clothingStyle}, anime style, vibrant colors, attractive body, high quality anime artwork, detailed facial features, anime eyes, perfect anime anatomy, alluring pose, single character, solo`;
+        } else {
+          attractivePrompt = `beautiful woman, attractive face, seductive expression, alluring pose, wearing ${clothingStyle}, photorealistic, professional photography, soft romantic lighting, glamour photography style, eye contact, sharp focus, attractive model, confident pose, single person, solo`;
+        }
+
+        console.log('🖼️ Generating avatar with prompt:', attractivePrompt);
+
+        const avatarResponse = await fetch('/.netlify/functions/selira-generate-custom-image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            customPrompt: attractivePrompt,
+            characterName: 'Preview Character',
+            category: style === 'anime' ? 'anime-manga' : 'realistic',
+            style: style,
+            shotType: 'portrait',
+            sex: 'female',
+            ethnicity: ethnicity,
+            hairLength: hairLength,
+            hairColor: hairColor
+          })
+        });
+
+        if (avatarResponse.ok) {
+          const avatarResult = await avatarResponse.json();
+          if (avatarResult.success && avatarResult.imageUrl) {
+            preGeneratedAvatarUrl = avatarResult.imageUrl;
+            console.log('✅ Avatar pre-generated successfully:', preGeneratedAvatarUrl);
+          } else {
+            console.log('⚠️ Avatar generation succeeded but no imageUrl:', avatarResult);
+          }
+        } else {
+          const errorText = await avatarResponse.text();
+          console.log('❌ Avatar generation failed:', avatarResponse.status, errorText);
+        }
+
+      } catch (error) {
+        console.log('❌ Avatar generation error:', error.message);
       }
     }
 
@@ -1409,6 +1467,13 @@
         alert('Please select at least one tag for your character.');
         return;
       }
+
+      // Show loading state
+      const createBtn = document.getElementById('createFinalBtn');
+      const originalText = createBtn.textContent;
+      createBtn.textContent = '⏳ Creating...';
+      createBtn.disabled = true;
+      createBtn.style.opacity = '0.7';
 
       // Get user info for creator identification
       let userEmail = 'anonymous';
@@ -1465,7 +1530,8 @@
             hairColor: characterCreationState.hairColor,
             visibility: visibility,
             createdBy: createdBy,
-            userEmail: userEmail
+            userEmail: userEmail,
+            preGeneratedAvatarUrl: preGeneratedAvatarUrl // Use the pre-generated avatar
           })
         });
         

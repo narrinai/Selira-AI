@@ -171,7 +171,8 @@ exports.handler = async (event, context) => {
       hairColor,
       visibility,
       createdBy,
-      userEmail
+      userEmail,
+      preGeneratedAvatarUrl
     } = body;
 
     console.log('📋 Received character data:', {
@@ -282,10 +283,12 @@ BOUNDARIES:
     console.log('🎨 Setting up avatar for character...');
 
     // Generate avatar using existing avatar generation system
-    let avatarUrlToUse = ''; // Empty for now, will be filled later by avatar generation system
+    let avatarUrlToUse = preGeneratedAvatarUrl || ''; // Use pre-generated avatar if available
 
-    try {
-      console.log('🖼️ Generating companion avatar using companion traits...');
+    // Only generate avatar if no pre-generated one is provided
+    if (!preGeneratedAvatarUrl) {
+      try {
+        console.log('🖼️ Generating companion avatar using companion traits...');
 
       // Generate attractive avatar with enhanced prompt based on art style and tags
       let attractivePrompt;
@@ -345,8 +348,11 @@ BOUNDARIES:
         console.log('❌ Avatar generation error response:', errorText);
       }
 
-    } catch (error) {
-      console.log('⚠️ Avatar generation error:', error.message, ', creating companion without avatar');
+      } catch (error) {
+        console.log('⚠️ Avatar generation error:', error.message, ', creating companion without avatar');
+      }
+    } else {
+      console.log('✅ Using pre-generated avatar URL:', preGeneratedAvatarUrl);
     }
 
     // Greeting is now stored in description, no need to generate again
