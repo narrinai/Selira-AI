@@ -287,6 +287,14 @@ BOUNDARIES:
 
     // Only generate avatar if no pre-generated one is provided
     if (!preGeneratedAvatarUrl) {
+      console.log('⚠️ No pre-generated avatar provided, skipping backend generation');
+      console.log('💡 Avatar should be generated in frontend during create flow');
+    } else {
+      console.log('✅ Using pre-generated avatar URL:', preGeneratedAvatarUrl);
+    }
+
+    // Disable backend avatar generation to force frontend generation
+    if (false && !preGeneratedAvatarUrl) {
       try {
         console.log('🖼️ Generating companion avatar using companion traits...');
 
