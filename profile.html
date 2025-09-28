@@ -813,13 +813,13 @@
               </div>
             </div>
             
-            <a href="/pricing" class="btn" style="width: 100%; margin-bottom: 16px;">
+            <a href="/pricing" class="btn" style="width: 100%; margin-bottom: 16px;" onclick="console.log('🔗 Navigating to pricing page'); return true;">
               Upgrade Plan
             </a>
             
-            <button class="btn btn-secondary" style="width: 100%;" onclick="managePlan()">
+            <a href="/pricing" class="btn btn-secondary" style="width: 100%; text-decoration: none;">
               Manage Subscription
-            </button>
+            </a>
             
             <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); text-align: center;">
               <a href="#" style="color: var(--error); text-decoration: none; font-weight: 600; font-size: 14px;" onclick="logout(); return false;">

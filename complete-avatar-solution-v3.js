@@ -162,7 +162,7 @@ async function generateAndDownloadAvatar(companion) {
 
     console.log(`   🔥 EXPLICIT PROMPT: ${explicitPrompt}`);
 
-    const avatarResponse = await fetch('https://selira.ai/.netlify/functions/generate-avatar-replicate', {
+    const avatarResponse = await fetch('https://selira.ai/.netlify/functions/generate-custom-image', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

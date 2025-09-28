@@ -1049,8 +1049,13 @@
 
       // User is logged in - handle based on plan type
       if (planType === 'free') {
-        // Free plan - just redirect to category page
-        window.location.href = '/category';
+        // Free plan - check if it's a downgrade
+        if (window.currentUserPlan && window.currentUserPlan !== 'free') {
+          downgradeToFree();
+        } else {
+          // Already free or new user - redirect to category page
+          window.location.href = '/category';
+        }
       } else {
         // Paid plans - initiate Stripe checkout
         initiateStripeCheckout(planType);
@@ -1123,6 +1128,78 @@
       }
     }
 
+    // Downgrade to free plan
+    async function downgradeToFree() {
+      const confirmMessage = 'Are you sure you want to downgrade to the Free plan?\n\nYour current subscription will be canceled at the end of your current billing period, and you will keep access until then.';
+
+      if (!confirm(confirmMessage)) {
+        return;
+      }
+
+      try {
+        const user = window.getCurrentUser();
+        if (!user) {
+          alert('Please log in to manage your subscription');
+          return;
+        }
+
+        console.log('🔄 Downgrading to free plan for user:', user.email);
+
+        // Show loading state
+        const freeButton = document.querySelector('.pricing-card:nth-child(1) .plan-button');
+        if (freeButton) {
+          const originalText = freeButton.textContent;
+          freeButton.textContent = 'Processing...';
+          freeButton.style.opacity = '0.7';
+        }
+
+        // Call the manage subscription function with cancel_at_period_end action
+        const response = await fetch('/.netlify/functions/selira-manage-subscription', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            action: 'cancel_at_period_end',
+            userEmail: user.email,
+            auth0Id: user.sub
+          })
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          console.log('✅ Subscription downgrade successful:', result);
+
+          alert(`Subscription canceled successfully!\n\nYou will keep access to your current plan until ${result.cancels_at || 'the end of your billing period'}, after which you will be automatically switched to the Free plan.`);
+
+          // Reload the current plan display
+          await loadCurrentPlan();
+
+        } else {
+          console.error('❌ Downgrade failed:', result);
+          alert(`Failed to downgrade subscription: ${result.error || 'Unknown error'}`);
+        }
+
+        // Restore button state
+        if (freeButton) {
+          freeButton.textContent = 'Downgrade to Free';
+          freeButton.style.opacity = '1';
+        }
+
+      } catch (error) {
+        console.error('❌ Error downgrading subscription:', error);
+        alert('An error occurred while downgrading your subscription. Please try again.');
+
+        // Restore button state
+        const freeButton = document.querySelector('.pricing-card:nth-child(1) .plan-button');
+        if (freeButton) {
+          freeButton.textContent = 'Downgrade to Free';
+          freeButton.style.opacity = '1';
+        }
+      }
+    }
+
     // Load current subscription info
     async function loadCurrentPlan() {
       try {
@@ -1155,15 +1232,21 @@
 
     // Update pricing cards to show current plan
     function updatePricingDisplay(subscription) {
-      // Remove all current plan indicators
+      // Set global variable for current plan
+      window.currentUserPlan = (subscription.plan || 'Free').toLowerCase();
+      window.currentSubscription = subscription;
+
+      // Remove all current plan indicators and remaining time displays
       document.querySelectorAll('.pricing-card').forEach(card => {
         card.classList.remove('current-plan');
         const badge = card.querySelector('.current-plan-badge');
         if (badge) badge.remove();
+        const timeRemaining = card.querySelector('.time-remaining');
+        if (timeRemaining) timeRemaining.remove();
       });
 
       // Find and highlight the current plan
-      const currentPlan = (subscription.plan || 'Free').toLowerCase();
+      const currentPlan = window.currentUserPlan;
       let cardSelector = '';
 
       if (currentPlan === 'free') {
@@ -1182,9 +1265,45 @@
           // Add current plan badge
           const badge = document.createElement('div');
           badge.className = 'current-plan-badge';
-          badge.textContent = 'Current Plan';
+
+          // Check subscription status for badge text
+          if (subscription.subscription_status === 'canceling' || subscription.cancel_at_period_end) {
+            badge.textContent = 'Canceling at Period End';
+            badge.style.background = 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
+          } else {
+            badge.textContent = 'Current Plan';
+          }
+
           currentCard.style.position = 'relative';
           currentCard.appendChild(badge);
+
+          // Add remaining time display for paid plans
+          if (currentPlan !== 'free') {
+            // Prefer Stripe data if available, otherwise use Airtable data
+            const endDateString = subscription.current_period_end || subscription.plan_end_date;
+
+            if (endDateString) {
+              const timeDiv = document.createElement('div');
+              timeDiv.className = 'time-remaining';
+              timeDiv.style.cssText = 'margin-top: 12px; padding: 8px 12px; background: rgba(212, 165, 116, 0.1); border: 1px solid rgba(212, 165, 116, 0.3); border-radius: 8px; font-size: 13px; color: var(--text-secondary); text-align: center;';
+
+              const endDate = new Date(endDateString);
+              const now = new Date();
+              const daysRemaining = Math.ceil((endDate - now) / (1000 * 60 * 60 * 24));
+
+              if (subscription.subscription_status === 'canceling' || subscription.cancel_at_period_end) {
+                timeDiv.innerHTML = `<strong>⏰ Access until ${endDate.toLocaleDateString()}</strong><br><small>Will downgrade to Free plan after this date</small>`;
+              } else {
+                timeDiv.innerHTML = `<strong>📅 Renews ${endDate.toLocaleDateString()}</strong><br><small>${daysRemaining} days remaining</small>`;
+              }
+
+              // Insert after plan description
+              const description = currentCard.querySelector('.plan-description');
+              if (description) {
+                description.insertAdjacentElement('afterend', timeDiv);
+              }
+            }
+          }
 
           // Update button text for current plan
           const button = currentCard.querySelector('.plan-button');
@@ -1192,6 +1311,13 @@
             if (currentPlan === 'free') {
               button.textContent = 'Current Plan';
               button.style.opacity = '0.7';
+              button.onclick = function() { return false; };
+            } else if (subscription.subscription_status === 'canceling' || subscription.cancel_at_period_end) {
+              button.textContent = 'Reactivate Subscription';
+              button.onclick = function() {
+                reactivateSubscription();
+                return false;
+              };
             } else {
               button.textContent = 'Manage Plan';
               button.onclick = function() {
@@ -1204,33 +1330,88 @@
       }
 
       // Update other plan buttons for upgrades/downgrades
-      updatePlanButtons(currentPlan);
+      updatePlanButtons(currentPlan, subscription);
     }
 
     // Update plan button texts based on current subscription
-    function updatePlanButtons(currentPlan) {
+    function updatePlanButtons(currentPlan, subscription) {
       const cards = document.querySelectorAll('.pricing-card');
 
       cards.forEach((card, index) => {
         const button = card.querySelector('.plan-button');
         if (!button || card.classList.contains('current-plan')) return;
 
+        // Reset button onclick to default plan selection
+        button.onclick = function() {
+          const planTypes = ['free', 'basic', 'premium'];
+          handlePlanClick(planTypes[index]);
+          return false;
+        };
+
         if (index === 0) { // Free
           if (currentPlan !== 'free') {
             button.textContent = 'Downgrade to Free';
+          } else {
+            button.textContent = 'Start Free';
           }
         } else if (index === 1) { // Basic
           if (currentPlan === 'free') {
             button.textContent = 'Upgrade to Basic';
           } else if (currentPlan === 'premium') {
             button.textContent = 'Downgrade to Basic';
+          } else {
+            button.textContent = 'Choose Basic';
           }
         } else if (index === 2) { // Premium
           if (currentPlan === 'free' || currentPlan === 'basic') {
             button.textContent = 'Upgrade to Premium';
+          } else {
+            button.textContent = 'Choose Premium';
           }
         }
       });
+    }
+
+    // Reactivate subscription
+    async function reactivateSubscription() {
+      try {
+        const user = window.getCurrentUser();
+        if (!user) {
+          alert('Please log in to manage your subscription');
+          return;
+        }
+
+        console.log('🔄 Reactivating subscription for user:', user.email);
+
+        const response = await fetch('/.netlify/functions/selira-manage-subscription', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            action: 'reactivate',
+            userEmail: user.email,
+            auth0Id: user.sub
+          })
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          console.log('✅ Subscription reactivated successfully:', result);
+          alert('Subscription reactivated successfully! Your plan will continue as normal.');
+
+          // Reload the current plan display
+          await loadCurrentPlan();
+        } else {
+          console.error('❌ Reactivation failed:', result);
+          alert(`Failed to reactivate subscription: ${result.error || 'Unknown error'}`);
+        }
+
+      } catch (error) {
+        console.error('❌ Error reactivating subscription:', error);
+        alert('An error occurred while reactivating your subscription. Please try again.');
+      }
     }
 
     // Initialize current plan loading when page loads
