@@ -93,7 +93,7 @@ exports.handler = async (event, context) => {
     // Wait for the prediction to complete (max 10 seconds for Flux Schnell)
     let result = prediction;
     let attempts = 0;
-    const maxAttempts = 10;
+    const maxAttempts = 60;
     
     while (result.status !== 'succeeded' && result.status !== 'failed' && attempts < maxAttempts) {
       await new Promise(resolve => setTimeout(resolve, 1000));
