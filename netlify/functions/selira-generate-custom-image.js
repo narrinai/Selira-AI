@@ -306,8 +306,8 @@ exports.handler = async (event, context) => {
     console.log(`🎨 [${requestId}] Full prompt:`, fullPrompt);
     console.log(`🎌 [${requestId}] Anime style:`, isAnimeStyle);
     
-    // Use uncensored FLUX model for sexy companion content
-    const modelVersion = "aisha-ai-official/flux.1dev-uncensored-msfluxnsfw-v3:b477d8fc3a62e591c6224e10020538c4a9c340fb1f494891aff60019ffd5bc48";
+    // Use FLUX Schnell for fast generation (1-4 steps, ~8 seconds)
+    const modelVersion = "black-forest-labs/flux-schnell:c846a69991daf4c0e5d016514849d14ee5b2e6846ce6b9d6f21369e564cfe51e";
 
     // Add progressive delay to prevent rate limiting
     // More requests = longer delay
@@ -339,8 +339,8 @@ exports.handler = async (event, context) => {
             prompt: fullPrompt,
             width: 768,
             height: 768,
-            steps: 20,
-            cfg_scale: 5
+            num_outputs: 1,
+            num_inference_steps: 4
           }
         })
       });

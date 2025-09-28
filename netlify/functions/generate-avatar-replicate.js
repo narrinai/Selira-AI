@@ -59,8 +59,8 @@ exports.handler = async (event, context) => {
     console.log('🎨 Generated prompt:', prompt);
     console.log('👤 Detected gender:', gender);
     
-    // Use uncensored FLUX model for sexy companion content
-    const model = "aisha-ai-official/flux.1dev-uncensored-msfluxnsfw-v3:b477d8fc3a62e591c6224e10020538c4a9c340fb1f494891aff60019ffd5bc48";
+    // Use FLUX Schnell for fast generation (1-4 steps, ~8 seconds)
+    const model = "black-forest-labs/flux-schnell:c846a69991daf4c0e5d016514849d14ee5b2e6846ce6b9d6f21369e564cfe51e";
     
     // Call Replicate API
     const replicateResponse = await fetch('https://api.replicate.com/v1/predictions', {
@@ -75,8 +75,8 @@ exports.handler = async (event, context) => {
           prompt: prompt,
           width: 768,
           height: 768,
-          steps: 20,
-          cfg_scale: 5
+          num_outputs: 1,
+          num_inference_steps: 4
         }
       })
     });
@@ -93,7 +93,7 @@ exports.handler = async (event, context) => {
     // Wait for the prediction to complete (max 10 seconds for Flux Schnell)
     let result = prediction;
     let attempts = 0;
-    const maxAttempts = 60;
+    const maxAttempts = 15;
     
     while (result.status !== 'succeeded' && result.status !== 'failed' && attempts < maxAttempts) {
       await new Promise(resolve => setTimeout(resolve, 1000));
