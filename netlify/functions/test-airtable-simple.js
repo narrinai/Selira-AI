@@ -32,6 +32,12 @@ exports.handler = async (event, context) => {
         hasToken: !!process.env.AIRTABLE_TOKEN,
         hasSeliraBase: !!process.env.AIRTABLE_BASE_ID_SELIRA,
         hasGeneralBase: !!process.env.AIRTABLE_BASE_ID
+      },
+      actualValues: {
+        AIRTABLE_TOKEN_SELIRA_length: process.env.AIRTABLE_TOKEN_SELIRA ? process.env.AIRTABLE_TOKEN_SELIRA.length : 0,
+        AIRTABLE_BASE_ID_SELIRA_length: process.env.AIRTABLE_BASE_ID_SELIRA ? process.env.AIRTABLE_BASE_ID_SELIRA.length : 0,
+        AIRTABLE_BASE_ID_length: process.env.AIRTABLE_BASE_ID ? process.env.AIRTABLE_BASE_ID.length : 0,
+        allEnvVarsStartingWithAIRTABLE: Object.keys(process.env).filter(key => key.startsWith('AIRTABLE'))
       }
     });
 
