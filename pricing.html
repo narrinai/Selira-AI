@@ -1151,6 +1151,13 @@
         return;
       }
 
+      // Small delay to ensure confirm dialog is fully closed before showing success message
+      const showSuccessMessage = (message) => {
+        setTimeout(() => {
+          alert(message);
+        }, 100);
+      };
+
       try {
         const user = window.getCurrentUser();
         if (!user) {
@@ -1204,7 +1211,8 @@
         if (response.ok && result.success) {
           console.log('✅ Subscription downgrade successful:', result);
 
-          alert(`Subscription canceled successfully!\n\nYou will keep access to your current plan until ${result.cancels_at || 'the end of your billing period'}, after which you will be automatically switched to the Free plan.`);
+          // Use delayed success message
+          showSuccessMessage(`Subscription canceled successfully!\n\nYou will keep access to your current plan until ${result.cancels_at || 'the end of your billing period'}, after which you will be automatically switched to the Free plan.`);
 
           // Reload the current plan display
           await loadCurrentPlan();

@@ -60,7 +60,7 @@ exports.handler = async (event, context) => {
     console.log('👤 Detected gender:', gender);
     
     // Use FLUX Schnell for fast generation (1-4 steps, ~8 seconds)
-    const model = "black-forest-labs/flux-dev:6e4a938f85952bdabcc15aa329178c4d681c52bf25a0342403287dc26944661d";
+    const model = "playgroundai/playground-v2.5-1024px-aesthetic:a45f82a1382bed5c7aeb861dac7c7d191b0fdf74d8d57c4a0e6ed7d4d0bf7d24";
     
     // Call Replicate API
     const replicateResponse = await fetch('https://api.replicate.com/v1/predictions', {

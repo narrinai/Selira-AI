@@ -223,10 +223,17 @@ async function cancelAtPeriodEnd(stripe, user, userData) {
     if (userData.Plan && userData.Plan.toLowerCase() !== 'free') {
       console.log('✅ Downgrading manual plan from', userData.Plan, 'to Free');
 
+      // Calculate plan end date (30 days from now for manual downgrades)
+      const planEndDate = new Date();
+      planEndDate.setDate(planEndDate.getDate() + 30);
+      const planEndDateString = planEndDate.toISOString().split('T')[0];
+
+      console.log('📅 Setting plan end date to:', planEndDateString);
+
       // Update user directly in Airtable since there's no Stripe subscription
-      // Only update the Plan field to avoid issues with other field types
       await base('Users').update(user.id, {
-        'Plan': 'Free'
+        'Plan': 'Free',
+        'plan_end_date': planEndDateString
       });
 
       return {

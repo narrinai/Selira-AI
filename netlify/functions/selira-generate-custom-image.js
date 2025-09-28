@@ -306,8 +306,8 @@ exports.handler = async (event, context) => {
     console.log(`🎨 [${requestId}] Full prompt:`, fullPrompt);
     console.log(`🎌 [${requestId}] Anime style:`, isAnimeStyle);
     
-    // Use FLUX Dev for reliable generation (higher quality and better reliability)
-    const modelVersion = "black-forest-labs/flux-dev:6e4a938f85952bdabcc15aa329178c4d681c52bf25a0342403287dc26944661d";
+    // Use Playground v2.5 for aesthetic generation with less content filtering
+    const modelVersion = "playgroundai/playground-v2.5-1024px-aesthetic:a45f82a1382bed5c7aeb861dac7c7d191b0fdf74d8d57c4a0e6ed7d4d0bf7d24";
 
     // Add progressive delay to prevent rate limiting
     // More requests = longer delay
