@@ -69,6 +69,17 @@ exports.handler = async (event, context) => {
     const user = users[0];
     const userData = user.fields;
 
+    console.log('🔍 Found user in Airtable:', {
+      email: userData.Email,
+      plan: userData.Plan,
+      hasStripeCustomerId: !!userData.stripe_customer_id,
+      hasStripeSubId: !!userData.stripe_subscription_id,
+      stripeCustomerId: userData.stripe_customer_id,
+      stripeSubId: userData.stripe_subscription_id,
+      subscriptionStatus: userData.subscription_status,
+      allFields: Object.keys(userData)
+    });
+
     // Initialize Stripe
     const stripeKey = process.env.STRIPE_SECRET_KEY_SELIRA ||
                      process.env.STRIPE_SECRET_KEY ||
@@ -168,16 +179,41 @@ async function cancelAtPeriodEnd(stripe, user, userData) {
     userId: user.id
   });
 
-  if (!userData.stripe_subscription_id) {
+  console.log('🔍 All user fields for debugging:', userData);
+
+  // Check different possible field names for Stripe subscription ID
+  const possibleSubIdFields = [
+    'stripe_subscription_id',
+    'Stripe_Subscription_ID',
+    'stripe_sub_id',
+    'subscription_id',
+    'StripeSubscriptionID'
+  ];
+
+  let foundSubId = null;
+  for (const fieldName of possibleSubIdFields) {
+    if (userData[fieldName]) {
+      console.log(`✅ Found subscription ID in field '${fieldName}':`, userData[fieldName]);
+      foundSubId = userData[fieldName];
+      break;
+    }
+  }
+
+  if (!foundSubId && !userData.stripe_subscription_id) {
     console.error('❌ No stripe_subscription_id found for user:', userData.Email);
+    console.error('❌ Checked fields:', possibleSubIdFields);
+    console.error('❌ Available fields:', Object.keys(userData));
     throw new Error('No active subscription found');
   }
 
+  // Use found subscription ID or fallback to original field name
+  const subscriptionId = foundSubId || userData.stripe_subscription_id;
+
   try {
-    console.log('🔄 Calling Stripe to cancel subscription at period end:', userData.stripe_subscription_id);
+    console.log('🔄 Calling Stripe to cancel subscription at period end:', subscriptionId);
 
     // Cancel subscription at period end
-    const subscription = await stripe.subscriptions.update(userData.stripe_subscription_id, {
+    const subscription = await stripe.subscriptions.update(subscriptionId, {
       cancel_at_period_end: true
     });
 
