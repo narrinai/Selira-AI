@@ -233,7 +233,8 @@ async function cancelAtPeriodEnd(stripe, user, userData) {
       // Update user directly in Airtable since there's no Stripe subscription
       await base('Users').update(user.id, {
         'Plan': 'Free',
-        'plan_end_date': planEndDateString
+        'plan_end_date': planEndDateString,
+        'subscription_status': 'canceled'
       });
 
       return {
