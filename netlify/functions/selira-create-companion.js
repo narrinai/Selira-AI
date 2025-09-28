@@ -328,14 +328,21 @@ BOUNDARIES:
         })
       });
 
+      console.log('📊 Avatar generation response status:', avatarResponse.status);
+
       if (avatarResponse.ok) {
         const avatarResult = await avatarResponse.json();
-        if (avatarResult.imageUrl) {
+        console.log('📋 Avatar generation result:', avatarResult);
+        if (avatarResult.success && avatarResult.imageUrl) {
           avatarUrlToUse = avatarResult.imageUrl;
           console.log('✅ Generated companion avatar:', avatarUrlToUse);
+        } else {
+          console.log('⚠️ Avatar generation succeeded but no imageUrl:', avatarResult);
         }
       } else {
-        console.log('⚠️ Avatar generation failed, companion will be created without avatar');
+        const errorText = await avatarResponse.text();
+        console.log('❌ Avatar generation failed with status:', avatarResponse.status);
+        console.log('❌ Avatar generation error response:', errorText);
       }
 
     } catch (error) {
