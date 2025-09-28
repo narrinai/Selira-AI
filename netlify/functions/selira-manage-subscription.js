@@ -1,10 +1,30 @@
 const Stripe = require('stripe');
 const Airtable = require('airtable');
 
-// Initialize Airtable
-const base = new Airtable({
-  apiKey: process.env.AIRTABLE_TOKEN_SELIRA || process.env.AIRTABLE_API_KEY || process.env.AIRTABLE_TOKEN
-}).base(process.env.AIRTABLE_BASE_ID_SELIRA || process.env.AIRTABLE_BASE_ID);
+// Initialize Airtable - try all possible environment variable combinations
+const airtableKey = process.env.AIRTABLE_TOKEN_SELIRA ||
+                   process.env.AIRTABLE_API_KEY ||
+                   process.env.AIRTABLE_TOKEN;
+
+const airtableBaseId = process.env.AIRTABLE_BASE_ID_SELIRA ||
+                      process.env.AIRTABLE_BASE_ID;
+
+console.log('🔍 Airtable config check:', {
+  hasKey: !!airtableKey,
+  hasBase: !!airtableBaseId,
+  keyLength: airtableKey ? airtableKey.length : 0,
+  baseLength: airtableBaseId ? airtableBaseId.length : 0,
+  availableEnvVars: Object.keys(process.env).filter(key => key.includes('AIRTABLE'))
+});
+
+if (!airtableKey || !airtableBaseId) {
+  console.error('❌ Missing Airtable configuration:', {
+    key: !!airtableKey,
+    base: !!airtableBaseId
+  });
+}
+
+const base = new Airtable({ apiKey: airtableKey }).base(airtableBaseId);
 
 exports.handler = async (event, context) => {
   const headers = {
