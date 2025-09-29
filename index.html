@@ -111,46 +111,6 @@
       align-items: center;
     }
 
-    .search-container {
-      position: relative;
-      max-width: 300px;
-    }
-
-    .search-icon {
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-muted);
-      font-size: 14px;
-      cursor: pointer;
-      transition: color 0.2s ease;
-    }
-
-    .search-icon:hover {
-      color: var(--accent);
-    }
-
-    .search-input {
-      width: 100%;
-      padding: 8px 12px 8px 32px;
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      color: var(--text-primary);
-      font-size: 14px;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    .search-input:focus {
-      border-color: var(--accent);
-    }
-
-    .search-input::placeholder {
-      color: var(--text-muted);
-    }
-
     .nav-link {
       color: var(--text-secondary);
       text-decoration: none;
@@ -773,15 +733,6 @@
     <nav class="nav">
       <a href="/" class="logo" aria-label="Selira AI Home">Selira AI</a>
       <div class="nav-menu">
-        <div class="search-container">
-          <div class="search-icon">🔍</div>
-          <input
-            type="text"
-            class="search-input"
-            placeholder="Search characters..."
-            id="searchInput"
-          >
-        </div>
         <a href="/news.html" class="nav-link">News</a>
         <a href="/pricing.html" class="nav-link">Pricing</a>
         <a href="#" class="nav-link login-btn" onclick="openLoginModal('login'); return false;">Login</a>
@@ -1042,26 +993,6 @@
         });
       }
 
-      // Initialize search functionality
-      const searchInput = document.getElementById('searchInput');
-      if (searchInput) {
-        searchInput.addEventListener('keyup', function(e) {
-          if (e.key === 'Enter' && this.value.trim()) {
-            window.location.href = `/search-results?q=${encodeURIComponent(this.value.trim())}`;
-          }
-        });
-
-        // Also add click listener to search icon
-        const searchIcon = document.querySelector('.search-icon');
-        if (searchIcon) {
-          searchIcon.addEventListener('click', function() {
-            const query = searchInput.value.trim();
-            if (query) {
-              window.location.href = `/search-results?q=${encodeURIComponent(query)}`;
-            }
-          });
-        }
-      }
     });
 
     // Smooth scrolling for anchor links only
