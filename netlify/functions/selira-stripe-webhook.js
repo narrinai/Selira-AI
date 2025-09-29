@@ -220,6 +220,16 @@ async function handleCheckoutCompleted(session) {
       'subscription_status': 'active'
     };
 
+    // Add plan_end_date if we have subscription data
+    if (session.subscription) {
+      // We'll get the actual end date from the subscription.updated event
+      // For now, set a default end date (30 days from start for most subscriptions)
+      const startDate = new Date();
+      const endDate = new Date(startDate);
+      endDate.setMonth(endDate.getMonth() + 1);
+      updateData.plan_end_date = endDate.toISOString().split('T')[0];
+    }
+
     console.log('🔄 Updating user with data:', updateData);
     console.log('🔍 Session values:', {
       customer: session.customer,
@@ -316,6 +326,11 @@ async function handleSubscriptionUpdated(subscription) {
       'plan_end_date': subscription.current_period_end ?
         new Date(subscription.current_period_end * 1000).toISOString().split('T')[0] : null
     };
+
+    // Add plan_start_date if we have current_period_start
+    if (subscription.current_period_start) {
+      updateData.plan_start_date = new Date(subscription.current_period_start * 1000).toISOString().split('T')[0];
+    }
 
     // Add plan name if available in metadata
     if (subscription.metadata?.plan_name) {
