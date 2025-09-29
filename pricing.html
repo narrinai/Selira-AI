@@ -1204,7 +1204,7 @@
 
     // Downgrade to a paid plan (Premium -> Basic)
     async function downgradePlan(targetPlan) {
-      const confirmMessage = `Are you sure you want to downgrade to the ${targetPlan.charAt(0).toUpperCase() + targetPlan.slice(1)} plan?\n\nYour subscription will be updated immediately and you will receive a prorated credit for the unused portion of your current plan.`;
+      const confirmMessage = `Are you sure you want to downgrade to the ${targetPlan.charAt(0).toUpperCase() + targetPlan.slice(1)} plan?\n\nYour subscription will be updated immediately and you can continue using your current plan benefits until your next billing date.`;
 
       if (!confirm(confirmMessage)) {
         return;
@@ -1273,12 +1273,8 @@
 
           let successMessage = `Plan downgraded to ${targetPlan.charAt(0).toUpperCase() + targetPlan.slice(1)} successfully!`;
 
-          if (result.proration_note) {
-            successMessage += `\n\n${result.proration_note}`;
-          }
-
           if (result.next_billing_date) {
-            successMessage += `\n\nNext billing date: ${result.next_billing_date}`;
+            successMessage += `\n\nYou can continue to use your current plan benefits until ${result.next_billing_date}`;
           }
 
           showSuccessMessage(successMessage);
