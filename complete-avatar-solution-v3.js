@@ -209,63 +209,31 @@ async function generateAndDownloadAvatar(companion) {
 
     console.log(`   🔥 EXPLICIT PROMPT: ${explicitPrompt}`);
 
-    // Use Flux Schnell model directly (same as chat generation)
-    const REPLICATE_API_TOKEN = process.env.REPLICATE_API_TOKEN_SELIRA || process.env.REPLICATE_API_TOKEN;
-    const modelVersion = "black-forest-labs/flux-schnell:c846a69991daf4c0e5d016514849d14ee5b2e6846ce6b9d6f21369e564cfe51e";
-
-    const avatarResponse = await fetch('https://api.replicate.com/v1/predictions', {
+    // Use Netlify function which has access to Replicate API token
+    const avatarResponse = await fetch('https://selira.ai/.netlify/functions/selira-generate-custom-image', {
       method: 'POST',
-      headers: {
-        'Authorization': `Token ${REPLICATE_API_TOKEN}`,
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        version: modelVersion,
-        input: {
-          prompt: explicitPrompt,
-          width: 768,
-          height: 768,
-          num_outputs: 1,
-          num_inference_steps: 4,
-          seed: Math.floor(Math.random() * 100000)
-        }
+        customPrompt: explicitPrompt,
+        characterName: name,
+        category: traits.style === 'anime' ? 'anime-manga' : 'realistic',
+        style: traits.style,
+        shotType: 'portrait',
+        sex: traits.sex,
+        ethnicity: traits.ethnicity,
+        hairLength: traits.hairLength,
+        hairColor: traits.hairColor
       })
     });
 
     if (avatarResponse.ok) {
-      const prediction = await avatarResponse.json();
-      console.log(`📊 Prediction created: ${prediction.id}, status: ${prediction.status}`);
-
-      // Wait for the prediction to complete (max 30 seconds)
-      let result = prediction;
-      let attempts = 0;
-      const maxAttempts = 30;
-
-      while (result.status !== 'succeeded' && result.status !== 'failed' && attempts < maxAttempts) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        attempts++;
-
-        const statusResponse = await fetch(`https://api.replicate.com/v1/predictions/${prediction.id}`, {
-          headers: {
-            'Authorization': `Token ${REPLICATE_API_TOKEN}`,
-            'Accept': 'application/json'
-          }
-        });
-
-        if (statusResponse.ok) {
-          result = await statusResponse.json();
-          console.log(`⏳ Status [${attempts}/${maxAttempts}]: ${result.status}`);
-        }
-      }
-
-      if (result.status === 'succeeded' && result.output?.[0]) {
-        const imageUrl = result.output[0];
-        console.log(`✅ Generated EXPLICIT: ${imageUrl}`);
+      const avatarResult = await avatarResponse.json();
+      if (avatarResult.success && avatarResult.imageUrl) {
+        console.log(`✅ Generated EXPLICIT: ${avatarResult.imageUrl}`);
 
         // Download the image immediately
         const filename = `${nameToFilename(name)}-explicit-${Date.now()}.webp`;
-        const downloaded = await downloadImage(imageUrl, filename);
+        const downloaded = await downloadImage(avatarResult.imageUrl, filename);
 
         if (downloaded) {
           const localUrl = `https://selira.ai/avatars/${filename}`;
@@ -273,7 +241,7 @@ async function generateAndDownloadAvatar(companion) {
           return localUrl;
         }
       } else {
-        console.log(`⚠️ Generation failed or timed out: ${result.status}`);
+        console.log(`⚠️ Generation failed: ${avatarResult.error || 'Unknown error'}`);
       }
     } else {
       const errorText = await avatarResponse.text();
@@ -289,58 +257,29 @@ async function generateAndDownloadAvatar(companion) {
           `anime portrait of ${characterAppearance}, anime style, attractive pose, appealing expression, anime character, vibrant colors, digital anime art, upper body, anime artwork, detailed facial features, anime eyes, single character, solo` :
           `realistic photography, portrait photograph of ${characterAppearance}, attractive expression, appealing clothing, confident pose, attractive, photorealistic, professional pose, attractive body, portrait photography, attractive model, professional photography, single person, solo, one woman only`;
 
-        const conservativeResponse = await fetch('https://api.replicate.com/v1/predictions', {
+        const conservativeResponse = await fetch('https://selira.ai/.netlify/functions/selira-generate-custom-image', {
           method: 'POST',
-          headers: {
-            'Authorization': `Token ${REPLICATE_API_TOKEN}`,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            version: modelVersion,
-            input: {
-              prompt: moderatePrompt,
-              width: 768,
-              height: 768,
-              num_outputs: 1,
-              num_inference_steps: 4,
-              seed: Math.floor(Math.random() * 100000)
-            }
+            customPrompt: moderatePrompt,
+            characterName: name,
+            category: traits.style === 'anime' ? 'anime-manga' : 'realistic',
+            style: traits.style,
+            shotType: 'portrait',
+            sex: traits.sex,
+            ethnicity: traits.ethnicity,
+            hairLength: traits.hairLength,
+            hairColor: traits.hairColor
           })
         });
 
         if (conservativeResponse.ok) {
-          const conservativePrediction = await conservativeResponse.json();
-          console.log(`📊 Conservative prediction created: ${conservativePrediction.id}`);
-
-          // Wait for conservative prediction
-          let conservativeResult = conservativePrediction;
-          let conservativeAttempts = 0;
-          const maxConservativeAttempts = 30;
-
-          while (conservativeResult.status !== 'succeeded' && conservativeResult.status !== 'failed' && conservativeAttempts < maxConservativeAttempts) {
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            conservativeAttempts++;
-
-            const statusResponse = await fetch(`https://api.replicate.com/v1/predictions/${conservativePrediction.id}`, {
-              headers: {
-                'Authorization': `Token ${REPLICATE_API_TOKEN}`,
-                'Accept': 'application/json'
-              }
-            });
-
-            if (statusResponse.ok) {
-              conservativeResult = await statusResponse.json();
-              console.log(`⏳ Conservative status [${conservativeAttempts}/${maxConservativeAttempts}]: ${conservativeResult.status}`);
-            }
-          }
-
-          if (conservativeResult.status === 'succeeded' && conservativeResult.output?.[0]) {
-            const conservativeImageUrl = conservativeResult.output[0];
-            console.log(`✅ Generated moderate explicit: ${conservativeImageUrl}`);
+          const conservativeResult = await conservativeResponse.json();
+          if (conservativeResult.success && conservativeResult.imageUrl) {
+            console.log(`✅ Generated moderate explicit: ${conservativeResult.imageUrl}`);
 
             const filename = `${nameToFilename(name)}-moderate-${Date.now()}.webp`;
-            const downloaded = await downloadImage(conservativeImageUrl, filename);
+            const downloaded = await downloadImage(conservativeResult.imageUrl, filename);
 
             if (downloaded) {
               const localUrl = `https://selira.ai/avatars/${filename}`;
