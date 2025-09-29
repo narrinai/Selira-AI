@@ -121,10 +121,32 @@ async function handleCheckoutCompleted(session) {
       return;
     }
 
-    // Find user in Airtable
-    const users = await base('Users').select({
-      filterByFormula: `OR({Email} = '${userEmail}', {Auth0ID} = '${userId}')`
-    }).firstPage();
+    // Find user in Airtable - prioritize email lookup since Auth0ID might be missing
+    console.log('🔍 Searching for user with email:', userEmail, 'and userId:', userId);
+
+    let users = [];
+    // First try by email (more reliable)
+    if (userEmail) {
+      users = await base('Users').select({
+        filterByFormula: `{Email} = '${userEmail}'`
+      }).firstPage();
+
+      if (users.length > 0) {
+        console.log('✅ Found user by email:', userEmail);
+      }
+    }
+
+    // If not found by email and we have userId, try by Auth0ID
+    if (users.length === 0 && userId) {
+      console.log('🔄 Email search failed, trying Auth0ID:', userId);
+      users = await base('Users').select({
+        filterByFormula: `{Auth0ID} = '${userId}'`
+      }).firstPage();
+
+      if (users.length > 0) {
+        console.log('✅ Found user by Auth0ID:', userId);
+      }
+    }
 
     if (users.length === 0) {
       console.error('❌ User not found:', { userEmail, userId });
