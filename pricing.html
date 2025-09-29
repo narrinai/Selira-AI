@@ -1050,6 +1050,34 @@
     
     // Handle plan button clicks
     function handlePlanClick(planType) {
+      console.log('🚀 handlePlanClick called with planType:', planType);
+
+      // PRIORITY CHECK: Premium -> Basic downgrade
+      if (planType === 'basic') {
+        // Check if user is currently on Premium
+        const premiumCard = document.querySelector('.pricing-card:nth-child(3)');
+        const basicButton = document.querySelector('.pricing-card:nth-child(2) .plan-button');
+
+        console.log('🔍 Checking for Premium -> Basic downgrade:', {
+          premiumCardExists: !!premiumCard,
+          premiumHasCurrentPlan: premiumCard ? premiumCard.classList.contains('current-plan') : false,
+          basicButtonExists: !!basicButton,
+          basicButtonText: basicButton ? basicButton.textContent : 'N/A'
+        });
+
+        if (premiumCard && premiumCard.classList.contains('current-plan')) {
+          console.log('🎯 PREMIUM -> BASIC DOWNGRADE DETECTED (current-plan class) - bypassing normal flow');
+          downgradePlan(planType);
+          return;
+        }
+
+        if (basicButton && basicButton.textContent.includes('Downgrade to Basic')) {
+          console.log('🎯 PREMIUM -> BASIC DOWNGRADE DETECTED (button text) - bypassing normal flow');
+          downgradePlan(planType);
+          return;
+        }
+      }
+
       // Check if user is logged in
       const isLoggedIn = localStorage.getItem('auth0_token') || localStorage.getItem('user_uid');
 
