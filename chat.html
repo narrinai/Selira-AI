@@ -2745,15 +2745,31 @@
           ? companion.lastUserMessage.substring(0, 40) + '...'
           : companion.lastUserMessage;
 
-        // Get avatar URL with fallbacks
+        // Get avatar URL and name with fallbacks
         let avatarUrl = '/avatars/placeholder.webp';
         let characterName = companion.slug;
 
+        // Priority 1: Use character data from loadedCharacters
         if (character?.avatar) {
           avatarUrl = character.avatar;
           characterName = character.name;
-        } else if (companion.avatar) {
+        }
+        // Priority 2: Use cached data from localStorage
+        else if (companion.characterName && companion.avatar) {
+          characterName = companion.characterName;
           avatarUrl = companion.avatar;
+        }
+        // Priority 3: Try to get cached character name only
+        else if (companion.characterName) {
+          characterName = companion.characterName;
+          // Keep placeholder avatar
+        }
+        // Priority 4: If this is the current character, use its data
+        else if (currentCharacter && currentCharacter.slug === companion.slug) {
+          characterName = currentCharacter.name;
+          if (currentCharacter.avatar && currentCharacter.avatar !== '/avatars/placeholder.webp') {
+            avatarUrl = currentCharacter.avatar;
+          }
         }
 
         // Cache character info for future sidebar displays
@@ -2764,10 +2780,13 @@
           }
         }
 
-        // For newly created characters, try to get avatar from the companion data
-        if (!character && companion.characterName) {
-          characterName = companion.characterName;
-        }
+        // Debug: Check what's in localStorage for this companion
+        const cachedName = localStorage.getItem(`char_name_${companion.slug}`);
+        const cachedAvatar = localStorage.getItem(`char_avatar_${companion.slug}`);
+        console.log(`🏷️ Sidebar item: ${companion.slug}`);
+        console.log(`   - Companion data: name="${companion.characterName}", avatar="${companion.avatar}"`);
+        console.log(`   - Cached data: name="${cachedName}", avatar="${cachedAvatar}"`);
+        console.log(`   - Final result: name="${characterName}", avatar="${avatarUrl}"`);
 
         html += `
           <div class="chat-item ${isActive ? 'active' : ''}"
