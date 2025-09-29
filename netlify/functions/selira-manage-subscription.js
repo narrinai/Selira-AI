@@ -126,6 +126,10 @@ exports.handler = async (event, context) => {
         result = await cancelAtPeriodEnd(stripe, user, userData);
         break;
 
+      case 'downgrade_plan':
+        result = await downgradePlan(stripe, user, userData, data.targetPlan);
+        break;
+
       case 'reactivate':
         result = await reactivateSubscription(stripe, user, userData);
         break;
@@ -347,4 +351,107 @@ async function createPortalSession(stripe, userData) {
   return {
     portal_url: session.url
   };
+}
+
+async function downgradePlan(stripe, user, userData, targetPlan) {
+  try {
+    console.log('🔄 Processing plan downgrade:', {
+      currentPlan: userData.Plan,
+      targetPlan,
+      userId: user.id
+    });
+
+    // Validate target plan
+    const validPlans = ['basic', 'premium'];
+    if (!validPlans.includes(targetPlan)) {
+      throw new Error(`Invalid target plan: ${targetPlan}`);
+    }
+
+    // Get current plan
+    const currentPlan = (userData.Plan || 'free').toLowerCase();
+
+    // Validate it's actually a downgrade
+    const planHierarchy = { 'free': 0, 'basic': 1, 'premium': 2 };
+    if (planHierarchy[targetPlan] >= planHierarchy[currentPlan]) {
+      throw new Error('This is not a valid downgrade');
+    }
+
+    // Map plan names to Stripe price IDs
+    const priceIds = {
+      'basic': 'price_1S9KVADEKVIZZyJVXXjE2gYE',
+      'premium': 'price_1S9KVbDEKVIZZyJVDpWlXYhb'
+    };
+
+    const newPriceId = priceIds[targetPlan];
+    if (!newPriceId) {
+      throw new Error(`No Stripe price ID found for plan: ${targetPlan}`);
+    }
+
+    // Check if user has an active Stripe subscription
+    if (!userData.stripe_subscription_id) {
+      // No Stripe subscription - handle as manual downgrade in Airtable only
+      console.log('🔄 No Stripe subscription found, updating Airtable directly');
+
+      await base('Users').update(user.id, {
+        'Plan': targetPlan.charAt(0).toUpperCase() + targetPlan.slice(1),
+        'subscription_status': 'active',
+        'plan_start_date': new Date().toISOString().split('T')[0]
+      });
+
+      return {
+        message: `Plan downgraded to ${targetPlan} successfully`,
+        plan: targetPlan,
+        note: 'Direct Airtable update (no Stripe subscription found)'
+      };
+    }
+
+    // Get current subscription from Stripe
+    const subscription = await stripe.subscriptions.retrieve(userData.stripe_subscription_id);
+    console.log('🔍 Current subscription status:', subscription.status);
+
+    if (subscription.status !== 'active') {
+      throw new Error('Subscription is not active');
+    }
+
+    // Update the subscription to the new plan immediately
+    console.log('🔄 Updating Stripe subscription to new plan:', targetPlan);
+
+    const updatedSubscription = await stripe.subscriptions.update(userData.stripe_subscription_id, {
+      items: [{
+        id: subscription.items.data[0].id,
+        price: newPriceId,
+      }],
+      proration_behavior: 'always_invoice', // Create prorated invoice immediately
+      metadata: {
+        plan_name: targetPlan,
+        user_email: userData.Email,
+        user_id: user.id
+      }
+    });
+
+    console.log('✅ Stripe subscription updated successfully');
+
+    // Update Airtable with new plan info
+    const airtableUpdate = {
+      'Plan': targetPlan.charAt(0).toUpperCase() + targetPlan.slice(1),
+      'subscription_status': 'active',
+      'plan_start_date': new Date().toISOString().split('T')[0],
+      'plan_end_date': new Date(updatedSubscription.current_period_end * 1000).toISOString().split('T')[0]
+    };
+
+    console.log('🔄 Updating Airtable with:', airtableUpdate);
+    await base('Users').update(user.id, airtableUpdate);
+
+    return {
+      message: `Plan downgraded to ${targetPlan} successfully`,
+      plan: targetPlan,
+      subscription_status: 'active',
+      next_billing_date: new Date(updatedSubscription.current_period_end * 1000).toISOString().split('T')[0],
+      proration_note: 'You will receive a prorated refund/credit for the unused portion of your current plan'
+    };
+
+  } catch (error) {
+    console.error('❌ Error in downgradePlan:', error);
+    throw error;
+  }
 }

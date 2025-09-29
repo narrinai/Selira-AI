@@ -441,8 +441,9 @@
       right: 16px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      z-index: 2;
     }
-    
+
     .card-badge {
       position: absolute;
       top: -10px;
@@ -454,6 +455,18 @@
       border-radius: 20px;
       font-size: 12px;
       font-weight: 600;
+      z-index: 1;
+    }
+
+    /* Adjust badge positioning when both are present */
+    .pricing-card.featured.current-plan .card-badge {
+      left: 16px;
+      transform: translateX(0);
+    }
+
+    .pricing-card.featured.current-plan .current-plan-badge {
+      right: 16px;
+      top: -8px;
     }
     
     .plan-name {
@@ -1072,8 +1085,156 @@
           window.location.href = '/category';
         }
       } else {
-        // Paid plans - initiate Stripe checkout
-        initiateStripeCheckout(planType);
+        // Paid plans - check if this is an upgrade or downgrade
+        handlePaidPlanSelection(planType);
+      }
+    }
+
+    // Handle paid plan selection (upgrade or downgrade)
+    async function handlePaidPlanSelection(planType) {
+      try {
+        // Load current plan if not already loaded
+        if (window.currentUserPlan === undefined) {
+          await loadCurrentPlan();
+        }
+
+        const currentPlan = window.currentUserPlan || 'free';
+        const planHierarchy = { 'free': 0, 'basic': 1, 'premium': 2 };
+
+        console.log('🔄 Plan selection:', { currentPlan, targetPlan: planType });
+
+        // Determine if this is an upgrade or downgrade
+        if (planHierarchy[planType] > planHierarchy[currentPlan]) {
+          // This is an upgrade - use Stripe checkout
+          console.log('✅ Upgrade detected - using Stripe checkout');
+          initiateStripeCheckout(planType);
+        } else if (planHierarchy[planType] < planHierarchy[currentPlan]) {
+          // This is a downgrade - use subscription downgrade
+          console.log('✅ Downgrade detected - using subscription update');
+          await downgradePlan(planType);
+        } else {
+          // Same plan - shouldn't happen but handle gracefully
+          alert('You are already on this plan');
+        }
+
+      } catch (error) {
+        console.error('❌ Error handling plan selection:', error);
+        alert('An error occurred while processing your plan change. Please try again.');
+      }
+    }
+
+    // Downgrade to a paid plan (Premium -> Basic)
+    async function downgradePlan(targetPlan) {
+      const confirmMessage = `Are you sure you want to downgrade to the ${targetPlan.charAt(0).toUpperCase() + targetPlan.slice(1)} plan?\n\nYour subscription will be updated immediately and you will receive a prorated credit for the unused portion of your current plan.`;
+
+      if (!confirm(confirmMessage)) {
+        return;
+      }
+
+      // Delay to ensure confirm dialog is fully closed before showing success message
+      const showSuccessMessage = (message) => {
+        setTimeout(() => {
+          alert(message);
+        }, 500);
+      };
+
+      try {
+        const user = window.getCurrentUser();
+        if (!user) {
+          showSuccessMessage('Please log in to manage your subscription');
+          return;
+        }
+
+        console.log('🔄 Downgrading to', targetPlan, 'for user:', user.email);
+
+        // Show loading state on the target plan button
+        const targetCard = document.querySelector(`.pricing-card:nth-child(${targetPlan === 'basic' ? '2' : '3'})`);
+        const targetButton = targetCard ? targetCard.querySelector('.plan-button') : null;
+        if (targetButton) {
+          const originalText = targetButton.textContent;
+          targetButton.textContent = 'Processing...';
+          targetButton.style.opacity = '0.7';
+        }
+
+        // Call the manage subscription function with downgrade action
+        const requestData = {
+          action: 'downgrade_plan',
+          targetPlan: targetPlan,
+          userEmail: user.email,
+          auth0Id: user.sub
+        };
+
+        console.log('🔄 Sending downgrade request:', requestData);
+
+        const response = await fetch('/.netlify/functions/selira-manage-subscription', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestData)
+        });
+
+        console.log('📊 Response status:', response.status);
+
+        let result;
+        try {
+          result = await response.json();
+        } catch (jsonError) {
+          console.error('❌ Failed to parse response as JSON:', jsonError);
+          const textResponse = await response.text();
+          console.error('❌ Raw response:', textResponse);
+          showSuccessMessage(`Server error: Unable to parse response. Status: ${response.status}`);
+          return;
+        }
+
+        console.log('📋 Parsed result:', result);
+
+        if (response.ok && result.success) {
+          console.log('✅ Plan downgrade successful:', result);
+
+          let successMessage = `Plan downgraded to ${targetPlan.charAt(0).toUpperCase() + targetPlan.slice(1)} successfully!`;
+
+          if (result.proration_note) {
+            successMessage += `\n\n${result.proration_note}`;
+          }
+
+          if (result.next_billing_date) {
+            successMessage += `\n\nNext billing date: ${result.next_billing_date}`;
+          }
+
+          showSuccessMessage(successMessage);
+
+          // Reload the current plan display
+          await loadCurrentPlan();
+
+        } else {
+          console.error('❌ Downgrade failed:', result);
+          let alertMessage = `Failed to downgrade plan: ${result.error || 'Unknown error'}`;
+
+          if (result.details) {
+            alertMessage += `\n\nDetails: ${result.details}`;
+          }
+
+          showSuccessMessage(alertMessage);
+        }
+
+        // Restore button state
+        if (targetButton) {
+          targetButton.textContent = `Downgrade to ${targetPlan.charAt(0).toUpperCase() + targetPlan.slice(1)}`;
+          targetButton.style.opacity = '1';
+        }
+
+      } catch (error) {
+        console.error('❌ Error downgrading plan:', error);
+        showSuccessMessage('An error occurred while downgrading your plan. Please try again.');
+
+        // Restore button state
+        const targetCard = document.querySelector(`.pricing-card:nth-child(${targetPlan === 'basic' ? '2' : '3'})`);
+        const targetButton = targetCard ? targetCard.querySelector('.plan-button') : null;
+        if (targetButton) {
+          targetButton.textContent = `Downgrade to ${targetPlan.charAt(0).toUpperCase() + targetPlan.slice(1)}`;
+          targetButton.style.opacity = '1';
+        }
       }
     }
 
