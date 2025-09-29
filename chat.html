@@ -2779,13 +2779,16 @@
           rating: character.rating || '4.5',
           tags: character.tags || [],
           voice: character.voice || '',
-          // Include appearance properties for image generation
-          category: character.category,
-          companion_type: character.companion_type,
-          sex: character.sex,
-          ethnicity: character.ethnicity,
-          hair_length: character.hair_length,
-          hair_color: character.hair_color
+          // Include ALL appearance properties for image generation (check both cases)
+          category: character.category || character.Category,
+          companion_type: character.companion_type || character.Companion_Type,
+          sex: character.sex || character.Sex || character.Gender,
+          ethnicity: character.ethnicity || character.Ethnicity,
+          hair_length: character.hair_length || character.Hair_Length,
+          hair_color: character.hair_color || character.Hair_Color,
+          age: character.age || character.Age,
+          personality: character.personality || character.Personality,
+          prompt: character.prompt || character.Prompt
         };
 
         // Update UI
@@ -2833,13 +2836,16 @@
         chats: Math.floor(Math.random() * 100) + 'K',
         rating: (Math.random() * 2 + 3).toFixed(1),
         tags: character.tags || ['Fantasy', 'Adventure', 'Hero'],
-        // Include appearance properties for image generation
-        category: character.category,
-        companion_type: character.companion_type,
-        sex: character.sex,
-        ethnicity: character.ethnicity,
-        hair_length: character.hair_length,
-        hair_color: character.hair_color
+        // Include ALL appearance properties for image generation (check both cases)
+        category: character.category || character.Category,
+        companion_type: character.companion_type || character.Companion_Type,
+        sex: character.sex || character.Sex || character.Gender,
+        ethnicity: character.ethnicity || character.Ethnicity,
+        hair_length: character.hair_length || character.Hair_Length,
+        hair_color: character.hair_color || character.Hair_Color,
+        age: character.age || character.Age,
+        personality: character.personality || character.Personality,
+        prompt: character.prompt || character.Prompt
       };
       
       updateCharacterDisplay();
@@ -2876,18 +2882,21 @@
         avatar: fixAvatarUrl(avatar),
         title: title || fullCharacterData.title || '',
         description: fullCharacterData.description || 'Start a conversation with ' + name,
-        category: fullCharacterData.category || 'Other',
+        category: fullCharacterData.category || fullCharacterData.Category || 'Other',
         creator: fullCharacterData.creator || '@Selira',
         chats: Math.floor(Math.random() * 100) + 'K',
         rating: (Math.random() * 2 + 3).toFixed(1),
         tags: fullCharacterData.tags || ['Fantasy', 'Adventure', 'Hero'],
         character_url: fullCharacterData.character_url,
-        // Include appearance properties for image generation
-        companion_type: fullCharacterData.companion_type,
-        sex: fullCharacterData.sex,
-        ethnicity: fullCharacterData.ethnicity,
-        hair_length: fullCharacterData.hair_length,
-        hair_color: fullCharacterData.hair_color
+        // Include ALL appearance properties for image generation (check both cases)
+        companion_type: fullCharacterData.companion_type || fullCharacterData.Companion_Type,
+        sex: fullCharacterData.sex || fullCharacterData.Sex || fullCharacterData.Gender,
+        ethnicity: fullCharacterData.ethnicity || fullCharacterData.Ethnicity,
+        hair_length: fullCharacterData.hair_length || fullCharacterData.Hair_Length,
+        hair_color: fullCharacterData.hair_color || fullCharacterData.Hair_Color,
+        age: fullCharacterData.age || fullCharacterData.Age,
+        personality: fullCharacterData.personality || fullCharacterData.Personality,
+        prompt: fullCharacterData.prompt || fullCharacterData.Prompt
       };
       
       updateCharacterDisplay();
@@ -3001,7 +3010,17 @@
         greeting: character.greeting || extractGreetingFromDescription(character.description) || `Hello! I'm ${name}. Nice to meet you!`,
         chats: character.chats || (isNewCharacter ? '0' : Math.floor(Math.random() * 100) + 'K'),
         rating: character.rating || (isNewCharacter ? '5.0' : (Math.random() * 2 + 3).toFixed(1)),
-        tags: character.tags || ['Fantasy', 'Adventure', 'Hero']
+        tags: character.tags || ['Fantasy', 'Adventure', 'Hero'],
+        // Include ALL appearance properties for image generation (check both cases)
+        category: character.category || character.Category,
+        companion_type: character.companion_type || character.Companion_Type,
+        sex: character.sex || character.Sex || character.Gender,
+        ethnicity: character.ethnicity || character.Ethnicity,
+        hair_length: character.hair_length || character.Hair_Length,
+        hair_color: character.hair_color || character.Hair_Color,
+        age: character.age || character.Age,
+        personality: character.personality || character.Personality,
+        prompt: character.prompt || character.Prompt
       };
 
       // Clear chat display first
@@ -3376,7 +3395,17 @@
           description: character.description || 'An amazing character ready for conversation.',
           chats: character.chats || Math.floor(Math.random() * 100) + 'K',
           rating: character.rating || (Math.random() * 2 + 3).toFixed(1),
-          tags: character.tags || ['Character']
+          tags: character.tags || ['Character'],
+          // Include ALL appearance properties for image generation (check both cases)
+          category: character.category || character.Category,
+          companion_type: character.companion_type || character.Companion_Type,
+          sex: character.sex || character.Sex || character.Gender,
+          ethnicity: character.ethnicity || character.Ethnicity,
+          hair_length: character.hair_length || character.Hair_Length,
+          hair_color: character.hair_color || character.Hair_Color,
+          age: character.age || character.Age,
+          personality: character.personality || character.Personality,
+          prompt: character.prompt || character.Prompt
         };
         
         updateCharacterDisplay();
@@ -3564,12 +3593,22 @@
           characterStyle: characterStyle,
           character: currentCharacter.name
         });
-        
+
         // Use character appearance data if available, otherwise fallback
         const characterSex = currentCharacter.sex || 'female';
         const characterEthnicity = currentCharacter.ethnicity || 'white';
         const characterHairLength = currentCharacter.hair_length || 'medium';
         const characterHairColor = currentCharacter.hair_color || 'brown';
+
+        console.log('🎭 Using companion traits for image generation:', {
+          sex: characterSex,
+          ethnicity: characterEthnicity,
+          hair_length: characterHairLength,
+          hair_color: characterHairColor,
+          style: characterStyle,
+          category: currentCharacter.category,
+          companion_type: currentCharacter.companion_type
+        });
 
         // Get user info for rate limiting
         const user = window.getCurrentUser ? window.getCurrentUser() : null;
