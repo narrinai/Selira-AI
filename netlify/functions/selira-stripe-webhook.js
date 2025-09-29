@@ -7,6 +7,9 @@ const base = new Airtable({
 }).base(process.env.AIRTABLE_BASE_ID_SELIRA || process.env.AIRTABLE_BASE_ID);
 
 exports.handler = async (event, context) => {
+  console.log('🚀 WEBHOOK HANDLER STARTED - Version debug-v2');
+  console.log('📨 HTTP Method:', event.httpMethod);
+
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
@@ -16,6 +19,7 @@ exports.handler = async (event, context) => {
 
   // Handle preflight OPTIONS request
   if (event.httpMethod === 'OPTIONS') {
+    console.log('🔄 OPTIONS request handled');
     return { statusCode: 200, headers, body: '' };
   }
 
@@ -99,7 +103,12 @@ exports.handler = async (event, context) => {
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify({ received: true })
+      body: JSON.stringify({
+        received: true,
+        processed: true,
+        timestamp: new Date().toISOString(),
+        version: "debug-v2"
+      })
     };
 
   } catch (error) {
