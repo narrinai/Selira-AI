@@ -215,9 +215,27 @@ async function cancelAtPeriodEnd(stripe, user, userData) {
     finalSubscriptionId: subscriptionId
   });
 
-  if (!subscriptionId) {
-    console.log('⚠️ No Stripe subscription found, but user has plan:', userData.Plan);
-    console.log('🔄 This appears to be a manually assigned plan - downgrading directly in Airtable');
+  // Check if this is a test subscription ID
+  const isTestSubscription = subscriptionId && (
+    subscriptionId.startsWith('sub_test_') ||
+    subscriptionId.startsWith('cus_test_') ||
+    subscriptionId === 'test' ||
+    subscriptionId.includes('test')
+  );
+
+  console.log('🧪 Test subscription check:', {
+    subscriptionId,
+    isTestSubscription
+  });
+
+  if (!subscriptionId || isTestSubscription) {
+    if (isTestSubscription) {
+      console.log('🧪 Test subscription detected - handling as manual plan:', userData.Plan);
+      console.log('🔄 Downgrading test subscription directly in Airtable');
+    } else {
+      console.log('⚠️ No Stripe subscription found, but user has plan:', userData.Plan);
+      console.log('🔄 This appears to be a manually assigned plan - downgrading directly in Airtable');
+    }
 
     // Check if user actually has a paid plan that needs downgrading
     if (userData.Plan && userData.Plan.toLowerCase() !== 'free') {
@@ -240,7 +258,7 @@ async function cancelAtPeriodEnd(stripe, user, userData) {
       return {
         message: 'Plan downgraded successfully',
         subscription_status: 'canceled',
-        note: 'Manual plan downgrade (no Stripe subscription found)',
+        note: isTestSubscription ? 'Test subscription downgraded (no real Stripe subscription)' : 'Manual plan downgrade (no Stripe subscription found)',
         previousPlan: userData.Plan,
         cancels_at: planEndDateString
       };
