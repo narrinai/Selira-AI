@@ -1151,17 +1151,17 @@
         return;
       }
 
-      // Small delay to ensure confirm dialog is fully closed before showing success message
+      // Delay to ensure confirm dialog is fully closed before showing success message
       const showSuccessMessage = (message) => {
         setTimeout(() => {
           alert(message);
-        }, 100);
+        }, 500); // Increased delay to prevent overlap
       };
 
       try {
         const user = window.getCurrentUser();
         if (!user) {
-          alert('Please log in to manage your subscription');
+          showSuccessMessage('Please log in to manage your subscription');
           return;
         }
 
@@ -1202,7 +1202,7 @@
           console.error('❌ Failed to parse response as JSON:', jsonError);
           const textResponse = await response.text();
           console.error('❌ Raw response:', textResponse);
-          alert(`Server error: Unable to parse response. Status: ${response.status}`);
+          showSuccessMessage(`Server error: Unable to parse response. Status: ${response.status}`);
           return;
         }
 
@@ -1226,7 +1226,7 @@
             alertMessage += `\n\nDebug Info:\nUser Plan: ${result.debugInfo.userPlan || 'Unknown'}\nAvailable Fields: ${result.debugInfo.availableFields ? result.debugInfo.availableFields.join(', ') : 'None'}\nStripe Fields: ${result.debugInfo.stripeFields ? result.debugInfo.stripeFields.join(', ') : 'None'}`;
           }
 
-          alert(alertMessage);
+          showSuccessMessage(alertMessage);
         }
 
         // Restore button state
@@ -1237,7 +1237,7 @@
 
       } catch (error) {
         console.error('❌ Error downgrading subscription:', error);
-        alert('An error occurred while downgrading your subscription. Please try again.');
+        showSuccessMessage('An error occurred while downgrading your subscription. Please try again.');
 
         // Restore button state
         const freeButton = document.querySelector('.pricing-card:nth-child(1) .plan-button');
