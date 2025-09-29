@@ -1596,7 +1596,7 @@
       avatar: '/avatars/placeholder.webp',
       creator: '@Selira',
       description: 'Loading character information...',
-      chats: '0',
+      chats: 0,
       rating: '0.0',
       tags: ['Loading']
     };
@@ -1804,9 +1804,40 @@
       const styleModifier = artStyleAdditions[artStyle] || '';
       suggestions = suggestions.map(suggestion => suggestion + styleModifier);
 
-      // Return 3 random suggestions
-      const shuffled = suggestions.sort(() => 0.5 - Math.random());
-      return shuffled.slice(0, 3);
+      // Store all suggestions if first time
+      if (allAvailableSuggestions.length === 0) {
+        allAvailableSuggestions = [...suggestions];
+      }
+
+      // Get suggestions that haven't been used yet
+      const availableSuggestions = suggestions.filter(s => !usedSuggestions.has(s));
+
+      // If we've used all suggestions, reset the used set but keep the last few to avoid immediate repeats
+      if (availableSuggestions.length < 3) {
+        console.log('🔄 Resetting used suggestions, keeping last 3 to avoid immediate repeats');
+        const recentSuggestions = Array.from(usedSuggestions).slice(-3);
+        usedSuggestions.clear();
+        recentSuggestions.forEach(s => usedSuggestions.add(s));
+
+        // Re-filter
+        const freshSuggestions = suggestions.filter(s => !usedSuggestions.has(s));
+        const shuffled = shuffleArray(freshSuggestions);
+        const selected = shuffled.slice(0, 3);
+
+        // Mark as used
+        selected.forEach(s => usedSuggestions.add(s));
+        return selected;
+      }
+
+      // Shuffle and select 3 unused suggestions
+      const shuffled = shuffleArray(availableSuggestions);
+      const selected = shuffled.slice(0, 3);
+
+      // Mark selected suggestions as used
+      selected.forEach(s => usedSuggestions.add(s));
+
+      console.log(`🎲 Selected ${selected.length} new suggestions, ${usedSuggestions.size} total used`);
+      return selected;
     }
 
     // Show image prompt suggestions
@@ -2663,7 +2694,10 @@
               lastMessage: lastMessage?.content || '',
               lastUserMessage: lastUserMessage?.content || '',
               timestamp: lastMessage?.timestamp || Date.now(),
-              messageCount: chatHistory.length
+              messageCount: chatHistory.length,
+              // Try to get cached character data from localStorage
+              characterName: localStorage.getItem(`char_name_${characterSlug}`) || characterSlug,
+              avatar: localStorage.getItem(`char_avatar_${characterSlug}`) || null
             });
           }
         }
@@ -2711,18 +2745,41 @@
           ? companion.lastUserMessage.substring(0, 40) + '...'
           : companion.lastUserMessage;
 
+        // Get avatar URL with fallbacks
+        let avatarUrl = '/avatars/placeholder.webp';
+        let characterName = companion.slug;
+
+        if (character?.avatar) {
+          avatarUrl = character.avatar;
+          characterName = character.name;
+        } else if (companion.avatar) {
+          avatarUrl = companion.avatar;
+        }
+
+        // Cache character info for future sidebar displays
+        if (character) {
+          localStorage.setItem(`char_name_${companion.slug}`, character.name);
+          if (character.avatar) {
+            localStorage.setItem(`char_avatar_${companion.slug}`, character.avatar);
+          }
+        }
+
+        // For newly created characters, try to get avatar from the companion data
+        if (!character && companion.characterName) {
+          characterName = companion.characterName;
+        }
+
         html += `
           <div class="chat-item ${isActive ? 'active' : ''}"
                onclick="switchToCompanion('${companion.slug}')"
                data-slug="${companion.slug}">
             <div class="chat-avatar">
-              ${ character ?
-                `<img src="${fixAvatarUrl(character.avatar)}" alt="${character.name}" onerror="this.style.display='none'">` :
-                `<div style="width: 40px; height: 40px; background: var(--bg-tertiary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-secondary);">?</div>`
-              }
+              <img src="${fixAvatarUrl(avatarUrl)}"
+                   alt="${characterName}"
+                   onerror="this.src='/avatars/default-avatar.webp'; console.warn('❌ Chat item avatar failed for ${companion.slug}');">
             </div>
             <div class="chat-info">
-              <div class="chat-name">${character ? character.name : companion.slug}</div>
+              <div class="chat-name">${characterName}</div>
               <div class="chat-preview">${preview || character?.description?.substring(0, 30) || 'Start chatting...'}</div>
             </div>
           </div>
@@ -2769,7 +2826,7 @@
           description: character.description,
           greeting: character.greeting || `Hello! I'm ${character.name}. ${character.description}`,
           creator: character.creator || '@Selira',
-          chats: character.chats || '0',
+          chats: getMessageCount(character.slug),
           rating: character.rating || '4.5',
           tags: character.tags || [],
           voice: character.voice || '',
@@ -2784,6 +2841,9 @@
           personality: character.personality || character.Personality,
           prompt: character.prompt || character.Prompt
         };
+
+        // Cache character info for sidebar
+        cacheCharacterInfo(character);
 
         // Update UI
         updateCharacterDisplay();
@@ -2957,6 +3017,42 @@
       return greetingMatch ? greetingMatch[1].trim() : null;
     }
 
+    // Cache character info for sidebar
+    function cacheCharacterInfo(character) {
+      if (!character?.slug) return;
+
+      localStorage.setItem(`char_name_${character.slug}`, character.name || character.slug);
+      if (character.avatar && character.avatar !== '/avatars/placeholder.webp') {
+        localStorage.setItem(`char_avatar_${character.slug}`, character.avatar);
+        console.log('💾 Cached avatar for sidebar:', character.slug, character.avatar);
+      }
+    }
+
+    // Get actual message count for a character
+    function getMessageCount(characterSlug) {
+      try {
+        const chatHistory = JSON.parse(localStorage.getItem(`chat_${characterSlug}`) || '[]');
+        return chatHistory.length;
+      } catch (error) {
+        console.warn('Error getting message count for', characterSlug, error);
+        return 0;
+      }
+    }
+
+    // Track used suggestions to avoid repeating
+    let usedSuggestions = new Set();
+    let allAvailableSuggestions = [];
+
+    // Fisher-Yates shuffle algorithm
+    function shuffleArray(array) {
+      const shuffled = [...array];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    }
+
     // Generate a greeting for new characters based on their traits
     function generateGreetingForNewCharacter(character) {
       const name = character.name;
@@ -3051,7 +3147,7 @@
         creator: '@' + (character.creator || character.createdBy || 'Selira'),
         description: character.description || 'Start a conversation with ' + name,
         greeting: character.greeting || extractGreetingFromDescription(character.description) || `Hello! I'm ${name}. Nice to meet you!`,
-        chats: character.chats || (isNewCharacter ? '0' : Math.floor(Math.random() * 100) + 'K'),
+        chats: getMessageCount(slug),
         rating: character.rating || (isNewCharacter ? '5.0' : (Math.random() * 2 + 3).toFixed(1)),
         tags: character.tags || ['Fantasy', 'Adventure', 'Hero'],
         // Include ALL appearance properties for image generation (check both cases)
@@ -3383,7 +3479,7 @@
         creator: '@Selira',
         description: 'Character is being created...',
         greeting: '',
-        chats: '0',
+        chats: 0,
         rating: '5.0',
         tags: ['New']
       };
