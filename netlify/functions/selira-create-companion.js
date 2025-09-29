@@ -186,7 +186,9 @@ exports.handler = async (event, context) => {
       hairColor,
       visibility,
       createdBy,
-      userEmail
+      userEmail,
+      preGeneratedAvatarUrl: preGeneratedAvatarUrl ? 'PROVIDED' : 'NOT PROVIDED',
+      preGeneratedAvatarUrlLength: preGeneratedAvatarUrl?.length || 0
     });
 
     if (!name) {
@@ -228,13 +230,16 @@ exports.handler = async (event, context) => {
       }
     }
 
-    // Generate slug from name (simple version without timestamp)
-    const slug = name.toLowerCase()
+    // Generate unique slug from name with timestamp to prevent duplicates
+    const baseSlug = name.toLowerCase()
       .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
       .trim()
       .replace(/\s+/g, '-') // Replace spaces with hyphens
       .replace(/-+/g, '-') // Replace multiple hyphens with single
       .replace(/^-|-$/g, ''); // Remove leading/trailing hyphens
+
+    const timestamp = Date.now();
+    const slug = `${baseSlug}-${timestamp}`;
 
     // Generate Character_URL
     const characterUrl = `https://selira.ai/chat.html?char=${slug}`;
@@ -284,6 +289,7 @@ BOUNDARIES:
 
     // Generate avatar using existing avatar generation system
     let avatarUrlToUse = preGeneratedAvatarUrl || ''; // Use pre-generated avatar if available
+    console.log('🔍 Initial avatarUrlToUse:', avatarUrlToUse);
 
     // Only generate avatar if no pre-generated one is provided
     if (!preGeneratedAvatarUrl) {
@@ -291,6 +297,7 @@ BOUNDARIES:
       console.log('💡 Avatar should be generated in frontend during create flow');
     } else {
       console.log('✅ Using pre-generated avatar URL:', preGeneratedAvatarUrl);
+      console.log('✅ avatarUrlToUse set to:', avatarUrlToUse);
     }
 
     // Enable backend avatar generation as fallback when frontend fails
@@ -392,6 +399,9 @@ BOUNDARIES:
       is_unfiltered: isUnfiltered
       // chats and rating fields don't exist in Airtable - removed
     };
+
+    console.log('🔍 Final avatarUrlToUse before saving:', avatarUrlToUse);
+    console.log('🔍 Avatar_URL in characterData:', characterData.Avatar_URL);
 
     // Add Created_By field only if we have a user record ID (linked record field)
     if (userRecordId) {
@@ -502,6 +512,9 @@ BOUNDARIES:
     const result = JSON.parse(responseText);
     console.log('✅ Character created successfully:', result.id);
     console.log('✅ Created fields:', result.fields);
+    console.log('🔍 Specific Avatar_URL field in result:', result.fields.Avatar_URL);
+    console.log('🔍 Avatar_URL type:', typeof result.fields.Avatar_URL);
+    console.log('🔍 Avatar_URL length:', result.fields.Avatar_URL?.length || 'no length');
 
     // Now update the Users table to link this character to the user
     if (userRecordId) {
