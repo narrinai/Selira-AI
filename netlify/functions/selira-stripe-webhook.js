@@ -205,14 +205,39 @@ async function handleCheckoutCompleted(session) {
     };
 
     console.log('🔄 Updating user with data:', updateData);
+    console.log('🔍 Session values:', {
+      customer: session.customer,
+      subscription: session.subscription,
+      planName: planName
+    });
 
     // Update user plan in Airtable
-    const updateResult = await base('Users').update(user.id, updateData);
+    try {
+      const updateResult = await base('Users').update(user.id, updateData);
 
-    console.log('✅ Airtable update successful:', {
-      id: updateResult.id,
-      updatedFields: Object.keys(updateData)
-    });
+      console.log('✅ Airtable update successful:', {
+        id: updateResult.id,
+        updatedFields: Object.keys(updateData),
+        resultFields: updateResult.fields
+      });
+
+      // Verify the update by checking specific fields
+      console.log('✅ Verification - Updated values:', {
+        Plan: updateResult.fields.Plan,
+        stripe_customer_id: updateResult.fields.stripe_customer_id,
+        stripe_subscription_id: updateResult.fields.stripe_subscription_id,
+        subscription_status: updateResult.fields.subscription_status
+      });
+
+    } catch (updateError) {
+      console.error('❌ Airtable update failed:', updateError);
+      console.error('❌ Update error details:', {
+        message: updateError.message,
+        status: updateError.status,
+        error: updateError.error
+      });
+      throw updateError;
+    }
 
     console.log('✅ Updated user plan to:', planName || 'Basic');
 
