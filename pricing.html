@@ -1093,15 +1093,59 @@
     // Handle paid plan selection (upgrade or downgrade)
     async function handlePaidPlanSelection(planType) {
       try {
-        // Load current plan if not already loaded
-        if (window.currentUserPlan === undefined) {
-          await loadCurrentPlan();
+        console.log('🔄 Starting plan selection for:', planType);
+        console.log('🔍 Current window.currentUserPlan:', window.currentUserPlan);
+
+        // Try to determine current plan from button text as fallback
+        let detectedCurrentPlan = 'free';
+
+        // Check if any pricing card has "current plan" styling
+        const currentPlanCard = document.querySelector('.pricing-card.current-plan');
+        if (currentPlanCard) {
+          const planName = currentPlanCard.querySelector('.plan-name');
+          if (planName) {
+            detectedCurrentPlan = planName.textContent.toLowerCase();
+            console.log('🔍 Detected current plan from UI:', detectedCurrentPlan);
+          }
         }
 
-        const currentPlan = window.currentUserPlan || 'free';
+        // Also check button texts for downgrade clues
+        const basicButton = document.querySelector('.pricing-card:nth-child(2) .plan-button');
+        const premiumButton = document.querySelector('.pricing-card:nth-child(3) .plan-button');
+
+        if (basicButton && basicButton.textContent.includes('Downgrade to Basic')) {
+          detectedCurrentPlan = 'premium';
+          console.log('🔍 Detected premium plan from Basic downgrade button');
+        } else if (premiumButton && premiumButton.textContent.includes('Downgrade to Premium')) {
+          // This shouldn't happen, but just in case
+          console.log('🔍 Unusual: detected downgrade to premium');
+        }
+
+        // Always load current plan to get the most up-to-date info
+        console.log('🔄 Loading current plan...');
+        await loadCurrentPlan();
+
+        // Use the loaded plan, fallback to detected plan
+        const currentPlan = window.currentUserPlan || detectedCurrentPlan;
         const planHierarchy = { 'free': 0, 'basic': 1, 'premium': 2 };
 
-        console.log('🔄 Plan selection:', { currentPlan, targetPlan: planType });
+        console.log('🔄 Plan comparison:', {
+          currentPlan,
+          detectedCurrentPlan,
+          targetPlan: planType,
+          currentLevel: planHierarchy[currentPlan],
+          targetLevel: planHierarchy[planType],
+          isUpgrade: planHierarchy[planType] > planHierarchy[currentPlan],
+          isDowngrade: planHierarchy[planType] < planHierarchy[currentPlan],
+          isSame: planHierarchy[planType] === planHierarchy[currentPlan]
+        });
+
+        // For Premium -> Basic specifically, force downgrade logic
+        if (currentPlan === 'premium' && planType === 'basic') {
+          console.log('🎯 FORCED DOWNGRADE: Premium -> Basic detected');
+          await downgradePlan(planType);
+          return;
+        }
 
         // Determine if this is an upgrade or downgrade
         if (planHierarchy[planType] > planHierarchy[currentPlan]) {
@@ -1114,12 +1158,15 @@
           await downgradePlan(planType);
         } else {
           // Same plan - shouldn't happen but handle gracefully
+          console.log('⚠️ Same plan selected');
           alert('You are already on this plan');
         }
 
       } catch (error) {
         console.error('❌ Error handling plan selection:', error);
-        alert('An error occurred while processing your plan change. Please try again.');
+        // Fallback to Stripe checkout if we can't determine current plan
+        console.log('🔄 Falling back to Stripe checkout due to error');
+        initiateStripeCheckout(planType);
       }
     }
 
@@ -1414,14 +1461,15 @@
       try {
         // Check if user is authenticated using the existing window functions
         if (!window.isUserAuthenticated || !window.isUserAuthenticated()) {
-          console.log('🔄 User not authenticated, skipping plan load');
+          console.log('🔄 User not authenticated, setting plan to free');
+          window.currentUserPlan = 'free';
           return;
         }
 
         const user = window.getCurrentUser();
         if (!user) {
-          console.log('🔄 No user data available, retrying in 500ms...');
-          setTimeout(loadCurrentPlan, 500);
+          console.log('🔄 No user data available, setting plan to free');
+          window.currentUserPlan = 'free';
           return;
         }
 
