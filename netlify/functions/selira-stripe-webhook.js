@@ -69,11 +69,15 @@ exports.handler = async (event, context) => {
     }
 
     console.log('✅ Received Stripe webhook:', stripeEvent.type);
+    console.log('🔍 Event data object type:', stripeEvent.data.object.object);
 
     // Handle different webhook events
+    console.log('🔄 About to handle event type:', stripeEvent.type);
     switch (stripeEvent.type) {
       case 'checkout.session.completed':
+        console.log('🎯 Calling handleCheckoutCompleted...');
         await handleCheckoutCompleted(stripeEvent.data.object);
+        console.log('✅ handleCheckoutCompleted completed');
         break;
 
       case 'invoice.payment_succeeded':
@@ -122,6 +126,7 @@ exports.handler = async (event, context) => {
 
 async function handleCheckoutCompleted(session) {
   try {
+    console.log('🎯 ENTERING handleCheckoutCompleted for session:', session.id);
     console.log('🔄 Processing checkout completed for session:', session.id);
     console.log('📋 Session data:', {
       id: session.id,
