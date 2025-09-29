@@ -307,7 +307,7 @@ exports.handler = async (event, context) => {
     console.log(`🎌 [${requestId}] Anime style:`, isAnimeStyle);
     
     // Use Playground v2.5 for aesthetic generation with less content filtering
-    const modelVersion = "lucataco/absolutereality-v1.8.1:cd3c5c6c6d05c2b1e15fa3ae3b7ed72cddc2b03f4c4d033814b7a4e59b2a4e8b";
+    const modelVersion = "lucataco/absolutereality-v1.8.1:37d55ac7158f9c857f82c8b5d57d8eb2953a7847de87d932be0bc37c5bac1c01";
 
     // Add progressive delay to prevent rate limiting
     // More requests = longer delay
