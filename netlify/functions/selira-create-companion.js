@@ -302,6 +302,7 @@ BOUNDARIES:
 
     // Enable backend avatar generation as fallback when frontend fails
     if (!preGeneratedAvatarUrl) {
+      console.log('🖼️ No pre-generated avatar, enabling backend generation...');
       try {
         console.log('🖼️ Generating companion avatar using companion traits...');
 

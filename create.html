@@ -1513,6 +1513,7 @@
       try {
         // Avatar generation happens silently in the background
         console.log('💾 Creating companion with automatic avatar generation...');
+        console.log('🔍 preGeneratedAvatarUrl being sent:', preGeneratedAvatarUrl);
 
         const response = await fetch('/.netlify/functions/selira-create-companion', {
           method: 'POST',
