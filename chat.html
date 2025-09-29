@@ -2867,6 +2867,9 @@
         // Update UI
         updateCharacterDisplay();
 
+        // Refresh sidebar to show updated character info
+        displayCompanionChats();
+
         // Load chat history
         loadChatHistoryFromStorage(slug);
 
@@ -3574,8 +3577,18 @@
           prompt: character.prompt || character.Prompt
         };
         
+        // Cache the loaded character info
+        cacheCharacterInfo({
+          slug: character.slug,
+          name: character.name,
+          avatar: character.avatar
+        });
+
         updateCharacterDisplay();
         highlightCorrectChatItem(character.slug);
+
+        // Refresh sidebar after character loads
+        displayCompanionChats();
         
         // Load chat history for this character
         loadChatHistoryFromStorage(character.slug);
