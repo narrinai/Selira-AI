@@ -100,10 +100,22 @@ exports.handler = async (event, context) => {
 
   } catch (error) {
     console.error('❌ Webhook error:', error);
+    console.error('❌ Error stack:', error.stack);
+    console.error('❌ Error details:', {
+      message: error.message,
+      name: error.name,
+      code: error.code
+    });
+
+    // Still return 200 to acknowledge receipt to Stripe
     return {
-      statusCode: 500,
+      statusCode: 200,
       headers,
-      body: JSON.stringify({ error: 'Webhook processing failed' })
+      body: JSON.stringify({
+        received: true,
+        error: error.message,
+        processed: false
+      })
     };
   }
 };
@@ -111,13 +123,23 @@ exports.handler = async (event, context) => {
 async function handleCheckoutCompleted(session) {
   try {
     console.log('🔄 Processing checkout completed for session:', session.id);
+    console.log('📋 Session data:', {
+      id: session.id,
+      customer: session.customer,
+      customer_email: session.customer_email,
+      subscription: session.subscription,
+      metadata: session.metadata
+    });
 
     const userEmail = session.customer_email || session.metadata?.user_email;
     const userId = session.metadata?.user_id;
     const planName = session.metadata?.plan_name;
 
+    console.log('📧 Extracted data:', { userEmail, userId, planName });
+
     if (!userEmail) {
       console.error('❌ No user email found in session metadata');
+      console.error('❌ Available session data:', JSON.stringify(session, null, 2));
       return;
     }
 
@@ -150,19 +172,46 @@ async function handleCheckoutCompleted(session) {
 
     if (users.length === 0) {
       console.error('❌ User not found:', { userEmail, userId });
+
+      // Try to list some users to debug
+      console.log('🔍 Debugging - listing available users...');
+      try {
+        const debugUsers = await base('Users').select({ maxRecords: 3 }).firstPage();
+        console.log('Available users:', debugUsers.map(u => ({
+          email: u.fields.Email,
+          plan: u.fields.Plan
+        })));
+      } catch (debugError) {
+        console.error('❌ Failed to list users for debugging:', debugError.message);
+      }
+
       return;
     }
 
     const user = users[0];
-    console.log('✅ Found user:', user.fields.Email);
+    console.log('✅ Found user:', {
+      id: user.id,
+      email: user.fields.Email,
+      currentPlan: user.fields.Plan
+    });
 
-    // Update user plan in Airtable
-    await base('Users').update(user.id, {
+    // Prepare update data
+    const updateData = {
       'Plan': planName || 'Basic',
       'stripe_customer_id': session.customer,
       'stripe_subscription_id': session.subscription,
       'plan_start_date': new Date().toISOString().split('T')[0],
       'subscription_status': 'active'
+    };
+
+    console.log('🔄 Updating user with data:', updateData);
+
+    // Update user plan in Airtable
+    const updateResult = await base('Users').update(user.id, updateData);
+
+    console.log('✅ Airtable update successful:', {
+      id: updateResult.id,
+      updatedFields: Object.keys(updateData)
     });
 
     console.log('✅ Updated user plan to:', planName || 'Basic');
