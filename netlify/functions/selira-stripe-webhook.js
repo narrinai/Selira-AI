@@ -123,7 +123,7 @@ async function handleCheckoutCompleted(session) {
 
     // Find user in Airtable
     const users = await base('Users').select({
-      filterByFormula: `OR({Email} = '${userEmail}', {AuthoID} = '${userId}')`
+      filterByFormula: `OR({Email} = '${userEmail}', {Auth0ID} = '${userId}')`
     }).firstPage();
 
     if (users.length === 0) {
