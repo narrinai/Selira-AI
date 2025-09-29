@@ -48,12 +48,13 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const { action, userEmail, auth0Id } = JSON.parse(event.body || '{}');
+    const { action, userEmail, auth0Id, targetPlan } = JSON.parse(event.body || '{}');
 
     console.log('🔄 Manage subscription called with:', {
       action,
       userEmail,
-      hasAuth0Id: !!auth0Id
+      hasAuth0Id: !!auth0Id,
+      targetPlan
     });
 
     if (!action || (!userEmail && !auth0Id)) {
@@ -127,7 +128,7 @@ exports.handler = async (event, context) => {
         break;
 
       case 'downgrade_plan':
-        result = await downgradePlan(stripe, user, userData, data.targetPlan);
+        result = await downgradePlan(stripe, user, userData, targetPlan);
         break;
 
       case 'reactivate':
