@@ -390,9 +390,29 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 400px;
+      min-height: 60vh;
       flex-direction: column;
       gap: 16px;
+      width: 100%;
+      position: relative;
+      top: 0;
+    }
+
+    /* Ensure proper centering on desktop above the fold */
+    @media (min-width: 769px) {
+      .loading-grid {
+        min-height: 50vh;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+      }
+
+      .characters-grid {
+        position: relative;
+        min-height: 60vh;
+      }
     }
 
     .spinner {
