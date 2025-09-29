@@ -1726,58 +1726,61 @@
       const hairLength = character.hair_length || character.hairLength || 'medium';
       const artStyle = character.companion_type || character.artStyle || 'realistic';
 
-      // Base scenarios that work for most characters
+      // Seductive scenarios that match the romantic/erotic companion style
       const baseScenarios = [
-        `Send me a picture of ${name} in a cozy coffee shop, sitting by the window with soft natural lighting illuminating her ${hairLength} ${hairColor} hair.`,
-        `Send me a picture of ${name} in an elegant outfit, posing confidently with a warm smile and gentle gaze.`,
-        `Send me a picture of ${name} in a beautiful garden setting, surrounded by flowers with the golden hour light highlighting her features.`
+        `Send me a picture of ${name} in revealing lingerie, posing seductively on a bed with sultry bedroom eyes and an inviting expression.`,
+        `Send me a picture of ${name} in a tight, low-cut dress, leaning forward with a provocative smile and intense eye contact.`,
+        `Send me a picture of ${name} in the shower, with water cascading down her body, looking back over her shoulder with desire in her eyes.`,
+        `Send me a picture of ${name} in barely-there underwear, stretching sensually with her ${hairLength} ${hairColor} hair flowing and a seductive bite of her lip.`,
+        `Send me a picture of ${name} in a silk robe that's barely covering her, with the fabric slipping off one shoulder and a hungry look in her eyes.`,
+        `Send me a picture of ${name} lying on satin sheets, wearing something incredibly revealing, with a come-hither expression and inviting pose.`
       ];
 
-      // Tag-specific scenarios
+      // Seductive tag-specific scenarios that match the erotic companion style
       const tagScenarios = {
         'Girlfriend': [
-          `Send me a picture of ${name} in a romantic candlelit dinner setting, wearing an elegant dress with soft lighting accentuating her beauty.`,
-          `Send me a picture of ${name} cuddling on a cozy couch, wearing comfortable clothes with a loving expression.`
+          `Send me a picture of ${name} in sexy lingerie, lying on our bed with a passionate look in her eyes, reaching out for you to join her.`,
+          `Send me a picture of ${name} wearing just your shirt and nothing else, sitting on the kitchen counter with a playful, seductive smile.`
         ],
         'Romance': [
-          `Send me a picture of ${name} on a moonlit beach, her ${hairLength} ${hairColor} hair flowing in the gentle breeze as she gazes at the stars.`,
-          `Send me a picture of ${name} in a field of roses, wearing a flowing dress with petals gently falling around her.`
+          `Send me a picture of ${name} in a passionate embrace pose, wearing a low-cut dress that shows off her curves, with intense desire in her eyes.`,
+          `Send me a picture of ${name} in a silk slip dress, lying provocatively on rose petals with a sultry, come-hither expression.`
         ],
         'Cute': [
-          `Send me a picture of ${name} in adorable casual wear, making a playful expression with sparkling eyes.`,
-          `Send me a picture of ${name} holding a cute plushie, sitting in a colorful room with a sweet innocent smile.`
+          `Send me a picture of ${name} in innocent-looking but revealing underwear, biting her lip playfully with a mischievous twinkle in her eyes.`,
+          `Send me a picture of ${name} in a crop top and tiny shorts, stretching seductively with an adorable yet naughty expression.`
         ],
         'Seductive': [
-          `Send me a picture of ${name} in sophisticated lingerie, posing elegantly with confidence and allure.`,
-          `Send me a picture of ${name} in a luxury bedroom setting, wearing silk pajamas with an inviting gaze.`
+          `Send me a picture of ${name} in black lace lingerie, posing dominantly on a luxury bed with a predatory, hungry gaze.`,
+          `Send me a picture of ${name} in a see-through negligee, touching herself sensually while giving you an intensely erotic stare.`
         ],
         'Maid': [
-          `Send me a picture of ${name} in a classic maid outfit, gracefully cleaning in an elegant mansion with perfect posture.`,
-          `Send me a picture of ${name} serving tea in a beautiful maid uniform, with a professional yet warm smile.`
+          `Send me a picture of ${name} in a skimpy maid outfit, bending over provocatively while cleaning, looking back with a naughty smile.`,
+          `Send me a picture of ${name} in a revealing French maid costume, on her knees in a submissive pose with eager, obedient eyes.`
         ],
         'Fantasy': [
-          `Send me a picture of ${name} in a magical forest clearing, wearing flowing robes with mystical light surrounding her.`,
-          `Send me a picture of ${name} casting spells in an enchanted tower, her ${hairColor} hair glowing with magical energy.`
+          `Send me a picture of ${name} as a sexy elf in barely-there fantasy armor, posing erotically in an enchanted forest clearing.`,
+          `Send me a picture of ${name} as a sultry sorceress in revealing robes, casting love spells with magic swirling around her exposed skin.`
         ],
         'Angel': [
-          `Send me a picture of ${name} with beautiful white wings spread wide, standing in heavenly light with a serene expression.`,
-          `Send me a picture of ${name} in flowing white robes on fluffy clouds, radiating divine beauty and grace.`
+          `Send me a picture of ${name} as a fallen angel in torn white lingerie, her wings spread as she poses seductively with a corrupted smile.`,
+          `Send me a picture of ${name} with angel wings, wearing heavenly white underwear, in a passionate pose that's both divine and sinful.`
         ],
         'Monster': [
-          `Send me a picture of ${name} with her unique monster features, posing playfully in a mysterious dark forest.`,
-          `Send me a picture of ${name} showing her supernatural side while maintaining an alluring and captivating presence.`
+          `Send me a picture of ${name} with her monster features, wearing revealing leather outfit, posing dominantly with predatory desire.`,
+          `Send me a picture of ${name} showing her supernatural side in minimal clothing, with an otherworldly beauty that's irresistibly seductive.`
         ],
         'Boss': [
-          `Send me a picture of ${name} in a power suit at her executive office, commanding presence with confident authority.`,
-          `Send me a picture of ${name} in professional attire during a business meeting, exuding leadership and elegance.`
+          `Send me a picture of ${name} in a tight business suit with the shirt unbuttoned, sitting on her desk in a position of sexual dominance.`,
+          `Send me a picture of ${name} in professional attire but with revealing elements, commanding you with authoritative yet lustful eyes.`
         ],
         'Student': [
-          `Send me a picture of ${name} in a school uniform, studying in a bright classroom with focused determination.`,
-          `Send me a picture of ${name} in casual student clothes on campus, carrying books with a cheerful expression.`
+          `Send me a picture of ${name} in a sexy schoolgirl outfit, sitting on a desk with her legs crossed, giving you a flirtatious look.`,
+          `Send me a picture of ${name} in a modified school uniform that's much more revealing, posing innocently yet suggestively after class.`
         ],
         'Teacher': [
-          `Send me a picture of ${name} in professional teacher attire, standing confidently in front of a classroom blackboard.`,
-          `Send me a picture of ${name} in smart business casual, grading papers in a cozy office with warm lighting.`
+          `Send me a picture of ${name} in a tight teacher outfit with a low neckline, leaning over a desk in a position that shows off her assets.`,
+          `Send me a picture of ${name} in professional attire that hugs her curves, pointing at you with a stern but sexually charged expression.`
         ]
       };
 
