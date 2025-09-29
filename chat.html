@@ -1909,6 +1909,10 @@
             console.warn('❌ Header avatar failed to load:', currentCharacter.avatar);
             this.src = '/avatars/default-avatar.webp';
             this.style.display = 'block';
+            // Update currentCharacter.avatar to the fallback for modal functionality
+            if (currentCharacter) {
+              currentCharacter.avatar = '/avatars/default-avatar.webp';
+            }
           };
         } else {
           console.warn('⚠️ No header avatar URL, using default');
@@ -3914,8 +3918,9 @@
     // Avatar Modal Functions
     function openAvatarModal(avatarUrl, characterName) {
       console.log('🖼️ Opening avatar modal:', { avatarUrl, characterName });
-      if (!avatarUrl || avatarUrl === '/avatars/placeholder.webp') {
+      if (!avatarUrl || avatarUrl === '/avatars/placeholder.webp' || avatarUrl === '/avatars/default-avatar.webp') {
         console.log('⚠️ No avatar to display - avatarUrl:', avatarUrl);
+        alert('No avatar available for this character yet.');
         return;
       }
 

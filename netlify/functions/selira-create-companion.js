@@ -345,6 +345,8 @@ BOUNDARIES:
         const avatarResult = await avatarResponse.json();
         console.log('📋 Avatar generation result:', avatarResult);
         if (avatarResult.success && avatarResult.imageUrl) {
+          // For now, use Replicate URL directly - implement cloud storage later if needed
+          // TODO: Consider uploading to Cloudinary, AWS S3, or other cloud storage for permanent URLs
           avatarUrlToUse = avatarResult.imageUrl;
           console.log('✅ Generated companion avatar:', avatarUrlToUse);
         } else {
@@ -400,7 +402,67 @@ BOUNDARIES:
 
     console.log('💾 Saving to Airtable with fields:', Object.keys(characterData));
     console.log('💾 Character data:', characterData);
+    console.log('🔍 About to create character with name:', characterData.Name);
+    console.log('🔍 Character slug:', characterData.Slug);
     console.log('🏷️ Tags being sent:', characterData.Tags, 'Type:', typeof characterData.Tags, 'Is Array:', Array.isArray(characterData.Tags));
+
+    // Check for existing characters with same slug to prevent duplicates
+    try {
+      const existingCharacterResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters?filterByFormula={Slug}="${characterData.Slug}"`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (existingCharacterResponse.ok) {
+        const existingData = await existingCharacterResponse.json();
+        if (existingData.records && existingData.records.length > 0) {
+          console.log('⚠️ Character with slug already exists:', characterData.Slug);
+          console.log('🔄 Updating existing character instead of creating new one');
+
+          // Update the existing character instead
+          const existingRecordId = existingData.records[0].id;
+          const updateResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters/${existingRecordId}`, {
+            method: 'PATCH',
+            headers: {
+              'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              fields: characterData
+            })
+          });
+
+          if (updateResponse.ok) {
+            const updatedResult = await updateResponse.json();
+            console.log('✅ Character updated successfully:', updatedResult.fields.Name);
+
+            return {
+              statusCode: 200,
+              headers: {
+                ...corsHeaders,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                success: true,
+                message: 'Character updated successfully',
+                character: {
+                  id: updatedResult.id,
+                  name: updatedResult.fields.Name,
+                  slug: updatedResult.fields.Slug,
+                  avatarUrl: updatedResult.fields.Avatar_URL,
+                  isUpdated: true
+                }
+              })
+            };
+          }
+        }
+      }
+    } catch (error) {
+      console.log('⚠️ Error checking for existing character:', error.message);
+    }
 
     // Create character in Airtable
     const airtableResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters`, {
