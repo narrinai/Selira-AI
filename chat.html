@@ -1871,6 +1871,25 @@
       }
     }
 
+    // Update only the plan info in image suggestions (used after image generation)
+    async function updateImageSuggestionsPlan() {
+      const planRemainingElement = document.querySelector('.plan-remaining');
+      if (!planRemainingElement) {
+        console.log('🔄 No plan-remaining element found, suggestions not visible');
+        return;
+      }
+
+      try {
+        console.log('🔄 Updating image plan counter...');
+        // Force fresh fetch to get updated count (bypass cache)
+        const permissions = await checkUserImagePermissions(false);
+        planRemainingElement.textContent = `${permissions.remaining || 0} / ${permissions.limit || 0} images left this hour`;
+        console.log('✅ Updated image counter:', permissions.remaining, '/', permissions.limit);
+      } catch (error) {
+        console.warn('⚠️ Failed to update image plan counter:', error);
+      }
+    }
+
     // Use a suggestion (put it in the input field)
     function useSuggestion(suggestion) {
       const messageInput = document.getElementById('messageInput');
@@ -1891,7 +1910,19 @@
     function handleKeyDown(e) {
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
-        sendMessage();
+        const messageInput = document.getElementById('messageInput');
+        const message = messageInput.value.trim();
+
+        // Clear input immediately before sending
+        messageInput.value = '';
+        autoResizeTextarea();
+
+        // Only send if there was a message
+        if (message) {
+          // Temporarily set the value back for sendMessage to process
+          messageInput.value = message;
+          sendMessage();
+        }
       }
     }
 
@@ -3391,12 +3422,25 @@
     }
 
     // Check if user can generate images
-    async function checkUserImagePermissions() {
+    // Cache for image permissions (to speed up UI)
+    let imagePermissionsCache = null;
+    let imagePermissionsCacheTime = 0;
+    const IMAGE_PERMISSIONS_CACHE_DURATION = 30000; // 30 seconds
+
+    async function checkUserImagePermissions(useCache = true) {
       const user = window.getCurrentUser ? window.getCurrentUser() : null;
       if (!user?.email && !user?.sub) {
         return { canGenerate: false, plan: 'Guest', reason: 'Please log in to generate images' };
       }
 
+      // Check cache if requested and valid
+      if (useCache && imagePermissionsCache &&
+          (Date.now() - imagePermissionsCacheTime) < IMAGE_PERMISSIONS_CACHE_DURATION) {
+        console.log('🚀 Using cached image permissions for fast UI');
+        return imagePermissionsCache;
+      }
+
+      console.log('🔄 Fetching fresh image permissions from server');
       try {
         const response = await fetch('/.netlify/functions/selira-check-image-limit', {
           method: 'POST',
@@ -3409,27 +3453,45 @@
 
         if (response.status === 403) {
           const error = await response.json();
-          return {
+          const permissions = {
             canGenerate: false,
             plan: error.plan || 'Free',
             reason: 'Image generation requires Basic plan or higher'
           };
+
+          // Cache blocked permissions for shorter time (5 seconds)
+          imagePermissionsCache = permissions;
+          imagePermissionsCacheTime = Date.now() - (IMAGE_PERMISSIONS_CACHE_DURATION - 5000);
+          console.log('💾 Cached blocked permissions (short cache):', permissions);
+
+          return permissions;
         }
 
         if (response.ok) {
           const data = await response.json();
-          return {
+          const permissions = {
             canGenerate: true,
             plan: data.plan,
             remaining: data.remaining,
             limit: data.limit
           };
+
+          // Cache the result
+          imagePermissionsCache = permissions;
+          imagePermissionsCacheTime = Date.now();
+          console.log('💾 Cached fresh image permissions:', permissions);
+
+          return permissions;
         }
 
-        return { canGenerate: true, plan: 'Unknown' }; // Default to allow if check fails
+        const fallbackPermissions = { canGenerate: true, plan: 'Unknown' };
+        // Don't cache fallback permissions
+        return fallbackPermissions;
       } catch (error) {
         console.warn('⚠️ Could not check image permissions:', error);
-        return { canGenerate: true, plan: 'Unknown' }; // Default to allow if check fails
+        const fallbackPermissions = { canGenerate: true, plan: 'Unknown' };
+        // Don't cache error states
+        return fallbackPermissions;
       }
     }
 
@@ -3457,8 +3519,8 @@
 
 
     async function handleImageRequest(message) {
-      // Check user permissions before processing
-      const permissions = await checkUserImagePermissions();
+      // Check user permissions before processing (force fresh check for actual generation)
+      const permissions = await checkUserImagePermissions(false);
 
       if (!permissions.canGenerate) {
         // Add user message first
@@ -3541,6 +3603,10 @@
 
           // Add generated image as AI response
           addImageMessage(result.imageUrl, fullPrompt, characterStyle);
+
+          // Refresh image permissions to update the counter
+          console.log('🔄 Refreshing image counter after successful generation');
+          updateImageSuggestionsPlan();
 
         } else if (response.status === 429) {
           // Rate limited - show specific message
