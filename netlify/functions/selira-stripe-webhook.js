@@ -322,15 +322,56 @@ async function handleSubscriptionUpdated(subscription) {
     const updateData = {
       'subscription_status': subscription.status,
       'stripe_customer_id': subscription.customer,
-      'stripe_subscription_id': subscription.id,
-      'plan_end_date': subscription.current_period_end ?
-        new Date(subscription.current_period_end * 1000).toISOString().split('T')[0] : null
+      'stripe_subscription_id': subscription.id
     };
 
-    // Add plan_start_date if we have current_period_start
+    // Get dates from subscription - try multiple sources
+    let startDate = null;
+    let endDate = null;
+
+    // First try current_period dates from subscription level
     if (subscription.current_period_start) {
-      updateData.plan_start_date = new Date(subscription.current_period_start * 1000).toISOString().split('T')[0];
+      startDate = subscription.current_period_start;
     }
+    if (subscription.current_period_end) {
+      endDate = subscription.current_period_end;
+    }
+
+    // If not found, try subscription items (where they actually are in this case)
+    if (!startDate || !endDate) {
+      if (subscription.items && subscription.items.data && subscription.items.data.length > 0) {
+        const firstItem = subscription.items.data[0];
+        if (!startDate && firstItem.current_period_start) {
+          startDate = firstItem.current_period_start;
+        }
+        if (!endDate && firstItem.current_period_end) {
+          endDate = firstItem.current_period_end;
+        }
+      }
+    }
+
+    // Fallback to start_date if available
+    if (!startDate && subscription.start_date) {
+      startDate = subscription.start_date;
+    }
+
+    // Set the dates if we found them
+    if (startDate) {
+      updateData.plan_start_date = new Date(startDate * 1000).toISOString().split('T')[0];
+      console.log('🗓️ Found start date:', startDate, '→', updateData.plan_start_date);
+    }
+    if (endDate) {
+      updateData.plan_end_date = new Date(endDate * 1000).toISOString().split('T')[0];
+      console.log('🗓️ Found end date:', endDate, '→', updateData.plan_end_date);
+    }
+
+    console.log('🔍 Date sources checked:', {
+      subscription_current_period_start: subscription.current_period_start,
+      subscription_current_period_end: subscription.current_period_end,
+      subscription_start_date: subscription.start_date,
+      first_item_period_start: subscription.items?.data?.[0]?.current_period_start,
+      first_item_period_end: subscription.items?.data?.[0]?.current_period_end
+    });
 
     // Add plan name if available in metadata
     if (subscription.metadata?.plan_name) {
