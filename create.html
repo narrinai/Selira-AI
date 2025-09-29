@@ -1405,7 +1405,12 @@
     let preGeneratedAvatarUrl = null;
 
     async function generateAvatarPreview() {
-      console.log('🎨 Starting background avatar generation...');
+      console.log('🔄 Skipping frontend avatar generation - will use backend generation instead');
+
+      // Skip frontend generation entirely and rely on backend
+      preGeneratedAvatarUrl = null;
+      console.log('⚠️ Frontend avatar generation disabled - backend will handle it');
+      return;
 
       try {
         const { style, ethnicity, hairLength, hairColor } = characterCreationState;
