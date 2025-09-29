@@ -279,27 +279,52 @@ async function handlePaymentSucceeded(invoice) {
 async function handleSubscriptionUpdated(subscription) {
   try {
     console.log('🔄 Processing subscription updated:', subscription.id);
+    console.log('🔍 Subscription metadata:', subscription.metadata);
 
     const customerId = subscription.customer;
+    const userEmail = subscription.metadata?.user_email;
+    const userId = subscription.metadata?.user_id;
 
-    // Find user by Stripe customer ID
-    const users = await base('Users').select({
+    console.log('🔍 Looking for user with:', { customerId, userEmail, userId });
+
+    // Try to find user by Stripe customer ID first
+    let users = await base('Users').select({
       filterByFormula: `{stripe_customer_id} = '${customerId}'`
     }).firstPage();
 
+    // If not found by customer ID, try by email from metadata
+    if (users.length === 0 && userEmail) {
+      console.log('🔄 User not found by customer ID, trying email:', userEmail);
+      users = await base('Users').select({
+        filterByFormula: `{Email} = '${userEmail}'`
+      }).firstPage();
+    }
+
     if (users.length === 0) {
-      console.error('❌ User not found for customer:', customerId);
+      console.error('❌ User not found for customer:', customerId, 'or email:', userEmail);
       return;
     }
 
     const user = users[0];
+    console.log('✅ Found user for subscription update:', user.fields.Email);
 
-    // Update subscription details
-    await base('Users').update(user.id, {
+    // Update subscription details with most recent Stripe data
+    const updateData = {
       'subscription_status': subscription.status,
+      'stripe_customer_id': subscription.customer,
+      'stripe_subscription_id': subscription.id,
       'plan_end_date': subscription.current_period_end ?
         new Date(subscription.current_period_end * 1000).toISOString().split('T')[0] : null
-    });
+    };
+
+    // Add plan name if available in metadata
+    if (subscription.metadata?.plan_name) {
+      updateData.Plan = subscription.metadata.plan_name.charAt(0).toUpperCase() + subscription.metadata.plan_name.slice(1);
+    }
+
+    console.log('🔄 Updating user with subscription data:', updateData);
+
+    await base('Users').update(user.id, updateData);
 
     console.log('✅ Updated subscription status for user:', user.fields.Email);
 
