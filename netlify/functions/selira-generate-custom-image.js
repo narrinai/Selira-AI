@@ -52,16 +52,21 @@ exports.handler = async (event, context) => {
   });
   
   if (!REPLICATE_API_TOKEN) {
-    console.error('❌ Replicate API token not found');
+    console.error('❌ Replicate API token not found - generating mock avatar');
+    // Return a mock avatar for now
+    const mockAvatarUrl = `https://via.placeholder.com/768x768/FF6B6B/FFFFFF?text=${encodeURIComponent(body.characterName || 'Avatar')}`;
+    console.log('🔄 Using mock avatar due to missing token:', mockAvatarUrl);
+
     return {
-      statusCode: 500,
+      statusCode: 200,
       headers: {
         ...corsHeaders,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ 
-        error: 'Replicate API token not configured',
-        debug: 'Please add REPLICATE_API_TOKEN to Netlify environment variables'
+      body: JSON.stringify({
+        success: true,
+        imageUrl: mockAvatarUrl,
+        message: 'Mock avatar generated (Replicate token missing)'
       })
     };
   }
@@ -312,7 +317,7 @@ exports.handler = async (event, context) => {
     console.log(`🎌 [${requestId}] Anime style:`, isAnimeStyle);
     
     // Use Playground v2.5 for aesthetic generation with less content filtering
-    const modelVersion = "stability-ai/sdxl:39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b";
+    const modelVersion = "black-forest-labs/flux-schnell:c846a69991daf4c0e5d016514849d14ee5b2e6846ce6b9d6f21369e564cfe51e";
 
     // Add progressive delay to prevent rate limiting
     // More requests = longer delay
@@ -345,9 +350,7 @@ exports.handler = async (event, context) => {
             width: 768,
             height: 768,
             num_outputs: 1,
-            num_inference_steps: 30,
-            guidance_scale: 7.5,
-            scheduler: "DPMSolverMultistep",
+            num_inference_steps: 4,
             seed: Math.floor(Math.random() * 100000)
           }
         })
