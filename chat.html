@@ -1884,7 +1884,10 @@
 
       try {
         console.log('🔄 Updating image plan counter...');
-        // Force fresh fetch to get updated count (bypass cache)
+        // Force fresh fetch AND invalidate cache to get updated count
+        imagePermissionsCache = null;
+        imagePermissionsCacheTime = 0;
+        console.log('♻️ Cache invalidated for fresh counter update');
         const permissions = await checkUserImagePermissions(false);
         planRemainingElement.textContent = `${permissions.remaining || 0} / ${permissions.limit || 0} images left this hour`;
         console.log('✅ Updated image counter:', permissions.remaining, '/', permissions.limit);
