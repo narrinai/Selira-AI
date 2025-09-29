@@ -1,65 +1,56 @@
-// Quick debug script to test user lookup
-const https = require('https');
+// Debug function to test user lookup in webhook context
+const Airtable = require('airtable');
 
-async function debugUserLookup() {
-  const testData = {
-    user_email: 'emailnotiseb@gmail.com',
-    user_uid: 'google-oauth2|110738284325422051851',
-    user_token: 'auth0_authenticated',
-    char: 'orion-nightfall',
-    user_message: 'debug test',
-    ai_response: 'debug response'
-  };
-  
-  console.log('🔍 Testing user lookup with:', {
-    email: testData.user_email,
-    uid: testData.user_uid
-  });
-  
-  const postData = JSON.stringify(testData);
-  
-  const options = {
-    hostname: 'selira.ai',
-    port: 443,
-    path: '/.netlify/functions/save-chat-message',
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Content-Length': Buffer.byteLength(postData)
+// Use same environment variables as webhook
+const base = new Airtable({
+  apiKey: process.env.AIRTABLE_TOKEN_SELIRA || process.env.AIRTABLE_API_KEY || process.env.AIRTABLE_TOKEN
+}).base(process.env.AIRTABLE_BASE_ID_SELIRA || process.env.AIRTABLE_BASE_ID);
+
+async function testUserLookup() {
+  try {
+    const testEmail = 'info@narrin.ai';
+
+    console.log('🔍 Debug user lookup for:', testEmail);
+    console.log('🔍 Environment check:', {
+      hasTokenSelira: !!process.env.AIRTABLE_TOKEN_SELIRA,
+      hasToken: !!process.env.AIRTABLE_TOKEN,
+      hasApiKey: !!process.env.AIRTABLE_API_KEY,
+      hasBaseSelira: !!process.env.AIRTABLE_BASE_ID_SELIRA,
+      hasBase: !!process.env.AIRTABLE_BASE_ID,
+      tokenUsed: process.env.AIRTABLE_TOKEN_SELIRA || process.env.AIRTABLE_API_KEY || process.env.AIRTABLE_TOKEN || 'none',
+      baseUsed: process.env.AIRTABLE_BASE_ID_SELIRA || process.env.AIRTABLE_BASE_ID || 'none'
+    });
+
+    // Try to find user using same logic as webhook
+    const users = await base('Users').select({
+      filterByFormula: `{Email} = '${testEmail}'`
+    }).firstPage();
+
+    console.log('👥 Users found:', users.length);
+
+    if (users.length > 0) {
+      const user = users[0];
+      console.log('✅ User found:', {
+        id: user.id,
+        email: user.fields.Email,
+        plan: user.fields.Plan,
+        auth0ID: user.fields.Auth0ID
+      });
+    } else {
+      console.log('❌ User not found');
+      
+      // Try to list first few users to see what's in the database
+      console.log('🔍 Listing available users...');
+      const allUsers = await base('Users').select({ maxRecords: 3 }).firstPage();
+      console.log('Available users:');
+      allUsers.forEach((user, index) => {
+        console.log(`${index + 1}. ${user.fields.Email || 'No email'} - ${user.fields.Plan || 'No plan'}`);
+      });
     }
-  };
 
-  return new Promise((resolve, reject) => {
-    const req = https.request(options, (res) => {
-      let responseData = '';
-      
-      res.on('data', (chunk) => {
-        responseData += chunk;
-      });
-      
-      res.on('end', () => {
-        console.log('📊 Response Status:', res.statusCode);
-        console.log('📨 Response Data:', responseData);
-        
-        try {
-          const parsed = JSON.parse(responseData);
-          console.log('✅ Parsed Response:', JSON.stringify(parsed, null, 2));
-        } catch (e) {
-          console.log('❌ Failed to parse JSON, raw response:', responseData);
-        }
-        
-        resolve();
-      });
-    });
-
-    req.on('error', (error) => {
-      console.error('❌ Request failed:', error);
-      reject(error);
-    });
-
-    req.write(postData);
-    req.end();
-  });
+  } catch (error) {
+    console.error('❌ Debug error:', error);
+  }
 }
 
-debugUserLookup().catch(console.error);
+testUserLookup();

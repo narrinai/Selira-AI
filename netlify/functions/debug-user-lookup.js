@@ -1,210 +1,56 @@
-const https = require('https');
+// Debug function to test user lookup in webhook context
+const Airtable = require('airtable');
 
-exports.handler = async (event, context) => {
-  console.log('🔍 Debug user lookup function called');
+// Use same environment variables as webhook
+const base = new Airtable({
+  apiKey: process.env.AIRTABLE_TOKEN_SELIRA || process.env.AIRTABLE_API_KEY || process.env.AIRTABLE_TOKEN
+}).base(process.env.AIRTABLE_BASE_ID_SELIRA || process.env.AIRTABLE_BASE_ID);
 
-  // Handle CORS
-  if (event.httpMethod === 'OPTIONS') {
-    return {
-      statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type'
-      },
-      body: ''
-    };
-  }
-
-  if (event.httpMethod !== 'POST') {
-    return {
-      statusCode: 405,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
-      },
-      body: JSON.stringify({ error: 'Method not allowed. Use POST.' })
-    };
-  }
-
+async function testUserLookup() {
   try {
-    const { email } = JSON.parse(event.body || '{}');
+    const testEmail = 'info@narrin.ai';
 
-    if (!email) {
-      return {
-        statusCode: 400,
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
-        },
-        body: JSON.stringify({ error: 'Email required' })
-      };
-    }
-
-    // Get environment variables - use only Selira credentials
-    const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA;
-    const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA;
-
+    console.log('🔍 Debug user lookup for:', testEmail);
     console.log('🔍 Environment check:', {
-      hasSeliraToken: !!process.env.AIRTABLE_TOKEN_SELIRA,
+      hasTokenSelira: !!process.env.AIRTABLE_TOKEN_SELIRA,
       hasToken: !!process.env.AIRTABLE_TOKEN,
       hasApiKey: !!process.env.AIRTABLE_API_KEY,
-      hasSeliraBaseId: !!process.env.AIRTABLE_BASE_ID_SELIRA,
-      hasBaseId: !!process.env.AIRTABLE_BASE_ID,
-      finalToken: !!AIRTABLE_TOKEN,
-      finalBaseId: !!AIRTABLE_BASE_ID
+      hasBaseSelira: !!process.env.AIRTABLE_BASE_ID_SELIRA,
+      hasBase: !!process.env.AIRTABLE_BASE_ID,
+      tokenUsed: process.env.AIRTABLE_TOKEN_SELIRA || process.env.AIRTABLE_API_KEY || process.env.AIRTABLE_TOKEN || 'none',
+      baseUsed: process.env.AIRTABLE_BASE_ID_SELIRA || process.env.AIRTABLE_BASE_ID || 'none'
     });
 
-    if (!AIRTABLE_TOKEN || !AIRTABLE_BASE_ID) {
-      return {
-        statusCode: 500,
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
-        },
-        body: JSON.stringify({ error: 'Missing Airtable configuration' })
-      };
+    // Try to find user using same logic as webhook
+    const users = await base('Users').select({
+      filterByFormula: `{Email} = '${testEmail}'`
+    }).firstPage();
+
+    console.log('👥 Users found:', users.length);
+
+    if (users.length > 0) {
+      const user = users[0];
+      console.log('✅ User found:', {
+        id: user.id,
+        email: user.fields.Email,
+        plan: user.fields.Plan,
+        auth0ID: user.fields.Auth0ID
+      });
+    } else {
+      console.log('❌ User not found');
+      
+      // Try to list first few users to see what's in the database
+      console.log('🔍 Listing available users...');
+      const allUsers = await base('Users').select({ maxRecords: 3 }).firstPage();
+      console.log('Available users:');
+      allUsers.forEach((user, index) => {
+        console.log(`${index + 1}. ${user.fields.Email || 'No email'} - ${user.fields.Plan || 'No plan'}`);
+      });
     }
-
-    // Search for user by email first
-    console.log('🔍 Searching for user with email:', email);
-
-    const searchByEmail = () => {
-      return new Promise((resolve, reject) => {
-        const options = {
-          hostname: 'api.airtable.com',
-          port: 443,
-          path: `/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula=AND({Email}="${email}")`,
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
-            'Content-Type': 'application/json'
-          }
-        };
-
-        const req = https.request(options, (res) => {
-          let data = '';
-
-          res.on('data', (chunk) => {
-            data += chunk;
-          });
-
-          res.on('end', () => {
-            try {
-              const response = JSON.parse(data);
-              resolve({ statusCode: res.statusCode, data: response, searchType: 'email' });
-            } catch (error) {
-              console.error('❌ Error parsing response:', error);
-              reject(error);
-            }
-          });
-        });
-
-        req.on('error', (error) => {
-          console.error('❌ Request error:', error);
-          reject(error);
-        });
-
-        req.end();
-      });
-    };
-
-    const emailResult = await searchByEmail();
-    console.log('📧 Email search result:', {
-      statusCode: emailResult.statusCode,
-      recordCount: emailResult.data.records?.length || 0,
-      records: emailResult.data.records?.map(r => ({
-        id: r.id,
-        fields: r.fields
-      }))
-    });
-
-    // Also get all users to see the structure
-    const getAllUsers = () => {
-      return new Promise((resolve, reject) => {
-        const options = {
-          hostname: 'api.airtable.com',
-          port: 443,
-          path: `/v0/${AIRTABLE_BASE_ID}/Users?maxRecords=5`,
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
-            'Content-Type': 'application/json'
-          }
-        };
-
-        const req = https.request(options, (res) => {
-          let data = '';
-
-          res.on('data', (chunk) => {
-            data += chunk;
-          });
-
-          res.on('end', () => {
-            try {
-              const response = JSON.parse(data);
-              resolve({ statusCode: res.statusCode, data: response });
-            } catch (error) {
-              console.error('❌ Error parsing all users response:', error);
-              reject(error);
-            }
-          });
-        });
-
-        req.on('error', (error) => {
-          console.error('❌ All users request error:', error);
-          reject(error);
-        });
-
-        req.end();
-      });
-    };
-
-    const allUsersResult = await getAllUsers();
-    console.log('👥 All users sample:', {
-      statusCode: allUsersResult.statusCode,
-      recordCount: allUsersResult.data.records?.length || 0,
-      sampleFields: allUsersResult.data.records?.map(r => Object.keys(r.fields || {}))
-    });
-
-    return {
-      statusCode: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
-      },
-      body: JSON.stringify({
-        success: true,
-        environment: {
-          hasSeliraToken: !!process.env.AIRTABLE_TOKEN_SELIRA,
-          hasToken: !!process.env.AIRTABLE_TOKEN,
-          hasApiKey: !!process.env.AIRTABLE_API_KEY,
-          hasSeliraBaseId: !!process.env.AIRTABLE_BASE_ID_SELIRA,
-          hasBaseId: !!process.env.AIRTABLE_BASE_ID,
-          finalToken: !!AIRTABLE_TOKEN,
-          finalBaseId: !!AIRTABLE_BASE_ID
-        },
-        emailSearch: {
-          found: emailResult.data.records?.length > 0,
-          count: emailResult.data.records?.length || 0,
-          records: emailResult.data.records?.map(r => ({
-            id: r.id,
-            fields: r.fields
-          }))
-        },
-        allUsersFields: allUsersResult.data.records?.map(r => Object.keys(r.fields || {})) || []
-      })
-    };
 
   } catch (error) {
     console.error('❌ Debug error:', error);
-    return {
-      statusCode: 500,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
-      },
-      body: JSON.stringify({ error: 'Debug function error', details: error.message })
-    };
   }
-};
+}
+
+testUserLookup();
