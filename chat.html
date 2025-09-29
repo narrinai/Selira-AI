@@ -2689,15 +2689,41 @@
             const lastMessage = chatHistory[chatHistory.length - 1];
             const lastUserMessage = chatHistory.filter(m => m.type === 'user').pop();
 
+            // Try to find character in loaded data first
+            let characterName = characterSlug;
+            let avatar = null;
+
+            // Check if we can find this character in our loaded data
+            let foundCharacter = null;
+            if (loadedCharacters) {
+              foundCharacter = loadedCharacters.find(c => c.slug === characterSlug);
+            }
+            if (!foundCharacter && window.allCharacters) {
+              foundCharacter = window.allCharacters.find(c => c.slug === characterSlug);
+            }
+
+            if (foundCharacter) {
+              characterName = foundCharacter.name || characterSlug;
+              avatar = foundCharacter.avatar;
+              // Cache this for next time
+              localStorage.setItem(`char_name_${characterSlug}`, foundCharacter.name);
+              if (foundCharacter.avatar) {
+                localStorage.setItem(`char_avatar_${characterSlug}`, foundCharacter.avatar);
+              }
+            } else {
+              // Fall back to cached data
+              characterName = localStorage.getItem(`char_name_${characterSlug}`) || characterSlug;
+              avatar = localStorage.getItem(`char_avatar_${characterSlug}`) || null;
+            }
+
             companions.push({
               slug: characterSlug,
               lastMessage: lastMessage?.content || '',
               lastUserMessage: lastUserMessage?.content || '',
               timestamp: lastMessage?.timestamp || Date.now(),
               messageCount: chatHistory.length,
-              // Try to get cached character data from localStorage
-              characterName: localStorage.getItem(`char_name_${characterSlug}`) || characterSlug,
-              avatar: localStorage.getItem(`char_avatar_${characterSlug}`) || null
+              characterName: characterName,
+              avatar: avatar
             });
           }
         }

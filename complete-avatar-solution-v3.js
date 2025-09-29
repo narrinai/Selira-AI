@@ -149,127 +149,198 @@ async function generateAndDownloadAvatar(companion) {
     const sexyClothing = getSexyClothing(traits.style, category);
     console.log(`   Clothing: ${sexyClothing}`);
 
-    // EXACT prompts from selira-generate-companion-avatar.js createRealisticPortraitPrompt()
-    let explicitPrompt;
-    const isAnimeCategory = traits.style === 'anime';
-    const ethnicGender = `${traits.ethnicity} ${traits.sex}`;
+    // Use same character-aware prompt building as chat/create image generation
+    const isAnimeStyle = traits.style === 'anime';
 
-    if (isAnimeCategory) {
-      explicitPrompt = `Sexy anime girl, ${ethnicGender}, seductive pose, revealing outfit, detailed anime art, attractive, flirtatious expression, seductive pose, wearing ${sexyClothing}, attractive body, bedroom background, anime art style, sexy anime character, vibrant colors, attractive body, sensual lighting, digital anime art, ecchi style, full body or upper body, seductive composition, high quality anime artwork, detailed facial features, anime eyes, perfect anime anatomy, suggestive pose, single character, solo, one person only`;
+    // Character appearance based on creation flow data
+    const genderDescription = traits.sex === 'male' ?
+      'handsome man, masculine physique, strong features, well-built' :
+      'beautiful woman, feminine physique, attractive features, well-proportioned';
+
+    // Ethnicity descriptions
+    const ethnicityMap = {
+      'white': 'Caucasian/European features',
+      'black': 'African/Black features',
+      'indian': 'South Asian/Indian features',
+      'middle-east': 'Middle Eastern features',
+      'hispanic': 'Hispanic/Latino features',
+      'korean': 'Korean features',
+      'chinese': 'Chinese features',
+      'japanese': 'Japanese features',
+      'vietnamese': 'Vietnamese features'
+    };
+
+    // Hair length descriptions
+    const hairMap = {
+      'short': 'short hair',
+      'medium': 'medium length hair, shoulder-length hair',
+      'long': 'long hair, flowing hair'
+    };
+
+    // Hair color descriptions
+    const hairColorMap = {
+      'brown': 'brown hair',
+      'black': 'black hair',
+      'blonde': 'blonde hair, golden hair',
+      'red': 'red hair, ginger hair',
+      'auburn': 'auburn hair, reddish-brown hair',
+      'gray': 'gray hair, silver hair',
+      'white': 'white hair, platinum hair',
+      'purple': 'purple hair, violet hair'
+    };
+
+    const ethnicityDesc = ethnicityMap[traits.ethnicity] || 'diverse features';
+    const hairLengthDesc = hairMap[traits.hairLength] || 'styled hair';
+    const hairColorDesc = hairColorMap[traits.hairColor] || 'brown hair';
+
+    // Build character-aware prompt
+    const characterAppearance = `${genderDescription}, ${ethnicityDesc}, ${hairLengthDesc}, ${hairColorDesc}`;
+
+    // Create base prompt with seductive/explicit elements for companion avatars
+    const basePrompt = `seductive expression, revealing clothing, sensual pose, attractive, wearing ${sexyClothing}, attractive body, bedroom or intimate setting, cozy interior, soft lighting, intimate setting`;
+
+    // Build full prompt with character appearance and context
+    let explicitPrompt;
+    if (isAnimeStyle) {
+      explicitPrompt = `anime portrait of ${characterAppearance}, anime style, ${basePrompt}, detailed anime art, high quality anime illustration, vibrant colors, cel shading, clean background, single anime character, perfect anime anatomy, anime eyes`;
     } else {
-      explicitPrompt = `Beautiful sexy ${ethnicGender}, seductive expression, revealing clothing, sensual pose, attractive, photorealistic, flirtatious expression, seductive pose, wearing ${sexyClothing}, attractive body, bedroom or intimate setting, full body or upper body shot, sensual photography, attractive model, soft romantic lighting, glamour photography style, alluring pose, eye contact, sharp focus, professional photography, shallow depth of field, sexy photoshoot, single person, solo, one woman only`;
+      explicitPrompt = `realistic photography, portrait photograph of ${characterAppearance}, ${basePrompt}, photorealistic, real photo, not anime, not cartoon, not illustration, not drawing, professional photography, high quality, professional lighting, clean background, single real person, perfect anatomy, realistic skin, realistic features`;
     }
 
     console.log(`   🔥 EXPLICIT PROMPT: ${explicitPrompt}`);
 
-    const avatarResponse = await fetch('https://selira.ai/.netlify/functions/generate-custom-image', {
+    // Use Flux Schnell model directly (same as chat generation)
+    const REPLICATE_API_TOKEN = process.env.REPLICATE_API_TOKEN_SELIRA || process.env.REPLICATE_API_TOKEN;
+    const modelVersion = "black-forest-labs/flux-schnell:c846a69991daf4c0e5d016514849d14ee5b2e6846ce6b9d6f21369e564cfe51e";
+
+    const avatarResponse = await fetch('https://api.replicate.com/v1/predictions', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Authorization': `Token ${REPLICATE_API_TOKEN}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
       body: JSON.stringify({
-        customPrompt: explicitPrompt,
-        characterName: name,
-        category: traits.style === 'anime' ? 'anime-manga' : 'realistic',
-        style: traits.style,
-        shotType: 'portrait',
-        sex: traits.sex,
-        ethnicity: traits.ethnicity,
-        hairLength: traits.hairLength,
-        hairColor: traits.hairColor
+        version: modelVersion,
+        input: {
+          prompt: explicitPrompt,
+          width: 768,
+          height: 768,
+          num_outputs: 1,
+          num_inference_steps: 4,
+          seed: Math.floor(Math.random() * 100000)
+        }
       })
     });
 
     if (avatarResponse.ok) {
-      const avatarResult = await avatarResponse.json();
-      if (avatarResult.imageUrl) {
-        console.log(`✅ Generated EXPLICIT: ${avatarResult.imageUrl}`);
+      const prediction = await avatarResponse.json();
+      console.log(`📊 Prediction created: ${prediction.id}, status: ${prediction.status}`);
+
+      // Wait for the prediction to complete (max 30 seconds)
+      let result = prediction;
+      let attempts = 0;
+      const maxAttempts = 30;
+
+      while (result.status !== 'succeeded' && result.status !== 'failed' && attempts < maxAttempts) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        attempts++;
+
+        const statusResponse = await fetch(`https://api.replicate.com/v1/predictions/${prediction.id}`, {
+          headers: {
+            'Authorization': `Token ${REPLICATE_API_TOKEN}`,
+            'Accept': 'application/json'
+          }
+        });
+
+        if (statusResponse.ok) {
+          result = await statusResponse.json();
+          console.log(`⏳ Status [${attempts}/${maxAttempts}]: ${result.status}`);
+        }
+      }
+
+      if (result.status === 'succeeded' && result.output?.[0]) {
+        const imageUrl = result.output[0];
+        console.log(`✅ Generated EXPLICIT: ${imageUrl}`);
 
         // Download the image immediately
         const filename = `${nameToFilename(name)}-explicit-${Date.now()}.webp`;
-        const downloaded = await downloadImage(avatarResult.imageUrl, filename);
+        const downloaded = await downloadImage(imageUrl, filename);
 
         if (downloaded) {
           const localUrl = `https://selira.ai/avatars/${filename}`;
           console.log(`🔗 Local URL: ${localUrl}`);
           return localUrl;
         }
+      } else {
+        console.log(`⚠️ Generation failed or timed out: ${result.status}`);
       }
     } else {
       const errorText = await avatarResponse.text();
       console.log(`⚠️ Avatar generation failed: ${avatarResponse.status} - ${errorText}`);
 
-      // Handle 503 Service Busy with longer wait
-      if (avatarResponse.status === 503) {
-        console.log(`   🔄 Service busy, waiting 30 seconds before retrying...`);
-        await new Promise(resolve => setTimeout(resolve, 30000));
-
-        const retryResponse = await fetch('https://selira.ai/.netlify/functions/generate-avatar-replicate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            customPrompt: explicitPrompt,
-            characterName: name,
-            category: traits.style === 'anime' ? 'anime-manga' : 'realistic',
-            style: traits.style,
-            shotType: 'portrait',
-            sex: traits.sex,
-            ethnicity: traits.ethnicity,
-            hairLength: traits.hairLength,
-            hairColor: traits.hairColor
-          })
-        });
-
-        if (retryResponse.ok) {
-          const retryResult = await retryResponse.json();
-          if (retryResult.imageUrl) {
-            console.log(`✅ Generated on retry: ${retryResult.imageUrl}`);
-            const filename = `${nameToFilename(name)}-explicit-retry-${Date.now()}.webp`;
-            const downloaded = await downloadImage(retryResult.imageUrl, filename);
-
-            if (downloaded) {
-              const localUrl = `https://selira.ai/avatars/${filename}`;
-              console.log(`🔗 Local URL: ${localUrl}`);
-              return localUrl;
-            }
-          }
-        }
-      }
-
       // Try slightly less explicit prompt for NSFW errors
-      if (errorText.includes('NSFW content detected')) {
+      if (errorText.includes('NSFW content detected') || errorText.includes('content policy')) {
         console.log(`   🔄 Trying with moderate explicit prompt...`);
         await new Promise(resolve => setTimeout(resolve, 5000));
 
-        // Use more conservative version of real /create prompts
-        let moderatePrompt;
-        if (isAnimeCategory) {
-          moderatePrompt = `anime girl, ${ethnicGender}, attractive pose, anime art style, detailed anime art, appealing expression, anime character, vibrant colors, attractive body, digital anime art, upper body, anime artwork, detailed facial features, anime eyes, single character, solo`;
-        } else {
-          moderatePrompt = `Beautiful ${ethnicGender}, attractive expression, appealing clothing, confident pose, attractive, photorealistic, professional pose, attractive body, portrait photography, attractive model, professional photography, single person, solo, one woman only`;
-        }
+        // Use more conservative version but keep character appearance
+        const moderatePrompt = isAnimeStyle ?
+          `anime portrait of ${characterAppearance}, anime style, attractive pose, appealing expression, anime character, vibrant colors, digital anime art, upper body, anime artwork, detailed facial features, anime eyes, single character, solo` :
+          `realistic photography, portrait photograph of ${characterAppearance}, attractive expression, appealing clothing, confident pose, attractive, photorealistic, professional pose, attractive body, portrait photography, attractive model, professional photography, single person, solo, one woman only`;
 
-        const conservativeResponse = await fetch('https://selira.ai/.netlify/functions/generate-avatar-replicate', {
+        const conservativeResponse = await fetch('https://api.replicate.com/v1/predictions', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Authorization': `Token ${REPLICATE_API_TOKEN}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
           body: JSON.stringify({
-            customPrompt: moderatePrompt,
-            characterName: name,
-            category: traits.style === 'anime' ? 'anime-manga' : 'realistic',
-            style: traits.style,
-            shotType: 'portrait',
-            sex: traits.sex,
-            ethnicity: traits.ethnicity,
-            hairLength: traits.hairLength,
-            hairColor: traits.hairColor
+            version: modelVersion,
+            input: {
+              prompt: moderatePrompt,
+              width: 768,
+              height: 768,
+              num_outputs: 1,
+              num_inference_steps: 4,
+              seed: Math.floor(Math.random() * 100000)
+            }
           })
         });
 
         if (conservativeResponse.ok) {
-          const conservativeResult = await conservativeResponse.json();
-          if (conservativeResult.imageUrl) {
-            console.log(`✅ Generated moderate explicit: ${conservativeResult.imageUrl}`);
+          const conservativePrediction = await conservativeResponse.json();
+          console.log(`📊 Conservative prediction created: ${conservativePrediction.id}`);
+
+          // Wait for conservative prediction
+          let conservativeResult = conservativePrediction;
+          let conservativeAttempts = 0;
+          const maxConservativeAttempts = 30;
+
+          while (conservativeResult.status !== 'succeeded' && conservativeResult.status !== 'failed' && conservativeAttempts < maxConservativeAttempts) {
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            conservativeAttempts++;
+
+            const statusResponse = await fetch(`https://api.replicate.com/v1/predictions/${conservativePrediction.id}`, {
+              headers: {
+                'Authorization': `Token ${REPLICATE_API_TOKEN}`,
+                'Accept': 'application/json'
+              }
+            });
+
+            if (statusResponse.ok) {
+              conservativeResult = await statusResponse.json();
+              console.log(`⏳ Conservative status [${conservativeAttempts}/${maxConservativeAttempts}]: ${conservativeResult.status}`);
+            }
+          }
+
+          if (conservativeResult.status === 'succeeded' && conservativeResult.output?.[0]) {
+            const conservativeImageUrl = conservativeResult.output[0];
+            console.log(`✅ Generated moderate explicit: ${conservativeImageUrl}`);
 
             const filename = `${nameToFilename(name)}-moderate-${Date.now()}.webp`;
-            const downloaded = await downloadImage(conservativeResult.imageUrl, filename);
+            const downloaded = await downloadImage(conservativeImageUrl, filename);
 
             if (downloaded) {
               const localUrl = `https://selira.ai/avatars/${filename}`;
