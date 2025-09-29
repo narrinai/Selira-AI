@@ -312,7 +312,7 @@ exports.handler = async (event, context) => {
     console.log(`🎌 [${requestId}] Anime style:`, isAnimeStyle);
     
     // Use Playground v2.5 for aesthetic generation with less content filtering
-    const modelVersion = "black-forest-labs/flux-dev:a1f6b4b9ecb4b8aa8d18c2b07a07fdf9265cd9b424c5b153b654a766e1ce40d2";
+    const modelVersion = "stability-ai/sdxl:39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b";
 
     // Add progressive delay to prevent rate limiting
     // More requests = longer delay
@@ -345,8 +345,9 @@ exports.handler = async (event, context) => {
             width: 768,
             height: 768,
             num_outputs: 1,
-            num_inference_steps: 20,
+            num_inference_steps: 30,
             guidance_scale: 7.5,
+            scheduler: "DPMSolverMultistep",
             seed: Math.floor(Math.random() * 100000)
           }
         })
