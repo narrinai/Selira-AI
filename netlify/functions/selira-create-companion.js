@@ -304,14 +304,6 @@ BOUNDARIES:
     if (!preGeneratedAvatarUrl) {
       console.log('🖼️ No pre-generated avatar, enabling backend generation...');
 
-      // Temporary fallback: use a default avatar URL pattern for now
-      const timestamp = Date.now();
-      const defaultAvatarUrl = `/avatars/generated-${slug}-${timestamp}.webp`;
-      avatarUrlToUse = defaultAvatarUrl;
-      console.log('🔄 Using fallback avatar URL pattern:', avatarUrlToUse);
-      console.log('💡 Note: Actual avatar generation is disabled due to missing Replicate API token');
-
-      /* Commented out until Replicate API token is fixed
       try {
         console.log('🖼️ Generating companion avatar using companion traits...');
 
@@ -377,8 +369,11 @@ BOUNDARIES:
 
       } catch (error) {
         console.log('⚠️ Avatar generation error:', error.message, ', creating companion without avatar');
+        // Fallback to default avatar pattern if generation fails
+        const timestamp = Date.now();
+        avatarUrlToUse = `/avatars/generated-${slug}-${timestamp}.webp`;
+        console.log('🔄 Using fallback avatar URL after error:', avatarUrlToUse);
       }
-      */
     } else {
       console.log('✅ Using pre-generated avatar URL:', preGeneratedAvatarUrl);
     }

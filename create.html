@@ -1405,9 +1405,54 @@
     let preGeneratedAvatarUrl = null;
 
     async function generateAvatarPreview() {
-      console.log('🔄 Skipping frontend avatar generation - backend will handle it');
-      preGeneratedAvatarUrl = null;
-      console.log('⚠️ Frontend avatar generation disabled - backend fallback active');
+      console.log('🎨 Starting avatar generation to test Replicate API...');
+
+      try {
+        const { style, ethnicity, hairLength, hairColor } = characterCreationState;
+
+        let attractivePrompt = style === 'anime'
+          ? `beautiful anime girl, attractive face, seductive expression, detailed anime art, flirtatious pose, wearing stylish attractive outfit, anime style, vibrant colors, high quality anime artwork, detailed facial features, anime eyes, perfect anatomy, alluring pose, single character, solo`
+          : `beautiful woman, attractive face, seductive expression, alluring pose, wearing stylish attractive outfit, photorealistic, professional photography, soft romantic lighting, glamour photography style, eye contact, sharp focus, attractive model, confident pose, single person, solo`;
+
+        console.log('🖼️ Testing avatar generation with prompt:', attractivePrompt.substring(0, 100) + '...');
+
+        const avatarResponse = await fetch('/.netlify/functions/selira-generate-custom-image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            customPrompt: attractivePrompt,
+            characterName: 'Test Character',
+            category: style === 'anime' ? 'anime-manga' : 'realistic',
+            style: style,
+            shotType: 'portrait',
+            sex: 'female',
+            ethnicity: ethnicity,
+            hairLength: hairLength,
+            hairColor: hairColor
+          })
+        });
+
+        console.log('📊 Avatar generation response status:', avatarResponse.status);
+
+        if (avatarResponse.ok) {
+          const avatarResult = await avatarResponse.json();
+          console.log('📋 Avatar generation result:', avatarResult);
+          if (avatarResult.success && avatarResult.imageUrl) {
+            preGeneratedAvatarUrl = avatarResult.imageUrl;
+            console.log('✅ Avatar pre-generated successfully:', preGeneratedAvatarUrl);
+          } else {
+            console.log('⚠️ Avatar generation succeeded but no imageUrl:', avatarResult);
+            preGeneratedAvatarUrl = null;
+          }
+        } else {
+          const errorText = await avatarResponse.text();
+          console.log('❌ Avatar generation failed:', avatarResponse.status, errorText);
+          preGeneratedAvatarUrl = null;
+        }
+      } catch (error) {
+        console.log('❌ Avatar generation error:', error.message);
+        preGeneratedAvatarUrl = null;
+      }
     }
 
     async function createCharacter() {

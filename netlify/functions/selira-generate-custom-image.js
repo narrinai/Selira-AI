@@ -43,7 +43,12 @@ exports.handler = async (event, context) => {
     hasReplicateToken: !!REPLICATE_API_TOKEN,
     tokenLength: REPLICATE_API_TOKEN ? REPLICATE_API_TOKEN.length : 0,
     tokenPrefix: REPLICATE_API_TOKEN ? REPLICATE_API_TOKEN.substring(0, 8) + '...' : 'none',
-    envKeys: Object.keys(process.env).filter(key => key.includes('REPLICATE')).join(', ')
+    envKeys: Object.keys(process.env).filter(key => key.includes('REPLICATE')).join(', '),
+    allEnvKeys: Object.keys(process.env).length,
+    specificTokens: {
+      REPLICATE_API_TOKEN: process.env.REPLICATE_API_TOKEN ? 'EXISTS' : 'MISSING',
+      REPLICATE_API_TOKEN_SELIRA: process.env.REPLICATE_API_TOKEN_SELIRA ? 'EXISTS' : 'MISSING'
+    }
   });
   
   if (!REPLICATE_API_TOKEN) {
