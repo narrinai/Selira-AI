@@ -107,7 +107,9 @@ exports.handler = async (event, context) => {
         received: true,
         processed: true,
         timestamp: new Date().toISOString(),
-        version: "debug-v2"
+        version: "debug-v2",
+        eventType: stripeEvent.type,
+        eventId: stripeEvent.id
       })
     };
 
