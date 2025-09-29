@@ -1541,9 +1541,12 @@
         }
         
         const result = await response.json();
-        
+
         console.log('✅ Character created successfully:', result);
-        
+        console.log('🔍 Character details:', result.character);
+        console.log('🔍 Character URL:', result.character?.url);
+        console.log('🔍 Character slug:', result.character?.slug);
+
         // Show success message
         alert(`🎉 ${name} has been created successfully! Redirecting to chat...`);
 
@@ -1555,10 +1558,13 @@
 
         // Redirect to the character's chat page using the returned URL
         if (result.character && result.character.url) {
+          console.log('🔄 Redirecting to character URL:', result.character.url);
           window.location.href = result.character.url;
         } else if (result.character && result.character.slug) {
+          console.log('🔄 Redirecting to character slug:', result.character.slug);
           window.location.href = `/chat.html?char=${result.character.slug}`;
         } else {
+          console.log('🔄 Redirecting to category page');
           window.location.href = '/category';
         }
         
