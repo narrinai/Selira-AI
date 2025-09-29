@@ -458,15 +458,19 @@
       z-index: 1;
     }
 
-    /* Adjust badge positioning when both are present */
+    /* Adjust badge positioning when both are present - stack vertically */
     .pricing-card.featured.current-plan .card-badge {
-      left: 16px;
-      transform: translateX(0);
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1;
     }
 
     .pricing-card.featured.current-plan .current-plan-badge {
-      right: 16px;
-      top: -8px;
+      top: 8px;
+      right: 50%;
+      transform: translateX(50%);
+      z-index: 2;
     }
     
     .plan-name {
