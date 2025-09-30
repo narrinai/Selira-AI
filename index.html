@@ -241,23 +241,42 @@
     }
 
     .hero-companions {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
+      position: relative;
       max-width: 600px;
       margin: 0 auto;
       padding: 40px 20px;
+      overflow: hidden;
+    }
+
+    .carousel-container {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .carousel-track {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+    }
+
+    .carousel-slide {
+      min-width: 100%;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
     }
 
     .companion-card {
       background: var(--bg-secondary);
       border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
+      border-radius: 12px;
       padding: 16px;
       transition: all 0.3s ease;
       cursor: pointer;
       position: relative;
       overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      display: block;
     }
 
     .companion-card:hover {
@@ -270,7 +289,7 @@
       width: 100%;
       height: 140px;
       object-fit: cover;
-      border-radius: var(--radius-md);
+      border-radius: 8px;
       margin-bottom: 12px;
     }
 
@@ -294,6 +313,61 @@
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
+    }
+
+    .carousel-controls {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    .carousel-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--border);
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      padding: 0;
+    }
+
+    .carousel-dot.active {
+      background: var(--accent);
+      width: 24px;
+      border-radius: 4px;
+    }
+
+    .carousel-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(10, 10, 10, 0.8);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 2;
+      transition: all 0.2s ease;
+      color: var(--text-primary);
+    }
+
+    .carousel-arrow:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .carousel-arrow.prev {
+      left: -10px;
+    }
+
+    .carousel-arrow.next {
+      right: -10px;
     }
 
     /* Tags Section */
@@ -634,9 +708,12 @@
       }
 
       .hero-companions {
+        padding: 20px 16px;
+      }
+
+      .carousel-slide {
         grid-template-columns: 1fr;
         gap: 16px;
-        padding: 20px 16px;
       }
 
       .companion-card {
@@ -653,6 +730,19 @@
 
       .companion-description {
         font-size: 0.8rem;
+      }
+
+      .carousel-arrow {
+        width: 32px;
+        height: 32px;
+      }
+
+      .carousel-arrow.prev {
+        left: 0;
+      }
+
+      .carousel-arrow.next {
+        right: 0;
       }
 
 
@@ -766,36 +856,15 @@
 
       <div class="hero-visual">
         <div class="hero-companions">
-          <div class="companion-card" onclick="window.location.href='/chat?character=aria-sunshine'">
-            <img src="https://selira.ai/avatars/aria-sunshine.jpg" alt="Aria Sunshine" class="companion-image" loading="lazy" onerror="this.onerror=null; this.src='https://selira.ai/avatars/female-1.jpg';">
-            <div class="companion-info">
-              <h3 class="companion-name">Aria Sunshine</h3>
-              <p class="companion-description">Your cheerful AI girlfriend who loves adventures and deep conversations</p>
+          <div class="carousel-container">
+            <button class="carousel-arrow prev" onclick="moveCarousel(-1)">‹</button>
+            <div class="carousel-track" id="carouselTrack">
+              <!-- Companions will be loaded here dynamically -->
             </div>
+            <button class="carousel-arrow next" onclick="moveCarousel(1)">›</button>
           </div>
-
-          <div class="companion-card" onclick="window.location.href='/chat?character=luna-mystique'">
-            <img src="https://selira.ai/avatars/luna-mystique.jpg" alt="Luna Mystique" class="companion-image" loading="lazy" onerror="this.onerror=null; this.src='https://selira.ai/avatars/female-2.jpg';">
-            <div class="companion-info">
-              <h3 class="companion-name">Luna Mystique</h3>
-              <p class="companion-description">Mysterious and enchanting companion with wisdom beyond her years</p>
-            </div>
-          </div>
-
-          <div class="companion-card" onclick="window.location.href='/chat?character=zara-tech'">
-            <img src="https://selira.ai/avatars/zara-tech.jpg" alt="Zara Tech" class="companion-image" loading="lazy" onerror="this.onerror=null; this.src='https://selira.ai/avatars/female-3.jpg';">
-            <div class="companion-info">
-              <h3 class="companion-name">Zara Tech</h3>
-              <p class="companion-description">Tech-savvy companion who loves gaming and coding adventures</p>
-            </div>
-          </div>
-
-          <div class="companion-card" onclick="window.location.href='/chat?character=elena-romance'">
-            <img src="https://selira.ai/avatars/elena-romance.jpg" alt="Elena Romance" class="companion-image" loading="lazy" onerror="this.onerror=null; this.src='https://selira.ai/avatars/female-4.jpg';">
-            <div class="companion-info">
-              <h3 class="companion-name">Elena Romance</h3>
-              <p class="companion-description">Romantic and passionate companion for intimate conversations</p>
-            </div>
+          <div class="carousel-controls" id="carouselControls">
+            <!-- Dots will be added here dynamically -->
           </div>
         </div>
       </div>
@@ -965,6 +1034,137 @@
   </footer>
 
   <script>
+    // Carousel functionality
+    let currentSlide = 0;
+    let companions = [];
+    const COMPANIONS_PER_SLIDE = 4;
+
+    async function loadCompanions() {
+      try {
+        const response = await fetch('/.netlify/functions/characters');
+        const data = await response.json();
+
+        // Filter companions with avatar_url and character_url
+        companions = data.characters
+          .filter(c => c.avatar_url && c.character_url)
+          .slice(0, 12); // Limit to 12 companions for performance
+
+        renderCarousel();
+      } catch (error) {
+        console.error('Failed to load companions:', error);
+        // Show fallback static companions if API fails
+        showFallbackCompanions();
+      }
+    }
+
+    function renderCarousel() {
+      const track = document.getElementById('carouselTrack');
+      const controls = document.getElementById('carouselControls');
+
+      if (companions.length === 0) {
+        showFallbackCompanions();
+        return;
+      }
+
+      // Create slides
+      const slides = [];
+      for (let i = 0; i < companions.length; i += COMPANIONS_PER_SLIDE) {
+        slides.push(companions.slice(i, i + COMPANIONS_PER_SLIDE));
+      }
+
+      // Render slides
+      track.innerHTML = slides.map((slide, slideIndex) => `
+        <div class="carousel-slide">
+          ${slide.map(companion => `
+            <a href="${companion.character_url}" class="companion-card">
+              <img src="${companion.avatar_url}"
+                   alt="${companion.name || 'AI Companion'}"
+                   class="companion-image"
+                   loading="lazy">
+              <div class="companion-info">
+                <h3 class="companion-name">${companion.name || 'AI Companion'}</h3>
+                <p class="companion-description">${companion.description || 'Chat with this unique AI companion'}</p>
+              </div>
+            </a>
+          `).join('')}
+        </div>
+      `).join('');
+
+      // Render dots
+      controls.innerHTML = slides.map((_, i) => `
+        <button class="carousel-dot ${i === 0 ? 'active' : ''}" onclick="goToSlide(${i})"></button>
+      `).join('');
+    }
+
+    function showFallbackCompanions() {
+      const track = document.getElementById('carouselTrack');
+      track.innerHTML = `
+        <div class="carousel-slide">
+          <a href="/category" class="companion-card">
+            <img src="https://selira.ai/avatars/female-1.jpg" alt="AI Companion" class="companion-image" loading="lazy">
+            <div class="companion-info">
+              <h3 class="companion-name">Discover Companions</h3>
+              <p class="companion-description">Explore thousands of unique AI personalities</p>
+            </div>
+          </a>
+          <a href="/category" class="companion-card">
+            <img src="https://selira.ai/avatars/female-2.jpg" alt="AI Companion" class="companion-image" loading="lazy">
+            <div class="companion-info">
+              <h3 class="companion-name">Find Your Match</h3>
+              <p class="companion-description">From romantic to mysterious characters</p>
+            </div>
+          </a>
+          <a href="/category" class="companion-card">
+            <img src="https://selira.ai/avatars/female-3.jpg" alt="AI Companion" class="companion-image" loading="lazy">
+            <div class="companion-info">
+              <h3 class="companion-name">Start Chatting</h3>
+              <p class="companion-description">Begin meaningful conversations today</p>
+            </div>
+          </a>
+          <a href="/category" class="companion-card">
+            <img src="https://selira.ai/avatars/female-4.jpg" alt="AI Companion" class="companion-image" loading="lazy">
+            <div class="companion-info">
+              <h3 class="companion-name">Endless Possibilities</h3>
+              <p class="companion-description">Create lasting connections with AI</p>
+            </div>
+          </a>
+        </div>
+      `;
+    }
+
+    function moveCarousel(direction) {
+      const totalSlides = Math.ceil(companions.length / COMPANIONS_PER_SLIDE);
+      currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
+      updateCarousel();
+    }
+
+    function goToSlide(index) {
+      currentSlide = index;
+      updateCarousel();
+    }
+
+    function updateCarousel() {
+      const track = document.getElementById('carouselTrack');
+      track.style.transform = `translateX(-${currentSlide * 100}%)`;
+
+      // Update dots
+      document.querySelectorAll('.carousel-dot').forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentSlide);
+      });
+    }
+
+    // Auto-rotate carousel
+    let carouselInterval;
+    function startCarouselAutoPlay() {
+      carouselInterval = setInterval(() => {
+        moveCarousel(1);
+      }, 5000); // Change slide every 5 seconds
+    }
+
+    function stopCarouselAutoPlay() {
+      clearInterval(carouselInterval);
+    }
+
     // Mobile menu toggle
     function toggleMobileMenu() {
       const mobileMenu = document.getElementById('mobileMenu');
@@ -993,6 +1193,16 @@
         });
       }
 
+      // Load companions and start carousel
+      loadCompanions();
+      startCarouselAutoPlay();
+
+      // Pause carousel on hover
+      const carouselContainer = document.querySelector('.carousel-container');
+      if (carouselContainer) {
+        carouselContainer.addEventListener('mouseenter', stopCarouselAutoPlay);
+        carouselContainer.addEventListener('mouseleave', startCarouselAutoPlay);
+      }
     });
 
     // Smooth scrolling for anchor links only
