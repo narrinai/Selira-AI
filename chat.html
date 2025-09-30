@@ -3958,52 +3958,11 @@
       const characterHairLength = currentCharacter.hair_length || 'medium';
       const characterHairColor = currentCharacter.hair_color || 'brown';
 
-      // Get random sexy clothing
+      // Get random sexy clothing - this is the only thing we send to the backend
       const stylishClothing = getStylishClothing(characterStyle);
 
-      // Ethnicity descriptions
-      const ethnicityMap = {
-        'white': 'Caucasian/European features',
-        'black': 'African/Black features',
-        'indian': 'South Asian/Indian features',
-        'middle-east': 'Middle Eastern features',
-        'hispanic': 'Hispanic/Latino features',
-        'korean': 'Korean features',
-        'chinese': 'Chinese features',
-        'japanese': 'Japanese features',
-        'vietnamese': 'Vietnamese features'
-      };
-
-      // Hair length descriptions
-      const hairMap = {
-        'short': 'short hair',
-        'medium': 'medium length hair, shoulder-length hair',
-        'long': 'long hair, flowing hair'
-      };
-
-      // Hair color descriptions
-      const hairColorMap = {
-        'brown': 'brown hair',
-        'black': 'black hair',
-        'blonde': 'blonde hair, golden hair',
-        'red': 'red hair, ginger hair',
-        'auburn': 'auburn hair, reddish-brown hair',
-        'gray': 'gray hair, silver hair',
-        'white': 'white hair, platinum hair',
-        'purple': 'purple hair, violet hair'
-      };
-
-      const ethnicityDesc = ethnicityMap[characterEthnicity] || 'diverse features';
-      const hairLengthDesc = hairMap[characterHairLength] || 'styled hair';
-      const hairColorDesc = hairColorMap[characterHairColor] || 'brown hair';
-
-      // Build character appearance
-      const characterAppearance = `${ethnicityDesc}, ${hairLengthDesc}, ${hairColorDesc}`;
-
-      // Build optimized prompt for reliable generation
-      const fullPrompt = characterStyle === 'anime'
-        ? `anime portrait of attractive character, ${characterAppearance}, wearing ${stylishClothing}, detailed anime art style, high quality illustration, vibrant colors, clean background`
-        : `professional portrait photograph, attractive person, ${characterAppearance}, wearing ${stylishClothing}, photorealistic, soft lighting, high quality photo, clean background`;
+      // The backend will build the full prompt with character traits
+      const simplePrompt = stylishClothing;
       
       // Add user message
       addMessage(message, 'user');
@@ -4020,21 +3979,11 @@
       addMessage('🎨 Generating your image...', 'ai', loadingId);
       
       try {
-        // Detect character style from companion_type field, fallback to Category
-        const characterStyle = currentCharacter.companion_type || 
-                               (currentCharacter.category === 'anime-manga' ? 'anime' : 'realistic');
-        
         console.log('🎨 Generating image:', {
-          prompt: fullPrompt,
+          prompt: simplePrompt,
           characterStyle: characterStyle,
           character: currentCharacter.name
         });
-
-        // Use character appearance data if available, otherwise fallback
-        const characterSex = currentCharacter.sex || 'female';
-        const characterEthnicity = currentCharacter.ethnicity || 'white';
-        const characterHairLength = currentCharacter.hair_length || 'medium';
-        const characterHairColor = currentCharacter.hair_color || 'brown';
 
         console.log('🎭 Using companion traits for image generation:', {
           sex: characterSex,
@@ -4055,7 +4004,7 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            customPrompt: fullPrompt,
+            customPrompt: simplePrompt,
             characterName: currentCharacter.name,
             category: currentCharacter.category,
             style: characterStyle,
