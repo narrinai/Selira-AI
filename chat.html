@@ -1409,7 +1409,7 @@
         <a href="/" class="sidebar-logo">
           <div class="sidebar-logo-text">Selira AI</div>
         </a>
-        <a href="/category" class="back-btn" title="Back to Characters">
+        <a href="/" class="back-btn" title="Back to Characters">
           <span class="btn-icon">←</span>
           <span>Back</span>
         </a>
@@ -2824,7 +2824,7 @@
         if (companion.characterName && companion.characterName !== companion.slug) {
           characterName = companion.characterName;
         }
-        if (companion.avatar) {
+        if (companion.avatar && companion.avatar !== 'null' && companion.avatar !== null && companion.avatar !== '/avatars/placeholder.webp') {
           avatarUrl = companion.avatar;
         }
 
@@ -2833,14 +2833,14 @@
           if (character.name) {
             characterName = character.name;
           }
-          if (character.avatar) {
+          if (character.avatar && character.avatar !== 'null' && character.avatar !== null && character.avatar !== '/avatars/placeholder.webp') {
             avatarUrl = character.avatar;
           }
         }
         // Priority 3: If this is the current character, use its data
         else if (currentCharacter && currentCharacter.slug === companion.slug) {
           characterName = currentCharacter.name;
-          if (currentCharacter.avatar && currentCharacter.avatar !== '/avatars/placeholder.webp') {
+          if (currentCharacter.avatar && currentCharacter.avatar !== '/avatars/placeholder.webp' && currentCharacter.avatar !== 'null' && currentCharacter.avatar !== null) {
             avatarUrl = currentCharacter.avatar;
           }
         }
