@@ -2538,7 +2538,7 @@
             }
 
             // Apply filters and close overlay
-            filterAndDisplayCharacters();
+            applyFilters();
             hideMobileFilters();
           }
         });
@@ -4646,7 +4646,7 @@ Please be thorough and include important details from our conversations.`;
           if (tag === 'all') {
             // Clear all filters and show all characters
             currentFilters.tags = [];
-            filterAndDisplayCharacters();
+            applyFilters();
 
             // Update URL for all characters
             history.pushState({section: 'category'}, 'All Characters - Selira AI', '/category');
@@ -4671,7 +4671,7 @@ Please be thorough and include important details from our conversations.`;
       currentFilters.tags = [tag];
 
       // Filter and display characters
-      filterAndDisplayCharacters();
+      applyFilters();
 
       // Update URL
       const tagSlug = tag.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
