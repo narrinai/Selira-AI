@@ -138,9 +138,15 @@
 
     /* Tags Bar */
     .tags-bar {
-      max-width: 1200px;
-      margin: 16px auto 0;
-      padding: 0 32px;
+      position: fixed;
+      top: 72px;
+      left: 0;
+      right: 0;
+      background: rgba(10, 10, 10, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      z-index: 999;
+      padding: 12px 32px;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
@@ -155,6 +161,8 @@
       gap: 8px;
       flex-wrap: nowrap;
       min-width: min-content;
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
     .tag-btn {
@@ -190,7 +198,7 @@
       display: flex;
       align-items: center;
       background: var(--gradient-hero);
-      padding: 120px 32px 80px;
+      padding: 150px 32px 80px;
       position: relative;
       overflow: hidden;
     }
@@ -311,6 +319,12 @@
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 20px;
+    }
+
+    @media (min-width: 769px) {
+      .carousel-slide {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
 
     .companion-card {
@@ -887,73 +901,73 @@
       <a href="#" class="mobile-signup-link" onclick="openLoginModal('signup'); return false;">✨ Sign Up</a>
       <a href="/category" class="cta-btn">Start Chatting</a>
     </div>
-
-    <!-- Tags Bar -->
-    <div class="tags-bar">
-      <div class="tags-row">
-        <a href="/category?filter=girlfriend" class="tag-btn">
-          <span class="tag-emoji">💕</span>
-          <span>Girlfriend</span>
-        </a>
-        <a href="/category?filter=boyfriend" class="tag-btn">
-          <span class="tag-emoji">💪</span>
-          <span>Boyfriend</span>
-        </a>
-        <a href="/category?filter=seductive" class="tag-btn">
-          <span class="tag-emoji">🔥</span>
-          <span>Seductive</span>
-        </a>
-        <a href="/category?filter=tsundere" class="tag-btn">
-          <span class="tag-emoji">😤</span>
-          <span>Tsundere</span>
-        </a>
-        <a href="/category?filter=yandere" class="tag-btn">
-          <span class="tag-emoji">💖</span>
-          <span>Yandere</span>
-        </a>
-        <a href="/category?filter=maid" class="tag-btn">
-          <span class="tag-emoji">👗</span>
-          <span>Maid</span>
-        </a>
-        <a href="/category?filter=elf" class="tag-btn">
-          <span class="tag-emoji">🧝‍♀️</span>
-          <span>Elf</span>
-        </a>
-        <a href="/category?filter=angel" class="tag-btn">
-          <span class="tag-emoji">😇</span>
-          <span>Angel</span>
-        </a>
-        <a href="/category?filter=monster" class="tag-btn">
-          <span class="tag-emoji">👹</span>
-          <span>Monster</span>
-        </a>
-        <a href="/category?filter=vampire" class="tag-btn">
-          <span class="tag-emoji">🧛‍♀️</span>
-          <span>Vampire</span>
-        </a>
-        <a href="/category?filter=anime" class="tag-btn">
-          <span class="tag-emoji">⭐</span>
-          <span>Anime</span>
-        </a>
-        <a href="/category?filter=fantasy" class="tag-btn">
-          <span class="tag-emoji">🎭</span>
-          <span>Fantasy</span>
-        </a>
-        <a href="/category?filter=romance" class="tag-btn">
-          <span class="tag-emoji">💝</span>
-          <span>Romance</span>
-        </a>
-        <a href="/category?filter=cute" class="tag-btn">
-          <span class="tag-emoji">🥰</span>
-          <span>Cute</span>
-        </a>
-        <a href="/category?filter=flirty" class="tag-btn">
-          <span class="tag-emoji">😏</span>
-          <span>Flirty</span>
-        </a>
-      </div>
-    </div>
   </header>
+
+  <!-- Tags Bar -->
+  <div class="tags-bar">
+    <div class="tags-row">
+      <a href="/category?filter=girlfriend" class="tag-btn">
+        <span class="tag-emoji">💕</span>
+        <span>Girlfriend</span>
+      </a>
+      <a href="/category?filter=boyfriend" class="tag-btn">
+        <span class="tag-emoji">💪</span>
+        <span>Boyfriend</span>
+      </a>
+      <a href="/category?filter=seductive" class="tag-btn">
+        <span class="tag-emoji">🔥</span>
+        <span>Seductive</span>
+      </a>
+      <a href="/category?filter=tsundere" class="tag-btn">
+        <span class="tag-emoji">😤</span>
+        <span>Tsundere</span>
+      </a>
+      <a href="/category?filter=yandere" class="tag-btn">
+        <span class="tag-emoji">💖</span>
+        <span>Yandere</span>
+      </a>
+      <a href="/category?filter=maid" class="tag-btn">
+        <span class="tag-emoji">👗</span>
+        <span>Maid</span>
+      </a>
+      <a href="/category?filter=elf" class="tag-btn">
+        <span class="tag-emoji">🧝‍♀️</span>
+        <span>Elf</span>
+      </a>
+      <a href="/category?filter=angel" class="tag-btn">
+        <span class="tag-emoji">😇</span>
+        <span>Angel</span>
+      </a>
+      <a href="/category?filter=monster" class="tag-btn">
+        <span class="tag-emoji">👹</span>
+        <span>Monster</span>
+      </a>
+      <a href="/category?filter=vampire" class="tag-btn">
+        <span class="tag-emoji">🧛‍♀️</span>
+        <span>Vampire</span>
+      </a>
+      <a href="/category?filter=anime" class="tag-btn">
+        <span class="tag-emoji">⭐</span>
+        <span>Anime</span>
+      </a>
+      <a href="/category?filter=fantasy" class="tag-btn">
+        <span class="tag-emoji">🎭</span>
+        <span>Fantasy</span>
+      </a>
+      <a href="/category?filter=romance" class="tag-btn">
+        <span class="tag-emoji">💝</span>
+        <span>Romance</span>
+      </a>
+      <a href="/category?filter=cute" class="tag-btn">
+        <span class="tag-emoji">🥰</span>
+        <span>Cute</span>
+      </a>
+      <a href="/category?filter=flirty" class="tag-btn">
+        <span class="tag-emoji">😏</span>
+        <span>Flirty</span>
+      </a>
+    </div>
+  </div>
 
   <!-- Hero Section -->
   <section class="hero">
@@ -1067,7 +1081,7 @@
     // Carousel functionality
     let currentSlide = 0;
     let companions = [];
-    const COMPANIONS_PER_SLIDE = 4;
+    const COMPANIONS_PER_SLIDE = 2;
 
     async function loadCompanions() {
       try {
