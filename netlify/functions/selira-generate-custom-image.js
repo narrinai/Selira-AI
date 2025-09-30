@@ -300,17 +300,41 @@ exports.handler = async (event, context) => {
                        promptLower.includes('fullbody') || promptLower.includes('standing') ||
                        promptLower.includes('beach') || promptLower.includes('pose');
     
+    // Filter out NSFW-triggering words from custom prompt
+    const nsfwWords = [
+      'seductive', 'sexy', 'revealing', 'tight', 'low-cut', 'lingerie', 'underwear',
+      'barely-there', 'provocative', 'sultry', 'flirtatious', 'alluring', 'erotic',
+      'sensual', 'nude', 'naked', 'exposed', 'intimate', 'passionate', 'desire'
+    ];
+
+    let sanitizedPrompt = customPrompt;
+    nsfwWords.forEach(word => {
+      const regex = new RegExp(`\\b${word}\\b`, 'gi');
+      sanitizedPrompt = sanitizedPrompt.replace(regex, '');
+    });
+
+    // Replace common NSFW phrases with safe alternatives
+    sanitizedPrompt = sanitizedPrompt
+      .replace(/tight.*dress/gi, 'elegant dress')
+      .replace(/low-cut/gi, 'elegant')
+      .replace(/barely.*covering/gi, 'wearing')
+      .replace(/looking back.*shoulder/gi, 'portrait')
+      .trim()
+      .replace(/\s+/g, ' '); // Clean up multiple spaces
+
+    console.log(`🧹 [${requestId}] Sanitized prompt: "${customPrompt}" -> "${sanitizedPrompt}"`);
+
     // Build character-aware prompt
     const characterAppearance = `${genderDescription}, ${ethnicityDesc}, ${hairLengthDesc}, ${hairColorDesc}`;
-    
+
     // Build full prompt with character appearance and context
     let fullPrompt;
     if (isAnimeStyle) {
       const shotDesc = isFullBody ? 'full body anime illustration' : 'anime portrait';
-      fullPrompt = `${shotDesc} of ${characterAppearance}, anime style, ${customPrompt}${contextualEnhancement}, detailed anime art, high quality anime illustration, vibrant colors, cel shading, clean background, single anime character, perfect anime anatomy, anime eyes`;
+      fullPrompt = `${shotDesc} of ${characterAppearance}, anime style, ${sanitizedPrompt}${contextualEnhancement}, detailed anime art, high quality anime illustration, vibrant colors, cel shading, clean background, single anime character, perfect anime anatomy, anime eyes`;
     } else {
       const shotDesc = isFullBody ? 'full body photograph' : 'portrait photograph';
-      fullPrompt = `realistic photography, ${shotDesc} of ${characterAppearance}, ${customPrompt}${contextualEnhancement}, photorealistic, real photo, not anime, not cartoon, not illustration, not drawing, professional photography, high quality, professional lighting, clean background, single real person, perfect anatomy, realistic skin, realistic features`;
+      fullPrompt = `realistic photography, ${shotDesc} of ${characterAppearance}, ${sanitizedPrompt}${contextualEnhancement}, photorealistic, real photo, not anime, not cartoon, not illustration, not drawing, professional photography, high quality, professional lighting, clean background, single real person, perfect anatomy, realistic skin, realistic features`;
     }
     
     console.log(`🎨 [${requestId}] Full prompt:`, fullPrompt);
