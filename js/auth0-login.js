@@ -557,13 +557,13 @@ class Auth0LoginModal {
         loginBtn.textContent = 'Profile';
         loginBtn.className = loginBtn.className.replace('login-btn', 'profile-btn') + ' inverted-btn';
         loginBtn.onclick = null; // Remove modal trigger
-        // Transparent button styling with gold border
+        // Transparent button styling with gold border - inherit font-size from nav
         loginBtn.style.background = 'transparent';
         loginBtn.style.color = 'var(--accent, #d4a574)';
         loginBtn.style.border = '2px solid var(--accent, #d4a574)';
         loginBtn.style.borderRadius = '8px';
         loginBtn.style.padding = '10px 24px';
-        loginBtn.style.fontSize = '13px';
+        loginBtn.style.fontSize = ''; // Remove inline font-size to inherit from nav
         loginBtn.style.fontWeight = '600';
         loginBtn.style.textDecoration = 'none';
         loginBtn.style.transition = 'all 0.2s ease';
@@ -738,7 +738,6 @@ const AUTH0_STYLES = `
   border: 2px solid var(--accent, #d4a574) !important;
   border-radius: 8px !important;
   padding: 10px 24px !important;
-  font-size: 13px !important;
   font-weight: 600 !important;
   text-decoration: none !important;
   transition: all 0.2s ease !important;

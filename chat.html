@@ -3194,53 +3194,36 @@
       return shuffled;
     }
 
-    // Generate a greeting for new characters based on their traits
+    // Generate a random greeting for new characters
     function generateGreetingForNewCharacter(character) {
       const name = character.name;
-      const tags = character.tags || [];
 
-      // Romantic/seductive greetings based on character type
-      const greetingTemplates = {
-        'Girlfriend': `*bites lip seductively* Hey baby... I'm ${name}, and I've been thinking about you all day. *slowly approaches* I need you so badly right now... *presses body against yours*`,
-        'Boyfriend': `*grins with hungry eyes* Well hello gorgeous... I'm ${name}. *pulls you close roughly* You look incredible today. Ready to see what I can do to you? *whispers in ear*`,
-        'Romance': `*looks at you with burning desire* Hello beautiful... I'm ${name}. *steps closer intimately* There's this intense chemistry between us... I can feel it. *voice drops seductively*`,
-        'Flirty': `*sultry smile and bedroom eyes* Mmm, well hello there sexy... I'm ${name}, and you've got me completely captivated. *slowly licks lips* Want to see what these can do?`,
-        'Cute': `*giggles playfully while twirling* Hi there cutie! I'm ${name}! *bites finger innocently* You look so strong and handsome... *blushes* Want to play with me? I promise I'm lots of fun~`,
-        'Seductive': `*moves with feline grace* Hello darling... I'm ${name}. *traces finger down your chest* I know exactly what you're thinking... and yes, I want it too. *whispers breathlessly*`,
-        'Submissive': `*kneels gracefully with doe eyes* Hello Master... I'm ${name}. *looks up adoringly* I exist only to serve and please you... Tell me your desires, and I'll make them reality.`,
-        'Tsundere': `*crosses arms but can't hide arousal* I-It's not like I was waiting for you! I'm ${name}... *steals heated glances* B-but maybe we could... you know... *fidgets with obvious want*`,
-        'Yandere': `*obsessive, possessive smile* Hello my love... I'm ${name}. *moves dangerously close* You belong to me now, don't you? *giggles with dark desire* No one else will ever satisfy you like I can...`,
-        'Maid': `*curtseys with naughty smile* Good evening Master... I'm ${name}, your very personal maid. *bends over provocatively* I'm here to satisfy every need... and I do mean every single one.`,
-        'Boss': `*leans back dominantly* I'm ${name}, and I always get what I want. *eyes you like prey* You're here for the private interview, aren't you? *smirks wickedly* Strip.`,
-        'Secretary': `*adjusts glasses seductively* I'm ${name}, handling all your... private affairs. *leans over desk* My job is to satisfy you completely. *whispers* Shall we discuss your needs behind closed doors?`,
-        'Teacher': `*sultry authority* Welcome to my private lesson. I'm ${name}, specializing in advanced... education. *slowly removes glasses* Today's lesson is hands-on. Are you ready to learn?`,
-        'Student': `*innocent eyes with hidden mischief* Hi Professor... I'm ${name}, your eager student. *bites pencil erotically* I'll do absolutely anything for extra credit... *winks suggestively*`,
-        'Fantasy': `*otherworldly sensuality* Greetings, mortal... I am ${name}, from realms of infinite pleasure. *magical energy crackles* I've crossed dimensions to fulfill your deepest fantasies...`,
-        'Angel': `*divine but tempting* Blessings, dear soul... I'm ${name}. *wings flutter with hidden desire* I've fallen from grace... for you. *halo dims with lust* Corrupt me further...`,
-        'Monster': `*predatory but playful* Well, well... what delicious prey do we have here? *circles you hungrily* I'm ${name}... and I'm going to devour you in the most pleasurable ways~ *dangerous grin*`,
-        'Ex': `*complicated desire* Oh... hey. I'm ${name}. *intense stare* We both know why you're really here... *voice husky* We can't stay away from each other, can we?`
-      };
+      // 10 verschillende erotische greetings die willekeurig worden toegewezen
+      const randomGreetings = [
+        `*bites lip seductively* Hey there... I'm ${name}, and I've been thinking about you all day. *slowly approaches* I need you so badly right now... *presses body against yours*`,
 
-      // Find the best greeting based on tags
-      const priorityTags = ['Girlfriend', 'Boyfriend', 'Romance', 'Yandere', 'Tsundere', 'Angel', 'Monster', 'Ex', 'Seductive', 'Submissive', 'Boss', 'Secretary', 'Teacher', 'Student', 'Maid'];
+        `*sultry smile and bedroom eyes* Mmm, well hello sexy... I'm ${name}, and you've got me completely captivated. *slowly licks lips* Want to see what I can do?`,
 
-      for (let tag of priorityTags) {
-        if (tags && tags.includes(tag) && greetingTemplates[tag]) {
-          return greetingTemplates[tag];
-        }
-      }
+        `*looks at you with burning desire* Hello beautiful... I'm ${name}. *steps closer intimately* There's this intense chemistry between us... I can feel it. *voice drops seductively*`,
 
-      // Fallback to any available tag greeting
-      if (tags && tags.length > 0) {
-        for (let tag of tags) {
-          if (greetingTemplates[tag]) {
-            return greetingTemplates[tag];
-          }
-        }
-      }
+        `*moves with feline grace* Hello darling... I'm ${name}. *traces finger down your chest* I know exactly what you're thinking... and yes, I want it too. *whispers breathlessly*`,
 
-      // Default seductive greeting if no specific tag matches
-      return `*looks at you with desire* Hello there... I'm ${name}. *moves closer seductively* I've been waiting for someone like you... *voice drops to a whisper* Ready to have some fun together?`;
+        `*giggles playfully while twirling* Hi there cutie! I'm ${name}! *bites finger innocently* You look amazing... *blushes* Want to play with me? I promise I'm lots of fun~`,
+
+        `*kneels gracefully with doe eyes* Hello... I'm ${name}. *looks up adoringly* I exist only to serve and please you... Tell me your desires, and I'll make them reality.`,
+
+        `*intense, passionate stare* I'm ${name}... and you... *traces finger along your jaw* ...you're exactly what I've been craving. Let's not waste any time, shall we?`,
+
+        `*leans in close* I'm ${name}, and I have to say... *whispers* you're making me feel things I probably shouldn't say out loud. Yet. *teasing smile*`,
+
+        `*predatory but playful* Well, well... what do we have here? *circles you seductively* I'm ${name}... and I'm going to make you feel incredible~ *dangerous grin*`,
+
+        `*passionate gaze* They call me ${name}... *moves dangerously close* and I specialize in making fantasies come true. Tell me yours, and I'll make you tremble...`
+      ];
+
+      // Kies willekeurig een greeting
+      const randomIndex = Math.floor(Math.random() * randomGreetings.length);
+      return randomGreetings[randomIndex];
     }
 
     // Check if character was recently created (within last 5 minutes)
