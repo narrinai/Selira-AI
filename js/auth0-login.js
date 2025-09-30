@@ -557,8 +557,8 @@ class Auth0LoginModal {
         loginBtn.textContent = 'Profile';
         loginBtn.className = loginBtn.className.replace('login-btn', 'profile-btn') + ' inverted-btn';
         loginBtn.onclick = null; // Remove modal trigger
-        // Inverted button styling - white background with gold border
-        loginBtn.style.background = '#ffffff';
+        // Transparent button styling with gold border
+        loginBtn.style.background = 'transparent';
         loginBtn.style.color = 'var(--accent, #d4a574)';
         loginBtn.style.border = '2px solid var(--accent, #d4a574)';
         loginBtn.style.borderRadius = '8px';
@@ -567,7 +567,7 @@ class Auth0LoginModal {
         loginBtn.style.fontWeight = '600';
         loginBtn.style.textDecoration = 'none';
         loginBtn.style.transition = 'all 0.2s ease';
-        console.log('✅ Updated login button to inverted profile button:', loginBtn.textContent);
+        console.log('✅ Updated login button to transparent profile button:', loginBtn.textContent);
       }
       
       // Hide/remove signup button
@@ -633,11 +633,11 @@ class Auth0LoginModal {
           window.location.href = '/profile';
           return false;
         };
-        // Apply inverted button styling for mobile too
-        loginBtn.style.background = '#ffffff';
+        // Apply transparent button styling for mobile too
+        loginBtn.style.background = 'transparent';
         loginBtn.style.color = 'var(--accent, #d4a574)';
         loginBtn.style.border = '2px solid var(--accent, #d4a574)';
-        console.log('✅ Updated mobile header to show inverted Profile button');
+        console.log('✅ Updated mobile header to show transparent Profile button');
       } else {
         loginBtn.textContent = 'Login';
         loginBtn.className = loginBtn.className.replace('profile-btn', 'login-btn').replace('inverted-btn', '');
@@ -730,10 +730,10 @@ class Auth0LoginModal {
 // ===== AUTH0 MODAL STYLES (SELIRA THEME) =====
 const AUTH0_STYLES = `
 <style>
-/* Inverted Profile Button Styling */
+/* Transparent Profile Button Styling */
 .profile-btn.inverted-btn,
 .inverted-btn {
-  background: #ffffff !important;
+  background: transparent !important;
   color: var(--accent, #d4a574) !important;
   border: 2px solid var(--accent, #d4a574) !important;
   border-radius: 8px !important;

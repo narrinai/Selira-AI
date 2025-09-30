@@ -2337,9 +2337,31 @@
           console.log('🔍 Checking localStorage keys:', Object.keys(localStorage).filter(k => k.startsWith('chat_')));
 
           // Add automatic greeting message for new chats (only once per session)
-          const character = allCharacters.find(c => c.slug === characterSlug);
-          if (character && character.description && !greetingAddedFor.has(characterSlug)) {
-            const greeting = extractGreetingFromDescription(character.description);
+          let character = allCharacters.find(c => c.slug === characterSlug);
+
+          // If not in allCharacters, use currentCharacter if it matches the slug
+          if (!character && currentCharacter?.slug === characterSlug) {
+            character = currentCharacter;
+          }
+
+          if (character && !greetingAddedFor.has(characterSlug)) {
+            // Try to extract greeting from description first, otherwise use character.greeting or generate one
+            let greeting = null;
+
+            if (character.description) {
+              greeting = extractGreetingFromDescription(character.description);
+            }
+
+            // If no greeting found in description, use character.greeting field or generate one
+            if (!greeting && character.greeting) {
+              greeting = character.greeting;
+            }
+
+            // Generate greeting if still none found
+            if (!greeting) {
+              greeting = generateGreetingForNewCharacter(character);
+            }
+
             if (greeting) {
               console.log('👋 Adding automatic greeting for new chat with:', character.name);
               greetingAddedFor.add(characterSlug);
@@ -2709,9 +2731,14 @@
               foundCharacter = window.allCharacters.find(c => c.slug === characterSlug);
             }
 
+            // Get cached data first as fallback
+            const cachedName = localStorage.getItem(`char_name_${characterSlug}`);
+            const cachedAvatar = localStorage.getItem(`char_avatar_${characterSlug}`);
+
             if (foundCharacter) {
               characterName = foundCharacter.name || characterSlug;
-              avatar = foundCharacter.avatar;
+              // Use foundCharacter avatar if available, otherwise use cached avatar
+              avatar = foundCharacter.avatar || cachedAvatar;
               // Cache this for next time
               if (foundCharacter.name) {
                 localStorage.setItem(`char_name_${characterSlug}`, foundCharacter.name);
@@ -2721,8 +2748,6 @@
               }
             } else {
               // Fall back to cached data, but check if cached name looks like a slug
-              const cachedName = localStorage.getItem(`char_name_${characterSlug}`);
-
               // If cached name looks like a slug (contains timestamp pattern), try to fetch from API
               if (!cachedName || cachedName === characterSlug || /\d{13}/.test(cachedName)) {
                 // Try to extract the actual name from the slug by removing the timestamp
@@ -2734,7 +2759,7 @@
                 characterName = cachedName;
               }
 
-              avatar = localStorage.getItem(`char_avatar_${characterSlug}`) || null;
+              avatar = cachedAvatar || null;
             }
 
             companions.push({
@@ -2796,13 +2821,18 @@
         let avatarUrl = '/avatars/placeholder.webp';
         let characterName = companion.slug;
 
+        // Get cached data as baseline
+        const cachedAvatar = localStorage.getItem(`char_avatar_${companion.slug}`);
+        const cachedName = localStorage.getItem(`char_name_${companion.slug}`);
+
         // Priority 1: Use companion.characterName if available (from getActiveChatCompanions)
         if (companion.characterName && companion.characterName !== companion.slug) {
           characterName = companion.characterName;
-          if (companion.avatar) {
-            avatarUrl = companion.avatar;
-          }
         }
+        if (companion.avatar) {
+          avatarUrl = companion.avatar;
+        }
+
         // Priority 2: Use character data from loadedCharacters
         if (character) {
           if (character.name) {
@@ -2820,6 +2850,16 @@
           }
         }
 
+        // Priority 4: Use cached avatar if no other avatar found
+        if ((!avatarUrl || avatarUrl === '/avatars/placeholder.webp') && cachedAvatar) {
+          avatarUrl = cachedAvatar;
+        }
+
+        // Priority 5: Use cached name if no other name found
+        if ((!characterName || characterName === companion.slug) && cachedName) {
+          characterName = cachedName;
+        }
+
         // Cache character info for future sidebar displays
         if (character) {
           localStorage.setItem(`char_name_${companion.slug}`, character.name);
@@ -2829,8 +2869,6 @@
         }
 
         // Debug: Check what's in localStorage for this companion
-        const cachedName = localStorage.getItem(`char_name_${companion.slug}`);
-        const cachedAvatar = localStorage.getItem(`char_avatar_${companion.slug}`);
         console.log(`🏷️ Sidebar item: ${companion.slug}`);
         console.log(`   - Companion data: name="${companion.characterName}", avatar="${companion.avatar}"`);
         console.log(`   - Cached data: name="${cachedName}", avatar="${cachedAvatar}"`);

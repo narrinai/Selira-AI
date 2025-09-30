@@ -1189,7 +1189,15 @@
       track.innerHTML = slides.map((slide, slideIndex) => `
         <div class="carousel-slide">
           ${slide.map(companion => {
-            const tags = companion.tags ? companion.tags.split(',').slice(0, 2) : [];
+            // Handle tags - can be array or string
+            let tags = [];
+            if (companion.tags) {
+              if (Array.isArray(companion.tags)) {
+                tags = companion.tags.slice(0, 2);
+              } else if (typeof companion.tags === 'string') {
+                tags = companion.tags.split(',').slice(0, 2);
+              }
+            }
             const messageCount = companion.message_count || Math.floor(Math.random() * 100) + 10;
             return `
             <a href="${companion.character_url}" class="companion-card">

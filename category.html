@@ -2023,18 +2023,8 @@
         allCharacters = getDemoCharacters();
       }
       
-      // Randomize character order using Fisher-Yates shuffle
-      filteredCharacters = [...allCharacters];
-      for (let i = filteredCharacters.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [filteredCharacters[i], filteredCharacters[j]] = [filteredCharacters[j], filteredCharacters[i]];
-      }
-
-      console.log('📋 Initial filteredCharacters:', filteredCharacters.length);
-      const testChars = filteredCharacters.filter(c => c.name.includes('Emma') || c.name.includes('Sarah') || c.name.includes('Visible'));
-      console.log('🔍 Test characters in filtered:', testChars);
-      console.log('🔍 Test character positions:', testChars.map(c => ({name: c.name, index: filteredCharacters.indexOf(c)})));
-      console.log('🎯 First 5 characters:', filteredCharacters.slice(0, 5).map(c => c.name));
+      // Initial render with shuffled characters
+      applyFilters();
       renderCharacters();
     }
 
@@ -2308,6 +2298,12 @@
         
         return true;
       });
+
+      // Shuffle the filtered characters using Fisher-Yates algorithm
+      for (let i = filteredCharacters.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [filteredCharacters[i], filteredCharacters[j]] = [filteredCharacters[j], filteredCharacters[i]];
+      }
 
       renderCharacters();
       console.log('🔍 Filtered characters:', filteredCharacters.length, '/', allCharacters.length, 'with filters:', currentFilters);
