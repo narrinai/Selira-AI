@@ -1705,10 +1705,16 @@
       <section class="filter-section">
         <!-- Tag Pills Row -->
         <div class="tag-filters" id="tagFilters">
-          <!-- Style dropdown on same line as tags -->
+          <!-- Dynamic tags will be inserted here with All button first -->
+          <div id="dynamicTagFilters" style="display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center;">
+            <!-- Loading placeholder -->
+            <span class="loading-tags" style="font-size: 11px;">Loading tags...</span>
+          </div>
+
+          <!-- Style dropdown after All button -->
           <div class="filter-dropdown" style="display: inline-block;">
-            <button class="dropdown-btn" onclick="toggleDropdown('style')" style="padding: 4px 10px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 16px; font-size: 11px; font-weight: 500; display: inline-flex; align-items: center; gap: 4px;">
-              <span>All</span>
+            <button class="dropdown-btn" id="styleDropdownBtn" onclick="toggleDropdown('style')" style="padding: 4px 10px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 16px; font-size: 11px; font-weight: 500; display: inline-flex; align-items: center; gap: 4px;">
+              <span>Realistic</span>
               <span class="dropdown-arrow" style="font-size: 9px;">▼</span>
             </button>
             <div class="dropdown-menu" id="styleDropdown">
@@ -1716,12 +1722,6 @@
               <a href="#" onclick="setStyleFilter('realistic')">Realistic</a>
               <a href="#" onclick="setStyleFilter('anime')">Anime</a>
             </div>
-          </div>
-
-          <!-- Dynamic tags will be inserted here with All button first -->
-          <div id="dynamicTagFilters" style="display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center;">
-            <!-- Loading placeholder -->
-            <span class="loading-tags" style="font-size: 11px;">Loading tags...</span>
           </div>
         </div>
       </section>
@@ -1747,6 +1747,7 @@
       search: '',
       category: 'all',
       tags: [],
+      style: 'realistic', // Default to realistic
       animated: undefined, // undefined = show all, true = only animated, false = only realistic
       unfiltered: undefined // undefined = show all, true = only unfiltered, false = only safe
     };
@@ -2306,14 +2307,14 @@
       currentFilters.style = style === 'all' ? undefined : style;
 
       // Update button text
-      const dropdownBtn = document.querySelector('.dropdown-btn[onclick*="style"] span:first-child');
+      const dropdownBtn = document.getElementById('styleDropdownBtn');
       if (dropdownBtn) {
         const styleLabels = {
           'all': 'All',
           'realistic': 'Realistic',
           'anime': 'Anime'
         };
-        dropdownBtn.textContent = styleLabels[style] || 'All';
+        dropdownBtn.querySelector('span:first-child').textContent = styleLabels[style] || 'All';
       }
 
       // Hide dropdown
