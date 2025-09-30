@@ -1,4 +1,5 @@
 # Netlify redirects for clean URLs
+/category          /                       301
 /pricing           /pricing.html           200
 /profile           /profile.html           200
 /chat-overview     /chat-overview.html     200
@@ -6,7 +7,6 @@
 /contact           /contact.html           200
 /privacy-policy    /privacy-policy.html    200
 /terms-and-conditions /terms-and-conditions.html 200
-/category          /category.html          200
 /tags              /tags.html              200
 /search-results    /search-results.html    200
 
