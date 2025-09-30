@@ -1726,68 +1726,69 @@
       const hairLength = character.hair_length || character.hairLength || 'medium';
       const artStyle = character.companion_type || character.artStyle || 'realistic';
 
-      // Seductive scenarios that match the romantic/erotic companion style
+      // Shorter, more concise scenarios
       const baseScenarios = [
-        `Send me a picture of ${name} in revealing lingerie, posing seductively on a bed with sultry bedroom eyes and an inviting expression.`,
-        `Send me a picture of ${name} in a tight, low-cut dress, leaning forward with a provocative smile and intense eye contact.`,
-        `Send me a picture of ${name} in the shower, with water cascading down her body, looking back over her shoulder with desire in her eyes.`,
-        `Send me a picture of ${name} in barely-there underwear, stretching sensually with her ${hairLength} ${hairColor} hair flowing and a seductive bite of her lip.`,
-        `Send me a picture of ${name} in a silk robe that's barely covering her, with the fabric slipping off one shoulder and a hungry look in her eyes.`,
-        `Send me a picture of ${name} lying on satin sheets, wearing something incredibly revealing, with a come-hither expression and inviting pose.`
+        `Send me a picture of ${name} in lingerie on a bed`,
+        `Send me a picture of ${name} in a tight dress`,
+        `Send me a picture of ${name} in the shower`,
+        `Send me a picture of ${name} in underwear`,
+        `Send me a picture of ${name} in a silk robe`,
+        `Send me a picture of ${name} lying on satin sheets`,
+        `Send me a picture of`
       ];
 
-      // Seductive tag-specific scenarios that match the erotic companion style
+      // Shorter tag-specific scenarios
       const tagScenarios = {
         'Girlfriend': [
-          `Send me a picture of ${name} in sexy lingerie, lying on our bed with a passionate look in her eyes, reaching out for you to join her.`,
-          `Send me a picture of ${name} wearing just your shirt and nothing else, sitting on the kitchen counter with a playful, seductive smile.`
+          `Send me a picture of ${name} in lingerie on our bed`,
+          `Send me a picture of ${name} wearing just your shirt`
         ],
         'Romance': [
-          `Send me a picture of ${name} in a passionate embrace pose, wearing a low-cut dress that shows off her curves, with intense desire in her eyes.`,
-          `Send me a picture of ${name} in a silk slip dress, lying provocatively on rose petals with a sultry, come-hither expression.`
+          `Send me a picture of ${name} in a low-cut dress`,
+          `Send me a picture of ${name} lying on rose petals`
         ],
         'Cute': [
-          `Send me a picture of ${name} in innocent-looking but revealing underwear, biting her lip playfully with a mischievous twinkle in her eyes.`,
-          `Send me a picture of ${name} in a crop top and tiny shorts, stretching seductively with an adorable yet naughty expression.`
+          `Send me a picture of ${name} in cute underwear`,
+          `Send me a picture of ${name} in a crop top`
         ],
         'Seductive': [
-          `Send me a picture of ${name} in black lace lingerie, posing dominantly on a luxury bed with a predatory, hungry gaze.`,
-          `Send me a picture of ${name} in a see-through negligee, touching herself sensually while giving you an intensely erotic stare.`
+          `Send me a picture of ${name} in black lace lingerie`,
+          `Send me a picture of ${name} in a negligee`
         ],
         'Maid': [
-          `Send me a picture of ${name} in a skimpy maid outfit, bending over provocatively while cleaning, looking back with a naughty smile.`,
-          `Send me a picture of ${name} in a revealing French maid costume, on her knees in a submissive pose with eager, obedient eyes.`
+          `Send me a picture of ${name} in a maid outfit`,
+          `Send me a picture of ${name} in a French maid costume`
         ],
         'Fantasy': [
-          `Send me a picture of ${name} as a sexy elf in barely-there fantasy armor, posing erotically in an enchanted forest clearing.`,
-          `Send me a picture of ${name} as a sultry sorceress in revealing robes, casting love spells with magic swirling around her exposed skin.`
+          `Send me a picture of ${name} as an elf in fantasy armor`,
+          `Send me a picture of ${name} as a sorceress`
         ],
         'Angel': [
-          `Send me a picture of ${name} as a fallen angel in torn white lingerie, her wings spread as she poses seductively with a corrupted smile.`,
-          `Send me a picture of ${name} with angel wings, wearing heavenly white underwear, in a passionate pose that's both divine and sinful.`
+          `Send me a picture of ${name} as a fallen angel`,
+          `Send me a picture of ${name} with angel wings`
         ],
         'Monster': [
-          `Send me a picture of ${name} with her monster features, wearing revealing leather outfit, posing dominantly with predatory desire.`,
-          `Send me a picture of ${name} showing her supernatural side in minimal clothing, with an otherworldly beauty that's irresistibly seductive.`
+          `Send me a picture of ${name} with her monster features`,
+          `Send me a picture of ${name} showing her supernatural side`
         ],
         'Boss': [
-          `Send me a picture of ${name} in a tight business suit with the shirt unbuttoned, sitting on her desk in a position of sexual dominance.`,
-          `Send me a picture of ${name} in professional attire but with revealing elements, commanding you with authoritative yet lustful eyes.`
+          `Send me a picture of ${name} in a business suit`,
+          `Send me a picture of ${name} in professional attire`
         ],
         'Student': [
-          `Send me a picture of ${name} in a sexy schoolgirl outfit, sitting on a desk with her legs crossed, giving you a flirtatious look.`,
-          `Send me a picture of ${name} in a modified school uniform that's much more revealing, posing innocently yet suggestively after class.`
+          `Send me a picture of ${name} in a schoolgirl outfit`,
+          `Send me a picture of ${name} in a school uniform`
         ],
         'Teacher': [
-          `Send me a picture of ${name} in a tight teacher outfit with a low neckline, leaning over a desk in a position that shows off her assets.`,
-          `Send me a picture of ${name} in professional attire that hugs her curves, pointing at you with a stern but sexually charged expression.`
+          `Send me a picture of ${name} in a teacher outfit`,
+          `Send me a picture of ${name} in professional attire`
         ]
       };
 
-      // Art style specific additions
+      // No art style additions - keep prompts short
       const artStyleAdditions = {
-        'anime': ' in beautiful anime art style with vibrant colors and detailed animation quality',
-        'realistic': ' in photorealistic style with natural lighting and detailed features'
+        'anime': '',
+        'realistic': ''
       };
 
       // Build suggestions array
