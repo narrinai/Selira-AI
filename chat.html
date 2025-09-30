@@ -2063,7 +2063,7 @@
 
       // Check if this is an image request
       if (message.toLowerCase().startsWith('send me a picture')) {
-        // Clear input immediately
+        // Clear input immediately before processing (v2 - cache buster)
         messageInput.value = '';
         autoResizeTextarea();
         await handleImageRequest(message);
