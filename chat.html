@@ -4000,10 +4000,10 @@
       // Build character appearance
       const characterAppearance = `${ethnicityDesc}, ${hairLengthDesc}, ${hairColorDesc}`;
 
-      // Build simplified prompt for faster generation
+      // Build optimized prompt for reliable generation
       const fullPrompt = characterStyle === 'anime'
-        ? `anime portrait, ${characterAppearance}, wearing ${stylishClothing}, anime style, high quality`
-        : `portrait photo, ${characterAppearance}, wearing ${stylishClothing}, professional photography`;
+        ? `anime portrait of attractive character, ${characterAppearance}, wearing ${stylishClothing}, detailed anime art style, high quality illustration, vibrant colors, clean background`
+        : `professional portrait photograph, attractive person, ${characterAppearance}, wearing ${stylishClothing}, photorealistic, soft lighting, high quality photo, clean background`;
       
       // Add user message
       addMessage(message, 'user');
