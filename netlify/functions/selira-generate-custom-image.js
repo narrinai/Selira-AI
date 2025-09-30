@@ -321,8 +321,9 @@ exports.handler = async (event, context) => {
     console.log(`🎨 [${requestId}] Full prompt:`, fullPrompt);
     console.log(`🎌 [${requestId}] Anime style:`, isAnimeStyle);
 
-    // Use SDXL Lightning for fast and reliable generation (2-4 seconds)
-    const modelVersion = "bytedance/sdxl-lightning-4step:5599ed30703defd1d160a25a63321b4dec97101d98b4674bcc56e41f62f35637";
+    // Use Flux Dev for uncensored high-quality generation
+    // Flux Dev has no NSFW filter and produces high quality realistic/anime images
+    const modelVersion = "black-forest-labs/flux-dev:d2a9c3e3ebc2fefc0f33d8c6fde00b7e46f40c394f7f0ef81aa8bf7495788b6c";
 
     // Add progressive delay to prevent rate limiting
     // More requests = longer delay
@@ -354,9 +355,11 @@ exports.handler = async (event, context) => {
             prompt: fullPrompt,
             width: 1024,
             height: 1024,
-            num_inference_steps: 4,
-            guidance_scale: 0,
-            seed: Math.floor(Math.random() * 100000)
+            num_inference_steps: 28,
+            guidance_scale: 3.5,
+            num_outputs: 1,
+            output_format: "webp",
+            output_quality: 90
           }
         })
       });
@@ -397,10 +400,10 @@ exports.handler = async (event, context) => {
       throw new Error('Invalid response from Replicate API');
     }
     
-    // Wait for the prediction to complete (max 30 seconds for custom prompts)
+    // Wait for the prediction to complete (max 60 seconds for Flux Dev)
     let result = prediction;
     let attempts = 0;
-    const maxAttempts = 30;
+    const maxAttempts = 60;
     
     while (result.status !== 'succeeded' && result.status !== 'failed' && attempts < maxAttempts) {
       await new Promise(resolve => setTimeout(resolve, 1000));
