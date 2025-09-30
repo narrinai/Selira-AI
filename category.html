@@ -345,11 +345,11 @@
 
     .dropdown-menu a {
       display: block;
-      padding: 8px 14px;
+      padding: 8px 12px;
       color: var(--text-primary);
       text-decoration: none;
-      font-size: 13px;
-      font-weight: 400;
+      font-size: 11px;
+      font-weight: 500;
       transition: all 0.2s ease;
       border-bottom: 1px solid var(--border);
     }
@@ -452,6 +452,23 @@
     .dropdown-arrow {
       font-size: 9px;
       color: var(--text-secondary);
+    }
+
+    /* Green style for style filter button */
+    .style-filter-btn {
+      background: #10b981 !important;
+      color: white !important;
+      border-color: #10b981 !important;
+    }
+
+    .style-filter-btn:hover {
+      background: #059669 !important;
+      color: white !important;
+      border-color: #059669 !important;
+    }
+
+    .style-filter-btn .dropdown-arrow {
+      color: white !important;
     }
 
     .tag-pill.category {
@@ -1706,15 +1723,9 @@
       <section class="filter-section">
         <!-- Tag Pills Row - all on same line -->
         <div class="tag-filters" id="tagFilters">
-          <!-- Dynamic tags will be inserted here with All button first -->
-          <div id="dynamicTagFilters" style="display: contents;">
-            <!-- Loading placeholder -->
-            <span class="loading-tags" style="font-size: 11px;">Loading tags...</span>
-          </div>
-
-          <!-- Style dropdown after All button - same styling as tags -->
+          <!-- Style dropdown FIRST - green styling -->
           <div class="filter-dropdown">
-            <button class="dropdown-btn" id="styleDropdownBtn" onclick="toggleDropdown('style')">
+            <button class="dropdown-btn style-filter-btn" id="styleDropdownBtn" onclick="toggleDropdown('style')">
               <span>Realistic</span>
               <span class="dropdown-arrow">▼</span>
             </button>
@@ -1723,6 +1734,12 @@
               <a href="#" onclick="setStyleFilter('realistic')">Realistic</a>
               <a href="#" onclick="setStyleFilter('anime')">Anime</a>
             </div>
+          </div>
+
+          <!-- Dynamic tags will be inserted here with All button first -->
+          <div id="dynamicTagFilters" style="display: contents;">
+            <!-- Loading placeholder -->
+            <span class="loading-tags" style="font-size: 11px;">Loading tags...</span>
           </div>
         </div>
       </section>
