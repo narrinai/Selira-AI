@@ -4312,29 +4312,36 @@
       fullscreenModal.style.cssText = `
         position: fixed; top: 0; left: 0; right: 0; bottom: 0;
         background: rgba(0,0,0,0.9); z-index: 3000;
-        display: flex; align-items: center; justify-content: center;
+        overflow-y: auto; overflow-x: hidden;
         backdrop-filter: blur(8px);
+        padding: 40px 20px;
       `;
-      
+
       fullscreenModal.innerHTML = `
-        <div style="position: relative; max-width: 90vw; max-height: 90vh;">
-          <img src="${imageUrl}" alt="Generated image" style="
-            max-width: 100%; max-height: 100%; border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-          ">
-          <div style="
-            position: absolute; bottom: -40px; left: 0; right: 0; text-align: center;
-            color: white; font-size: 14px; background: rgba(0,0,0,0.7); 
-            padding: 8px; border-radius: 8px;
-          ">"${prompt}"</div>
-          <button onclick="this.parentElement.parentElement.remove()" style="
-            position: absolute; top: -40px; right: 0; background: rgba(255,255,255,0.9); 
-            border: none; border-radius: 50%; width: 32px; height: 32px; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; font-size: 18px;
-          ">&times;</button>
+        <div style="
+          position: relative; max-width: 90vw; margin: 0 auto;
+          display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 80px);
+        ">
+          <div style="position: relative;">
+            <img src="${imageUrl}" alt="Generated image" style="
+              max-width: 90vw; max-height: 90vh; border-radius: 12px;
+              box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            ">
+            <div style="
+              margin-top: 16px; text-align: center;
+              color: white; font-size: 14px; background: rgba(0,0,0,0.7);
+              padding: 8px; border-radius: 8px;
+            ">"${prompt}"</div>
+            <button onclick="this.parentElement.parentElement.parentElement.remove()" style="
+              position: fixed; top: 20px; right: 20px; background: rgba(255,255,255,0.9);
+              border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer;
+              display: flex; align-items: center; justify-content: center; font-size: 24px;
+              z-index: 3001;
+            ">&times;</button>
+          </div>
         </div>
       `;
-      
+
       document.body.appendChild(fullscreenModal);
       fullscreenModal.addEventListener('click', (e) => {
         if (e.target === fullscreenModal) fullscreenModal.remove();
