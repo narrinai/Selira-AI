@@ -294,16 +294,9 @@
 
     /* Filter Section */
     .filter-section {
-      padding: 20px 30px;
+      padding: 16px 30px;
       background: var(--bg-secondary);
       border-bottom: 1px solid var(--border-light);
-    }
-
-    .filter-row {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      margin-bottom: 15px;
     }
 
     .filter-dropdown {
@@ -412,7 +405,18 @@
     .tag-filters {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .filter-dropdown {
+      position: relative;
+    }
+
+    #dynamicTagFilters {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 8px;
       align-items: center;
     }
 
@@ -1717,11 +1721,11 @@
 
       <!-- Filter Section -->
       <section class="filter-section">
-        <!-- Filter Dropdowns Row -->
-        <div class="filter-row">
-
-          <div class="filter-dropdown">
-            <button class="dropdown-btn" onclick="toggleDropdown('style')">
+        <!-- Tag Pills Row -->
+        <div class="tag-filters" id="tagFilters">
+          <!-- Style dropdown placed before All button -->
+          <div class="filter-dropdown" style="display: inline-block;">
+            <button class="dropdown-btn" onclick="toggleDropdown('style')" style="padding: 6px 14px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 20px; font-size: 13px;">
               <span>All</span>
               <span class="dropdown-arrow">▼</span>
             </button>
@@ -1732,22 +1736,11 @@
             </div>
           </div>
 
-          <div style="margin-left: auto;">
-            <div class="toggle-switch">
-              <span style="color: var(--accent-primary); font-weight: 600;">Unfiltered</span>
-              <div class="switch active" id="unfilteredToggle" onclick="toggleSwitch('unfiltered')"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tag Pills Row -->
-        <div class="tag-filters" id="tagFilters">
           <!-- Dynamic tags will be inserted here with All button first -->
-          <div id="dynamicTagFilters">
+          <div id="dynamicTagFilters" style="display: inline-flex; gap: 12px; align-items: center;">
             <!-- Loading placeholder -->
             <span class="loading-tags">Loading tags...</span>
           </div>
-          <a href="#" class="tag-pill special">Unfiltered</a>
           <button class="more-tags-btn">All tags</button>
         </div>
       </section>
@@ -2372,14 +2365,7 @@
 
     function updateToggleStates() {
       const animatedToggle = document.getElementById('animatedToggle');
-      const unfilteredToggle = document.getElementById('unfilteredToggle');
-      
-      if (animatedToggle) {
-        animatedToggle.classList.toggle('active', currentFilters.animated === true);
-      }
-      if (unfilteredToggle) {
-        unfilteredToggle.classList.toggle('active', currentFilters.unfiltered === true);
-      }
+      // Unfiltered toggle removed from UI
     }
 
     function openCharacter(slug) {
@@ -4622,7 +4608,7 @@ Please be thorough and include important details from our conversations.`;
       const filteredTags = tags
         .filter(tag => !systemTags.includes(tag))
         .filter(tag => tag && tag.length > 0 && tag.trim() !== '')
-        .slice(0, 15); // Show max 15 relevant tags
+        .slice(0, 20); // Show max 20 relevant tags (increased from 15)
 
       // Create tag pills with "All" button first
       const allButton = '<a href="#" class="tag-pill active" data-tag="all">All</a>';

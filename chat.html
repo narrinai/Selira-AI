@@ -2642,6 +2642,7 @@
             creator: char.Nickname || 'Selira',
             tags: Array.isArray(char.Tags) ? char.Tags.slice(0, 11) : (char.Tags || '').toString().split(',').filter(Boolean).slice(0, 11), // Get real tags
             character_url: char.Character_URL ? char.Character_URL.replace('narrin.ai', 'selira.ai') : null,
+            greeting: char.Greeting || char.greeting, // Add greeting field
             // Add appearance data
             companion_type: char.companion_type,
             sex: char.sex,
@@ -2912,8 +2913,30 @@
           const response = await fetch(`/.netlify/functions/selira-characters-fetch?slug=${slug}`);
           if (response.ok) {
             const data = await response.json();
-            if (data.characters && data.characters.length > 0) {
-              character = data.characters[0];
+            if (data.success && data.characters && data.characters.length > 0) {
+              const airtableChar = data.characters[0];
+              // Map Airtable format to local format
+              character = {
+                id: airtableChar.Character_ID || airtableChar.Name,
+                name: airtableChar.Name || 'Unknown',
+                title: airtableChar.Character_Title || '',
+                description: airtableChar.Character_Description || '',
+                avatar: airtableChar.Avatar_URL ? airtableChar.Avatar_URL.replace('narrin.ai', 'selira.ai') : null,
+                category: airtableChar.Category || 'Other',
+                slug: airtableChar.Slug || slug,
+                creator: airtableChar.Nickname || airtableChar.Created_by || 'Selira',
+                tags: Array.isArray(airtableChar.Tags) ? airtableChar.Tags.slice(0, 11) : (airtableChar.Tags || '').toString().split(',').filter(Boolean).slice(0, 11),
+                greeting: airtableChar.Greeting || airtableChar.Conversation_Starter,
+                // Appearance data
+                companion_type: airtableChar.companion_type,
+                sex: airtableChar.sex,
+                ethnicity: airtableChar.ethnicity,
+                hair_length: airtableChar.hair_length,
+                hair_color: airtableChar.hair_color,
+                age: airtableChar.age,
+                personality: airtableChar.personality,
+                prompt: airtableChar.prompt
+              };
             }
           }
         } catch (error) {
@@ -2924,16 +2947,16 @@
       if (character) {
         // Update current character
         currentCharacter = {
-          name: character.name,
-          slug: character.slug,
-          avatar: character.avatar,
-          title: character.title || character.description,
-          description: character.description,
-          greeting: character.greeting || `Hello! I'm ${character.name}. ${character.description}`,
-          creator: character.creator || '@Selira',
-          chats: getMessageCount(character.slug),
+          name: character.name || character.Name,
+          slug: character.slug || character.Slug,
+          avatar: character.avatar || character.Avatar_URL,
+          title: character.title || character.Character_Title || character.description,
+          description: character.description || character.Character_Description,
+          greeting: character.greeting || character.Greeting || character.Conversation_Starter || extractGreetingFromDescription(character.description) || `Hello! I'm ${character.name}. ${character.description}`,
+          creator: character.creator || character.Nickname || '@Selira',
+          chats: getMessageCount(character.slug || character.Slug),
           rating: character.rating || '4.5',
-          tags: character.tags || [],
+          tags: character.tags || character.Tags || [],
           voice: character.voice || '',
           // Include ALL appearance properties for image generation (check both cases)
           category: character.category || character.Category,
@@ -2953,8 +2976,8 @@
         // Update UI
         updateCharacterDisplay();
 
-        // Refresh sidebar to show updated character info
-        displayCompanionChats();
+        // Update URL
+        updateUrlForCharacter(slug);
 
         // Load chat history
         loadChatHistoryFromStorage(slug);
@@ -2963,6 +2986,9 @@
         document.querySelectorAll('.chat-item').forEach(item => {
           item.classList.toggle('active', item.dataset.slug === slug);
         });
+
+        // Refresh sidebar to reflect any changes
+        updateActiveChatsSidebar();
 
         // Close sidebar on mobile
         if (window.innerWidth <= 768) {
