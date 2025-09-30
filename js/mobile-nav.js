@@ -122,10 +122,6 @@ function createMobileNav() {
             <span class="menu-icon">➕</span>
             <span>Create</span>
           </a>
-          <a href="/memory-import" class="mobile-menu-link">
-            <span class="menu-icon">📋</span>
-            <span>Memory Import</span>
-          </a>
           <div class="mobile-menu-divider"></div>
           <a href="/profile" class="mobile-menu-link">
             <span class="menu-icon">👤</span>
