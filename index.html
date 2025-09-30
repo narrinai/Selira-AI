@@ -1106,6 +1106,21 @@
       }
     }
 
+    function extractGreeting(description) {
+      if (!description) return 'Chat with this unique AI companion';
+
+      // Try to extract greeting from description
+      const greetingMatch = description.match(/Greeting:\s*(.+?)(?:\n\n|\n[A-Z]|$)/s);
+      if (greetingMatch) {
+        // Remove asterisks and clean up
+        return greetingMatch[1].replace(/\*/g, '').trim().substring(0, 150) + '...';
+      }
+
+      // Fallback to first part of description
+      const firstLine = description.split('\\n')[0];
+      return firstLine.substring(0, 100) + (firstLine.length > 100 ? '...' : '');
+    }
+
     function renderCarousel() {
       const track = document.getElementById('carouselTrack');
       const controls = document.getElementById('carouselControls');
@@ -1132,7 +1147,7 @@
                    loading="lazy">
               <div class="companion-info">
                 <h3 class="companion-name">${companion.name || 'AI Companion'}</h3>
-                <p class="companion-description">${companion.description || 'Chat with this unique AI companion'}</p>
+                <p class="companion-description">${extractGreeting(companion.description)}</p>
               </div>
             </a>
           `).join('')}
