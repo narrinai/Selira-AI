@@ -48,30 +48,10 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    console.log('🏷️ Fetching all available tags...');
+    console.log('🏷️ Fetching tags from companions...');
 
-    // Return all available tags that should be selectable
-    const allAvailableTags = [
-      'Girlfriend', 'Boyfriend', 'Ex', 'Romance', 'Companion', 'Fantasy', 'Flirty',
-      'Cute', 'Seductive', 'Submissive', 'Tsundere', 'Yandere', 'Maid', 'Boss',
-      'Student', 'Secretary', 'Teacher', 'Angel', 'Elf', 'Monster', 'Lesbian', 'Cheating'
-    ];
-
-    console.log('✅ Returning all available tags:', {
-      total: allAvailableTags.length,
-      tags: allAvailableTags
-    });
-
-    return {
-      statusCode: 200,
-      headers,
-      body: JSON.stringify({
-        success: true,
-        tags: allAvailableTags,
-        total: allAvailableTags.length,
-        source: 'predefined_all_tags'
-      })
-    };
+    // Extract tags from actual companions to only show tags that have characters
+    return await extractTagsFromCharacters(AIRTABLE_BASE_ID, AIRTABLE_TOKEN, headers);
 
   } catch (error) {
     console.error('❌ Tags fetch error:', error);
@@ -103,55 +83,64 @@ async function extractTagsFromCharacters(baseId, token, headers) {
     console.log('🔍 Extracting tags from Characters table...');
     console.log('🔑 Using baseId:', baseId ? baseId.substring(0, 8) + '...' : 'none');
 
-    let url = `https://api.airtable.com/v0/${baseId}/Characters?maxRecords=100`;
     let allTags = new Set();
     let recordCount = 0;
+    let offset = null;
 
-    // Fetch characters to extract tags (limit to avoid timeouts)
-    const response = await fetch(url, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
+    // Fetch all characters with pagination to get all tags
+    do {
+      let url = `https://api.airtable.com/v0/${baseId}/Characters?filterByFormula=OR({Visibility}="public",{Visibility}="",NOT({Visibility}))`;
+      if (offset) {
+        url += `&offset=${offset}`;
       }
-    });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('❌ Characters API error:', response.status, errorText);
-      throw new Error(`Failed to fetch characters: ${response.status} - ${errorText}`);
-    }
-
-    const data = await response.json();
-    console.log('📊 Characters response:', {
-      recordCount: data.records?.length || 0,
-      hasOffset: !!data.offset
-    });
-
-    // Extract tags from each character
-    if (data.records && Array.isArray(data.records)) {
-      data.records.forEach(record => {
-        recordCount++;
-        const tags = record.fields?.Tags;
-        if (tags) {
-          if (Array.isArray(tags)) {
-            // If tags is an array
-            tags.forEach(tag => {
-              if (tag && typeof tag === 'string') {
-                allTags.add(tag.trim());
-              }
-            });
-          } else if (typeof tags === 'string') {
-            // If tags is a comma-separated string
-            tags.split(',').forEach(tag => {
-              const cleanTag = tag.trim();
-              if (cleanTag) {
-                allTags.add(cleanTag);
-              }
-            });
-          }
+      const response = await fetch(url, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
         }
       });
-    }
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('❌ Characters API error:', response.status, errorText);
+        throw new Error(`Failed to fetch characters: ${response.status} - ${errorText}`);
+      }
+
+      const data = await response.json();
+      console.log('📊 Characters response:', {
+        recordCount: data.records?.length || 0,
+        hasOffset: !!data.offset
+      });
+
+      // Extract tags from each character
+      if (data.records && Array.isArray(data.records)) {
+        data.records.forEach(record => {
+          recordCount++;
+          const tags = record.fields?.Tags;
+          if (tags) {
+            if (Array.isArray(tags)) {
+              // If tags is an array
+              tags.forEach(tag => {
+                if (tag && typeof tag === 'string') {
+                  allTags.add(tag.trim());
+                }
+              });
+            } else if (typeof tags === 'string') {
+              // If tags is a comma-separated string
+              tags.split(',').forEach(tag => {
+                const cleanTag = tag.trim();
+                if (cleanTag) {
+                  allTags.add(cleanTag);
+                }
+              });
+            }
+          }
+        });
+      }
+
+      offset = data.offset;
+    } while (offset);
 
     const tagsArray = Array.from(allTags).filter(tag => tag && tag.length > 0).sort();
 
