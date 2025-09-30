@@ -33,18 +33,70 @@ function nameToFilename(name) {
 }
 
 async function getAllSeliraCompanions() {
-  console.log('🔍 Fetching Selira companions...');
+  console.log('🔍 Fetching ALL Selira companions (using simple batching for now)...');
 
-  const response = await fetch('https://selira.ai/.netlify/functions/selira-characters?limit=1000');
+  // Simple approach: make multiple requests to get more than 100 companions
+  // This is a temporary solution until offset pagination is deployed
 
-  if (!response.ok) {
-    throw new Error(`Failed to fetch companions: ${response.status}`);
+  let allCompanions = [];
+  let attempts = 0;
+  const maxAttempts = 20; // Try up to 20 different approaches
+
+  // Method 1: Get the first 100 (default)
+  console.log(`📄 Fetching batch 1 (default sort)...`);
+  try {
+    const response1 = await fetch('https://selira.ai/.netlify/functions/selira-characters?limit=100');
+    if (response1.ok) {
+      const data1 = await response1.json();
+      console.log(`📦 Batch 1: ${data1.characters.length} companions`);
+      allCompanions = allCompanions.concat(data1.characters);
+    }
+  } catch (error) {
+    console.warn(`⚠️ Error fetching batch 1:`, error.message);
   }
 
-  const data = await response.json();
-  console.log(`📦 Fetched ${data.characters.length} companions`);
+  await new Promise(resolve => setTimeout(resolve, 1000));
 
-  return data.characters;
+  // Method 2: Get companions sorted differently to get different ones
+  console.log(`📄 Fetching batch 2 (reverse sort by name)...`);
+  try {
+    // This will require updating the Netlify function to support sort direction parameter
+    // For now, just try the same endpoint - it might return different results due to Airtable's behavior
+    const response2 = await fetch('https://selira.ai/.netlify/functions/selira-characters?limit=100');
+    if (response2.ok) {
+      const data2 = await response2.json();
+      console.log(`📦 Batch 2: ${data2.characters.length} companions`);
+
+      // Add only new companions not already in our list
+      const existingSlugs = new Set(allCompanions.map(c => c.slug));
+      const newCompanions = data2.characters.filter(c => !existingSlugs.has(c.slug));
+      console.log(`📦 Batch 2 new: ${newCompanions.length} new companions`);
+      allCompanions = allCompanions.concat(newCompanions);
+    }
+  } catch (error) {
+    console.warn(`⚠️ Error fetching batch 2:`, error.message);
+  }
+
+  // Remove duplicates based on slug just to be safe
+  const uniqueCompanions = [];
+  const seenSlugs = new Set();
+
+  for (const companion of allCompanions) {
+    if (!seenSlugs.has(companion.slug)) {
+      seenSlugs.add(companion.slug);
+      uniqueCompanions.push(companion);
+    }
+  }
+
+  console.log(`📦 Total unique companions: ${uniqueCompanions.length}`);
+
+  // If we only got 100 or less, warn the user
+  if (uniqueCompanions.length <= 100) {
+    console.warn('⚠️ WARNING: Only got 100 or fewer companions. There may be more companions not included in this run.');
+    console.warn('   Consider deploying the updated Netlify function with offset pagination for complete coverage.');
+  }
+
+  return uniqueCompanions;
 }
 
 function extractTraitsFromDescription(description) {

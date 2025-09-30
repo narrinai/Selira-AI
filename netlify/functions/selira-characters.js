@@ -43,7 +43,7 @@ exports.handler = async (event, context) => {
     console.log('Base ID:', SELIRA_BASE_ID);
 
     // Get query parameters
-    const { limit = 50, category, slug } = event.queryStringParameters || {};
+    const { limit = 50, category, slug, offset } = event.queryStringParameters || {};
 
     // Build Airtable URL
     let url = `https://api.airtable.com/v0/${SELIRA_BASE_ID}/Characters`;
@@ -59,6 +59,11 @@ exports.handler = async (event, context) => {
     params.append('maxRecords', limit);
     params.append('sort[0][field]', 'Name');
     params.append('sort[0][direction]', 'asc');
+
+    // Add offset for pagination
+    if (offset) {
+      params.append('offset', offset);
+    }
 
     if (params.toString()) {
       url += '?' + params.toString();
@@ -100,7 +105,8 @@ exports.handler = async (event, context) => {
       body: JSON.stringify({
         success: true,
         total: characters.length,
-        characters: characters
+        characters: characters,
+        offset: data.offset // Include offset for pagination
       })
     };
 
