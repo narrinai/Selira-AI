@@ -138,15 +138,10 @@
 
     /* Tags Bar */
     .tags-bar {
-      position: fixed;
-      top: 72px;
-      left: 0;
-      right: 0;
-      background: rgba(10, 10, 10, 0.95);
-      backdrop-filter: blur(10px);
+      background: var(--bg-primary);
+      border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
-      z-index: 999;
-      padding: 12px 32px;
+      padding: 20px 32px;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
@@ -198,7 +193,7 @@
       display: flex;
       align-items: center;
       background: var(--gradient-hero);
-      padding: 150px 32px 80px;
+      padding: 120px 32px 80px;
       position: relative;
       overflow: hidden;
     }
@@ -903,6 +898,37 @@
     </div>
   </header>
 
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-container">
+      <div class="hero-content">
+        <h1>Your Perfect <span class="highlight">AI Companion</span> Awaits</h1>
+        <p>Discover thousands of unique AI personalities. From romantic girlfriends to mysterious characters, find your ideal companion and start meaningful conversations today.</p>
+
+
+        <div class="hero-actions">
+          <a href="/category" class="primary-btn">Start Chatting Now</a>
+          <a href="/category" class="secondary-btn">Explore Companions</a>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="hero-companions">
+          <div class="carousel-container">
+            <button class="carousel-arrow prev" onclick="moveCarousel(-1)">‹</button>
+            <div class="carousel-track" id="carouselTrack">
+              <!-- Companions will be loaded here dynamically -->
+            </div>
+            <button class="carousel-arrow next" onclick="moveCarousel(1)">›</button>
+          </div>
+          <div class="carousel-controls" id="carouselControls">
+            <!-- Dots will be added here dynamically -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Tags Bar -->
   <div class="tags-bar">
     <div class="tags-row">
@@ -968,37 +994,6 @@
       </a>
     </div>
   </div>
-
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="hero-container">
-      <div class="hero-content">
-        <h1>Your Perfect <span class="highlight">AI Companion</span> Awaits</h1>
-        <p>Discover thousands of unique AI personalities. From romantic girlfriends to mysterious characters, find your ideal companion and start meaningful conversations today.</p>
-
-
-        <div class="hero-actions">
-          <a href="/category" class="primary-btn">Start Chatting Now</a>
-          <a href="/category" class="secondary-btn">Explore Companions</a>
-        </div>
-      </div>
-
-      <div class="hero-visual">
-        <div class="hero-companions">
-          <div class="carousel-container">
-            <button class="carousel-arrow prev" onclick="moveCarousel(-1)">‹</button>
-            <div class="carousel-track" id="carouselTrack">
-              <!-- Companions will be loaded here dynamically -->
-            </div>
-            <button class="carousel-arrow next" onclick="moveCarousel(1)">›</button>
-          </div>
-          <div class="carousel-controls" id="carouselControls">
-            <!-- Dots will be added here dynamically -->
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- Footer -->
   <footer class="footer">
