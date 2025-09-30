@@ -3875,6 +3875,29 @@
     }
 
 
+    // Stylish clothing options for companion avatars - extremely explicit
+    function getStylishClothing(style, category = 'default') {
+      const categoryClothing = {
+        anime: {
+          female: ['extremely revealing school uniform', 'micro bikini', 'ultra-short kimono', 'barely-there top', 'almost naked maid outfit', 'tiny lingerie set', 'string bikini', 'see-through outfit', 'exposed breasts lingerie', 'topless with mini skirt', 'transparent clothing', 'nipple-revealing top']
+        },
+        default: {
+          female: ['ultra-revealing lingerie', 'micro string bikini', 'see-through dress', 'topless with tiny shorts', 'exposed breasts outfit', 'barely covered privates', 'transparent lingerie', 'nipple-revealing top', 'almost completely naked', 'tiny thong bikini', 'exposed cleavage outfit']
+        }
+      };
+
+      // Find matching category or use default
+      let clothingOptions = categoryClothing.default;
+
+      if (categoryClothing[style]) {
+        clothingOptions = categoryClothing[style];
+      }
+
+      // Select female clothing (since all companions are female)
+      const femaleClothing = clothingOptions.female || categoryClothing.default.female;
+      return femaleClothing[Math.floor(Math.random() * femaleClothing.length)];
+    }
+
     async function handleImageRequest(message) {
       // Check if we're already generating an image
       if (isGeneratingImage) {
@@ -3927,7 +3950,63 @@
 
       // Extract the prompt part after "send me a picture"
       const promptPart = message.substring('send me a picture'.length).trim();
-      const fullPrompt = promptPart || 'beautiful portrait';
+
+      // Detect character style from companion_type field, fallback to Category
+      const characterStyle = currentCharacter.companion_type ||
+                             (currentCharacter.category === 'anime-manga' ? 'anime' : 'realistic');
+
+      // Get character traits
+      const characterSex = currentCharacter.sex || 'female';
+      const characterEthnicity = currentCharacter.ethnicity || 'white';
+      const characterHairLength = currentCharacter.hair_length || 'medium';
+      const characterHairColor = currentCharacter.hair_color || 'brown';
+
+      // Get random sexy clothing
+      const stylishClothing = getStylishClothing(characterStyle);
+
+      // Ethnicity descriptions
+      const ethnicityMap = {
+        'white': 'Caucasian/European features',
+        'black': 'African/Black features',
+        'indian': 'South Asian/Indian features',
+        'middle-east': 'Middle Eastern features',
+        'hispanic': 'Hispanic/Latino features',
+        'korean': 'Korean features',
+        'chinese': 'Chinese features',
+        'japanese': 'Japanese features',
+        'vietnamese': 'Vietnamese features'
+      };
+
+      // Hair length descriptions
+      const hairMap = {
+        'short': 'short hair',
+        'medium': 'medium length hair, shoulder-length hair',
+        'long': 'long hair, flowing hair'
+      };
+
+      // Hair color descriptions
+      const hairColorMap = {
+        'brown': 'brown hair',
+        'black': 'black hair',
+        'blonde': 'blonde hair, golden hair',
+        'red': 'red hair, ginger hair',
+        'auburn': 'auburn hair, reddish-brown hair',
+        'gray': 'gray hair, silver hair',
+        'white': 'white hair, platinum hair',
+        'purple': 'purple hair, violet hair'
+      };
+
+      const ethnicityDesc = ethnicityMap[characterEthnicity] || 'diverse features';
+      const hairLengthDesc = hairMap[characterHairLength] || 'styled hair';
+      const hairColorDesc = hairColorMap[characterHairColor] || 'brown hair';
+
+      // Build character appearance
+      const characterAppearance = `${ethnicityDesc}, ${hairLengthDesc}, ${hairColorDesc}`;
+
+      // Build explicit prompt like bulk script with companion traits
+      const fullPrompt = characterStyle === 'anime'
+        ? `beautiful anime girl, very attractive face, extremely seductive expression, detailed anime art, very erotic pose, wearing ${stylishClothing}, ${characterAppearance}, anime style, vibrant colors, high quality anime artwork, detailed facial features, anime eyes, perfect anatomy, correct human anatomy, two arms, two hands, very sensual pose, large breasts, curvy figure, big butt, voluptuous body, exposed skin, revealing clothing, single character, solo, no extra limbs, proper proportions, bedroom background, intimate setting, seductive atmosphere`
+        : `beautiful woman, attractive face, seductive expression, alluring pose, wearing ${stylishClothing}, ${characterAppearance}, photorealistic, professional photography, soft romantic lighting, glamour photography style, eye contact, sharp focus, attractive model, confident pose, single person, solo, perfect human anatomy, two arms, two hands, correct proportions, no extra limbs, bedroom background, beach setting, luxury suite, intimate atmosphere`;
       
       // Add user message
       addMessage(message, 'user');
