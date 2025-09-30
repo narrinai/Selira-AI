@@ -3959,11 +3959,15 @@
       const characterHairLength = currentCharacter.hair_length || 'medium';
       const characterHairColor = currentCharacter.hair_color || 'brown';
 
-      // Get random sexy clothing - this is the only thing we send to the backend
-      const stylishClothing = getStylishClothing(characterStyle);
-
-      // The backend will build the full prompt with character traits
-      const simplePrompt = stylishClothing;
+      // Use the full user prompt if provided, otherwise get random sexy clothing
+      let simplePrompt;
+      if (promptPart && promptPart.length > 0) {
+        // User provided specific prompt - use it fully without filtering
+        simplePrompt = promptPart;
+      } else {
+        // No specific prompt - use random sexy clothing
+        simplePrompt = getStylishClothing(characterStyle);
+      }
       
       // Add user message
       addMessage(message, 'user');
