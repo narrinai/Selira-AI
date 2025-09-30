@@ -1985,6 +1985,7 @@
           
           console.log('✅ Loaded characters:', allCharacters.length);
           console.log('🔍 Sample character names:', allCharacters.slice(-5).map(c => c.name));
+          console.log('🔍 Sample character tags:', allCharacters.slice(0, 10).map(c => ({name: c.name, tags: c.tags})));
           console.log('🔍 New test characters:', allCharacters.filter(c => c.name.includes('Emma') || c.name.includes('Sarah') || c.name.includes('Visible')));
         } else {
           throw new Error('Invalid API response');
@@ -2268,8 +2269,8 @@
           // Debug logging for elf tag
           if (currentFilters.tags.some(t => t.toLowerCase().includes('elf'))) {
             console.log('🔍 DEBUG - Character:', character.name,
-                       '| Character tags:', character.tags,
-                       '| Filter tags:', currentFilters.tags,
+                       '| Character tags:', JSON.stringify(character.tags),
+                       '| Filter tags:', JSON.stringify(currentFilters.tags),
                        '| Match:', hasMatchingTag);
           }
 
