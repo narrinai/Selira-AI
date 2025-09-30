@@ -2117,15 +2117,20 @@
     // ===== TAG PROCESSING FUNCTIONS =====
     function processTags(tagsField) {
       if (!tagsField) return [];
-      
+
       // Handle different tag formats
       if (Array.isArray(tagsField)) {
         return tagsField;
       } else if (typeof tagsField === 'string') {
         // Split by comma and clean up
-        return tagsField.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
+        const tags = tagsField.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
+        // Debug: log if this contains 'elf' tag
+        if (tags.some(t => t.toLowerCase().includes('elf'))) {
+          console.log('🔍 Found character with elf-related tag:', tags);
+        }
+        return tags;
       }
-      
+
       return [];
     }
 
@@ -2147,19 +2152,31 @@
     }
 
     function applyTagFilters() {
+      console.log('🔍 TAG FILTER DEBUG - Active tags:', activeTags);
+      console.log('🔍 TAG FILTER DEBUG - Total characters:', allCharacters.length);
+
       if (activeTags.length === 0) {
         filteredCharacters = [...allCharacters];
       } else {
         filteredCharacters = allCharacters.filter(character => {
           // Character must have ALL active tags (AND logic)
-          return activeTags.every(activeTag => 
-            character.tags.some(characterTag => 
+          const hasAllTags = activeTags.every(activeTag =>
+            character.tags.some(characterTag =>
               characterTag.toLowerCase() === activeTag.toLowerCase()
             )
           );
+
+          // Debug logging for specific problematic tags
+          if (activeTags.some(tag => tag.toLowerCase() === 'elf')) {
+            console.log('🔍 Character:', character.name, '| Tags:', character.tags, '| Match:', hasAllTags);
+          }
+
+          return hasAllTags;
         });
       }
-      
+
+      console.log('🔍 TAG FILTER DEBUG - Filtered characters:', filteredCharacters.length);
+
       // Sort alphabetically
       filteredCharacters.sort((a, b) => a.name.localeCompare(b.name));
       currentPage = 1;
