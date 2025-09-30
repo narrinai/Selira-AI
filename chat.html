@@ -2706,13 +2706,27 @@
               characterName = foundCharacter.name || characterSlug;
               avatar = foundCharacter.avatar;
               // Cache this for next time
-              localStorage.setItem(`char_name_${characterSlug}`, foundCharacter.name);
+              if (foundCharacter.name) {
+                localStorage.setItem(`char_name_${characterSlug}`, foundCharacter.name);
+              }
               if (foundCharacter.avatar) {
                 localStorage.setItem(`char_avatar_${characterSlug}`, foundCharacter.avatar);
               }
             } else {
-              // Fall back to cached data
-              characterName = localStorage.getItem(`char_name_${characterSlug}`) || characterSlug;
+              // Fall back to cached data, but check if cached name looks like a slug
+              const cachedName = localStorage.getItem(`char_name_${characterSlug}`);
+
+              // If cached name looks like a slug (contains timestamp pattern), try to fetch from API
+              if (!cachedName || cachedName === characterSlug || /\d{13}/.test(cachedName)) {
+                // Try to extract the actual name from the slug by removing the timestamp
+                const slugWithoutTimestamp = characterSlug.replace(/-\d{13}$/, '');
+                characterName = slugWithoutTimestamp.split('-').map(word =>
+                  word.charAt(0).toUpperCase() + word.slice(1)
+                ).join(' ');
+              } else {
+                characterName = cachedName;
+              }
+
               avatar = localStorage.getItem(`char_avatar_${characterSlug}`) || null;
             }
 
@@ -2722,7 +2736,7 @@
               lastUserMessage: lastUserMessage?.content || '',
               timestamp: lastMessage?.timestamp || Date.now(),
               messageCount: chatHistory.length,
-              characterName: characterName,
+              characterName: characterName, // This is already set from foundCharacter.name or cached name
               avatar: avatar
             });
           }
@@ -2775,22 +2789,23 @@
         let avatarUrl = '/avatars/placeholder.webp';
         let characterName = companion.slug;
 
-        // Priority 1: Use character data from loadedCharacters
-        if (character?.avatar) {
-          avatarUrl = character.avatar;
-          characterName = character.name;
-        }
-        // Priority 2: Use cached data from localStorage
-        else if (companion.characterName && companion.avatar) {
+        // Priority 1: Use companion.characterName if available (from getActiveChatCompanions)
+        if (companion.characterName && companion.characterName !== companion.slug) {
           characterName = companion.characterName;
-          avatarUrl = companion.avatar;
+          if (companion.avatar) {
+            avatarUrl = companion.avatar;
+          }
         }
-        // Priority 3: Try to get cached character name only
-        else if (companion.characterName) {
-          characterName = companion.characterName;
-          // Keep placeholder avatar
+        // Priority 2: Use character data from loadedCharacters
+        if (character) {
+          if (character.name) {
+            characterName = character.name;
+          }
+          if (character.avatar) {
+            avatarUrl = character.avatar;
+          }
         }
-        // Priority 4: If this is the current character, use its data
+        // Priority 3: If this is the current character, use its data
         else if (currentCharacter && currentCharacter.slug === companion.slug) {
           characterName = currentCharacter.name;
           if (currentCharacter.avatar && currentCharacter.avatar !== '/avatars/placeholder.webp') {

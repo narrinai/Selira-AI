@@ -33,123 +33,68 @@ function nameToFilename(name) {
 }
 
 async function getAllSeliraCompanions() {
-  console.log('🔍 Fetching ALL companions using multiple strategies...');
+  console.log('🔍 Fetching ALL companions using proper pagination...');
 
   let allCompanions = [];
   const seenSlugs = new Set();
+  let offset = null;
+  let batchNumber = 1;
 
-  // Strategy 1: Get first 100 companions (A-M roughly)
-  console.log(`📄 Batch 1: Fetching first 100 companions...`);
-  try {
-    const response1 = await fetch('https://selira.ai/.netlify/functions/selira-characters?limit=100');
-    if (response1.ok) {
-      const data1 = await response1.json();
-      console.log(`📦 Batch 1: ${data1.characters.length} companions`);
-      data1.characters.forEach(companion => {
+  // Use proper pagination to get ALL companions
+  while (true) {
+    console.log(`📄 Batch ${batchNumber}: Fetching companions${offset ? ` with offset ${offset}` : ''}...`);
+
+    try {
+      let url = 'https://selira.ai/.netlify/functions/selira-characters?limit=200';
+      if (offset) {
+        url += `&offset=${offset}`;
+      }
+
+      const response = await fetch(url);
+      if (!response.ok) {
+        console.log(`❌ HTTP error: ${response.status}`);
+        break;
+      }
+
+      const data = await response.json();
+      console.log(`📦 Batch ${batchNumber}: ${data.characters.length} companions received, offset: ${data.offset || 'null'}`);
+
+      // If no characters returned, we've reached the end
+      if (!data.characters || data.characters.length === 0) {
+        console.log('✅ No more companions to fetch - reached end of database');
+        break;
+      }
+
+      // Add new companions to our collection
+      let newCompanions = 0;
+      data.characters.forEach(companion => {
         if (!seenSlugs.has(companion.slug)) {
           seenSlugs.add(companion.slug);
           allCompanions.push(companion);
+          newCompanions++;
         }
       });
-    }
-  } catch (error) {
-    console.warn(`⚠️ Error fetching batch 1:`, error.message);
-  }
 
-  // Small delay between requests
-  await new Promise(resolve => setTimeout(resolve, 1000));
+      console.log(`📦 Batch ${batchNumber}: ${newCompanions} new companions added (${allCompanions.length} total)`);
 
-  // Strategy 2: Use multiple fetch approaches to get more companions systematically
-  console.log(`📄 Batch 2: Trying to get companions beyond the first 100...`);
-
-  // Strategy 2A: Try fetching with high limit multiple times (Airtable might return different results)
-  for (let attempt = 1; attempt <= 5; attempt++) {
-    console.log(`📄 Batch 2${String.fromCharCode(64 + attempt)}: Fetching attempt ${attempt}...`);
-    try {
-      const response = await fetch(`https://selira.ai/.netlify/functions/selira-characters?limit=100&_=${Date.now()}`);
-      if (response.ok) {
-        const data = await response.json();
-        console.log(`📦 Batch 2${String.fromCharCode(64 + attempt)}: ${data.characters.length} companions`);
-
-        data.characters.forEach(companion => {
-          if (!seenSlugs.has(companion.slug)) {
-            seenSlugs.add(companion.slug);
-            allCompanions.push(companion);
-          }
-        });
+      // Check if there's an offset for next batch
+      if (!data.offset) {
+        console.log('✅ No offset returned - reached end of database');
+        break;
       }
-    } catch (error) {
-      console.warn(`⚠️ Error fetching batch 2${String.fromCharCode(64 + attempt)}:`, error.message);
-    }
 
-    // Small delay between attempts
-    await new Promise(resolve => setTimeout(resolve, 1000));
+      offset = data.offset;
+      batchNumber++;
+
+      // Rate limiting - wait between requests
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+    } catch (error) {
+      console.warn(`⚠️ Error fetching batch ${batchNumber}:`, error.message);
+      break;
+    }
   }
 
-  // Strategy 2B: Target specific companions we know need avatars from screenshots and database
-  const knownCompanionsNeedingAvatars = [
-    // From original screenshot (rows 106-114)
-    'sakura-lopez', 'lin-johansson', 'stella-mehta', 'rania-omar', 'violet-jain',
-    'nala-gustafsson', 'xin-martinez', 'maya-lee', 'mila-zhang',
-
-    // Additional companions from rows 115+ that likely need avatars (common patterns)
-    'aria-martinez', 'bella-chen', 'carmen-wilson', 'diana-garcia', 'elena-rodriguez',
-    'fiona-smith', 'gabriella-davis', 'hana-kim', 'isla-wang', 'julia-anderson',
-    'kara-brown', 'luna-taylor', 'nina-johnson', 'olivia-jones', 'petra-williams',
-    'quinn-miller', 'ruby-moore', 'sophia-lee', 'tina-clark', 'vera-harris',
-    'willow-young', 'yuki-thomas', 'zara-jackson', 'amber-white', 'bianca-martin',
-    'chloe-thompson', 'delia-garcia', 'emma-martinez', 'faith-robinson', 'grace-clark',
-    'holly-lewis', 'iris-walker', 'jade-hall', 'kate-allen', 'lily-young',
-    'mia-hernandez', 'nina-king', 'pia-wright', 'quinn-lopez', 'rina-hill',
-    'sara-scott', 'tara-green', 'uma-adams', 'vera-baker', 'willa-gonzalez',
-    'xara-nelson', 'yara-carter', 'zina-mitchell', 'ana-perez', 'eva-roberts'
-  ];
-
-  // Strategy 2C: Generate wider range of likely companion names
-  const alphabet = 'abcdefghijklmnopqrstuvwxyz';
-  const potentialSlugs = [];
-
-  // Combine all potential slugs
-  const allPotentialSlugs = [...knownCompanionsNeedingAvatars, ...potentialSlugs];
-  console.log(`📄 Batch 2: Fetching ${allPotentialSlugs.length} potential companions...`);
-
-  let foundCount = 0;
-  let checkedCount = 0;
-
-  for (const slug of allPotentialSlugs) {
-    checkedCount++;
-    if (checkedCount % 50 === 0) {
-      console.log(`📊 Progress: checked ${checkedCount}/${allPotentialSlugs.length} potential companions...`);
-    }
-    try {
-      const response = await fetch(`https://selira.ai/.netlify/functions/selira-characters?slug=${slug}`);
-      if (response.ok) {
-        const data = await response.json();
-        if (data.characters && data.characters.length > 0) {
-          const companion = data.characters[0];
-          if (!seenSlugs.has(companion.slug)) {
-            seenSlugs.add(companion.slug);
-            allCompanions.push(companion);
-            foundCount++;
-
-            // Only log companions without avatar_url to reduce noise
-            if (!companion.avatar_url || companion.avatar_url === null || companion.avatar_url === '') {
-              console.log(`📦 Found ${slug}: avatar_url = ${companion.avatar_url || 'null'} ⭐`);
-            } else {
-              console.log(`📦 Found ${slug}: has avatar`);
-            }
-          }
-        }
-      }
-    } catch (error) {
-      console.warn(`⚠️ Error fetching ${slug}:`, error.message);
-    }
-
-    // Small delay between individual requests - reduced for faster bulk processing
-    await new Promise(resolve => setTimeout(resolve, 100));
-  }
-
-  console.log(`📦 Summary: Found ${foundCount} existing companions out of ${checkedCount} checked`);
   console.log(`📦 Total unique companions collected: ${allCompanions.length}`);
 
   // Debug: Show companions without avatar_url
