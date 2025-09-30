@@ -1,5 +1,7 @@
 [functions]
 directory = "netlify/functions"
+# Increase timeout for image generation functions (max 26 seconds for Pro plans)
+timeout = 26
 
 [build]
 publish = "."
