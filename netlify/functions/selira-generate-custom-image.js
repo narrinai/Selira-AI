@@ -354,9 +354,9 @@ exports.handler = async (event, context) => {
     
     console.log(`🎨 [${requestId}] Full prompt:`, fullPrompt);
     console.log(`🎌 [${requestId}] Anime style:`, isAnimeStyle);
-    
-    // Use Playground v2.5 for aesthetic generation with less content filtering
-    const modelVersion = "black-forest-labs/flux-schnell:c846a69991daf4c0e5d016514849d14ee5b2e6846ce6b9d6f21369e564cfe51e";
+
+    // Use SDXL Lightning for fast and reliable generation (2-4 seconds)
+    const modelVersion = "bytedance/sdxl-lightning-4step:5599ed30703defd1d160a25a63321b4dec97101d98b4674bcc56e41f62f35637";
 
     // Add progressive delay to prevent rate limiting
     // More requests = longer delay
@@ -386,10 +386,10 @@ exports.handler = async (event, context) => {
           version: modelVersion,
           input: {
             prompt: fullPrompt,
-            width: 768,
-            height: 768,
-            num_outputs: 1,
+            width: 1024,
+            height: 1024,
             num_inference_steps: 4,
+            guidance_scale: 0,
             seed: Math.floor(Math.random() * 100000)
           }
         })
