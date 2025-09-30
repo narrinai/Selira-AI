@@ -1722,7 +1722,7 @@
 
           <div class="filter-dropdown">
             <button class="dropdown-btn" onclick="toggleDropdown('style')">
-              <span>Realistic</span>
+              <span>All</span>
               <span class="dropdown-arrow">▼</span>
             </button>
             <div class="dropdown-menu" id="styleDropdown">
@@ -2023,13 +2023,12 @@
         allCharacters = getDemoCharacters();
       }
       
+      // Randomize character order using Fisher-Yates shuffle
       filteredCharacters = [...allCharacters];
-
-      // Move newly created characters to the front for visibility
-      const newCharacters = filteredCharacters.filter(c => c.category === 'romance' ||
-        (c.name && (c.name.includes('Emma') || c.name.includes('Sarah') || c.name.includes('Visible') || c.name.includes('Test'))));
-      const otherCharacters = filteredCharacters.filter(c => !newCharacters.includes(c));
-      filteredCharacters = [...newCharacters, ...otherCharacters];
+      for (let i = filteredCharacters.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [filteredCharacters[i], filteredCharacters[j]] = [filteredCharacters[j], filteredCharacters[i]];
+      }
 
       console.log('📋 Initial filteredCharacters:', filteredCharacters.length);
       const testChars = filteredCharacters.filter(c => c.name.includes('Emma') || c.name.includes('Sarah') || c.name.includes('Visible'));
@@ -2344,7 +2343,7 @@
           'realistic': 'Realistic',
           'anime': 'Anime'
         };
-        dropdownBtn.textContent = styleLabels[style] || 'Realistic';
+        dropdownBtn.textContent = styleLabels[style] || 'All';
       }
 
       // Hide dropdown
