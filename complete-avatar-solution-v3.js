@@ -33,52 +33,66 @@ function nameToFilename(name) {
 }
 
 async function getAllSeliraCompanions() {
-  console.log('🔍 Fetching companions in multiple batches to catch all missing avatars...');
+  console.log('🔍 Fetching ALL companions using multiple strategies...');
 
   let allCompanions = [];
+  const seenSlugs = new Set();
 
-  // Strategy: Request a high limit to get as many as possible
-  // Even though Airtable limits to 100, we'll try different approaches
-
-  console.log(`📄 Fetching all available companions...`);
+  // Strategy 1: Get first 100 companions (A-M roughly)
+  console.log(`📄 Batch 1: Fetching first 100 companions...`);
   try {
-    // Try to get as many as possible with a very high limit
-    const response = await fetch('https://selira.ai/.netlify/functions/selira-characters?limit=2000');
-    if (response.ok) {
-      const data = await response.json();
-      console.log(`📦 Retrieved ${data.characters.length} companions`);
-      allCompanions = data.characters;
-    } else {
-      console.error(`❌ Failed to fetch companions: ${response.status}`);
+    const response1 = await fetch('https://selira.ai/.netlify/functions/selira-characters?limit=100');
+    if (response1.ok) {
+      const data1 = await response1.json();
+      console.log(`📦 Batch 1: ${data1.characters.length} companions`);
+      data1.characters.forEach(companion => {
+        if (!seenSlugs.has(companion.slug)) {
+          seenSlugs.add(companion.slug);
+          allCompanions.push(companion);
+        }
+      });
     }
   } catch (error) {
-    console.error(`❌ Error fetching companions:`, error.message);
+    console.warn(`⚠️ Error fetching batch 1:`, error.message);
   }
 
-  // Debug: Check if we have the expected companions
-  const sakuraCompanion = allCompanions.find(c => c.slug === 'sakura-lopez');
-  if (sakuraCompanion) {
-    console.log(`✅ Found sakura-lopez with avatar_url: ${sakuraCompanion.avatar_url}`);
-  } else {
-    console.warn(`⚠️ sakura-lopez not found in the ${allCompanions.length} companions retrieved`);
+  // Small delay between requests
+  await new Promise(resolve => setTimeout(resolve, 1000));
 
-    // Try to fetch sakura-lopez specifically if not found
-    console.log(`🔍 Attempting to fetch sakura-lopez specifically...`);
+  // Strategy 2: Target specific companions we know need avatars
+  const knownCompanionsNeedingAvatars = ['sakura-lopez', 'lin-johansson', 'stella-mehta', 'rania-omar', 'violet-jain', 'nala-gustafsson', 'xin-martinez', 'maya-lee', 'mila-zhang'];
+
+  console.log(`📄 Batch 2: Fetching specific companions known to need avatars...`);
+  for (const slug of knownCompanionsNeedingAvatars) {
     try {
-      const sakuraResponse = await fetch('https://selira.ai/.netlify/functions/selira-characters?slug=sakura-lopez');
-      if (sakuraResponse.ok) {
-        const sakuraData = await sakuraResponse.json();
-        if (sakuraData.characters && sakuraData.characters.length > 0) {
-          console.log(`✅ Found sakura-lopez via specific fetch`);
-          allCompanions.push(sakuraData.characters[0]);
+      const response = await fetch(`https://selira.ai/.netlify/functions/selira-characters?slug=${slug}`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.characters && data.characters.length > 0) {
+          const companion = data.characters[0];
+          if (!seenSlugs.has(companion.slug)) {
+            seenSlugs.add(companion.slug);
+            allCompanions.push(companion);
+            console.log(`📦 Found ${slug}: avatar_url = ${companion.avatar_url || 'null'}`);
+          }
         }
       }
     } catch (error) {
-      console.warn(`⚠️ Could not fetch sakura-lopez specifically:`, error.message);
+      console.warn(`⚠️ Error fetching ${slug}:`, error.message);
     }
+
+    // Small delay between individual requests
+    await new Promise(resolve => setTimeout(resolve, 200));
   }
 
-  console.log(`📦 Total companions available for processing: ${allCompanions.length}`);
+  console.log(`📦 Total unique companions collected: ${allCompanions.length}`);
+
+  // Debug: Show companions without avatar_url
+  const companionsWithoutAvatars = allCompanions.filter(c => !c.avatar_url || c.avatar_url === null || c.avatar_url === '');
+  console.log(`🔍 Companions without avatar_url: ${companionsWithoutAvatars.length}`);
+  companionsWithoutAvatars.forEach(c => {
+    console.log(`   - ${c.slug}: avatar_url = ${c.avatar_url}`);
+  });
 
   return allCompanions;
 }
