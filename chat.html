@@ -1726,66 +1726,66 @@
       const hairLength = character.hair_length || character.hairLength || 'medium';
       const artStyle = character.companion_type || character.artStyle || 'realistic';
 
-      // Shorter, more concise scenarios
+      // Seductive and suggestive scenario prompts
       const baseScenarios = [
-        `Send me a picture of ${name} in lingerie on a bed`,
-        `Send me a picture of ${name} in a tight dress`,
-        `Send me a picture of ${name} in the shower`,
-        `Send me a picture of ${name} in underwear`,
-        `Send me a picture of ${name} in a silk robe`,
-        `Send me a picture of ${name} lying on satin sheets`,
+        `Send me a picture of ${name} in revealing lingerie, posing seductively on a bed with bedroom eyes`,
+        `Send me a picture of ${name} in a tight dress, leaning forward with a provocative smile`,
+        `Send me a picture of ${name} in the shower with water cascading down her body, looking back`,
+        `Send me a picture of ${name} in barely-there underwear, stretching sensually with desire in her eyes`,
+        `Send me a picture of ${name} in a silk robe that's slipping off, with a hungry look`,
+        `Send me a picture of ${name} lying on satin sheets, wearing something revealing with an inviting pose`,
         `Send me a picture of`
       ];
 
-      // Shorter tag-specific scenarios
+      // Seductive tag-specific scenarios
       const tagScenarios = {
         'Girlfriend': [
-          `Send me a picture of ${name} in lingerie on our bed`,
-          `Send me a picture of ${name} wearing just your shirt`
+          `Send me a picture of ${name} in sexy lingerie on our bed with a passionate look, reaching out`,
+          `Send me a picture of ${name} wearing just your shirt and nothing else, with a playful smile`
         ],
         'Romance': [
-          `Send me a picture of ${name} in a low-cut dress`,
-          `Send me a picture of ${name} lying on rose petals`
+          `Send me a picture of ${name} in a low-cut dress showing off her curves, with intense desire`,
+          `Send me a picture of ${name} lying provocatively on rose petals with a sultry expression`
         ],
         'Cute': [
-          `Send me a picture of ${name} in cute underwear`,
-          `Send me a picture of ${name} in a crop top`
+          `Send me a picture of ${name} in innocent-looking but revealing underwear, biting her lip playfully`,
+          `Send me a picture of ${name} in a crop top and tiny shorts, stretching with a naughty expression`
         ],
         'Seductive': [
-          `Send me a picture of ${name} in black lace lingerie`,
-          `Send me a picture of ${name} in a negligee`
+          `Send me a picture of ${name} in black lace lingerie, posing dominantly on a bed with a hungry gaze`,
+          `Send me a picture of ${name} in a see-through negligee, touching herself with an erotic stare`
         ],
         'Maid': [
-          `Send me a picture of ${name} in a maid outfit`,
-          `Send me a picture of ${name} in a French maid costume`
+          `Send me a picture of ${name} in a skimpy maid outfit, bending over while cleaning with a naughty smile`,
+          `Send me a picture of ${name} in a revealing French maid costume in a submissive pose`
         ],
         'Fantasy': [
-          `Send me a picture of ${name} as an elf in fantasy armor`,
-          `Send me a picture of ${name} as a sorceress`
+          `Send me a picture of ${name} as a sexy elf in barely-there fantasy armor, posing erotically`,
+          `Send me a picture of ${name} as a sultry sorceress in revealing robes with magic swirling`
         ],
         'Angel': [
-          `Send me a picture of ${name} as a fallen angel`,
-          `Send me a picture of ${name} with angel wings`
+          `Send me a picture of ${name} as a fallen angel in torn lingerie, wings spread seductively`,
+          `Send me a picture of ${name} with angel wings in white underwear, in a passionate divine pose`
         ],
         'Monster': [
-          `Send me a picture of ${name} with her monster features`,
-          `Send me a picture of ${name} showing her supernatural side`
+          `Send me a picture of ${name} with her monster features in revealing leather, posing dominantly`,
+          `Send me a picture of ${name} showing her supernatural side in minimal clothing, irresistibly seductive`
         ],
         'Boss': [
-          `Send me a picture of ${name} in a business suit`,
-          `Send me a picture of ${name} in professional attire`
+          `Send me a picture of ${name} in a tight suit unbuttoned, sitting on her desk in sexual dominance`,
+          `Send me a picture of ${name} in revealing professional attire, commanding with lustful eyes`
         ],
         'Student': [
-          `Send me a picture of ${name} in a schoolgirl outfit`,
-          `Send me a picture of ${name} in a school uniform`
+          `Send me a picture of ${name} in a sexy schoolgirl outfit on a desk with a flirtatious look`,
+          `Send me a picture of ${name} in a revealing school uniform, posing suggestively after class`
         ],
         'Teacher': [
-          `Send me a picture of ${name} in a teacher outfit`,
-          `Send me a picture of ${name} in professional attire`
+          `Send me a picture of ${name} in a tight teacher outfit leaning over a desk showing her assets`,
+          `Send me a picture of ${name} in professional attire, pointing with a stern but sexually charged look`
         ]
       };
 
-      // No art style additions - keep prompts short
+      // No art style additions - backend handles this
       const artStyleAdditions = {
         'anime': '',
         'realistic': ''
