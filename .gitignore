@@ -45,3 +45,4 @@ Icon?
 # Backup files
 *.bak
 *.backup
+.netlify/
