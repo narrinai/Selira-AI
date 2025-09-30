@@ -3998,12 +3998,32 @@
       }
     }
 
+    // Generate companion message for image
+    function generateImageCompanionMessage() {
+      const messages = [
+        "*sends you a picture with a seductive smile* I hope you like what you see...",
+        "*blushes while sending the image* Here's something special for you... 💕",
+        "*sends photo with a playful wink* This is just for you, baby~",
+        "*shares an intimate picture* I've been thinking about you... *bites lip*",
+        "*sends image with anticipation* What do you think? I want to know your reaction...",
+        "*nervously sends the picture* I hope this is what you wanted to see... 😳",
+        "*confidently shares the photo* Like what you see? There's more where that came from~",
+        "*sends picture while looking into your eyes* This moment is just for us...",
+        "*shyly sends the image* I-I made this just for you... *fidgets*",
+        "*sends photo with desire* Does this get your attention? *teases*"
+      ];
+      return messages[Math.floor(Math.random() * messages.length)];
+    }
+
     // Save image message to localStorage
     function saveImageMessageToStorage(characterSlug, imageUrl, prompt, style) {
       try {
         const storageKey = `chat_${characterSlug}`;
         let chatHistory = JSON.parse(localStorage.getItem(storageKey) || '[]');
-        
+
+        // Generate companion message
+        const companionMessage = generateImageCompanionMessage();
+
         // Add image message
         chatHistory.push({
           type: 'image',
@@ -4011,17 +4031,17 @@
             imageUrl: imageUrl,
             prompt: prompt,
             style: style,
-            text: `Here's your ${style} image:`
+            text: companionMessage
           },
           timestamp: Date.now()
         });
-        
+
         // Keep only last 50 messages
         chatHistory = chatHistory.slice(-50);
-        
+
         localStorage.setItem(storageKey, JSON.stringify(chatHistory));
         console.log('💾 Saved image message to localStorage:', characterSlug);
-        
+
       } catch (error) {
         console.error('❌ Error saving image message to localStorage:', error);
       }
@@ -4030,17 +4050,19 @@
     function addImageMessage(imageUrl, prompt, style, saveToStorage = true) {
       const messagesContainer = document.getElementById('chatMessages');
 
+      // Generate companion message
+      const companionMessage = generateImageCompanionMessage();
+
       const messageDiv = document.createElement('div');
       messageDiv.className = 'message ai';
       messageDiv.innerHTML = `
         <div class="message-content">
           <div class="message-text" style="margin-left: 0;">
-            <div style="margin-bottom: 8px;">Here's your ${style} image:</div>
+            <div style="margin-bottom: 12px;">${companionMessage}</div>
             <img src="${imageUrl}" alt="Generated image" style="
               max-width: 300px; border-radius: 12px; cursor: pointer;
               box-shadow: 0 4px 16px rgba(0,0,0,0.3);
             " onclick="openImageFullscreen('${imageUrl}', '${prompt}')">
-            <div style="margin-top: 4px; font-size: 11px; color: var(--text-muted);">"${prompt}"</div>
           </div>
           <div class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
         </div>
