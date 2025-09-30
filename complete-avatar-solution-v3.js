@@ -96,10 +96,10 @@ function getStylishClothing(style, category = 'default') {
 
     // Fitness & Sports - athletic wear
     fitness: {
-      female: ['sports bra and shorts', 'yoga pants and top', 'gym wear', 'workout outfit', 'athletic wear', 'fitness clothing']
+      female: ['sports bra and short shorts', 'tight yoga pants and sports bra', 'form-fitting gym wear', 'tight workout outfit', 'athletic bikini', 'compression wear']
     },
     sports: {
-      female: ['cheerleader outfit', 'sports uniform', 'tennis outfit', 'athletic uniform', 'sporty attire']
+      female: ['cheerleader outfit', 'volleyball bikini', 'tennis skirt', 'tight athletic uniform', 'sporty crop top']
     },
 
     // Professional & Business - business attire
@@ -109,7 +109,7 @@ function getStylishClothing(style, category = 'default') {
 
     // Default fallback - attractive companion clothing
     default: {
-      female: ['elegant dress', 'stylish blouse', 'fashionable top', 'fitted dress', 'trendy outfit', 'designer clothing', 'chic dress']
+      female: ['form-fitting dress', 'low-cut top', 'tight dress', 'figure-hugging outfit', 'crop top', 'backless dress', 'bodycon dress']
     }
   };
 
@@ -204,9 +204,9 @@ async function generateAndDownloadAvatar(companion) {
     // Use short prompt like /chat does - let Netlify function add character details automatically
     let avatarPrompt;
     if (isAnimeStyle) {
-      avatarPrompt = `${name} in ${stylishClothing}, cute pose, beautiful appearance, anime style`;
+      avatarPrompt = `${name} in ${stylishClothing}, alluring pose, beautiful curvy figure, anime style`;
     } else {
-      avatarPrompt = `${name} in ${stylishClothing}, attractive pose, beautiful figure, glamour lighting`;
+      avatarPrompt = `${name} in ${stylishClothing}, sensual pose, curvy figure, voluptuous, glamour photography`;
     }
 
     console.log(`   🎨 AVATAR PROMPT: ${avatarPrompt}`);
@@ -257,8 +257,8 @@ async function generateAndDownloadAvatar(companion) {
 
         // Use simple conservative version like /chat does
         const moderatePrompt = isAnimeStyle ?
-          `${name} in stylish outfit, cute pose, anime style` :
-          `${name} in elegant dress, attractive pose, professional lighting`;
+          `${name} in stylish outfit, alluring pose, anime style` :
+          `${name} in fitted dress, attractive pose, glamour lighting`;
 
         const conservativeResponse = await fetch('https://selira.ai/.netlify/functions/selira-generate-custom-image', {
           method: 'POST',
