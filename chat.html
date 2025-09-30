@@ -1999,7 +1999,9 @@
           sidebarImage.style.display = 'block';
         }
       }
-      document.getElementById('sidebarCharacterChats').textContent = '0';
+      // Update chat count with actual message count
+      const messageCount = getMessageCount(currentCharacter.slug);
+      document.getElementById('sidebarCharacterChats').textContent = messageCount > 0 ? messageCount : '0';
       
       // Update tags
       const tagsContainer = document.getElementById('sidebarCharacterTags');
@@ -2139,6 +2141,10 @@
         
         // Save both user and AI message to localStorage
         saveBothMessagesToStorage(currentCharacter.slug, message, data.response);
+
+        // Update chat count in sidebar
+        const updatedMessageCount = getMessageCount(currentCharacter.slug);
+        document.getElementById('sidebarCharacterChats').textContent = updatedMessageCount;
 
         // Update sidebar to reflect new activity
         updateActiveChatsSidebar();
@@ -3682,6 +3688,34 @@
     let isGeneratingImage = false;
     const MIN_IMAGE_GENERATION_INTERVAL = 3000; // 3 seconds between requests
 
+    // Increment image usage counter in Airtable
+    async function incrementImageUsage(userId) {
+      try {
+        console.log('📊 Incrementing images_generated for user:', userId);
+
+        const response = await fetch('/.netlify/functions/selira-increment-image-usage', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            userId: userId,
+            currentHour: new Date().toISOString().slice(0, 13) // "YYYY-MM-DDTHH"
+          })
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          console.log('✅ Successfully incremented images_generated:', result);
+        } else {
+          console.warn('⚠️ Failed to increment images_generated:', response.status);
+        }
+      } catch (error) {
+        console.warn('⚠️ Error incrementing images_generated:', error.message);
+        // Don't fail the image generation if counter fails
+      }
+    }
+
     async function checkUserImagePermissions(useCache = true) {
       const user = window.getCurrentUser ? window.getCurrentUser() : null;
       if (!user?.email && !user?.sub) {
@@ -3806,6 +3840,10 @@
         addMessage(message, 'user');
         saveUserMessageToStorage(currentCharacter.slug, message);
 
+        // Update chat count in sidebar
+        const updatedMessageCount = getMessageCount(currentCharacter.slug);
+        document.getElementById('sidebarCharacterChats').textContent = updatedMessageCount;
+
         // Show upgrade modal and add explanation message
         showImageUpgradeModal(permissions);
 
@@ -3825,9 +3863,13 @@
       
       // Add user message
       addMessage(message, 'user');
-      
+
       // Save user message to localStorage
       saveUserMessageToStorage(currentCharacter.slug, message);
+
+      // Update chat count in sidebar
+      const userMessageCount = getMessageCount(currentCharacter.slug);
+      document.getElementById('sidebarCharacterChats').textContent = userMessageCount;
       
       // Add loading message
       const loadingId = 'loading-' + Date.now();
@@ -3892,6 +3934,13 @@
 
           // Add generated image as AI response
           addImageMessage(result.imageUrl, fullPrompt, characterStyle);
+
+          // Increment images_generated counter for the user
+          const user = window.getCurrentUser ? window.getCurrentUser() : null;
+          if (user) {
+            const auth0_id = user.sub || user.uid || user.auth0_id;
+            await incrementImageUsage(auth0_id);
+          }
 
           // Refresh image permissions to update the counter
           console.log('🔄 Refreshing image counter after successful generation');
@@ -4075,6 +4124,10 @@
       // Save to localStorage if requested
       if (saveToStorage && currentCharacter.slug) {
         saveImageMessageToStorage(currentCharacter.slug, imageUrl, prompt, style);
+
+        // Update chat count in sidebar
+        const updatedMessageCount = getMessageCount(currentCharacter.slug);
+        document.getElementById('sidebarCharacterChats').textContent = updatedMessageCount;
 
         // Update sidebar to reflect new activity
         updateActiveChatsSidebar();

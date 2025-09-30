@@ -555,18 +555,19 @@ class Auth0LoginModal {
       if (loginBtn) {
         loginBtn.href = '/profile';
         loginBtn.textContent = 'Profile';
-        loginBtn.className = loginBtn.className.replace('login-btn', 'profile-btn');
+        loginBtn.className = loginBtn.className.replace('login-btn', 'profile-btn') + ' inverted-btn';
         loginBtn.onclick = null; // Remove modal trigger
-        // Style like the mobile profile button
-        loginBtn.style.background = 'var(--accent, #d4a574)';
-        loginBtn.style.color = 'white';
-        loginBtn.style.borderRadius = '25px';
-        loginBtn.style.padding = '10px 20px';
-        loginBtn.style.fontSize = '14px';
+        // Inverted button styling - white background with gold border
+        loginBtn.style.background = '#ffffff';
+        loginBtn.style.color = 'var(--accent, #d4a574)';
+        loginBtn.style.border = '2px solid var(--accent, #d4a574)';
+        loginBtn.style.borderRadius = '8px';
+        loginBtn.style.padding = '10px 24px';
+        loginBtn.style.fontSize = '13px';
         loginBtn.style.fontWeight = '600';
-        loginBtn.style.border = 'none';
         loginBtn.style.textDecoration = 'none';
-        console.log('✅ Updated login button to profile:', loginBtn.textContent);
+        loginBtn.style.transition = 'all 0.2s ease';
+        console.log('✅ Updated login button to inverted profile button:', loginBtn.textContent);
       }
       
       // Hide/remove signup button
@@ -625,20 +626,30 @@ class Auth0LoginModal {
 
       if (isAuthenticated) {
         loginBtn.textContent = 'Profile';
+        loginBtn.className = loginBtn.className.replace('login-btn', 'profile-btn') + ' inverted-btn';
         loginBtn.onclick = (e) => {
           e.preventDefault();
           // Always navigate to /profile page
           window.location.href = '/profile';
           return false;
         };
-        console.log('✅ Updated mobile header to show Profile button');
+        // Apply inverted button styling for mobile too
+        loginBtn.style.background = '#ffffff';
+        loginBtn.style.color = 'var(--accent, #d4a574)';
+        loginBtn.style.border = '2px solid var(--accent, #d4a574)';
+        console.log('✅ Updated mobile header to show inverted Profile button');
       } else {
         loginBtn.textContent = 'Login';
+        loginBtn.className = loginBtn.className.replace('profile-btn', 'login-btn').replace('inverted-btn', '');
         loginBtn.onclick = (e) => {
           e.preventDefault();
           this.openModal('login');
           return false;
         };
+        // Reset to original mobile styling
+        loginBtn.style.background = 'var(--accent)';
+        loginBtn.style.color = 'white';
+        loginBtn.style.border = 'none';
         console.log('✅ Updated mobile header to show Login button');
       }
       return;
@@ -719,6 +730,29 @@ class Auth0LoginModal {
 // ===== AUTH0 MODAL STYLES (SELIRA THEME) =====
 const AUTH0_STYLES = `
 <style>
+/* Inverted Profile Button Styling */
+.profile-btn.inverted-btn,
+.inverted-btn {
+  background: #ffffff !important;
+  color: var(--accent, #d4a574) !important;
+  border: 2px solid var(--accent, #d4a574) !important;
+  border-radius: 8px !important;
+  padding: 10px 24px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+  transition: all 0.2s ease !important;
+  display: inline-block !important;
+}
+
+.profile-btn.inverted-btn:hover,
+.inverted-btn:hover {
+  background: var(--accent, #d4a574) !important;
+  color: #ffffff !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(212, 165, 116, 0.3) !important;
+}
+
 .auth0-modal-overlay {
   position: fixed;
   top: 0;

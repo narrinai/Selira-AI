@@ -38,6 +38,7 @@
       --bg-tertiary: #2a2a2a;
       --text-primary: #ffffff;
       --text-secondary: #b3b3b3;
+      --text-muted: #888888;
       --accent: #d4a574;
       --accent-hover: #c19456;
       --accent-secondary: #ec4899;
@@ -326,11 +327,10 @@
       background: var(--bg-secondary);
       border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 20px;
+      overflow: hidden;
       transition: all 0.3s ease;
       cursor: pointer;
       position: relative;
-      overflow: hidden;
       text-decoration: none;
       color: inherit;
       display: block;
@@ -339,7 +339,7 @@
     .companion-card:hover {
       border-color: var(--accent);
       transform: translateY(-4px);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
     }
 
     .companion-image {
@@ -347,30 +347,75 @@
       height: 260px;
       object-fit: cover;
       object-position: center top;
-      border-radius: 12px;
-      margin-bottom: 16px;
+      position: relative;
+    }
+
+    .companion-stats-overlay {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .stat-badge {
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 4px 8px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
 
     .companion-info {
-      text-align: left;
+      padding: 16px;
     }
 
     .companion-name {
-      font-size: 1.3rem;
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
       font-weight: 600;
       color: var(--text-primary);
-      margin-bottom: 8px;
+      margin-bottom: 4px;
       line-height: 1.2;
     }
 
+    .companion-creator {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
     .companion-description {
-      font-size: 0.95rem;
       color: var(--text-secondary);
-      line-height: 1.5;
+      font-size: 14px;
+      line-height: 1.4;
+      margin-bottom: 12px;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
+    }
+
+    .companion-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .companion-tag {
+      background: rgba(212, 165, 116, 0.2);
+      color: var(--accent);
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
     }
 
     .carousel-controls {
@@ -779,20 +824,20 @@
         gap: 12px;
       }
 
-      .companion-card {
-        padding: 10px;
-      }
-
       .companion-image {
-        height: 150px;
+        height: 200px;
       }
 
       .companion-name {
-        font-size: 1rem;
+        font-size: 16px;
       }
 
       .companion-description {
-        font-size: 0.8rem;
+        font-size: 13px;
+      }
+
+      .companion-info {
+        padding: 12px;
       }
 
       .carousel-arrow {
@@ -907,8 +952,8 @@
   <section class="hero">
     <div class="hero-container">
       <div class="hero-content">
-        <h1>Your Perfect <span class="highlight">AI Companion</span> Awaits</h1>
-        <p>Always Free AI Chat - Discover thousands of unique AI personalities. From romantic girlfriends to mysterious characters, find your ideal companion and start meaningful conversations today.</p>
+        <h1>Always Free <span class="highlight">AI Chat</span> with Your Perfect Companion</h1>
+        <p>Discover thousands of unique AI personalities - completely free, forever. From romantic girlfriends to mysterious characters, find your ideal companion and start unlimited conversations today.</p>
 
         <div class="hero-actions">
           <a href="/category" class="primary-btn">Start Chatting Now</a>
@@ -1143,18 +1188,32 @@
       // Render slides
       track.innerHTML = slides.map((slide, slideIndex) => `
         <div class="carousel-slide">
-          ${slide.map(companion => `
+          ${slide.map(companion => {
+            const tags = companion.tags ? companion.tags.split(',').slice(0, 2) : [];
+            const messageCount = companion.message_count || Math.floor(Math.random() * 100) + 10;
+            return `
             <a href="${companion.character_url}" class="companion-card">
-              <img src="${companion.avatar_url}"
-                   alt="${companion.name || 'AI Companion'}"
-                   class="companion-image"
-                   loading="lazy">
+              <div style="position: relative;">
+                <img src="${companion.avatar_url}"
+                     alt="${companion.name || 'AI Companion'}"
+                     class="companion-image"
+                     loading="lazy">
+                <div class="companion-stats-overlay">
+                  <span class="stat-badge">💬 ${messageCount}K</span>
+                </div>
+              </div>
               <div class="companion-info">
                 <h3 class="companion-name">${companion.name || 'AI Companion'}</h3>
+                <div class="companion-creator">@Selira</div>
                 <p class="companion-description">${extractGreeting(companion.description)}</p>
+                ${tags.length > 0 ? `
+                <div class="companion-tags">
+                  ${tags.map(tag => `<span class="companion-tag">${tag.trim()}</span>`).join('')}
+                </div>
+                ` : ''}
               </div>
             </a>
-          `).join('')}
+          `}).join('')}
         </div>
       `).join('');
 
