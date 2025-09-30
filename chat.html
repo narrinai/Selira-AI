@@ -2063,9 +2063,10 @@
 
       // Check if this is an image request
       if (message.toLowerCase().startsWith('send me a picture')) {
-        await handleImageRequest(message);
+        // Clear input immediately
         messageInput.value = '';
         autoResizeTextarea();
+        await handleImageRequest(message);
         return;
       }
 

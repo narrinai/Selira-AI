@@ -136,6 +136,54 @@
       background: var(--accent-hover);
     }
 
+    /* Tags Bar */
+    .tags-bar {
+      max-width: 1200px;
+      margin: 16px auto 0;
+      padding: 0 32px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .tags-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tags-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: nowrap;
+      min-width: min-content;
+    }
+
+    .tag-btn {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 6px 16px;
+      text-decoration: none;
+      color: var(--text-secondary);
+      transition: all 0.2s ease;
+      font-size: 14px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .tag-btn:hover {
+      border-color: var(--accent);
+      background: rgba(212, 165, 116, 0.1);
+      color: var(--text-primary);
+    }
+
+    .tag-btn .tag-emoji {
+      font-size: 16px;
+    }
+
     /* Hero Section */
     .hero {
       min-height: 100vh;
