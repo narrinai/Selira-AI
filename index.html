@@ -1088,7 +1088,7 @@
           .filter(c => c.avatar_url && c.slug)
           .map(c => ({
             ...c,
-            character_url: `/chat?character=${c.slug}`
+            character_url: `/chat?char=${c.slug}`
           }));
 
         // Shuffle companions randomly
