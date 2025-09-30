@@ -4,10 +4,4 @@ timeout = 10
 
 [build]
 publish = "."
-publishOrigin = "default"
 functions = "netlify/functions"
-
-[build.environment]
-SECRETS_SCAN_ENABLED = "false"
-NETLIFY_IDENTITY_WIDGET_VERSION = "1"
-REACT_APP_NETLIFY_IDENTITY_URL = "/.netlify/identity"
