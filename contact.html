@@ -654,6 +654,22 @@
   </style>
 </head>
 <body>
+  <!-- Hidden form for Netlify to detect -->
+  <form name="contact" netlify netlify-honeypot="bot-field" hidden>
+    <input type="text" name="name" />
+    <input type="email" name="email" />
+    <select name="subject">
+      <option value="technical">Technical Support</option>
+      <option value="account">Account & Billing</option>
+      <option value="companions">AI Companions</option>
+      <option value="feature">Feature Request</option>
+      <option value="bug">Bug Report</option>
+      <option value="business">Business Inquiry</option>
+      <option value="other">Other</option>
+    </select>
+    <textarea name="message"></textarea>
+  </form>
+
   <div class="app-container">
     <!-- Left Sidebar Navigation -->
     <aside class="sidebar" id="sidebar">
@@ -732,12 +748,6 @@
 
       <!-- Contact Section -->
       <section class="contact-section">
-        <!-- Hero -->
-        <div class="contact-hero">
-          <h1 class="contact-title">Get in Touch</h1>
-          <p class="contact-subtitle">Have questions about Selira AI? Need technical support? We're here to help you get the most out of your AI companion experience.</p>
-        </div>
-
         <!-- Contact Grid -->
         <div class="contact-grid">
           <!-- Contact Information -->
@@ -747,18 +757,8 @@
             <div class="contact-item">
               <div class="contact-icon">📧</div>
               <div class="contact-details">
-                <h4>Email Support</h4>
-                <p>Get help with technical issues, account questions, or general inquiries.</p>
-                <a href="mailto:support@selira.ai">support@selira.ai</a>
-              </div>
-            </div>
-
-            <div class="contact-item">
-              <div class="contact-icon">💼</div>
-              <div class="contact-details">
-                <h4>Business Inquiries</h4>
-                <p>Partnerships, press inquiries, and business development opportunities.</p>
-                <a href="mailto:business@selira.ai">business@selira.ai</a>
+                <h4>Email</h4>
+                <a href="mailto:gcastrading@gmail.com">gcastrading@gmail.com</a>
               </div>
             </div>
 
@@ -766,15 +766,7 @@
               <div class="contact-icon">⏱️</div>
               <div class="contact-details">
                 <h4>Response Time</h4>
-                <p>We typically respond within 24 hours during business days. Premium users receive priority support.</p>
-              </div>
-            </div>
-
-            <div class="contact-item">
-              <div class="contact-icon">🌍</div>
-              <div class="contact-details">
-                <h4>Global Support</h4>
-                <p>Available worldwide with support in multiple languages. We're committed to helping users everywhere.</p>
+                <p>We typically respond within 24-48 hours during business days.</p>
               </div>
             </div>
           </div>
@@ -785,7 +777,15 @@
 
             <div id="formMessage" class="form-message" style="display: none;"></div>
 
-            <form id="contactForm" onsubmit="submitContactForm(event)">
+            <form id="contactForm" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+              <!-- Hidden field for Netlify -->
+              <input type="hidden" name="form-name" value="contact" />
+
+              <!-- Honeypot field (hidden from users) -->
+              <p style="display: none;">
+                <label>Don't fill this out if you're human: <input name="bot-field" /></label>
+              </p>
+
               <div class="form-group">
                 <label for="name" class="form-label">Full Name *</label>
                 <input type="text" id="name" name="name" class="form-input" required placeholder="Enter your full name">
@@ -811,18 +811,8 @@
               </div>
 
               <div class="form-group">
-                <label for="priority" class="form-label">Priority Level</label>
-                <select id="priority" name="priority" class="form-select">
-                  <option value="low">Low - General inquiry</option>
-                  <option value="medium" selected>Medium - Standard support</option>
-                  <option value="high">High - Urgent issue</option>
-                  <option value="critical">Critical - Service disruption</option>
-                </select>
-              </div>
-
-              <div class="form-group">
                 <label for="message" class="form-label">Message *</label>
-                <textarea id="message" name="message" class="form-textarea" required placeholder="Please describe your inquiry in detail. Include any relevant information such as error messages, steps you've taken, or specific features you're asking about."></textarea>
+                <textarea id="message" name="message" class="form-textarea" required placeholder="Please describe your inquiry in detail..."></textarea>
               </div>
 
               <button type="submit" class="submit-btn" id="submitBtn">
@@ -883,71 +873,6 @@
     // Navigation functions for consistency with other pages
     function showMyCompanions() {
       window.location.href = '/category';
-    }
-
-    // Contact form submission
-    async function submitContactForm(event) {
-      event.preventDefault();
-
-      const submitBtn = document.getElementById('submitBtn');
-      const formMessage = document.getElementById('formMessage');
-      const form = document.getElementById('contactForm');
-
-      // Disable submit button
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Sending...';
-
-      // Hide previous messages
-      formMessage.style.display = 'none';
-
-      try {
-        const formData = new FormData(form);
-        const data = Object.fromEntries(formData.entries());
-
-        // Add timestamp and user agent
-        data.timestamp = new Date().toISOString();
-        data.userAgent = navigator.userAgent;
-
-        // Get user info if logged in
-        const userEmail = localStorage.getItem('user_email');
-        const userId = localStorage.getItem('user_uid');
-        if (userEmail) data.userEmail = userEmail;
-        if (userId) data.userId = userId;
-
-        // Send to Netlify function
-        const response = await fetch('/.netlify/functions/selira-contact-form', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data)
-        });
-
-        if (response.ok) {
-          showFormMessage('success', 'Thank you for your message! We\'ll get back to you within 24 hours.');
-          form.reset();
-        } else {
-          throw new Error('Failed to send message');
-        }
-
-      } catch (error) {
-        console.error('Contact form error:', error);
-        showFormMessage('error', 'Sorry, there was an error sending your message. Please try again or email us directly at support@selira.ai.');
-      } finally {
-        // Re-enable submit button
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Send Message';
-      }
-    }
-
-    function showFormMessage(type, message) {
-      const formMessage = document.getElementById('formMessage');
-      formMessage.className = `form-message ${type}`;
-      formMessage.textContent = message;
-      formMessage.style.display = 'block';
-
-      // Scroll to message
-      formMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
     // Auto-fill email if user is logged in

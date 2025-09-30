@@ -72,44 +72,44 @@ function extractTraitsFromDescription(description) {
   };
 }
 
-// Exact clothing options from selira-generate-companion-avatar.js
-function getSexyClothing(style, category = 'default') {
+// Stylish clothing options for companion avatars
+function getStylishClothing(style, category = 'default') {
   const categoryClothing = {
-    // Anime & Manga specific - more revealing
+    // Anime & Manga specific - stylish anime wear
     'anime-manga': {
-      female: ['sexy school uniform', 'revealing magical girl outfit', 'short kimono', 'crop top sailor uniform', 'sexy maid outfit', 'revealing anime outfit', 'mini skirt and crop top', 'bikini armor']
+      female: ['school uniform', 'magical girl outfit', 'kimono', 'sailor uniform', 'maid outfit', 'anime outfit', 'fashionable dress', 'cute costume']
     },
     anime: {
-      female: ['sexy school uniform', 'revealing outfit', 'short kimono', 'bikini top', 'sexy maid outfit', 'revealing anime clothes']
+      female: ['school uniform', 'stylish outfit', 'kimono', 'trendy top', 'maid outfit', 'anime fashion']
     },
     manga: {
-      female: ['sexy manga outfit', 'revealing uniform', 'bikini', 'lingerie style outfit']
+      female: ['manga outfit', 'stylish uniform', 'cute dress', 'fashionable attire']
     },
 
-    // Cooking & Food - sexy versions
+    // Cooking & Food - professional chef wear
     cooking: {
-      female: ['sexy apron only', 'revealing chef outfit', 'apron over lingerie', 'crop top chef outfit', 'bikini with apron']
+      female: ['chef apron', 'chef outfit', 'kitchen attire', 'culinary uniform', 'cooking dress']
     },
     food: {
-      female: ['sexy waitress outfit', 'revealing server uniform', 'mini skirt uniform', 'crop top and shorts']
+      female: ['waitress outfit', 'server uniform', 'restaurant attire', 'service wear']
     },
 
-    // Fitness & Sports - already revealing
+    // Fitness & Sports - athletic wear
     fitness: {
-      female: ['sports bra and short shorts', 'yoga pants and sports bra', 'revealing gym wear', 'sexy workout outfit', 'bikini fitness wear', 'tight athletic wear']
+      female: ['sports bra and shorts', 'yoga pants and top', 'gym wear', 'workout outfit', 'athletic wear', 'fitness clothing']
     },
     sports: {
-      female: ['cheerleader outfit', 'volleyball bikini', 'tennis skirt', 'athletic bikini', 'sexy sports uniform']
+      female: ['cheerleader outfit', 'sports uniform', 'tennis outfit', 'athletic uniform', 'sporty attire']
     },
 
-    // Professional & Business - sexy professional
+    // Professional & Business - business attire
     business: {
-      female: ['sexy secretary outfit', 'revealing business dress', 'short skirt suit', 'unbuttoned blouse', 'sexy office wear']
+      female: ['business outfit', 'professional dress', 'office attire', 'work suit', 'corporate wear']
     },
 
-    // Default fallback - sexy companions
+    // Default fallback - attractive companion clothing
     default: {
-      female: ['sexy lingerie', 'revealing dress', 'bikini', 'crop top and mini skirt', 'sexy outfit', 'revealing top', 'sensual clothing']
+      female: ['elegant dress', 'stylish blouse', 'fashionable top', 'fitted dress', 'trendy outfit', 'designer clothing', 'chic dress']
     }
   };
 
@@ -135,7 +135,7 @@ function getSexyClothing(style, category = 'default') {
 
 async function generateAndDownloadAvatar(companion) {
   const name = companion.name;
-  console.log(`🔥 Generating EXPLICIT avatar for: ${name}`);
+  console.log(`🎨 Generating avatar for: ${name}`);
 
   try {
     const traits = extractTraitsFromDescription(companion.description);
@@ -146,8 +146,8 @@ async function generateAndDownloadAvatar(companion) {
                      companion.description.toLowerCase().includes('fitness') ? 'fitness' :
                      companion.description.toLowerCase().includes('business') ? 'business' : 'default';
 
-    const sexyClothing = getSexyClothing(traits.style, category);
-    console.log(`   Clothing: ${sexyClothing}`);
+    const stylishClothing = getStylishClothing(traits.style, category);
+    console.log(`   Clothing: ${stylishClothing}`);
 
     // Use same character-aware prompt building as chat/create image generation
     const isAnimeStyle = traits.style === 'anime';
@@ -196,25 +196,27 @@ async function generateAndDownloadAvatar(companion) {
     // Build character-aware prompt
     const characterAppearance = `${genderDescription}, ${ethnicityDesc}, ${hairLengthDesc}, ${hairColorDesc}`;
 
-    // Create base prompt with seductive/explicit elements for companion avatars
-    const basePrompt = `seductive expression, revealing clothing, sensual pose, attractive, wearing ${sexyClothing}, attractive body, bedroom or intimate setting, cozy interior, soft lighting, intimate setting`;
+    // Create balanced prompt for companion avatars - attractive but not overly explicit
+    const basePrompt = isAnimeStyle ?
+      `cute pose, wearing ${stylishClothing}, beautiful appearance, soft lighting` :
+      `attractive pose, wearing ${stylishClothing}, beautiful figure, glamour lighting, elegant setting`;
 
-    // Build full prompt with character appearance and context
-    let explicitPrompt;
+    // Use short prompt like /chat does - let Netlify function add character details automatically
+    let avatarPrompt;
     if (isAnimeStyle) {
-      explicitPrompt = `anime portrait of ${characterAppearance}, anime style, ${basePrompt}, detailed anime art, high quality anime illustration, vibrant colors, cel shading, clean background, single anime character, perfect anime anatomy, anime eyes`;
+      avatarPrompt = `${name} in ${stylishClothing}, cute pose, beautiful appearance, anime style`;
     } else {
-      explicitPrompt = `realistic photography, portrait photograph of ${characterAppearance}, ${basePrompt}, photorealistic, real photo, not anime, not cartoon, not illustration, not drawing, professional photography, high quality, professional lighting, clean background, single real person, perfect anatomy, realistic skin, realistic features`;
+      avatarPrompt = `${name} in ${stylishClothing}, attractive pose, beautiful figure, glamour lighting`;
     }
 
-    console.log(`   🔥 EXPLICIT PROMPT: ${explicitPrompt}`);
+    console.log(`   🎨 AVATAR PROMPT: ${avatarPrompt}`);
 
     // Use Netlify function which has access to Replicate API token
     const avatarResponse = await fetch('https://selira.ai/.netlify/functions/selira-generate-custom-image', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        customPrompt: explicitPrompt,
+        customPrompt: avatarPrompt,
         characterName: name,
         category: traits.style === 'anime' ? 'anime-manga' : 'realistic',
         style: traits.style,
@@ -229,10 +231,10 @@ async function generateAndDownloadAvatar(companion) {
     if (avatarResponse.ok) {
       const avatarResult = await avatarResponse.json();
       if (avatarResult.success && avatarResult.imageUrl) {
-        console.log(`✅ Generated EXPLICIT: ${avatarResult.imageUrl}`);
+        console.log(`✅ Generated avatar: ${avatarResult.imageUrl}`);
 
         // Download the image immediately
-        const filename = `${nameToFilename(name)}-explicit-${Date.now()}.webp`;
+        const filename = `${nameToFilename(name)}-avatar-${Date.now()}.webp`;
         const downloaded = await downloadImage(avatarResult.imageUrl, filename);
 
         if (downloaded) {
@@ -247,15 +249,16 @@ async function generateAndDownloadAvatar(companion) {
       const errorText = await avatarResponse.text();
       console.log(`⚠️ Avatar generation failed: ${avatarResponse.status} - ${errorText}`);
 
-      // Try slightly less explicit prompt for NSFW errors
-      if (errorText.includes('NSFW content detected') || errorText.includes('content policy')) {
-        console.log(`   🔄 Trying with moderate explicit prompt...`);
+      // Try conservative prompt for NSFW errors or rate limiting
+      if (errorText.includes('NSFW content detected') || errorText.includes('content policy') ||
+          avatarResponse.status === 429 || avatarResponse.status === 503) {
+        console.log(`   🔄 Trying with more conservative prompt...`);
         await new Promise(resolve => setTimeout(resolve, 5000));
 
-        // Use more conservative version but keep character appearance
+        // Use simple conservative version like /chat does
         const moderatePrompt = isAnimeStyle ?
-          `anime portrait of ${characterAppearance}, anime style, attractive pose, appealing expression, anime character, vibrant colors, digital anime art, upper body, anime artwork, detailed facial features, anime eyes, single character, solo` :
-          `realistic photography, portrait photograph of ${characterAppearance}, attractive expression, appealing clothing, confident pose, attractive, photorealistic, professional pose, attractive body, portrait photography, attractive model, professional photography, single person, solo, one woman only`;
+          `${name} in stylish outfit, cute pose, anime style` :
+          `${name} in elegant dress, attractive pose, professional lighting`;
 
         const conservativeResponse = await fetch('https://selira.ai/.netlify/functions/selira-generate-custom-image', {
           method: 'POST',
@@ -276,9 +279,9 @@ async function generateAndDownloadAvatar(companion) {
         if (conservativeResponse.ok) {
           const conservativeResult = await conservativeResponse.json();
           if (conservativeResult.success && conservativeResult.imageUrl) {
-            console.log(`✅ Generated moderate explicit: ${conservativeResult.imageUrl}`);
+            console.log(`✅ Generated conservative avatar: ${conservativeResult.imageUrl}`);
 
-            const filename = `${nameToFilename(name)}-moderate-${Date.now()}.webp`;
+            const filename = `${nameToFilename(name)}-conservative-${Date.now()}.webp`;
             const downloaded = await downloadImage(conservativeResult.imageUrl, filename);
 
             if (downloaded) {
@@ -328,7 +331,7 @@ async function updateCompanionAvatar(companionId, avatarUrl, name) {
 
 async function main() {
   try {
-    console.log('🔥 Starting EXPLICIT avatar solution V3 (max sexuality)...\n');
+    console.log('🎨 Starting avatar solution V3 (stylish companions)...\n');
 
     // Get all companions
     const allCompanions = await getAllSeliraCompanions();
@@ -341,7 +344,7 @@ async function main() {
              companion.avatar_url.includes('placeholder');
     });
 
-    console.log(`🔍 Found ${companionsNeedingAvatars.length} companions needing EXPLICIT avatars\n`);
+    console.log(`🔍 Found ${companionsNeedingAvatars.length} companions needing avatars\n`);
 
     if (companionsNeedingAvatars.length === 0) {
       console.log('🎉 All companions already have working avatars!');
@@ -372,25 +375,25 @@ async function main() {
         failCount++;
       }
 
-      // Add longer delay between requests due to API rate limits
+      // Add longer delay between requests to avoid overwhelming the API
       if (i < companionsNeedingAvatars.length - 1) {
-        console.log('⏳ Waiting 15 seconds...');
-        await new Promise(resolve => setTimeout(resolve, 15000));
+        console.log('⏳ Waiting 20 seconds...');
+        await new Promise(resolve => setTimeout(resolve, 20000));
       }
 
-      // Take longer break every 3 companions
-      if ((i + 1) % 3 === 0 && i < companionsNeedingAvatars.length - 1) {
-        console.log('☕ Taking a 60 second break...');
-        await new Promise(resolve => setTimeout(resolve, 60000));
+      // Take longer break every 2 companions to be more conservative
+      if ((i + 1) % 2 === 0 && i < companionsNeedingAvatars.length - 1) {
+        console.log('☕ Taking a 90 second break...');
+        await new Promise(resolve => setTimeout(resolve, 90000));
       }
     }
 
-    console.log(`\n📊 EXPLICIT avatar solution V3 finished!`);
+    console.log(`\n📊 Avatar solution V3 finished!`);
     console.log(`✅ Successfully processed: ${successCount} companions`);
     console.log(`❌ Failed: ${failCount} companions`);
 
     if (successCount > 0) {
-      console.log(`\n🔥 All avatars are now using stable local URLs with MAXIMUM SEXUALITY!`);
+      console.log(`\n🎨 All avatars are now using stable local URLs with stylish appearances!`);
     }
 
   } catch (error) {
