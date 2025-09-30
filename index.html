@@ -2259,11 +2259,20 @@
 
         // Tags filter
         if (currentFilters.tags && currentFilters.tags.length > 0) {
-          const hasMatchingTag = currentFilters.tags.some(filterTag => 
-            character.tags.some(characterTag => 
+          const hasMatchingTag = currentFilters.tags.some(filterTag =>
+            character.tags.some(characterTag =>
               characterTag.toLowerCase() === filterTag.toLowerCase()
             )
           );
+
+          // Debug logging for elf tag
+          if (currentFilters.tags.some(t => t.toLowerCase().includes('elf'))) {
+            console.log('🔍 DEBUG - Character:', character.name,
+                       '| Character tags:', character.tags,
+                       '| Filter tags:', currentFilters.tags,
+                       '| Match:', hasMatchingTag);
+          }
+
           if (!hasMatchingTag) {
             return false;
           }
@@ -2496,7 +2505,9 @@
             } else if (tag === 'unfiltered') {
               currentFilters.tags = ['Unfiltered'];
             } else {
-              currentFilters.tags = [tag];
+              // Strip emoji prefix from tag (Airtable tags don't have emojis)
+              const tagClean = tag.replace(/^[\u{1F000}-\u{1F9FF}]\s*/u, '');
+              currentFilters.tags = [tagClean];
             }
 
             // Apply filters and close overlay
@@ -2591,15 +2602,18 @@
             .replace(/\s+/g, '-') // Replace spaces with hyphens
             .replace(/-+/g, '-') // Remove duplicate hyphens
             .replace(/^-+|-+$/g, ''); // Remove leading and trailing hyphens
-          
+
+          // Strip emoji prefix from tag text for filtering (Airtable tags don't have emojis)
+          const tagTextClean = tagText.replace(/^[\u{1F000}-\u{1F9FF}]\s*/u, '');
+
           // For categories, use /category?filter=, for tags use /tags/
           if (['fantasy', 'anime-manga', 'historical'].includes(tagSlug)) {
             history.pushState({section: 'category', filter: tagSlug}, `${tagText} Characters - Selira AI`, `/category?filter=${tagSlug}`);
           } else {
             history.pushState({section: 'tag', tag: tagText}, `${tagText} Characters - Selira AI`, `/tags/${tagSlug}`);
           }
-          
-          currentFilters.tags = [tagText];
+
+          currentFilters.tags = [tagTextClean];
         }
         
         // Update UI
@@ -2653,7 +2667,9 @@
         } else if (e.state.section === 'tag') {
           // Show characters filtered by tag
           document.querySelector('.filter-section').style.display = 'block';
-          currentFilters.tags = [e.state.tag];
+          // Strip emoji prefix from tag (Airtable tags don't have emojis)
+          const tagClean = (e.state.tag || '').replace(/^[\u{1F000}-\u{1F9FF}]\s*/u, '');
+          currentFilters.tags = [tagClean];
           updateActiveTag(e.state.tag);
           currentTab = 'discover';
           applyFilters();
@@ -2732,7 +2748,9 @@
 
           // When filtering by tag, disable style filter to show all types
           currentFilters.style = undefined;
-          currentFilters.tags = [tagText];
+          // Strip emoji prefix from tag (Airtable tags don't have emojis)
+          const tagTextClean = tagText.replace(/^[\u{1F000}-\u{1F9FF}]\s*/u, '');
+          currentFilters.tags = [tagTextClean];
 
           // Update dropdown to show "All"
           const dropdownBtn = document.getElementById('styleDropdownBtn');
@@ -4659,8 +4677,11 @@ Please be thorough and include important details from our conversations.`;
     function filterByTag(tag) {
       console.log('🏷️ Filtering by tag:', tag);
 
+      // Strip emoji prefix from tag (Airtable tags don't have emojis)
+      const tagClean = tag.replace(/^[\u{1F000}-\u{1F9FF}]\s*/u, '');
+
       // Update current filters
-      currentFilters.tags = [tag];
+      currentFilters.tags = [tagClean];
 
       // Filter and display characters
       applyFilters();
