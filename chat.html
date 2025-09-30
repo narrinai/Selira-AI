@@ -3060,12 +3060,19 @@
         personality: fullCharacterData.personality || fullCharacterData.Personality,
         prompt: fullCharacterData.prompt || fullCharacterData.Prompt
       };
-      
+
+      // Cache character info for sidebar
+      cacheCharacterInfo({
+        slug: slug,
+        name: name,
+        avatar: avatar
+      });
+
       updateCharacterDisplay();
-      
+
       // Update URL to reflect new character
       updateUrlForCharacter(slug);
-      
+
       closeCharacterSearch();
       
       // Load chat history for this character
@@ -3269,6 +3276,13 @@
         personality: character.personality || character.Personality,
         prompt: character.prompt || character.Prompt
       };
+
+      // Cache character info for sidebar
+      cacheCharacterInfo({
+        slug: slug,
+        name: name,
+        avatar: avatar
+      });
 
       // Clear chat display first
       clearChatDisplay();
@@ -3512,6 +3526,13 @@
             };
 
             console.log('✅ Loaded specific character:', processedChar.name);
+
+            // Cache character info for sidebar
+            cacheCharacterInfo({
+              slug: processedChar.slug,
+              name: processedChar.name,
+              avatar: processedChar.avatar
+            });
 
             // Clear the new character flag
             if (isNewCharacter) {
