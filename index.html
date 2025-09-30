@@ -1041,17 +1041,22 @@
 
     async function loadCompanions() {
       try {
-        const response = await fetch('/.netlify/functions/characters');
+        const response = await fetch('/.netlify/functions/selira-characters?limit=12');
         const data = await response.json();
 
-        // Filter companions with avatar_url and character_url
+        // Filter companions with avatar_url and add character_url
         companions = data.characters
-          .filter(c => c.avatar_url && c.character_url)
+          .filter(c => c.avatar_url && c.slug)
+          .map(c => ({
+            ...c,
+            character_url: `/chat?character=${c.slug}`
+          }))
           .slice(0, 12); // Limit to 12 companions for performance
 
+        console.log('✅ Loaded companions:', companions.length);
         renderCarousel();
       } catch (error) {
-        console.error('Failed to load companions:', error);
+        console.error('❌ Failed to load companions:', error);
         // Show fallback static companions if API fails
         showFallbackCompanions();
       }
