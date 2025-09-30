@@ -75,41 +75,41 @@ function extractTraitsFromDescription(description) {
 // Stylish clothing options for companion avatars
 function getStylishClothing(style, category = 'default') {
   const categoryClothing = {
-    // Anime & Manga specific - stylish anime wear
+    // Anime & Manga specific - sexy anime wear
     'anime-manga': {
-      female: ['school uniform', 'magical girl outfit', 'kimono', 'sailor uniform', 'maid outfit', 'anime outfit', 'fashionable dress', 'cute costume']
+      female: ['revealing school uniform', 'skimpy magical girl outfit', 'short kimono', 'sexy sailor uniform', 'provocative maid outfit', 'barely-there anime outfit', 'revealing dress', 'seductive costume']
     },
     anime: {
-      female: ['school uniform', 'stylish outfit', 'kimono', 'trendy top', 'maid outfit', 'anime fashion']
+      female: ['revealing school uniform', 'sexy outfit', 'short kimono', 'skimpy top', 'provocative maid outfit', 'seductive anime fashion']
     },
     manga: {
-      female: ['manga outfit', 'stylish uniform', 'cute dress', 'fashionable attire']
+      female: ['sexy manga outfit', 'revealing uniform', 'skimpy dress', 'provocative attire']
     },
 
-    // Cooking & Food - professional chef wear
+    // Cooking & Food - sexy chef wear
     cooking: {
-      female: ['chef apron', 'chef outfit', 'kitchen attire', 'culinary uniform', 'cooking dress']
+      female: ['sexy apron only', 'revealing chef outfit', 'apron over lingerie', 'skimpy kitchen wear', 'provocative cooking attire']
     },
     food: {
-      female: ['waitress outfit', 'server uniform', 'restaurant attire', 'service wear']
+      female: ['sexy waitress outfit', 'revealing server uniform', 'skimpy restaurant attire', 'provocative service wear']
     },
 
-    // Fitness & Sports - athletic wear
+    // Fitness & Sports - sexy athletic wear
     fitness: {
-      female: ['sports bra and short shorts', 'tight yoga pants and sports bra', 'form-fitting gym wear', 'tight workout outfit', 'athletic bikini', 'compression wear']
+      female: ['revealing sports bra and micro shorts', 'tight yoga pants and crop sports bra', 'skimpy gym wear', 'barely-there workout outfit', 'sexy athletic bikini', 'revealing compression wear']
     },
     sports: {
-      female: ['cheerleader outfit', 'volleyball bikini', 'tennis skirt', 'tight athletic uniform', 'sporty crop top']
+      female: ['sexy cheerleader outfit', 'skimpy volleyball bikini', 'short tennis skirt', 'revealing athletic uniform', 'provocative sporty crop top']
     },
 
-    // Professional & Business - business attire
+    // Professional & Business - sexy professional attire
     business: {
-      female: ['business outfit', 'professional dress', 'office attire', 'work suit', 'corporate wear']
+      female: ['sexy secretary outfit', 'revealing business dress', 'low-cut office attire', 'provocative work suit', 'seductive corporate wear']
     },
 
-    // Default fallback - attractive companion clothing
+    // Default fallback - sexy companion clothing (pushing boundaries)
     default: {
-      female: ['form-fitting dress', 'low-cut top', 'tight dress', 'figure-hugging outfit', 'crop top', 'backless dress', 'bodycon dress']
+      female: ['revealing lingerie', 'sexy bikini', 'tight low-cut dress', 'barely-there outfit', 'seductive lingerie', 'skimpy dress', 'provocative outfit']
     }
   };
 
@@ -201,12 +201,12 @@ async function generateAndDownloadAvatar(companion) {
       `cute pose, wearing ${stylishClothing}, beautiful appearance, soft lighting` :
       `attractive pose, wearing ${stylishClothing}, beautiful figure, glamour lighting, elegant setting`;
 
-    // Use short prompt like /chat does - let Netlify function add character details automatically
+    // Use exact prompts from /create flow that work successfully
     let avatarPrompt;
     if (isAnimeStyle) {
-      avatarPrompt = `${name} in ${stylishClothing}, alluring pose, beautiful curvy figure, anime style`;
+      avatarPrompt = `beautiful anime girl, attractive face, seductive expression, detailed anime art, flirtatious pose, wearing ${stylishClothing}, anime style, vibrant colors, high quality anime artwork, detailed facial features, anime eyes, perfect anatomy, alluring pose, single character, solo`;
     } else {
-      avatarPrompt = `${name} in ${stylishClothing}, sensual pose, curvy figure, voluptuous, glamour photography`;
+      avatarPrompt = `beautiful woman, attractive face, seductive expression, alluring pose, wearing ${stylishClothing}, photorealistic, professional photography, soft romantic lighting, glamour photography style, eye contact, sharp focus, attractive model, confident pose, single person, solo`;
     }
 
     console.log(`   🎨 AVATAR PROMPT: ${avatarPrompt}`);
