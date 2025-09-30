@@ -213,12 +213,13 @@ function fetchAllCharacters(offset = null) {
   });
 }
 
-// Update character with greeting
+// Update character with greeting (try both lowercase and capitalized)
 function updateCharacterGreeting(recordId, greeting) {
   return new Promise((resolve, reject) => {
+    // Try with "Greeting" (capitalized) first
     const data = JSON.stringify({
       fields: {
-        greeting: greeting
+        Greeting: greeting
       }
     });
 
