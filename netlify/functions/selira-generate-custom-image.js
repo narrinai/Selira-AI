@@ -300,44 +300,10 @@ exports.handler = async (event, context) => {
                        promptLower.includes('fullbody') || promptLower.includes('standing') ||
                        promptLower.includes('beach') || promptLower.includes('pose');
     
-    // Filter out NSFW-triggering words from custom prompt
-    const nsfwWords = [
-      'seductive', 'sexy', 'revealing', 'incredibly revealing', 'tight', 'low-cut', 'lingerie', 'underwear',
-      'barely-there', 'provocative', 'sultry', 'flirtatious', 'alluring', 'erotic',
-      'sensual', 'nude', 'naked', 'exposed', 'intimate', 'passionate', 'desire',
-      'come-hither', 'inviting pose', 'bedroom eyes', 'sultry', 'hungry look',
-      'barely covering', 'satin sheets', 'silk robe', 'shower'
-    ];
+    // Use custom prompt directly without filtering
+    const sanitizedPrompt = customPrompt.trim();
 
-    let sanitizedPrompt = customPrompt;
-
-    // Replace phrases first (before individual words)
-    sanitizedPrompt = sanitizedPrompt
-      .replace(/incredibly revealing/gi, 'elegant')
-      .replace(/tight.*dress/gi, 'elegant dress')
-      .replace(/low-cut/gi, 'elegant')
-      .replace(/barely.*covering/gi, 'wearing')
-      .replace(/looking back.*shoulder/gi, 'portrait')
-      .replace(/come-hither expression/gi, 'friendly expression')
-      .replace(/inviting pose/gi, 'relaxed pose')
-      .replace(/bedroom eyes/gi, 'expressive eyes')
-      .replace(/on satin sheets/gi, 'relaxing')
-      .replace(/lying on.*sheets/gi, 'portrait');
-
-    // Then remove individual NSFW words
-    nsfwWords.forEach(word => {
-      const regex = new RegExp(`\\b${word}\\b`, 'gi');
-      sanitizedPrompt = sanitizedPrompt.replace(regex, '');
-    });
-
-    // Clean up multiple spaces and trim
-    sanitizedPrompt = sanitizedPrompt
-      .trim()
-      .replace(/\s+/g, ' ')
-      .replace(/,\s*,/g, ',') // Remove double commas
-      .replace(/,\s*$/g, ''); // Remove trailing comma
-
-    console.log(`🧹 [${requestId}] Sanitized prompt: "${customPrompt}" -> "${sanitizedPrompt}"`);
+    console.log(`✨ [${requestId}] Using full custom prompt: "${sanitizedPrompt}"`);
 
     // Build character-aware prompt
     const characterAppearance = `${genderDescription}, ${ethnicityDesc}, ${hairLengthDesc}, ${hairColorDesc}`;
