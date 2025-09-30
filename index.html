@@ -141,7 +141,7 @@
       background: var(--bg-primary);
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
-      padding: 20px 32px;
+      padding: 12px 32px;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
@@ -153,7 +153,7 @@
 
     .tags-row {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       flex-wrap: nowrap;
       min-width: min-content;
       max-width: 1200px;
@@ -163,16 +163,16 @@
     .tag-btn {
       background: var(--bg-secondary);
       border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 6px 16px;
+      border-radius: 16px;
+      padding: 4px 12px;
       text-decoration: none;
       color: var(--text-secondary);
       transition: all 0.2s ease;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 500;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       white-space: nowrap;
       flex-shrink: 0;
     }
@@ -184,7 +184,7 @@
     }
 
     .tag-btn .tag-emoji {
-      font-size: 16px;
+      font-size: 14px;
     }
 
     /* Hero Section */
@@ -325,8 +325,8 @@
     .companion-card {
       background: var(--bg-secondary);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 16px;
+      border-radius: 16px;
+      padding: 20px;
       transition: all 0.3s ease;
       cursor: pointer;
       position: relative;
@@ -344,11 +344,11 @@
 
     .companion-image {
       width: 100%;
-      height: 180px;
+      height: 260px;
       object-fit: cover;
       object-position: center top;
-      border-radius: 8px;
-      margin-bottom: 12px;
+      border-radius: 12px;
+      margin-bottom: 16px;
     }
 
     .companion-info {
@@ -356,17 +356,17 @@
     }
 
     .companion-name {
-      font-size: 1.1rem;
+      font-size: 1.3rem;
       font-weight: 600;
       color: var(--text-primary);
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       line-height: 1.2;
     }
 
     .companion-description {
-      font-size: 0.85rem;
+      font-size: 0.95rem;
       color: var(--text-secondary);
-      line-height: 1.4;
+      line-height: 1.5;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
@@ -908,7 +908,7 @@
     <div class="hero-container">
       <div class="hero-content">
         <h1>Your Perfect <span class="highlight">AI Companion</span> Awaits</h1>
-        <p>Discover thousands of unique AI personalities. From romantic girlfriends to mysterious characters, find your ideal companion and start meaningful conversations today.</p>
+        <p>Always Free AI Chat - Discover thousands of unique AI personalities. From romantic girlfriends to mysterious characters, find your ideal companion and start meaningful conversations today.</p>
 
         <div class="hero-actions">
           <a href="/category" class="primary-btn">Start Chatting Now</a>
@@ -1166,38 +1166,23 @@
 
     function showFallbackCompanions() {
       const track = document.getElementById('carouselTrack');
+      const controls = document.getElementById('carouselControls');
+
       track.innerHTML = `
         <div class="carousel-slide">
           <a href="/category" class="companion-card">
-            <img src="https://selira.ai/avatars/female-1.jpg" alt="AI Companion" class="companion-image" loading="lazy">
-            <div class="companion-info">
-              <h3 class="companion-name">Discover Companions</h3>
-              <p class="companion-description">Explore thousands of unique AI personalities</p>
+            <div style="width: 100%; height: 260px; background: var(--bg-tertiary); border-radius: 12px; margin-bottom: 16px; display: flex; align-items: center; justify-content: center; color: var(--text-secondary);">
+              Loading companions...
             </div>
-          </a>
-          <a href="/category" class="companion-card">
-            <img src="https://selira.ai/avatars/female-2.jpg" alt="AI Companion" class="companion-image" loading="lazy">
             <div class="companion-info">
-              <h3 class="companion-name">Find Your Match</h3>
-              <p class="companion-description">From romantic to mysterious characters</p>
-            </div>
-          </a>
-          <a href="/category" class="companion-card">
-            <img src="https://selira.ai/avatars/female-3.jpg" alt="AI Companion" class="companion-image" loading="lazy">
-            <div class="companion-info">
-              <h3 class="companion-name">Start Chatting</h3>
-              <p class="companion-description">Begin meaningful conversations today</p>
-            </div>
-          </a>
-          <a href="/category" class="companion-card">
-            <img src="https://selira.ai/avatars/female-4.jpg" alt="AI Companion" class="companion-image" loading="lazy">
-            <div class="companion-info">
-              <h3 class="companion-name">Endless Possibilities</h3>
-              <p class="companion-description">Create lasting connections with AI</p>
+              <h3 class="companion-name">Loading...</h3>
+              <p class="companion-description">Please wait while we load companions from our database</p>
             </div>
           </a>
         </div>
       `;
+
+      controls.innerHTML = '';
     }
 
     function moveCarousel(direction) {
