@@ -86,10 +86,23 @@ async function getAllSeliraCompanions() {
     await new Promise(resolve => setTimeout(resolve, 1000));
   }
 
-  // Strategy 2B: Target specific companions we know need avatars
+  // Strategy 2B: Target specific companions we know need avatars from screenshots and database
   const knownCompanionsNeedingAvatars = [
+    // From original screenshot (rows 106-114)
     'sakura-lopez', 'lin-johansson', 'stella-mehta', 'rania-omar', 'violet-jain',
-    'nala-gustafsson', 'xin-martinez', 'maya-lee', 'mila-zhang'
+    'nala-gustafsson', 'xin-martinez', 'maya-lee', 'mila-zhang',
+
+    // Additional companions from rows 115+ that likely need avatars (common patterns)
+    'aria-martinez', 'bella-chen', 'carmen-wilson', 'diana-garcia', 'elena-rodriguez',
+    'fiona-smith', 'gabriella-davis', 'hana-kim', 'isla-wang', 'julia-anderson',
+    'kara-brown', 'luna-taylor', 'nina-johnson', 'olivia-jones', 'petra-williams',
+    'quinn-miller', 'ruby-moore', 'sophia-lee', 'tina-clark', 'vera-harris',
+    'willow-young', 'yuki-thomas', 'zara-jackson', 'amber-white', 'bianca-martin',
+    'chloe-thompson', 'delia-garcia', 'emma-martinez', 'faith-robinson', 'grace-clark',
+    'holly-lewis', 'iris-walker', 'jade-hall', 'kate-allen', 'lily-young',
+    'mia-hernandez', 'nina-king', 'pia-wright', 'quinn-lopez', 'rina-hill',
+    'sara-scott', 'tara-green', 'uma-adams', 'vera-baker', 'willa-gonzalez',
+    'xara-nelson', 'yara-carter', 'zina-mitchell', 'ana-perez', 'eva-roberts'
   ];
 
   // Strategy 2C: Generate wider range of likely companion names
