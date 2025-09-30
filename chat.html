@@ -2738,7 +2738,7 @@
               if (foundCharacter.name) {
                 localStorage.setItem(`char_name_${characterSlug}`, foundCharacter.name);
               }
-              if (foundCharacter.avatar) {
+              if (foundCharacter.avatar && foundCharacter.avatar !== '/avatars/placeholder.webp' && foundCharacter.avatar !== 'null' && foundCharacter.avatar !== null) {
                 localStorage.setItem(`char_avatar_${characterSlug}`, foundCharacter.avatar);
               }
             } else {
@@ -2764,7 +2764,7 @@
               timestamp: lastMessage?.timestamp || Date.now(),
               messageCount: chatHistory.length,
               characterName: characterName, // This is already set from foundCharacter.name or cached name
-              avatar: avatar
+              avatar: avatar || null  // Ensure null instead of string "null"
             });
           }
         }
@@ -2857,8 +2857,10 @@
 
         // Cache character info for future sidebar displays
         if (character) {
-          localStorage.setItem(`char_name_${companion.slug}`, character.name);
-          if (character.avatar) {
+          if (character.name) {
+            localStorage.setItem(`char_name_${companion.slug}`, character.name);
+          }
+          if (character.avatar && character.avatar !== '/avatars/placeholder.webp' && character.avatar !== 'null' && character.avatar !== null) {
             localStorage.setItem(`char_avatar_${companion.slug}`, character.avatar);
           }
         }
@@ -3155,8 +3157,10 @@
     function cacheCharacterInfo(character) {
       if (!character?.slug) return;
 
-      localStorage.setItem(`char_name_${character.slug}`, character.name || character.slug);
-      if (character.avatar && character.avatar !== '/avatars/placeholder.webp') {
+      if (character.name && character.name !== character.slug) {
+        localStorage.setItem(`char_name_${character.slug}`, character.name);
+      }
+      if (character.avatar && character.avatar !== '/avatars/placeholder.webp' && character.avatar !== 'null' && character.avatar !== null) {
         localStorage.setItem(`char_avatar_${character.slug}`, character.avatar);
         console.log('💾 Cached avatar for sidebar:', character.slug, character.avatar);
       }
@@ -3996,10 +4000,10 @@
       // Build character appearance
       const characterAppearance = `${ethnicityDesc}, ${hairLengthDesc}, ${hairColorDesc}`;
 
-      // Build explicit prompt like bulk script with companion traits
+      // Build simplified prompt for faster generation
       const fullPrompt = characterStyle === 'anime'
-        ? `beautiful anime girl, very attractive face, extremely seductive expression, detailed anime art, very erotic pose, wearing ${stylishClothing}, ${characterAppearance}, anime style, vibrant colors, high quality anime artwork, detailed facial features, anime eyes, perfect anatomy, correct human anatomy, two arms, two hands, very sensual pose, large breasts, curvy figure, big butt, voluptuous body, exposed skin, revealing clothing, single character, solo, no extra limbs, proper proportions, bedroom background, intimate setting, seductive atmosphere`
-        : `beautiful woman, attractive face, seductive expression, alluring pose, wearing ${stylishClothing}, ${characterAppearance}, photorealistic, professional photography, soft romantic lighting, glamour photography style, eye contact, sharp focus, attractive model, confident pose, single person, solo, perfect human anatomy, two arms, two hands, correct proportions, no extra limbs, bedroom background, beach setting, luxury suite, intimate atmosphere`;
+        ? `anime portrait, ${characterAppearance}, wearing ${stylishClothing}, anime style, high quality`
+        : `portrait photo, ${characterAppearance}, wearing ${stylishClothing}, professional photography`;
       
       // Add user message
       addMessage(message, 'user');
