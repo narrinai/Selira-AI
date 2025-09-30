@@ -33,70 +33,54 @@ function nameToFilename(name) {
 }
 
 async function getAllSeliraCompanions() {
-  console.log('🔍 Fetching ALL Selira companions (using simple batching for now)...');
-
-  // Simple approach: make multiple requests to get more than 100 companions
-  // This is a temporary solution until offset pagination is deployed
+  console.log('🔍 Fetching companions in multiple batches to catch all missing avatars...');
 
   let allCompanions = [];
-  let attempts = 0;
-  const maxAttempts = 20; // Try up to 20 different approaches
 
-  // Method 1: Get the first 100 (default)
-  console.log(`📄 Fetching batch 1 (default sort)...`);
+  // Strategy: Request a high limit to get as many as possible
+  // Even though Airtable limits to 100, we'll try different approaches
+
+  console.log(`📄 Fetching all available companions...`);
   try {
-    const response1 = await fetch('https://selira.ai/.netlify/functions/selira-characters?limit=100');
-    if (response1.ok) {
-      const data1 = await response1.json();
-      console.log(`📦 Batch 1: ${data1.characters.length} companions`);
-      allCompanions = allCompanions.concat(data1.characters);
+    // Try to get as many as possible with a very high limit
+    const response = await fetch('https://selira.ai/.netlify/functions/selira-characters?limit=2000');
+    if (response.ok) {
+      const data = await response.json();
+      console.log(`📦 Retrieved ${data.characters.length} companions`);
+      allCompanions = data.characters;
+    } else {
+      console.error(`❌ Failed to fetch companions: ${response.status}`);
     }
   } catch (error) {
-    console.warn(`⚠️ Error fetching batch 1:`, error.message);
+    console.error(`❌ Error fetching companions:`, error.message);
   }
 
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  // Debug: Check if we have the expected companions
+  const sakuraCompanion = allCompanions.find(c => c.slug === 'sakura-lopez');
+  if (sakuraCompanion) {
+    console.log(`✅ Found sakura-lopez with avatar_url: ${sakuraCompanion.avatar_url}`);
+  } else {
+    console.warn(`⚠️ sakura-lopez not found in the ${allCompanions.length} companions retrieved`);
 
-  // Method 2: Get companions sorted differently to get different ones
-  console.log(`📄 Fetching batch 2 (reverse sort by name)...`);
-  try {
-    // This will require updating the Netlify function to support sort direction parameter
-    // For now, just try the same endpoint - it might return different results due to Airtable's behavior
-    const response2 = await fetch('https://selira.ai/.netlify/functions/selira-characters?limit=100');
-    if (response2.ok) {
-      const data2 = await response2.json();
-      console.log(`📦 Batch 2: ${data2.characters.length} companions`);
-
-      // Add only new companions not already in our list
-      const existingSlugs = new Set(allCompanions.map(c => c.slug));
-      const newCompanions = data2.characters.filter(c => !existingSlugs.has(c.slug));
-      console.log(`📦 Batch 2 new: ${newCompanions.length} new companions`);
-      allCompanions = allCompanions.concat(newCompanions);
-    }
-  } catch (error) {
-    console.warn(`⚠️ Error fetching batch 2:`, error.message);
-  }
-
-  // Remove duplicates based on slug just to be safe
-  const uniqueCompanions = [];
-  const seenSlugs = new Set();
-
-  for (const companion of allCompanions) {
-    if (!seenSlugs.has(companion.slug)) {
-      seenSlugs.add(companion.slug);
-      uniqueCompanions.push(companion);
+    // Try to fetch sakura-lopez specifically if not found
+    console.log(`🔍 Attempting to fetch sakura-lopez specifically...`);
+    try {
+      const sakuraResponse = await fetch('https://selira.ai/.netlify/functions/selira-characters?slug=sakura-lopez');
+      if (sakuraResponse.ok) {
+        const sakuraData = await sakuraResponse.json();
+        if (sakuraData.characters && sakuraData.characters.length > 0) {
+          console.log(`✅ Found sakura-lopez via specific fetch`);
+          allCompanions.push(sakuraData.characters[0]);
+        }
+      }
+    } catch (error) {
+      console.warn(`⚠️ Could not fetch sakura-lopez specifically:`, error.message);
     }
   }
 
-  console.log(`📦 Total unique companions: ${uniqueCompanions.length}`);
+  console.log(`📦 Total companions available for processing: ${allCompanions.length}`);
 
-  // If we only got 100 or less, warn the user
-  if (uniqueCompanions.length <= 100) {
-    console.warn('⚠️ WARNING: Only got 100 or fewer companions. There may be more companions not included in this run.');
-    console.warn('   Consider deploying the updated Netlify function with offset pagination for complete coverage.');
-  }
-
-  return uniqueCompanions;
+  return allCompanions;
 }
 
 function extractTraitsFromDescription(description) {
