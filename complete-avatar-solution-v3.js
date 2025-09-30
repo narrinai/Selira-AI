@@ -140,7 +140,7 @@ function getStylishClothing(style, category = 'default') {
       female: ['revealing school uniform', 'skimpy magical girl outfit', 'short kimono', 'sexy sailor uniform', 'provocative maid outfit', 'barely-there anime outfit', 'revealing dress', 'seductive costume']
     },
     anime: {
-      female: ['revealing school uniform', 'sexy outfit', 'short kimono', 'skimpy top', 'provocative maid outfit', 'seductive anime fashion']
+      female: ['extremely revealing school uniform', 'micro bikini', 'ultra-short kimono', 'barely-there top', 'almost naked maid outfit', 'tiny lingerie set', 'string bikini', 'see-through outfit', 'exposed breasts lingerie', 'topless with mini skirt', 'transparent clothing', 'nipple-revealing top']
     },
     manga: {
       female: ['sexy manga outfit', 'revealing uniform', 'skimpy dress', 'provocative attire']
@@ -167,9 +167,9 @@ function getStylishClothing(style, category = 'default') {
       female: ['sexy secretary outfit', 'revealing business dress', 'low-cut office attire', 'provocative work suit', 'seductive corporate wear']
     },
 
-    // Default fallback - sexy companion clothing (pushing boundaries)
+    // Default fallback - extremely sexy companion clothing for anime
     default: {
-      female: ['revealing lingerie', 'sexy bikini', 'tight low-cut dress', 'barely-there outfit', 'seductive lingerie', 'skimpy dress', 'provocative outfit']
+      female: ['ultra-revealing lingerie', 'micro string bikini', 'see-through dress', 'topless with tiny shorts', 'exposed breasts outfit', 'barely covered privates', 'transparent lingerie', 'nipple-revealing top', 'almost completely naked', 'tiny thong bikini', 'exposed cleavage outfit']
     }
   };
 
@@ -261,10 +261,10 @@ async function generateAndDownloadAvatar(companion) {
       `cute pose, wearing ${stylishClothing}, beautiful appearance, soft lighting` :
       `attractive pose, wearing ${stylishClothing}, beautiful figure, glamour lighting, elegant setting`;
 
-    // Use exact prompts from /create flow with anatomy fixes and sexy backgrounds
+    // Use much more explicit prompts for anime - very sexual with large breasts/butt and exposed skin
     let avatarPrompt;
     if (isAnimeStyle) {
-      avatarPrompt = `beautiful anime girl, attractive face, seductive expression, detailed anime art, flirtatious pose, wearing ${stylishClothing}, anime style, vibrant colors, high quality anime artwork, detailed facial features, anime eyes, perfect anatomy, correct human anatomy, two arms, two hands, alluring pose, single character, solo, no extra limbs, proper proportions, bedroom background, intimate setting`;
+      avatarPrompt = `beautiful anime girl, very attractive face, extremely seductive expression, detailed anime art, very erotic pose, wearing ${stylishClothing}, anime style, vibrant colors, high quality anime artwork, detailed facial features, anime eyes, perfect anatomy, correct human anatomy, two arms, two hands, very sensual pose, large breasts, curvy figure, big butt, voluptuous body, exposed skin, revealing clothing, single character, solo, no extra limbs, proper proportions, bedroom background, intimate setting, seductive atmosphere`;
     } else {
       avatarPrompt = `beautiful woman, attractive face, seductive expression, alluring pose, wearing ${stylishClothing}, photorealistic, professional photography, soft romantic lighting, glamour photography style, eye contact, sharp focus, attractive model, confident pose, single person, solo, perfect human anatomy, two arms, two hands, correct proportions, no extra limbs, bedroom background, beach setting, luxury suite, intimate atmosphere`;
     }
