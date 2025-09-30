@@ -59,41 +59,42 @@ async function getAllSeliraCompanions() {
   // Small delay between requests
   await new Promise(resolve => setTimeout(resolve, 1000));
 
-  // Strategy 2: Generate likely companion slugs based on common patterns
-  // Most companions follow pattern: firstname-lastname
-  const commonFirstNames = [
-    'aria', 'bella', 'carmen', 'diana', 'elena', 'fiona', 'gabriella', 'hana', 'isla', 'julia',
-    'kara', 'luna', 'maya', 'nora', 'olivia', 'petra', 'quinn', 'ruby', 'sophia', 'tina',
-    'ursula', 'vera', 'willow', 'xara', 'yuki', 'zara', 'amber', 'bianca', 'chloe', 'delia',
-    'emma', 'faith', 'grace', 'holly', 'iris', 'jade', 'kate', 'lily', 'mia', 'nina',
-    'lila', 'mila', 'nina', 'rina', 'tara', 'yara', 'zina', 'ana', 'eva', 'ida',
-    'lin', 'mai', 'rei', 'sai', 'tai', 'nala', 'rania', 'sakura', 'stella', 'violet',
-    'xin', 'yen', 'zoe', 'ava', 'ivy', 'joy', 'kim', 'lea', 'mya', 'pia'
-  ];
+  // Strategy 2: Use multiple fetch approaches to get more companions systematically
+  console.log(`📄 Batch 2: Trying to get companions beyond the first 100...`);
 
-  const commonLastNames = [
-    'anderson', 'brown', 'clark', 'davis', 'evans', 'garcia', 'harris', 'jackson', 'johnson', 'jones',
-    'lee', 'lopez', 'martinez', 'miller', 'moore', 'rodriguez', 'smith', 'taylor', 'thomas', 'williams',
-    'wilson', 'young', 'allen', 'baker', 'bell', 'collins', 'cooper', 'flores', 'gonzalez', 'green',
-    'gustafsson', 'johansson', 'mehta', 'omar', 'jain', 'zhang', 'chen', 'wang', 'liu', 'kumar',
-    'patel', 'singh', 'ahmed', 'khan', 'ali', 'hassan', 'ibrahim', 'shah', 'malik', 'hussain'
-  ];
+  // Strategy 2A: Try fetching with high limit multiple times (Airtable might return different results)
+  for (let attempt = 1; attempt <= 5; attempt++) {
+    console.log(`📄 Batch 2${String.fromCharCode(64 + attempt)}: Fetching attempt ${attempt}...`);
+    try {
+      const response = await fetch(`https://selira.ai/.netlify/functions/selira-characters?limit=100&_=${Date.now()}`);
+      if (response.ok) {
+        const data = await response.json();
+        console.log(`📦 Batch 2${String.fromCharCode(64 + attempt)}: ${data.characters.length} companions`);
 
-  // Generate potential companion slugs
-  const potentialSlugs = [];
+        data.characters.forEach(companion => {
+          if (!seenSlugs.has(companion.slug)) {
+            seenSlugs.add(companion.slug);
+            allCompanions.push(companion);
+          }
+        });
+      }
+    } catch (error) {
+      console.warn(`⚠️ Error fetching batch 2${String.fromCharCode(64 + attempt)}:`, error.message);
+    }
 
-  // Add specific known companions from your screenshot
+    // Small delay between attempts
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+
+  // Strategy 2B: Target specific companions we know need avatars
   const knownCompanionsNeedingAvatars = [
     'sakura-lopez', 'lin-johansson', 'stella-mehta', 'rania-omar', 'violet-jain',
     'nala-gustafsson', 'xin-martinez', 'maya-lee', 'mila-zhang'
   ];
 
-  // Add combinations that are likely to exist and need avatars
-  for (const firstName of commonFirstNames.slice(0, 20)) { // First 20 names
-    for (const lastName of commonLastNames.slice(0, 10)) { // First 10 surnames
-      potentialSlugs.push(`${firstName}-${lastName}`);
-    }
-  }
+  // Strategy 2C: Generate wider range of likely companion names
+  const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+  const potentialSlugs = [];
 
   // Combine all potential slugs
   const allPotentialSlugs = [...knownCompanionsNeedingAvatars, ...potentialSlugs];
