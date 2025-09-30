@@ -8,8 +8,8 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const { text, voice_id } = JSON.parse(event.body);
-    
+    let { text, voice_id } = JSON.parse(event.body);
+
     // Validate input
     if (!text || !voice_id) {
       return {
@@ -29,7 +29,7 @@ exports.handler = async (event, context) => {
 
     // Log API key status (without exposing the key)
     console.log(`🔑 API key status: ${process.env.ELEVENLABS_API_KEY ? `configured (length: ${process.env.ELEVENLABS_API_KEY.length})` : 'not found'}`);
-    
+
     // Validate voice_id format (ElevenLabs voice IDs are typically 20 characters)
     if (voice_id.length < 10 || voice_id.length > 30) {
       console.warn(`⚠️ Suspicious voice_id format: ${voice_id} (length: ${voice_id.length})`);
