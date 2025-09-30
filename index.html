@@ -2506,7 +2506,8 @@
               currentFilters.tags = ['Unfiltered'];
             } else {
               // Strip emoji prefix from tag (Airtable tags don't have emojis)
-              const tagClean = tag.replace(/^[\u{1F000}-\u{1F9FF}]\s*/u, '');
+              // This regex handles complex multi-codepoint emojis like 🧝‍♀️
+              const tagClean = tag.replace(/^[\u{1F000}-\u{1FFFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{FE00}-\u{FE0F}\u{200D}]+\s*/gu, '').trim();
               currentFilters.tags = [tagClean];
             }
 
@@ -2604,7 +2605,8 @@
             .replace(/^-+|-+$/g, ''); // Remove leading and trailing hyphens
 
           // Strip emoji prefix from tag text for filtering (Airtable tags don't have emojis)
-          const tagTextClean = tagText.replace(/^[\u{1F000}-\u{1F9FF}]\s*/u, '');
+          // This regex handles complex multi-codepoint emojis like 🧝‍♀️
+          const tagTextClean = tagText.replace(/^[\u{1F000}-\u{1FFFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{FE00}-\u{FE0F}\u{200D}]+\s*/gu, '').trim();
 
           // For categories, use /category?filter=, for tags use /tags/
           if (['fantasy', 'anime-manga', 'historical'].includes(tagSlug)) {
@@ -2668,7 +2670,8 @@
           // Show characters filtered by tag
           document.querySelector('.filter-section').style.display = 'block';
           // Strip emoji prefix from tag (Airtable tags don't have emojis)
-          const tagClean = (e.state.tag || '').replace(/^[\u{1F000}-\u{1F9FF}]\s*/u, '');
+          // This regex handles complex multi-codepoint emojis like 🧝‍♀️
+          const tagClean = (e.state.tag || '').replace(/^[\u{1F000}-\u{1FFFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{FE00}-\u{FE0F}\u{200D}]+\s*/gu, '').trim();
           currentFilters.tags = [tagClean];
           updateActiveTag(e.state.tag);
           currentTab = 'discover';
@@ -2749,7 +2752,8 @@
           // When filtering by tag, disable style filter to show all types
           currentFilters.style = undefined;
           // Strip emoji prefix from tag (Airtable tags don't have emojis)
-          const tagTextClean = tagText.replace(/^[\u{1F000}-\u{1F9FF}]\s*/u, '');
+          // This regex handles complex multi-codepoint emojis like 🧝‍♀️
+          const tagTextClean = tagText.replace(/^[\u{1F000}-\u{1FFFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{FE00}-\u{FE0F}\u{200D}]+\s*/gu, '').trim();
           currentFilters.tags = [tagTextClean];
 
           // Update dropdown to show "All"
@@ -4678,7 +4682,8 @@ Please be thorough and include important details from our conversations.`;
       console.log('🏷️ Filtering by tag:', tag);
 
       // Strip emoji prefix from tag (Airtable tags don't have emojis)
-      const tagClean = tag.replace(/^[\u{1F000}-\u{1F9FF}]\s*/u, '');
+      // This regex handles complex multi-codepoint emojis like 🧝‍♀️
+      const tagClean = tag.replace(/^[\u{1F000}-\u{1FFFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{FE00}-\u{FE0F}\u{200D}]+\s*/gu, '').trim();
 
       // Update current filters
       currentFilters.tags = [tagClean];
