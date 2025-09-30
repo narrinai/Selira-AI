@@ -335,8 +335,9 @@
 
     .companion-image {
       width: 100%;
-      height: 140px;
+      height: 200px;
       object-fit: cover;
+      object-position: center top;
       border-radius: 8px;
       margin-bottom: 12px;
     }
@@ -769,7 +770,7 @@
       }
 
       .companion-image {
-        height: 120px;
+        height: 180px;
       }
 
       .companion-name {
@@ -1070,17 +1071,22 @@
 
     async function loadCompanions() {
       try {
-        const response = await fetch('/.netlify/functions/selira-characters?limit=12');
+        const response = await fetch('/.netlify/functions/selira-characters?limit=50');
         const data = await response.json();
 
         // Filter companions with avatar_url and add character_url
-        companions = data.characters
+        let allCompanions = data.characters
           .filter(c => c.avatar_url && c.slug)
           .map(c => ({
             ...c,
             character_url: `/chat?character=${c.slug}`
-          }))
-          .slice(0, 12); // Limit to 12 companions for performance
+          }));
+
+        // Shuffle companions randomly
+        allCompanions = allCompanions.sort(() => Math.random() - 0.5);
+
+        // Take first 12 after shuffling
+        companions = allCompanions.slice(0, 12);
 
         console.log('✅ Loaded companions:', companions.length);
         renderCarousel();
