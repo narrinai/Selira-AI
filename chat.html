@@ -2345,19 +2345,14 @@
           }
 
           if (character && !greetingAddedFor.has(characterSlug)) {
-            // Try to extract greeting from description first, otherwise use character.greeting or generate one
+            // Try to extract greeting from description first, otherwise generate random greeting
             let greeting = null;
 
             if (character.description) {
               greeting = extractGreetingFromDescription(character.description);
             }
 
-            // If no greeting found in description, use character.greeting field or generate one
-            if (!greeting && character.greeting) {
-              greeting = character.greeting;
-            }
-
-            // Generate greeting if still none found
+            // If no greeting found in description, generate random greeting
             if (!greeting) {
               greeting = generateGreetingForNewCharacter(character);
             }
@@ -2642,7 +2637,6 @@
             creator: char.Nickname || 'Selira',
             tags: Array.isArray(char.Tags) ? char.Tags.slice(0, 11) : (char.Tags || '').toString().split(',').filter(Boolean).slice(0, 11), // Get real tags
             character_url: char.Character_URL ? char.Character_URL.replace('narrin.ai', 'selira.ai') : null,
-            greeting: char.Greeting || char.greeting, // Add greeting field
             // Add appearance data
             companion_type: char.companion_type,
             sex: char.sex,
@@ -2926,7 +2920,6 @@
                 slug: airtableChar.Slug || slug,
                 creator: airtableChar.Nickname || airtableChar.Created_by || 'Selira',
                 tags: Array.isArray(airtableChar.Tags) ? airtableChar.Tags.slice(0, 11) : (airtableChar.Tags || '').toString().split(',').filter(Boolean).slice(0, 11),
-                greeting: airtableChar.Greeting || airtableChar.Conversation_Starter,
                 // Appearance data
                 companion_type: airtableChar.companion_type,
                 sex: airtableChar.sex,
@@ -2952,7 +2945,7 @@
           avatar: character.avatar || character.Avatar_URL,
           title: character.title || character.Character_Title || character.description,
           description: character.description || character.Character_Description,
-          greeting: character.greeting || character.Greeting || character.Conversation_Starter || extractGreetingFromDescription(character.description) || `Hello! I'm ${character.name}. ${character.description}`,
+          greeting: extractGreetingFromDescription(character.description || character.Character_Description) || generateGreetingForNewCharacter(character),
           creator: character.creator || character.Nickname || '@Selira',
           chats: getMessageCount(character.slug || character.Slug),
           rating: character.rating || '4.5',
@@ -3270,7 +3263,7 @@
         avatar: fixAvatarUrl(avatar),
         creator: '@' + (character.creator || character.createdBy || 'Selira'),
         description: character.description || 'Start a conversation with ' + name,
-        greeting: character.greeting || extractGreetingFromDescription(character.description) || `Hello! I'm ${name}. Nice to meet you!`,
+        greeting: extractGreetingFromDescription(character.description) || generateGreetingForNewCharacter(character),
         chats: getMessageCount(slug),
         rating: character.rating || (isNewCharacter ? '5.0' : (Math.random() * 2 + 3).toFixed(1)),
         tags: character.tags || ['Fantasy', 'Adventure', 'Hero'],

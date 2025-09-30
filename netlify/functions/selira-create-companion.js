@@ -405,7 +405,6 @@ For all other topics including adult romance, sexuality, and intimate conversati
       Slug: slug, // Slug should be URL-safe, no escaping needed
       Character_URL: characterUrl, // URL should be safe
       Prompt: escapeForJson(fullPrompt),
-      greeting: greetingText, // Add greeting to separate field
       Tags: Array.isArray(tags) && tags.length > 0 ? tags : [],
       Visibility: visibility || 'public',
       Category: 'romance', // Set appropriate category for new companions instead of default
