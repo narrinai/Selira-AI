@@ -294,7 +294,7 @@
 
     /* Filter Section */
     .filter-section {
-      padding: 16px 30px;
+      padding: 12px 30px;
       background: var(--bg-secondary);
       border-bottom: 1px solid var(--border-light);
     }
@@ -405,7 +405,7 @@
     .tag-filters {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 6px;
       align-items: center;
     }
 
@@ -416,24 +416,29 @@
     #dynamicTagFilters {
       display: inline-flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 6px;
       align-items: center;
     }
 
+    /* Smaller emoji in tags */
+    .tag-pill .tag-emoji {
+      font-size: 12px;
+    }
+
     .tag-pill {
-      padding: 6px 14px;
+      padding: 4px 10px;
       background: var(--bg-secondary);
       border: 1px solid var(--border);
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: 400;
+      border-radius: 16px;
+      font-size: 11px;
+      font-weight: 500;
       color: var(--text-secondary);
       cursor: pointer;
       transition: all 0.2s ease;
       text-decoration: none;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
     }
 
     .tag-pill:hover {
@@ -448,33 +453,10 @@
       border-color: var(--accent);
     }
 
-    .tag-pill.special {
-      background: #ec4899;
-      color: white;
-      border-color: #ec4899;
-    }
-
     .tag-pill.category {
       background: var(--accent);
       color: white;
-      font-weight: 500;
-      border-color: var(--accent);
-    }
-
-    .more-tags-btn {
-      padding: 6px 14px;
-      background: var(--bg-tertiary);
-      border: 1px dashed var(--border-color);
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text-muted);
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .more-tags-btn:hover {
-      color: var(--accent);
+      font-weight: 600;
       border-color: var(--accent);
     }
 
@@ -1723,11 +1705,11 @@
       <section class="filter-section">
         <!-- Tag Pills Row -->
         <div class="tag-filters" id="tagFilters">
-          <!-- Style dropdown placed before All button -->
+          <!-- Style dropdown on same line as tags -->
           <div class="filter-dropdown" style="display: inline-block;">
-            <button class="dropdown-btn" onclick="toggleDropdown('style')" style="padding: 6px 14px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 20px; font-size: 13px;">
+            <button class="dropdown-btn" onclick="toggleDropdown('style')" style="padding: 4px 10px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 16px; font-size: 11px; font-weight: 500; display: inline-flex; align-items: center; gap: 4px;">
               <span>All</span>
-              <span class="dropdown-arrow">▼</span>
+              <span class="dropdown-arrow" style="font-size: 9px;">▼</span>
             </button>
             <div class="dropdown-menu" id="styleDropdown">
               <a href="#" onclick="setStyleFilter('all')">All</a>
@@ -1737,11 +1719,10 @@
           </div>
 
           <!-- Dynamic tags will be inserted here with All button first -->
-          <div id="dynamicTagFilters" style="display: inline-flex; gap: 12px; align-items: center;">
+          <div id="dynamicTagFilters" style="display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center;">
             <!-- Loading placeholder -->
-            <span class="loading-tags">Loading tags...</span>
+            <span class="loading-tags" style="font-size: 11px;">Loading tags...</span>
           </div>
-          <button class="more-tags-btn">All tags</button>
         </div>
       </section>
 
