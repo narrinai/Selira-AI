@@ -411,13 +411,7 @@
 
     .filter-dropdown {
       position: relative;
-    }
-
-    #dynamicTagFilters {
-      display: inline-flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      align-items: center;
+      display: inline-block;
     }
 
     /* Smaller emoji in tags */
@@ -425,7 +419,8 @@
       font-size: 12px;
     }
 
-    .tag-pill {
+    .tag-pill,
+    .dropdown-btn {
       padding: 4px 10px;
       background: var(--bg-secondary);
       border: 1px solid var(--border);
@@ -441,7 +436,8 @@
       gap: 4px;
     }
 
-    .tag-pill:hover {
+    .tag-pill:hover,
+    .dropdown-btn:hover {
       background: var(--bg-tertiary);
       color: var(--text-primary);
       border-color: var(--accent);
@@ -451,6 +447,11 @@
       background: var(--accent);
       color: white;
       border-color: var(--accent);
+    }
+
+    .dropdown-arrow {
+      font-size: 9px;
+      color: var(--text-secondary);
     }
 
     .tag-pill.category {
@@ -1703,19 +1704,19 @@
 
       <!-- Filter Section -->
       <section class="filter-section">
-        <!-- Tag Pills Row -->
+        <!-- Tag Pills Row - all on same line -->
         <div class="tag-filters" id="tagFilters">
           <!-- Dynamic tags will be inserted here with All button first -->
-          <div id="dynamicTagFilters" style="display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center;">
+          <div id="dynamicTagFilters" style="display: contents;">
             <!-- Loading placeholder -->
             <span class="loading-tags" style="font-size: 11px;">Loading tags...</span>
           </div>
 
-          <!-- Style dropdown after All button -->
-          <div class="filter-dropdown" style="display: inline-block;">
-            <button class="dropdown-btn" id="styleDropdownBtn" onclick="toggleDropdown('style')" style="padding: 4px 10px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 16px; font-size: 11px; font-weight: 500; display: inline-flex; align-items: center; gap: 4px;">
+          <!-- Style dropdown after All button - same styling as tags -->
+          <div class="filter-dropdown">
+            <button class="dropdown-btn" id="styleDropdownBtn" onclick="toggleDropdown('style')">
               <span>Realistic</span>
-              <span class="dropdown-arrow" style="font-size: 9px;">▼</span>
+              <span class="dropdown-arrow">▼</span>
             </button>
             <div class="dropdown-menu" id="styleDropdown">
               <a href="#" onclick="setStyleFilter('all')">All</a>
@@ -2673,7 +2674,7 @@
     // ===== INITIAL URL HANDLING =====
     function handleInitialURL() {
       const currentURL = window.location.pathname + window.location.search;
-      
+
       if (currentURL.includes('/tags/')) {
         // Extract tag from URL
         const tagSlug = currentURL.split('/tags/')[1];
@@ -2691,27 +2692,57 @@
           'romance': 'Romance',
           'mystery': 'Mystery',
           'action': 'Action',
-          'unfiltered': 'Unfiltered'
+          'unfiltered': 'Unfiltered',
+          'monster': 'Monster',
+          'girlfriend': 'Girlfriend',
+          'boyfriend': 'Boyfriend',
+          'seductive': 'Seductive',
+          'tsundere': 'Tsundere',
+          'yandere': 'Yandere',
+          'maid': 'Maid',
+          'elf': 'Elf',
+          'angel': 'Angel',
+          'vampire': 'Vampire'
         };
-        
+
         const tagText = tagMap[tagSlug] || tagSlug.charAt(0).toUpperCase() + tagSlug.slice(1);
+
+        // When filtering by tag, disable style filter to show all types
+        currentFilters.style = undefined;
         currentFilters.tags = [tagText];
+
+        // Update dropdown to show "All"
+        const dropdownBtn = document.getElementById('styleDropdownBtn');
+        if (dropdownBtn) {
+          dropdownBtn.querySelector('span:first-child').textContent = 'All';
+        }
+
         updateActiveTag(tagText);
         applyFilters();
       } else if (currentURL.includes('?filter=')) {
         // Extract category filter from URL
         const urlParams = new URLSearchParams(window.location.search);
         const filter = urlParams.get('filter');
-        
+
         if (filter) {
           const filterMap = {
             'fantasy': '🏰 Fantasy',
             'anime-manga': '🎌 Anime-Manga',
             'historical': '🏛️ Historical'
           };
-          
+
           const tagText = filterMap[filter] || filter;
+
+          // When filtering by tag, disable style filter to show all types
+          currentFilters.style = undefined;
           currentFilters.tags = [tagText];
+
+          // Update dropdown to show "All"
+          const dropdownBtn = document.getElementById('styleDropdownBtn');
+          if (dropdownBtn) {
+            dropdownBtn.querySelector('span:first-child').textContent = 'All';
+          }
+
           updateActiveTag(tagText);
           applyFilters();
         }
