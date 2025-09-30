@@ -59,11 +59,54 @@ async function getAllSeliraCompanions() {
   // Small delay between requests
   await new Promise(resolve => setTimeout(resolve, 1000));
 
-  // Strategy 2: Target specific companions we know need avatars
-  const knownCompanionsNeedingAvatars = ['sakura-lopez', 'lin-johansson', 'stella-mehta', 'rania-omar', 'violet-jain', 'nala-gustafsson', 'xin-martinez', 'maya-lee', 'mila-zhang'];
+  // Strategy 2: Generate likely companion slugs based on common patterns
+  // Most companions follow pattern: firstname-lastname
+  const commonFirstNames = [
+    'aria', 'bella', 'carmen', 'diana', 'elena', 'fiona', 'gabriella', 'hana', 'isla', 'julia',
+    'kara', 'luna', 'maya', 'nora', 'olivia', 'petra', 'quinn', 'ruby', 'sophia', 'tina',
+    'ursula', 'vera', 'willow', 'xara', 'yuki', 'zara', 'amber', 'bianca', 'chloe', 'delia',
+    'emma', 'faith', 'grace', 'holly', 'iris', 'jade', 'kate', 'lily', 'mia', 'nina',
+    'lila', 'mila', 'nina', 'rina', 'tara', 'yara', 'zina', 'ana', 'eva', 'ida',
+    'lin', 'mai', 'rei', 'sai', 'tai', 'nala', 'rania', 'sakura', 'stella', 'violet',
+    'xin', 'yen', 'zoe', 'ava', 'ivy', 'joy', 'kim', 'lea', 'mya', 'pia'
+  ];
 
-  console.log(`📄 Batch 2: Fetching specific companions known to need avatars...`);
-  for (const slug of knownCompanionsNeedingAvatars) {
+  const commonLastNames = [
+    'anderson', 'brown', 'clark', 'davis', 'evans', 'garcia', 'harris', 'jackson', 'johnson', 'jones',
+    'lee', 'lopez', 'martinez', 'miller', 'moore', 'rodriguez', 'smith', 'taylor', 'thomas', 'williams',
+    'wilson', 'young', 'allen', 'baker', 'bell', 'collins', 'cooper', 'flores', 'gonzalez', 'green',
+    'gustafsson', 'johansson', 'mehta', 'omar', 'jain', 'zhang', 'chen', 'wang', 'liu', 'kumar',
+    'patel', 'singh', 'ahmed', 'khan', 'ali', 'hassan', 'ibrahim', 'shah', 'malik', 'hussain'
+  ];
+
+  // Generate potential companion slugs
+  const potentialSlugs = [];
+
+  // Add specific known companions from your screenshot
+  const knownCompanionsNeedingAvatars = [
+    'sakura-lopez', 'lin-johansson', 'stella-mehta', 'rania-omar', 'violet-jain',
+    'nala-gustafsson', 'xin-martinez', 'maya-lee', 'mila-zhang'
+  ];
+
+  // Add combinations that are likely to exist and need avatars
+  for (const firstName of commonFirstNames.slice(0, 20)) { // First 20 names
+    for (const lastName of commonLastNames.slice(0, 10)) { // First 10 surnames
+      potentialSlugs.push(`${firstName}-${lastName}`);
+    }
+  }
+
+  // Combine all potential slugs
+  const allPotentialSlugs = [...knownCompanionsNeedingAvatars, ...potentialSlugs];
+  console.log(`📄 Batch 2: Fetching ${allPotentialSlugs.length} potential companions...`);
+
+  let foundCount = 0;
+  let checkedCount = 0;
+
+  for (const slug of allPotentialSlugs) {
+    checkedCount++;
+    if (checkedCount % 50 === 0) {
+      console.log(`📊 Progress: checked ${checkedCount}/${allPotentialSlugs.length} potential companions...`);
+    }
     try {
       const response = await fetch(`https://selira.ai/.netlify/functions/selira-characters?slug=${slug}`);
       if (response.ok) {
@@ -73,7 +116,14 @@ async function getAllSeliraCompanions() {
           if (!seenSlugs.has(companion.slug)) {
             seenSlugs.add(companion.slug);
             allCompanions.push(companion);
-            console.log(`📦 Found ${slug}: avatar_url = ${companion.avatar_url || 'null'}`);
+            foundCount++;
+
+            // Only log companions without avatar_url to reduce noise
+            if (!companion.avatar_url || companion.avatar_url === null || companion.avatar_url === '') {
+              console.log(`📦 Found ${slug}: avatar_url = ${companion.avatar_url || 'null'} ⭐`);
+            } else {
+              console.log(`📦 Found ${slug}: has avatar`);
+            }
           }
         }
       }
@@ -81,10 +131,11 @@ async function getAllSeliraCompanions() {
       console.warn(`⚠️ Error fetching ${slug}:`, error.message);
     }
 
-    // Small delay between individual requests
-    await new Promise(resolve => setTimeout(resolve, 200));
+    // Small delay between individual requests - reduced for faster bulk processing
+    await new Promise(resolve => setTimeout(resolve, 100));
   }
 
+  console.log(`📦 Summary: Found ${foundCount} existing companions out of ${checkedCount} checked`);
   console.log(`📦 Total unique companions collected: ${allCompanions.length}`);
 
   // Debug: Show companions without avatar_url
@@ -251,12 +302,12 @@ async function generateAndDownloadAvatar(companion) {
       `cute pose, wearing ${stylishClothing}, beautiful appearance, soft lighting` :
       `attractive pose, wearing ${stylishClothing}, beautiful figure, glamour lighting, elegant setting`;
 
-    // Use exact prompts from /create flow that work successfully
+    // Use exact prompts from /create flow with anatomy fixes and sexy backgrounds
     let avatarPrompt;
     if (isAnimeStyle) {
-      avatarPrompt = `beautiful anime girl, attractive face, seductive expression, detailed anime art, flirtatious pose, wearing ${stylishClothing}, anime style, vibrant colors, high quality anime artwork, detailed facial features, anime eyes, perfect anatomy, alluring pose, single character, solo`;
+      avatarPrompt = `beautiful anime girl, attractive face, seductive expression, detailed anime art, flirtatious pose, wearing ${stylishClothing}, anime style, vibrant colors, high quality anime artwork, detailed facial features, anime eyes, perfect anatomy, correct human anatomy, two arms, two hands, alluring pose, single character, solo, no extra limbs, proper proportions, bedroom background, intimate setting`;
     } else {
-      avatarPrompt = `beautiful woman, attractive face, seductive expression, alluring pose, wearing ${stylishClothing}, photorealistic, professional photography, soft romantic lighting, glamour photography style, eye contact, sharp focus, attractive model, confident pose, single person, solo`;
+      avatarPrompt = `beautiful woman, attractive face, seductive expression, alluring pose, wearing ${stylishClothing}, photorealistic, professional photography, soft romantic lighting, glamour photography style, eye contact, sharp focus, attractive model, confident pose, single person, solo, perfect human anatomy, two arms, two hands, correct proportions, no extra limbs, bedroom background, beach setting, luxury suite, intimate atmosphere`;
     }
 
     console.log(`   🎨 AVATAR PROMPT: ${avatarPrompt}`);
@@ -305,10 +356,10 @@ async function generateAndDownloadAvatar(companion) {
         console.log(`   🔄 Trying with more conservative prompt...`);
         await new Promise(resolve => setTimeout(resolve, 5000));
 
-        // Use simple conservative version like /chat does
+        // Use simple conservative version like /chat does with anatomy constraints and sexy backgrounds
         const moderatePrompt = isAnimeStyle ?
-          `${name} in stylish outfit, alluring pose, anime style` :
-          `${name} in fitted dress, attractive pose, glamour lighting`;
+          `${name} in stylish outfit, alluring pose, anime style, correct anatomy, two arms, no extra limbs, bedroom setting` :
+          `${name} in fitted dress, attractive pose, glamour lighting, perfect anatomy, two arms, correct proportions, beach background, intimate setting`;
 
         const conservativeResponse = await fetch('https://selira.ai/.netlify/functions/selira-generate-custom-image', {
           method: 'POST',
