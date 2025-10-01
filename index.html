@@ -1951,13 +1951,23 @@
     function cleanDescription(description) {
       if (!description) return '';
 
-      // Remove everything after "Extra Instructions:" or "Greeting:"
-      let cleaned = description.split(/(?:Extra Instructions:|Greeting:)/)[0].trim();
+      // First, unescape newlines
+      let cleaned = description.replace(/\\n/g, '\n');
 
-      // Remove "A realistic/anime companion with..." part and keep only the "Discover..." part
-      const discoverMatch = cleaned.match(/Discover\s+.+/);
+      // Remove everything after "Extra Instructions:" or "Greeting:"
+      cleaned = cleaned.split(/(?:Extra Instructions:|Greeting:)/)[0].trim();
+
+      // Remove "A realistic/anime companion with..." part and keep only the "Discover..." or "Experience..." part
+      const discoverMatch = cleaned.match(/(?:Discover|Experience)\s+[^]*$/m);
       if (discoverMatch) {
         return discoverMatch[0].trim();
+      }
+
+      // If no Discover/Experience found, return the cleaned text without the first line
+      const lines = cleaned.split('\n').filter(line => line.trim());
+      if (lines.length > 1) {
+        // Skip first line (e.g., "A realistic companion with...")
+        return lines.slice(1).join(' ').trim();
       }
 
       return cleaned;
