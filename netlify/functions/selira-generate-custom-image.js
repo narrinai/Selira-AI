@@ -321,9 +321,9 @@ exports.handler = async (event, context) => {
     console.log(`🎨 [${requestId}] Full prompt:`, fullPrompt);
     console.log(`🎌 [${requestId}] Anime style:`, isAnimeStyle);
 
-    // Use Flux Dev for uncensored high-quality generation
-    // Flux Dev has no NSFW filter and produces high quality realistic/anime images
-    const modelVersion = "black-forest-labs/flux-dev:d2a9c3e3ebc2fefc0f33d8c6fde00b7e46f40c394f7f0ef81aa8bf7495788b6c";
+    // Use uncensored Flux Dev model - no NSFW filter
+    // aisha-ai-official/flux.1dev-uncensored-msfluxnsfw-v3 has no content restrictions
+    const modelName = "aisha-ai-official/flux.1dev-uncensored-msfluxnsfw-v3";
 
     // Add progressive delay to prevent rate limiting
     // More requests = longer delay
@@ -335,14 +335,14 @@ exports.handler = async (event, context) => {
     // Remove concurrent request limit for better throughput
     console.log(`📊 [${requestId}] Current active Replicate requests: ${activeReplicateRequests}`);
 
-    // Call Replicate API
-    console.log(`📡 [${requestId}] Calling Replicate API with model version:`, modelVersion);
+    // Call Replicate API using model name (not version hash)
+    console.log(`📡 [${requestId}] Calling Replicate API with model:`, modelName);
     console.log(`📡 [${requestId}] Active Replicate requests: ${activeReplicateRequests}`);
 
     activeReplicateRequests++;
     let replicateResponse;
     try {
-      replicateResponse = await fetch('https://api.replicate.com/v1/predictions', {
+      replicateResponse = await fetch('https://api.replicate.com/v1/models/' + modelName + '/predictions', {
         method: 'POST',
         headers: {
           'Authorization': `Token ${REPLICATE_API_TOKEN}`,
@@ -350,16 +350,13 @@ exports.handler = async (event, context) => {
           'Accept': 'application/json'
         },
         body: JSON.stringify({
-          version: modelVersion,
           input: {
             prompt: fullPrompt,
             width: 1024,
             height: 1024,
-            num_inference_steps: 28,
-            guidance_scale: 3.5,
-            num_outputs: 1,
-            output_format: "webp",
-            output_quality: 90
+            steps: 28,
+            cfg_scale: 5,
+            scheduler: "default"
           }
         })
       });
