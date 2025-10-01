@@ -321,9 +321,9 @@ exports.handler = async (event, context) => {
     console.log(`🎨 [${requestId}] Full prompt:`, fullPrompt);
     console.log(`🎌 [${requestId}] Anime style:`, isAnimeStyle);
 
-    // Use uncensored Flux Dev model - no NSFW filter
-    // aisha-ai-official/flux.1dev-uncensored-msfluxnsfw-v3 has no content restrictions
-    const modelName = "aisha-ai-official/flux.1dev-uncensored-msfluxnsfw-v3";
+    // Use Flux Dev with safety checker disabled - no NSFW filter
+    // Latest version with disable_safety_checker option
+    const modelVersion = "6e4a938f85952bdabcc15aa329178c4d681c52bf25a0342403287dc26944661d";
 
     // Add progressive delay to prevent rate limiting
     // More requests = longer delay
@@ -335,14 +335,14 @@ exports.handler = async (event, context) => {
     // Remove concurrent request limit for better throughput
     console.log(`📊 [${requestId}] Current active Replicate requests: ${activeReplicateRequests}`);
 
-    // Call Replicate API using model name (not version hash)
-    console.log(`📡 [${requestId}] Calling Replicate API with model:`, modelName);
+    // Call Replicate API
+    console.log(`📡 [${requestId}] Calling Replicate API with model version:`, modelVersion);
     console.log(`📡 [${requestId}] Active Replicate requests: ${activeReplicateRequests}`);
 
     activeReplicateRequests++;
     let replicateResponse;
     try {
-      replicateResponse = await fetch('https://api.replicate.com/v1/models/' + modelName + '/predictions', {
+      replicateResponse = await fetch('https://api.replicate.com/v1/predictions', {
         method: 'POST',
         headers: {
           'Authorization': `Token ${REPLICATE_API_TOKEN}`,
@@ -350,13 +350,17 @@ exports.handler = async (event, context) => {
           'Accept': 'application/json'
         },
         body: JSON.stringify({
+          version: modelVersion,
           input: {
             prompt: fullPrompt,
             width: 1024,
             height: 1024,
-            steps: 28,
-            cfg_scale: 5,
-            scheduler: "default"
+            num_inference_steps: 28,
+            guidance_scale: 3.5,
+            num_outputs: 1,
+            output_format: "webp",
+            output_quality: 90,
+            disable_safety_checker: true
           }
         })
       });
