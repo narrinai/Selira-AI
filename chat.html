@@ -1981,8 +1981,8 @@
       // Update sidebar
       document.getElementById('sidebarCharacterName').textContent = currentCharacter.name;
       document.getElementById('sidebarCharacterCreator').textContent = currentCharacter.creator;
-      const greeting = extractGreetingFromDescription(currentCharacter.description) || currentCharacter.description || '';
-      document.getElementById('sidebarCharacterDescription').innerHTML = greeting.replace(/\\n\\n/g, '<br><br>').replace(/\\n/g, '<br>');
+      const cleanDesc = cleanDescription(currentCharacter.description) || currentCharacter.description || '';
+      document.getElementById('sidebarCharacterDescription').innerHTML = cleanDesc.replace(/\\n\\n/g, '<br><br>').replace(/\\n/g, '<br>');
       const sidebarImage = document.getElementById('sidebarCharacterImage');
       if (sidebarImage) {
         if (currentCharacter.avatar && currentCharacter.avatar !== '/avatars/placeholder.webp') {
@@ -3152,6 +3152,22 @@
 
       const greetingMatch = description.match(/Greeting:\s*(.+?)(?:\n|$)/);
       return greetingMatch ? greetingMatch[1].trim() : null;
+    }
+
+    // Clean description by removing greeting and extra instructions
+    function cleanDescription(description) {
+      if (!description) return '';
+
+      // Remove everything after "Extra Instructions:" or "Greeting:"
+      let cleaned = description.split(/(?:Extra Instructions:|Greeting:)/)[0].trim();
+
+      // Remove "A realistic/anime companion with..." part and keep only the "Discover..." part
+      const discoverMatch = cleaned.match(/Discover\s+.+/);
+      if (discoverMatch) {
+        return discoverMatch[0].trim();
+      }
+
+      return cleaned;
     }
 
     // Cache character info for sidebar
@@ -4373,7 +4389,7 @@
           </div>
           
           <p style="color: var(--text-secondary); line-height: 1.6; margin: 0;">
-            ${(extractGreetingFromDescription(currentCharacter.description) || 'An amazing AI companion ready for conversation.').replace(/\\n\\n/g, '<br><br>').replace(/\\n/g, '<br>')}
+            ${(cleanDescription(currentCharacter.description) || 'An amazing AI companion ready for conversation.').replace(/\\n\\n/g, '<br><br>').replace(/\\n/g, '<br>')}
           </p>
         </div>
       `;

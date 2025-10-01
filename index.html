@@ -1946,6 +1946,23 @@
 
     });
 
+    // ===== HELPER FUNCTIONS =====
+    // Clean description by removing greeting and extra instructions
+    function cleanDescription(description) {
+      if (!description) return '';
+
+      // Remove everything after "Extra Instructions:" or "Greeting:"
+      let cleaned = description.split(/(?:Extra Instructions:|Greeting:)/)[0].trim();
+
+      // Remove "A realistic/anime companion with..." part and keep only the "Discover..." part
+      const discoverMatch = cleaned.match(/Discover\s+.+/);
+      if (discoverMatch) {
+        return discoverMatch[0].trim();
+      }
+
+      return cleaned;
+    }
+
     // ===== CHARACTER LOADING =====
     async function loadCharacters() {
       try {
@@ -1966,7 +1983,7 @@
             id: char.Character_ID || char.Name,
             name: char.Name || 'Unknown',
             title: char.Character_Title || '',
-            description: char.Character_Description || '',
+            description: cleanDescription(char.Character_Description || ''),
             avatar: char.Avatar_URL ? char.Avatar_URL.replace('narrin.ai', 'selira.ai') : null,
             category: char.Category || 'Other',
             slug: char.Slug || (char.Name ? char.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'unknown'),
