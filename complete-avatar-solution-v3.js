@@ -256,11 +256,6 @@ async function generateAndDownloadAvatar(companion) {
     // Build character-aware prompt
     const characterAppearance = `${genderDescription}, ${ethnicityDesc}, ${hairLengthDesc}, ${hairColorDesc}`;
 
-    // Create balanced prompt for companion avatars - attractive but not overly explicit
-    const basePrompt = isAnimeStyle ?
-      `cute pose, wearing ${stylishClothing}, beautiful appearance, soft lighting` :
-      `attractive pose, wearing ${stylishClothing}, beautiful figure, glamour lighting, elegant setting`;
-
     // Use much more explicit prompts for anime - very sexual with large breasts/butt and exposed skin
     let avatarPrompt;
     if (isAnimeStyle) {
@@ -272,6 +267,7 @@ async function generateAndDownloadAvatar(companion) {
     console.log(`   🎨 AVATAR PROMPT: ${avatarPrompt}`);
 
     // Use Netlify function which has access to Replicate API token
+    // (now using uncensored Flux Dev model - no NSFW filter)
     const avatarResponse = await fetch('https://selira.ai/.netlify/functions/selira-generate-custom-image', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -308,50 +304,6 @@ async function generateAndDownloadAvatar(companion) {
     } else {
       const errorText = await avatarResponse.text();
       console.log(`⚠️ Avatar generation failed: ${avatarResponse.status} - ${errorText}`);
-
-      // Try conservative prompt for NSFW errors or rate limiting
-      if (errorText.includes('NSFW content detected') || errorText.includes('content policy') ||
-          avatarResponse.status === 429 || avatarResponse.status === 503) {
-        console.log(`   🔄 Trying with more conservative prompt...`);
-        await new Promise(resolve => setTimeout(resolve, 5000));
-
-        // Use simple conservative version like /chat does with anatomy constraints and sexy backgrounds
-        const moderatePrompt = isAnimeStyle ?
-          `${name} in stylish outfit, alluring pose, anime style, correct anatomy, two arms, no extra limbs, bedroom setting` :
-          `${name} in fitted dress, attractive pose, glamour lighting, perfect anatomy, two arms, correct proportions, beach background, intimate setting`;
-
-        const conservativeResponse = await fetch('https://selira.ai/.netlify/functions/selira-generate-custom-image', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            customPrompt: moderatePrompt,
-            characterName: name,
-            category: traits.style === 'anime' ? 'anime-manga' : 'realistic',
-            style: traits.style,
-            shotType: 'portrait',
-            sex: traits.sex,
-            ethnicity: traits.ethnicity,
-            hairLength: traits.hairLength,
-            hairColor: traits.hairColor
-          })
-        });
-
-        if (conservativeResponse.ok) {
-          const conservativeResult = await conservativeResponse.json();
-          if (conservativeResult.success && conservativeResult.imageUrl) {
-            console.log(`✅ Generated conservative avatar: ${conservativeResult.imageUrl}`);
-
-            const filename = `${nameToFilename(name)}-conservative-${Date.now()}.webp`;
-            const downloaded = await downloadImage(conservativeResult.imageUrl, filename);
-
-            if (downloaded) {
-              const localUrl = `https://selira.ai/avatars/${filename}`;
-              console.log(`🔗 Local URL: ${localUrl}`);
-              return localUrl;
-            }
-          }
-        }
-      }
     }
   } catch (error) {
     console.log(`❌ Error: ${error.message}`);
