@@ -4031,7 +4031,7 @@
           if (loadingMsg) loadingMsg.remove();
 
           // Add generated image as AI response
-          addImageMessage(result.imageUrl, fullPrompt, characterStyle);
+          addImageMessage(result.imageUrl, result.fullPrompt || simplePrompt, characterStyle);
 
           // Increment images_generated counter for the user
           const user = window.getCurrentUser ? window.getCurrentUser() : null;
