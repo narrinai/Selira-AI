@@ -4,8 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Selira AI - Social Media Templates</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      /* Selira dark theme - matching index.html */
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #1a1a1a;
+      --bg-tertiary: #2a2a2a;
+      --text-primary: #ffffff;
+      --text-secondary: #b3b3b3;
+      --text-muted: #888888;
+      --accent: #d4a574;
+      --accent-hover: #c19456;
+      --border: #333333;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -13,10 +29,10 @@
     }
 
     body {
-      font-family: 'Nunito', sans-serif;
-      background: linear-gradient(135deg, #faf9f7 0%, #f5f2ed 100%);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-primary);
       padding: 40px;
-      color: #2d2620;
+      color: var(--text-primary);
       line-height: 1.6;
     }
 
@@ -38,7 +54,7 @@
     }
 
     .subtitle {
-      color: #8b7355;
+      color: var(--text-secondary);
       font-size: 18px;
       font-weight: 500;
       margin-bottom: 50px;
@@ -54,7 +70,7 @@
       font-size: 32px;
       font-weight: 600;
       margin-bottom: 25px;
-      color: #2d2620;
+      color: var(--text-primary);
       position: relative;
       padding-bottom: 10px;
     }
@@ -66,8 +82,15 @@
       left: 0;
       width: 60px;
       height: 3px;
-      background: linear-gradient(135deg, #d4a574 0%, #c19456 100%);
+      background: var(--accent);
       border-radius: 2px;
+    }
+
+    h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      margin: 30px 0 15px 0;
+      color: var(--text-secondary);
     }
 
     .template-grid {
@@ -77,26 +100,27 @@
     }
 
     .template-card {
-      background: white;
-      border-radius: 16px;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-lg);
       padding: 25px;
-      box-shadow: 0 8px 32px rgba(212, 165, 116, 0.1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
       transition: all 0.3s ease;
-      border: 1px solid rgba(212, 165, 116, 0.1);
+      border: 1px solid var(--border);
     }
 
     .template-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 20px 40px rgba(212, 165, 116, 0.15);
+      box-shadow: 0 20px 40px rgba(212, 165, 116, 0.2);
+      border-color: var(--accent);
     }
 
     .template-preview {
       position: relative;
       margin-bottom: 20px;
-      border-radius: 12px;
+      border-radius: var(--radius-md);
       overflow: hidden;
-      background: #f9f8f6;
-      border: 2px solid rgba(212, 165, 116, 0.1);
+      background: var(--bg-tertiary);
+      border: 2px solid var(--border);
     }
 
     .template-title {
@@ -104,29 +128,29 @@
       font-weight: 600;
       font-size: 18px;
       margin-bottom: 8px;
-      color: #2d2620;
+      color: var(--text-primary);
     }
 
     .template-dimensions {
-      color: #8b7355;
+      color: var(--text-secondary);
       font-size: 14px;
       margin-bottom: 20px;
-      font-family: 'Nunito', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-weight: 500;
       background: rgba(212, 165, 116, 0.1);
       padding: 5px 10px;
-      border-radius: 6px;
+      border-radius: var(--radius-sm);
       display: inline-block;
     }
 
     .download-btn {
-      background: linear-gradient(135deg, #d4a574 0%, #c19456 100%);
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
       color: white;
       border: none;
       padding: 12px 28px;
-      border-radius: 10px;
+      border-radius: var(--radius-md);
       font-weight: 600;
-      font-family: 'Nunito', sans-serif;
+      font-family: 'Inter', sans-serif;
       cursor: pointer;
       transition: all 0.3s ease;
       width: 100%;
@@ -295,9 +319,9 @@
     .favicon-item {
       text-align: center;
       padding: 15px;
-      background: rgba(212, 165, 116, 0.05);
-      border-radius: 8px;
-      border: 1px solid rgba(212, 165, 116, 0.1);
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
     }
 
     .favicon-preview {
@@ -317,18 +341,18 @@
 
     .favicon-label {
       font-size: 12px;
-      color: #8b7355;
+      color: var(--text-secondary);
       font-weight: 600;
     }
 
     .specs-table {
       width: 100%;
       margin-top: 50px;
-      background: white;
-      border-radius: 16px;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-lg);
       overflow: hidden;
-      box-shadow: 0 8px 32px rgba(212, 165, 116, 0.1);
-      border: 1px solid rgba(212, 165, 116, 0.1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border);
     }
 
     .specs-table table {
@@ -337,19 +361,21 @@
     }
 
     .specs-table th {
-      background: linear-gradient(135deg, #d4a574 0%, #c19456 100%);
-      color: white;
+      background: var(--bg-tertiary);
+      color: var(--accent);
       padding: 20px;
       text-align: left;
       font-weight: 700;
       font-family: 'Playfair Display', serif;
       font-size: 16px;
+      border-bottom: 2px solid var(--accent);
     }
 
     .specs-table td {
       padding: 15px 20px;
-      border-bottom: 1px solid rgba(212, 165, 116, 0.1);
-      font-family: 'Nunito', sans-serif;
+      border-bottom: 1px solid var(--border);
+      font-family: 'Inter', sans-serif;
+      color: var(--text-secondary);
     }
 
     .specs-table tr:last-child td {
@@ -357,23 +383,23 @@
     }
 
     .specs-table tr:hover {
-      background: rgba(212, 165, 116, 0.05);
+      background: var(--bg-tertiary);
     }
 
     .platform-name {
       font-weight: 700;
-      color: #2d2620;
+      color: var(--text-primary);
       font-family: 'Playfair Display', serif;
     }
 
     .dimension-code {
       font-family: 'Monaco', 'Menlo', monospace;
-      color: #c19456;
+      color: var(--accent);
       font-size: 14px;
       font-weight: 600;
       background: rgba(212, 165, 116, 0.1);
       padding: 4px 8px;
-      border-radius: 4px;
+      border-radius: var(--radius-sm);
     }
 
     .loading-overlay {
@@ -382,7 +408,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(212, 165, 116, 0.1);
+      background: rgba(0, 0, 0, 0.8);
       backdrop-filter: blur(4px);
       display: none;
       align-items: center;
@@ -393,8 +419,8 @@
     .loading-spinner {
       width: 60px;
       height: 60px;
-      border: 4px solid rgba(212, 165, 116, 0.2);
-      border-top: 4px solid #c19456;
+      border: 4px solid var(--border);
+      border-top: 4px solid var(--accent);
       border-radius: 50%;
       animation: spin 1s linear infinite;
     }
@@ -530,7 +556,7 @@
       <h2>Social Media Banners</h2>
       
       <!-- Twitter/X -->
-      <h3 style="font-family: 'Playfair Display', serif; font-size: 20px; margin: 30px 0 15px 0; color: #8b7355;">Twitter/X</h3>
+      <h3>Twitter/X</h3>
       <div class="template-grid">
         <div class="template-card">
           <div class="template-preview">
@@ -550,7 +576,7 @@
       </div>
 
       <!-- LinkedIn -->
-      <h3 style="font-family: 'Playfair Display', serif; font-size: 20px; margin: 30px 0 15px 0; color: #8b7355;">LinkedIn</h3>
+      <h3>LinkedIn</h3>
       <div class="template-grid">
         <div class="template-card">
           <div class="template-preview">
@@ -584,7 +610,7 @@
       </div>
 
       <!-- Facebook -->
-      <h3 style="font-family: 'Playfair Display', serif; font-size: 20px; margin: 30px 0 15px 0; color: #8b7355;">Facebook</h3>
+      <h3>Facebook</h3>
       <div class="template-grid">
         <div class="template-card">
           <div class="template-preview">
@@ -604,7 +630,7 @@
       </div>
 
       <!-- YouTube -->
-      <h3 style="font-family: 'Playfair Display', serif; font-size: 20px; margin: 30px 0 15px 0; color: #8b7355;">YouTube</h3>
+      <h3>YouTube</h3>
       <div class="template-grid">
         <div class="template-card">
           <div class="template-preview">
