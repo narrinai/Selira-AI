@@ -1186,8 +1186,9 @@
     }
 
     .image-upgrade-title {
-      font-size: 24px;
-      font-weight: 600;
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      font-weight: 700;
       color: var(--text-primary);
       margin-bottom: 8px;
     }
@@ -4533,17 +4534,13 @@
       const upgradeButton = document.getElementById('upgradeButton');
 
       // Customize modal content based on user status
-      if (permissions.plan === 'Guest') {
-        title.textContent = 'Login Required';
-        subtitle.textContent = 'Create an account to start generating images';
-        upgradeButton.textContent = 'Sign Up Free';
-        upgradeButton.href = '/signup';
-      } else {
-        title.textContent = 'Unlock Image Generation';
-        subtitle.textContent = `${permissions.plan} plan doesn't include image generation`;
-        upgradeButton.textContent = 'Upgrade Plan';
-        upgradeButton.href = '/pricing';
-      }
+      // Always focus on upgrading since user is logged in if they see this
+      title.textContent = 'Upgrade to Generate Images';
+      subtitle.textContent = permissions.plan === 'Free'
+        ? 'Image generation is available on Basic and Premium plans'
+        : `${permissions.plan} plan doesn't include image generation`;
+      upgradeButton.textContent = 'View Pricing';
+      upgradeButton.href = '/pricing';
 
       modal.classList.add('show');
 
