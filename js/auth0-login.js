@@ -638,17 +638,40 @@ class Auth0LoginModal {
       innerHTML: navMenu.innerHTML.substring(0, 200) + '...'
     });
     
-    // Find existing auth buttons or create them (exclude mobile-header buttons)
-    let loginBtn = navMenu.querySelector('.login-btn:not(.mobile-header .login-btn)');
-    let signupBtn = navMenu.querySelector('.signup-btn:not(.mobile-header .signup-btn)');
-    let profileBtn = navMenu.querySelector('.profile-btn:not(.mobile-header .profile-btn)');
-    
-    console.log('🔍 Found buttons:', { 
-      loginBtn: !!loginBtn, 
-      signupBtn: !!signupBtn, 
-      profileBtn: !!profileBtn 
+    // Find all auth buttons
+    const allLoginBtns = navMenu.querySelectorAll('.login-btn');
+    const allSignupBtns = navMenu.querySelectorAll('.signup-btn');
+    const allProfileBtns = navMenu.querySelectorAll('.profile-btn');
+
+    // Filter out mobile-header buttons
+    let loginBtn = null;
+    let signupBtn = null;
+    let profileBtn = null;
+
+    allLoginBtns.forEach(btn => {
+      if (!btn.closest('.mobile-header')) {
+        loginBtn = btn;
+      }
     });
-    
+
+    allSignupBtns.forEach(btn => {
+      if (!btn.closest('.mobile-header')) {
+        signupBtn = btn;
+      }
+    });
+
+    allProfileBtns.forEach(btn => {
+      if (!btn.closest('.mobile-header')) {
+        profileBtn = btn;
+      }
+    });
+
+    console.log('🔍 Found desktop buttons (excluding mobile-header):', {
+      loginBtn: !!loginBtn,
+      signupBtn: !!signupBtn,
+      profileBtn: !!profileBtn
+    });
+
     if (isAuthenticated) {
       console.log('✅ User authenticated - showing profile button');
       // Update existing login button to profile
