@@ -134,7 +134,158 @@ exports.handler = async (event, context) => {
 
     console.log(`📊 Found user record ${userRecordId}, updating: ${currentImagesGenerated} → ${newImagesGenerated}`);
 
-    // Update the Users table with the new total
+    // Get current hour in format YYYY-MM-DD-HH
+    const now = new Date();
+    const currentHour = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, '0')}-${String(now.getUTCDate()).padStart(2, '0')}-${String(now.getUTCHours()).padStart(2, '0')}`;
+
+    console.log(`🕐 Current hour: ${currentHour}`);
+
+    // Check if ImageUsage record exists for this user + hour
+    const findImageUsage = () => {
+      return new Promise((resolve, reject) => {
+        // Use RECORD_ID() to get the linked User record ID
+        const filterFormula = `AND(RECORD_ID()=ARRAYJOIN(User), {Hour}="${currentHour}")`;
+        const path = `/v0/${AIRTABLE_BASE_ID}/ImageUsage?filterByFormula=${encodeURIComponent(filterFormula)}`;
+
+        const options = {
+          hostname: 'api.airtable.com',
+          port: 443,
+          path: path,
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+            'Content-Type': 'application/json'
+          }
+        };
+
+        console.log('🔍 Looking up ImageUsage record for user:', userRecordId, 'hour:', currentHour);
+
+        const req = https.request(options, (res) => {
+          let data = '';
+          res.on('data', (chunk) => { data += chunk; });
+          res.on('end', () => {
+            try {
+              const response = JSON.parse(data);
+              resolve({ statusCode: res.statusCode, data: response });
+            } catch (error) {
+              reject(error);
+            }
+          });
+        });
+
+        req.on('error', reject);
+        req.end();
+      });
+    };
+
+    const imageUsageLookup = await findImageUsage();
+
+    let imageUsageUpdateResult;
+
+    if (imageUsageLookup.data.records && imageUsageLookup.data.records.length > 0) {
+      // Record exists - increment Count
+      const existingRecord = imageUsageLookup.data.records[0];
+      const currentCount = existingRecord.fields.Count || 0;
+      const newCount = currentCount + 1;
+
+      console.log(`📊 ImageUsage record exists, incrementing: ${currentCount} → ${newCount}`);
+
+      const updateImageUsage = () => {
+        return new Promise((resolve, reject) => {
+          const data = JSON.stringify({
+            fields: {
+              Count: newCount
+            }
+          });
+
+          const options = {
+            hostname: 'api.airtable.com',
+            port: 443,
+            path: `/v0/${AIRTABLE_BASE_ID}/ImageUsage/${existingRecord.id}`,
+            method: 'PATCH',
+            headers: {
+              'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+              'Content-Type': 'application/json',
+              'Content-Length': data.length
+            }
+          };
+
+          const req = https.request(options, (res) => {
+            let responseData = '';
+            res.on('data', (chunk) => { responseData += chunk; });
+            res.on('end', () => {
+              try {
+                const response = JSON.parse(responseData);
+                resolve({ statusCode: res.statusCode, data: response });
+              } catch (error) {
+                reject(error);
+              }
+            });
+          });
+
+          req.on('error', reject);
+          req.write(data);
+          req.end();
+        });
+      };
+
+      imageUsageUpdateResult = await updateImageUsage();
+    } else {
+      // Record doesn't exist - create new one
+      console.log(`➕ Creating new ImageUsage record for user ${userRecordId}, hour ${currentHour}`);
+
+      const createImageUsage = () => {
+        return new Promise((resolve, reject) => {
+          const data = JSON.stringify({
+            fields: {
+              User: [userRecordId],
+              Hour: currentHour,
+              Count: 1
+            }
+          });
+
+          const options = {
+            hostname: 'api.airtable.com',
+            port: 443,
+            path: `/v0/${AIRTABLE_BASE_ID}/ImageUsage`,
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+              'Content-Type': 'application/json',
+              'Content-Length': data.length
+            }
+          };
+
+          const req = https.request(options, (res) => {
+            let responseData = '';
+            res.on('data', (chunk) => { responseData += chunk; });
+            res.on('end', () => {
+              try {
+                const response = JSON.parse(responseData);
+                resolve({ statusCode: res.statusCode, data: response });
+              } catch (error) {
+                reject(error);
+              }
+            });
+          });
+
+          req.on('error', reject);
+          req.write(data);
+          req.end();
+        });
+      };
+
+      imageUsageUpdateResult = await createImageUsage();
+    }
+
+    if (imageUsageUpdateResult.statusCode !== 200 && imageUsageUpdateResult.statusCode !== 201) {
+      console.error('❌ Failed to update ImageUsage table:', imageUsageUpdateResult.data);
+      // Continue anyway - we still want to update lifetime counter
+    } else {
+      console.log(`✅ Successfully updated ImageUsage table`);
+    }
+
+    // Update the Users table with the new lifetime total
     const updateUserRecord = () => {
       return new Promise((resolve, reject) => {
         const data = JSON.stringify({
