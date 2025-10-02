@@ -638,10 +638,10 @@ class Auth0LoginModal {
       innerHTML: navMenu.innerHTML.substring(0, 200) + '...'
     });
     
-    // Find existing auth buttons or create them
-    let loginBtn = navMenu.querySelector('.login-btn');
-    let signupBtn = navMenu.querySelector('.signup-btn');
-    let profileBtn = navMenu.querySelector('.profile-btn');
+    // Find existing auth buttons or create them (exclude mobile-header buttons)
+    let loginBtn = navMenu.querySelector('.login-btn:not(.mobile-header .login-btn)');
+    let signupBtn = navMenu.querySelector('.signup-btn:not(.mobile-header .signup-btn)');
+    let profileBtn = navMenu.querySelector('.profile-btn:not(.mobile-header .profile-btn)');
     
     console.log('🔍 Found buttons:', { 
       loginBtn: !!loginBtn, 
