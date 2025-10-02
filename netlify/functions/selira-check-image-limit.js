@@ -137,7 +137,8 @@ exports.handler = async (event, context) => {
 
     const getImageUsage = () => {
       return new Promise((resolve, reject) => {
-        const filterFormula = `AND(SEARCH("${userId}", ARRAYJOIN(User, ",")), {Hour}="${currentHour}")`;
+        // Just filter by hour, then check User link client-side
+        const filterFormula = `{Hour}="${currentHour}"`;
         const options = {
           hostname: 'api.airtable.com',
           port: 443,
@@ -173,9 +174,20 @@ exports.handler = async (event, context) => {
     let usageRecordId = null;
 
     if (usageResult.statusCode === 200 && usageResult.data.records && usageResult.data.records.length > 0) {
-      const usageRecord = usageResult.data.records[0];
-      currentUsage = usageRecord.fields.Count || 0;
-      usageRecordId = usageRecord.id;
+      // Filter client-side to find record matching this user
+      // User field is a linked record array containing User record IDs
+      const usageRecord = usageResult.data.records.find(record => {
+        const userLinks = record.fields.User || [];
+        return userLinks.includes(userId);
+      });
+
+      if (usageRecord) {
+        currentUsage = usageRecord.fields.Count || 0;
+        usageRecordId = usageRecord.id;
+        console.log(`✅ Found ImageUsage record for user ${userId}: ${currentUsage} images used`);
+      } else {
+        console.log(`ℹ️ No ImageUsage record found for user ${userId} in hour ${currentHour}`);
+      }
     }
 
     // Determine hourly limits based on plan
