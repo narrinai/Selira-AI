@@ -335,11 +335,17 @@ class Auth0LoginModal {
   async loginWithSocial(provider) {
     try {
       console.log(`🔄 Logging in with ${provider}...`);
-      
+
       // Store current page URL for redirect after login
       const returnUrl = window.location.pathname + window.location.search;
       localStorage.setItem('auth_return_url', returnUrl);
-      
+
+      // Detect if we're in signup mode based on modal title
+      const modalTitle = document.querySelector('.auth0-logo h2')?.textContent;
+      const isSignupMode = modalTitle?.includes('Join');
+
+      console.log(`🔍 Modal mode detected: ${isSignupMode ? 'signup' : 'login'}`);
+
       // Map provider names to Auth0 connection names
       const connectionMap = {
         'google': 'google-oauth2',
@@ -349,12 +355,19 @@ class Auth0LoginModal {
         'linkedin': 'linkedin'
       };
 
+      const authParams = {
+        connection: connectionMap[provider]
+      };
+
+      // Add screen_hint for signup mode
+      if (isSignupMode) {
+        authParams.screen_hint = 'signup';
+      }
+
       await this.auth0Client.loginWithRedirect({
-        authorizationParams: {
-          connection: connectionMap[provider]
-        }
+        authorizationParams: authParams
       });
-      
+
     } catch (error) {
       console.error(`❌ ${provider} login failed:`, error);
       this.showError(`Failed to login with ${provider}. Please try again.`);
