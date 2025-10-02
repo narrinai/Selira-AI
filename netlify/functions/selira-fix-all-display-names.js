@@ -1,6 +1,6 @@
 const https = require('https');
 
-// Username generator function (same as in auth0-user-sync.js)
+// Username generator function (same as in selira-auth0-user-sync.js)
 function generateUsername() {
   const adjectives = [
     'Brave', 'Swift', 'Clever', 'Mighty', 'Cosmic', 'Golden', 'Silver', 'Bright',

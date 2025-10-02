@@ -99,7 +99,7 @@ const getCurrentUser = async () => {
 // Sync user to Airtable database
 const syncUserToDatabase = async (user) => {
   try {
-    const response = await fetch('/.netlify/functions/auth0-user-sync', {
+    const response = await fetch('/.netlify/functions/selira-auth0-user-sync', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

@@ -170,7 +170,7 @@ class Auth0LoginModal {
       
       console.log('📤 Sending sync data:', syncData);
       
-      const response = await fetch('/.netlify/functions/auth0-user-sync', {
+      const response = await fetch('/.netlify/functions/selira-auth0-user-sync', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(syncData)
