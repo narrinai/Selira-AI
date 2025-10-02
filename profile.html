@@ -1433,6 +1433,38 @@
               const errorText = await response.text();
               console.log('⚠️ Failed to fetch profile data from Airtable. Status:', response.status);
               console.log('⚠️ Error response:', errorText);
+
+              // If user not found (404), trigger auth0-user-sync to create the user
+              if (response.status === 404) {
+                console.log('🔄 User not found in Airtable - triggering user sync...');
+
+                try {
+                  const syncResponse = await fetch('/.netlify/functions/selira-auth0-user-sync', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                      email: user.email,
+                      name: user.name || user.email.split('@')[0],
+                      auth0_id: user.sub || user.email
+                    })
+                  });
+
+                  const syncResult = await syncResponse.json();
+
+                  if (syncResult.success) {
+                    console.log('✅ User synced to Airtable successfully');
+
+                    // Reload the profile page to fetch the new data
+                    window.location.reload();
+                  } else {
+                    console.error('❌ Failed to sync user:', syncResult);
+                  }
+                } catch (syncError) {
+                  console.error('❌ Error syncing user to Airtable:', syncError);
+                }
+              }
             }
           } catch (airtableError) {
             console.log('⚠️ Error fetching from Airtable (using localStorage):', airtableError);
