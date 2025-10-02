@@ -40,7 +40,7 @@ function createAgeVerificationHTML() {
     <div class="age-verification-modal">
       <div class="age-verification-content">
         <div class="age-verification-logo-section">
-          <img src="/selira-logo-gold.svg" alt="Selira AI" class="age-verification-logo-img" />
+          <img src="/images/selira-ai-logo-dark-s.svg" alt="Selira AI" class="age-verification-logo-img" />
         </div>
 
         <div class="age-verification-body">
