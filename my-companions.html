@@ -495,28 +495,44 @@
       }
 
       .mobile-header {
-        display: flex !important;
-        justify-content: space-between;
+        display: flex;
         align-items: center;
-        padding: 12px 20px;
-        background: var(--bg-secondary);
+        justify-content: space-between;
+        padding: 16px 20px;
+        background: var(--bg-primary);
         border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        height: 60px;
+        box-sizing: border-box;
       }
 
       .mobile-menu-btn {
         background: none;
         border: none;
+        font-size: 24px;
         color: var(--text-primary);
-        font-size: 18px;
         cursor: pointer;
         padding: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
       }
 
       .mobile-logo {
         font-family: 'Playfair Display', serif;
-        font-size: 18px;
+        font-size: 20px;
         font-weight: 700;
         color: var(--accent);
+        flex-grow: 1;
+        text-align: center;
+        margin: 0 16px;
+      }
+
+      .top-header {
+        display: none;
       }
 
       .header-top {
