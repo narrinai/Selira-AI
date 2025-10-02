@@ -3780,33 +3780,8 @@
     let isGeneratingImage = false;
     const MIN_IMAGE_GENERATION_INTERVAL = 3000; // 3 seconds between requests
 
-    // Increment image usage counter in Airtable
-    async function incrementImageUsage(userId) {
-      try {
-        console.log('📊 Incrementing images_generated for user:', userId);
-
-        const response = await fetch('/.netlify/functions/selira-increment-image-usage', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            userId: userId,
-            currentHour: new Date().toISOString().slice(0, 13) // "YYYY-MM-DDTHH"
-          })
-        });
-
-        if (response.ok) {
-          const result = await response.json();
-          console.log('✅ Successfully incremented images_generated:', result);
-        } else {
-          console.warn('⚠️ Failed to increment images_generated:', response.status);
-        }
-      } catch (error) {
-        console.warn('⚠️ Error incrementing images_generated:', error.message);
-        // Don't fail the image generation if counter fails
-      }
-    }
+    // Note: incrementImageUsage function removed - now handled by backend
+    // The selira-generate-custom-image function now handles usage tracking
 
     async function checkUserImagePermissions(useCache = true) {
       const user = window.getCurrentUser ? window.getCurrentUser() : null;
@@ -4045,7 +4020,8 @@
             hairLength: characterHairLength,
             hairColor: characterHairColor,
             email: userEmail,
-            auth0_id: userAuth0Id
+            auth0_id: userAuth0Id,
+            source: 'chat' // Mark as chat-generated image for usage tracking
           })
         });
         
@@ -4059,12 +4035,8 @@
           // Add generated image as AI response
           addImageMessage(result.imageUrl, result.fullPrompt || simplePrompt, characterStyle);
 
-          // Increment images_generated counter for the user
-          const user = window.getCurrentUser ? window.getCurrentUser() : null;
-          if (user) {
-            const auth0_id = user.sub || user.uid || user.auth0_id;
-            await incrementImageUsage(auth0_id);
-          }
+          // Note: images_generated counter is now incremented by the backend function
+          // No need to call incrementImageUsage here anymore
 
           // Refresh image permissions to update the counter
           console.log('🔄 Refreshing image counter after successful generation');

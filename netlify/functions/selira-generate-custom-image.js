@@ -125,7 +125,7 @@ exports.handler = async (event, context) => {
       };
     }
 
-    const { customPrompt, characterName, category, style, shotType, sex, ethnicity, hairLength, hairColor, email, auth0_id } = body;
+    const { customPrompt, characterName, category, style, shotType, sex, ethnicity, hairLength, hairColor, email, auth0_id, source } = body;
     
     console.log(`📋 [${requestId}] Received:`, {
       customPrompt,
@@ -478,17 +478,24 @@ exports.handler = async (event, context) => {
       console.warn(`⚠️ [${requestId}] Error triggering avatar download (non-blocking):`, error.message);
     }
 
-    // Increment usage counter for authenticated users
-    if (body.limitData && (email || auth0_id)) {
-      console.log(`📈 [${requestId}] Incrementing usage counter`);
+    // Increment usage counter ONLY for chat-generated images (not companion creation)
+    if (source === 'chat' && (email || auth0_id)) {
+      console.log(`📈 [${requestId}] Incrementing usage counter for chat image generation`);
       try {
+        // Get userId and currentHour - either from limitData or generate new
+        const currentHour = new Date().toISOString().slice(0, 13); // "YYYY-MM-DDTHH"
+        const userId = body.limitData?.userId || auth0_id;
+        const usageRecordId = body.limitData?.usageRecordId;
+
+        console.log(`📈 [${requestId}] Incrementing with:`, { userId, usageRecordId, currentHour });
+
         const incrementResponse = await fetch(`${process.env.NETLIFY_FUNCTIONS_URL || 'https://selira.ai/.netlify/functions'}/selira-increment-image-usage`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            userId: body.limitData.userId,
-            usageRecordId: body.limitData.usageRecordId,
-            currentHour: body.limitData.currentHour
+            userId: userId,
+            usageRecordId: usageRecordId,
+            currentHour: currentHour
           })
         });
 
@@ -496,11 +503,16 @@ exports.handler = async (event, context) => {
           const incrementData = await incrementResponse.json();
           console.log(`✅ [${requestId}] Usage incremented to:`, incrementData.newCount);
         } else {
-          console.warn(`⚠️ [${requestId}] Failed to increment usage counter`);
+          const errorText = await incrementResponse.text();
+          console.warn(`⚠️ [${requestId}] Failed to increment usage counter:`, errorText);
         }
       } catch (incrementError) {
         console.warn(`⚠️ [${requestId}] Error incrementing usage:`, incrementError.message);
       }
+    } else if (source !== 'chat') {
+      console.log(`🎨 [${requestId}] Companion creation image - skipping usage tracking (source: ${source || 'not specified'})`);
+    } else {
+      console.log(`👤 [${requestId}] Anonymous user - skipping usage increment`);
     }
 
     // Decrement active requests counter

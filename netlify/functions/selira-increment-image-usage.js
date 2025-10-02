@@ -164,13 +164,20 @@ exports.handler = async (event, context) => {
     try {
       console.log('📊 Updating total images_generated in Users table for userId:', userId);
 
-      // First, get the current images_generated count from Users table
+      // First, find the user by Auth0ID to get their Airtable record ID
       const getUserRecord = () => {
         return new Promise((resolve, reject) => {
+          // userId might be Auth0ID (auth0|xxx) or Airtable record ID (recXXX)
+          // Try both approaches
+          const isAirtableRecordId = userId.startsWith('rec');
+          const path = isAirtableRecordId
+            ? `/v0/${AIRTABLE_BASE_ID}/Users/${userId}`
+            : `/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula={Auth0ID}="${userId}"&maxRecords=1`;
+
           const options = {
             hostname: 'api.airtable.com',
             port: 443,
-            path: `/v0/${AIRTABLE_BASE_ID}/Users/${userId}`,
+            path: path,
             method: 'GET',
             headers: {
               'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
@@ -178,13 +185,15 @@ exports.handler = async (event, context) => {
             }
           };
 
+          console.log(`🔍 Looking up user with ${isAirtableRecordId ? 'record ID' : 'Auth0ID'}:`, userId);
+
           const req = https.request(options, (res) => {
             let data = '';
             res.on('data', (chunk) => { data += chunk; });
             res.on('end', () => {
               try {
                 const response = JSON.parse(data);
-                resolve({ statusCode: res.statusCode, data: response });
+                resolve({ statusCode: res.statusCode, data: response, isAirtableRecordId });
               } catch (error) {
                 reject(error);
               }
@@ -196,12 +205,23 @@ exports.handler = async (event, context) => {
         });
       };
 
-      const userRecord = await getUserRecord();
-      if (userRecord.statusCode === 200) {
-        const currentImagesGenerated = userRecord.data.fields?.images_generated || 0;
+      const userLookup = await getUserRecord();
+      if (userLookup.statusCode === 200) {
+        // Extract user record based on lookup method
+        const userRecord = userLookup.isAirtableRecordId
+          ? userLookup.data
+          : userLookup.data.records?.[0];
+
+        if (!userRecord) {
+          console.warn('⚠️ User not found in Users table:', userId);
+          return; // Exit early if user not found
+        }
+
+        const userRecordId = userRecord.id;
+        const currentImagesGenerated = userRecord.fields?.images_generated || 0;
         const newImagesGenerated = currentImagesGenerated + 1;
 
-        console.log(`📊 Updating Users table: ${currentImagesGenerated} → ${newImagesGenerated}`);
+        console.log(`📊 Found user record ${userRecordId}, updating: ${currentImagesGenerated} → ${newImagesGenerated}`);
 
         // Update the Users table with the new total
         const updateUserRecord = () => {
@@ -215,7 +235,7 @@ exports.handler = async (event, context) => {
             const options = {
               hostname: 'api.airtable.com',
               port: 443,
-              path: `/v0/${AIRTABLE_BASE_ID}/Users/${userId}`,
+              path: `/v0/${AIRTABLE_BASE_ID}/Users/${userRecordId}`,
               method: 'PATCH',
               headers: {
                 'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
