@@ -105,10 +105,12 @@ exports.handler = async (event, context) => {
 
     const findUserRecord = () => {
       return new Promise((resolve, reject) => {
+        const filterFormula = encodeURIComponent(`OR({Email}='${auth0_id}',{Auth0ID}='${auth0_id}')`);
+
         const options = {
           hostname: 'api.airtable.com',
           port: 443,
-          path: `/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula=OR({Email}="${auth0_id}",{Auth0ID}="${auth0_id}")`,
+          path: `/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula=${filterFormula}&maxRecords=1`,
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
