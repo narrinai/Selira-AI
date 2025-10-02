@@ -105,7 +105,22 @@ exports.handler = async (event, context) => {
       // User exists - update last active
       const userId = existingData.records[0].id;
       const updateUrl = `https://api.airtable.com/v0/${SELIRA_BASE_ID}/Users/${userId}`;
-      
+
+      // Check if user has a display_name, if not or if it's their email, generate one
+      const existingDisplayName = existingData.records[0].fields.display_name;
+      const needsNewDisplayName = !existingDisplayName || existingDisplayName === email || existingDisplayName.includes('@');
+
+      const fieldsToUpdate = {
+        LastActive: new Date().toISOString(),
+        Name: name // Update name in case it changed
+      };
+
+      // Generate new display name if needed
+      if (needsNewDisplayName) {
+        fieldsToUpdate.display_name = generateUsername();
+        console.log('🎲 Generating new display name for existing user:', fieldsToUpdate.display_name);
+      }
+
       await fetch(updateUrl, {
         method: 'PATCH',
         headers: {
@@ -113,10 +128,7 @@ exports.handler = async (event, context) => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          fields: {
-            LastActive: new Date().toISOString(),
-            Name: name // Update name in case it changed
-          }
+          fields: fieldsToUpdate
         })
       });
 
@@ -124,8 +136,8 @@ exports.handler = async (event, context) => {
       return {
         statusCode: 200,
         headers,
-        body: JSON.stringify({ 
-          success: true, 
+        body: JSON.stringify({
+          success: true,
           action: 'updated',
           user_id: userId
         })
