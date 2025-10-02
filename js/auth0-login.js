@@ -741,7 +741,7 @@ class Auth0LoginModal {
   updateMobileNav(mobileMenu, isAuthenticated) {
     // Check for category page specific mobile header
     const mobileHeader = document.querySelector('.mobile-header');
-    const loginBtn = mobileHeader?.querySelector('.login-btn');
+    const loginBtn = mobileHeader?.querySelector('.login-btn, .mobile-auth-btn');
 
     if (loginBtn) {
       // Handle category page mobile header
