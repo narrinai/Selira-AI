@@ -129,18 +129,18 @@ exports.handler = async (event, context) => {
     }
 
     // Check current hour's image usage
+    // Use same format as increment function: YYYY-MM-DD-HH
     const now = new Date();
-    const currentHour = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours());
-    const currentHourISO = currentHour.toISOString();
+    const currentHour = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, '0')}-${String(now.getUTCDate()).padStart(2, '0')}-${String(now.getUTCHours()).padStart(2, '0')}`;
 
-    console.log('🕐 Checking usage for hour:', currentHourISO);
+    console.log('🕐 Checking usage for hour:', currentHour);
 
     const getImageUsage = () => {
       return new Promise((resolve, reject) => {
         const options = {
           hostname: 'api.airtable.com',
           port: 443,
-          path: `/v0/${AIRTABLE_BASE_ID}/ImageUsage?filterByFormula=AND({UserID}="${userId}",{Hour}="${currentHourISO}")`,
+          path: `/v0/${AIRTABLE_BASE_ID}/ImageUsage?filterByFormula=AND(RECORD_ID()=ARRAYJOIN(User),{Hour}="${currentHour}")`,
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
@@ -221,7 +221,7 @@ exports.handler = async (event, context) => {
         plan: userPlan,
         userId: userId,
         usageRecordId: usageRecordId,
-        currentHour: currentHourISO
+        currentHour: currentHour
       })
     };
 
