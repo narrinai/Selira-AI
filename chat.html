@@ -3840,13 +3840,22 @@
           return permissions;
         }
 
-        const fallbackPermissions = { canGenerate: true, plan: 'Unknown' };
-        // Don't cache fallback permissions
+        // Default to blocking if server returns unexpected response
+        const fallbackPermissions = {
+          canGenerate: false,
+          plan: 'Unknown',
+          reason: 'Could not verify image generation permissions'
+        };
+        console.warn('⚠️ Unexpected response status:', response.status, '- blocking image generation');
         return fallbackPermissions;
       } catch (error) {
         console.warn('⚠️ Could not check image permissions:', error);
-        const fallbackPermissions = { canGenerate: true, plan: 'Unknown' };
-        // Don't cache error states
+        // Default to blocking on errors for safety
+        const fallbackPermissions = {
+          canGenerate: false,
+          plan: 'Unknown',
+          reason: 'Could not verify image generation permissions'
+        };
         return fallbackPermissions;
       }
     }
