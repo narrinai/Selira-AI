@@ -389,28 +389,11 @@ class Auth0LoginModal {
       // Store user data
       this.user = data.user;
 
-      // Store tokens in Auth0 client cache (for compatibility)
+      // Store tokens in localStorage for persistence
       if (data.tokens) {
-        try {
-          // Store tokens in localStorage for Auth0 SDK
-          const cacheKey = `@@auth0spajs@@::${this.config.clientId}::${this.config.audience || 'default'}::openid profile email offline_access`;
-          localStorage.setItem(cacheKey, JSON.stringify({
-            body: {
-              client_id: this.config.clientId,
-              access_token: data.tokens.access_token,
-              id_token: data.tokens.id_token,
-              scope: 'openid profile email',
-              expires_in: data.tokens.expires_in,
-              token_type: 'Bearer',
-              decodedToken: {
-                user: data.user
-              }
-            },
-            expiresAt: Math.floor(Date.now() / 1000) + data.tokens.expires_in
-          }));
-        } catch (e) {
-          console.warn('⚠️ Could not store tokens in cache:', e);
-        }
+        localStorage.setItem('auth0_access_token', data.tokens.access_token);
+        localStorage.setItem('auth0_id_token', data.tokens.id_token);
+        localStorage.setItem('auth0_token_expires', Date.now() + (data.tokens.expires_in * 1000));
       }
 
       // Sync user to Airtable (non-blocking)
@@ -437,12 +420,16 @@ class Auth0LoginModal {
 
       // Show user-friendly error
       const errorMsg = error.message.toLowerCase();
-      if (errorMsg.includes('wrong') || errorMsg.includes('invalid') || errorMsg.includes('password')) {
+      if (errorMsg.includes('wrong') || errorMsg.includes('invalid') || errorMsg.includes('incorrect')) {
         this.showError('Invalid email or password. Please try again.');
       } else if (errorMsg.includes('already') || errorMsg.includes('exists')) {
         this.showError('This email is already registered. Try logging in instead.');
-      } else if (errorMsg.includes('weak')) {
-        this.showError('Password is too weak. Use a stronger password with letters, numbers and symbols.');
+      } else if (errorMsg.includes('weak') || errorMsg.includes('password')) {
+        this.showError('Password must be at least 8 characters with letters and numbers.');
+      } else if (errorMsg.includes('environment') || errorMsg.includes('configuration')) {
+        this.showError('Service configuration error. Please contact support.');
+      } else if (errorMsg.includes('grant') || errorMsg.includes('not enabled')) {
+        this.showError('Email/password login is not enabled. Please use Google login or contact support.');
       } else {
         this.showError(error.message || 'Authentication failed. Please try again.');
       }

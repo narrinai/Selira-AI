@@ -30,8 +30,22 @@ exports.handler = async (event) => {
     const AUTH0_CLIENT_ID = process.env.AUTH0_CLIENT_ID;
     const AUTH0_CLIENT_SECRET = process.env.AUTH0_CLIENT_SECRET;
 
-    if (!AUTH0_DOMAIN || !AUTH0_CLIENT_ID || !AUTH0_CLIENT_SECRET) {
-      throw new Error('Auth0 configuration missing');
+    console.log('🔍 Auth0 environment check:', {
+      domain: AUTH0_DOMAIN ? `${AUTH0_DOMAIN.substring(0, 10)}...` : 'MISSING',
+      clientId: AUTH0_CLIENT_ID ? `${AUTH0_CLIENT_ID.substring(0, 8)}...` : 'MISSING',
+      clientSecret: AUTH0_CLIENT_SECRET ? 'EXISTS' : 'MISSING',
+      action: action,
+      email: email
+    });
+
+    if (!AUTH0_DOMAIN) {
+      throw new Error('AUTH0_DOMAIN environment variable is missing');
+    }
+    if (!AUTH0_CLIENT_ID) {
+      throw new Error('AUTH0_CLIENT_ID environment variable is missing');
+    }
+    if (!AUTH0_CLIENT_SECRET) {
+      throw new Error('AUTH0_CLIENT_SECRET environment variable is missing. Please add it to your Netlify environment variables.');
     }
 
     if (action === 'signup') {
