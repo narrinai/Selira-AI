@@ -64,7 +64,7 @@ exports.handler = async (event, context) => {
         const options = {
           hostname: 'api.airtable.com',
           port: 443,
-          path: `/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula=AND({Email}="${email}")`,
+          path: `/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula=${encodeURIComponent(`{Email}='${email}'`)}&maxRecords=1`,
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
