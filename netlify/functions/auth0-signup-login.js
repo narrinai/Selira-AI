@@ -48,6 +48,11 @@ exports.handler = async (event) => {
       throw new Error('AUTH0_CLIENT_SECRET environment variable is missing. Please add it to your Netlify environment variables.');
     }
 
+    // Try common database connection names
+    const CONNECTION_NAME = process.env.AUTH0_DB_CONNECTION || 'Username-Password-Authentication';
+
+    console.log('🔗 Using database connection:', CONNECTION_NAME);
+
     if (action === 'signup') {
       // Step 1: Create account
       console.log('📝 Creating new Auth0 account:', email);
@@ -59,7 +64,7 @@ exports.handler = async (event) => {
           client_id: AUTH0_CLIENT_ID,
           email: email,
           password: password,
-          connection: 'Username-Password-Authentication'
+          connection: CONNECTION_NAME
         })
       });
 
@@ -76,18 +81,27 @@ exports.handler = async (event) => {
     // Step 2: Get access token (for both signup and login)
     console.log('🔐 Authenticating user:', email);
 
+    // Build token request - try with and without audience
+    const tokenBody = {
+      grant_type: 'http://auth0.com/oauth/grant-type/password-realm',
+      username: email,
+      password: password,
+      client_id: AUTH0_CLIENT_ID,
+      client_secret: AUTH0_CLIENT_SECRET,
+      realm: CONNECTION_NAME,
+      scope: 'openid profile email'
+    };
+
+    console.log('🔐 Token request (without sensitive data):', {
+      grant_type: tokenBody.grant_type,
+      username: email,
+      realm: CONNECTION_NAME
+    });
+
     const tokenResponse = await fetch(`https://${AUTH0_DOMAIN}/oauth/token`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        grant_type: 'password',
-        username: email,
-        password: password,
-        client_id: AUTH0_CLIENT_ID,
-        client_secret: AUTH0_CLIENT_SECRET,
-        audience: `https://${AUTH0_DOMAIN}/api/v2/`,
-        scope: 'openid profile email'
-      })
+      body: JSON.stringify(tokenBody)
     });
 
     if (!tokenResponse.ok) {
