@@ -350,7 +350,7 @@ class Auth0LoginModal {
     const email = document.getElementById('auth0-email').value;
     const passwordGroup = document.querySelector('.auth0-password-group');
     const submitBtn = document.querySelector('.auth0-submit-btn');
-    
+
     this.setLoading(true);
 
     try {
@@ -364,12 +364,23 @@ class Auth0LoginModal {
         // Store current page URL for redirect after login
         const returnUrl = window.location.pathname + window.location.search;
         localStorage.setItem('auth_return_url', returnUrl);
-        
-        // Second step - authenticate
+
+        // Detect if we're in signup mode
+        const modalTitle = document.querySelector('.auth0-logo h2')?.textContent;
+        const isSignupMode = modalTitle?.includes('Join');
+
+        // Second step - authenticate with proper mode
+        const authParams = {
+          login_hint: email
+        };
+
+        // For signup mode, show signup screen
+        if (isSignupMode) {
+          authParams.screen_hint = 'signup';
+        }
+
         await this.auth0Client.loginWithRedirect({
-          authorizationParams: {
-            login_hint: email
-          }
+          authorizationParams: authParams
         });
       }
     } catch (error) {
