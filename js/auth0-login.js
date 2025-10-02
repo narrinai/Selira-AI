@@ -359,9 +359,10 @@ class Auth0LoginModal {
         connection: connectionMap[provider]
       };
 
-      // Add screen_hint for signup mode
+      // For signup mode, use prompt=consent to force account selection
+      // This allows users to choose/create a new account
       if (isSignupMode) {
-        authParams.screen_hint = 'signup';
+        authParams.prompt = 'select_account';
       }
 
       await this.auth0Client.loginWithRedirect({
