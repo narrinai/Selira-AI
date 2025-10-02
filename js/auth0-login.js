@@ -216,26 +216,28 @@ class Auth0LoginModal {
           <!-- Email/Password Form -->
           <form class="auth0-form" id="auth0-form">
             <div class="auth0-input-group">
-              <input 
-                type="email" 
-                id="auth0-email" 
-                class="auth0-input" 
-                placeholder="Enter your email"
+              <input
+                type="email"
+                id="auth0-email"
+                class="auth0-input"
+                placeholder="Email address"
                 required
               >
             </div>
-            
-            <div class="auth0-input-group auth0-password-group" style="display: none;">
-              <input 
-                type="password" 
-                id="auth0-password" 
-                class="auth0-input" 
-                placeholder="Enter your password"
+
+            <div class="auth0-input-group">
+              <input
+                type="password"
+                id="auth0-password"
+                class="auth0-input"
+                placeholder="Password (min 8 characters)"
+                minlength="8"
+                required
               >
             </div>
 
             <button type="submit" class="auth0-submit-btn">
-              <span class="btn-text">Continue</span>
+              <span class="btn-text">${isSignup ? 'Create Account' : 'Sign In'}</span>
               <div class="btn-loader" style="display: none;">
                 <div class="spinner"></div>
               </div>
@@ -289,10 +291,10 @@ class Auth0LoginModal {
       });
     });
 
-    // Email form
+    // Email/Password form
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      await this.handleEmailSubmit();
+      await this.handleEmailPasswordSubmit();
     });
 
     // ESC key to close
@@ -346,48 +348,129 @@ class Auth0LoginModal {
     }
   }
 
-  async handleEmailSubmit() {
+  async handleEmailPasswordSubmit() {
     const email = document.getElementById('auth0-email').value;
-    const passwordGroup = document.querySelector('.auth0-password-group');
-    const submitBtn = document.querySelector('.auth0-submit-btn');
+    const password = document.getElementById('auth0-password').value;
+
+    // Validate password length
+    if (password.length < 8) {
+      this.showError('Password must be at least 8 characters long.');
+      return;
+    }
+
+    // Detect if we're in signup mode
+    const modalTitle = document.querySelector('.auth0-logo h2')?.textContent;
+    const isSignupMode = modalTitle?.includes('Join');
 
     this.setLoading(true);
 
     try {
-      if (passwordGroup.style.display === 'none') {
-        // First step - show password field
-        passwordGroup.style.display = 'block';
-        document.getElementById('auth0-password').focus();
-        submitBtn.querySelector('.btn-text').textContent = 'Sign In';
-        this.setLoading(false);
-      } else {
-        // Store current page URL for redirect after login
-        const returnUrl = window.location.pathname + window.location.search;
-        localStorage.setItem('auth_return_url', returnUrl);
+      console.log(`🔄 ${isSignupMode ? 'Creating account' : 'Logging in'} for:`, email);
 
-        // Detect if we're in signup mode
-        const modalTitle = document.querySelector('.auth0-logo h2')?.textContent;
-        const isSignupMode = modalTitle?.includes('Join');
+      // Call our Netlify function to handle signup/login
+      const response = await fetch('/.netlify/functions/auth0-signup-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: isSignupMode ? 'signup' : 'login',
+          email: email,
+          password: password
+        })
+      });
 
-        // Second step - authenticate with proper mode
-        const authParams = {
-          login_hint: email
-        };
+      const data = await response.json();
 
-        // For signup mode, show signup screen
-        if (isSignupMode) {
-          authParams.screen_hint = 'signup';
-        }
-
-        await this.auth0Client.loginWithRedirect({
-          authorizationParams: authParams
-        });
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || 'Authentication failed');
       }
-    } catch (error) {
-      console.error('❌ Email login failed:', error);
-      this.showError('Login failed. Please check your credentials.');
+
+      console.log('✅ Authentication successful:', data.user.email);
+
+      // Store user data
+      this.user = data.user;
+
+      // Store tokens in Auth0 client cache (for compatibility)
+      if (data.tokens) {
+        try {
+          // Store tokens in localStorage for Auth0 SDK
+          const cacheKey = `@@auth0spajs@@::${this.config.clientId}::${this.config.audience || 'default'}::openid profile email offline_access`;
+          localStorage.setItem(cacheKey, JSON.stringify({
+            body: {
+              client_id: this.config.clientId,
+              access_token: data.tokens.access_token,
+              id_token: data.tokens.id_token,
+              scope: 'openid profile email',
+              expires_in: data.tokens.expires_in,
+              token_type: 'Bearer',
+              decodedToken: {
+                user: data.user
+              }
+            },
+            expiresAt: Math.floor(Date.now() / 1000) + data.tokens.expires_in
+          }));
+        } catch (e) {
+          console.warn('⚠️ Could not store tokens in cache:', e);
+        }
+      }
+
+      // Sync user to Airtable (non-blocking)
+      this.syncUserToAirtable(this.user).catch(error => {
+        console.error('⚠️ User sync failed but continuing:', error);
+      });
+
+      // Update UI
+      this.updateAuthState(true);
+      this.closeModal();
       this.setLoading(false);
+
+      // Show success message
+      this.showSuccess(isSignupMode ? 'Account created successfully! 🎉' : 'Welcome back! 👋');
+
+      // Reload page to ensure all auth state is properly set
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+
+    } catch (error) {
+      console.error('❌ Email/password authentication failed:', error);
+      this.setLoading(false);
+
+      // Show user-friendly error
+      const errorMsg = error.message.toLowerCase();
+      if (errorMsg.includes('wrong') || errorMsg.includes('invalid') || errorMsg.includes('password')) {
+        this.showError('Invalid email or password. Please try again.');
+      } else if (errorMsg.includes('already') || errorMsg.includes('exists')) {
+        this.showError('This email is already registered. Try logging in instead.');
+      } else if (errorMsg.includes('weak')) {
+        this.showError('Password is too weak. Use a stronger password with letters, numbers and symbols.');
+      } else {
+        this.showError(error.message || 'Authentication failed. Please try again.');
+      }
     }
+  }
+
+  showSuccess(message) {
+    // Show success notification
+    const successDiv = document.createElement('div');
+    successDiv.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #10b981;
+      color: white;
+      padding: 16px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      z-index: 10000;
+      animation: slideIn 0.3s ease;
+    `;
+    successDiv.textContent = message;
+    document.body.appendChild(successDiv);
+
+    setTimeout(() => {
+      successDiv.remove();
+    }, 3000);
   }
 
   setLoading(loading) {
@@ -887,6 +970,31 @@ const AUTH0_STYLES = `
 .auth0-google-btn:hover {
   background: rgba(66, 133, 244, 0.1);
   border-color: #4285f4;
+}
+
+.auth0-email-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border: 1px solid #333333;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.auth0-email-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #d4a574;
+  transform: translateY(-2px);
 }
 
 .auth0-divider {
