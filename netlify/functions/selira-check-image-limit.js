@@ -137,7 +137,7 @@ exports.handler = async (event, context) => {
 
     const getImageUsage = () => {
       return new Promise((resolve, reject) => {
-        const filterFormula = `AND(ARRAYJOIN(User)="${userId}", {Hour}="${currentHour}")`;
+        const filterFormula = `AND(SEARCH("${userId}", ARRAYJOIN(User, ",")), {Hour}="${currentHour}")`;
         const options = {
           hostname: 'api.airtable.com',
           port: 443,
