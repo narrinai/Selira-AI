@@ -420,11 +420,6 @@ class Auth0LoginModal {
         localStorage.setItem('auth0_token_expires', Date.now() + (data.tokens.expires_in * 1000));
       }
 
-      // Sync user to Airtable (non-blocking)
-      this.syncUserToAirtable(this.user).catch(error => {
-        console.error('⚠️ User sync failed but continuing:', error);
-      });
-
       // Update UI
       this.updateAuthState(true);
       this.closeModal();
@@ -433,10 +428,18 @@ class Auth0LoginModal {
       // Show success message
       this.showSuccess(isSignupMode ? 'Account created successfully! 🎉' : 'Welcome back! 👋');
 
+      // Sync user to Airtable BEFORE reloading (blocking)
+      try {
+        await this.syncUserToAirtable(this.user);
+        console.log('✅ User synced to Airtable - reloading page');
+      } catch (error) {
+        console.error('⚠️ User sync failed but continuing:', error);
+      }
+
       // Reload page to ensure all auth state is properly set
       setTimeout(() => {
         window.location.reload();
-      }, 1000);
+      }, 500);
 
     } catch (error) {
       console.error('❌ Email/password authentication failed:', error);
