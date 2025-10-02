@@ -84,23 +84,16 @@
     /* Left Sidebar with Character List */
     .sidebar {
       width: 220px;
-      background: var(--bg-sidebar);
-      border-right: none;
-      padding: 16px;
+      background: var(--bg-secondary);
+      border-right: 1px solid var(--border);
       display: flex;
       flex-direction: column;
-      position: fixed;
-      height: 100vh;
-      left: 0;
-      top: 0;
-      z-index: 100;
-      overflow-y: auto;
+      overflow: hidden;
     }
 
     .sidebar-header {
-      padding: 0;
-      border-bottom: none;
-      margin-bottom: 16px;
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
     }
 
     .sidebar-logo {
@@ -123,7 +116,7 @@
 
     .sidebar-logo-text {
       font-family: 'Playfair Display', serif;
-      font-size: 16px;
+      font-size: 18px;
       font-weight: 700;
       color: var(--accent);
     }
@@ -157,24 +150,23 @@
     }
 
     .section-header {
-      padding: 0 10px 4px;
-      margin: 12px 0 4px;
-      font-size: 9px;
+      padding: 16px 16px 8px;
+      font-size: 10px;
       font-weight: 700;
-      color: rgba(255, 255, 255, 0.6);
+      color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
 
     .chat-list {
-      padding: 0;
+      padding: 0 8px;
     }
 
     .chat-item {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 8px 10px;
+      padding: 12px 16px;
       margin-bottom: 2px;
       border-radius: var(--radius-sm);
       cursor: pointer;
@@ -182,7 +174,7 @@
     }
 
     .chat-item:hover, .chat-item.active {
-      background: rgba(255, 255, 255, 0.1);
+      background: var(--bg-tertiary);
     }
 
     .chat-avatar {
@@ -207,19 +199,20 @@
     }
 
     .chat-name {
-      font-weight: 500;
-      color: rgba(255, 255, 255, 0.8);
+      font-weight: 600;
+      color: var(--text-primary);
       margin-bottom: 4px;
-      font-size: 13px;
+      font-size: 14px;
     }
 
     .chat-preview {
-      color: rgba(255, 255, 255, 0.6);
-      font-size: 11px;
+      color: var(--text-secondary);
+      font-size: 12px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
       max-width: 100%;
+      white-space: nowrap;
     }
 
     /* Main Chat Area */
@@ -1064,6 +1057,13 @@
 
       .sidebar-overlay.show {
         display: block;
+      }
+    }
+
+    /* Hide character sidebar on medium screens */
+    @media (max-width: 1200px) {
+      .character-sidebar {
+        display: none;
       }
     }
 
@@ -3161,52 +3161,23 @@
       // First, unescape newlines
       let cleaned = description.replace(/\\n/g, '\n');
 
-      // Extract text after "Extra instructions:" (case-insensitive) and before "Greeting:"
-      const extraInstructionsMatch = cleaned.match(/Extra [Ii]nstructions:\s*(.+?)(?:Greeting:|$)/s);
-      if (extraInstructionsMatch) {
-        return extraInstructionsMatch[1].trim();
-      }
+      // Remove everything after "Extra Instructions:" or "Greeting:"
+      cleaned = cleaned.split(/(?:Extra Instructions:|Greeting:)/)[0].trim();
 
-      // If description starts with "A realistic/anime companion with", skip it and get the next meaningful part
-      if (cleaned.match(/^A (realistic|anime|fantasy|semi-realistic).+companion with.+features?.+hair/i)) {
-        // Split by newlines and find the first meaningful line that's not appearance-based
-        const lines = cleaned.split('\n').filter(line => line.trim());
-        for (let line of lines) {
-          // Skip lines that are just appearance descriptions
-          if (!line.match(/^A (realistic|anime|fantasy|semi-realistic).+companion with/i) &&
-              !line.match(/^Greeting:/i) &&
-              line.trim().length > 20) {
-            return line.trim();
-          }
-        }
-      }
-
-      // Try to find "Discover..." or "Meet..." pattern
-      const discoverMatch = cleaned.match(/(?:Discover|Meet|Experience|Explore)\s+[^]*?(?=\n\n|$)/s);
+      // Remove "A realistic/anime companion with..." part and keep only the "Discover..." or "Experience..." part
+      const discoverMatch = cleaned.match(/(?:Discover|Experience)\s+[^]*$/m);
       if (discoverMatch) {
         return discoverMatch[0].trim();
       }
 
-      // If description is very short or generic, return it as-is
-      if (cleaned.length < 200 && !cleaned.includes('\n\n')) {
-        return cleaned.trim();
+      // If no Discover/Experience found, return the cleaned text without the first line
+      const lines = cleaned.split('\n').filter(line => line.trim());
+      if (lines.length > 1) {
+        // Skip first line (e.g., "A realistic companion with...")
+        return lines.slice(1).join(' ').trim();
       }
 
-      // Last resort: return first meaningful paragraph
-      const paragraphs = cleaned.split('\n\n').filter(p => p.trim());
-      if (paragraphs.length > 0) {
-        const firstParagraph = paragraphs[0].trim();
-        // Skip if it's just appearance description
-        if (!firstParagraph.match(/^A (realistic|anime|fantasy|semi-realistic).+companion with/i)) {
-          return firstParagraph;
-        }
-        // Try second paragraph if first is appearance
-        if (paragraphs.length > 1) {
-          return paragraphs[1].trim();
-        }
-      }
-
-      return cleaned.trim();
+      return cleaned;
     }
 
     // Cache character info for sidebar
