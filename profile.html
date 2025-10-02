@@ -1435,8 +1435,12 @@
               console.log('⚠️ Error response:', errorText);
 
               // If user not found (404), trigger auth0-user-sync to create the user
-              if (response.status === 404) {
+              // Check if we've already tried syncing to prevent infinite reload loop
+              const hasTriedSync = sessionStorage.getItem('profile_sync_attempted');
+
+              if (response.status === 404 && !hasTriedSync) {
                 console.log('🔄 User not found in Airtable - triggering user sync...');
+                sessionStorage.setItem('profile_sync_attempted', 'true');
 
                 try {
                   const syncResponse = await fetch('/.netlify/functions/selira-auth0-user-sync', {
@@ -1460,10 +1464,15 @@
                     window.location.reload();
                   } else {
                     console.error('❌ Failed to sync user:', syncResult);
+                    sessionStorage.removeItem('profile_sync_attempted');
                   }
                 } catch (syncError) {
                   console.error('❌ Error syncing user to Airtable:', syncError);
+                  sessionStorage.removeItem('profile_sync_attempted');
                 }
+              } else if (hasTriedSync) {
+                console.log('⚠️ Already attempted sync, skipping reload to prevent loop');
+                sessionStorage.removeItem('profile_sync_attempted');
               }
             }
           } catch (airtableError) {
