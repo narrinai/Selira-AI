@@ -137,10 +137,11 @@ exports.handler = async (event, context) => {
 
     const getImageUsage = () => {
       return new Promise((resolve, reject) => {
+        const filterFormula = `AND(ARRAYJOIN(User)="${userId}", {Hour}="${currentHour}")`;
         const options = {
           hostname: 'api.airtable.com',
           port: 443,
-          path: `/v0/${AIRTABLE_BASE_ID}/ImageUsage?filterByFormula=AND(RECORD_ID()=ARRAYJOIN(User),{Hour}="${currentHour}")`,
+          path: `/v0/${AIRTABLE_BASE_ID}/ImageUsage?filterByFormula=${encodeURIComponent(filterFormula)}`,
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
