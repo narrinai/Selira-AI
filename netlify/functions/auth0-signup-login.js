@@ -126,6 +126,8 @@ exports.handler = async (event) => {
 
     const userInfo = await userInfoResponse.json();
     console.log('✅ User info retrieved:', userInfo.email);
+    console.log('📋 Full userInfo object:', userInfo);
+    console.log('🆔 Auth0 sub (user ID):', userInfo.sub);
 
     return {
       statusCode: 200,
