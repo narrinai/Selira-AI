@@ -487,25 +487,16 @@ exports.handler = async (event, context) => {
     if (source === 'chat' && (email || auth0_id)) {
       console.log(`📈 [${requestId}] ✅ Incrementing usage counter for chat image generation`);
       try {
-        // Get userId and currentHour - either from limitData or generate new
-        const currentHour = new Date().toISOString().slice(0, 13); // "YYYY-MM-DDTHH"
+        // Get userId - prefer limitData userId (Airtable record ID) over auth0_id
         const userId = body.limitData?.userId || auth0_id;
-        const usageRecordId = body.limitData?.usageRecordId;
 
-        console.log(`📈 [${requestId}] Incrementing with:`, {
-          userId: userId?.substring(0, 20) + '...',
-          usageRecordId,
-          currentHour,
-          hasLimitData: !!body.limitData
-        });
+        console.log(`📈 [${requestId}] Incrementing with userId:`, userId?.substring(0, 20) + '...');
 
         const incrementResponse = await fetch(`${process.env.NETLIFY_FUNCTIONS_URL || 'https://selira.ai/.netlify/functions'}/selira-increment-image-usage`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            userId: userId,
-            usageRecordId: usageRecordId,
-            currentHour: currentHour
+            userId: userId
           })
         });
 
