@@ -66,13 +66,37 @@ class Auth0LoginModal {
         search: window.location.search,
         pathname: window.location.pathname
       });
-      
+
+      // First check if we have tokens from direct email/password login
+      const accessToken = localStorage.getItem('auth0_access_token');
+      const idToken = localStorage.getItem('auth0_id_token');
+      const tokenExpires = localStorage.getItem('auth0_token_expires');
+      const userEmail = localStorage.getItem('user_email');
+      const userUid = localStorage.getItem('user_uid');
+
+      if (accessToken && idToken && tokenExpires && Date.now() < parseInt(tokenExpires)) {
+        // We have valid tokens from direct login
+        console.log('✅ Found valid tokens from direct login');
+
+        // Reconstruct user object from localStorage
+        this.user = {
+          email: userEmail,
+          sub: userUid,
+          name: localStorage.getItem('user_name') || userEmail?.split('@')[0]
+        };
+
+        console.log('✅ User authenticated from stored tokens:', this.user.email);
+        this.updateAuthState(true);
+        return;
+      }
+
+      // If no direct login tokens, check Auth0 SDK
       const isAuthenticated = await this.auth0Client.isAuthenticated();
       console.log('🔍 Auth0 isAuthenticated result:', isAuthenticated);
-      
+
       if (isAuthenticated) {
         this.user = await this.auth0Client.getUser();
-        console.log('✅ User is authenticated:', this.user);
+        console.log('✅ User is authenticated via Auth0 SDK:', this.user);
         this.updateAuthState(true);
       } else {
         // Check for callback after redirect
@@ -522,12 +546,18 @@ class Auth0LoginModal {
 
   async logout() {
     try {
+      // Clear direct login tokens
+      localStorage.removeItem('auth0_access_token');
+      localStorage.removeItem('auth0_id_token');
+      localStorage.removeItem('auth0_token_expires');
+
+      // Logout from Auth0 SDK (for Google/social logins)
       await this.auth0Client.logout({
         logoutParams: {
           returnTo: window.location.origin
         }
       });
-      
+
       this.user = null;
       this.updateAuthState(false);
       console.log('✅ User logged out successfully');
