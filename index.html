@@ -1950,7 +1950,7 @@
     });
 
     // ===== HELPER FUNCTIONS =====
-    // Clean description - extract only the "Discover..." or "Meet..." part after "Extra instructions:"
+    // Clean description - extract only the meaningful part and skip auto-generated appearance descriptions
     function cleanDescription(description) {
       if (!description) return '';
 
@@ -1963,19 +1963,46 @@
         return extraInstructionsMatch[1].trim();
       }
 
-      // Fallback: if no Extra Instructions found, try to find "Discover..." or "Meet..." pattern
-      const discoverMatch = cleaned.match(/(?:Discover|Meet|Experience)\s+[^]*$/m);
+      // If description starts with "A realistic/anime companion with", skip it and get the next meaningful part
+      if (cleaned.match(/^A (realistic|anime|fantasy|semi-realistic).+companion with.+features?.+hair/i)) {
+        // Split by newlines and find the first meaningful line that's not appearance-based
+        const lines = cleaned.split('\n').filter(line => line.trim());
+        for (let line of lines) {
+          // Skip lines that are just appearance descriptions
+          if (!line.match(/^A (realistic|anime|fantasy|semi-realistic).+companion with/i) &&
+              !line.match(/^Greeting:/i) &&
+              line.trim().length > 20) {
+            return line.trim();
+          }
+        }
+      }
+
+      // Try to find "Discover..." or "Meet..." pattern
+      const discoverMatch = cleaned.match(/(?:Discover|Meet|Experience|Explore)\s+[^]*?(?=\n\n|$)/s);
       if (discoverMatch) {
         return discoverMatch[0].trim();
       }
 
-      // Last resort: return cleaned text without the first line
-      const lines = cleaned.split('\n').filter(line => line.trim());
-      if (lines.length > 1) {
-        return lines.slice(1).join(' ').trim();
+      // If description is very short or generic, return it as-is
+      if (cleaned.length < 200 && !cleaned.includes('\n\n')) {
+        return cleaned.trim();
       }
 
-      return cleaned;
+      // Last resort: return first meaningful paragraph
+      const paragraphs = cleaned.split('\n\n').filter(p => p.trim());
+      if (paragraphs.length > 0) {
+        const firstParagraph = paragraphs[0].trim();
+        // Skip if it's just appearance description
+        if (!firstParagraph.match(/^A (realistic|anime|fantasy|semi-realistic).+companion with/i)) {
+          return firstParagraph;
+        }
+        // Try second paragraph if first is appearance
+        if (paragraphs.length > 1) {
+          return paragraphs[1].trim();
+        }
+      }
+
+      return cleaned.trim();
     }
 
     // ===== CHARACTER LOADING =====

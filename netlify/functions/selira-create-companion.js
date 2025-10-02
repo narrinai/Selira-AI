@@ -247,9 +247,8 @@ exports.handler = async (event, context) => {
     // Generate greeting based on character traits first
     const greetingText = generateGreeting(name, tags, extraInstructions);
 
-    // Generate automatic description based on appearance and extra instructions
-    const description = `A ${artStyle || 'realistic'} companion with ${ethnicity || 'diverse'} features, ${hairLength || 'medium'} ${hairColor || 'brown'} hair`;
-    const fullDescription = extraInstructions ? `${description}\n\nExtra Instructions: ${extraInstructions}\n\nGreeting: ${greetingText}` : `${description}\n\nGreeting: ${greetingText}`;
+    // Use extraInstructions directly as description, with appearance details only in the system prompt
+    const fullDescription = extraInstructions ? `${extraInstructions}\n\nGreeting: ${greetingText}` : `A companion ready to chat.\n\nGreeting: ${greetingText}`;
 
     // Generate personalized prompt based on user selections
     const genderPronoun = sex === 'male' ? 'he/him' : 'she/her';
