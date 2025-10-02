@@ -1370,7 +1370,7 @@
       <button class="image-upgrade-close" onclick="closeImageUpgradeModal()">&times;</button>
 
       <div class="image-upgrade-header">
-        <div class="image-upgrade-icon">🎨</div>
+        <img src="/avatars/lisa-park-avatar-1759235809322.webp" alt="AI Generated Image Example" style="width: 100%; max-width: 400px; border-radius: 16px; margin-bottom: 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
         <div class="image-upgrade-title" id="upgradeModalTitle">Unlock Image Generation</div>
         <div class="image-upgrade-subtitle" id="upgradeModalSubtitle">Generate beautiful AI images of your characters</div>
       </div>
@@ -3843,7 +3843,7 @@
         // Default to blocking if server returns unexpected response
         const fallbackPermissions = {
           canGenerate: false,
-          plan: 'Unknown',
+          plan: 'Free',
           reason: 'Could not verify image generation permissions'
         };
         console.warn('⚠️ Unexpected response status:', response.status, '- blocking image generation');
@@ -3853,7 +3853,7 @@
         // Default to blocking on errors for safety
         const fallbackPermissions = {
           canGenerate: false,
-          plan: 'Unknown',
+          plan: 'Free',
           reason: 'Could not verify image generation permissions'
         };
         return fallbackPermissions;

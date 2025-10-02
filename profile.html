@@ -1033,7 +1033,7 @@
 
         console.log('🧪 Testing update profile with:', { auth0_id, email });
 
-        const response = await fetch('/.netlify/functions/update-profile', {
+        const response = await fetch('/.netlify/functions/selira-update-profile', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -1093,7 +1093,7 @@
         saveButton.disabled = true;
 
         // Call Netlify function to update Airtable
-        const response = await fetch('/.netlify/functions/update-profile', {
+        const response = await fetch('/.netlify/functions/selira-update-profile', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -1391,7 +1391,7 @@
           console.log('🔄 Fetching latest profile data from Airtable...');
 
           try {
-            const response = await fetch('/.netlify/functions/get-user-profile', {
+            const response = await fetch('/.netlify/functions/selira-get-user-profile', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json'
