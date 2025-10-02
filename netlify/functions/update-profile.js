@@ -100,15 +100,15 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Find the user record by Email (since auth0_id is actually the email)
-    console.log('🔍 Searching for user with email:', auth0_id);
+    // Find the user record by Email OR Auth0ID
+    console.log('🔍 Searching for user with identifier:', auth0_id);
 
     const findUserRecord = () => {
       return new Promise((resolve, reject) => {
         const options = {
           hostname: 'api.airtable.com',
           port: 443,
-          path: `/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula=AND({Email}="${auth0_id}")`,
+          path: `/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula=OR({Email}="${auth0_id}",{Auth0ID}="${auth0_id}")`,
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
