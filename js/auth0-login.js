@@ -681,7 +681,7 @@ class Auth0LoginModal {
       // Ensure login button is visible and functional
       if (loginBtn) {
         loginBtn.href = '#';
-        loginBtn.textContent = 'Sign In';
+        loginBtn.textContent = 'Login';
         loginBtn.className = loginBtn.className.replace('profile-btn', 'login-btn');
         loginBtn.onclick = (e) => {
           e.preventDefault();
