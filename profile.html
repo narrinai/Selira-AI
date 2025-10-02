@@ -1440,6 +1440,32 @@
 
     // Initialize profile on page load
     document.addEventListener('DOMContentLoaded', async function() {
+      // Check if user is authenticated
+      const checkAuth = () => {
+        // Check Auth0 tokens
+        const auth0Token = localStorage.getItem('auth0_access_token');
+        const auth0Expires = localStorage.getItem('auth0_token_expires');
+
+        // Check legacy user data
+        const userEmail = localStorage.getItem('user_email');
+        const userUid = localStorage.getItem('user_uid');
+
+        // User is authenticated if they have valid tokens OR user data
+        const hasValidAuth0Token = auth0Token && auth0Expires && Date.now() < parseInt(auth0Expires);
+        const hasUserData = userEmail && userUid;
+
+        return hasValidAuth0Token || hasUserData;
+      };
+
+      // If not authenticated, redirect to home
+      if (!checkAuth()) {
+        console.log('🚫 User not authenticated - redirecting to home');
+        window.location.href = '/';
+        return;
+      }
+
+      console.log('✅ User authenticated - loading profile');
+
       // Load profile, subscription info, and email preferences in parallel
       const profilePromise = loadUserProfile();
       const subscriptionPromise = loadSubscriptionInfo();
