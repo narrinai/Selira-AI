@@ -146,7 +146,9 @@ exports.handler = async (event, context) => {
             Email: email,
             Name: name,
             Plan: 'Free',
-            display_name: name ? (name.split(' ')[0] || name) : email.split('@')[0]
+            display_name: name ? (name.split(' ')[0] || name) : email.split('@')[0],
+            email_notifications: true,
+            email_marketing: true
           }
         })
       });

@@ -125,7 +125,9 @@ exports.handler = async (event, context) => {
       records: [{
         fields: {
           Email: email,
-          Auth0ID: auth0_id
+          Auth0ID: auth0_id,
+          email_notifications: true,
+          email_marketing: true
         }
       }]
     };

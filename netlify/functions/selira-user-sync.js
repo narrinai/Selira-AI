@@ -139,7 +139,9 @@ exports.handler = async (event, context) => {
             Email: email,
             Auth0ID: auth0_id,
             Name: name || defaultDisplayName,
-            display_name: defaultDisplayName
+            display_name: defaultDisplayName,
+            email_notifications: true,
+            email_marketing: true
           }
         }]
       })
