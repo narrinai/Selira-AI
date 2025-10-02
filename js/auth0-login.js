@@ -499,10 +499,11 @@ class Auth0LoginModal {
       localStorage.setItem('user_name', this.user.name || this.user.email.split('@')[0]);
       localStorage.setItem('user_auth_timestamp', Date.now().toString());
       
-      // Store for compatibility
+      // Store for Selira (use auth0_id and sub for compatibility)
       localStorage.setItem('user', JSON.stringify({
         email: this.user.email,
-        uid: this.user.sub,
+        sub: this.user.sub,
+        auth0_id: this.user.sub,
         name: this.user.name
       }));
     } else {
