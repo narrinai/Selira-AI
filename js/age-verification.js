@@ -32,38 +32,37 @@ function showAgeVerificationPopup() {
 function createAgeVerificationHTML() {
   // Check if already exists
   if (document.getElementById('age-verification-overlay')) return;
-  
+
   const ageVerification = document.createElement('div');
   ageVerification.id = 'age-verification-overlay';
+  ageVerification.className = 'age-verification-overlay';
   ageVerification.innerHTML = `
-    <div class="age-verification-overlay">
-      <div class="age-verification-modal">
-        <div class="age-verification-content">
-          <div class="age-verification-logo-section">
-            <div class="age-verification-logo">Selira</div>
-          </div>
+    <div class="age-verification-modal">
+      <div class="age-verification-content">
+        <div class="age-verification-logo-section">
+          <div class="age-verification-logo">Selira</div>
+        </div>
 
-          <div class="age-verification-body">
-            <h2 class="age-verification-title">Age Verification</h2>
-            <p class="age-verification-description">
-              You must be at least 18 years old to use Selira.
-            </p>
-          </div>
+        <div class="age-verification-body">
+          <h2 class="age-verification-title">Age Verification</h2>
+          <p class="age-verification-description">
+            You must be at least 18 years old to use Selira.
+          </p>
+        </div>
 
-          <div class="age-verification-footer">
-            <button class="age-btn age-btn-confirm" onclick="confirmAgeVerification()">
-              <span class="btn-icon">✓</span>
-              <span>Yes, I am 18+</span>
-            </button>
-            <button class="age-btn age-btn-deny" onclick="denyAgeVerification()">
-              <span class="btn-icon">✕</span>
-              <span>No, I am not</span>
-            </button>
-          </div>
+        <div class="age-verification-footer">
+          <button class="age-btn age-btn-confirm" onclick="confirmAgeVerification()">
+            <span class="btn-icon">✓</span>
+            <span>Yes, I am 18+</span>
+          </button>
+          <button class="age-btn age-btn-deny" onclick="denyAgeVerification()">
+            <span class="btn-icon">✕</span>
+            <span>No, I am not</span>
+          </button>
+        </div>
 
-          <div class="age-verification-disclaimer">
-            By continuing, you confirm that you are at least 18 years old and agree to our <a href="/terms-and-conditions" target="_blank">Terms of Service</a> and <a href="/privacy-policy" target="_blank">Privacy Policy</a>.
-          </div>
+        <div class="age-verification-disclaimer">
+          By continuing, you confirm that you are at least 18 years old and agree to our <a href="/terms-and-conditions" target="_blank">Terms of Service</a> and <a href="/privacy-policy" target="_blank">Privacy Policy</a>.
         </div>
       </div>
     </div>
