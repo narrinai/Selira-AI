@@ -627,18 +627,18 @@ class Auth0LoginModal {
         loginBtn.style.border = '2px solid var(--accent, #d4a574)';
         console.log('✅ Updated mobile header to show transparent Profile button');
       } else {
-        loginBtn.textContent = 'Login';
+        loginBtn.textContent = 'Register';
         loginBtn.className = loginBtn.className.replace('profile-btn', 'login-btn').replace('inverted-btn', '');
         loginBtn.onclick = (e) => {
           e.preventDefault();
-          this.openModal('login');
+          this.openModal('signup');
           return false;
         };
         // Reset to original mobile styling
         loginBtn.style.background = 'var(--accent)';
         loginBtn.style.color = 'white';
         loginBtn.style.border = 'none';
-        console.log('✅ Updated mobile header to show Login button');
+        console.log('✅ Updated mobile header to show Register button');
       }
       return;
     }
