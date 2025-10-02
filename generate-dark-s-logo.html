@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Generate Dark S Logo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+</head>
+<body style="margin: 0; padding: 20px; background: #1a1a1a; font-family: Arial, sans-serif; color: white;">
+  <h1>Selira AI - Dark S Logo Generator</h1>
+  <p>Click the button to download the logo (black background + green S)</p>
+  <button onclick="generateAndDownload()" style="padding: 12px 24px; background: #10b981; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer;">
+    Download PNG (800x300)
+  </button>
+  <br><br>
+  <canvas id="canvas" width="800" height="300" style="border: 2px solid #333; display: block;"></canvas>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    function drawLogo() {
+      // Dark background (matching favicon)
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(0, 0, 800, 300);
+
+      // Draw green 'S' with Playfair Display font (matching favicon)
+      const centerX = 400;
+      const centerY = 150;
+
+      ctx.fillStyle = '#10b981';
+      ctx.font = '700 180px "Playfair Display", Georgia, serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('S', centerX, centerY);
+    }
+
+    function generateAndDownload() {
+      drawLogo();
+
+      canvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'selira-ai-logo-dark-s.png';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        alert('✅ Logo downloaded: selira-ai-logo-dark-s.png');
+      });
+    }
+
+    // Draw on load
+    drawLogo();
+  </script>
+</body>
+</html>
