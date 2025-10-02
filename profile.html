@@ -780,15 +780,15 @@
                 <h4>Notifications</h4>
                 <p>Feature updates and announcements</p>
               </div>
-              <div class="toggle-switch active" onclick="toggleSetting(this)"></div>
+              <div class="toggle-switch active" id="notificationsToggle" onclick="toggleEmailSetting('notifications', this)"></div>
             </div>
-            
+
             <div class="settings-group">
               <div class="setting-info">
                 <h4>Marketing</h4>
                 <p>Promotions and special offers</p>
               </div>
-              <div class="toggle-switch" onclick="toggleSetting(this)"></div>
+              <div class="toggle-switch" id="marketingToggle" onclick="toggleEmailSetting('marketing', this)"></div>
             </div>
             
           </div>
@@ -848,9 +848,95 @@
       toggleSidebar();
     });
     
-    // Toggle settings
-    function toggleSetting(element) {
+    // Toggle email settings and save to Airtable
+    async function toggleEmailSetting(type, element) {
+      const isActive = !element.classList.contains('active');
       element.classList.toggle('active');
+
+      try {
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        if (!user.email) {
+          alert('Please login to update email preferences');
+          element.classList.toggle('active'); // Revert toggle
+          return;
+        }
+
+        // Prepare preferences object
+        const preferences = {
+          email: user.email,
+          notifications: type === 'notifications' ? isActive : document.getElementById('notificationsToggle').classList.contains('active'),
+          marketing: type === 'marketing' ? isActive : document.getElementById('marketingToggle').classList.contains('active')
+        };
+
+        console.log('📧 Updating email preferences:', preferences);
+
+        // Save to Airtable
+        const response = await fetch('/.netlify/functions/selira-update-email-preferences', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(preferences)
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          console.log('✅ Email preferences saved successfully');
+        } else {
+          console.error('❌ Failed to save preferences:', result.error);
+          alert('Failed to save preferences. Please try again.');
+          element.classList.toggle('active'); // Revert toggle
+        }
+
+      } catch (error) {
+        console.error('❌ Error saving email preferences:', error);
+        alert('Error saving preferences. Please try again.');
+        element.classList.toggle('active'); // Revert toggle
+      }
+    }
+
+    // Load email preferences from Airtable
+    async function loadEmailPreferences() {
+      try {
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        if (!user.email) {
+          console.log('⚠️ No user email, skipping email preferences load');
+          return;
+        }
+
+        console.log('📧 Loading email preferences for:', user.email);
+
+        const response = await fetch(`/.netlify/functions/selira-get-email-preferences?email=${encodeURIComponent(user.email)}`);
+        const result = await response.json();
+
+        if (result.success && result.preferences) {
+          console.log('✅ Email preferences loaded:', result.preferences);
+
+          // Update toggles
+          const notificationsToggle = document.getElementById('notificationsToggle');
+          const marketingToggle = document.getElementById('marketingToggle');
+
+          if (notificationsToggle) {
+            if (result.preferences.notifications) {
+              notificationsToggle.classList.add('active');
+            } else {
+              notificationsToggle.classList.remove('active');
+            }
+          }
+
+          if (marketingToggle) {
+            if (result.preferences.marketing) {
+              marketingToggle.classList.add('active');
+            } else {
+              marketingToggle.classList.remove('active');
+            }
+          }
+        }
+
+      } catch (error) {
+        console.error('❌ Error loading email preferences:', error);
+      }
     }
     
     // Save username
@@ -1312,12 +1398,13 @@
 
     // Initialize profile on page load
     document.addEventListener('DOMContentLoaded', async function() {
-      // Load profile and subscription info in parallel for better performance
+      // Load profile, subscription info, and email preferences in parallel
       const profilePromise = loadUserProfile();
       const subscriptionPromise = loadSubscriptionInfo();
+      const preferencesPromise = loadEmailPreferences();
 
-      // Wait for both to complete
-      await Promise.all([profilePromise, subscriptionPromise]);
+      // Wait for all to complete
+      await Promise.all([profilePromise, subscriptionPromise, preferencesPromise]);
     });
 
     // TODO: Add authentication integration

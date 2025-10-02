@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email System Test - Selira</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0a0a0a;
+      color: #ffffff;
+      padding: 40px 20px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: #d4a574;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .test-section {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    h2 {
+      color: #d4a574;
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      color: #b3b3b3;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      background: #0a0a0a;
+      border: 1px solid #333;
+      border-radius: 8px;
+      color: #ffffff;
+      font-size: 14px;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+      font-family: monospace;
+    }
+
+    button {
+      background: #d4a574;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background: #c19456;
+    }
+
+    button:disabled {
+      background: #333;
+      cursor: not-allowed;
+    }
+
+    .result {
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .result.success {
+      background: rgba(16, 185, 129, 0.2);
+      border: 1px solid #10b981;
+      color: #10b981;
+      display: block;
+    }
+
+    .result.error {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid #ef4444;
+      color: #ef4444;
+      display: block;
+    }
+
+    .result.info {
+      background: rgba(212, 165, 116, 0.2);
+      border: 1px solid #d4a574;
+      color: #d4a574;
+      display: block;
+    }
+
+    pre {
+      background: #0a0a0a;
+      padding: 12px;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin-top: 8px;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📧 Email System Test Panel</h1>
+
+    <!-- Test 1: Get Email Preferences -->
+    <div class="test-section">
+      <h2>1. Get Email Preferences</h2>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="getPrefsEmail" placeholder="user@example.com">
+      </div>
+      <button onclick="testGetPreferences()">Get Preferences</button>
+      <div id="getPrefsResult" class="result"></div>
+    </div>
+
+    <!-- Test 2: Update Email Preferences -->
+    <div class="test-section">
+      <h2>2. Update Email Preferences</h2>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="updatePrefsEmail" placeholder="user@example.com">
+      </div>
+      <div class="form-group">
+        <label>
+          <input type="checkbox" id="updateNotifications" checked> Enable Notifications
+        </label>
+      </div>
+      <div class="form-group">
+        <label>
+          <input type="checkbox" id="updateMarketing"> Enable Marketing
+        </label>
+      </div>
+      <button onclick="testUpdatePreferences()">Update Preferences</button>
+      <div id="updatePrefsResult" class="result"></div>
+    </div>
+
+    <!-- Test 3: Send Single Email -->
+    <div class="test-section">
+      <h2>3. Send Single Email</h2>
+      <div class="form-group">
+        <label>Recipient Email</label>
+        <input type="email" id="sendEmail" placeholder="user@example.com">
+      </div>
+      <div class="form-group">
+        <label>Email Type</label>
+        <select id="sendType">
+          <option value="notification">Notification</option>
+          <option value="marketing">Marketing</option>
+          <option value="transactional">Transactional</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Subject</label>
+        <input type="text" id="sendSubject" placeholder="Test Email">
+      </div>
+      <div class="form-group">
+        <label>Message (HTML)</label>
+        <textarea id="sendMessage" placeholder="<p>This is a test email</p>"></textarea>
+      </div>
+      <button onclick="testSendEmail()">Send Email</button>
+      <div id="sendEmailResult" class="result"></div>
+    </div>
+
+    <!-- Test 4: Bulk Send -->
+    <div class="test-section">
+      <h2>4. Bulk Email Send</h2>
+      <div class="form-group">
+        <label>Email Type</label>
+        <select id="bulkType">
+          <option value="notification">Notification</option>
+          <option value="marketing">Marketing</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Filter by Plan (Optional)</label>
+        <select id="bulkPlan">
+          <option value="">All Plans</option>
+          <option value="Free">Free</option>
+          <option value="Basic">Basic</option>
+          <option value="Premium">Premium</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Subject</label>
+        <input type="text" id="bulkSubject" placeholder="Important Announcement">
+      </div>
+      <div class="form-group">
+        <label>Message (HTML)</label>
+        <textarea id="bulkMessage" placeholder="<p>Hello {{display_name}},</p><p>We have an important announcement!</p>"></textarea>
+      </div>
+      <button onclick="testBulkSend()">Send Bulk Email</button>
+      <div id="bulkSendResult" class="result"></div>
+    </div>
+  </div>
+
+  <script>
+    // Test 1: Get Email Preferences
+    async function testGetPreferences() {
+      const email = document.getElementById('getPrefsEmail').value;
+      const resultDiv = document.getElementById('getPrefsResult');
+
+      if (!email) {
+        showResult(resultDiv, 'error', 'Please enter an email address');
+        return;
+      }
+
+      try {
+        const response = await fetch(`/.netlify/functions/selira-get-email-preferences?email=${encodeURIComponent(email)}`);
+        const data = await response.json();
+
+        if (data.success) {
+          showResult(resultDiv, 'success', 'Preferences retrieved successfully', data);
+        } else {
+          showResult(resultDiv, 'error', data.error, data);
+        }
+      } catch (error) {
+        showResult(resultDiv, 'error', error.message);
+      }
+    }
+
+    // Test 2: Update Email Preferences
+    async function testUpdatePreferences() {
+      const email = document.getElementById('updatePrefsEmail').value;
+      const notifications = document.getElementById('updateNotifications').checked;
+      const marketing = document.getElementById('updateMarketing').checked;
+      const resultDiv = document.getElementById('updatePrefsResult');
+
+      if (!email) {
+        showResult(resultDiv, 'error', 'Please enter an email address');
+        return;
+      }
+
+      try {
+        const response = await fetch('/.netlify/functions/selira-update-email-preferences', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, notifications, marketing })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          showResult(resultDiv, 'success', 'Preferences updated successfully', data);
+        } else {
+          showResult(resultDiv, 'error', data.error, data);
+        }
+      } catch (error) {
+        showResult(resultDiv, 'error', error.message);
+      }
+    }
+
+    // Test 3: Send Single Email
+    async function testSendEmail() {
+      const email = document.getElementById('sendEmail').value;
+      const type = document.getElementById('sendType').value;
+      const subject = document.getElementById('sendSubject').value;
+      const html = document.getElementById('sendMessage').value;
+      const resultDiv = document.getElementById('sendEmailResult');
+
+      if (!email || !subject || !html) {
+        showResult(resultDiv, 'error', 'Please fill in all fields');
+        return;
+      }
+
+      try {
+        const response = await fetch('/.netlify/functions/selira-sendgrid-send-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, type, subject, html })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          showResult(resultDiv, 'success', 'Email sent successfully', data);
+        } else if (data.skipped) {
+          showResult(resultDiv, 'info', data.reason, data);
+        } else {
+          showResult(resultDiv, 'error', data.error, data);
+        }
+      } catch (error) {
+        showResult(resultDiv, 'error', error.message);
+      }
+    }
+
+    // Test 4: Bulk Send
+    async function testBulkSend() {
+      const type = document.getElementById('bulkType').value;
+      const filterByPlan = document.getElementById('bulkPlan').value;
+      const subject = document.getElementById('bulkSubject').value;
+      const html = document.getElementById('bulkMessage').value;
+      const resultDiv = document.getElementById('bulkSendResult');
+
+      if (!subject || !html) {
+        showResult(resultDiv, 'error', 'Please fill in subject and message');
+        return;
+      }
+
+      if (!confirm(`Are you sure you want to send bulk emails?\nType: ${type}\nPlan: ${filterByPlan || 'All'}`)) {
+        return;
+      }
+
+      try {
+        const response = await fetch('/.netlify/functions/selira-sendgrid-bulk-send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type, filterByPlan, subject, html })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          showResult(resultDiv, 'success', `Bulk send complete: ${data.sent} sent, ${data.failed} failed`, data);
+        } else {
+          showResult(resultDiv, 'error', data.error, data);
+        }
+      } catch (error) {
+        showResult(resultDiv, 'error', error.message);
+      }
+    }
+
+    // Helper function to show results
+    function showResult(element, type, message, data = null) {
+      element.className = `result ${type}`;
+      element.innerHTML = message;
+
+      if (data) {
+        element.innerHTML += `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+      }
+    }
+  </script>
+</body>
+</html>
