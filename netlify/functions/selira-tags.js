@@ -57,21 +57,15 @@ exports.handler = async (event, context) => {
     console.error('❌ Tags fetch error:', error);
     console.error('❌ Error stack:', error.stack);
 
-    // Return fallback tags if everything fails
-    const fallbackTags = [
-      'Fantasy', 'Romance', 'Adventure', 'Mystery', 'Action', 'Historical', 'Anime-Manga',
-      'Friendship', 'Comedy', 'Drama', 'Girlfriend', 'Boyfriend', 'Companion', 'Flirty',
-      'Cute', 'Seductive', 'Dominant', 'Submissive', 'Angel', 'Demon', 'Vampire'
-    ];
-
+    // Return empty tags array if everything fails - don't show tags that don't exist
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
         success: true,
-        tags: fallbackTags,
-        total: fallbackTags.length,
-        source: 'fallback_hardcoded'
+        tags: [],
+        total: 0,
+        source: 'error_no_fallback'
       })
     };
   }
@@ -166,23 +160,17 @@ async function extractTagsFromCharacters(baseId, token, headers) {
     console.error('❌ Character tags extraction error:', error);
     console.error('❌ Error details:', error.message);
 
-    // Return fallback tags if everything fails
-    const fallbackTags = [
-      'Fantasy', 'Romance', 'Adventure', 'Mystery', 'Action', 'Historical', 'Anime-Manga',
-      'Friendship', 'Comedy', 'Drama', 'Girlfriend', 'Boyfriend', 'Companion', 'Flirty',
-      'Cute', 'Seductive', 'Dominant', 'Submissive', 'Angel', 'Demon', 'Vampire'
-    ];
-
-    console.log('🔄 Returning fallback tags:', fallbackTags.length);
+    // Return empty tags array - don't show tags that don't exist
+    console.log('🔄 Returning empty tags due to error');
 
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
         success: true,
-        tags: fallbackTags,
-        total: fallbackTags.length,
-        source: 'fallback_after_error'
+        tags: [],
+        total: 0,
+        source: 'error_no_tags'
       })
     };
   }
