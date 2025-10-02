@@ -295,17 +295,19 @@ function denyAgeVerification() {
 // Hide age verification popup
 function hideAgeVerificationPopup() {
   const overlay = document.getElementById('age-verification-overlay');
-  overlay.classList.remove('show');
+  if (overlay) {
+    overlay.classList.remove('show');
 
-  // Restore scrolling
+    // Remove element after animation
+    setTimeout(() => {
+      if (overlay.parentNode) {
+        overlay.parentNode.removeChild(overlay);
+      }
+    }, 300);
+  }
+
+  // Restore scrolling - always execute this even if overlay doesn't exist
   document.body.style.overflow = '';
-
-  // Remove element after animation
-  setTimeout(() => {
-    if (overlay.parentNode) {
-      overlay.parentNode.removeChild(overlay);
-    }
-  }, 300);
 }
 
 // Export functions for external use
