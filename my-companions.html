@@ -799,13 +799,13 @@
         if (userCompanions.length === 0) {
           grid.innerHTML = `
             <div class="loading-grid">
-              <div style="text-align: center; padding: 40px;">
-                <div style="font-size: 48px; margin-bottom: 16px;">💬</div>
-                <h3 style="color: var(--text-primary); margin-bottom: 8px;">No companions yet</h3>
-                <p style="color: var(--text-secondary); margin-bottom: 20px;">Create or chat with characters to add them to your companions!</p>
-                <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-                  <a href="/category" class="user-btn" style="text-decoration: none;">Discover Characters</a>
-                  <a href="/create" class="user-btn" style="text-decoration: none;">Create Companion</a>
+              <div style="text-align: center; padding: 60px 20px; max-width: 600px; margin: 0 auto;">
+                <div style="font-size: 64px; margin-bottom: 24px;">💬</div>
+                <h3 style="color: var(--text-primary); font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 700; margin-bottom: 12px;">No companions yet</h3>
+                <p style="color: var(--text-secondary); font-family: 'Inter', sans-serif; font-size: 16px; margin-bottom: 32px; line-height: 1.6;">Create or chat with characters to add them to your companions!</p>
+                <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                  <a href="/" style="text-decoration: none; background: var(--accent); color: white; padding: 14px 28px; border-radius: 12px; font-weight: 600; transition: all 0.2s ease; font-family: 'Inter', sans-serif;">Discover Characters</a>
+                  <a href="/create" style="text-decoration: none; background: transparent; color: var(--accent); border: 2px solid var(--accent); padding: 14px 28px; border-radius: 12px; font-weight: 600; transition: all 0.2s ease; font-family: 'Inter', sans-serif;">Create Companion</a>
                 </div>
               </div>
             </div>
