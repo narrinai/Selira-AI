@@ -719,7 +719,7 @@
       try {
         console.log('🚀 Loading all characters for search page...');
 
-        const response = await fetch('/.netlify/functions/characters');
+        const response = await fetch('/.netlify/functions/selira-characters');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
