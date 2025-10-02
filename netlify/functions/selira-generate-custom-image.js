@@ -136,7 +136,10 @@ exports.handler = async (event, context) => {
       sex,
       ethnicity,
       hairLength,
-      hairColor
+      hairColor,
+      source,
+      email,
+      auth0_id: auth0_id ? auth0_id.substring(0, 15) + '...' : 'none'
     });
     
     if (!customPrompt) {
@@ -479,15 +482,22 @@ exports.handler = async (event, context) => {
     }
 
     // Increment usage counter ONLY for chat-generated images (not companion creation)
+    console.log(`🔍 [${requestId}] Checking increment conditions:`, { source, hasEmail: !!email, hasAuth0Id: !!auth0_id });
+
     if (source === 'chat' && (email || auth0_id)) {
-      console.log(`📈 [${requestId}] Incrementing usage counter for chat image generation`);
+      console.log(`📈 [${requestId}] ✅ Incrementing usage counter for chat image generation`);
       try {
         // Get userId and currentHour - either from limitData or generate new
         const currentHour = new Date().toISOString().slice(0, 13); // "YYYY-MM-DDTHH"
         const userId = body.limitData?.userId || auth0_id;
         const usageRecordId = body.limitData?.usageRecordId;
 
-        console.log(`📈 [${requestId}] Incrementing with:`, { userId, usageRecordId, currentHour });
+        console.log(`📈 [${requestId}] Incrementing with:`, {
+          userId: userId?.substring(0, 20) + '...',
+          usageRecordId,
+          currentHour,
+          hasLimitData: !!body.limitData
+        });
 
         const incrementResponse = await fetch(`${process.env.NETLIFY_FUNCTIONS_URL || 'https://selira.ai/.netlify/functions'}/selira-increment-image-usage`, {
           method: 'POST',
