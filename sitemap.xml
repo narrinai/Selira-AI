@@ -48,49 +48,742 @@
   <!-- Popular Tag Pages -->
   <url>
     <loc>https://selira.ai/tags/boyfriend</loc>
-    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
     <loc>https://selira.ai/tags/girlfriend</loc>
-    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
     <loc>https://selira.ai/tags/vampire</loc>
-    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
     <loc>https://selira.ai/tags/anime</loc>
-    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
     <loc>https://selira.ai/tags/fantasy</loc>
-    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
     <loc>https://selira.ai/tags/romance</loc>
-    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
     <loc>https://selira.ai/tags/historical</loc>
-    <lastmod>2025-09-25T12:00:00+00:00</lastmod>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/dominant</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/submissive</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/monster</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/demon</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/angel</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/elf</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/fairy</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/dragon</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/witch</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/wizard</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/hero</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/villain</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/tsundere</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/yandere</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/teacher</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/student</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/doctor</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/nurse</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/royal</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/knight</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/pirate</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/scientist</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/detective</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/police</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/military</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/ceo</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/assistant</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/celebrity</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/athlete</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/musician</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/artist</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/gamer</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/nerd</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/bully</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/shy</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/confident</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/flirty</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/caring</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/mysterious</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/aggressive</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/gentle</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/sadistic</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/masochistic</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/femdom</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/maledom</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/futanari</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/furry</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/catgirl</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/foxgirl</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/wolfgirl</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/bunny</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/maid</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/butler</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/android</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/alien</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/ghost</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/zombie</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/werewolf</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/mermaid</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/centaur</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/succubus</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/incubus</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/goddess</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/god</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/immortal</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/time-traveler</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/psychic</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/supernatural</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/magic</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/medieval</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/modern</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/futuristic</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/apocalyptic</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/cyberpunk</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/steampunk</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/slice-of-life</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/action</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/adventure</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/thriller</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/horror</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/comedy</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/drama</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/mystery</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/sci-fi</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/school</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/college</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/workplace</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/cafe</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/library</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/gym</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/beach</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/forest</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/castle</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/spaceship</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/dungeon</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/mansion</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/village</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/city</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://selira.ai/tags/island</loc>
+    <lastmod>2025-10-02T12:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
