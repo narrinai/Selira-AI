@@ -1379,10 +1379,10 @@
           // Update email field immediately from localStorage
           document.getElementById('userEmail').value = user.email;
 
-          // Set initial display name from localStorage
+          // Don't set initial display name from localStorage - wait for Airtable data
           const displayNameField = document.getElementById('userDisplayName');
           if (displayNameField) {
-            displayNameField.value = user.display_name || user.name || '';
+            displayNameField.placeholder = 'Loading...';
           }
 
           console.log('✅ Profile loaded from localStorage:', user.email);
