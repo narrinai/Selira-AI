@@ -1371,16 +1371,11 @@
       <button class="image-upgrade-close" onclick="closeImageUpgradeModal()">&times;</button>
 
       <div class="image-upgrade-header">
-        <img src="/avatars/lisa-park-avatar-1759235809322.webp" alt="AI Generated Image Example" style="width: 100%; max-width: 400px; border-radius: 16px; margin-bottom: 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
-        <div class="image-upgrade-title" id="upgradeModalTitle">Unlock Image Generation</div>
-        <div class="image-upgrade-subtitle" id="upgradeModalSubtitle">Generate beautiful AI images of your characters</div>
+        <img src="/avatars/lisa-park-avatar-1759235809322.webp" alt="AI Generated Image Example" style="width: 100%; max-width: 300px; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
+        <div class="image-upgrade-title" id="upgradeModalTitle">Upgrade to Generate Images</div>
       </div>
 
       <div class="image-upgrade-features">
-        <div class="image-upgrade-feature">
-          <div class="image-upgrade-feature-icon">✨</div>
-          <div>AI-powered character images</div>
-        </div>
         <div class="image-upgrade-feature">
           <div class="image-upgrade-feature-icon">🎯</div>
           <div>Custom poses and scenarios</div>
@@ -4530,15 +4525,11 @@
     function showImageUpgradeModal(permissions) {
       const modal = document.getElementById('imageUpgradeModal');
       const title = document.getElementById('upgradeModalTitle');
-      const subtitle = document.getElementById('upgradeModalSubtitle');
       const upgradeButton = document.getElementById('upgradeButton');
 
       // Customize modal content based on user status
       // Always focus on upgrading since user is logged in if they see this
       title.textContent = 'Upgrade to Generate Images';
-      subtitle.textContent = permissions.plan === 'Free'
-        ? 'Image generation is available on Basic and Premium plans'
-        : `${permissions.plan} plan doesn't include image generation`;
       upgradeButton.textContent = 'View Pricing';
       upgradeButton.href = '/pricing';
 
