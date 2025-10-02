@@ -40,7 +40,7 @@ function createAgeVerificationHTML() {
     <div class="age-verification-modal">
       <div class="age-verification-content">
         <div class="age-verification-logo-section">
-          <div class="age-verification-logo">Selira</div>
+          <img src="/selira-logo-gold.svg" alt="Selira AI" class="age-verification-logo-img" />
         </div>
 
         <div class="age-verification-body">
@@ -52,12 +52,10 @@ function createAgeVerificationHTML() {
 
         <div class="age-verification-footer">
           <button class="age-btn age-btn-confirm" onclick="confirmAgeVerification()">
-            <span class="btn-icon">✓</span>
-            <span>Yes, I am 18+</span>
+            Yes, I am 18+
           </button>
           <button class="age-btn age-btn-deny" onclick="denyAgeVerification()">
-            <span class="btn-icon">✕</span>
-            <span>No, I am not</span>
+            No, I am not
           </button>
         </div>
 
@@ -117,16 +115,11 @@ function addAgeVerificationStyles() {
       padding: 48px 32px 32px;
     }
 
-    .age-verification-logo {
-      font-family: 'Playfair Display', serif;
-      font-size: 48px;
-      font-weight: 700;
-      background: linear-gradient(135deg, #d4a574 0%, #c19456 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 0;
-      letter-spacing: 2px;
+    .age-verification-logo-img {
+      height: 60px;
+      width: auto;
+      margin: 0 auto;
+      display: block;
     }
 
     .age-verification-body {
@@ -159,10 +152,6 @@ function addAgeVerificationStyles() {
 
     .age-btn {
       flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
       padding: 16px 24px;
       border: none;
       border-radius: 12px;
