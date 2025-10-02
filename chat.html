@@ -84,16 +84,23 @@
     /* Left Sidebar with Character List */
     .sidebar {
       width: 220px;
-      background: var(--bg-secondary);
-      border-right: 1px solid var(--border);
+      background: var(--bg-sidebar);
+      border-right: none;
+      padding: 16px;
       display: flex;
       flex-direction: column;
-      overflow: hidden;
+      position: fixed;
+      height: 100vh;
+      left: 0;
+      top: 0;
+      z-index: 100;
+      overflow-y: auto;
     }
 
     .sidebar-header {
-      padding: 16px;
-      border-bottom: 1px solid var(--border);
+      padding: 0;
+      border-bottom: none;
+      margin-bottom: 16px;
     }
 
     .sidebar-logo {
@@ -116,7 +123,7 @@
 
     .sidebar-logo-text {
       font-family: 'Playfair Display', serif;
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 700;
       color: var(--accent);
     }
@@ -150,23 +157,24 @@
     }
 
     .section-header {
-      padding: 16px 16px 8px;
-      font-size: 10px;
+      padding: 0 10px 4px;
+      margin: 12px 0 4px;
+      font-size: 9px;
       font-weight: 700;
-      color: var(--text-muted);
+      color: rgba(255, 255, 255, 0.6);
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
 
     .chat-list {
-      padding: 0 8px;
+      padding: 0;
     }
 
     .chat-item {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 12px 16px;
+      padding: 8px 10px;
       margin-bottom: 2px;
       border-radius: var(--radius-sm);
       cursor: pointer;
@@ -174,7 +182,7 @@
     }
 
     .chat-item:hover, .chat-item.active {
-      background: var(--bg-tertiary);
+      background: rgba(255, 255, 255, 0.1);
     }
 
     .chat-avatar {
@@ -199,20 +207,19 @@
     }
 
     .chat-name {
-      font-weight: 600;
-      color: var(--text-primary);
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.8);
       margin-bottom: 4px;
-      font-size: 14px;
+      font-size: 13px;
     }
 
     .chat-preview {
-      color: var(--text-secondary);
-      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 11px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
       max-width: 100%;
-      white-space: nowrap;
     }
 
     /* Main Chat Area */
