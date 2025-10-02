@@ -128,8 +128,8 @@ function addAgeVerificationStyles() {
     }
 
     .age-verification-title {
-      font-family: 'Inter', sans-serif;
-      font-size: 28px;
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
       font-weight: 700;
       color: #ffffff;
       margin: 0 0 16px 0;
@@ -137,7 +137,8 @@ function addAgeVerificationStyles() {
     }
 
     .age-verification-description {
-      color: #9ca3af;
+      font-family: 'Inter', sans-serif;
+      color: #b3b3b3;
       font-size: 16px;
       line-height: 1.6;
       margin: 0;
@@ -189,9 +190,10 @@ function addAgeVerificationStyles() {
     }
 
     .age-verification-disclaimer {
+      font-family: 'Inter', sans-serif;
       padding: 24px 40px 32px;
       font-size: 13px;
-      color: #6b7280;
+      color: #888888;
       text-align: center;
       line-height: 1.6;
     }
