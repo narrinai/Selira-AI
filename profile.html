@@ -1389,6 +1389,7 @@
 
           // Now fetch the latest profile data from Airtable
           console.log('🔄 Fetching latest profile data from Airtable...');
+          console.log('📧 Using email:', user.email);
 
           try {
             const response = await fetch('/.netlify/functions/selira-get-user-profile', {
@@ -1401,30 +1402,41 @@
               })
             });
 
+            console.log('📊 Response status:', response.status);
+            console.log('📊 Response ok:', response.ok);
+
             if (response.ok) {
               const result = await response.json();
+              console.log('📦 Full response:', result);
 
               if (result.success && result.profile) {
                 console.log('✅ Latest profile data from Airtable:', result.profile);
+                console.log('📝 Display name from Airtable:', result.profile.display_name);
+                console.log('📝 Display name type:', typeof result.profile.display_name);
+                console.log('📝 Display name length:', result.profile.display_name?.length);
 
                 // Update display name with the latest value from Airtable
                 if (displayNameField && result.profile.display_name) {
                   displayNameField.value = result.profile.display_name;
-                  console.log('📝 Updated display name from Airtable:', result.profile.display_name);
+                  console.log('✅ Display name field updated to:', displayNameField.value);
                 }
 
                 // Update localStorage with the latest display_name
                 user.display_name = result.profile.display_name;
                 localStorage.setItem('user', JSON.stringify(user));
+                console.log('✅ localStorage updated with display_name');
 
               } else {
                 console.log('⚠️ Could not fetch latest profile data:', result.error);
               }
             } else {
-              console.log('⚠️ Failed to fetch profile data from Airtable');
+              const errorText = await response.text();
+              console.log('⚠️ Failed to fetch profile data from Airtable. Status:', response.status);
+              console.log('⚠️ Error response:', errorText);
             }
           } catch (airtableError) {
             console.log('⚠️ Error fetching from Airtable (using localStorage):', airtableError);
+            console.log('⚠️ Error details:', airtableError.message, airtableError.stack);
           }
 
         } else {
