@@ -121,13 +121,12 @@ function addAgeVerificationStyles() {
       font-family: 'Playfair Display', serif;
       font-size: 48px;
       font-weight: 700;
-      background: linear-gradient(135deg, #b084cc 0%, #8b5fbf 100%);
+      background: linear-gradient(135deg, #d4a574 0%, #c19456 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
       margin-bottom: 0;
       letter-spacing: 2px;
-      font-style: italic;
     }
 
     .age-verification-body {
@@ -209,7 +208,7 @@ function addAgeVerificationStyles() {
     }
 
     .age-verification-disclaimer a {
-      color: #b084cc;
+      color: #d4a574;
       text-decoration: none;
     }
 
