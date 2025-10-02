@@ -32,8 +32,18 @@
     gtag('config', 'G-XZXX201WKD');
   </script>
   
+  <!-- Force cache clear for Safari -->
+  <script>
+    // Unregister any service workers (Safari cache killer)
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(registrations => {
+        registrations.forEach(registration => registration.unregister());
+      });
+    }
+  </script>
+
   <!-- Auth0 Authentication System -->
-  <script src="/js/auth0-login.js?t=1759426579"></script>
+  <script src="/js/auth0-login.js?t=1759427345"></script>
 
   <!-- Mobile Navigation System -->
   <script src="/js/mobile-nav.js"></script>
