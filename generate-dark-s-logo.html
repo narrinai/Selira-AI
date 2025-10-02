@@ -6,52 +6,81 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 </head>
 <body style="margin: 0; padding: 20px; background: #1a1a1a; font-family: Arial, sans-serif; color: white;">
-  <h1>Selira AI - Dark S Logo Generator</h1>
-  <p>Click the button to download the logo (black background + green S)</p>
-  <button onclick="generateAndDownload()" style="padding: 12px 24px; background: #10b981; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer;">
-    Download PNG (800x300)
+  <h1>Selira AI - Dark Logo Generator</h1>
+  <p>Click the buttons to download logos (black background + green text)</p>
+
+  <button onclick="generateAndDownload('rectangle')" style="padding: 12px 24px; background: #10b981; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; margin-right: 10px;">
+    Download Rectangle (800x300)
   </button>
+
+  <button onclick="generateAndDownload('square')" style="padding: 12px 24px; background: #10b981; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer;">
+    Download Square (1080x1080)
+  </button>
+
   <br><br>
-  <canvas id="canvas" width="800" height="300" style="border: 2px solid #333; display: block;"></canvas>
+  <canvas id="canvas" style="border: 2px solid #333; display: block;"></canvas>
 
   <script>
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
 
-    function drawLogo() {
-      // Dark background (matching favicon)
-      ctx.fillStyle = '#000000';
-      ctx.fillRect(0, 0, 800, 300);
+    function drawLogo(type) {
+      if (type === 'rectangle') {
+        // Rectangle: 800x300 - just "S"
+        canvas.width = 800;
+        canvas.height = 300;
 
-      // Draw green 'S' with Playfair Display font (matching favicon)
-      const centerX = 400;
-      const centerY = 150;
+        // Dark background
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(0, 0, 800, 300);
 
-      ctx.fillStyle = '#10b981';
-      ctx.font = '700 180px "Playfair Display", Georgia, serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('S', centerX, centerY);
+        // Draw green 'S'
+        ctx.fillStyle = '#10b981';
+        ctx.font = '700 180px "Playfair Display", Georgia, serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('S', 400, 150);
+
+      } else if (type === 'square') {
+        // Square: 1080x1080 - "Selira AI" text without tagline
+        canvas.width = 1080;
+        canvas.height = 1080;
+
+        // Dark background
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(0, 0, 1080, 1080);
+
+        // Draw "Selira AI" text in green
+        ctx.fillStyle = '#10b981';
+        ctx.font = '700 120px "Playfair Display", Georgia, serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('Selira AI', 540, 540);
+      }
     }
 
-    function generateAndDownload() {
-      drawLogo();
+    function generateAndDownload(type) {
+      drawLogo(type);
+
+      const filename = type === 'square'
+        ? 'selira-ai-logo-dark-square.png'
+        : 'selira-ai-logo-dark-s.png';
 
       canvas.toBlob((blob) => {
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = 'selira-ai-logo-dark-s.png';
+        link.download = filename;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
-        alert('✅ Logo downloaded: selira-ai-logo-dark-s.png');
+        alert(`✅ Logo downloaded: ${filename}`);
       });
     }
 
-    // Draw on load
-    drawLogo();
+    // Draw rectangle on load
+    drawLogo('rectangle');
   </script>
 </body>
 </html>
