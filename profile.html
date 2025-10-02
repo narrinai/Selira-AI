@@ -30,7 +30,7 @@
   </script>
   
   <!-- Auth0 Authentication System -->
-  <script src="/js/auth0-login.js?t=1759429360"></script>
+  <script src="/js/auth0-login.js?t=1759429552"></script>
   
   <!-- Selira AI Popup System -->
   <script src="/js/selira-popups.js"></script>
@@ -1435,12 +1435,8 @@
               console.log('⚠️ Error response:', errorText);
 
               // If user not found (404), trigger auth0-user-sync to create the user
-              // Check if we've already tried syncing to prevent infinite reload loop
-              const hasTriedSync = sessionStorage.getItem('profile_sync_attempted');
-
-              if (response.status === 404 && !hasTriedSync) {
+              if (response.status === 404) {
                 console.log('🔄 User not found in Airtable - triggering user sync...');
-                sessionStorage.setItem('profile_sync_attempted', 'true');
 
                 try {
                   const syncResponse = await fetch('/.netlify/functions/selira-auth0-user-sync', {
@@ -1460,19 +1456,42 @@
                   if (syncResult.success) {
                     console.log('✅ User synced to Airtable successfully');
 
-                    // Reload the profile page to fetch the new data
-                    window.location.reload();
+                    // Fetch the profile data again instead of reloading
+                    const retryResponse = await fetch('/.netlify/functions/selira-get-user-profile', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json'
+                      },
+                      body: JSON.stringify({
+                        email: user.email
+                      })
+                    });
+
+                    if (retryResponse.ok) {
+                      const retryResult = await retryResponse.json();
+
+                      if (retryResult.success && retryResult.profile) {
+                        console.log('✅ Profile data loaded after sync:', retryResult.profile);
+
+                        // Update display name field
+                        if (displayNameField && retryResult.profile.display_name) {
+                          displayNameField.value = retryResult.profile.display_name;
+                          console.log('✅ Display name field updated to:', displayNameField.value);
+                        }
+
+                        // Update localStorage
+                        user.display_name = retryResult.profile.display_name;
+                        localStorage.setItem('user', JSON.stringify(user));
+                        console.log('✅ User synced and profile loaded without reload');
+                      }
+                    }
+
                   } else {
                     console.error('❌ Failed to sync user:', syncResult);
-                    sessionStorage.removeItem('profile_sync_attempted');
                   }
                 } catch (syncError) {
                   console.error('❌ Error syncing user to Airtable:', syncError);
-                  sessionStorage.removeItem('profile_sync_attempted');
                 }
-              } else if (hasTriedSync) {
-                console.log('⚠️ Already attempted sync, skipping reload to prevent loop');
-                sessionStorage.removeItem('profile_sync_attempted');
               }
             }
           } catch (airtableError) {
