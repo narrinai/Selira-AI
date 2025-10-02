@@ -6,7 +6,7 @@ class Auth0LoginModal {
     this.config = {
       domain: config.domain || 'YOUR_AUTH0_DOMAIN.auth0.com',
       clientId: config.clientId || 'YOUR_AUTH0_CLIENT_ID',
-      redirectUri: config.redirectUri || window.location.origin + '/category.html',
+      redirectUri: config.redirectUri || window.location.origin + '/',
       ...config
     };
     
@@ -102,27 +102,30 @@ class Auth0LoginModal {
         console.error('⚠️ User sync failed but continuing login:', error);
       });
       
-      // Get return URL or default - stay on current page if on category
-      const currentPath = window.location.pathname;
-      if (currentPath.includes('/category')) {
-        console.log('✅ Authentication callback handled - staying on category page');
-        // Don't redirect, just update the UI
-        return;
+      // Get return URL from localStorage (where user was before login)
+      const returnUrl = localStorage.getItem('auth_return_url');
+
+      if (returnUrl) {
+        localStorage.removeItem('auth_return_url');
+        console.log('✅ Authentication callback handled:', this.user.email);
+        console.log('🔄 Redirecting back to:', returnUrl);
+
+        // Clean up the URL by removing auth callback params and redirect
+        const cleanUrl = returnUrl.split('?')[0];
+        window.history.replaceState({}, document.title, cleanUrl);
+        window.location.href = cleanUrl;
+      } else {
+        // No return URL stored - clean up current URL from auth params and stay here
+        const cleanUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, cleanUrl);
+        console.log('✅ Authentication callback handled - staying on current page');
       }
-      
-      const returnUrl = localStorage.getItem('auth_return_url') || '/category.html';
-      localStorage.removeItem('auth_return_url');
-      
-      console.log('✅ Authentication callback handled:', this.user.email);
-      console.log('🔄 Redirecting to:', returnUrl);
-      
-      // Only redirect if not already on category page
-      window.location.href = returnUrl;
-      
+
     } catch (error) {
       console.error('❌ Callback handling failed:', error);
-      // Fallback redirect on error
-      window.location.href = '/category.html';
+      // Fallback: clean URL and stay on current page
+      const cleanUrl = window.location.pathname || '/';
+      window.history.replaceState({}, document.title, cleanUrl);
     }
   }
 
@@ -1148,7 +1151,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     seliraAuth = new Auth0LoginModal({
       domain: data.config.domain,
       clientId: data.config.clientId,
-      redirectUri: window.location.origin + '/category.html'
+      redirectUri: window.location.origin + '/'
     });
     
     console.log('🔐 Selira Auth0 system initialized');
