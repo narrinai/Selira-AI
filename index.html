@@ -2743,9 +2743,11 @@
         if (mobileBtn && !window.isUserAuthenticated?.()) {
           // Store our correct onclick handler
           const correctOnClick = function(e) {
+            console.log('🔧🔧🔧 OUR HANDLER CALLED - Mobile Register button clicked');
             e.preventDefault();
             e.stopPropagation();
-            console.log('🔧 Mobile Register button clicked - opening signup modal');
+            e.stopImmediatePropagation(); // Stop ALL other handlers
+            console.log('🔧 Opening signup modal');
             if (window.openLoginModal) {
               window.openLoginModal('signup');
             } else if (window.seliraAuth) {
@@ -2783,12 +2785,27 @@
           // Completely override onclick property to null so auth0 can't set it
           mobileBtn.onclick = null;
 
-          // Add our event listener with capture phase (highest priority)
+          // Add MULTIPLE event listeners to ensure we catch it
+          // Capture phase - highest priority
           mobileBtn.addEventListener('click', correctOnClick, true);
+          // Bubble phase - backup
+          mobileBtn.addEventListener('click', correctOnClick, false);
+
+          // Also add to parent as backup
+          const parentDiv = mobileBtn.parentElement;
+          if (parentDiv) {
+            parentDiv.addEventListener('click', function(e) {
+              if (e.target === mobileBtn) {
+                console.log('🔧 Parent caught click on button');
+                correctOnClick(e);
+              }
+            }, true);
+          }
 
           // Log the current onclick state
           console.log('🔧 Button onclick property after setup:', mobileBtn.onclick);
           console.log('🔧 Button onclick attribute after setup:', mobileBtn.getAttribute('onclick'));
+          console.log('🔧 Event listeners added to button');
 
           const observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
