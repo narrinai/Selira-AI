@@ -43,7 +43,7 @@
   </script>
 
   <!-- Auth0 Authentication System -->
-  <script src="/js/auth0-login.js?t=1759430184"></script>
+  <script src="/js/auth0-login.js?t=1738540800"></script>
 
   <!-- Mobile Navigation System -->
   <script src="/js/mobile-nav.js"></script>
@@ -2675,7 +2675,15 @@
         const mobileBtn = mobileHeader?.querySelector('.mobile-auth-btn, .login-btn');
         if (mobileBtn && !window.isUserAuthenticated?.()) {
           mobileBtn.textContent = 'Register';
-          console.log('🔧 Force-set mobile button to Register');
+          // Force onclick to open signup modal
+          mobileBtn.onclick = function(e) {
+            e.preventDefault();
+            if (window.openLoginModal) {
+              window.openLoginModal('signup');
+            }
+            return false;
+          };
+          console.log('🔧 Force-set mobile button to Register with signup modal');
         }
       }, 100);
     });
