@@ -2755,15 +2755,14 @@
           };
 
           // Override the onclick property setter to prevent auth0-login.js from changing it
-          let currentOnClick = correctOnClick;
           Object.defineProperty(mobileBtn, 'onclick', {
             get: function() {
-              return currentOnClick;
+              return null; // Always return null so auth0 thinks there's no onclick
             },
             set: function(newHandler) {
               console.log('🔧 Blocked attempt to change mobile button onclick via property setter');
-              // Ignore the new handler, keep our correct one
-              currentOnClick = correctOnClick;
+              // Completely ignore any attempts to set onclick
+              // Our addEventListener will handle the click
             },
             configurable: true
           });
@@ -2780,7 +2779,16 @@
 
           // Remove any existing inline onclick attribute and add our event listener
           mobileBtn.removeAttribute('onclick');
-          mobileBtn.addEventListener('click', correctOnClick, true); // Use capture phase
+
+          // Completely override onclick property to null so auth0 can't set it
+          mobileBtn.onclick = null;
+
+          // Add our event listener with capture phase (highest priority)
+          mobileBtn.addEventListener('click', correctOnClick, true);
+
+          // Log the current onclick state
+          console.log('🔧 Button onclick property after setup:', mobileBtn.onclick);
+          console.log('🔧 Button onclick attribute after setup:', mobileBtn.getAttribute('onclick'));
 
           const observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
