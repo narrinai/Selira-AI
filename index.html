@@ -2648,10 +2648,19 @@
       const isMobile = window.innerWidth <= 768;
       const mobileHeader = document.querySelector('.mobile-header');
       const topHeader = document.querySelector('.top-header');
-      
+
       if (mobileHeader && topHeader) {
         mobileHeader.style.display = isMobile ? 'flex' : 'none';
         topHeader.style.display = isMobile ? 'none' : 'block';
+
+        // Ensure mobile button shows "Register" for non-authenticated users
+        if (isMobile && window.seliraAuth) {
+          const isAuth = window.seliraAuth.isAuthenticated();
+          const mobileBtn = mobileHeader.querySelector('.mobile-auth-btn');
+          if (mobileBtn && !isAuth) {
+            mobileBtn.textContent = 'Register';
+          }
+        }
       }
     }
 
