@@ -2071,12 +2071,77 @@
         return;
       }
 
-      // Check if this is an image request
-      if (message.toLowerCase().startsWith('send me a picture')) {
-        // Clear input immediately before processing (v2 - cache buster)
+      // Check if this is an image request (multiple patterns)
+      const lowerMessage = message.toLowerCase();
+      const imageRequestPatterns = [
+        'send me a picture',
+        'send me a pic',
+        'show me a picture',
+        'show me a pic',
+        'can you send',
+        'make a picture',
+        'create a picture',
+        'generate a picture',
+        'take a picture',
+        'send a picture',
+        'send a pic',
+        'picture of you',
+        'pic of you',
+        'photo of you',
+        'selfie'
+      ];
+
+      const isImageRequest = imageRequestPatterns.some(pattern => lowerMessage.includes(pattern));
+
+      if (isImageRequest) {
+        // Check if it starts with "send me a picture" - if so, use the existing flow
+        if (lowerMessage.startsWith('send me a picture')) {
+          messageInput.value = '';
+          autoResizeTextarea();
+          await handleImageRequest(message);
+          return;
+        }
+
+        // Otherwise, show a helpful message directing to Image Gen button
         messageInput.value = '';
         autoResizeTextarea();
-        await handleImageRequest(message);
+        addMessage(message, 'user');
+
+        // Add helpful AI response with Image Gen button
+        const helpMessage = document.createElement('div');
+        helpMessage.className = 'message ai';
+        helpMessage.innerHTML = `
+          <div class="message-content">
+            <div class="message-text">
+              <div style="margin-bottom: 12px;">I'd love to send you a picture! 📸</div>
+              <div style="margin-bottom: 12px;">Click the <strong>Image Gen</strong> button below to generate an image of me. You can choose from suggestions or type exactly what you want to see!</div>
+              <div style="margin-top: 16px;">
+                <button onclick="document.getElementById('imageGenBtn').click()" style="
+                  background: var(--accent);
+                  color: white;
+                  border: none;
+                  padding: 10px 20px;
+                  border-radius: 20px;
+                  font-size: 14px;
+                  font-weight: 600;
+                  cursor: pointer;
+                  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+                ">
+                  Open Image Gen ✨
+                </button>
+              </div>
+            </div>
+            <div class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+          </div>
+        `;
+        document.getElementById('chatMessages').appendChild(helpMessage);
+        document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
+
+        // Save both messages to localStorage
+        saveUserMessageToStorage(currentCharacter.slug, message);
+        const aiMessageContent = "I'd love to send you a picture! Click the Image Gen button below to generate an image of me.";
+        saveAIMessageToStorage(currentCharacter.slug, aiMessageContent);
+
         return;
       }
 
