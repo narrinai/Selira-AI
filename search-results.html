@@ -747,13 +747,7 @@
         ];
 
         const searchText = searchableFields.join(' ').toLowerCase();
-        const matches = searchTerms.every(term => searchText.includes(term));
-
-        if (matches) {
-          console.log('✅ Match found:', character.name || character.Name);
-        }
-
-        return matches;
+        return searchTerms.every(term => searchText.includes(term));
       });
     }
 
@@ -818,16 +812,8 @@
         filteredCharacters = [...allCharacters];
         console.log('✅ No search query - showing all', filteredCharacters.length, 'characters');
       } else {
-        const originalCharacters = allCharacters.map(char => char._original);
-        const searchResults = performComprehensiveSearch(originalCharacters, currentSearchQuery);
-        console.log('🔍 Search results from comprehensive search:', searchResults.length);
-
-        filteredCharacters = allCharacters.filter(char =>
-          searchResults.some(result =>
-            (result.Character_ID && result.Character_ID === char.id) ||
-            (result.Name && result.Name === char.name)
-          )
-        );
+        // Search directly on allCharacters (which has normalized lowercase field names)
+        filteredCharacters = performComprehensiveSearch(allCharacters, currentSearchQuery);
         console.log('✅ Filtered to', filteredCharacters.length, 'matching characters');
       }
       filteredCharacters.sort((a, b) => a.name.localeCompare(b.name));
