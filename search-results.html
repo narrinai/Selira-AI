@@ -719,32 +719,22 @@
       }
 
       const searchTerms = query.toLowerCase().trim().split(' ').filter(term => term.length > 0);
-      console.log('🔍 Search terms:', searchTerms);
 
       return characters.filter(character => {
+        // Build searchable text from all character fields
         const searchableFields = [
-          character.name || character.Name || '',
-          character.title || character.Character_Title || '',
-          character.description || character.Character_Description || '',
-          character.category || character.Category || '',
-          character.hair_color || character.Hair_Color || '',
-          character.ethnicity || character.Ethnicity || '',
-          character.hair_length || character.Hair_Length || '',
-          character.skin_tone || character.Skin_Tone || '',
-          character.eye_color || character.Eye_Color || '',
-          character.personality || character.Personality || '',
-          character.occupation || character.Occupation || '',
-          character.age || character.Age || '',
-          character.location || character.Location || '',
-          character.background || character.Background || '',
-          character.style || character.Style || '',
-          character.interests || character.Interests || '',
-          character.relationship_status || character.Relationship_Status || '',
-          character.created_by || character.Created_by || '',
-          character.slug || character.Slug || '',
-          ...(Array.isArray(character.tags || character.Tags) ? (character.tags || character.Tags) : []),
-          ...(typeof (character.tags || character.Tags) === 'string' ? (character.tags || character.Tags).split(',').map(tag => tag.trim()) : [])
-        ];
+          character.name,
+          character.title,
+          character.description,
+          character.slug,
+          character.category,
+          character.hair_color,
+          character.ethnicity,
+          character.hair_length,
+          character.companion_type,
+          character.sex,
+          ...(character.tags || [])
+        ].filter(Boolean); // Remove empty values
 
         const searchText = searchableFields.join(' ').toLowerCase();
         return searchTerms.every(term => searchText.includes(term));
@@ -777,74 +767,46 @@
       let characters = Array.isArray(data) ? data : [];
       console.log('📦 Processing characters:', characters.length);
 
+      // API returns lowercase field names - use them directly
       allCharacters = characters.map(character => ({
-        id: character.id || character.Character_ID || character.name || character.Name || 'unknown',
-        name: character.name || character.Name || 'Unknown',
-        title: character.title || character.Character_Title || '',
-        description: character.description || character.Character_Description || '',
-        avatarUrl: getAvatarUrl(character),
-        characterUrl: character.Character_URL || getCharacterUrl(character),
-        category: character.category || character.Category || 'unknown',
-        tags: processTags(character.tags || character.Tags),
-        createdBy: character.created_by || character.Created_by || null,
-        slug: character.slug || character.Slug || '',
-        // Include appearance traits for search
-        hair_color: character.hair_color || character.Hair_Color || '',
-        ethnicity: character.ethnicity || character.Ethnicity || '',
-        hair_length: character.hair_length || character.Hair_Length || '',
-        companion_type: character.companion_type || character.Companion_Type || '',
-        sex: character.sex || character.Sex || '',
-        _original: character
+        id: character.id || 'unknown',
+        name: character.name || 'Unknown',
+        title: character.title || '',
+        description: character.description || '',
+        slug: character.slug || '',
+        category: character.category || 'unknown',
+        tags: Array.isArray(character.tags) ? character.tags : [],
+        createdBy: null, // Not used in search
+        // Avatar URL from API
+        avatarUrl: character.avatar_url || character.avatar_file || null,
+        // Character URL
+        characterUrl: `/chat?char=${character.slug || 'unknown'}`,
+        // Appearance traits for comprehensive search
+        hair_color: character.hair_color || '',
+        ethnicity: character.ethnicity || '',
+        hair_length: character.hair_length || '',
+        companion_type: character.companion_type || '',
+        sex: character.sex || ''
       }));
+
+      console.log('✅ Processed characters:', allCharacters.length);
+      console.log('📝 Sample character:', allCharacters[0]);
 
       applySearch();
       updateResultsCount();
       renderCharacters();
     }
 
-    function processTags(tagsField) {
-      if (!tagsField) return [];
-      if (Array.isArray(tagsField)) return tagsField;
-      if (typeof tagsField === 'string') {
-        return tagsField.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
-      }
-      return [];
-    }
-
     function applySearch() {
-      console.log('🔎 applySearch() called with query:', currentSearchQuery);
-      console.log('📊 Total characters before search:', allCharacters.length);
-
       if (!currentSearchQuery || currentSearchQuery.trim() === '') {
         filteredCharacters = [...allCharacters];
-        console.log('✅ No search query - showing all', filteredCharacters.length, 'characters');
       } else {
-        // Search directly on allCharacters (which has normalized lowercase field names)
+        // Search directly on allCharacters
         filteredCharacters = performComprehensiveSearch(allCharacters, currentSearchQuery);
-        console.log('✅ Filtered to', filteredCharacters.length, 'matching characters');
       }
       filteredCharacters.sort((a, b) => a.name.localeCompare(b.name));
-      console.log('📋 Final filtered characters:', filteredCharacters.length);
       currentPage = 1;
-    }
-
-    // ===== AVATAR & URL HELPERS =====
-    function getAvatarUrl(fields) {
-      if (fields.Avatar_URL && Array.isArray(fields.Avatar_URL) && fields.Avatar_URL.length > 0) {
-        if (fields.Avatar_URL[0] && fields.Avatar_URL[0].url) {
-          return fields.Avatar_URL[0].url;
-        }
-      }
-      if (fields.Avatar_URL && typeof fields.Avatar_URL === 'string' && fields.Avatar_URL.startsWith('http')) {
-        return fields.Avatar_URL;
-      }
-      return null;
-    }
-
-    function getCharacterUrl(fields) {
-      if (fields.Character_URL) return fields.Character_URL;
-      const slug = fields.Slug || (fields.Name || 'unknown').toLowerCase().replace(/\s+/g, '-');
-      return `chat.html?char=${slug}`;
+      console.log(`🔍 Search results: ${filteredCharacters.length}/${allCharacters.length} characters`);
     }
 
     // ===== CHARACTER CARD CREATION =====
