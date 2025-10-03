@@ -2873,6 +2873,21 @@
       }, 200);
     });
 
+    // FINAL FIX: Add global click interceptor for mobile header as absolute last resort
+    document.addEventListener('click', function(e) {
+      const isHomepage = window.location.pathname === '/' || window.location.pathname === '/index.html';
+      if (isHomepage && e.target.closest('.mobile-header .mobile-auth-btn, .mobile-header .login-btn, .mobile-header .user-btn')) {
+        console.log('🔧 Global click interceptor: Mobile button clicked on homepage - forcing signup');
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        if (window.seliraAuth) {
+          window.seliraAuth.openModal('signup');
+        }
+        return false;
+      }
+    }, true); // Capture phase - runs FIRST before all other handlers
+
 
     // ===== TAG FILTERING WITH URLS =====
     document.addEventListener('click', function(e) {
