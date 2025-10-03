@@ -10,9 +10,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Check if user needs age verification
 function checkAgeVerification() {
-  // Always show age verification on first visit (no localStorage check)
-  // Only show once per session
-  if (!sessionStorage.getItem('selira_age_verified_session')) {
+  // Check if user has already verified their age (stored permanently)
+  if (!localStorage.getItem('selira_age_verified')) {
     showAgeVerificationPopup();
   }
 }
@@ -268,8 +267,8 @@ function addAgeVerificationStyles() {
 
 // Confirm age verification
 function confirmAgeVerification() {
-  // Store verification in sessionStorage (only for current session, not persistent)
-  sessionStorage.setItem('selira_age_verified_session', 'true');
+  // Store verification in localStorage (persistent across sessions)
+  localStorage.setItem('selira_age_verified', 'true');
 
   // Hide popup
   hideAgeVerificationPopup();
@@ -304,9 +303,9 @@ window.SeliraAgeVerification = {
   show: showAgeVerificationPopup,
   hide: hideAgeVerificationPopup,
   reset: () => {
-    sessionStorage.removeItem('selira_age_verified_session');
+    localStorage.removeItem('selira_age_verified');
   },
   isVerified: () => {
-    return sessionStorage.getItem('selira_age_verified_session') === 'true';
+    return localStorage.getItem('selira_age_verified') === 'true';
   }
 };
