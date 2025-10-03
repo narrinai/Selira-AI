@@ -58,21 +58,13 @@ exports.handler = async (event, context) => {
     // Get user profile to check their plan
     console.log('👤 Getting user profile for image limit check', { email, auth0_id });
 
-    // Try both email AND auth0_id if both are provided (correct Airtable OR syntax)
-    const userFilter = email && auth0_id
-      ? `OR({Email}='${email}', {Auth0ID}='${auth0_id}')`
-      : email
-        ? `{Email}='${email}'`
-        : `{Auth0ID}='${auth0_id}'`;
-
-    console.log('🔍 Using filter:', userFilter);
-
-    const getUserProfile = () => {
+    const getUserProfile = (filterFormula) => {
       return new Promise((resolve, reject) => {
+        const encodedFilter = encodeURIComponent(filterFormula);
         const options = {
           hostname: 'api.airtable.com',
           port: 443,
-          path: `/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula=AND(${userFilter})`,
+          path: `/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula=${encodedFilter}`,
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
@@ -80,25 +72,43 @@ exports.handler = async (event, context) => {
           }
         };
 
+        console.log('🔍 Querying Users table with filter:', filterFormula);
+
         const req = https.request(options, (res) => {
           let data = '';
           res.on('data', (chunk) => { data += chunk; });
           res.on('end', () => {
             try {
               const response = JSON.parse(data);
+              console.log('📊 Airtable response status:', res.statusCode, 'Records found:', response.records?.length || 0);
               resolve({ statusCode: res.statusCode, data: response });
             } catch (error) {
+              console.error('❌ Error parsing Airtable response:', error);
               reject(error);
             }
           });
         });
 
-        req.on('error', reject);
+        req.on('error', (error) => {
+          console.error('❌ HTTP request error:', error);
+          reject(error);
+        });
         req.end();
       });
     };
 
-    const userResult = await getUserProfile();
+    // Try Email first, then Auth0ID
+    let userResult;
+    if (email) {
+      console.log('🔍 Trying lookup by Email:', email);
+      userResult = await getUserProfile(`{Email}='${email}'`);
+    }
+
+    // If not found by email, try Auth0ID
+    if ((!userResult || !userResult.data.records || userResult.data.records.length === 0) && auth0_id) {
+      console.log('🔍 Email lookup failed, trying Auth0ID:', auth0_id);
+      userResult = await getUserProfile(`{Auth0ID}='${auth0_id}'`);
+    }
 
     console.log('👤 User lookup result:', {
       statusCode: userResult.statusCode,
