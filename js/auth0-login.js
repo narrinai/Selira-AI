@@ -710,8 +710,12 @@ class Auth0LoginModal {
       
     } else {
       console.log('👤 User not authenticated - showing login/signup buttons');
-      // Ensure login button is visible and functional
-      if (loginBtn) {
+
+      // Check if we're on index.html (homepage) - only show Register button there
+      const isHomepage = window.location.pathname === '/' || window.location.pathname === '/index.html';
+
+      // Ensure login button is visible and functional (except on homepage)
+      if (loginBtn && !isHomepage) {
         loginBtn.href = '#';
         loginBtn.textContent = 'Login';
         loginBtn.className = loginBtn.className.replace('profile-btn', 'login-btn');
@@ -730,8 +734,12 @@ class Auth0LoginModal {
         loginBtn.style.border = '';
         loginBtn.style.textDecoration = '';
         console.log('✅ Restored login button functionality');
+      } else if (loginBtn && isHomepage) {
+        // On homepage, hide/remove login button - only Register should show
+        loginBtn.style.display = 'none';
+        console.log('✅ Hid login button on homepage (Register-only mode)');
       }
-      
+
       // Show signup button
       if (signupBtn) {
         signupBtn.style.display = '';
