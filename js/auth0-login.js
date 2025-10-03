@@ -967,14 +967,7 @@ class Auth0LoginModal {
       // Show success message
       this.showForgotPasswordSuccess('Check your email for the password reset link! 📧');
 
-      // Close modal after 2 seconds
-      setTimeout(() => {
-        const modal = document.getElementById('auth0-forgot-password-modal');
-        if (modal) {
-          modal.remove();
-          document.body.style.overflow = '';
-        }
-      }, 2000);
+      // Don't auto-close the modal - let user close it manually
 
     } catch (error) {
       console.error('❌ Forgot password failed:', error);
