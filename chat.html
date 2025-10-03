@@ -3555,10 +3555,24 @@
               slug: character.Slug || characterSlug,
               creator: character.Created_by || 'Selira',
               tags: Array.isArray(character.Tags) ? character.Tags.slice(0, 11) : (character.Tags || '').toString().split(',').filter(Boolean).slice(0, 11),
-              character_url: character.Character_URL ? character.Character_URL.replace('narrin.ai', 'selira.ai') : null
+              character_url: character.Character_URL ? character.Character_URL.replace('narrin.ai', 'selira.ai') : null,
+              // Appearance traits for image generation
+              companion_type: character.companion_type,
+              sex: character.sex,
+              ethnicity: character.ethnicity,
+              hair_length: character.hair_length,
+              hair_color: character.hair_color
             };
 
             console.log('✅ Loaded specific character:', processedChar.name);
+
+            // Add to loadedCharacters if not already there
+            const existingIndex = loadedCharacters.findIndex(c => c.slug === processedChar.slug);
+            if (existingIndex >= 0) {
+              loadedCharacters[existingIndex] = processedChar;
+            } else {
+              loadedCharacters.push(processedChar);
+            }
 
             // Cache character info for sidebar
             cacheCharacterInfo({
