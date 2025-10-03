@@ -97,17 +97,17 @@ exports.handler = async (event, context) => {
       });
     };
 
-    // Try Email first, then Auth0ID
+    // Try Email first, then Auth0ID (note: spaces around = are important for Airtable)
     let userResult;
     if (email) {
       console.log('🔍 Trying lookup by Email:', email);
-      userResult = await getUserProfile(`{Email}='${email}'`);
+      userResult = await getUserProfile(`{Email} = '${email}'`);
     }
 
     // If not found by email, try Auth0ID
     if ((!userResult || !userResult.data.records || userResult.data.records.length === 0) && auth0_id) {
       console.log('🔍 Email lookup failed, trying Auth0ID:', auth0_id);
-      userResult = await getUserProfile(`{Auth0ID}='${auth0_id}'`);
+      userResult = await getUserProfile(`{Auth0ID} = '${auth0_id}'`);
     }
 
     console.log('👤 User lookup result:', {
