@@ -723,28 +723,37 @@
 
       return characters.filter(character => {
         const searchableFields = [
-          character.Name || '',
-          character.Character_Title || '',
-          character.Character_Description || '',
-          character.Category || '',
-          character.Hair_Color || '',
-          character.Skin_Tone || '',
-          character.Eye_Color || '',
-          character.Personality || '',
-          character.Occupation || '',
-          character.Age || '',
-          character.Location || '',
-          character.Background || '',
-          character.Style || '',
-          character.Interests || '',
-          character.Relationship_Status || '',
-          character.Created_by || '',
-          ...(Array.isArray(character.Tags) ? character.Tags : []),
-          ...(typeof character.Tags === 'string' ? character.Tags.split(',').map(tag => tag.trim()) : [])
+          character.name || character.Name || '',
+          character.title || character.Character_Title || '',
+          character.description || character.Character_Description || '',
+          character.category || character.Category || '',
+          character.hair_color || character.Hair_Color || '',
+          character.ethnicity || character.Ethnicity || '',
+          character.hair_length || character.Hair_Length || '',
+          character.skin_tone || character.Skin_Tone || '',
+          character.eye_color || character.Eye_Color || '',
+          character.personality || character.Personality || '',
+          character.occupation || character.Occupation || '',
+          character.age || character.Age || '',
+          character.location || character.Location || '',
+          character.background || character.Background || '',
+          character.style || character.Style || '',
+          character.interests || character.Interests || '',
+          character.relationship_status || character.Relationship_Status || '',
+          character.created_by || character.Created_by || '',
+          character.slug || character.Slug || '',
+          ...(Array.isArray(character.tags || character.Tags) ? (character.tags || character.Tags) : []),
+          ...(typeof (character.tags || character.Tags) === 'string' ? (character.tags || character.Tags).split(',').map(tag => tag.trim()) : [])
         ];
 
         const searchText = searchableFields.join(' ').toLowerCase();
-        return searchTerms.every(term => searchText.includes(term));
+        const matches = searchTerms.every(term => searchText.includes(term));
+
+        if (matches) {
+          console.log('✅ Match found:', character.name || character.Name);
+        }
+
+        return matches;
       });
     }
 
