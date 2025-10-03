@@ -2669,23 +2669,32 @@
 
     // Force mobile button to always show "Register" for non-authenticated users
     // This runs after auth0-login.js might have changed it
+    function forceMobileButtonToRegister() {
+      const mobileHeader = document.querySelector('.mobile-header');
+      const mobileBtn = mobileHeader?.querySelector('.mobile-auth-btn, .login-btn');
+      if (mobileBtn && !window.isUserAuthenticated?.()) {
+        mobileBtn.textContent = 'Register';
+        // Force onclick to open signup modal
+        mobileBtn.onclick = function(e) {
+          e.preventDefault();
+          if (window.openLoginModal) {
+            window.openLoginModal('signup');
+          }
+          return false;
+        };
+        console.log('🔧 Force-set mobile button to Register with signup modal');
+      }
+    }
+
+    // Run on load
     window.addEventListener('load', function() {
-      setTimeout(function() {
-        const mobileHeader = document.querySelector('.mobile-header');
-        const mobileBtn = mobileHeader?.querySelector('.mobile-auth-btn, .login-btn');
-        if (mobileBtn && !window.isUserAuthenticated?.()) {
-          mobileBtn.textContent = 'Register';
-          // Force onclick to open signup modal
-          mobileBtn.onclick = function(e) {
-            e.preventDefault();
-            if (window.openLoginModal) {
-              window.openLoginModal('signup');
-            }
-            return false;
-          };
-          console.log('🔧 Force-set mobile button to Register with signup modal');
-        }
-      }, 100);
+      setTimeout(forceMobileButtonToRegister, 100);
+    });
+
+    // Run again after auth state changes (auth0-login.js dispatches this event)
+    window.addEventListener('auth-state-changed', function(event) {
+      console.log('🔧 Auth state changed, re-applying mobile button fix');
+      setTimeout(forceMobileButtonToRegister, 50);
     });
 
 
