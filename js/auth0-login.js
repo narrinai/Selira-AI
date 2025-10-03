@@ -772,7 +772,12 @@ class Auth0LoginModal {
         console.log('✅ Updated mobile header to show transparent Profile button');
       } else {
         loginBtn.textContent = 'Register';
-        loginBtn.className = loginBtn.className.replace('profile-btn', 'login-btn').replace('inverted-btn', '');
+        // Keep mobile-auth-btn class, just remove profile-btn if it exists
+        loginBtn.className = loginBtn.className.replace('profile-btn', '').replace('inverted-btn', '').trim();
+        // Ensure mobile-auth-btn class is present
+        if (!loginBtn.className.includes('mobile-auth-btn')) {
+          loginBtn.className += ' mobile-auth-btn';
+        }
         loginBtn.onclick = (e) => {
           e.preventDefault();
           this.openModal('signup');
