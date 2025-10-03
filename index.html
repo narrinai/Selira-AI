@@ -2700,24 +2700,36 @@
       setTimeout(forceMobileButtonToRegister, 50);
     });
 
+    // Track if click came from mobile header button
+    let clickFromMobileHeaderButton = false;
+
     // Ultimate fix: Wrap openLoginModal to intercept mobile button clicks
     window.addEventListener('load', function() {
       setTimeout(function() {
+        // Add click listener to mobile header button to set flag
+        const mobileHeaderBtn = document.querySelector('.mobile-header .mobile-auth-btn, .mobile-header .login-btn, .mobile-header .user-btn');
+        if (mobileHeaderBtn) {
+          mobileHeaderBtn.addEventListener('click', function() {
+            clickFromMobileHeaderButton = true;
+            console.log('🔧 Click detected from mobile header button');
+            setTimeout(function() {
+              clickFromMobileHeaderButton = false;
+            }, 100);
+          }, true);
+        }
+
         if (window.openLoginModal) {
           const originalOpenLoginModal = window.openLoginModal;
           window.openLoginModal = function(mode) {
-            // Check if this is being called from mobile button context
-            const mobileBtn = document.querySelector('.mobile-header .mobile-auth-btn, .mobile-header .login-btn');
-
-            // If mobile button exists and is visible, force signup mode
-            if (mobileBtn && window.innerWidth <= 768) {
-              console.log('🔧 Intercepted openLoginModal call - forcing signup mode for mobile button');
+            // Only force signup if click came from mobile header button
+            if (clickFromMobileHeaderButton) {
+              console.log('🔧 Intercepted openLoginModal call from mobile header button - forcing signup mode');
               mode = 'signup';
             }
 
             return originalOpenLoginModal.call(this, mode);
           };
-          console.log('🔧 Wrapped openLoginModal to force signup mode on mobile');
+          console.log('🔧 Wrapped openLoginModal with mobile header detection');
         }
       }, 50);
     });
