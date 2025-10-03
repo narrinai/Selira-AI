@@ -92,14 +92,31 @@ exports.handler = async (event, context) => {
 
     const userResult = await getUserProfile();
 
+    console.log('👤 User lookup result:', {
+      statusCode: userResult.statusCode,
+      recordsFound: userResult.data.records?.length || 0,
+      email,
+      auth0_id,
+      filter: userFilter
+    });
+
     if (userResult.statusCode !== 200 || !userResult.data.records || userResult.data.records.length === 0) {
+      console.error('❌ User not found in Airtable:', { email, auth0_id, statusCode: userResult.statusCode });
       return {
         statusCode: 404,
         headers: {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*'
         },
-        body: JSON.stringify({ error: 'User not found' })
+        body: JSON.stringify({
+          error: 'User not found',
+          debug: {
+            email,
+            auth0_id,
+            filter: userFilter,
+            recordsReturned: userResult.data.records?.length || 0
+          }
+        })
       };
     }
 
