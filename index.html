@@ -2225,12 +2225,7 @@
             `<img src="${character.avatar}" alt="${character.name}" class="character-image" loading="lazy" onerror="this.onerror=null; this.src='https://selira.ai/avatars/${getWorkingAvatar(character.name, character.sex)}'; console.log('🔧 Fixed broken avatar for ${character.name}');">` :
             `<div class="character-image-placeholder">${character.name.charAt(0)}</div>`
           }
-          
-          <!-- Favorite Button -->
-          <button class="character-favorite" onclick="event.stopPropagation(); toggleFavorite('${character.id}')">
-            ⭐
-          </button>
-          
+
           <!-- Stats Overlay -->
           <div class="character-stats-overlay">
             <div class="stat-badge">
@@ -3770,10 +3765,6 @@
             `<img src="${character.avatar}" alt="${character.name}" class="character-image" loading="lazy" onerror="this.onerror=null; this.src='https://selira.ai/avatars/${getWorkingAvatar(character.name, character.sex)}'; console.log('🔧 Fixed broken avatar for ${character.name}');">` :
             `<div class="character-image-placeholder">${character.name.charAt(0)}</div>`
           }
-
-          <button class="character-favorite" onclick="event.stopPropagation(); toggleFavorite('${character.id}')">
-            ⭐
-          </button>
 
           <div class="character-stats-overlay">
             <div class="stat-badge">
