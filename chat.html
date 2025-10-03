@@ -1805,29 +1805,39 @@
       // Get suggestions that haven't been used yet
       const availableSuggestions = suggestions.filter(s => !usedSuggestions.has(s));
 
+      // Always include open-ended prompt as 3rd option
+      const openEndedPrompt = 'Send me a picture of yourself';
+
       // If we've used all suggestions, reset the used set but keep the last few to avoid immediate repeats
-      if (availableSuggestions.length < 3) {
-        console.log('🔄 Resetting used suggestions, keeping last 3 to avoid immediate repeats');
-        const recentSuggestions = Array.from(usedSuggestions).slice(-3);
+      if (availableSuggestions.filter(s => s !== openEndedPrompt).length < 2) {
+        console.log('🔄 Resetting used suggestions, keeping last 2 to avoid immediate repeats');
+        const recentSuggestions = Array.from(usedSuggestions).slice(-2);
         usedSuggestions.clear();
         recentSuggestions.forEach(s => usedSuggestions.add(s));
 
         // Re-filter
-        const freshSuggestions = suggestions.filter(s => !usedSuggestions.has(s));
+        const freshSuggestions = suggestions.filter(s => !usedSuggestions.has(s) && s !== openEndedPrompt);
         const shuffled = shuffleArray(freshSuggestions);
-        const selected = shuffled.slice(0, 3);
+        const selected = shuffled.slice(0, 2);
 
-        // Mark as used
-        selected.forEach(s => usedSuggestions.add(s));
+        // Always add the open-ended prompt as 3rd option
+        selected.push(openEndedPrompt);
+
+        // Mark as used (except open-ended)
+        selected.filter(s => s !== openEndedPrompt).forEach(s => usedSuggestions.add(s));
         return selected;
       }
 
-      // Shuffle and select 3 unused suggestions
-      const shuffled = shuffleArray(availableSuggestions);
-      const selected = shuffled.slice(0, 3);
+      // Shuffle and select 2 unused suggestions + always include the open-ended one
+      const otherSuggestions = availableSuggestions.filter(s => s !== openEndedPrompt);
+      const shuffled = shuffleArray(otherSuggestions);
+      const selected = shuffled.slice(0, 2);
 
-      // Mark selected suggestions as used
-      selected.forEach(s => usedSuggestions.add(s));
+      // Always add the open-ended prompt as 3rd option
+      selected.push(openEndedPrompt);
+
+      // Mark selected suggestions as used (except the open-ended one, keep it available)
+      selected.filter(s => s !== openEndedPrompt).forEach(s => usedSuggestions.add(s));
 
       console.log(`🎲 Selected ${selected.length} new suggestions, ${usedSuggestions.size} total used`);
       return selected;
@@ -1871,7 +1881,7 @@
         const planInfo = document.createElement('div');
         planInfo.className = 'image-plan-info';
         planInfo.innerHTML = `
-          <span class="plan-badge">${permissions.plan}</span>
+          <span class="plan-badge">${permissions.plan} Plan</span>
           <span class="plan-remaining">${permissions.remaining || 0} / ${permissions.limit || 0} images left this hour</span>
         `;
         suggestionContainer.appendChild(planInfo);
@@ -4079,7 +4089,7 @@
                     You've used ${error.usage}/${error.limit} images this hour.
                   </div>
                   <div style="margin-top: 8px; color: #666; font-size: 14px;">
-                    ${error.plan === 'Basic' ? 'Upgrade to Premium for 20 images per hour!' : 'Try again in the next hour.'}
+                    ${error.plan === 'Basic' ? 'Upgrade to Premium Plan for 20 images per hour!' : 'Try again in the next hour.'}
                   </div>
                 `;
               } else {
