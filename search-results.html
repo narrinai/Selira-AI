@@ -802,19 +802,27 @@
     }
 
     function applySearch() {
+      console.log('🔎 applySearch() called with query:', currentSearchQuery);
+      console.log('📊 Total characters before search:', allCharacters.length);
+
       if (!currentSearchQuery || currentSearchQuery.trim() === '') {
         filteredCharacters = [...allCharacters];
+        console.log('✅ No search query - showing all', filteredCharacters.length, 'characters');
       } else {
         const originalCharacters = allCharacters.map(char => char._original);
         const searchResults = performComprehensiveSearch(originalCharacters, currentSearchQuery);
+        console.log('🔍 Search results from comprehensive search:', searchResults.length);
+
         filteredCharacters = allCharacters.filter(char =>
           searchResults.some(result =>
             (result.Character_ID && result.Character_ID === char.id) ||
             (result.Name && result.Name === char.name)
           )
         );
+        console.log('✅ Filtered to', filteredCharacters.length, 'matching characters');
       }
       filteredCharacters.sort((a, b) => a.name.localeCompare(b.name));
+      console.log('📋 Final filtered characters:', filteredCharacters.length);
       currentPage = 1;
     }
 
@@ -929,20 +937,29 @@
 
     // ===== RENDERING =====
     function renderCharacters() {
+      console.log('🎨 renderCharacters() called with', filteredCharacters.length, 'characters');
       const grid = document.getElementById('characterGrid');
 
+      if (!grid) {
+        console.error('❌ characterGrid element not found!');
+        return;
+      }
+
       if (filteredCharacters.length === 0) {
+        console.log('⚠️ No characters to display, showing empty state');
         showEmptyState(currentSearchQuery ?
           'No characters found matching your search criteria.' :
           'No characters available.');
         return;
       }
 
+      console.log('✅ Rendering', filteredCharacters.length, 'character cards');
       grid.innerHTML = '';
       filteredCharacters.forEach(character => {
         const card = createCharacterCard(character);
         grid.appendChild(card);
       });
+      console.log('✅ Render complete!');
     }
 
     function showEmptyState(message) {
