@@ -426,6 +426,18 @@ class Auth0LoginModal {
         localStorage.setItem('auth0_token_expires', Date.now() + (data.tokens.expires_in * 1000));
       }
 
+      // Track registration event for Facebook Pixel
+      if (isSignupMode) {
+        localStorage.setItem('just_registered', 'true');
+
+        // Dispatch custom event for Facebook Pixel tracking
+        window.dispatchEvent(new CustomEvent('auth0-registration-complete', {
+          detail: { email: data.user.email }
+        }));
+
+        console.log('📊 Registration event dispatched for tracking');
+      }
+
       // Update UI
       this.updateAuthState(true);
       this.closeModal();
