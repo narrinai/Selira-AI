@@ -2784,11 +2784,13 @@
 
           // Also add an interval check every 500ms to force Register text
           setInterval(function() {
-            if (mobileBtn && !window.isUserAuthenticated?.()) {
-              const currentText = mobileBtn.textContent.trim();
+            // Re-query the button in case it was re-rendered
+            const btn = document.querySelector('.mobile-header .mobile-auth-btn, .mobile-header .login-btn, .mobile-header .user-btn');
+            if (btn && !window.isUserAuthenticated?.()) {
+              const currentText = btn.textContent.trim();
               if (currentText !== 'Register') {
                 console.log('🔧 Interval check detected wrong text "' + currentText + '" - forcing to Register');
-                mobileBtn.textContent = 'Register';
+                btn.textContent = 'Register';
               }
             }
           }, 500);
