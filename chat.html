@@ -1880,9 +1880,10 @@
         // Show suggestions with plan info
         const planInfo = document.createElement('div');
         planInfo.className = 'image-plan-info';
+        const timeText = permissions.plan === 'Free' ? '' : ' this hour';
         planInfo.innerHTML = `
           <span class="plan-badge">${permissions.plan} Plan</span>
-          <span class="plan-remaining">${permissions.remaining || 0} / ${permissions.limit || 0} images left this hour</span>
+          <span class="plan-remaining">${permissions.remaining || 0} / ${permissions.limit || 0} images left${timeText}</span>
         `;
         suggestionContainer.appendChild(planInfo);
 
@@ -1923,7 +1924,8 @@
         imagePermissionsCacheTime = 0;
         console.log('♻️ Cache invalidated for fresh counter update');
         const permissions = await checkUserImagePermissions(false);
-        planRemainingElement.textContent = `${permissions.remaining || 0} / ${permissions.limit || 0} images left this hour`;
+        const timeText = permissions.plan === 'Free' ? '' : ' this hour';
+        planRemainingElement.textContent = `${permissions.remaining || 0} / ${permissions.limit || 0} images left${timeText}`;
         console.log('✅ Updated image counter:', permissions.remaining, '/', permissions.limit);
       } catch (error) {
         console.warn('⚠️ Failed to update image plan counter:', error);

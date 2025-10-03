@@ -99,26 +99,60 @@ exports.handler = async (event, context) => {
 
     console.log('👤 User plan:', userPlan);
 
-    // Block Free plan users from generating images
+    // For Free plan users, check lifetime usage (not hourly)
     if (userPlan === 'Free') {
+      // Get total lifetime image count for this user
+      const lifetimeUsageRecords = await base('ImageUsage').select({
+        filterByFormula: `SEARCH('${userId}', ARRAYJOIN({User}))`
+      }).all();
+
+      let lifetimeUsage = 0;
+      lifetimeUsageRecords.forEach(record => {
+        lifetimeUsage += record.fields.Count || 0;
+      });
+
+      console.log(`📊 Free plan user lifetime usage: ${lifetimeUsage}/2`);
+
+      // Free plan gets 2 total images (lifetime)
+      if (lifetimeUsage >= 2) {
+        return {
+          statusCode: 403,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+          },
+          body: JSON.stringify({
+            error: 'You\'ve used your 2 free images. Upgrade to Basic or Premium for unlimited image generation!',
+            plan: userPlan,
+            limit: 2,
+            usage: lifetimeUsage,
+            remaining: 0,
+            canGenerate: false,
+            upgradeRequired: true
+          })
+        };
+      }
+
+      // Free user can still generate
       return {
-        statusCode: 403,
+        statusCode: 200,
         headers: {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*'
         },
         body: JSON.stringify({
-          error: 'Image generation is not available on the Free plan. Upgrade to Basic or Premium to generate images!',
+          canGenerate: true,
+          limit: 2,
+          usage: lifetimeUsage,
+          remaining: 2 - lifetimeUsage,
           plan: userPlan,
-          limit: 0,
-          usage: 0,
-          canGenerate: false,
-          upgradeRequired: true
+          userId: userId,
+          isFreeUser: true
         })
       };
     }
 
-    // Check current hour's image usage
+    // For Basic/Premium plans: Check current hour's image usage
     // Use same format as increment function: YYYY-MM-DD-HH
     const now = new Date();
     const currentHour = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, '0')}-${String(now.getUTCDate()).padStart(2, '0')}-${String(now.getUTCHours()).padStart(2, '0')}`;
