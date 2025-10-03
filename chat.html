@@ -4621,12 +4621,23 @@
 
     // Image Upgrade Modal Functions
     function showImageUpgradeModal(permissions) {
+      // If user is a guest (not logged in), show signup modal instead
+      if (permissions && permissions.plan === 'Guest') {
+        console.log('🔒 Guest user detected, showing signup modal instead of upgrade modal');
+        if (window.openLoginModal) {
+          window.openLoginModal('signup');
+        } else {
+          alert('Please sign up to generate images');
+        }
+        return;
+      }
+
+      // For logged-in users with insufficient plan, show upgrade modal
       const modal = document.getElementById('imageUpgradeModal');
       const title = document.getElementById('upgradeModalTitle');
       const upgradeButton = document.getElementById('upgradeButton');
 
       // Customize modal content based on user status
-      // Always focus on upgrading since user is logged in if they see this
       title.textContent = 'Upgrade for Image Generation';
       upgradeButton.textContent = 'View Pricing';
       upgradeButton.href = '/pricing';
