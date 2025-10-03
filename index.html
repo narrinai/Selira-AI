@@ -2727,15 +2727,26 @@
               return currentOnClick;
             },
             set: function(newHandler) {
-              console.log('🔧 Blocked attempt to change mobile button onclick handler');
+              console.log('🔧 Blocked attempt to change mobile button onclick via property setter');
               // Ignore the new handler, keep our correct one
               currentOnClick = correctOnClick;
             },
             configurable: true
           });
 
-          // Set initial onclick
-          mobileBtn.addEventListener('click', correctOnClick);
+          // Also protect setAttribute to prevent inline onclick attribute changes
+          const originalSetAttribute = mobileBtn.setAttribute;
+          mobileBtn.setAttribute = function(name, value) {
+            if (name === 'onclick') {
+              console.log('🔧 Blocked attempt to change mobile button onclick via setAttribute');
+              return;
+            }
+            return originalSetAttribute.call(this, name, value);
+          };
+
+          // Remove any existing inline onclick attribute and add our event listener
+          mobileBtn.removeAttribute('onclick');
+          mobileBtn.addEventListener('click', correctOnClick, true); // Use capture phase
 
           const observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
