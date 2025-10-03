@@ -96,7 +96,13 @@ exports.handler = async (event, context) => {
       tags: record.fields.Tags || [],
       avatar_url: record.fields.Avatar_URL,
       avatar_file: record.fields.Avatar_File?.[0]?.url,
-      prompt: record.fields.Prompt
+      prompt: record.fields.Prompt,
+      // Appearance traits for image generation
+      companion_type: record.fields.companion_type,
+      sex: record.fields.sex,
+      ethnicity: record.fields.ethnicity,
+      hair_length: record.fields.hair_length,
+      hair_color: record.fields.hair_color
     }));
 
     return {

@@ -226,11 +226,11 @@ exports.handler = async (event, context) => {
         Created_by: createdBy,
         character_type: fields.Character_Type || fields.character_type || '',
         companion_type: fields.companion_type || (fields.Category === 'anime-manga' ? 'anime' : 'realistic'),
-        // New appearance fields
-        sex: fields.sex || 'female',
-        ethnicity: fields.ethnicity || 'white',
-        hair_length: fields.hair_length || 'medium',
-        hair_color: fields.hair_color || 'brown',
+        // Appearance fields - use actual values from Airtable (no defaults to see what's missing)
+        sex: fields.sex,
+        ethnicity: fields.ethnicity,
+        hair_length: fields.hair_length,
+        hair_color: fields.hair_color,
         _Created_by_record_id: (Array.isArray(fields.Created_By) && fields.Created_By.length > 0) ? fields.Created_By[0] : null
       };
     });
