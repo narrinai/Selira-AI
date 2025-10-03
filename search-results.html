@@ -778,15 +778,22 @@
       console.log('📦 Processing characters:', characters.length);
 
       allCharacters = characters.map(character => ({
-        id: character.Character_ID || character.Name || 'unknown',
-        name: character.Name || 'Unknown',
-        title: character.Character_Title || '',
-        description: character.Character_Description || '',
+        id: character.id || character.Character_ID || character.name || character.Name || 'unknown',
+        name: character.name || character.Name || 'Unknown',
+        title: character.title || character.Character_Title || '',
+        description: character.description || character.Character_Description || '',
         avatarUrl: getAvatarUrl(character),
         characterUrl: character.Character_URL || getCharacterUrl(character),
-        category: character.Category || 'unknown',
-        tags: processTags(character.Tags),
-        createdBy: character.Created_by || null,
+        category: character.category || character.Category || 'unknown',
+        tags: processTags(character.tags || character.Tags),
+        createdBy: character.created_by || character.Created_by || null,
+        slug: character.slug || character.Slug || '',
+        // Include appearance traits for search
+        hair_color: character.hair_color || character.Hair_Color || '',
+        ethnicity: character.ethnicity || character.Ethnicity || '',
+        hair_length: character.hair_length || character.Hair_Length || '',
+        companion_type: character.companion_type || character.Companion_Type || '',
+        sex: character.sex || character.Sex || '',
         _original: character
       }));
 
