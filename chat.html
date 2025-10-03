@@ -1713,78 +1713,67 @@
       const name = character.name || 'companion';
       const tags = character.tags || [];
       const description = character.description || '';
-      const ethnicity = character.ethnicity || character.Ethnicity || '';
-      const hairColor = character.hair_color || character.Hair_Color || '';
-      const hairLength = character.hair_length || character.Hair_Length || '';
       const artStyle = character.companion_type || character.Companion_Type || 'realistic';
 
-      // Build physical description from traits (only using actual Airtable fields)
-      const physicalTraits = [];
-      if (hairLength && hairColor) {
-        physicalTraits.push(`${hairLength} ${hairColor} hair`);
-      }
-      if (ethnicity) {
-        physicalTraits.push(`${ethnicity}`);
-      }
+      // Note: Traits are NOT added to user-visible prompts
+      // They will be added internally when sending to the backend
 
-      // Create trait string to append to prompts
-      const traitString = physicalTraits.length > 0 ? ` (${physicalTraits.join(', ')})` : '';
-
-      // Seductive and suggestive scenario prompts
+      // Seductive and suggestive scenario prompts (without trait string)
       const baseScenarios = [
-        `Send me a picture of ${name}${traitString} in revealing lingerie, posing seductively on a bed with bedroom eyes`,
-        `Send me a picture of ${name}${traitString} in a tight dress, leaning forward with a provocative smile`,
-        `Send me a picture of ${name}${traitString} in the shower with water cascading down her body, looking back`,
-        `Send me a picture of ${name}${traitString} in barely-there underwear, stretching sensually with desire in her eyes`,
-        `Send me a picture of ${name}${traitString} in a silk robe that's slipping off, with a hungry look`,
-        `Send me a picture of ${name}${traitString} lying on satin sheets, wearing something revealing with an inviting pose`
+        `Send me a picture of ${name} in revealing lingerie, posing seductively on a bed with bedroom eyes`,
+        `Send me a picture of ${name} in a tight dress, leaning forward with a provocative smile`,
+        `Send me a picture of ${name} in the shower with water cascading down her body, looking back`,
+        `Send me a picture of ${name} in barely-there underwear, stretching sensually with desire in her eyes`,
+        `Send me a picture of ${name} in a silk robe that's slipping off, with a hungry look`,
+        `Send me a picture of ${name} lying on satin sheets, wearing something revealing with an inviting pose`,
+        `Send me a picture of`
       ];
 
       // Seductive tag-specific scenarios
       const tagScenarios = {
         'Girlfriend': [
-          `Send me a picture of ${name}${traitString} in sexy lingerie on our bed with a passionate look, reaching out`,
-          `Send me a picture of ${name}${traitString} wearing just your shirt and nothing else, with a playful smile`
+          `Send me a picture of ${name} in sexy lingerie on our bed with a passionate look, reaching out`,
+          `Send me a picture of ${name} wearing just your shirt and nothing else, with a playful smile`
         ],
         'Romance': [
-          `Send me a picture of ${name}${traitString} in a low-cut dress showing off her curves, with intense desire`,
-          `Send me a picture of ${name}${traitString} lying provocatively on rose petals with a sultry expression`
+          `Send me a picture of ${name} in a low-cut dress showing off her curves, with intense desire`,
+          `Send me a picture of ${name} lying provocatively on rose petals with a sultry expression`
         ],
         'Cute': [
-          `Send me a picture of ${name}${traitString} in innocent-looking but revealing underwear, biting her lip playfully`,
-          `Send me a picture of ${name}${traitString} in a crop top and tiny shorts, stretching with a naughty expression`
+          `Send me a picture of ${name} in innocent-looking but revealing underwear, biting her lip playfully`,
+          `Send me a picture of ${name} in a crop top and tiny shorts, stretching with a naughty expression`
         ],
         'Seductive': [
-          `Send me a picture of ${name}${traitString} in black lace lingerie, posing dominantly on a bed with a hungry gaze`,
-          `Send me a picture of ${name}${traitString} in a see-through negligee, touching herself with an erotic stare`
+          `Send me a picture of ${name} in black lace lingerie, posing dominantly on a bed with a hungry gaze`,
+          `Send me a picture of ${name} in a see-through negligee, touching herself with an erotic stare`
         ],
         'Maid': [
-          `Send me a picture of ${name}${traitString} in a skimpy maid outfit, bending over while cleaning with a naughty smile`,
-          `Send me a picture of ${name}${traitString} in a revealing French maid costume in a submissive pose`
+          `Send me a picture of ${name} in a skimpy maid outfit, bending over while cleaning with a naughty smile`,
+          `Send me a picture of ${name} in a revealing French maid costume in a submissive pose`
         ],
         'Fantasy': [
-          `Send me a picture of ${name}${traitString} as a sexy elf in barely-there fantasy armor, posing erotically`,
-          `Send me a picture of ${name}${traitString} as a sultry sorceress in revealing robes with magic swirling`
+          `Send me a picture of ${name} as a sexy elf in barely-there fantasy armor, posing erotically`,
+          `Send me a picture of ${name} as a sultry sorceress in revealing robes with magic swirling`
         ],
         'Angel': [
-          `Send me a picture of ${name}${traitString} as a fallen angel in torn lingerie, wings spread seductively`,
-          `Send me a picture of ${name}${traitString} with angel wings in white underwear, in a passionate divine pose`
+          `Send me a picture of ${name} as a fallen angel in torn lingerie, wings spread seductively`,
+          `Send me a picture of ${name} with angel wings in white underwear, in a passionate divine pose`
         ],
         'Monster': [
-          `Send me a picture of ${name}${traitString} with her monster features in revealing leather, posing dominantly`,
-          `Send me a picture of ${name}${traitString} showing her supernatural side in minimal clothing, irresistibly seductive`
+          `Send me a picture of ${name} with her monster features in revealing leather, posing dominantly`,
+          `Send me a picture of ${name} showing her supernatural side in minimal clothing, irresistibly seductive`
         ],
         'Boss': [
-          `Send me a picture of ${name}${traitString} in a tight suit unbuttoned, sitting on her desk in sexual dominance`,
-          `Send me a picture of ${name}${traitString} in revealing professional attire, commanding with lustful eyes`
+          `Send me a picture of ${name} in a tight suit unbuttoned, sitting on her desk in sexual dominance`,
+          `Send me a picture of ${name} in revealing professional attire, commanding with lustful eyes`
         ],
         'Student': [
-          `Send me a picture of ${name}${traitString} in a sexy schoolgirl outfit on a desk with a flirtatious look`,
-          `Send me a picture of ${name}${traitString} in a revealing school uniform, posing suggestively after class`
+          `Send me a picture of ${name} in a sexy schoolgirl outfit on a desk with a flirtatious look`,
+          `Send me a picture of ${name} in a revealing school uniform, posing suggestively after class`
         ],
         'Teacher': [
-          `Send me a picture of ${name}${traitString} in a tight teacher outfit leaning over a desk showing her assets`,
-          `Send me a picture of ${name}${traitString} in professional attire, pointing with a stern but sexually charged look`
+          `Send me a picture of ${name} in a tight teacher outfit leaning over a desk showing her assets`,
+          `Send me a picture of ${name} in professional attire, pointing with a stern but sexually charged look`
         ]
       };
 
