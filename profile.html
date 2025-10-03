@@ -1351,9 +1351,17 @@
 
     // Logout function
     function logout() {
+      // Preserve age verification when clearing storage
+      const ageVerified = localStorage.getItem('selira_age_verified');
+
       // Clear local storage
       localStorage.clear();
-      
+
+      // Restore age verification
+      if (ageVerified) {
+        localStorage.setItem('selira_age_verified', ageVerified);
+      }
+
       // If Auth0 is available, logout
       if (window.auth0Client) {
         window.auth0Client.logout({
