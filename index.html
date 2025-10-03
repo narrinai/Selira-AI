@@ -2773,13 +2773,25 @@
           const observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
               if (mutation.type === 'childList' || mutation.type === 'characterData') {
-                if (mobileBtn.textContent.trim() !== 'Register' && !window.isUserAuthenticated?.()) {
-                  console.log('🔧 MutationObserver detected button text change from:', mobileBtn.textContent, '- forcing back to Register');
+                const currentText = mobileBtn.textContent.trim();
+                if (currentText !== 'Register' && !window.isUserAuthenticated?.()) {
+                  console.log('🔧 MutationObserver detected button text change from "' + currentText + '" - forcing back to Register');
                   mobileBtn.textContent = 'Register';
                 }
               }
             });
           });
+
+          // Also add an interval check every 500ms to force Register text
+          setInterval(function() {
+            if (mobileBtn && !window.isUserAuthenticated?.()) {
+              const currentText = mobileBtn.textContent.trim();
+              if (currentText !== 'Register') {
+                console.log('🔧 Interval check detected wrong text "' + currentText + '" - forcing to Register');
+                mobileBtn.textContent = 'Register';
+              }
+            }
+          }, 500);
 
           observer.observe(mobileBtn, {
             childList: true,
