@@ -1,4 +1,4 @@
-const https = require('https');
+const Airtable = require('airtable');
 
 exports.handler = async (event, context) => {
   console.log('🖼️ Check image limit function called');
@@ -55,71 +55,32 @@ exports.handler = async (event, context) => {
       };
     }
 
+    // Initialize Airtable
+    const base = new Airtable({ apiKey: AIRTABLE_TOKEN }).base(AIRTABLE_BASE_ID);
+
     // Get user profile to check their plan
     console.log('👤 Getting user profile for image limit check', { email, auth0_id });
 
-    const getUserProfile = (filterFormula) => {
-      return new Promise((resolve, reject) => {
-        const encodedFilter = encodeURIComponent(filterFormula);
-        const options = {
-          hostname: 'api.airtable.com',
-          port: 443,
-          path: `/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula=${encodedFilter}`,
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
-            'Content-Type': 'application/json'
-          }
-        };
-
-        console.log('🔍 Querying Users table with filter:', filterFormula);
-
-        const req = https.request(options, (res) => {
-          let data = '';
-          res.on('data', (chunk) => { data += chunk; });
-          res.on('end', () => {
-            try {
-              const response = JSON.parse(data);
-              console.log('📊 Airtable response status:', res.statusCode, 'Records found:', response.records?.length || 0);
-              resolve({ statusCode: res.statusCode, data: response });
-            } catch (error) {
-              console.error('❌ Error parsing Airtable response:', error);
-              reject(error);
-            }
-          });
-        });
-
-        req.on('error', (error) => {
-          console.error('❌ HTTP request error:', error);
-          reject(error);
-        });
-        req.end();
-      });
-    };
-
-    // Try Email first, then Auth0ID (note: spaces around = are important for Airtable)
-    let userResult;
+    // Try Email first
+    let filterFormula = '';
     if (email) {
+      filterFormula = `{Email} = '${email}'`;
       console.log('🔍 Trying lookup by Email:', email);
-      userResult = await getUserProfile(`{Email} = '${email}'`);
+    } else if (auth0_id) {
+      filterFormula = `{Auth0ID} = '${auth0_id}'`;
+      console.log('🔍 Trying lookup by Auth0ID:', auth0_id);
     }
 
-    // If not found by email, try Auth0ID
-    if ((!userResult || !userResult.data.records || userResult.data.records.length === 0) && auth0_id) {
-      console.log('🔍 Email lookup failed, trying Auth0ID:', auth0_id);
-      userResult = await getUserProfile(`{Auth0ID} = '${auth0_id}'`);
-    }
+    console.log('🔍 Filter formula:', filterFormula);
 
-    console.log('👤 User lookup result:', {
-      statusCode: userResult.statusCode,
-      recordsFound: userResult.data.records?.length || 0,
-      email,
-      auth0_id,
-      filter: userFilter
-    });
+    const users = await base('Users').select({
+      filterByFormula: filterFormula
+    }).firstPage();
 
-    if (userResult.statusCode !== 200 || !userResult.data.records || userResult.data.records.length === 0) {
-      console.error('❌ User not found in Airtable:', { email, auth0_id, statusCode: userResult.statusCode });
+    console.log('👥 Users found:', users.length);
+
+    if (users.length === 0) {
+      console.error('❌ User not found in Airtable:', { email, auth0_id });
       return {
         statusCode: 404,
         headers: {
@@ -127,18 +88,12 @@ exports.handler = async (event, context) => {
           'Access-Control-Allow-Origin': '*'
         },
         body: JSON.stringify({
-          error: 'User not found',
-          debug: {
-            email,
-            auth0_id,
-            filter: userFilter,
-            recordsReturned: userResult.data.records?.length || 0
-          }
+          error: 'User not found'
         })
       };
     }
 
-    const userRecord = userResult.data.records[0];
+    const userRecord = users[0];
     const userPlan = userRecord.fields.Plan || 'Basic';
     const userId = userRecord.id;
 
@@ -170,59 +125,28 @@ exports.handler = async (event, context) => {
 
     console.log('🕐 Checking usage for hour:', currentHour);
 
-    const getImageUsage = () => {
-      return new Promise((resolve, reject) => {
-        // Just filter by hour, then check User link client-side
-        const filterFormula = `{Hour}="${currentHour}"`;
-        const options = {
-          hostname: 'api.airtable.com',
-          port: 443,
-          path: `/v0/${AIRTABLE_BASE_ID}/ImageUsage?filterByFormula=${encodeURIComponent(filterFormula)}`,
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
-            'Content-Type': 'application/json'
-          }
-        };
+    // Query ImageUsage table using Airtable SDK
+    const usageRecords = await base('ImageUsage').select({
+      filterByFormula: `{Hour} = '${currentHour}'`
+    }).firstPage();
 
-        const req = https.request(options, (res) => {
-          let data = '';
-          res.on('data', (chunk) => { data += chunk; });
-          res.on('end', () => {
-            try {
-              const response = JSON.parse(data);
-              resolve({ statusCode: res.statusCode, data: response });
-            } catch (error) {
-              reject(error);
-            }
-          });
-        });
-
-        req.on('error', reject);
-        req.end();
-      });
-    };
-
-    const usageResult = await getImageUsage();
+    console.log('📊 ImageUsage records found for hour:', usageRecords.length);
 
     let currentUsage = 0;
     let usageRecordId = null;
 
-    if (usageResult.statusCode === 200 && usageResult.data.records && usageResult.data.records.length > 0) {
-      // Filter client-side to find record matching this user
-      // User field is a linked record array containing User record IDs
-      const usageRecord = usageResult.data.records.find(record => {
-        const userLinks = record.fields.User || [];
-        return userLinks.includes(userId);
-      });
+    // Filter client-side to find record matching this user
+    const usageRecord = usageRecords.find(record => {
+      const userLinks = record.fields.User || [];
+      return userLinks.includes(userId);
+    });
 
-      if (usageRecord) {
-        currentUsage = usageRecord.fields.Count || 0;
-        usageRecordId = usageRecord.id;
-        console.log(`✅ Found ImageUsage record for user ${userId}: ${currentUsage} images used`);
-      } else {
-        console.log(`ℹ️ No ImageUsage record found for user ${userId} in hour ${currentHour}`);
-      }
+    if (usageRecord) {
+      currentUsage = usageRecord.fields.Count || 0;
+      usageRecordId = usageRecord.id;
+      console.log(`✅ Found ImageUsage record for user ${userId}: ${currentUsage} images used`);
+    } else {
+      console.log(`ℹ️ No ImageUsage record found for user ${userId} in hour ${currentHour}`);
     }
 
     // Determine hourly limits based on plan
