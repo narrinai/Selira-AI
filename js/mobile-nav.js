@@ -52,7 +52,9 @@ function updateMobileNavAuthState(authDetail = null) {
     // Hide login/signup links in menu
     loginLinks.forEach(link => link.style.display = 'none');
   } else {
-    profileText.textContent = 'Login';
+    // On homepage show "Register", on other pages show "Login"
+    const isHomepage = window.location.pathname === '/' || window.location.pathname === '/index.html';
+    profileText.textContent = isHomepage ? 'Register' : 'Login';
     profileBtn.style.background = 'var(--accent, #d4a574)';
     profileBtn.style.color = 'white';
     profileBtn.style.borderRadius = '25px';
@@ -132,10 +134,6 @@ function createMobileNav() {
             <span>Pricing</span>
           </a>
           <div class="mobile-menu-divider"></div>
-          <a href="#" class="mobile-menu-link login-link" onclick="openLoginModal('login'); return false;">
-            <span class="menu-icon">🔑</span>
-            <span>Sign In</span>
-          </a>
           <a href="#" class="mobile-menu-link signup-link" onclick="openLoginModal('signup'); return false;">
             <span class="menu-icon">✨</span>
             <span>Register</span>
@@ -574,9 +572,10 @@ function attachMobileNavEvents() {
       // User is authenticated, go to profile
       window.location.href = '/profile';
     } else {
-      // User not authenticated, open login modal
+      // User not authenticated, open signup modal on homepage, login on other pages
+      const isHomepage = window.location.pathname === '/' || window.location.pathname === '/index.html';
       if (window.openLoginModal) {
-        window.openLoginModal('login');
+        window.openLoginModal(isHomepage ? 'signup' : 'login');
       } else {
         // Fallback to profile page which will handle login redirect
         window.location.href = '/profile';
