@@ -2677,12 +2677,15 @@
         // Force onclick to open signup modal
         mobileBtn.onclick = function(e) {
           e.preventDefault();
+          console.log('🔧 Mobile Register button clicked - opening signup modal');
           if (window.openLoginModal) {
             window.openLoginModal('signup');
+          } else if (window.seliraAuth) {
+            window.seliraAuth.openModal('signup');
           }
           return false;
         };
-        console.log('🔧 Force-set mobile button to Register with signup modal');
+        console.log('🔧 Force-set mobile button to Register with signup modal, onclick handler:', mobileBtn.onclick !== null);
       }
     }
 
@@ -2712,8 +2715,11 @@
                   mobileBtn.textContent = 'Register';
                   mobileBtn.onclick = function(e) {
                     e.preventDefault();
+                    console.log('🔧 Mobile Register button clicked (via MutationObserver) - opening signup modal');
                     if (window.openLoginModal) {
                       window.openLoginModal('signup');
+                    } else if (window.seliraAuth) {
+                      window.seliraAuth.openModal('signup');
                     }
                     return false;
                   };
