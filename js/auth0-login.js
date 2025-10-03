@@ -260,6 +260,12 @@ class Auth0LoginModal {
               >
             </div>
 
+            ${!isSignup ? `
+              <div class="auth0-forgot-password">
+                <a href="#" class="auth0-forgot-link" onclick="openForgotPasswordModal(event)">Forgot password?</a>
+              </div>
+            ` : ''}
+
             <button type="submit" class="auth0-submit-btn">
               <span class="btn-text">${isSignup ? 'Create Account' : 'Sign In'}</span>
               <div class="btn-loader" style="display: none;">
@@ -851,6 +857,165 @@ class Auth0LoginModal {
   getUserToken() {
     return this.auth0Client?.getTokenSilently();
   }
+
+  openForgotPasswordModal() {
+    this.closeModal();
+
+    const modal = document.createElement('div');
+    modal.id = 'auth0-forgot-password-modal';
+    modal.className = 'auth0-modal-overlay';
+
+    modal.innerHTML = `
+      <div class="auth0-modal-content">
+        <button class="auth0-modal-close" aria-label="Close">&times;</button>
+
+        <div class="auth0-modal-header">
+          <div class="auth0-logo">
+            <span class="logo-icon">🔑</span>
+            <h2>Reset Password</h2>
+          </div>
+          <p class="auth0-subtitle">Enter your email to receive a password reset code</p>
+        </div>
+
+        <div class="auth0-modal-body">
+          <form class="auth0-form" id="auth0-forgot-password-form">
+            <div class="auth0-input-group">
+              <input
+                type="email"
+                id="auth0-forgot-email"
+                class="auth0-input"
+                placeholder="Email address"
+                required
+              >
+            </div>
+
+            <button type="submit" class="auth0-submit-btn">
+              <span class="btn-text">Send Reset Code</span>
+              <div class="btn-loader" style="display: none;">
+                <div class="spinner"></div>
+              </div>
+            </button>
+          </form>
+
+          <div class="auth0-switch-mode" style="display: block !important; visibility: visible !important;">
+            Remember your password?
+            <a href="#" class="auth0-switch-link" onclick="switchToLogin(event)">Login here</a>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    const closeBtn = modal.querySelector('.auth0-modal-close');
+    const form = modal.querySelector('#auth0-forgot-password-form');
+
+    closeBtn.addEventListener('click', () => {
+      modal.remove();
+      document.body.style.overflow = '';
+    });
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.remove();
+        document.body.style.overflow = '';
+      }
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      await this.handleForgotPassword();
+    });
+
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+
+    setTimeout(() => {
+      document.getElementById('auth0-forgot-email')?.focus();
+    }, 100);
+  }
+
+  async handleForgotPassword() {
+    const email = document.getElementById('auth0-forgot-email').value;
+    const submitBtn = document.querySelector('#auth0-forgot-password-form .auth0-submit-btn');
+    const btnText = submitBtn?.querySelector('.btn-text');
+    const btnLoader = submitBtn?.querySelector('.btn-loader');
+
+    if (btnText && btnLoader && submitBtn) {
+      btnText.style.display = 'none';
+      btnLoader.style.display = 'flex';
+      submitBtn.disabled = true;
+    }
+
+    try {
+      console.log('🔄 Requesting password reset for:', email);
+
+      const response = await fetch('/.netlify/functions/auth0-forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || 'Failed to send reset code');
+      }
+
+      console.log('✅ Password reset code sent successfully');
+
+      // Show success message
+      this.showForgotPasswordSuccess('Check your email for the password reset code! 📧');
+
+      // Close modal after 2 seconds
+      setTimeout(() => {
+        const modal = document.getElementById('auth0-forgot-password-modal');
+        if (modal) {
+          modal.remove();
+          document.body.style.overflow = '';
+        }
+      }, 2000);
+
+    } catch (error) {
+      console.error('❌ Forgot password failed:', error);
+
+      if (btnText && btnLoader && submitBtn) {
+        btnText.style.display = 'block';
+        btnLoader.style.display = 'none';
+        submitBtn.disabled = false;
+      }
+
+      this.showForgotPasswordError(error.message || 'Failed to send reset code. Please try again.');
+    }
+  }
+
+  showForgotPasswordSuccess(message) {
+    const form = document.querySelector('#auth0-forgot-password-form');
+    const existingMsg = form?.querySelector('.auth0-success, .auth0-error');
+    if (existingMsg) existingMsg.remove();
+
+    const successDiv = document.createElement('div');
+    successDiv.className = 'auth0-success';
+    successDiv.textContent = message;
+
+    form?.insertBefore(successDiv, form.firstChild);
+  }
+
+  showForgotPasswordError(message) {
+    const form = document.querySelector('#auth0-forgot-password-form');
+    const existingMsg = form?.querySelector('.auth0-success, .auth0-error');
+    if (existingMsg) existingMsg.remove();
+
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'auth0-error';
+    errorDiv.textContent = message;
+
+    form?.insertBefore(errorDiv, form.firstChild);
+
+    setTimeout(() => {
+      errorDiv.remove();
+    }, 5000);
+  }
 }
 
 // ===== AUTH0 MODAL STYLES (SELIRA THEME) =====
@@ -1179,12 +1344,41 @@ const AUTH0_STYLES = `
   color: #c19456;
 }
 
+.auth0-forgot-password {
+  text-align: right;
+  margin-top: -2px;
+  margin-bottom: 8px;
+}
+
+.auth0-forgot-link {
+  color: #d4a574;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.auth0-forgot-link:hover {
+  text-decoration: underline;
+  color: #c19456;
+}
+
 .auth0-error {
   background: rgba(239, 68, 68, 0.1);
   border: 1px solid rgba(239, 68, 68, 0.3);
   border-radius: 8px;
   padding: 12px;
   color: #fca5a5;
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.auth0-success {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 8px;
+  padding: 12px;
+  color: #6ee7b7;
   font-size: 14px;
   text-align: center;
   margin-bottom: 16px;
@@ -1348,5 +1542,13 @@ window.switchToSignup = function(event) {
     setTimeout(() => {
       seliraAuth.openModal('signup');
     }, 100);
+  }
+};
+
+// Open forgot password modal
+window.openForgotPasswordModal = function(event) {
+  event.preventDefault();
+  if (seliraAuth) {
+    seliraAuth.openForgotPasswordModal();
   }
 };
