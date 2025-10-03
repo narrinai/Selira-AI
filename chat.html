@@ -3962,7 +3962,15 @@
       const characterStyle = currentCharacter.companion_type ||
                              (currentCharacter.category === 'anime-manga' ? 'anime' : 'realistic');
 
-      // Get character traits
+      // Get character traits - log what we have
+      console.log('🔍 Current character data:', {
+        name: currentCharacter.name,
+        ethnicity: currentCharacter.ethnicity,
+        hair_length: currentCharacter.hair_length,
+        hair_color: currentCharacter.hair_color,
+        companion_type: currentCharacter.companion_type
+      });
+
       const characterSex = currentCharacter.sex || 'female';
       const characterEthnicity = currentCharacter.ethnicity || 'white';
       const characterHairLength = currentCharacter.hair_length || 'medium';
