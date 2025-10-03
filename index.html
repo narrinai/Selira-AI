@@ -2795,7 +2795,7 @@
           });
 
           // Also add an interval check every 500ms to force Register text
-          setInterval(function() {
+          const intervalId = setInterval(function() {
             // Re-query the button in case it was re-rendered
             const btn = document.querySelector('.mobile-header .mobile-auth-btn, .mobile-header .login-btn, .mobile-header .user-btn');
             if (btn && !window.isUserAuthenticated?.()) {
@@ -2804,8 +2804,14 @@
                 console.log('🔧 Interval check detected wrong text "' + currentText + '" - forcing to Register');
                 btn.textContent = 'Register';
               }
+            } else if (!btn) {
+              console.log('🔧 Interval check: button not found with selector');
             }
           }, 500);
+
+          // Debug: log what we found initially
+          console.log('🔧 Initial button found:', mobileBtn ? 'YES' : 'NO');
+          console.log('🔧 Initial button text:', mobileBtn ? mobileBtn.textContent.trim() : 'N/A');
 
           observer.observe(mobileBtn, {
             childList: true,
