@@ -2697,6 +2697,42 @@
       setTimeout(forceMobileButtonToRegister, 50);
     });
 
+    // Nuclear option: MutationObserver to watch for button text changes
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        const mobileHeader = document.querySelector('.mobile-header');
+        const mobileBtn = mobileHeader?.querySelector('.mobile-auth-btn, .login-btn');
+
+        if (mobileBtn && !window.isUserAuthenticated?.()) {
+          const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+              if (mutation.type === 'childList' || mutation.type === 'characterData') {
+                if (mobileBtn.textContent.trim() !== 'Register' && !window.isUserAuthenticated?.()) {
+                  console.log('🔧 MutationObserver detected button text change from:', mobileBtn.textContent, '- forcing back to Register');
+                  mobileBtn.textContent = 'Register';
+                  mobileBtn.onclick = function(e) {
+                    e.preventDefault();
+                    if (window.openLoginModal) {
+                      window.openLoginModal('signup');
+                    }
+                    return false;
+                  };
+                }
+              }
+            });
+          });
+
+          observer.observe(mobileBtn, {
+            childList: true,
+            characterData: true,
+            subtree: true
+          });
+
+          console.log('🔧 MutationObserver watching mobile button for text changes');
+        }
+      }, 200);
+    });
+
 
     // ===== TAG FILTERING WITH URLS =====
     document.addEventListener('click', function(e) {
