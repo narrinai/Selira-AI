@@ -2700,6 +2700,28 @@
       setTimeout(forceMobileButtonToRegister, 50);
     });
 
+    // Ultimate fix: Wrap openLoginModal to intercept mobile button clicks
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        if (window.openLoginModal) {
+          const originalOpenLoginModal = window.openLoginModal;
+          window.openLoginModal = function(mode) {
+            // Check if this is being called from mobile button context
+            const mobileBtn = document.querySelector('.mobile-header .mobile-auth-btn, .mobile-header .login-btn');
+
+            // If mobile button exists and is visible, force signup mode
+            if (mobileBtn && window.innerWidth <= 768) {
+              console.log('🔧 Intercepted openLoginModal call - forcing signup mode for mobile button');
+              mode = 'signup';
+            }
+
+            return originalOpenLoginModal.call(this, mode);
+          };
+          console.log('🔧 Wrapped openLoginModal to force signup mode on mobile');
+        }
+      }, 50);
+    });
+
     // Nuclear option: MutationObserver to watch for button text changes AND protect onclick
     window.addEventListener('load', function() {
       setTimeout(function() {
