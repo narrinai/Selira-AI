@@ -1842,7 +1842,10 @@
       // Mark selected suggestions as used (except the open-ended one, keep it available)
       selected.filter(s => s !== openEndedPrompt).forEach(s => usedSuggestions.add(s));
 
-      console.log(`🎲 Selected ${selected.length} new suggestions, ${usedSuggestions.size} total used`);
+      console.log(`🎲 Selected ${selected.length} new suggestions:`, selected);
+      console.log(`📝 Open-ended prompt: "${openEndedPrompt}"`);
+      console.log(`🔍 All suggestions (${suggestions.length}):`, suggestions);
+      console.log(`✅ ${usedSuggestions.size} total used`);
       return selected;
     }
 
