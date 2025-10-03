@@ -2816,7 +2816,27 @@
           observer.observe(mobileBtn, {
             childList: true,
             characterData: true,
-            subtree: true
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['onclick']
+          });
+
+          // Also watch for attribute changes to protect onclick
+          const attrObserver = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+              if (mutation.type === 'attributes' && mutation.attributeName === 'onclick') {
+                const onclickAttr = mobileBtn.getAttribute('onclick');
+                if (onclickAttr && !onclickAttr.includes("'signup'")) {
+                  console.log('🔧 Detected onclick attribute change to login - reverting to signup');
+                  mobileBtn.setAttribute('onclick', "openLoginModal('signup'); return false;");
+                }
+              }
+            });
+          });
+
+          attrObserver.observe(mobileBtn, {
+            attributes: true,
+            attributeFilter: ['onclick']
           });
 
           console.log('🔧 MutationObserver watching mobile button + onclick protection enabled');
