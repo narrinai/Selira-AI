@@ -531,7 +531,36 @@
     .form-input::placeholder {
       color: var(--text-muted);
     }
-    
+
+    /* Name Generator Button */
+    .name-generator-btn {
+      padding: 12px 16px;
+      background: var(--accent);
+      border: 1px solid var(--accent);
+      border-radius: var(--radius-md);
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 48px;
+    }
+
+    .name-generator-btn:hover {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+
+    .name-generator-btn:active {
+      transform: translateY(0);
+    }
+
+    .name-generator-btn svg {
+      display: block;
+    }
+
     /* Tags */
     .create-popular-tags {
       display: flex;
@@ -1064,7 +1093,14 @@
 
               <div style="margin-bottom: 20px;">
                 <label style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 8px;">Character Name</label>
-                <input type="text" id="characterName" placeholder="e.g., Luna, Aria, Kai..." class="form-input">
+                <div style="display: flex; gap: 12px; align-items: stretch;">
+                  <input type="text" id="characterName" placeholder="e.g., Zoe Sanchez, Savannah Liu, Avery Smith..." class="form-input" style="flex: 1; margin: 0;">
+                  <button type="button" onclick="generateCharacterName()" class="name-generator-btn" title="Generate random name">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+                    </svg>
+                  </button>
+                </div>
               </div>
 
               
@@ -1276,15 +1312,53 @@
       if (characterCreationState.currentStep > 1) {
         // Hide current step
         hideCurrentStep();
-        
+
         // Move to previous step
         characterCreationState.currentStep--;
-        
+
         // Show previous step
         showCurrentStep();
-        
+
         // Update progress
         updateStepProgress();
+      }
+    }
+
+    // ===== NAME GENERATOR =====
+    function generateCharacterName() {
+      const firstNames = [
+        'Zoe', 'Savannah', 'Avery', 'Luna', 'Aria', 'Maya', 'Sophia', 'Isabella', 'Mia', 'Emma',
+        'Olivia', 'Ava', 'Charlotte', 'Amelia', 'Harper', 'Evelyn', 'Abigail', 'Emily', 'Scarlett', 'Madison',
+        'Lily', 'Chloe', 'Victoria', 'Grace', 'Ella', 'Riley', 'Natalie', 'Hannah', 'Addison', 'Brooklyn',
+        'Jade', 'Ruby', 'Aurora', 'Jasmine', 'Violet', 'Ivy', 'Rose', 'Hazel', 'Willow', 'Daisy',
+        'Liam', 'Noah', 'Oliver', 'Elijah', 'James', 'William', 'Benjamin', 'Lucas', 'Mason', 'Ethan',
+        'Alexander', 'Henry', 'Jacob', 'Michael', 'Daniel', 'Logan', 'Jackson', 'Sebastian', 'Jack', 'Aiden'
+      ];
+
+      const lastNames = [
+        'Sanchez', 'Liu', 'Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Martinez', 'Rodriguez',
+        'Davis', 'Miller', 'Wilson', 'Moore', 'Taylor', 'Anderson', 'Thomas', 'Jackson', 'White', 'Harris',
+        'Martin', 'Thompson', 'Young', 'Allen', 'King', 'Wright', 'Scott', 'Green', 'Baker', 'Adams',
+        'Chen', 'Wang', 'Li', 'Zhang', 'Kim', 'Park', 'Patel', 'Singh', 'Kumar', 'Nguyen',
+        'Lopez', 'Gonzalez', 'Hernandez', 'Perez', 'Rivera', 'Torres', 'Flores', 'Ramirez', 'Morales', 'Cruz'
+      ];
+
+      const randomFirstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+      const randomLastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+
+      const generatedName = `${randomFirstName} ${randomLastName}`;
+
+      // Set the value in the input field
+      const nameInput = document.getElementById('characterName');
+      if (nameInput) {
+        nameInput.value = generatedName;
+
+        // Add a subtle animation effect
+        nameInput.style.transition = 'all 0.2s ease';
+        nameInput.style.transform = 'scale(1.02)';
+        setTimeout(() => {
+          nameInput.style.transform = 'scale(1)';
+        }, 200);
       }
     }
 
