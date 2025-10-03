@@ -56,8 +56,14 @@ exports.handler = async (event, context) => {
     }
 
     // Get user profile to check their plan
-    console.log('👤 Getting user profile for image limit check');
-    const userFilter = email ? `{Email}="${email}"` : `{Auth0ID}="${auth0_id}"`;
+    console.log('👤 Getting user profile for image limit check', { email, auth0_id });
+
+    // Try both email AND auth0_id if both are provided
+    const userFilter = email && auth0_id
+      ? `OR({Email}="${email}", {Auth0ID}="${auth0_id}")`
+      : email
+        ? `{Email}="${email}"`
+        : `{Auth0ID}="${auth0_id}"`;
 
     const getUserProfile = () => {
       return new Promise((resolve, reject) => {
