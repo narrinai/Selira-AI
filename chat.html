@@ -1793,9 +1793,15 @@
         }
       });
 
+      // Define open-ended prompt BEFORE adding style modifiers
+      const openEndedPromptBase = 'Send me a picture of yourself';
+
       // Add art style modifier to all suggestions
       const styleModifier = artStyleAdditions[artStyle] || '';
       suggestions = suggestions.map(suggestion => suggestion + styleModifier);
+
+      // The open-ended prompt after style modifier is applied (which is empty string, so same)
+      const openEndedPrompt = openEndedPromptBase + styleModifier;
 
       // Store all suggestions if first time
       if (allAvailableSuggestions.length === 0) {
@@ -1804,9 +1810,6 @@
 
       // Get suggestions that haven't been used yet
       const availableSuggestions = suggestions.filter(s => !usedSuggestions.has(s));
-
-      // Always include open-ended prompt as 3rd option
-      const openEndedPrompt = 'Send me a picture of yourself';
 
       // If we've used all suggestions, reset the used set but keep the last few to avoid immediate repeats
       if (availableSuggestions.filter(s => s !== openEndedPrompt).length < 2) {
