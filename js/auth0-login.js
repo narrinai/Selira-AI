@@ -209,10 +209,7 @@ class Auth0LoginModal {
     const title = isSignup ? 'Join Selira AI' : 'Welcome Back';
     const subtitle = isSignup ? 'Start chatting with thousands of AI companions' : 'Connect with your AI companions';
 
-    // Check if we're on homepage - hide login switch link there
-    const isHomepage = window.location.pathname === '/' || window.location.pathname === '/index.html';
-
-    console.log('🔧 Modal configuration:', { mode, isSignup, title, isHomepage });
+    console.log('🔧 Modal configuration:', { mode, isSignup, title });
     
     modal.innerHTML = `
       <div class="auth0-modal-content">
@@ -286,7 +283,7 @@ class Auth0LoginModal {
           </div>
 
           <!-- Switch Mode Links -->
-          <div class="auth0-switch-mode" style="display: ${isHomepage && isSignup ? 'none' : 'block'} !important; visibility: ${isHomepage && isSignup ? 'hidden' : 'visible'} !important;">
+          <div class="auth0-switch-mode" style="display: block !important; visibility: visible !important;">
             ${isSignup ? `
               Already have an account?
               <a href="#" class="auth0-switch-link" onclick="switchToLogin(event)">Login here</a>
