@@ -2700,29 +2700,49 @@
       setTimeout(forceMobileButtonToRegister, 50);
     });
 
-    // Nuclear option: MutationObserver to watch for button text changes
+    // Nuclear option: MutationObserver to watch for button text changes AND protect onclick
     window.addEventListener('load', function() {
       setTimeout(function() {
         const mobileHeader = document.querySelector('.mobile-header');
         const mobileBtn = mobileHeader?.querySelector('.mobile-auth-btn, .login-btn');
 
         if (mobileBtn && !window.isUserAuthenticated?.()) {
+          // Store our correct onclick handler
+          const correctOnClick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('🔧 Mobile Register button clicked - opening signup modal');
+            if (window.openLoginModal) {
+              window.openLoginModal('signup');
+            } else if (window.seliraAuth) {
+              window.seliraAuth.openModal('signup');
+            }
+            return false;
+          };
+
+          // Override the onclick property setter to prevent auth0-login.js from changing it
+          let currentOnClick = correctOnClick;
+          Object.defineProperty(mobileBtn, 'onclick', {
+            get: function() {
+              return currentOnClick;
+            },
+            set: function(newHandler) {
+              console.log('🔧 Blocked attempt to change mobile button onclick handler');
+              // Ignore the new handler, keep our correct one
+              currentOnClick = correctOnClick;
+            },
+            configurable: true
+          });
+
+          // Set initial onclick
+          mobileBtn.addEventListener('click', correctOnClick);
+
           const observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
               if (mutation.type === 'childList' || mutation.type === 'characterData') {
                 if (mobileBtn.textContent.trim() !== 'Register' && !window.isUserAuthenticated?.()) {
                   console.log('🔧 MutationObserver detected button text change from:', mobileBtn.textContent, '- forcing back to Register');
                   mobileBtn.textContent = 'Register';
-                  mobileBtn.onclick = function(e) {
-                    e.preventDefault();
-                    console.log('🔧 Mobile Register button clicked (via MutationObserver) - opening signup modal');
-                    if (window.openLoginModal) {
-                      window.openLoginModal('signup');
-                    } else if (window.seliraAuth) {
-                      window.seliraAuth.openModal('signup');
-                    }
-                    return false;
-                  };
                 }
               }
             });
@@ -2734,7 +2754,7 @@
             subtree: true
           });
 
-          console.log('🔧 MutationObserver watching mobile button for text changes');
+          console.log('🔧 MutationObserver watching mobile button + onclick protection enabled');
         }
       }, 200);
     });
