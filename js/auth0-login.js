@@ -874,7 +874,7 @@ class Auth0LoginModal {
             <span class="logo-icon">🔑</span>
             <h2>Reset Password</h2>
           </div>
-          <p class="auth0-subtitle">Enter your email to receive a password reset code</p>
+          <p class="auth0-subtitle">Enter your email to receive a password reset link</p>
         </div>
 
         <div class="auth0-modal-body">
@@ -890,7 +890,7 @@ class Auth0LoginModal {
             </div>
 
             <button type="submit" class="auth0-submit-btn">
-              <span class="btn-text">Send Reset Code</span>
+              <span class="btn-text">Send Reset Link</span>
               <div class="btn-loader" style="display: none;">
                 <div class="spinner"></div>
               </div>
@@ -959,13 +959,13 @@ class Auth0LoginModal {
       const data = await response.json();
 
       if (!response.ok || !data.success) {
-        throw new Error(data.error || 'Failed to send reset code');
+        throw new Error(data.error || 'Failed to send reset link');
       }
 
-      console.log('✅ Password reset code sent successfully');
+      console.log('✅ Password reset link sent successfully');
 
       // Show success message
-      this.showForgotPasswordSuccess('Check your email for the password reset code! 📧');
+      this.showForgotPasswordSuccess('Check your email for the password reset link! 📧');
 
       // Close modal after 2 seconds
       setTimeout(() => {
@@ -985,7 +985,7 @@ class Auth0LoginModal {
         submitBtn.disabled = false;
       }
 
-      this.showForgotPasswordError(error.message || 'Failed to send reset code. Please try again.');
+      this.showForgotPasswordError(error.message || 'Failed to send reset link. Please try again.');
     }
   }
 
