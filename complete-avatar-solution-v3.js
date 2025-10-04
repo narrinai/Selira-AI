@@ -45,7 +45,7 @@ async function getAllSeliraCompanions() {
     console.log(`📄 Batch ${batchNumber}: Fetching companions${offset ? ` with offset ${offset}` : ''}...`);
 
     try {
-      let url = 'https://selira.ai/.netlify/functions/selira-characters?limit=200';
+      let url = 'https://selira.ai/.netlify/functions/selira-characters?limit=200&includePrivate=true';
       if (offset) {
         url += `&offset=${offset}`;
       }

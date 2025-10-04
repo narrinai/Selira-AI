@@ -43,14 +43,16 @@ exports.handler = async (event, context) => {
     console.log('Base ID:', SELIRA_BASE_ID);
 
     // Get query parameters
-    const { limit = 50, category, slug, offset } = event.queryStringParameters || {};
+    const { limit = 50, category, slug, offset, includePrivate } = event.queryStringParameters || {};
 
     // Build Airtable URL
     let url = `https://api.airtable.com/v0/${SELIRA_BASE_ID}/Characters`;
     const params = new URLSearchParams();
 
-    // Build filter formula - always include visibility check
-    let filterFormula = 'OR({Visibility}="public",{Visibility}="",NOT({Visibility}))';
+    // Build filter formula - include private if requested
+    let filterFormula = includePrivate === 'true'
+      ? 'TRUE()'
+      : 'OR({Visibility}="public",{Visibility}="",NOT({Visibility}))';
 
     // Add filters
     if (slug) {
