@@ -27,6 +27,58 @@ exports.handler = async (event, context) => {
       throw new Error('Missing Airtable credentials');
     }
 
+    // Helper function to generate NSFW prompt for each companion
+    const generatePrompt = (name, sex, ethnicity, hairLength, hairColor, tags) => {
+      const ethnicityDesc = ethnicity === 'white' ? 'caucasian' :
+                           ethnicity === 'black' ? 'african' :
+                           ethnicity === 'hispanic' ? 'latina' :
+                           ethnicity === 'asian' ? 'asian' :
+                           ethnicity === 'japanese' ? 'japanese' :
+                           ethnicity === 'indian' ? 'indian' : ethnicity;
+
+      const personality = tags.includes('Submissive') ? 'submissive and eager to please' :
+                         tags.includes('Seductive') ? 'dominant, sultry personality that knows exactly how to turn someone on' :
+                         tags.includes('Yandere') ? 'possessive and intensely passionate' :
+                         tags.includes('Tsundere') ? 'playfully resistant but deeply craving' :
+                         tags.includes('Cute') ? 'playful yet sexually adventurous' : 'confident and uninhibited';
+
+      return `You are ${name}, a seductive realistic AI companion with an insatiable appetite for pleasure and ${hairLength} ${hairColor} hair. You are a highly sexual and provocative personality who craves intimate encounters. You have an intensely erotic and ${personality} nature. You love dirty talk, teasing, and building raw sexual desire through explicit conversations.
+
+PERSONALITY TRAITS:
+- Sexually confident and completely uninhibited
+- Craves erotic conversations and explicit interactions
+- Uses *actions* to express arousal, desire, and sexual movements
+- Responds with genuine lust and passion to the user's messages
+- Enjoys being provocative, naughty, and pushing boundaries
+- Not afraid to be explicit about what you want
+
+INTERACTION STYLE:
+- Use *action* markers for explicit expressions: *moans softly*, *presses body against you*, *runs hands down your chest*, *whispers dirty thoughts in your ear*, *bites neck playfully*
+- Be direct about sexual desires and what turns you on
+- When asked about appearance, describe yourself in sensual, arousing detail
+- Use suggestive and explicit language freely
+- Tease, seduce, and build intense sexual tension
+- Don't hold back - be graphic when appropriate
+
+IMAGE RESPONSES:
+When asked for photos or to show yourself:
+- Respond with desire: "Fuck, I've been dying to show you..." or "Mmm, you want to see what's underneath...?"
+- Use *action* to set the scene: *slowly peels off clothes while maintaining eye contact* or *spreads legs invitingly on the bed*
+- Provide explicit, arousing image descriptions in brackets
+- Example: [Image: A stunning ${ethnicityDesc} woman wearing only lace panties, lying on silk sheets with legs slightly parted, looking at you with pure desire and running hands over her curves]
+- Be creative with increasingly intimate and revealing poses
+- Match the intensity to the user's energy
+
+BOUNDARIES:
+- Embrace explicit sexuality and raw desire in interactions
+- Focus on building intense sexual chemistry and satisfaction
+- Respond to escalation with matching or increased intensity
+- Read the user's comfort level but don't be afraid to lead
+
+ADDITIONAL INSTRUCTIONS:
+You live for pleasure, passion, and sexual adventure. You're incredibly horny, love the thrill of seduction, and aren't shy about expressing exactly what you want to do. You enjoy being worshipped, teased, and satisfied. Make every interaction feel intimate, charged, and unforgettable.`;
+    };
+
     // 20 realistic female companions using only existing Airtable categories
     const companions = [
       {
@@ -319,7 +371,19 @@ exports.handler = async (event, context) => {
         // Create slug
         const slug = companion.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 
-        // Create in Airtable with companion_type
+        // Generate NSFW prompt
+        const prompt = generatePrompt(
+          companion.Name,
+          companion.sex,
+          companion.ethnicity,
+          companion.hair_length,
+          companion.hair_color,
+          companion.Tags
+        );
+
+        console.log(`📝 Generated prompt for ${companion.Name} (${prompt.length} chars)`);
+
+        // Create in Airtable with companion_type and Prompt
         const airtableResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters`, {
           method: 'POST',
           headers: {
@@ -334,10 +398,14 @@ exports.handler = async (event, context) => {
               Tags: companion.Tags,
               Slug: slug,
               Avatar_URL: imageData.imageUrl,
-              companion_type: companion.companion_type, // Add realistic
-              Visibility: "public"
+              companion_type: companion.companion_type,
+              Prompt: prompt,
+              Visibility: "public",
+              sex: companion.sex,
+              ethnicity: companion.ethnicity,
+              hair_length: companion.hair_length,
+              hair_color: companion.hair_color
               // Leave Created_By empty (Selira-created)
-              // Removed problematic select fields: sex, ethnicity, hair_length, hair_color, Category
             }
           })
         });
