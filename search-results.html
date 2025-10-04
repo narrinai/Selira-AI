@@ -783,11 +783,11 @@
         let offset = null;
         let hasMore = true;
 
-        // Load all characters with pagination
+        // Load all characters with pagination (max 5000 per request to get all at once)
         while (hasMore) {
           const url = offset
-            ? `/.netlify/functions/selira-characters?limit=100&offset=${offset}`
-            : '/.netlify/functions/selira-characters?limit=100';
+            ? `/.netlify/functions/selira-characters?limit=5000&offset=${offset}`
+            : '/.netlify/functions/selira-characters?limit=5000';
 
           const response = await fetch(url);
           if (!response.ok) {
@@ -802,7 +802,7 @@
           allLoadedCharacters = allLoadedCharacters.concat(data.characters);
           console.log(`📦 Loaded ${data.characters.length} characters (total: ${allLoadedCharacters.length})`);
 
-          // Check if there are more records
+          // Check if there are more records (unlikely with limit 5000)
           if (data.offset) {
             offset = data.offset;
           } else {
