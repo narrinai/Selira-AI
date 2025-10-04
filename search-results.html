@@ -824,12 +824,22 @@
 
       console.log('✅ Processed characters:', allCharacters.length);
       console.log('📝 Sample character:', allCharacters[0]);
-      console.log('📝 Sample character fields:', {
-        name: allCharacters[0]?.name,
-        hair_color: allCharacters[0]?.hair_color,
-        ethnicity: allCharacters[0]?.ethnicity,
-        tags: allCharacters[0]?.tags
-      });
+
+      // Log all unique hair_color values to debug
+      const uniqueHairColors = [...new Set(allCharacters.map(c => c.hair_color).filter(Boolean))];
+      console.log('🎨 Unique hair_color values in database:', uniqueHairColors);
+
+      // Log sample character with all searchable fields
+      if (allCharacters[0]) {
+        console.log('📝 Sample character fields:', {
+          name: allCharacters[0].name,
+          hair_color: allCharacters[0].hair_color,
+          ethnicity: allCharacters[0].ethnicity,
+          tags: allCharacters[0].tags,
+          title: allCharacters[0].title,
+          description: allCharacters[0].description?.substring(0, 100)
+        });
+      }
 
       applySearch();
       updateResultsCount();
