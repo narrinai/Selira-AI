@@ -661,7 +661,7 @@
     }
 
     /* Hide mobile header on desktop by default */
-    .mobile-header {
+    .mobile-header-container {
       display: none;
     }
 
@@ -680,6 +680,14 @@
         margin-left: 0;
       }
 
+      .mobile-header-container {
+        display: block;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: var(--bg-primary);
+      }
+
       .mobile-header {
         display: flex;
         align-items: center;
@@ -687,9 +695,6 @@
         padding: 16px 10px;
         background: var(--bg-primary);
         border-bottom: 1px solid var(--border);
-        position: sticky;
-        top: 0;
-        z-index: 100;
         height: 60px;
         box-sizing: border-box;
         overflow-x: visible;
@@ -730,7 +735,7 @@
 
       .content-area {
         padding: 16px;
-        padding-top: 84px; /* Space for sticky mobile filter bar (60px header + 24px filter) */
+        padding-top: 120px; /* Space for sticky mobile header container */
       }
 
       .character-card {
@@ -1213,9 +1218,6 @@
           padding: 12px;
           background: var(--bg-primary);
           border-bottom: 1px solid var(--border);
-          position: sticky;
-          top: 60px;
-          z-index: 99;
         }
 
         .mobile-filter-dropdown {
@@ -1791,22 +1793,23 @@
     <!-- Main Content -->
     <main class="main-content">
       <!-- Mobile Header -->
-      <div class="mobile-header">
-        <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
-        <div class="mobile-logo">Selira AI</div>
-        <div style="display: flex; align-items: center; gap: 6px;">
-          <button onclick="showMobileSearch()" class="mobile-search-btn" style="background: none; border: none; cursor: pointer; padding: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="11" cy="11" r="8" stroke="var(--text-primary)" stroke-width="2"/>
-              <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="var(--text-primary)" stroke-width="2"/>
-            </svg>
-          </button>
-          <button class="user-btn mobile-auth-btn" onclick="openLoginModal('signup'); return false;" style="padding: 10px 20px; font-size: 14px; border-radius: 25px; background: var(--accent); color: white; border: none; font-weight: 600; flex-shrink: 0;">Register</button>
+      <div class="mobile-header-container">
+        <div class="mobile-header">
+          <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+          <div class="mobile-logo">Selira AI</div>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <button onclick="showMobileSearch()" class="mobile-search-btn" style="background: none; border: none; cursor: pointer; padding: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="11" cy="11" r="8" stroke="var(--text-primary)" stroke-width="2"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="var(--text-primary)" stroke-width="2"/>
+              </svg>
+            </button>
+            <button class="user-btn mobile-auth-btn" onclick="openLoginModal('signup'); return false;" style="padding: 10px 20px; font-size: 14px; border-radius: 25px; background: var(--accent); color: white; border: none; font-weight: 600; flex-shrink: 0;">Register</button>
+          </div>
         </div>
-      </div>
 
-      <!-- Mobile Filter Bar (only visible on mobile) -->
-      <div class="mobile-filter-bar">
+        <!-- Mobile Filter Bar (only visible on mobile) -->
+        <div class="mobile-filter-bar">
         <div class="mobile-filter-dropdown">
           <button class="mobile-dropdown-btn" id="mobileStyleFilter" onclick="toggleMobileStyleDropdown()">
             <span id="mobileStyleText">Realistic</span>
@@ -1832,6 +1835,7 @@
             <!-- Dynamic tags will be added here -->
           </div>
         </div>
+      </div>
       </div>
 
       <!-- Top Header with Search -->
