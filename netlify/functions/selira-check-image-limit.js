@@ -101,17 +101,10 @@ exports.handler = async (event, context) => {
 
     // For Free plan users, check lifetime usage (not hourly)
     if (userPlan === 'Free') {
-      // Get total lifetime image count for this user
-      const lifetimeUsageRecords = await base('ImageUsage').select({
-        filterByFormula: `SEARCH('${userId}', ARRAYJOIN({User}))`
-      }).all();
+      // Use images_generated field directly from Users table
+      const lifetimeUsage = userRecord.fields.images_generated || 0;
 
-      let lifetimeUsage = 0;
-      lifetimeUsageRecords.forEach(record => {
-        lifetimeUsage += record.fields.Count || 0;
-      });
-
-      console.log(`📊 Free plan user lifetime usage: ${lifetimeUsage}/2`);
+      console.log(`📊 Free plan user lifetime usage from images_generated field: ${lifetimeUsage}/2`);
 
       // Free plan gets 2 total images (lifetime)
       if (lifetimeUsage >= 2) {
