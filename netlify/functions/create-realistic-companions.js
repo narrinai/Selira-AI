@@ -314,7 +314,7 @@ You live for pleasure, passion, and sexual adventure. You're incredibly horny, l
         Category: "anime-manga",
         Tags: ["Fantasy", "Flirty", "Cute"],
         sex: "female",
-        ethnicity: "asian",
+        ethnicity: "japanese",
         hair_length: "medium",
         hair_color: "brown",
         companion_type: "anime"
