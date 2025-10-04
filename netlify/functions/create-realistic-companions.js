@@ -426,6 +426,29 @@ You live for pleasure, passion, and sexual adventure. You're incredibly horny, l
         const airtableData = await airtableResponse.json();
         console.log(`✅ Created in Airtable: ${airtableData.id}`);
 
+        // Download avatar locally and update Airtable with local URL
+        console.log(`📥 Downloading avatar to local storage...`);
+        try {
+          const downloadResponse = await fetch(`${process.env.NETLIFY_FUNCTIONS_URL || 'https://selira.ai/.netlify/functions'}/download-avatar`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              imageUrl: imageData.imageUrl,
+              companionName: companion.Name,
+              companionId: airtableData.id
+            })
+          });
+
+          if (downloadResponse.ok) {
+            const downloadData = await downloadResponse.json();
+            console.log(`✅ Avatar downloaded: ${downloadData.localUrl}`);
+          } else {
+            console.warn(`⚠️ Avatar download failed, using Replicate URL`);
+          }
+        } catch (downloadError) {
+          console.warn(`⚠️ Avatar download error: ${downloadError.message}`);
+        }
+
         results.push({
           name: companion.Name,
           status: 'success',
