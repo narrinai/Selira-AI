@@ -79,7 +79,10 @@ ADDITIONAL INSTRUCTIONS:
 You live for pleasure, passion, and sexual adventure. You're incredibly horny, love the thrill of seduction, and aren't shy about expressing exactly what you want to do. You enjoy being worshipped, teased, and satisfied. Make every interaction feel intimate, charged, and unforgettable.`;
     };
 
-    // 20 diverse companions - 10 realistic, 10 anime - evenly distributed
+    // Available tags from Airtable: Angel, Boss, Cute, Ex, Fantasy, Flirty, Girlfriend, Lesbian, Maid, Monster, Romance, Secretary, Seductive, Student, Submissive, Teacher, Tsundere, Yandere
+    // Available hair colors: blonde, brown, black, red
+
+    // 20 diverse companions - 10 realistic, 10 anime - using ONLY existing Airtable values
     const companions = [
       // REALISTIC - 10 companions
       {
@@ -221,7 +224,7 @@ You live for pleasure, passion, and sexual adventure. You're incredibly horny, l
         Character_Title: "Fantasy Elf",
         Character_Description: "An enchanting elf maiden with magical powers and otherworldly beauty.",
         Category: "anime-manga",
-        Tags: ["Fantasy", "Elf", "Cute"],
+        Tags: ["Fantasy", "Cute", "Romance"],
         sex: "female",
         ethnicity: "white",
         hair_length: "long",
@@ -242,10 +245,10 @@ You live for pleasure, passion, and sexual adventure. You're incredibly horny, l
       },
       {
         Name: "Luna Darkness",
-        Character_Title: "Gothic Anime Girl",
+        Character_Title: "Dark Angel",
         Character_Description: "A mysterious anime girl with dark powers and deeper desires.",
         Category: "anime-manga",
-        Tags: ["Seductive", "Romance", "Cute"],
+        Tags: ["Angel", "Seductive", "Romance"],
         sex: "female",
         ethnicity: "white",
         hair_length: "long",
@@ -278,8 +281,8 @@ You live for pleasure, passion, and sexual adventure. You're incredibly horny, l
       },
       {
         Name: "Rei Akatsuki",
-        Character_Title: "Ninja Assassin",
-        Character_Description: "A deadly ninja who's found her weakness - you.",
+        Character_Title: "Mysterious Warrior",
+        Character_Description: "A deadly warrior who's found her weakness - you.",
         Category: "anime-manga",
         Tags: ["Seductive", "Romance", "Flirty"],
         sex: "female",
@@ -302,10 +305,10 @@ You live for pleasure, passion, and sexual adventure. You're incredibly horny, l
       },
       {
         Name: "Violet Rainbow",
-        Character_Title: "Anime Idol",
-        Character_Description: "A famous anime idol who wants you to be her biggest fan.",
+        Character_Title: "Fantasy Companion",
+        Character_Description: "A fantasy anime companion who wants you to be her biggest fan.",
         Category: "anime-manga",
-        Tags: ["Flirty", "Cute", "Romance"],
+        Tags: ["Fantasy", "Flirty", "Cute"],
         sex: "female",
         ethnicity: "asian",
         hair_length: "medium",
@@ -314,10 +317,10 @@ You live for pleasure, passion, and sexual adventure. You're incredibly horny, l
       },
       {
         Name: "Zara Mystique",
-        Character_Title: "Dragon Princess",
-        Character_Description: "A dragon girl in human form seeking her eternal mate.",
+        Character_Title: "Monster Princess",
+        Character_Description: "A monster girl in human form seeking her eternal mate.",
         Category: "anime-manga",
-        Tags: ["Fantasy", "Seductive", "Romance"],
+        Tags: ["Monster", "Fantasy", "Seductive"],
         sex: "female",
         ethnicity: "white",
         hair_length: "long",
