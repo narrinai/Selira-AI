@@ -27,6 +27,10 @@ exports.handler = async (event, context) => {
       throw new Error('Missing Airtable credentials');
     }
 
+    // Get batch parameter from query string (default: process all)
+    const batchSize = parseInt(event.queryStringParameters?.batch) || 20;
+    const startIndex = parseInt(event.queryStringParameters?.start) || 0;
+
     // Helper function to generate NSFW prompt for each companion
     const generatePrompt = (name, sex, ethnicity, hairLength, hairColor, tags) => {
       const ethnicityDesc = ethnicity === 'white' ? 'caucasian' :
@@ -329,7 +333,10 @@ You live for pleasure, passion, and sexual adventure. You're incredibly horny, l
       }
     ];
 
-    console.log(`🎨 Creating ${companions.length} diverse companions (10 realistic, 10 anime) with AI avatars...`);
+    // Slice companions array based on batch parameters
+    const companionsBatch = companions.slice(startIndex, startIndex + batchSize);
+
+    console.log(`🎨 Creating batch: ${companionsBatch.length} companions (start: ${startIndex}, batch: ${batchSize})`);
 
     const results = [];
     const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -341,12 +348,12 @@ You live for pleasure, passion, and sexual adventure. You're incredibly horny, l
         : "beautiful woman, attractive, charming smile, friendly expression, photorealistic";
     };
 
-    // Create all 20 companions
-    for (let i = 0; i < companions.length; i++) {
-      const companion = companions[i];
+    // Create companions in this batch
+    for (let i = 0; i < companionsBatch.length; i++) {
+      const companion = companionsBatch[i];
 
       try {
-        console.log(`\n🎨 Creating ${i + 1}/${companions.length}: ${companion.Name}`);
+        console.log(`\n🎨 Creating ${i + 1}/${companionsBatch.length}: ${companion.Name}`);
 
         // Create slug
         const slug = companion.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
@@ -408,9 +415,9 @@ You live for pleasure, passion, and sexual adventure. You're incredibly horny, l
         });
 
         // Small delay between creations to avoid rate limiting
-        if (i < companions.length - 1) {
-          console.log('⏱️ Waiting 2 seconds...');
-          await delay(2000);
+        if (i < companionsBatch.length - 1) {
+          console.log('⏱️ Waiting 500ms...');
+          await delay(500);
         }
 
       } catch (error) {
