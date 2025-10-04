@@ -81,6 +81,9 @@ async function extractTagsFromCharacters(baseId, token, headers) {
     let recordCount = 0;
     let offset = null;
 
+    // Track tag counts to only show tags with actual companions
+    const tagCounts = new Map();
+
     // Fetch all characters with pagination to get all tags
     do {
       let url = `https://api.airtable.com/v0/${baseId}/Characters?filterByFormula=OR({Visibility}="public",{Visibility}="",NOT({Visibility}))`;
@@ -107,7 +110,7 @@ async function extractTagsFromCharacters(baseId, token, headers) {
         hasOffset: !!data.offset
       });
 
-      // Extract tags from each character
+      // Extract tags from each character and count them
       if (data.records && Array.isArray(data.records)) {
         data.records.forEach(record => {
           recordCount++;
@@ -117,7 +120,8 @@ async function extractTagsFromCharacters(baseId, token, headers) {
               // If tags is an array
               tags.forEach(tag => {
                 if (tag && typeof tag === 'string') {
-                  allTags.add(tag.trim());
+                  const cleanTag = tag.trim();
+                  tagCounts.set(cleanTag, (tagCounts.get(cleanTag) || 0) + 1);
                 }
               });
             } else if (typeof tags === 'string') {
@@ -125,7 +129,7 @@ async function extractTagsFromCharacters(baseId, token, headers) {
               tags.split(',').forEach(tag => {
                 const cleanTag = tag.trim();
                 if (cleanTag) {
-                  allTags.add(cleanTag);
+                  tagCounts.set(cleanTag, (tagCounts.get(cleanTag) || 0) + 1);
                 }
               });
             }
@@ -136,11 +140,19 @@ async function extractTagsFromCharacters(baseId, token, headers) {
       offset = data.offset;
     } while (offset);
 
+    // Only include tags that have at least 1 companion
+    tagCounts.forEach((count, tag) => {
+      if (count > 0) {
+        allTags.add(tag);
+      }
+    });
+
     const tagsArray = Array.from(allTags).filter(tag => tag && tag.length > 0).sort();
 
     console.log('✅ Extracted tags from characters:', {
       totalRecords: recordCount,
       uniqueTags: tagsArray.length,
+      tagCounts: Object.fromEntries(Array.from(tagCounts.entries()).slice(0, 20)),
       sampleTags: tagsArray.slice(0, 10)
     });
 
