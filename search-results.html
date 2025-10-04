@@ -527,6 +527,14 @@
         display: flex;
       }
 
+      .top-header {
+        display: none;
+      }
+
+      .login-btn {
+        display: none !important;
+      }
+
       .header-top {
         padding: 16px 20px;
         flex-direction: column;
@@ -680,7 +688,7 @@
               type="search"
               class="search-input"
               id="mainSearchInput"
-              placeholder="Search by name, hair color, personality, tags..."
+              placeholder="Cute blonde"
               aria-label="Search characters"
             >
           </div>
@@ -690,7 +698,7 @@
             <select class="dropdown-btn" style="border: none; background: none; color: var(--text-secondary);">
               <option>English</option>
             </select>
-            <a href="#" class="user-btn secondary login-btn" onclick="openLoginModal('login'); return false;">Login</a>
+            <a href="#" class="user-btn login-btn" onclick="openLoginModal('login'); return false;" style="margin-right: 8px;">Login</a>
             <a href="#" class="user-btn signup-btn" onclick="openLoginModal('signup'); return false;">Register</a>
           </div>
         </div>
@@ -760,7 +768,9 @@
         ].filter(Boolean); // Remove empty values
 
         const searchText = searchableFields.join(' ').toLowerCase();
-        return searchTerms.every(term => searchText.includes(term));
+
+        // Match ANY search term (OR logic) for flexible search
+        return searchTerms.some(term => searchText.includes(term));
       });
     }
 
