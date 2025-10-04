@@ -115,7 +115,7 @@
       gap: 8px;
       margin-bottom: 24px;
       padding-bottom: 16px;
-      border-bottom: 1px solid var(--border-color);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
       text-decoration: none;
       color: inherit;
       transition: opacity 0.2s ease;
@@ -133,11 +133,6 @@
       font-weight: 700;
       color: var(--accent);
     }
-      font-family: 'Playfair Display', serif;
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--accent);
-    }
 
     .sidebar-nav {
       flex: 1;
@@ -148,23 +143,18 @@
       align-items: center;
       gap: 8px;
       padding: 6px 10px;
+      margin-bottom: 2px;
       color: rgba(255, 255, 255, 0.8);
       text-decoration: none;
       border-radius: var(--radius-sm);
-      margin-bottom: 2px;
       transition: all 0.2s ease;
-      font-size: 13px;
       font-weight: 500;
+      font-size: 13px;
     }
 
     .nav-item:hover, .nav-item.active {
       background: rgba(255, 255, 255, 0.1);
       color: white;
-    }
-
-    .nav-item.active {
-      background: rgba(212, 165, 116, 0.15);
-      color: var(--accent);
     }
 
     .nav-item-icon {
@@ -174,21 +164,21 @@
     }
 
     .nav-section-title {
-      font-size: 11px;
-      font-weight: 600;
+      font-size: 9px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.6);
       text-transform: uppercase;
-      color: var(--text-muted);
       letter-spacing: 0.5px;
-      padding: 16px 10px 8px 10px;
-      margin-top: 8px;
+      margin: 12px 0 4px;
+      padding: 0 10px;
     }
 
     /* Main Content Area */
     .main-content {
       flex: 1;
       margin-left: 220px;
-      background: var(--bg-primary);
-      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
     /* Mobile Header (hidden on desktop) */
@@ -239,7 +229,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 20px 32px;
+      padding: 8px 40px;
       gap: 24px;
     }
 
@@ -688,7 +678,7 @@
               type="search"
               class="search-input"
               id="mainSearchInput"
-              placeholder="Cute blonde"
+              placeholder="blonde"
               aria-label="Search characters"
             >
           </div>
@@ -750,8 +740,9 @@
       }
 
       const searchTerms = query.toLowerCase().trim().split(' ').filter(term => term.length > 0);
+      console.log('🔍 Searching for terms:', searchTerms);
 
-      return characters.filter(character => {
+      const results = characters.filter(character => {
         // Build searchable text from all character fields
         const searchableFields = [
           character.name,
@@ -770,8 +761,17 @@
         const searchText = searchableFields.join(' ').toLowerCase();
 
         // Match ANY search term (OR logic) for flexible search
-        return searchTerms.some(term => searchText.includes(term));
+        const matches = searchTerms.some(term => searchText.includes(term));
+
+        if (matches) {
+          console.log('✅ Match found:', character.name, '- Hair:', character.hair_color, '- Tags:', character.tags);
+        }
+
+        return matches;
       });
+
+      console.log('📊 Total matches:', results.length);
+      return results;
     }
 
     // ===== CHARACTER LOADING =====
@@ -824,6 +824,12 @@
 
       console.log('✅ Processed characters:', allCharacters.length);
       console.log('📝 Sample character:', allCharacters[0]);
+      console.log('📝 Sample character fields:', {
+        name: allCharacters[0]?.name,
+        hair_color: allCharacters[0]?.hair_color,
+        ethnicity: allCharacters[0]?.ethnicity,
+        tags: allCharacters[0]?.tags
+      });
 
       applySearch();
       updateResultsCount();
@@ -956,9 +962,9 @@
       grid.innerHTML = `
         <div class="empty-state">
           <div class="empty-state-icon">🔍</div>
-          <h3>No Characters Found</h3>
-          <p>${message}</p>
-          ${currentSearchQuery ? '<p>Try adjusting your search terms or browse all characters.</p>' : ''}
+          <h3 style="color: var(--accent); font-family: 'Playfair Display', serif; font-weight: 700;">No Companions Found</h3>
+          <p style="color: var(--text-secondary);">No companions found matching your search criteria.</p>
+          ${currentSearchQuery ? '<p style="color: var(--text-muted); margin-top: 12px;">Try adjusting your search terms or <a href="/" style="color: var(--accent); text-decoration: none;">browse all companions</a>.</p>' : ''}
         </div>
       `;
     }
