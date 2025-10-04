@@ -4160,11 +4160,14 @@
           addImageMessage(result.imageUrl, result.fullPrompt || simplePrompt, characterStyle);
 
           // Note: images_generated counter is now incremented by the backend function
-          // No need to call incrementImageUsage here anymore
-
-          // Refresh image permissions to update the counter
+          // Wait for backend increment to complete before refreshing counter
           console.log('🔄 Refreshing image counter after successful generation');
-          updateImageSuggestionsPlan();
+
+          // Add delay to ensure backend increment completes first
+          setTimeout(() => {
+            console.log('⏱️ Delayed counter refresh to ensure backend increment completed');
+            updateImageSuggestionsPlan();
+          }, 2000); // 2 second delay to let backend complete
 
         } else if (response.status === 429) {
           // Rate limited - show specific message
