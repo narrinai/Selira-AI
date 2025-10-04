@@ -678,7 +678,7 @@
               type="search"
               class="search-input"
               id="mainSearchInput"
-              placeholder="cute"
+              placeholder="blonde"
               aria-label="Search characters"
             >
           </div>
@@ -779,17 +779,39 @@
       try {
         console.log('🚀 Loading all characters for search page...');
 
-        const response = await fetch('/.netlify/functions/selira-characters');
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+        let allLoadedCharacters = [];
+        let offset = null;
+        let hasMore = true;
+
+        // Load all characters with pagination
+        while (hasMore) {
+          const url = offset
+            ? `/.netlify/functions/selira-characters?limit=100&offset=${offset}`
+            : '/.netlify/functions/selira-characters?limit=100';
+
+          const response = await fetch(url);
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const data = await response.json();
+          if (!data.success) {
+            throw new Error(data.error || 'Unknown API error');
+          }
+
+          allLoadedCharacters = allLoadedCharacters.concat(data.characters);
+          console.log(`📦 Loaded ${data.characters.length} characters (total: ${allLoadedCharacters.length})`);
+
+          // Check if there are more records
+          if (data.offset) {
+            offset = data.offset;
+          } else {
+            hasMore = false;
+          }
         }
 
-        const data = await response.json();
-        if (!data.success) {
-          throw new Error(data.error || 'Unknown API error');
-        }
-
-        processCharacterData(data.characters);
+        console.log(`✅ Finished loading all ${allLoadedCharacters.length} characters`);
+        processCharacterData(allLoadedCharacters);
       } catch (error) {
         console.error('❌ Error loading characters:', error);
         showErrorState('Failed to load characters. Please try again.', error.message);
