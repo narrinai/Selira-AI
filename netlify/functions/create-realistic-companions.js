@@ -345,37 +345,6 @@ You live for pleasure, passion, and sexual adventure. You're incredibly horny, l
       try {
         console.log(`\n🎨 Creating ${i + 1}/${companions.length}: ${companion.Name}`);
 
-        // Generate avatar with appropriate style
-        const basePrompt = getBasePrompt(companion.companion_type);
-        const imageGenResponse = await fetch(`${process.env.NETLIFY_FUNCTIONS_URL || 'https://selira.ai/.netlify/functions'}/selira-generate-custom-image`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            customPrompt: basePrompt,
-            characterName: companion.Name,
-            category: companion.Category,
-            style: companion.companion_type,
-            shotType: 'portrait',
-            sex: companion.sex,
-            ethnicity: companion.ethnicity,
-            hairLength: companion.hair_length,
-            hairColor: companion.hair_color,
-            email: 'system@selira.ai',
-            auth0_id: 'diverse_companions_batch'
-          })
-        });
-
-        if (!imageGenResponse.ok) {
-          throw new Error(`Image generation failed: ${await imageGenResponse.text()}`);
-        }
-
-        const imageData = await imageGenResponse.json();
-        if (!imageData.success || !imageData.imageUrl) {
-          throw new Error('Invalid image generation response');
-        }
-
-        console.log(`✅ Avatar generated: ${imageData.imageUrl}`);
-
         // Create slug
         const slug = companion.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 
@@ -391,7 +360,7 @@ You live for pleasure, passion, and sexual adventure. You're incredibly horny, l
 
         console.log(`📝 Generated prompt for ${companion.Name} (${prompt.length} chars)`);
 
-        // Create in Airtable with companion_type and Prompt
+        // Create in Airtable WITHOUT avatar (will be added later via Node script)
         const airtableResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters`, {
           method: 'POST',
           headers: {
@@ -405,14 +374,14 @@ You live for pleasure, passion, and sexual adventure. You're incredibly horny, l
               Character_Description: companion.Character_Description,
               Tags: companion.Tags,
               Slug: slug,
-              Avatar_URL: imageData.imageUrl,
               companion_type: companion.companion_type,
               Prompt: prompt,
-              Visibility: "public",
+              Visibility: "private",  // Private by default until avatar is added
               sex: companion.sex,
               ethnicity: companion.ethnicity,
               hair_length: companion.hair_length,
               hair_color: companion.hair_color
+              // Avatar_URL left empty - will be filled by complete-avatar-solution-v3.js
               // Leave Created_By empty (Selira-created)
             }
           })
@@ -424,44 +393,20 @@ You live for pleasure, passion, and sexual adventure. You're incredibly horny, l
         }
 
         const airtableData = await airtableResponse.json();
-        console.log(`✅ Created in Airtable: ${airtableData.id}`);
-
-        // Download avatar locally and update Airtable with local URL
-        console.log(`📥 Downloading avatar to local storage...`);
-        try {
-          const downloadResponse = await fetch(`${process.env.NETLIFY_FUNCTIONS_URL || 'https://selira.ai/.netlify/functions'}/download-avatar`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              imageUrl: imageData.imageUrl,
-              companionName: companion.Name,
-              companionId: airtableData.id
-            })
-          });
-
-          if (downloadResponse.ok) {
-            const downloadData = await downloadResponse.json();
-            console.log(`✅ Avatar downloaded: ${downloadData.localUrl}`);
-          } else {
-            console.warn(`⚠️ Avatar download failed, using Replicate URL`);
-          }
-        } catch (downloadError) {
-          console.warn(`⚠️ Avatar download error: ${downloadError.message}`);
-        }
+        console.log(`✅ Created in Airtable: ${airtableData.id} (without avatar - will be added later)`);
 
         results.push({
           name: companion.Name,
           status: 'success',
           companionId: airtableData.id,
-          imageUrl: imageData.imageUrl,
           slug: slug,
           companion_type: companion.companion_type
         });
 
-        // Wait 60 seconds between creations for rate limiting
+        // Small delay between creations to avoid rate limiting
         if (i < companions.length - 1) {
-          console.log('⏱️ Waiting 60 seconds...');
-          await delay(60000);
+          console.log('⏱️ Waiting 2 seconds...');
+          await delay(2000);
         }
 
       } catch (error) {
