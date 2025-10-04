@@ -644,12 +644,13 @@
     }
 
     .request-image-btn {
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border);
-      color: var(--text-secondary);
+      background: var(--accent);
+      border: 1px solid var(--accent);
+      color: white;
       padding: 6px 12px;
       border-radius: 6px;
       font-size: 11px;
+      font-weight: 600;
       cursor: pointer;
       transition: all 0.2s ease;
       display: flex;
@@ -658,9 +659,9 @@
     }
 
     .request-image-btn:hover {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: white;
+      background: var(--bg-tertiary);
+      border-color: var(--border);
+      color: var(--text-secondary);
     }
 
     /* Character Search Modal */
@@ -1509,7 +1510,7 @@
         </div>
         <div class="input-footer">
           <button class="request-image-btn" onclick="requestImage()" title="Get Image Suggestions">
-            Image Gen
+            + Image Gen
           </button>
           <span class="input-hint">AI is fictional. Follow local laws. 18+ only.</span>
         </div>
@@ -2139,7 +2140,7 @@
           <div class="message-content">
             <div class="message-text">
               <div style="margin-bottom: 12px;">I'd love to send you a picture! 📸</div>
-              <div style="margin-bottom: 12px;">Click the <strong>Image Gen</strong> button below to generate an image of me. You can choose from suggestions or type exactly what you want to see!</div>
+              <div style="margin-bottom: 12px;">Click the <strong>+ Image Gen</strong> button below to generate an image of me. You can choose from suggestions or type exactly what you want to see!</div>
               <div style="margin-top: 16px;">
                 <button onclick="document.getElementById('imageGenBtn').click()" style="
                   background: var(--accent);
@@ -2164,7 +2165,7 @@
 
         // Save both messages to localStorage
         saveUserMessageToStorage(currentCharacter.slug, message);
-        const aiMessageContent = "I'd love to send you a picture! Click the Image Gen button below to generate an image of me.";
+        const aiMessageContent = "I'd love to send you a picture! Click the + Image Gen button below to generate an image of me.";
         saveAIMessageToStorage(currentCharacter.slug, aiMessageContent);
 
         return;
