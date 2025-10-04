@@ -423,7 +423,11 @@ class Auth0LoginModal {
       if (data.tokens) {
         localStorage.setItem('auth0_access_token', data.tokens.access_token);
         localStorage.setItem('auth0_id_token', data.tokens.id_token);
-        localStorage.setItem('auth0_token_expires', Date.now() + (data.tokens.expires_in * 1000));
+        // Set token expiration to 30 days for better UX (users stay logged in longer)
+        const expiresIn = data.tokens.expires_in || 86400; // Default 24h if not provided
+        const extendedExpiration = Math.max(expiresIn, 30 * 24 * 60 * 60); // Minimum 30 days
+        localStorage.setItem('auth0_token_expires', Date.now() + (extendedExpiration * 1000));
+        console.log(`🔐 Token expiration set to ${Math.floor(extendedExpiration / (24*60*60))} days`);
       }
 
       // Track registration event for Facebook Pixel

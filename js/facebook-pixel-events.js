@@ -306,20 +306,32 @@ class FacebookPixelTracking {
   }
 }
 
-// Initialize tracking when DOM is ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
-    window.seliraPixelTracking = new FacebookPixelTracking();
-  });
-} else {
-  window.seliraPixelTracking = new FacebookPixelTracking();
-}
-
-// Also initialize after a short delay to ensure fbq is loaded
-setTimeout(() => {
-  if (!window.seliraPixelTracking) {
+// Initialize tracking when DOM is ready - wrapped in try-catch to prevent breaking other scripts
+try {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      try {
+        window.seliraPixelTracking = new FacebookPixelTracking();
+      } catch (error) {
+        console.warn('⚠️ Facebook Pixel Tracking initialization failed:', error);
+      }
+    });
+  } else {
     window.seliraPixelTracking = new FacebookPixelTracking();
   }
-}, 1000);
 
-console.log('📊 Facebook Pixel Events script loaded');
+  // Also initialize after a short delay to ensure fbq is loaded
+  setTimeout(() => {
+    try {
+      if (!window.seliraPixelTracking) {
+        window.seliraPixelTracking = new FacebookPixelTracking();
+      }
+    } catch (error) {
+      console.warn('⚠️ Facebook Pixel Tracking delayed initialization failed:', error);
+    }
+  }, 1000);
+
+  console.log('📊 Facebook Pixel Events script loaded');
+} catch (error) {
+  console.warn('⚠️ Facebook Pixel Events script failed to initialize:', error);
+}
