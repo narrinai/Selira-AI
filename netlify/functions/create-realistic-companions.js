@@ -383,7 +383,8 @@ You live for pleasure, passion, and sexual adventure. You're incredibly horny, l
               sex: companion.sex,
               ethnicity: companion.ethnicity,
               hair_length: companion.hair_length,
-              hair_color: companion.hair_color
+              hair_color: companion.hair_color,
+              Character_URL: `https://selira.ai/chat.html?char=${slug}`
               // Avatar_URL left empty - will be filled by complete-avatar-solution-v3.js
               // Leave Created_By empty (Selira-created)
             }
