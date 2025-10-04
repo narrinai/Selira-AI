@@ -355,8 +355,10 @@ You live for pleasure, passion, and sexual adventure. You're incredibly horny, l
       try {
         console.log(`\n🎨 Creating ${i + 1}/${companionsBatch.length}: ${companion.Name}`);
 
-        // Create slug
-        const slug = companion.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+        // Create slug with timestamp
+        const baseSlug = companion.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+        const timestamp = Date.now();
+        const slug = `${baseSlug}-${timestamp}`;
 
         // Check if companion with this slug already exists
         const checkResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters?filterByFormula={Slug}='${slug}'`, {
