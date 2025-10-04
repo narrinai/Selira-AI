@@ -49,12 +49,17 @@ exports.handler = async (event, context) => {
     let url = `https://api.airtable.com/v0/${SELIRA_BASE_ID}/Characters`;
     const params = new URLSearchParams();
 
+    // Build filter formula - always include visibility check
+    let filterFormula = 'OR({Visibility}="public",{Visibility}="",NOT({Visibility}))';
+
     // Add filters
     if (slug) {
-      params.append('filterByFormula', `{Slug}='${slug}'`);
+      filterFormula = `AND(${filterFormula},{Slug}='${slug}')`;
     } else if (category) {
-      params.append('filterByFormula', `{Category}='${category}'`);
+      filterFormula = `AND(${filterFormula},{Category}='${category}')`;
     }
+
+    params.append('filterByFormula', filterFormula);
 
     params.append('maxRecords', limit);
     params.append('sort[0][field]', 'Name');
