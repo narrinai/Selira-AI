@@ -358,6 +358,25 @@ You live for pleasure, passion, and sexual adventure. You're incredibly horny, l
         // Create slug
         const slug = companion.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 
+        // Check if companion with this slug already exists
+        const checkResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters?filterByFormula={Slug}='${slug}'`, {
+          headers: {
+            'Authorization': `Bearer ${AIRTABLE_TOKEN}`
+          }
+        });
+        const checkData = await checkResponse.json();
+
+        if (checkData.records && checkData.records.length > 0) {
+          console.log(`⏭️ Skipping ${companion.Name} - already exists with slug: ${slug}`);
+          results.push({
+            name: companion.Name,
+            status: 'skipped',
+            reason: 'already_exists',
+            slug: slug
+          });
+          continue;
+        }
+
         // Generate NSFW prompt
         const prompt = generatePrompt(
           companion.Name,
