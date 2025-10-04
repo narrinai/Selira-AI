@@ -727,6 +727,10 @@
         display: none;
       }
 
+      .login-btn {
+        display: none !important;
+      }
+
       .characters-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 12px;
@@ -1857,6 +1861,7 @@
             <select class="dropdown-btn" style="border: none; background: none; color: var(--text-secondary);">
               <option>English</option>
             </select>
+            <a href="#" class="user-btn login-btn" onclick="openLoginModal('login'); return false;" style="margin-right: 8px;">Login</a>
             <a href="#" class="user-btn signup-btn" onclick="openLoginModal('signup'); return false;">Register</a>
           </div>
         </div>
