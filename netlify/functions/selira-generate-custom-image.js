@@ -482,7 +482,13 @@ exports.handler = async (event, context) => {
     }
 
     // Increment usage counter ONLY for chat-generated images (not companion creation)
-    console.log(`🔍 [${requestId}] Checking increment conditions:`, { source, hasEmail: !!email, hasAuth0Id: !!auth0_id });
+    console.log(`🔍 [${requestId}] Checking increment conditions:`, {
+      source,
+      hasEmail: !!email,
+      hasAuth0Id: !!auth0_id,
+      hasLimitData: !!body.limitData,
+      limitDataUserId: body.limitData?.userId
+    });
 
     if (source === 'chat' && (email || auth0_id)) {
       console.log(`📈 [${requestId}] ✅ Incrementing usage counter for chat image generation`);
@@ -490,7 +496,13 @@ exports.handler = async (event, context) => {
         // Get userId - prefer limitData userId (Airtable record ID) over auth0_id
         const userId = body.limitData?.userId || auth0_id;
 
-        console.log(`📈 [${requestId}] Incrementing with userId:`, userId?.substring(0, 20) + '...');
+        console.log(`📈 [${requestId}] Full increment details:`, {
+          userId: userId,
+          userIdLength: userId?.length,
+          isAirtableId: userId?.startsWith('rec'),
+          isAuth0Id: userId?.startsWith('auth0|'),
+          limitData: body.limitData
+        });
 
         const incrementResponse = await fetch(`${process.env.NETLIFY_FUNCTIONS_URL || 'https://selira.ai/.netlify/functions'}/selira-increment-image-usage`, {
           method: 'POST',
@@ -500,15 +512,17 @@ exports.handler = async (event, context) => {
           })
         });
 
+        console.log(`📊 [${requestId}] Increment response status:`, incrementResponse.status);
+
         if (incrementResponse.ok) {
           const incrementData = await incrementResponse.json();
-          console.log(`✅ [${requestId}] Usage incremented to:`, incrementData.newCount);
+          console.log(`✅ [${requestId}] Usage incremented successfully:`, incrementData);
         } else {
           const errorText = await incrementResponse.text();
-          console.warn(`⚠️ [${requestId}] Failed to increment usage counter:`, errorText);
+          console.error(`❌ [${requestId}] Increment failed with status ${incrementResponse.status}:`, errorText);
         }
       } catch (incrementError) {
-        console.warn(`⚠️ [${requestId}] Error incrementing usage:`, incrementError.message);
+        console.error(`❌ [${requestId}] Error incrementing usage:`, incrementError.message, incrementError.stack);
       }
     } else if (source !== 'chat') {
       console.log(`🎨 [${requestId}] Companion creation image - skipping usage tracking (source: ${source || 'not specified'})`);
