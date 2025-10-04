@@ -730,7 +730,7 @@
 
       .content-area {
         padding: 16px;
-        padding-top: 12px; /* Reduced padding, filter bar is sticky */
+        padding-top: 84px; /* Space for sticky mobile filter bar (60px header + 24px filter) */
       }
 
       .character-card {
@@ -1213,11 +1213,9 @@
           padding: 12px;
           background: var(--bg-primary);
           border-bottom: 1px solid var(--border);
-          border-top: none;
           position: sticky;
           top: 60px;
           z-index: 99;
-          margin-top: 0;
         }
 
         .mobile-filter-dropdown {
