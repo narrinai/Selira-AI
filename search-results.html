@@ -851,6 +851,22 @@
       const uniqueHairColors = [...new Set(allCharacters.map(c => c.hair_color).filter(Boolean))];
       console.log('🎨 Unique hair_color values in database:', uniqueHairColors);
 
+      // Check if "blonde" appears in tags or descriptions
+      const blondeInTags = allCharacters.filter(c =>
+        c.tags?.some(tag => tag.toLowerCase().includes('blonde'))
+      );
+      console.log(`🔍 Characters with 'blonde' in tags: ${blondeInTags.length}`);
+
+      const blondeInDescription = allCharacters.filter(c =>
+        c.description?.toLowerCase().includes('blonde')
+      );
+      console.log(`📝 Characters with 'blonde' in description: ${blondeInDescription.length}`);
+
+      // Log all unique tags
+      const allTags = [...new Set(allCharacters.flatMap(c => c.tags || []))];
+      const blondeTags = allTags.filter(tag => tag.toLowerCase().includes('blond'));
+      console.log('👱 Tags containing "blond":', blondeTags);
+
       // Log sample character with all searchable fields
       if (allCharacters[0]) {
         console.log('📝 Sample character fields:', {
