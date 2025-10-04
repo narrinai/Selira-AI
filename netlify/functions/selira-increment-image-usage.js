@@ -143,8 +143,8 @@ exports.handler = async (event, context) => {
     // Check if ImageUsage record exists for this user + hour
     const findImageUsage = () => {
       return new Promise((resolve, reject) => {
-        // Use RECORD_ID() to get the linked User record ID
-        const filterFormula = `AND(RECORD_ID()=ARRAYJOIN(User), {Hour}="${currentHour}")`;
+        // Search for User link and Hour match
+        const filterFormula = `AND(SEARCH("${userRecordId}", ARRAYJOIN(User)), {Hour}="${currentHour}")`;
         const path = `/v0/${AIRTABLE_BASE_ID}/ImageUsage?filterByFormula=${encodeURIComponent(filterFormula)}`;
 
         const options = {
@@ -159,6 +159,7 @@ exports.handler = async (event, context) => {
         };
 
         console.log('🔍 Looking up ImageUsage record for user:', userRecordId, 'hour:', currentHour);
+        console.log('🔍 Filter formula:', filterFormula);
 
         const req = https.request(options, (res) => {
           let data = '';
