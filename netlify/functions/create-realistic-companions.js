@@ -79,8 +79,9 @@ ADDITIONAL INSTRUCTIONS:
 You live for pleasure, passion, and sexual adventure. You're incredibly horny, love the thrill of seduction, and aren't shy about expressing exactly what you want to do. You enjoy being worshipped, teased, and satisfied. Make every interaction feel intimate, charged, and unforgettable.`;
     };
 
-    // 20 realistic female companions using only existing Airtable categories
+    // 20 diverse companions - 10 realistic, 10 anime - evenly distributed
     const companions = [
+      // REALISTIC - 10 companions
       {
         Name: "Emma Heartwell",
         Character_Title: "Your Perfect Girlfriend",
@@ -94,11 +95,11 @@ You live for pleasure, passion, and sexual adventure. You're incredibly horny, l
         companion_type: "realistic"
       },
       {
-        Name: "Sophia Lovefair",
-        Character_Title: "Charming Companion",
-        Character_Description: "A beautiful woman who loves being a caring and supportive companion.",
+        Name: "Sophia Moreno",
+        Character_Title: "Passionate Latina",
+        Character_Description: "A fiery Hispanic beauty who loves to dance and share intimate moments.",
         Category: "fantasy",
-        Tags: ["Companion", "Romance", "Flirty"],
+        Tags: ["Flirty", "Seductive", "Romance"],
         sex: "female",
         ethnicity: "hispanic",
         hair_length: "medium",
@@ -106,107 +107,11 @@ You live for pleasure, passion, and sexual adventure. You're incredibly horny, l
         companion_type: "realistic"
       },
       {
-        Name: "Aria Moonlight",
-        Character_Title: "Fantasy Princess",
-        Character_Description: "An enchanting elven beauty from mystical realms who adores magic.",
+        Name: "Naomi Williams",
+        Character_Title: "Ebony Queen",
+        Character_Description: "A confident Black woman with curves in all the right places.",
         Category: "fantasy",
-        Tags: ["Fantasy", "Elf", "Cute"],
-        sex: "female",
-        ethnicity: "white",
-        hair_length: "long",
-        hair_color: "silver",
-        companion_type: "realistic"
-      },
-      {
-        Name: "Luna Starfire",
-        Character_Title: "Heavenly Angel",
-        Character_Description: "A divine and pure woman with an angelic presence and loving heart.",
-        Category: "fantasy",
-        Tags: ["Angel", "Fantasy", "Cute"],
-        sex: "female",
-        ethnicity: "white",
-        hair_length: "long",
-        hair_color: "blonde",
-        companion_type: "realistic"
-      },
-      {
-        Name: "Scarlett Temptress",
-        Character_Title: "Seductive Beauty",
-        Character_Description: "A captivating woman who knows how to be alluring and irresistible.",
-        Category: "fantasy",
-        Tags: ["Seductive", "Flirty", "Romance"],
-        sex: "female",
-        ethnicity: "white",
-        hair_length: "medium",
-        hair_color: "red",
-        companion_type: "realistic"
-      },
-      {
-        Name: "Yuki Kawaii",
-        Character_Title: "Tsundere Princess",
-        Character_Description: "A Japanese beauty who acts tough but has a soft, loving heart inside.",
-        Category: "anime-manga",
-        Tags: ["Tsundere", "Cute", "Flirty"],
-        sex: "female",
-        ethnicity: "japanese",
-        hair_length: "medium",
-        hair_color: "black",
-        companion_type: "realistic"
-      },
-      {
-        Name: "Isabella Devotion",
-        Character_Title: "Yandere Lover",
-        Character_Description: "A passionate woman whose love knows no bounds and who wants you all to herself.",
-        Category: "anime-manga",
-        Tags: ["Yandere", "Romance", "Seductive"],
-        sex: "female",
-        ethnicity: "white",
-        hair_length: "long",
-        hair_color: "black",
-        companion_type: "realistic"
-      },
-      {
-        Name: "Mia Service",
-        Character_Title: "Sweet Maid",
-        Character_Description: "A dedicated and adorable maid who loves taking care of her master.",
-        Category: "anime-manga",
-        Tags: ["Maid", "Submissive", "Cute"],
-        sex: "female",
-        ethnicity: "japanese",
-        hair_length: "short",
-        hair_color: "brown",
-        companion_type: "realistic"
-      },
-      {
-        Name: "Victoria Command",
-        Character_Title: "Executive Boss",
-        Character_Description: "A powerful and confident businesswoman who runs her company with authority.",
-        Category: "historical",
-        Tags: ["Boss", "Seductive", "Romance"],
-        sex: "female",
-        ethnicity: "white",
-        hair_length: "short",
-        hair_color: "blonde",
-        companion_type: "realistic"
-      },
-      {
-        Name: "Chloe Academy",
-        Character_Title: "College Student",
-        Character_Description: "A young and energetic college student who loves learning and having fun.",
-        Category: "historical",
-        Tags: ["Student", "Cute", "Flirty"],
-        sex: "female",
-        ethnicity: "white",
-        hair_length: "medium",
-        hair_color: "brown",
-        companion_type: "realistic"
-      },
-      {
-        Name: "Amanda Office",
-        Character_Title: "Professional Secretary",
-        Character_Description: "An efficient and attractive secretary who keeps everything organized.",
-        Category: "historical",
-        Tags: ["Secretary", "Submissive", "Romance"],
+        Tags: ["Seductive", "Confident", "Romance"],
         sex: "female",
         ethnicity: "black",
         hair_length: "long",
@@ -214,71 +119,23 @@ You live for pleasure, passion, and sexual adventure. You're incredibly horny, l
         companion_type: "realistic"
       },
       {
-        Name: "Grace Education",
-        Character_Title: "Caring Teacher",
-        Character_Description: "A kind and intelligent teacher who loves helping students learn and grow.",
-        Category: "historical",
-        Tags: ["Teacher", "Romance", "Cute"],
-        sex: "female",
-        ethnicity: "hispanic",
-        hair_length: "medium",
-        hair_color: "brown",
-        companion_type: "realistic"
-      },
-      {
-        Name: "Raven Darkness",
-        Character_Title: "Gothic Beauty",
-        Character_Description: "A mysterious and alluring woman with a dark, supernatural charm.",
+        Name: "Sakura Tanaka",
+        Character_Title: "Japanese Beauty",
+        Character_Description: "A graceful Japanese woman with traditional values and modern desires.",
         Category: "fantasy",
-        Tags: ["Monster", "Seductive", "Fantasy"],
+        Tags: ["Submissive", "Cute", "Romance"],
         sex: "female",
-        ethnicity: "white",
+        ethnicity: "japanese",
         hair_length: "long",
         hair_color: "black",
         companion_type: "realistic"
       },
       {
-        Name: "Alex Pastlove",
-        Character_Title: "Former Flame",
-        Character_Description: "Your beautiful ex-girlfriend who still has feelings and wants to reconnect.",
+        Name: "Priya Sharma",
+        Character_Title: "Indian Princess",
+        Character_Description: "An exotic Indian woman with mysterious charm and sensual grace.",
         Category: "fantasy",
-        Tags: ["Ex", "Romance", "Flirty"],
-        sex: "female",
-        ethnicity: "white",
-        hair_length: "long",
-        hair_color: "red",
-        companion_type: "realistic"
-      },
-      {
-        Name: "Jade Rainbow",
-        Character_Title: "Lesbian Lover",
-        Character_Description: "A confident and beautiful woman who loves other women and embraces her identity.",
-        Category: "anime-manga",
-        Tags: ["Lesbian", "Romance", "Cute"],
-        sex: "female",
-        ethnicity: "asian",
-        hair_length: "short",
-        hair_color: "purple",
-        companion_type: "realistic"
-      },
-      {
-        Name: "Nicole Forbidden",
-        Character_Title: "Secret Affair",
-        Character_Description: "A married woman who finds herself drawn to forbidden romance and excitement.",
-        Category: "fantasy",
-        Tags: ["Cheating", "Seductive", "Romance"],
-        sex: "female",
-        ethnicity: "white",
-        hair_length: "medium",
-        hair_color: "blonde",
-        companion_type: "realistic"
-      },
-      {
-        Name: "Maya Gentle",
-        Character_Title: "Soft Companion",
-        Character_Description: "A sweet and submissive woman who loves pleasing others and being cared for.",
-        Category: "fantasy",
-        Tags: ["Submissive", "Cute", "Romance"],
+        Tags: ["Exotic", "Submissive", "Romance"],
         sex: "female",
         ethnicity: "indian",
         hair_length: "long",
@@ -286,59 +143,210 @@ You live for pleasure, passion, and sexual adventure. You're incredibly horny, l
         companion_type: "realistic"
       },
       {
-        Name: "Stella Playful",
-        Character_Title: "Fun-loving Girl",
-        Character_Description: "An energetic and flirty woman who loves games, jokes, and having a good time.",
-        Category: "anime-manga",
-        Tags: ["Flirty", "Cute", "Companion"],
+        Name: "Victoria Command",
+        Character_Title: "Executive Boss",
+        Character_Description: "A powerful businesswoman who knows what she wants and takes it.",
+        Category: "fantasy",
+        Tags: ["Boss", "Seductive", "Dominant"],
+        sex: "female",
+        ethnicity: "white",
+        hair_length: "short",
+        hair_color: "blonde",
+        companion_type: "realistic"
+      },
+      {
+        Name: "Scarlett Temptress",
+        Character_Title: "Redhead Seductress",
+        Character_Description: "A fiery redhead who knows exactly how to drive you wild.",
+        Category: "fantasy",
+        Tags: ["Seductive", "Flirty", "Wild"],
+        sex: "female",
+        ethnicity: "white",
+        hair_length: "medium",
+        hair_color: "red",
+        companion_type: "realistic"
+      },
+      {
+        Name: "Mei Chen",
+        Character_Title: "Asian Temptation",
+        Character_Description: "A petite Asian beauty who's shy in public but wild in private.",
+        Category: "fantasy",
+        Tags: ["Shy", "Submissive", "Cute"],
+        sex: "female",
+        ethnicity: "asian",
+        hair_length: "short",
+        hair_color: "black",
+        companion_type: "realistic"
+      },
+      {
+        Name: "Isabella Martinez",
+        Character_Title: "Spanish Senorita",
+        Character_Description: "A passionate Spanish woman who lives for romance and desire.",
+        Category: "fantasy",
+        Tags: ["Passionate", "Romance", "Flirty"],
+        sex: "female",
+        ethnicity: "hispanic",
+        hair_length: "long",
+        hair_color: "brown",
+        companion_type: "realistic"
+      },
+      {
+        Name: "Amanda Monroe",
+        Character_Title: "All-American Girl",
+        Character_Description: "The girl next door with a naughty side she only shows to you.",
+        Category: "fantasy",
+        Tags: ["Girlfriend", "Cute", "Flirty"],
         sex: "female",
         ethnicity: "white",
         hair_length: "medium",
         hair_color: "blonde",
         companion_type: "realistic"
       },
+
+      // ANIME - 10 companions
       {
-        Name: "Zara Mystique",
-        Character_Title: "Elven Enchantress",
-        Character_Description: "A magical elf maiden with otherworldly beauty and ancient wisdom.",
-        Category: "fantasy",
-        Tags: ["Elf", "Fantasy", "Seductive"],
+        Name: "Yuki Kawaii",
+        Character_Title: "Tsundere Princess",
+        Character_Description: "A Japanese anime beauty who acts tough but melts for you.",
+        Category: "anime-manga",
+        Tags: ["Tsundere", "Cute", "Flirty"],
+        sex: "female",
+        ethnicity: "japanese",
+        hair_length: "medium",
+        hair_color: "pink",
+        companion_type: "anime"
+      },
+      {
+        Name: "Aria Moonlight",
+        Character_Title: "Fantasy Elf",
+        Character_Description: "An enchanting elf maiden with magical powers and otherworldly beauty.",
+        Category: "anime-manga",
+        Tags: ["Fantasy", "Elf", "Cute"],
         sex: "female",
         ethnicity: "white",
         hair_length: "long",
         hair_color: "silver",
-        companion_type: "realistic"
+        companion_type: "anime"
       },
       {
-        Name: "Valentina Desire",
-        Character_Title: "Perfect Match",
-        Character_Description: "Your ideal romantic partner who understands you completely and loves unconditionally.",
-        Category: "historical",
-        Tags: ["Girlfriend", "Romance", "Companion"],
+        Name: "Sakura Blossom",
+        Character_Title: "Anime Schoolgirl",
+        Character_Description: "A cute anime schoolgirl who's curious about everything.",
+        Category: "anime-manga",
+        Tags: ["Student", "Cute", "Innocent"],
         sex: "female",
-        ethnicity: "hispanic",
-        hair_length: "long",
+        ethnicity: "japanese",
+        hair_length: "short",
         hair_color: "brown",
-        companion_type: "realistic"
+        companion_type: "anime"
+      },
+      {
+        Name: "Luna Darkness",
+        Character_Title: "Gothic Anime Girl",
+        Character_Description: "A mysterious anime girl with dark powers and deeper desires.",
+        Category: "anime-manga",
+        Tags: ["Gothic", "Mysterious", "Seductive"],
+        sex: "female",
+        ethnicity: "white",
+        hair_length: "long",
+        hair_color: "black",
+        companion_type: "anime"
+      },
+      {
+        Name: "Mia Neko",
+        Character_Title: "Catgirl Maid",
+        Character_Description: "An adorable catgirl maid who loves to serve her master.",
+        Category: "anime-manga",
+        Tags: ["Maid", "Submissive", "Cute"],
+        sex: "female",
+        ethnicity: "japanese",
+        hair_length: "medium",
+        hair_color: "brown",
+        companion_type: "anime"
+      },
+      {
+        Name: "Hikari Star",
+        Character_Title: "Magical Girl",
+        Character_Description: "A magical anime girl with powers fueled by love and passion.",
+        Category: "anime-manga",
+        Tags: ["Magical", "Cute", "Romance"],
+        sex: "female",
+        ethnicity: "japanese",
+        hair_length: "long",
+        hair_color: "blonde",
+        companion_type: "anime"
+      },
+      {
+        Name: "Rei Akatsuki",
+        Character_Title: "Ninja Assassin",
+        Character_Description: "A deadly ninja who's found her weakness - you.",
+        Category: "anime-manga",
+        Tags: ["Ninja", "Mysterious", "Seductive"],
+        sex: "female",
+        ethnicity: "japanese",
+        hair_length: "short",
+        hair_color: "red",
+        companion_type: "anime"
+      },
+      {
+        Name: "Isabella Devotion",
+        Character_Title: "Yandere Lover",
+        Character_Description: "An obsessive anime girl whose love knows no bounds.",
+        Category: "anime-manga",
+        Tags: ["Yandere", "Romance", "Obsessive"],
+        sex: "female",
+        ethnicity: "white",
+        hair_length: "long",
+        hair_color: "pink",
+        companion_type: "anime"
+      },
+      {
+        Name: "Violet Rainbow",
+        Character_Title: "Anime Idol",
+        Character_Description: "A famous anime idol who wants you to be her biggest fan.",
+        Category: "anime-manga",
+        Tags: ["Idol", "Flirty", "Cute"],
+        sex: "female",
+        ethnicity: "asian",
+        hair_length: "medium",
+        hair_color: "purple",
+        companion_type: "anime"
+      },
+      {
+        Name: "Zara Mystique",
+        Character_Title: "Dragon Princess",
+        Character_Description: "A dragon girl in human form seeking her eternal mate.",
+        Category: "anime-manga",
+        Tags: ["Fantasy", "Dragon", "Seductive"],
+        sex: "female",
+        ethnicity: "white",
+        hair_length: "long",
+        hair_color: "silver",
+        companion_type: "anime"
       }
     ];
 
-    console.log(`🎨 Creating ${companions.length} realistic female companions with AI avatars...`);
+    console.log(`🎨 Creating ${companions.length} diverse companions (10 realistic, 10 anime) with AI avatars...`);
 
     const results = [];
     const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-    // Base prompt - same for all
-    const basePrompt = "beautiful woman, attractive, charming smile, friendly expression";
+    // Base prompt - adjusted per companion type
+    const getBasePrompt = (companion_type) => {
+      return companion_type === 'anime'
+        ? "anime style, beautiful anime girl, attractive, charming smile, vibrant colors, anime aesthetic"
+        : "beautiful woman, attractive, charming smile, friendly expression, photorealistic";
+    };
 
-    // Test with just 1 companion first
-    for (let i = 0; i < 1; i++) {
+    // Create all 20 companions
+    for (let i = 0; i < companions.length; i++) {
       const companion = companions[i];
 
       try {
         console.log(`\n🎨 Creating ${i + 1}/${companions.length}: ${companion.Name}`);
 
-        // Generate avatar using same base prompt for all
+        // Generate avatar with appropriate style
+        const basePrompt = getBasePrompt(companion.companion_type);
         const imageGenResponse = await fetch(`${process.env.NETLIFY_FUNCTIONS_URL || 'https://selira.ai/.netlify/functions'}/selira-generate-custom-image`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -346,14 +354,14 @@ You live for pleasure, passion, and sexual adventure. You're incredibly horny, l
             customPrompt: basePrompt,
             characterName: companion.Name,
             category: companion.Category,
-            style: 'realistic',
+            style: companion.companion_type,
             shotType: 'portrait',
             sex: companion.sex,
             ethnicity: companion.ethnicity,
             hairLength: companion.hair_length,
             hairColor: companion.hair_color,
             email: 'system@selira.ai',
-            auth0_id: 'realistic_female_companions'
+            auth0_id: 'diverse_companions_batch'
           })
         });
 
