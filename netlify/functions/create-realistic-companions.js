@@ -175,12 +175,12 @@ You live for pleasure, passion, and sexual adventure. You're incredibly horny, l
       },
       {
         Name: "Mei Chen",
-        Character_Title: "Asian Temptation",
-        Character_Description: "A petite Asian beauty who's shy in public but wild in private.",
+        Character_Title: "Japanese Temptation",
+        Character_Description: "A petite Japanese beauty who's shy in public but wild in private.",
         Category: "fantasy",
         Tags: ["Submissive", "Cute", "Romance"],
         sex: "female",
-        ethnicity: "asian",
+        ethnicity: "japanese",
         hair_length: "short",
         hair_color: "black",
         companion_type: "realistic"
