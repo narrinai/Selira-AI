@@ -203,12 +203,50 @@ async function main() {
   try {
     console.log('🔧 Starting Replicate URL fix...\n');
 
-    // Get companions via Netlify function
-    const response = await fetch('https://selira.ai/.netlify/functions/selira-characters?limit=1000&includePrivate=true');
-    const data = await response.json();
+    // Get ALL companions using pagination
+    console.log('🔍 Fetching ALL companions using pagination...');
+    let allCompanions = [];
+    let offset = null;
+    let batchNumber = 1;
+
+    while (true) {
+      console.log(`📄 Batch ${batchNumber}: Fetching companions${offset ? ` with offset ${offset}` : ''}...`);
+
+      let url = 'https://selira.ai/.netlify/functions/selira-characters?limit=200&includePrivate=true';
+      if (offset) {
+        url += `&offset=${offset}`;
+      }
+
+      const response = await fetch(url);
+      if (!response.ok) {
+        console.log(`❌ HTTP error: ${response.status}`);
+        break;
+      }
+
+      const data = await response.json();
+      console.log(`📦 Batch ${batchNumber}: ${data.characters.length} companions received`);
+
+      if (!data.characters || data.characters.length === 0) {
+        console.log('✅ No more companions to fetch');
+        break;
+      }
+
+      allCompanions.push(...data.characters);
+
+      if (!data.offset) {
+        console.log('✅ Reached end of database');
+        break;
+      }
+
+      offset = data.offset;
+      batchNumber++;
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+
+    console.log(`📦 Total companions fetched: ${allCompanions.length}\n`);
 
     // Filter companions with Replicate URLs ONLY (not empty avatars)
-    const companionsToFix = data.characters.filter(char =>
+    const companionsToFix = allCompanions.filter(char =>
       char.avatar_url && char.avatar_url.includes('replicate.delivery')
     );
 
@@ -217,7 +255,11 @@ async function main() {
       return;
     }
 
-    console.log(`📊 Found ${companionsToFix.length} companions to fix\n`);
+    console.log(`📊 Found ${companionsToFix.length} companions with Replicate URLs to fix:\n`);
+    companionsToFix.forEach((c, i) => {
+      console.log(`   ${i + 1}. ${c.name} (${c.slug})`);
+    });
+    console.log();
 
     let successCount = 0;
     let failCount = 0;
