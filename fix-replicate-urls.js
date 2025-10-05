@@ -208,10 +208,9 @@ async function main() {
     const response = await fetch('https://selira.ai/.netlify/functions/selira-characters?limit=1000&includePrivate=true');
     const data = await response.json();
 
-    // Filter companions with Replicate URLs or empty avatars
+    // Filter companions with Replicate URLs ONLY (not empty avatars)
     const companionsToFix = data.characters.filter(char =>
-      !char.avatar_url ||
-      char.avatar_url.includes('replicate.delivery')
+      char.avatar_url && char.avatar_url.includes('replicate.delivery')
     );
 
     if (companionsToFix.length === 0) {
