@@ -40,12 +40,14 @@ async function getAllSeliraCompanions() {
   let offset = null;
   let batchNumber = 1;
 
-  // Use proper pagination to get ALL companions
-  while (true) {
-    console.log(`📄 Batch ${batchNumber}: Fetching companions${offset ? ` with offset ${offset}` : ''}...`);
+  // Fetch at least 5 batches to ensure we get all companions (including private ones)
+  const MAX_BATCHES = 5;
+
+  while (batchNumber <= MAX_BATCHES) {
+    console.log(`📄 Batch ${batchNumber}/${MAX_BATCHES}: Fetching companions${offset ? ` with offset ${offset}` : ''}...`);
 
     try {
-      let url = 'https://selira.ai/.netlify/functions/selira-characters?limit=200&includePrivate=true';
+      let url = 'https://selira.ai/.netlify/functions/selira-characters?limit=100&includePrivate=true';
       if (offset) {
         url += `&offset=${offset}`;
       }
@@ -87,7 +89,7 @@ async function getAllSeliraCompanions() {
       batchNumber++;
 
       // Rate limiting - wait between requests
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
     } catch (error) {
       console.warn(`⚠️ Error fetching batch ${batchNumber}:`, error.message);

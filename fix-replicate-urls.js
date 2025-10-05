@@ -203,16 +203,17 @@ async function main() {
   try {
     console.log('🔧 Starting Replicate URL fix...\n');
 
-    // Get ALL companions using pagination
+    // Get ALL companions using pagination - fetch at least 5 batches
     console.log('🔍 Fetching ALL companions using pagination...');
     let allCompanions = [];
     let offset = null;
     let batchNumber = 1;
+    const MAX_BATCHES = 5;
 
-    while (true) {
-      console.log(`📄 Batch ${batchNumber}: Fetching companions${offset ? ` with offset ${offset}` : ''}...`);
+    while (batchNumber <= MAX_BATCHES) {
+      console.log(`📄 Batch ${batchNumber}/${MAX_BATCHES}: Fetching companions${offset ? ` with offset ${offset}` : ''}...`);
 
-      let url = 'https://selira.ai/.netlify/functions/selira-characters?limit=200&includePrivate=true';
+      let url = 'https://selira.ai/.netlify/functions/selira-characters?limit=100&includePrivate=true';
       if (offset) {
         url += `&offset=${offset}`;
       }
@@ -224,7 +225,7 @@ async function main() {
       }
 
       const data = await response.json();
-      console.log(`📦 Batch ${batchNumber}: ${data.characters.length} companions received`);
+      console.log(`📦 Batch ${batchNumber}: ${data.characters.length} companions received, offset: ${data.offset || 'null'}`);
 
       if (!data.characters || data.characters.length === 0) {
         console.log('✅ No more companions to fetch');
