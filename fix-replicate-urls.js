@@ -136,15 +136,15 @@ async function generateNewAvatar(companion) {
       'long': 'long hair, flowing hair'
     };
 
-    // Hair color descriptions
+    // Hair color descriptions (with emphasis for better AI generation)
     const hairColorMap = {
-      'brown': 'brown hair',
-      'black': 'black hair',
-      'blonde': 'blonde hair, golden hair',
-      'red': 'red hair, ginger hair',
+      'brown': 'brown hair, brunette',
+      'black': 'black hair, dark hair',
+      'blonde': 'BLONDE hair, golden blonde hair, light blonde hair',
+      'red': 'red hair, ginger hair, vibrant red hair',
       'auburn': 'auburn hair, reddish-brown hair',
       'gray': 'gray hair, silver hair',
-      'white': 'white hair, platinum hair',
+      'white': 'white hair, platinum blonde hair',
       'purple': 'purple hair, violet hair'
     };
 
