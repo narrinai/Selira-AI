@@ -664,6 +664,23 @@
       color: var(--text-secondary);
     }
 
+    .image-credits-display {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: rgba(212, 165, 116, 0.1);
+      border: 1px solid rgba(212, 165, 116, 0.2);
+      border-radius: 6px;
+      font-size: 11px;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .image-credits-display .credits-icon {
+      font-size: 12px;
+    }
+
     /* Character Search Modal */
     .search-modal {
       position: fixed;
@@ -1398,23 +1415,33 @@
 
       <div class="image-upgrade-header">
         <img src="/avatars/abigail-moore-avatar-1759240661860.webp" alt="AI Generated Image Example" style="width: 100%; max-width: 300px; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
-        <div class="image-upgrade-title" id="upgradeModalTitle">Upgrade for Image Generation</div>
+        <div class="image-upgrade-title" id="upgradeModalTitle">Get Image Credits</div>
+        <p style="color: var(--text-secondary); font-size: 14px; margin-top: 12px;">Purchase credits to generate custom AI images. Credits never expire!</p>
       </div>
 
       <div class="image-upgrade-features">
         <div class="image-upgrade-feature">
-          <div class="image-upgrade-feature-icon">🎯</div>
-          <div>Custom poses and scenarios</div>
+          <div class="image-upgrade-feature-icon">💳</div>
+          <div><strong>One-time purchase</strong> - Pay once, use forever</div>
         </div>
         <div class="image-upgrade-feature">
-          <div class="image-upgrade-feature-icon">🔄</div>
-          <div id="imageLimit">10 images per hour (Basic) • 20 images per hour (Premium)</div>
+          <div class="image-upgrade-feature-icon">🎯</div>
+          <div>Custom poses, scenarios & styles</div>
+        </div>
+        <div class="image-upgrade-feature">
+          <div class="image-upgrade-feature-icon">⚡</div>
+          <div>From $0.08 per image (250 credits)</div>
         </div>
       </div>
 
       <div class="image-upgrade-buttons">
         <button class="image-upgrade-btn secondary" onclick="closeImageUpgradeModal()">Maybe Later</button>
-        <a href="/pricing" class="image-upgrade-btn primary" id="upgradeButton">Upgrade Now</a>
+        <a href="/pricing?tab=credits" class="image-upgrade-btn primary" id="upgradeButton">Buy Credits</a>
+      </div>
+
+      <div style="text-align: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);">
+        <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 8px;">Or get unlimited images with a subscription</p>
+        <a href="/pricing?tab=subscriptions" style="color: var(--accent); font-size: 13px; text-decoration: none;">View Monthly Plans →</a>
       </div>
     </div>
   </div>
@@ -1515,6 +1542,10 @@
           <button class="request-image-btn" onclick="requestImage()" title="Get Image Suggestions">
             + Image Gen
           </button>
+          <div class="image-credits-display" id="imageCreditsDisplay" style="display: none;">
+            <span class="credits-icon">💳</span>
+            <span id="imageCreditsText">Loading...</span>
+          </div>
           <span class="input-hint">AI is fictional. Follow local laws. 18+ only.</span>
         </div>
       </div>
@@ -1706,6 +1737,9 @@
 
       // Load active chats in sidebar immediately
       updateActiveChatsSidebar();
+
+      // Load image credits display
+      loadImageCredits();
 
       // Refresh sidebar periodically (every 30 seconds)
       setInterval(updateActiveChatsSidebar, 30000);
@@ -3971,6 +4005,51 @@
       }
     }
 
+    // Load and display image credits
+    async function loadImageCredits() {
+      const user = window.getCurrentUser ? window.getCurrentUser() : null;
+      const creditsDisplay = document.getElementById('imageCreditsDisplay');
+      const creditsText = document.getElementById('imageCreditsText');
+
+      if (!user?.email && !user?.sub) {
+        creditsDisplay.style.display = 'none';
+        return;
+      }
+
+      try {
+        const response = await fetch('/.netlify/functions/selira-get-image-credits', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: user.email,
+            auth0_id: user.sub || user.auth0_id
+          })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+
+          // Show credits if user has purchased credits or subscription
+          if (data.creditsRemaining > 0 || data.hasActiveSubscription) {
+            creditsDisplay.style.display = 'flex';
+
+            if (data.hasActiveSubscription) {
+              creditsText.textContent = `${data.plan} Plan`;
+            } else if (data.creditsRemaining > 0) {
+              creditsText.textContent = `${data.creditsRemaining} credits`;
+            }
+          } else {
+            creditsDisplay.style.display = 'none';
+          }
+        } else {
+          creditsDisplay.style.display = 'none';
+        }
+      } catch (error) {
+        console.warn('⚠️ Could not load image credits:', error);
+        creditsDisplay.style.display = 'none';
+      }
+    }
+
     // Request image function - fills input with "Send me a picture "
     async function requestImage() {
       // Check user permissions first
@@ -4171,6 +4250,7 @@
           setTimeout(() => {
             console.log('⏱️ Delayed counter refresh to ensure backend increment completed');
             updateImageSuggestionsPlan();
+            loadImageCredits(); // Refresh credits display
           }, 2000); // 2 second delay to let backend complete
 
         } else if (response.status === 429) {
@@ -4660,10 +4740,10 @@
       const title = document.getElementById('upgradeModalTitle');
       const upgradeButton = document.getElementById('upgradeButton');
 
-      // Customize modal content based on user status
-      title.textContent = 'Upgrade for Image Generation';
-      upgradeButton.textContent = 'View Plans';
-      upgradeButton.href = '/pricing';
+      // Customize modal content - prioritize one-time credits
+      title.textContent = 'Get Image Credits';
+      upgradeButton.textContent = 'Buy Credits';
+      upgradeButton.href = '/pricing?tab=credits';
 
       modal.classList.add('show');
 

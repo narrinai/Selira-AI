@@ -24,7 +24,7 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const { priceId, userEmail, userId, planName, successUrl, cancelUrl } = JSON.parse(event.body || '{}');
+    const { priceId, userEmail, userId, planName, successUrl, cancelUrl, mode } = JSON.parse(event.body || '{}');
 
     // Validate required fields
     if (!priceId || !userEmail || !userId || !successUrl || !cancelUrl) {
@@ -67,10 +67,12 @@ exports.handler = async (event, context) => {
 
     const stripe = new Stripe(stripeKey);
 
-    console.log('🔄 Creating checkout session for:', { userEmail, planName, priceId });
+    // Determine mode - default to subscription for backward compatibility
+    const checkoutMode = mode || 'subscription';
+    console.log('🔄 Creating checkout session for:', { userEmail, planName, priceId, mode: checkoutMode });
 
-    // Create Stripe checkout session
-    const session = await stripe.checkout.sessions.create({
+    // Build session config based on mode
+    const sessionConfig = {
       payment_method_types: ['card'],
       line_items: [
         {
@@ -78,25 +80,32 @@ exports.handler = async (event, context) => {
           quantity: 1,
         },
       ],
-      mode: 'subscription',
+      mode: checkoutMode,
       customer_email: userEmail,
       metadata: {
         user_id: userId,
         user_email: userEmail,
         plan_name: planName || 'unknown'
       },
-      subscription_data: {
+      success_url: successUrl,
+      cancel_url: cancelUrl,
+      allow_promotion_codes: true,
+      billing_address_collection: 'auto',
+    };
+
+    // Add subscription_data only for subscription mode
+    if (checkoutMode === 'subscription') {
+      sessionConfig.subscription_data = {
         metadata: {
           user_id: userId,
           user_email: userEmail,
           plan_name: planName || 'unknown'
         }
-      },
-      success_url: successUrl,
-      cancel_url: cancelUrl,
-      allow_promotion_codes: true,
-      billing_address_collection: 'auto',
-    });
+      };
+    }
+
+    // Create Stripe checkout session
+    const session = await stripe.checkout.sessions.create(sessionConfig);
 
     console.log('✅ Checkout session created:', session.id);
 

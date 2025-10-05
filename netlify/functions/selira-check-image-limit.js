@@ -96,12 +96,33 @@ exports.handler = async (event, context) => {
     const userRecord = users[0];
     const userPlan = userRecord.fields.Plan || 'Basic';
     const userId = userRecord.id;
+    const imageCreditsRemaining = userRecord.fields.image_credits_remaining || 0;
 
     console.log('👤 User plan:', userPlan);
+    console.log('💳 Image credits remaining:', imageCreditsRemaining);
 
-    // For Free plan users, check lifetime usage (not hourly)
+    // For Free plan users, check lifetime usage OR credits
     if (userPlan === 'Free') {
-      // Use images_generated field directly from Users table
+      // Check if they have purchased credits first
+      if (imageCreditsRemaining > 0) {
+        console.log(`💳 Free user has ${imageCreditsRemaining} purchased credits`);
+        return {
+          statusCode: 200,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+          },
+          body: JSON.stringify({
+            canGenerate: true,
+            plan: userPlan,
+            userId: userId,
+            imageCreditsRemaining: imageCreditsRemaining,
+            usingCredits: true
+          })
+        };
+      }
+
+      // No credits, check lifetime usage (2 free images)
       const lifetimeUsage = userRecord.fields.images_generated || 0;
 
       console.log(`📊 Free plan user lifetime usage from images_generated field: ${lifetimeUsage}/2`);

@@ -131,8 +131,11 @@ exports.handler = async (event, context) => {
     const userRecordId = userRecord.id;
     const currentImagesGenerated = userRecord.fields?.images_generated || 0;
     const newImagesGenerated = currentImagesGenerated + 1;
+    const currentCreditsRemaining = userRecord.fields?.image_credits_remaining || 0;
+    const userPlan = userRecord.fields?.Plan || 'Free';
 
     console.log(`📊 Found user record ${userRecordId}, updating: ${currentImagesGenerated} → ${newImagesGenerated}`);
+    console.log(`💳 User plan: ${userPlan}, Credits remaining: ${currentCreditsRemaining}`);
 
     // Get current hour in format YYYY-MM-DD-HH
     const now = new Date();
@@ -287,13 +290,20 @@ exports.handler = async (event, context) => {
     }
 
     // Update the Users table with the new lifetime total
+    // If user has credits, decrement them. Otherwise just increment images_generated
     const updateUserRecord = () => {
       return new Promise((resolve, reject) => {
-        const data = JSON.stringify({
-          fields: {
-            images_generated: newImagesGenerated
-          }
-        });
+        const updateFields = {
+          images_generated: newImagesGenerated
+        };
+
+        // Decrement credits if user has them (regardless of plan)
+        if (currentCreditsRemaining > 0) {
+          updateFields.image_credits_remaining = currentCreditsRemaining - 1;
+          console.log(`💳 Decrementing credits: ${currentCreditsRemaining} → ${currentCreditsRemaining - 1}`);
+        }
+
+        const data = JSON.stringify({ fields: updateFields });
 
         const options = {
           hostname: 'api.airtable.com',

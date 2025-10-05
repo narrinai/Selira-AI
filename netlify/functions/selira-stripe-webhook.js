@@ -211,7 +211,49 @@ async function handleCheckoutCompleted(session) {
       currentPlan: user.fields.Plan
     });
 
-    // Prepare update data
+    // Check if this is a one-time credit purchase by fetching line items
+    const Stripe = require('stripe');
+    const stripeKey = process.env.STRIPE_SECRET_KEY_SELIRA ||
+                     process.env.STRIPE_SECRET_KEY ||
+                     process.env.STRIPE_SELIRA_SECRET;
+    const stripe = new Stripe(stripeKey);
+
+    const lineItems = await stripe.checkout.sessions.listLineItems(session.id, { limit: 1 });
+
+    if (lineItems.data.length > 0) {
+      const price = await stripe.prices.retrieve(lineItems.data[0].price.id, {
+        expand: ['product']
+      });
+
+      const productMetadata = price.product.metadata || {};
+      console.log('🏷️ Product metadata:', productMetadata);
+
+      // Check if this is a one-time credit purchase
+      if (productMetadata.type === 'one_time_credits' && productMetadata.image_credits) {
+        const creditsToAdd = parseInt(productMetadata.image_credits);
+        console.log(`💳 One-time credit purchase detected: ${creditsToAdd} credits`);
+
+        const currentPurchased = user.fields.image_credits_purchased || 0;
+        const currentRemaining = user.fields.image_credits_remaining || 0;
+
+        const updateData = {
+          'image_credits_purchased': currentPurchased + creditsToAdd,
+          'image_credits_remaining': currentRemaining + creditsToAdd,
+          'stripe_customer_id': session.customer
+        };
+
+        console.log('🔄 Updating user credits:', {
+          purchased: `${currentPurchased} → ${currentPurchased + creditsToAdd}`,
+          remaining: `${currentRemaining} → ${currentRemaining + creditsToAdd}`
+        });
+
+        await base('Users').update(user.id, updateData);
+        console.log(`✅ Added ${creditsToAdd} image credits to user`);
+        return;
+      }
+    }
+
+    // If not a one-time purchase, handle as subscription
     const updateData = {
       'Plan': planName || 'Basic',
       'stripe_customer_id': session.customer,

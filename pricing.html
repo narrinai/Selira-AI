@@ -800,12 +800,12 @@
       <section class="pricing-section">
         <!-- Tab Navigation -->
         <div class="pricing-tabs">
-          <button class="tab-button active" onclick="switchTab('subscriptions')">Subscription Plans</button>
-          <button class="tab-button" onclick="switchTab('oneoff')">One-off Purchases</button>
+          <button class="tab-button" onclick="switchTab('subscriptions')">Subscription Plans</button>
+          <button class="tab-button active" onclick="switchTab('oneoff')">One-off Purchases</button>
         </div>
 
         <!-- Subscription Plans Tab -->
-        <div class="tab-content active" id="subscriptions-tab">
+        <div class="tab-content" id="subscriptions-tab">
           <div class="pricing-cards">
           <!-- Free -->
           <div class="pricing-card">
@@ -959,119 +959,107 @@
         </div>
 
         <!-- One-off Purchases Tab -->
-        <div class="tab-content" id="oneoff-tab">
-          <div style="text-align: center; padding: 60px 20px;">
-            <h2 style="font-family: 'Playfair Display', serif; font-size: 32px; margin-bottom: 16px;">Coming Soon</h2>
-            <p style="color: var(--text-secondary); font-size: 18px;">One-off purchase options will be available soon.</p>
+        <div class="tab-content active" id="oneoff-tab">
+          <div style="text-align: center; padding: 20px 20px 40px; max-width: 800px; margin: 0 auto;">
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 28px; margin-bottom: 12px; color: var(--accent);">Image Credit Packages</h2>
+            <p style="color: var(--text-secondary); font-size: 15px;">Purchase image credits to generate AI images without a subscription. Credits never expire!</p>
           </div>
-          <div class="pricing-cards" style="display: none;">
-            <!-- 50 Messages -->
+          <div class="pricing-cards">
+            <!-- Selira Light Credits -->
             <div class="pricing-card">
-              <div class="plan-name">50 Messages</div>
+              <div class="plan-name">Selira Light</div>
               <div class="plan-price">
                 <span class="price-currency">$</span>
-                <span class="price-amount">2.99</span>
+                <span class="price-amount">5.99</span>
               </div>
-              <div class="plan-description">Perfect for occasional chats with your AI companions</div>
-              
+              <div class="price-daily">$0.12 per image</div>
+              <div class="plan-description">Perfect for trying out AI image generation</div>
+
               <ul class="plan-features">
                 <li class="feature-item">
                   <span class="feature-icon">✓</span>
-                  <span>50 chat messages</span>
+                  <span>50 image credits</span>
                 </li>
                 <li class="feature-item">
                   <span class="feature-icon">✓</span>
-                  <span>Access to all companions</span>
+                  <span>Generate custom AI images</span>
                 </li>
                 <li class="feature-item">
                   <span class="feature-icon">✓</span>
-                  <span>Basic memory</span>
+                  <span>Realistic & anime styles</span>
                 </li>
                 <li class="feature-item">
                   <span class="feature-icon">✓</span>
-                  <span>30 days to use</span>
+                  <span>Credits never expire</span>
                 </li>
               </ul>
-              
-              <a href="#" class="plan-button">Buy 50 Messages</a>
+
+              <a href="#" class="plan-button" onclick="handleCreditPurchase('light'); return false;">Buy 50 Credits</a>
             </div>
 
-            <!-- 200 Messages -->
+            <!-- Selira Basic Credits -->
             <div class="pricing-card featured">
               <div class="card-badge">Best Value</div>
-              <div class="plan-name">200 Messages</div>
+              <div class="plan-name">Selira Basic</div>
               <div class="plan-price">
                 <span class="price-currency">$</span>
                 <span class="price-amount">9.99</span>
               </div>
-              <div class="price-daily">Only $0.05/message</div>
-              <div class="plan-description">Great for regular conversations throughout the month</div>
-              
+              <div class="price-daily">$0.10 per image</div>
+              <div class="plan-description">Great for regular image generation needs</div>
+
               <ul class="plan-features">
                 <li class="feature-item">
                   <span class="feature-icon">✓</span>
-                  <span>200 chat messages</span>
+                  <span>100 image credits</span>
                 </li>
                 <li class="feature-item">
                   <span class="feature-icon">✓</span>
-                  <span>Access to all companions</span>
+                  <span>Generate custom AI images</span>
                 </li>
                 <li class="feature-item">
                   <span class="feature-icon">✓</span>
-                  <span>5 voice chats included</span>
+                  <span>Realistic & anime styles</span>
                 </li>
                 <li class="feature-item">
                   <span class="feature-icon">✓</span>
-                  <span>Enhanced memory</span>
-                </li>
-                <li class="feature-item">
-                  <span class="feature-icon">✓</span>
-                  <span>60 days to use</span>
+                  <span>Credits never expire</span>
                 </li>
               </ul>
-              
-              <a href="#" class="plan-button">Buy 200 Messages</a>
+
+              <a href="#" class="plan-button" onclick="handleCreditPurchase('basic'); return false;">Buy 100 Credits</a>
             </div>
 
-            <!-- 500 Messages -->
+            <!-- Selira Premium Credits -->
             <div class="pricing-card">
-              <div class="card-badge" style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);">Power User</div>
-              <div class="plan-name">500 Messages</div>
+              <div class="plan-name">Selira Premium</div>
               <div class="plan-price">
                 <span class="price-currency">$</span>
                 <span class="price-amount">19.99</span>
               </div>
-              <div class="price-daily">Only $0.04/message</div>
-              <div class="plan-description">For heavy users who want maximum flexibility</div>
-              
+              <div class="price-daily">$0.08 per image</div>
+              <div class="plan-description">For power users who generate lots of images</div>
+
               <ul class="plan-features">
                 <li class="feature-item">
                   <span class="feature-icon">✓</span>
-                  <span>500 chat messages</span>
+                  <span>250 image credits</span>
                 </li>
                 <li class="feature-item">
                   <span class="feature-icon">✓</span>
-                  <span>Access to all companions</span>
+                  <span>Generate custom AI images</span>
                 </li>
                 <li class="feature-item">
                   <span class="feature-icon">✓</span>
-                  <span>15 voice chats included</span>
+                  <span>Realistic & anime styles</span>
                 </li>
                 <li class="feature-item">
                   <span class="feature-icon">✓</span>
-                  <span>Premium memory system</span>
-                </li>
-                <li class="feature-item">
-                  <span class="feature-icon">✓</span>
-                  <span>90 days to use</span>
-                </li>
-                <li class="feature-item">
-                  <span class="feature-icon">✓</span>
-                  <span>Priority support</span>
+                  <span>Credits never expire</span>
                 </li>
               </ul>
-              
-              <a href="#" class="plan-button">Buy 500 Messages</a>
+
+              <a href="#" class="plan-button" onclick="handleCreditPurchase('premium'); return false;">Buy 250 Credits</a>
             </div>
           </div>
         </div>
@@ -1135,10 +1123,13 @@
       document.querySelectorAll('.tab-button').forEach(button => {
         button.classList.remove('active');
       });
-      
-      // Add active class to selected tab and button
+
+      // Add active class to selected tab
       document.getElementById(tabName + '-tab').classList.add('active');
-      event.target.classList.add('active');
+
+      // Add active class to corresponding button
+      const buttonIndex = tabName === 'subscriptions' ? 0 : 1;
+      document.querySelectorAll('.tab-button')[buttonIndex].classList.add('active');
     }
     
     // Handle plan button clicks
@@ -1807,7 +1798,100 @@
     // Initialize current plan loading when page loads
     document.addEventListener('DOMContentLoaded', function() {
       setTimeout(loadCurrentPlan, 1000);
+
+      // Check URL parameter for tab selection
+      const urlParams = new URLSearchParams(window.location.search);
+      const tabParam = urlParams.get('tab');
+
+      if (tabParam === 'credits' || tabParam === 'oneoff') {
+        switchTab('oneoff');
+      } else if (tabParam === 'subscriptions') {
+        switchTab('subscriptions');
+      }
+      // Default is already set to oneoff tab
     });
+
+    // Handle credit purchase
+    async function handleCreditPurchase(packageType) {
+      console.log('💳 Credit purchase initiated:', packageType);
+
+      // Check if user is logged in
+      const isLoggedIn = localStorage.getItem('auth0_token') || localStorage.getItem('user_uid');
+
+      if (!isLoggedIn) {
+        // User is not logged in - show registration popup
+        if (typeof openLoginModal === 'function') {
+          openLoginModal('signup');
+        } else {
+          alert('Please sign up to purchase credits');
+        }
+        return;
+      }
+
+      try {
+        // Map package types to Stripe price IDs
+        const priceIds = {
+          'light': 'price_1SEvgFDEKVIZZyJVOpdIVcBG',
+          'basic': 'price_1SEvglDEKVIZZyJVQvKtNhmD',
+          'premium': 'price_1SEvhLDEKVIZZyJVvvjd7gSO'
+        };
+
+        const priceId = priceIds[packageType];
+        if (!priceId) {
+          console.error('Invalid package type:', packageType);
+          alert('Invalid package selected');
+          return;
+        }
+
+        // Get user info
+        const userEmail = localStorage.getItem('user_email');
+        const userId = localStorage.getItem('user_uid');
+
+        if (!userEmail || !userId) {
+          console.error('Missing user information');
+          alert('Please log in again to continue');
+          window.location.href = '/';
+          return;
+        }
+
+        // Create Stripe checkout session
+        const response = await fetch('/.netlify/functions/selira-create-checkout-session', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            priceId: priceId,
+            userEmail: userEmail,
+            userId: userId,
+            mode: 'payment', // One-time payment
+            successUrl: window.location.origin + '/profile?purchase=credits',
+            cancelUrl: window.location.origin + '/pricing?tab=oneoff'
+          })
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          console.error('Checkout session error:', error);
+          alert('Unable to start checkout process. Please try again.');
+          return;
+        }
+
+        const { sessionUrl } = await response.json();
+
+        if (sessionUrl) {
+          // Redirect to Stripe checkout
+          window.location.href = sessionUrl;
+        } else {
+          console.error('No session URL received');
+          alert('Unable to start checkout process. Please try again.');
+        }
+
+      } catch (error) {
+        console.error('Error initiating credit purchase:', error);
+        alert('An error occurred. Please try again later.');
+      }
+    }
   </script>
 </body>
 </html>
