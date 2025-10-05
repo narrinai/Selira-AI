@@ -1,4 +1,5 @@
 // Fix Replicate URLs by re-generating avatars
+// Uses EXACT same prompts as complete-avatar-solution-v3.js
 const fetch = require('node-fetch');
 const fs = require('fs');
 const path = require('path');
@@ -26,26 +27,158 @@ async function downloadImage(url, filename) {
   }
 }
 
+// EXACT COPY from complete-avatar-solution-v3.js
+function getStylishClothing(style, category = 'default') {
+  const categoryClothing = {
+    // Anime & Manga specific - sexy anime wear
+    'anime-manga': {
+      female: ['revealing school uniform', 'skimpy magical girl outfit', 'short kimono', 'sexy sailor uniform', 'provocative maid outfit', 'barely-there anime outfit', 'revealing dress', 'seductive costume']
+    },
+    anime: {
+      female: ['extremely revealing school uniform', 'micro bikini', 'ultra-short kimono', 'barely-there top', 'almost naked maid outfit', 'tiny lingerie set', 'string bikini', 'see-through outfit', 'exposed breasts lingerie', 'topless with mini skirt', 'transparent clothing', 'nipple-revealing top']
+    },
+    manga: {
+      female: ['sexy manga outfit', 'revealing uniform', 'skimpy dress', 'provocative attire']
+    },
+
+    // Cooking & Food - sexy chef wear
+    cooking: {
+      female: ['sexy apron only', 'revealing chef outfit', 'apron over lingerie', 'skimpy kitchen wear', 'provocative cooking attire']
+    },
+    food: {
+      female: ['sexy waitress outfit', 'revealing server uniform', 'skimpy restaurant attire', 'provocative service wear']
+    },
+
+    // Fitness & Sports - sexy athletic wear
+    fitness: {
+      female: ['revealing sports bra and micro shorts', 'tight yoga pants and crop sports bra', 'skimpy gym wear', 'barely-there workout outfit', 'sexy athletic bikini', 'revealing compression wear']
+    },
+    sports: {
+      female: ['sexy cheerleader outfit', 'skimpy volleyball bikini', 'short tennis skirt', 'revealing athletic uniform', 'provocative sporty crop top']
+    },
+
+    // Professional & Business - sexy professional attire
+    business: {
+      female: ['sexy secretary outfit', 'revealing business dress', 'low-cut office attire', 'provocative work suit', 'seductive corporate wear']
+    },
+
+    // Default fallback - extremely sexy companion clothing for anime
+    default: {
+      female: ['ultra-revealing lingerie', 'micro string bikini', 'see-through dress', 'topless with tiny shorts', 'exposed breasts outfit', 'barely covered privates', 'transparent lingerie', 'nipple-revealing top', 'almost completely naked', 'tiny thong bikini', 'exposed cleavage outfit']
+    }
+  };
+
+  // Find matching category or use default
+  let clothingOptions = categoryClothing.default;
+
+  const categoryLower = (category || 'default').toLowerCase();
+  if (categoryClothing[categoryLower]) {
+    clothingOptions = categoryClothing[categoryLower];
+  } else {
+    for (const [key, value] of Object.entries(categoryClothing)) {
+      if (categoryLower.includes(key) || key.includes(categoryLower)) {
+        clothingOptions = value;
+        break;
+      }
+    }
+  }
+
+  // Select female clothing (since all companions are female)
+  const femaleClothing = clothingOptions.female || categoryClothing.default.female;
+  return femaleClothing[Math.floor(Math.random() * femaleClothing.length)];
+}
+
 async function generateNewAvatar(companion) {
   console.log(`🎨 Generating new avatar for: ${companion.name}`);
 
-  // Use companion's traits to generate new avatar
-  const prompt = `beautiful ${companion.sex || 'female'}, ${companion.ethnicity || 'diverse'} features, ${companion.hair_length || 'medium'} ${companion.hair_color || 'brown'} hair, ${companion.companion_type === 'anime' ? 'anime style, vibrant colors' : 'photorealistic, professional photography'}`;
-
   try {
+    // Use companion's traits - same as complete-avatar-solution-v3.js
+    const traits = {
+      style: companion.companion_type || 'realistic',
+      sex: companion.sex || 'female',
+      ethnicity: companion.ethnicity || 'white',
+      hairLength: companion.hair_length || 'medium',
+      hairColor: companion.hair_color || 'brown'
+    };
+
+    console.log(`   Traits: ${traits.style}, ${traits.sex}, ${traits.ethnicity}, ${traits.hairLength} ${traits.hairColor} hair`);
+
+    // Get random sexy clothing - EXACT same as complete-avatar-solution-v3.js
+    const category = 'default'; // Use default for most explicit clothing
+    const stylishClothing = getStylishClothing(traits.style, category);
+    console.log(`   Clothing: ${stylishClothing}`);
+
+    // EXACT same character-aware prompt building as complete-avatar-solution-v3.js
+    const isAnimeStyle = traits.style === 'anime';
+
+    // Character appearance based on creation flow data
+    const genderDescription = traits.sex === 'male' ?
+      'handsome man, masculine physique, strong features, well-built' :
+      'beautiful woman, feminine physique, attractive features, well-proportioned';
+
+    // Ethnicity descriptions
+    const ethnicityMap = {
+      'white': 'Caucasian/European features',
+      'black': 'African/Black features',
+      'indian': 'South Asian/Indian features',
+      'middle-east': 'Middle Eastern features',
+      'hispanic': 'Hispanic/Latino features',
+      'korean': 'Korean features',
+      'chinese': 'Chinese features',
+      'japanese': 'Japanese features',
+      'vietnamese': 'Vietnamese features'
+    };
+
+    // Hair length descriptions
+    const hairMap = {
+      'short': 'short hair',
+      'medium': 'medium length hair, shoulder-length hair',
+      'long': 'long hair, flowing hair'
+    };
+
+    // Hair color descriptions
+    const hairColorMap = {
+      'brown': 'brown hair',
+      'black': 'black hair',
+      'blonde': 'blonde hair, golden hair',
+      'red': 'red hair, ginger hair',
+      'auburn': 'auburn hair, reddish-brown hair',
+      'gray': 'gray hair, silver hair',
+      'white': 'white hair, platinum hair',
+      'purple': 'purple hair, violet hair'
+    };
+
+    const ethnicityDesc = ethnicityMap[traits.ethnicity] || 'diverse features';
+    const hairLengthDesc = hairMap[traits.hairLength] || 'styled hair';
+    const hairColorDesc = hairColorMap[traits.hairColor] || 'brown hair';
+
+    // Build character-aware prompt
+    const characterAppearance = `${genderDescription}, ${ethnicityDesc}, ${hairLengthDesc}, ${hairColorDesc}`;
+
+    // EXACT same prompts as complete-avatar-solution-v3.js
+    let avatarPrompt;
+    if (isAnimeStyle) {
+      avatarPrompt = `beautiful anime girl, very attractive face, extremely seductive expression, detailed anime art, very erotic pose, wearing ${stylishClothing}, anime style, vibrant colors, high quality anime artwork, detailed facial features, anime eyes, perfect anatomy, correct human anatomy, two arms, two hands, very sensual pose, large breasts, curvy figure, big butt, voluptuous body, exposed skin, revealing clothing, single character, solo, no extra limbs, proper proportions, bedroom background, intimate setting, seductive atmosphere`;
+    } else {
+      avatarPrompt = `beautiful woman, attractive face, seductive expression, alluring pose, wearing ${stylishClothing}, photorealistic, professional photography, soft romantic lighting, glamour photography style, eye contact, sharp focus, attractive model, confident pose, single person, solo, perfect human anatomy, two arms, two hands, correct proportions, no extra limbs, bedroom background, beach setting, luxury suite, intimate atmosphere`;
+    }
+
+    console.log(`   🎨 AVATAR PROMPT: ${avatarPrompt.substring(0, 100)}...`);
+
+    // Call Netlify function - EXACT same as complete-avatar-solution-v3.js
     const response = await fetch('https://selira.ai/.netlify/functions/selira-generate-custom-image', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        customPrompt: prompt,
+        customPrompt: avatarPrompt,
         characterName: companion.name,
-        category: companion.companion_type === 'anime' ? 'anime-manga' : 'realistic',
-        style: companion.companion_type || 'realistic',
+        category: traits.style === 'anime' ? 'anime-manga' : 'realistic',
+        style: traits.style,
         shotType: 'portrait',
-        sex: companion.sex || 'female',
-        ethnicity: companion.ethnicity || 'white',
-        hairLength: companion.hair_length || 'medium',
-        hairColor: companion.hair_color || 'brown'
+        sex: traits.sex,
+        ethnicity: traits.ethnicity,
+        hairLength: traits.hairLength,
+        hairColor: traits.hairColor
       })
     });
 
@@ -65,83 +198,6 @@ async function generateNewAvatar(companion) {
     console.log(`❌ Generation error: ${error.message}`);
     return null;
   }
-}
-
-async function getAllCompanionsWithReplicateUrls() {
-  console.log('🔍 Fetching companions with Replicate URLs...');
-
-  const SELIRA_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA || process.env.AIRTABLE_BASE_ID || process.env.AIRTABLE_BASE;
-  const SELIRA_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA || process.env.AIRTABLE_TOKEN;
-
-  if (!SELIRA_BASE_ID || !SELIRA_TOKEN) {
-    throw new Error('Missing Airtable credentials. Set AIRTABLE_BASE_ID and AIRTABLE_TOKEN');
-  }
-
-  let allCompanions = [];
-  let offset = null;
-
-  while (true) {
-    let url = `https://api.airtable.com/v0/${SELIRA_BASE_ID}/Characters?filterByFormula=FIND("replicate.delivery",{Avatar_URL})>0`;
-    if (offset) {
-      url += `&offset=${offset}`;
-    }
-
-    const response = await fetch(url, {
-      headers: {
-        'Authorization': `Bearer ${SELIRA_TOKEN}`
-      }
-    });
-
-    if (!response.ok) {
-      throw new Error(`Airtable fetch failed: ${response.status}`);
-    }
-
-    const data = await response.json();
-
-    if (!data.records || data.records.length === 0) {
-      break;
-    }
-
-    allCompanions.push(...data.records);
-    console.log(`📦 Fetched ${data.records.length} companions (${allCompanions.length} total)`);
-
-    if (!data.offset) {
-      break;
-    }
-
-    offset = data.offset;
-    await new Promise(resolve => setTimeout(resolve, 200));
-  }
-
-  console.log(`📊 Total companions with Replicate URLs: ${allCompanions.length}`);
-  return allCompanions;
-}
-
-async function updateAirtableAvatar(companionId, localUrl) {
-  const SELIRA_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA || process.env.AIRTABLE_BASE_ID || process.env.AIRTABLE_BASE;
-  const SELIRA_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA || process.env.AIRTABLE_TOKEN;
-
-  const response = await fetch(
-    `https://api.airtable.com/v0/${SELIRA_BASE_ID}/Characters/${companionId}`,
-    {
-      method: 'PATCH',
-      headers: {
-        'Authorization': `Bearer ${SELIRA_TOKEN}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        fields: {
-          Avatar_URL: localUrl
-        }
-      })
-    }
-  );
-
-  if (!response.ok) {
-    throw new Error(`Airtable update failed: ${response.status}`);
-  }
-
-  return await response.json();
 }
 
 async function main() {
@@ -175,7 +231,7 @@ async function main() {
       console.log(`   Current avatar: ${companion.avatar_url || 'NONE'}`);
 
       try {
-        // Generate new avatar
+        // Generate new avatar using EXACT same method as complete-avatar-solution-v3.js
         const newAvatarUrl = await generateNewAvatar(companion);
 
         if (!newAvatarUrl) {
