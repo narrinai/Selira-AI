@@ -234,14 +234,18 @@ async function main() {
 
       allCompanions.push(...data.characters);
 
-      if (!data.offset) {
-        console.log('✅ Reached end of database');
-        break;
+      // Update offset if provided, otherwise continue without it
+      offset = data.offset || null;
+
+      if (!data.offset && batchNumber < MAX_BATCHES) {
+        console.log(`⚠️ No offset returned but continuing to batch ${batchNumber + 1}...`);
       }
 
-      offset = data.offset;
       batchNumber++;
-      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      if (batchNumber <= MAX_BATCHES) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
     }
 
     console.log(`📦 Total companions fetched: ${allCompanions.length}\n`);

@@ -63,7 +63,8 @@ exports.handler = async (event, context) => {
 
     params.append('filterByFormula', filterFormula);
 
-    params.append('maxRecords', limit);
+    // Use pageSize for pagination (not maxRecords which is a hard limit)
+    params.append('pageSize', Math.min(parseInt(limit) || 100, 100)); // Max 100 per page
     params.append('sort[0][field]', 'Name');
     params.append('sort[0][direction]', 'asc');
 
