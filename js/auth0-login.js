@@ -701,7 +701,7 @@ class Auth0LoginModal {
       console.log('✅ User authenticated - showing profile button');
       // Update existing login button to profile
       if (loginBtn) {
-        loginBtn.href = '/profile';
+        loginBtn.href = '/pricing';
         loginBtn.textContent = 'Upgrade';
         loginBtn.className = loginBtn.className.replace('login-btn', 'profile-btn') + ' inverted-btn';
         loginBtn.onclick = null; // Remove modal trigger
@@ -785,8 +785,8 @@ class Auth0LoginModal {
         loginBtn.className = loginBtn.className.replace('login-btn', 'profile-btn') + ' inverted-btn';
         loginBtn.onclick = (e) => {
           e.preventDefault();
-          // Always navigate to /profile page
-          window.location.href = '/profile';
+          // Always navigate to /pricing page
+          window.location.href = '/pricing';
           return false;
         };
         // Apply transparent button styling for mobile too
