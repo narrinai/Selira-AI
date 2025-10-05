@@ -737,9 +737,9 @@ class Auth0LoginModal {
           this.openModal('login');
           return false;
         };
-        // Style as a text link matching Register button color/size
+        // Style as a text link matching sidebar links (white)
         loginBtn.style.background = 'transparent';
-        loginBtn.style.color = 'var(--accent, #d4a574)';
+        loginBtn.style.color = 'rgba(255, 255, 255, 0.8)';
         loginBtn.style.border = 'none';
         loginBtn.style.borderRadius = '';
         loginBtn.style.padding = '8px 16px';
