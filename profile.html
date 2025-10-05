@@ -1560,19 +1560,26 @@
         return hasValidAuth0Token || hasUserData;
       };
 
-      // If not authenticated, show login prompt instead of redirecting
+      // If not authenticated, show login/register prompt instead of redirecting
       if (!checkAuth()) {
         console.log('🚫 User not authenticated - showing login prompt');
 
-        // Show login message in the main content area
-        const mainContent = document.querySelector('.profile-content');
-        if (mainContent) {
-          mainContent.innerHTML = `
-            <div style="text-align: center; padding: 60px 20px;">
-              <div style="font-size: 64px; margin-bottom: 20px;">🔐</div>
-              <h2 style="color: var(--text-primary); margin-bottom: 12px;">Please Sign In</h2>
-              <p style="color: var(--text-secondary); margin-bottom: 24px;">You need to be logged in to view your profile.</p>
-              <a href="/" class="btn-primary" style="display: inline-block; padding: 12px 24px; background: var(--accent); color: white; text-decoration: none; border-radius: var(--radius-md); font-weight: 600;">Go to Home</a>
+        // Show login/register message in the main content area
+        const profileGrid = document.querySelector('.profile-grid');
+        if (profileGrid) {
+          profileGrid.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 80px 20px;">
+              <div style="font-size: 72px; margin-bottom: 24px;">🔐</div>
+              <h2 style="color: var(--text-primary); margin-bottom: 16px; font-size: 32px;">Sign In Required</h2>
+              <p style="color: var(--text-secondary); margin-bottom: 32px; font-size: 16px;">Create an account or sign in to access your profile.</p>
+              <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                <button onclick="window.netlifyIdentity?.open('signup')" style="padding: 14px 32px; background: var(--accent); color: white; border: none; border-radius: var(--radius-md); font-weight: 600; font-size: 15px; cursor: pointer; transition: all 0.2s ease;">
+                  Register
+                </button>
+                <button onclick="window.netlifyIdentity?.open('login')" style="padding: 14px 32px; background: transparent; color: var(--text-primary); border: 1px solid var(--border); border-radius: var(--radius-md); font-weight: 600; font-size: 15px; cursor: pointer; transition: all 0.2s ease;">
+                  Sign In
+                </button>
+              </div>
             </div>
           `;
         }
