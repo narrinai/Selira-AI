@@ -270,11 +270,27 @@ class FacebookPixelTracking {
 
     // Check for credit purchase success
     if (urlParams.get('purchase') === 'credits') {
+      // Try to get credit info from localStorage first, then URL params as fallback
+      let creditData = null;
+
       const creditsPurchased = localStorage.getItem('credits_purchased');
-
       if (creditsPurchased) {
-        const creditData = JSON.parse(creditsPurchased);
+        creditData = JSON.parse(creditsPurchased);
+        localStorage.removeItem('credits_purchased');
+      } else {
+        // Fallback to URL parameters
+        const credits = urlParams.get('credits');
+        const amount = urlParams.get('amount');
 
+        if (credits && amount) {
+          creditData = {
+            credits: parseInt(credits),
+            amount: parseFloat(amount)
+          };
+        }
+      }
+
+      if (creditData) {
         this.trackEvent('Purchase', {
           content_name: `${creditData.credits} Image Credits`,
           value: creditData.amount || 0,
@@ -282,9 +298,6 @@ class FacebookPixelTracking {
           content_type: 'product',
           content_category: 'Image Credits'
         }, `purchase_credits_${creditData.credits}_${Date.now()}`);
-
-        // Clear flag
-        localStorage.removeItem('credits_purchased');
       }
     }
 
