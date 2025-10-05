@@ -716,6 +716,9 @@
 
   <!-- Facebook Pixel Event Tracking -->
   <script src="/js/facebook-pixel-events.js"></script>
+
+  <!-- Netlify Identity Widget -->
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
   <div class="app-container">
@@ -1597,11 +1600,28 @@
       await Promise.all([profilePromise, subscriptionPromise, preferencesPromise]);
     });
 
-    // TODO: Add authentication integration
-    // TODO: Add real API calls for saving user data
-    // TODO: Add loading states for save buttons
-    // TODO: Add form validation
-    // TODO: Add success/error notifications
+    // Initialize Netlify Identity
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on("init", user => {
+        console.log("Netlify Identity initialized", user);
+      });
+
+      window.netlifyIdentity.on("login", user => {
+        console.log("User logged in", user);
+        // Store user in localStorage for compatibility
+        localStorage.setItem('user', JSON.stringify({ email: user.email }));
+        // Reload page to show profile
+        window.location.reload();
+      });
+
+      window.netlifyIdentity.on("logout", () => {
+        console.log("User logged out");
+        // Clear localStorage
+        localStorage.removeItem('user');
+        // Reload page to show login prompt
+        window.location.reload();
+      });
+    }
   </script>
 </body>
 </html>

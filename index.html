@@ -1777,11 +1777,15 @@
           <span>Create</span>
         </a>
 
-        <div class="nav-section-title" id="accountSectionTitle" style="display: none;">Account</div>
+        <div class="nav-section-title">Account</div>
 
         <a href="/profile" class="nav-item" id="profileNavItem" style="display: none;">
           <span class="nav-item-icon">👤</span>
           <span>Profile</span>
+        </a>
+        <a href="#" class="nav-item" id="registerNavItem" onclick="window.netlifyIdentity?.open('signup'); return false;">
+          <span class="nav-item-icon">✨</span>
+          <span>Register</span>
         </a>
         <a href="/pricing" class="nav-item">
           <span class="nav-item-icon">💎</span>
@@ -5374,20 +5378,20 @@ Please be thorough and include important details from our conversations.`;
 
     console.log('✅ Selira Category page initialized with Character.AI style design');
 
-    // Show Profile nav item only for logged in users
+    // Show Profile/Register nav items based on login status
     function updateProfileNavVisibility() {
       const user = JSON.parse(localStorage.getItem('user') || '{}');
       const profileNavItem = document.getElementById('profileNavItem');
-      const accountSectionTitle = document.getElementById('accountSectionTitle');
+      const registerNavItem = document.getElementById('registerNavItem');
 
       if (user.email) {
-        // User is logged in - show Profile link
+        // User is logged in - show Profile, hide Register
         if (profileNavItem) profileNavItem.style.display = 'flex';
-        if (accountSectionTitle) accountSectionTitle.style.display = 'block';
+        if (registerNavItem) registerNavItem.style.display = 'none';
       } else {
-        // User is logged out - hide Profile link
+        // User is logged out - hide Profile, show Register
         if (profileNavItem) profileNavItem.style.display = 'none';
-        if (accountSectionTitle) accountSectionTitle.style.display = 'none';
+        if (registerNavItem) registerNavItem.style.display = 'flex';
       }
     }
 
