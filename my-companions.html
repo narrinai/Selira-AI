@@ -788,13 +788,18 @@
         if (!userEmail) {
           grid.innerHTML = `
             <div class="loading-grid">
-              <div style="text-align: center; padding: 40px;">
-                <div style="font-size: 48px; margin-bottom: 16px;">🔐</div>
-                <h3 style="color: var(--text-primary); margin-bottom: 8px;">Please login</h3>
-                <p style="color: var(--text-secondary); margin-bottom: 20px;">Login to see your companions!</p>
+              <div style="text-align: center; padding: 80px 20px;">
+                <div style="font-size: 72px; margin-bottom: 24px;">🔐</div>
+                <h2 style="color: var(--text-primary); margin-bottom: 16px; font-size: 32px;">Sign In Required</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 32px; font-size: 16px;">Create an account or sign in to see your companions.</p>
+                <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                  <a href="#" class="user-btn signup-btn" onclick="openLoginModal('signup'); return false;" style="padding: 14px 32px; font-size: 15px;">Register</a>
+                  <a href="#" class="user-btn secondary login-btn" onclick="openLoginModal('login'); return false;" style="padding: 14px 32px; font-size: 15px;">Sign In</a>
+                </div>
               </div>
             </div>
           `;
+
           return;
         }
         console.log('🔍 Loading companions for user:', userEmail);

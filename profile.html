@@ -717,8 +717,6 @@
   <!-- Facebook Pixel Event Tracking -->
   <script src="/js/facebook-pixel-events.js"></script>
 
-  <!-- Netlify Identity Widget -->
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
   <div class="app-container">
@@ -1583,43 +1581,11 @@
               <h2 style="color: var(--text-primary); margin-bottom: 16px; font-size: 32px;">Sign In Required</h2>
               <p style="color: var(--text-secondary); margin-bottom: 32px; font-size: 16px;">Create an account or sign in to access your profile.</p>
               <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
-                <button id="registerBtn" style="padding: 14px 32px; background: var(--accent); color: white; border: none; border-radius: var(--radius-md); font-weight: 600; font-size: 15px; cursor: pointer; transition: all 0.2s ease;">
-                  Register
-                </button>
-                <button id="signInBtn" style="padding: 14px 32px; background: transparent; color: var(--text-primary); border: 1px solid var(--border); border-radius: var(--radius-md); font-weight: 600; font-size: 15px; cursor: pointer; transition: all 0.2s ease;">
-                  Sign In
-                </button>
+                <a href="#" class="user-btn signup-btn" onclick="openLoginModal('signup'); return false;" style="padding: 14px 32px; font-size: 15px;">Register</a>
+                <a href="#" class="user-btn secondary login-btn" onclick="openLoginModal('login'); return false;" style="padding: 14px 32px; font-size: 15px;">Sign In</a>
               </div>
             </div>
           `;
-
-          // Add event listeners to the buttons after they're inserted
-          setTimeout(() => {
-            const registerBtn = document.getElementById('registerBtn');
-            const signInBtn = document.getElementById('signInBtn');
-
-            if (registerBtn) {
-              registerBtn.addEventListener('click', () => {
-                console.log('🔵 Register button clicked');
-                if (window.netlifyIdentity) {
-                  window.netlifyIdentity.open('signup');
-                } else {
-                  console.error('❌ Netlify Identity not loaded');
-                }
-              });
-            }
-
-            if (signInBtn) {
-              signInBtn.addEventListener('click', () => {
-                console.log('🔵 Sign In button clicked');
-                if (window.netlifyIdentity) {
-                  window.netlifyIdentity.open('login');
-                } else {
-                  console.error('❌ Netlify Identity not loaded');
-                }
-              });
-            }
-          }, 100);
         }
         return;
       }
@@ -1635,28 +1601,6 @@
       await Promise.all([profilePromise, subscriptionPromise, preferencesPromise]);
     });
 
-    // Initialize Netlify Identity
-    if (window.netlifyIdentity) {
-      window.netlifyIdentity.on("init", user => {
-        console.log("Netlify Identity initialized", user);
-      });
-
-      window.netlifyIdentity.on("login", user => {
-        console.log("User logged in", user);
-        // Store user in localStorage for compatibility
-        localStorage.setItem('user', JSON.stringify({ email: user.email }));
-        // Reload page to show profile
-        window.location.reload();
-      });
-
-      window.netlifyIdentity.on("logout", () => {
-        console.log("User logged out");
-        // Clear localStorage
-        localStorage.removeItem('user');
-        // Reload page to show login prompt
-        window.location.reload();
-      });
-    }
   </script>
 </body>
 </html>
