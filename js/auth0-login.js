@@ -610,11 +610,15 @@ class Auth0LoginModal {
       this.updateDesktopNav(navMenu, true);
       // Update mobile nav
       this.updateMobileNav(mobileMenu, true);
+      // Update sidebar nav
+      this.updateSidebarNav(true);
     } else {
       // Update desktop nav
       this.updateDesktopNav(navMenu, false);
       // Update mobile nav
       this.updateMobileNav(mobileMenu, false);
+      // Update sidebar nav
+      this.updateSidebarNav(false);
     }
 
     // Store auth state
@@ -867,6 +871,34 @@ class Auth0LoginModal {
         mobileMenu.insertBefore(signupLink, ctaBtn);
       }
     }
+  }
+
+  updateSidebarNav(isAuthenticated) {
+    // Update sidebar Profile link text on mobile when logged in
+    const sidebar = document.querySelector('.sidebar');
+    if (!sidebar) return;
+
+    // Find the Profile nav-item in the sidebar
+    const sidebarNavItems = sidebar.querySelectorAll('.nav-item');
+    sidebarNavItems.forEach(item => {
+      const href = item.getAttribute('href');
+      const textSpan = item.querySelector('span:not(.nav-item-icon)');
+
+      // Find the Profile link (href="/profile")
+      if (href === '/profile' && textSpan) {
+        // On mobile when authenticated, change to "Upgrade"
+        // On desktop or when not authenticated, keep as "Profile"
+        const isMobile = window.innerWidth <= 768;
+
+        if (isAuthenticated && isMobile) {
+          textSpan.textContent = 'Upgrade';
+          console.log('✅ Updated sidebar Profile to Upgrade (mobile, authenticated)');
+        } else {
+          textSpan.textContent = 'Profile';
+          console.log('✅ Kept sidebar as Profile (desktop or not authenticated)');
+        }
+      }
+    });
   }
 
   // Public methods
