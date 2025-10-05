@@ -198,8 +198,15 @@ async function generateAndDownloadAvatar(companion) {
   console.log(`🎨 Generating avatar for: ${name}`);
 
   try {
-    const traits = extractTraitsFromDescription(companion.description);
-    console.log(`   Traits: ${traits.style}, ${traits.sex}, ${traits.ethnicity}, ${traits.hairLength} ${traits.hairColor} hair`);
+    // Use actual Airtable fields instead of parsing description
+    const traits = {
+      style: companion.companion_type || 'realistic',
+      sex: companion.sex || 'female',
+      ethnicity: companion.ethnicity || 'white',
+      hairLength: companion.hair_length || 'long',
+      hairColor: companion.hair_color || 'brown'
+    };
+    console.log(`   Traits from Airtable: ${traits.style}, ${traits.sex}, ${traits.ethnicity}, ${traits.hairLength}, ${traits.hairColor}`);
 
     // Get random sexy clothing based on companion description (extract category)
     const category = companion.description.toLowerCase().includes('cooking') ? 'cooking' :
