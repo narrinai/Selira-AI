@@ -1819,6 +1819,24 @@
     async function handleCreditPurchase(packageType) {
       console.log('💳 Credit purchase initiated:', packageType);
 
+      // Track InitiateCheckout event for Meta Pixel
+      const packageDetails = {
+        'light': { credits: 50, value: 4.99 },
+        'basic': { credits: 100, value: 9.99 },
+        'premium': { credits: 250, value: 24.99 }
+      };
+
+      const details = packageDetails[packageType];
+      if (details && window.seliraPixelTracking) {
+        window.seliraPixelTracking.trackEvent('InitiateCheckout', {
+          content_name: `${details.credits} Image Credits`,
+          content_category: 'Image Credits',
+          value: details.value,
+          currency: 'USD',
+          content_type: 'product'
+        }, `checkout_credits_${packageType}_${Date.now()}`);
+      }
+
       // Check if user is logged in
       const isLoggedIn = localStorage.getItem('auth0_token') || localStorage.getItem('user_uid');
 
@@ -1858,6 +1876,13 @@
           return;
         }
 
+        // Store credit purchase info for tracking
+        localStorage.setItem('credits_purchased', JSON.stringify({
+          credits: details.credits,
+          amount: details.value,
+          packageType: packageType
+        }));
+
         // Create Stripe checkout session
         const response = await fetch('/.netlify/functions/selira-create-checkout-session', {
           method: 'POST',
@@ -1869,7 +1894,7 @@
             userEmail: userEmail,
             userId: userId,
             mode: 'payment', // One-time payment
-            successUrl: window.location.origin + '/profile?purchase=credits',
+            successUrl: window.location.origin + `/profile?purchase=credits&credits=${details.credits}&amount=${details.value}`,
             cancelUrl: window.location.origin + '/pricing?tab=oneoff'
           })
         });

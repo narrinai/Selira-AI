@@ -250,7 +250,7 @@ class FacebookPixelTracking {
     }
   }
 
-  // Track Purchase - when user successfully purchases Basic/Premium plan
+  // Track Purchase - when user successfully purchases Basic/Premium plan or image credits
   trackPurchase() {
     // Listen for Stripe payment success
     window.addEventListener('stripe-payment-success', (event) => {
@@ -267,6 +267,28 @@ class FacebookPixelTracking {
 
     // Check URL for payment success parameters
     const urlParams = new URLSearchParams(window.location.search);
+
+    // Check for credit purchase success
+    if (urlParams.get('purchase') === 'credits') {
+      const creditsPurchased = localStorage.getItem('credits_purchased');
+
+      if (creditsPurchased) {
+        const creditData = JSON.parse(creditsPurchased);
+
+        this.trackEvent('Purchase', {
+          content_name: `${creditData.credits} Image Credits`,
+          value: creditData.amount || 0,
+          currency: 'USD',
+          content_type: 'product',
+          content_category: 'Image Credits'
+        }, `purchase_credits_${creditData.credits}_${Date.now()}`);
+
+        // Clear flag
+        localStorage.removeItem('credits_purchased');
+      }
+    }
+
+    // Check for subscription purchase success
     if (urlParams.get('payment') === 'success' || urlParams.get('checkout') === 'success') {
       const planType = urlParams.get('plan') || 'Unknown';
       const amount = urlParams.get('amount') || (planType.toLowerCase() === 'premium' ? 9.99 : 4.99);
