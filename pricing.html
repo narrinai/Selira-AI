@@ -843,6 +843,42 @@
             <a href="#" class="plan-button secondary" onclick="handlePlanClick('free'); return false;">Start Free</a>
           </div>
 
+          <!-- Light Plan -->
+          <div class="pricing-card">
+            <div class="plan-name">Light</div>
+            <div class="plan-price">
+              <span class="price-currency">$</span>
+              <span class="price-amount">4.99</span>
+              <span class="price-period">/month</span>
+            </div>
+            <div class="plan-description">Everything in Free plus limited AI image generation</div>
+
+            <ul class="plan-features">
+              <li class="feature-item">
+                <span class="feature-icon">✓</span>
+                <span>Unlimited messaging</span>
+              </li>
+              <li class="feature-item">
+                <span class="feature-icon">✓</span>
+                <span>Unlimited companions</span>
+              </li>
+              <li class="feature-item">
+                <span class="feature-icon">✓</span>
+                <span>Unlimited memories</span>
+              </li>
+              <li class="feature-item">
+                <span class="feature-icon">✓</span>
+                <span>No ads</span>
+              </li>
+              <li class="feature-item">
+                <span class="feature-icon">✓</span>
+                <span>5 images generated per hour</span>
+              </li>
+            </ul>
+
+            <a href="#" class="plan-button" onclick="handlePlanClick('light'); return false;">Choose Light</a>
+          </div>
+
           <!-- Basic Plan -->
           <div class="pricing-card">
             <div class="plan-name">Basic</div>
@@ -1109,27 +1145,27 @@
     function handlePlanClick(planType) {
       console.log('🚀 handlePlanClick called with planType:', planType);
 
-      // PRIORITY CHECK: Premium -> Basic downgrade
-      if (planType === 'basic') {
+      // PRIORITY CHECK: Premium -> Basic/Light downgrade
+      if (planType === 'basic' || planType === 'light') {
         // Check if user is currently on Premium
-        const premiumCard = document.querySelector('.pricing-card:nth-child(3)');
-        const basicButton = document.querySelector('.pricing-card:nth-child(2) .plan-button');
+        const premiumCard = document.querySelector('.pricing-card:nth-child(4)');
+        const targetButton = document.querySelector(`.pricing-card:nth-child(${planType === 'light' ? '2' : '3'}) .plan-button`);
 
-        console.log('🔍 Checking for Premium -> Basic downgrade:', {
+        console.log(`🔍 Checking for Premium -> ${planType.charAt(0).toUpperCase() + planType.slice(1)} downgrade:`, {
           premiumCardExists: !!premiumCard,
           premiumHasCurrentPlan: premiumCard ? premiumCard.classList.contains('current-plan') : false,
-          basicButtonExists: !!basicButton,
-          basicButtonText: basicButton ? basicButton.textContent : 'N/A'
+          targetButtonExists: !!targetButton,
+          targetButtonText: targetButton ? targetButton.textContent : 'N/A'
         });
 
         if (premiumCard && premiumCard.classList.contains('current-plan')) {
-          console.log('🎯 PREMIUM -> BASIC DOWNGRADE DETECTED (current-plan class) - bypassing normal flow');
+          console.log(`🎯 PREMIUM -> ${planType.toUpperCase()} DOWNGRADE DETECTED (current-plan class) - bypassing normal flow`);
           downgradePlan(planType);
           return;
         }
 
-        if (basicButton && basicButton.textContent.includes('Downgrade to Basic')) {
-          console.log('🎯 PREMIUM -> BASIC DOWNGRADE DETECTED (button text) - bypassing normal flow');
+        if (targetButton && targetButton.textContent.includes(`Downgrade to ${planType.charAt(0).toUpperCase() + planType.slice(1)}`)) {
+          console.log(`🎯 PREMIUM -> ${planType.toUpperCase()} DOWNGRADE DETECTED (button text) - bypassing normal flow`);
           downgradePlan(planType);
           return;
         }
@@ -1199,15 +1235,16 @@
         }
 
         // Also check button texts for downgrade clues
-        const basicButton = document.querySelector('.pricing-card:nth-child(2) .plan-button');
-        const premiumButton = document.querySelector('.pricing-card:nth-child(3) .plan-button');
+        const lightButton = document.querySelector('.pricing-card:nth-child(2) .plan-button');
+        const basicButton = document.querySelector('.pricing-card:nth-child(3) .plan-button');
+        const premiumButton = document.querySelector('.pricing-card:nth-child(4) .plan-button');
 
-        if (basicButton && basicButton.textContent.includes('Downgrade to Basic')) {
+        if (lightButton && lightButton.textContent.includes('Downgrade to Light')) {
+          detectedCurrentPlan = 'basic';  // or premium
+          console.log('🔍 Detected basic/premium plan from Light downgrade button');
+        } else if (basicButton && basicButton.textContent.includes('Downgrade to Basic')) {
           detectedCurrentPlan = 'premium';
           console.log('🔍 Detected premium plan from Basic downgrade button');
-        } else if (premiumButton && premiumButton.textContent.includes('Downgrade to Premium')) {
-          // This shouldn't happen, but just in case
-          console.log('🔍 Unusual: detected downgrade to premium');
         }
 
         // Always load current plan to get the most up-to-date info
@@ -1284,7 +1321,8 @@
         console.log('🔄 Downgrading to', targetPlan, 'for user:', user.email);
 
         // Show loading state on the target plan button
-        const targetCard = document.querySelector(`.pricing-card:nth-child(${targetPlan === 'basic' ? '2' : '3'})`);
+        const cardIndex = targetPlan === 'light' ? '2' : targetPlan === 'basic' ? '3' : '4';
+        const targetCard = document.querySelector(`.pricing-card:nth-child(${cardIndex})`);
         const targetButton = targetCard ? targetCard.querySelector('.plan-button') : null;
         if (targetButton) {
           const originalText = targetButton.textContent;
@@ -1361,7 +1399,8 @@
         showSuccessMessage('An error occurred while downgrading your plan. Please try again.');
 
         // Restore button state
-        const targetCard = document.querySelector(`.pricing-card:nth-child(${targetPlan === 'basic' ? '2' : '3'})`);
+        const cardIndex = targetPlan === 'light' ? '2' : targetPlan === 'basic' ? '3' : '4';
+        const targetCard = document.querySelector(`.pricing-card:nth-child(${cardIndex})`);
         const targetButton = targetCard ? targetCard.querySelector('.plan-button') : null;
         if (targetButton) {
           targetButton.textContent = `Downgrade to ${targetPlan.charAt(0).toUpperCase() + targetPlan.slice(1)}`;
@@ -1375,6 +1414,7 @@
       try {
         // Map plan types to Stripe price IDs
         const priceIds = {
+          'light': 'prod_TBHHWm587HmPAi',
           'basic': 'price_1S9KVADEKVIZZyJVXXjE2gYE',
           'premium': 'price_1S9KVbDEKVIZZyJVDpWlXYhb'
         };
@@ -1599,10 +1639,12 @@
 
       if (currentPlan === 'free') {
         cardSelector = '.pricing-card:nth-child(1)'; // First card (Free)
+      } else if (currentPlan === 'light') {
+        cardSelector = '.pricing-card:nth-child(2)'; // Second card (Light)
       } else if (currentPlan === 'basic') {
-        cardSelector = '.pricing-card:nth-child(2)'; // Second card (Basic)
+        cardSelector = '.pricing-card:nth-child(3)'; // Third card (Basic)
       } else if (currentPlan === 'premium') {
-        cardSelector = '.pricing-card:nth-child(3)'; // Third card (Premium)
+        cardSelector = '.pricing-card:nth-child(4)'; // Fourth card (Premium)
       }
 
       if (cardSelector) {

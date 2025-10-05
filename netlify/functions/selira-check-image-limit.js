@@ -178,6 +178,7 @@ exports.handler = async (event, context) => {
 
     // Determine hourly limits based on plan
     const limits = {
+      'Light': 5,
       'Basic': 10,
       'Premium': 20,
       'Pro': 20 // Treating Pro same as Premium for images

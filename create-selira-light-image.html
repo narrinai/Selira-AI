@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Selira Light Image Generator</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #1a1a1a;
+      font-family: Arial, sans-serif;
+    }
+    #canvas {
+      border: 2px solid #333;
+      display: block;
+      margin: 20px auto;
+    }
+    button {
+      display: block;
+      margin: 20px auto;
+      padding: 12px 24px;
+      background: #d4a574;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background: #c19458;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas" width="800" height="600"></canvas>
+  <button onclick="downloadImage()">Download Selira Light Image</button>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    // Dark gradient background with stars
+    const gradient = ctx.createRadialGradient(400, 300, 0, 400, 300, 600);
+    gradient.addColorStop(0, '#2a2520');
+    gradient.addColorStop(1, '#1a1a1a');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 800, 600);
+
+    // Add subtle stars
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+    const stars = [
+      {x: 540, y: 120}, {x: 680, y: 180}, {x: 320, y: 140},
+      {x: 150, y: 220}, {x: 720, y: 340}, {x: 200, y: 450},
+      {x: 650, y: 480}, {x: 450, y: 520}
+    ];
+    stars.forEach(star => {
+      ctx.beginPath();
+      ctx.arc(star.x, star.y, 2, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    // Title "Selira AI"
+    ctx.fillStyle = 'white';
+    ctx.font = 'bold 80px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Selira AI', 400, 260);
+
+    // "LIGHT" badge with golden border
+    const badgeX = 400;
+    const badgeY = 370;
+    const badgeWidth = 180;
+    const badgeHeight = 60;
+    const radius = 30;
+
+    // Golden border
+    ctx.strokeStyle = '#d4a574';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(badgeX - badgeWidth/2 + radius, badgeY - badgeHeight/2);
+    ctx.lineTo(badgeX + badgeWidth/2 - radius, badgeY - badgeHeight/2);
+    ctx.quadraticCurveTo(badgeX + badgeWidth/2, badgeY - badgeHeight/2, badgeX + badgeWidth/2, badgeY - badgeHeight/2 + radius);
+    ctx.lineTo(badgeX + badgeWidth/2, badgeY + badgeHeight/2 - radius);
+    ctx.quadraticCurveTo(badgeX + badgeWidth/2, badgeY + badgeHeight/2, badgeX + badgeWidth/2 - radius, badgeY + badgeHeight/2);
+    ctx.lineTo(badgeX - badgeWidth/2 + radius, badgeY + badgeHeight/2);
+    ctx.quadraticCurveTo(badgeX - badgeWidth/2, badgeY + badgeHeight/2, badgeX - badgeWidth/2, badgeY + badgeHeight/2 - radius);
+    ctx.lineTo(badgeX - badgeWidth/2, badgeY - badgeHeight/2 + radius);
+    ctx.quadraticCurveTo(badgeX - badgeWidth/2, badgeY - badgeHeight/2, badgeX - badgeWidth/2 + radius, badgeY - badgeHeight/2);
+    ctx.closePath();
+    ctx.stroke();
+
+    // "LIGHT" text
+    ctx.fillStyle = '#d4a574';
+    ctx.font = 'bold 36px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('LIGHT', badgeX, badgeY);
+
+    function downloadImage() {
+      const link = document.createElement('a');
+      link.download = 'selira-light.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+  </script>
+</body>
+</html>

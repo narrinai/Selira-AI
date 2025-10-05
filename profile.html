@@ -1223,6 +1223,8 @@
       if (planNameElement) {
         if (currentPlan === 'free') {
           planNameElement.textContent = 'Free';
+        } else if (currentPlan === 'light') {
+          planNameElement.textContent = 'Light';
         } else if (currentPlan === 'basic') {
           planNameElement.textContent = 'Basic';
         } else if (currentPlan === 'premium') {
@@ -1233,7 +1235,9 @@
       }
 
       if (planPriceElement) {
-        if (currentPlan === 'basic') {
+        if (currentPlan === 'light') {
+          planPriceElement.textContent = '$4.99/month';
+        } else if (currentPlan === 'basic') {
           planPriceElement.textContent = '$9.99/month';
         } else if (currentPlan === 'premium') {
           planPriceElement.textContent = '$19.99/month';
@@ -1247,6 +1251,9 @@
       const usageValue = document.getElementById('currentUsage');
 
       if (currentPlan === 'free') {
+        if (usageLabel) usageLabel.textContent = 'Plan Status';
+        if (usageValue) usageValue.textContent = 'Active';
+      } else if (currentPlan === 'light') {
         if (usageLabel) usageLabel.textContent = 'Plan Status';
         if (usageValue) usageValue.textContent = 'Active';
       } else if (currentPlan === 'basic') {
