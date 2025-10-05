@@ -253,18 +253,17 @@ async function generateAndDownloadAvatar(companion) {
     const hairLengthDesc = hairMap[traits.hairLength] || 'styled hair';
     const hairColorDesc = hairColorMap[traits.hairColor] || 'brown hair';
 
-    // Build character-aware prompt
-    const characterAppearance = `${genderDescription}, ${ethnicityDesc}, ${hairLengthDesc}, ${hairColorDesc}`;
-
-    // Use much more explicit prompts for anime - very sexual with large breasts/butt and exposed skin
+    // Build simple prompt WITHOUT traits (Netlify function will add traits from parameters)
+    // Just include clothing and style keywords
     let avatarPrompt;
     if (isAnimeStyle) {
-      avatarPrompt = `beautiful anime girl, ${ethnicityDesc}, ${hairLengthDesc}, ${hairColorDesc}, very attractive face, extremely seductive expression, detailed anime art, very erotic pose, wearing ${stylishClothing}, anime style, vibrant colors, high quality anime artwork, detailed facial features, anime eyes, perfect anatomy, correct human anatomy, two arms, two hands, very sensual pose, large breasts, curvy figure, big butt, voluptuous body, exposed skin, revealing clothing, single character, solo, no extra limbs, proper proportions, bedroom background, intimate setting, seductive atmosphere`;
+      avatarPrompt = `very attractive face, extremely seductive expression, detailed anime art, very erotic pose, wearing ${stylishClothing}, vibrant colors, high quality anime artwork, detailed facial features, anime eyes, perfect anatomy, correct human anatomy, two arms, two hands, very sensual pose, large breasts, curvy figure, big butt, voluptuous body, exposed skin, revealing clothing, single character, solo, no extra limbs, proper proportions, bedroom background, intimate setting, seductive atmosphere`;
     } else {
-      avatarPrompt = `beautiful woman, ${ethnicityDesc}, ${hairLengthDesc}, ${hairColorDesc}, attractive face, seductive expression, alluring pose, wearing ${stylishClothing}, photorealistic, professional photography, soft romantic lighting, glamour photography style, eye contact, sharp focus, attractive model, confident pose, single person, solo, perfect human anatomy, two arms, two hands, correct proportions, no extra limbs, bedroom background, beach setting, luxury suite, intimate atmosphere`;
+      avatarPrompt = `attractive face, seductive expression, alluring pose, wearing ${stylishClothing}, photorealistic, professional photography, soft romantic lighting, glamour photography style, eye contact, sharp focus, attractive model, confident pose, single person, solo, perfect human anatomy, two arms, two hands, correct proportions, no extra limbs, bedroom background, beach setting, luxury suite, intimate atmosphere`;
     }
 
-    console.log(`   🎨 AVATAR PROMPT: ${avatarPrompt}`);
+    console.log(`   🎨 CUSTOM PROMPT (traits added by Netlify function): ${avatarPrompt.substring(0, 80)}...`);
+    console.log(`   👤 TRAITS: ${traits.style}, ${traits.sex}, ${traits.ethnicity}, ${traits.hairLength}, ${traits.hairColor}`);
 
     // Use Netlify function which has access to Replicate API token
     // (now using uncensored Flux Dev model - no NSFW filter)

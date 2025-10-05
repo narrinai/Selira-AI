@@ -308,17 +308,17 @@ exports.handler = async (event, context) => {
 
     console.log(`✨ [${requestId}] Using full custom prompt: "${sanitizedPrompt}"`);
 
-    // Build character-aware prompt
-    const characterAppearance = `${genderDescription}, ${ethnicityDesc}, ${hairLengthDesc}, ${hairColorDesc}`;
+    // Build character-aware prompt - PUT HAIR COLOR FIRST for better AI adherence
+    const characterAppearance = `${hairColorDesc}, ${genderDescription}, ${ethnicityDesc}, ${hairLengthDesc}`;
 
     // Build full prompt with character appearance and context
     let fullPrompt;
     if (isAnimeStyle) {
       const shotDesc = isFullBody ? 'full body anime illustration' : 'anime portrait';
-      fullPrompt = `${shotDesc} of ${characterAppearance}, anime style, ${sanitizedPrompt}${contextualEnhancement}, detailed anime art, high quality anime illustration, vibrant colors, cel shading, clean background, single anime character, perfect anime anatomy, anime eyes`;
+      fullPrompt = `${hairColorDesc}, ${shotDesc} of ${genderDescription}, ${ethnicityDesc}, ${hairLengthDesc}, anime style, ${sanitizedPrompt}${contextualEnhancement}, detailed anime art, high quality anime illustration, vibrant colors, cel shading, clean background, single anime character, perfect anime anatomy, anime eyes`;
     } else {
       const shotDesc = isFullBody ? 'full body photograph' : 'portrait photograph';
-      fullPrompt = `realistic photography, ${shotDesc} of ${characterAppearance}, ${sanitizedPrompt}${contextualEnhancement}, photorealistic, real photo, not anime, not cartoon, not illustration, not drawing, professional photography, high quality, professional lighting, clean background, single real person, perfect anatomy, realistic skin, realistic features`;
+      fullPrompt = `${hairColorDesc}, realistic photography, ${shotDesc} of ${genderDescription}, ${ethnicityDesc}, ${hairLengthDesc}, ${sanitizedPrompt}${contextualEnhancement}, photorealistic, real photo, not anime, not cartoon, not illustration, not drawing, professional photography, high quality, professional lighting, clean background, single real person, perfect anatomy, realistic skin, realistic features`;
     }
     
     console.log(`🎨 [${requestId}] Full prompt:`, fullPrompt);
