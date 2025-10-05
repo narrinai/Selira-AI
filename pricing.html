@@ -1244,7 +1244,7 @@
 
         // Use the loaded plan, fallback to detected plan
         const currentPlan = window.currentUserPlan || detectedCurrentPlan;
-        const planHierarchy = { 'free': 0, 'basic': 1, 'premium': 2 };
+        const planHierarchy = { 'free': 0, 'light': 1, 'basic': 2, 'premium': 3 };
 
         console.log('🔄 Plan comparison:', {
           currentPlan,
@@ -1716,7 +1716,11 @@
 
     // Update plan button texts based on current subscription
     function updatePlanButtons(currentPlan, subscription) {
-      const cards = document.querySelectorAll('.pricing-card');
+      // Only update subscription tab cards, not credit pack buttons
+      const subscriptionTab = document.getElementById('subscriptions-tab');
+      if (!subscriptionTab) return;
+
+      const cards = subscriptionTab.querySelectorAll('.pricing-card');
 
       cards.forEach((card, index) => {
         const button = card.querySelector('.plan-button');
@@ -1724,7 +1728,7 @@
 
         // Reset button onclick to default plan selection
         button.onclick = function() {
-          const planTypes = ['free', 'basic', 'premium'];
+          const planTypes = ['free', 'light', 'basic', 'premium'];
           handlePlanClick(planTypes[index]);
           return false;
         };
