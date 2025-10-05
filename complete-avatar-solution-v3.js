@@ -401,8 +401,8 @@ async function main() {
 
       // Take longer break every 2 companions to be more conservative
       if ((i + 1) % 2 === 0 && i < companionsNeedingAvatars.length - 1) {
-        console.log('☕ Taking a 90 second break...');
-        await new Promise(resolve => setTimeout(resolve, 90000));
+        console.log('☕ Taking a 20 second break...');
+        await new Promise(resolve => setTimeout(resolve, 20000));
       }
     }
 
