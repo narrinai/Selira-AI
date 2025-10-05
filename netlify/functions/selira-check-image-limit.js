@@ -117,6 +117,8 @@ exports.handler = async (event, context) => {
             plan: userPlan,
             userId: userId,
             imageCreditsRemaining: imageCreditsRemaining,
+            remaining: imageCreditsRemaining,
+            limit: imageCreditsRemaining,
             usingCredits: true
           })
         };

@@ -870,6 +870,13 @@
                 <div class="usage-bar-fill" id="usageBarFill" style="width: 60%;"></div>
               </div>
             </div>
+
+            <div class="usage-section" id="creditsSection" style="display: none;">
+              <div class="usage-header">
+                <span class="usage-label">💳 Image Credits</span>
+                <span class="usage-value" id="creditsRemaining">0</span>
+              </div>
+            </div>
             
             <a href="/pricing" class="btn" style="width: 100%; margin-bottom: 16px;" onclick="console.log('🔗 Navigating to pricing page'); return true;">
               Upgrade Plan
@@ -1199,8 +1206,42 @@
         } else {
           console.log('❌ Failed to load subscription info:', data);
         }
+
+        // Load image credits
+        await loadImageCredits(user);
       } catch (error) {
         console.error('❌ Error loading subscription info:', error);
+      }
+    }
+
+    // Load image credits
+    async function loadImageCredits(user) {
+      try {
+        const response = await fetch('/.netlify/functions/selira-get-image-credits', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: user.email,
+            auth0_id: user.sub
+          })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log('💳 Image credits loaded:', data);
+
+          if (data.creditsRemaining > 0) {
+            const creditsSection = document.getElementById('creditsSection');
+            const creditsRemaining = document.getElementById('creditsRemaining');
+
+            if (creditsSection && creditsRemaining) {
+              creditsSection.style.display = 'block';
+              creditsRemaining.textContent = data.creditsRemaining;
+            }
+          }
+        }
+      } catch (error) {
+        console.error('❌ Error loading image credits:', error);
       }
     }
 
