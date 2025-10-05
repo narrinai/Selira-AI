@@ -101,15 +101,15 @@ exports.handler = async (event, context) => {
       description: record.fields.Character_Description,
       category: record.fields.Category,
       tags: record.fields.Tags || [],
-      avatar_url: record.fields.Avatar_URL,
-      avatar_file: record.fields.Avatar_File?.[0]?.url,
+      avatar_url: record.fields.Avatar_URL || null, // Explicitly set null if empty
+      avatar_file: record.fields.Avatar_File?.[0]?.url || null,
       prompt: record.fields.Prompt,
       // Appearance traits for image generation
-      companion_type: record.fields.companion_type,
-      sex: record.fields.sex,
-      ethnicity: record.fields.ethnicity,
-      hair_length: record.fields.hair_length,
-      hair_color: record.fields.hair_color
+      companion_type: record.fields.companion_type || 'realistic',
+      sex: record.fields.sex || 'female',
+      ethnicity: record.fields.ethnicity || 'white',
+      hair_length: record.fields.hair_length || 'long',
+      hair_color: record.fields.hair_color || 'brown'
     }));
 
     return {
