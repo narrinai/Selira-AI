@@ -1560,10 +1560,22 @@
         return hasValidAuth0Token || hasUserData;
       };
 
-      // If not authenticated, redirect to home
+      // If not authenticated, show login prompt instead of redirecting
       if (!checkAuth()) {
-        console.log('🚫 User not authenticated - redirecting to home');
-        window.location.href = '/';
+        console.log('🚫 User not authenticated - showing login prompt');
+
+        // Show login message in the main content area
+        const mainContent = document.querySelector('.profile-content');
+        if (mainContent) {
+          mainContent.innerHTML = `
+            <div style="text-align: center; padding: 60px 20px;">
+              <div style="font-size: 64px; margin-bottom: 20px;">🔐</div>
+              <h2 style="color: var(--text-primary); margin-bottom: 12px;">Please Sign In</h2>
+              <p style="color: var(--text-secondary); margin-bottom: 24px;">You need to be logged in to view your profile.</p>
+              <a href="/" class="btn-primary" style="display: inline-block; padding: 12px 24px; background: var(--accent); color: white; text-decoration: none; border-radius: var(--radius-md); font-weight: 600;">Go to Home</a>
+            </div>
+          `;
+        }
         return;
       }
 
