@@ -702,7 +702,7 @@ class Auth0LoginModal {
       // Update existing login button to profile
       if (loginBtn) {
         loginBtn.href = '/profile';
-        loginBtn.textContent = 'Profile';
+        loginBtn.textContent = 'Upgrade';
         loginBtn.className = loginBtn.className.replace('login-btn', 'profile-btn') + ' inverted-btn';
         loginBtn.onclick = null; // Remove modal trigger
         // Transparent button styling with gold border - inherit font-size from nav
@@ -781,7 +781,7 @@ class Auth0LoginModal {
       console.log('🔄 Updating category page mobile header:', { isAuthenticated, loginBtn: loginBtn.textContent });
 
       if (isAuthenticated) {
-        loginBtn.textContent = 'Profile';
+        loginBtn.textContent = 'Upgrade';
         loginBtn.className = loginBtn.className.replace('login-btn', 'profile-btn') + ' inverted-btn';
         loginBtn.onclick = (e) => {
           e.preventDefault();
@@ -793,7 +793,7 @@ class Auth0LoginModal {
         loginBtn.style.background = 'transparent';
         loginBtn.style.color = 'var(--accent, #d4a574)';
         loginBtn.style.border = '2px solid var(--accent, #d4a574)';
-        console.log('✅ Updated mobile header to show transparent Profile button');
+        console.log('✅ Updated mobile header to show transparent Upgrade button');
       } else {
         loginBtn.textContent = 'Register';
         // Keep mobile-auth-btn class, just remove profile-btn if it exists
