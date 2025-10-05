@@ -856,7 +856,7 @@
             </h3>
             
             <div class="current-plan-display">
-              <div class="plan-name" id="currentPlanName">Free Trial</div>
+              <div class="plan-name" id="currentPlanName">Free</div>
               <div class="plan-price" id="currentPlanPrice">$0/month</div>
             </div>
             
@@ -1219,13 +1219,13 @@
 
       if (planNameElement) {
         if (currentPlan === 'free') {
-          planNameElement.textContent = 'Free Trial';
+          planNameElement.textContent = 'Free';
         } else if (currentPlan === 'basic') {
           planNameElement.textContent = 'Basic';
         } else if (currentPlan === 'premium') {
           planNameElement.textContent = 'Premium';
         } else {
-          planNameElement.textContent = subscription.plan || 'Free Trial';
+          planNameElement.textContent = subscription.plan || 'Free';
         }
       }
 
