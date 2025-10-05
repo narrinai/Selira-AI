@@ -727,7 +727,7 @@ class Auth0LoginModal {
     } else {
       console.log('👤 User not authenticated - showing login/signup buttons');
 
-      // Show login button on all pages (desktop only)
+      // Show login button on all pages (desktop only) - styled as a link
       if (loginBtn) {
         loginBtn.href = '#';
         loginBtn.textContent = 'Login';
@@ -737,17 +737,18 @@ class Auth0LoginModal {
           this.openModal('login');
           return false;
         };
-        // Reset to original styling
-        loginBtn.style.background = '';
-        loginBtn.style.color = '';
+        // Style as a text link matching Register button color/size
+        loginBtn.style.background = 'transparent';
+        loginBtn.style.color = 'var(--accent, #d4a574)';
+        loginBtn.style.border = 'none';
         loginBtn.style.borderRadius = '';
-        loginBtn.style.padding = '';
-        loginBtn.style.fontSize = '';
-        loginBtn.style.fontWeight = '';
-        loginBtn.style.border = '';
-        loginBtn.style.textDecoration = '';
+        loginBtn.style.padding = '8px 16px';
+        loginBtn.style.fontSize = '13px';
+        loginBtn.style.fontWeight = '600';
+        loginBtn.style.textDecoration = 'none';
         loginBtn.style.display = '';
-        console.log('✅ Restored login button functionality');
+        loginBtn.style.transition = 'all 0.2s ease';
+        console.log('✅ Restored login button as text link');
       }
 
       // Show signup button
