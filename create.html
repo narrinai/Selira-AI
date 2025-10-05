@@ -1529,9 +1529,22 @@
         // Get random sexy clothing
         const stylishClothing = getStylishClothing(style);
 
+        // Hair color descriptions (same as complete-avatar-solution-v3.js)
+        const hairColorMap = {
+          'brown': 'brown hair',
+          'black': 'black hair',
+          'blonde': 'blonde hair, golden hair',
+          'red': 'red hair, ginger hair',
+          'auburn': 'auburn hair, reddish-brown hair',
+          'gray': 'gray hair, silver hair',
+          'white': 'white hair, platinum hair',
+          'purple': 'purple hair, violet hair'
+        };
+        const hairColorDesc = hairColorMap[hairColor] || 'brown hair';
+
         let attractivePrompt = style === 'anime'
-          ? `beautiful anime girl, very attractive face, extremely seductive expression, detailed anime art, very erotic pose, wearing ${stylishClothing}, anime style, vibrant colors, high quality anime artwork, detailed facial features, anime eyes, perfect anatomy, correct human anatomy, two arms, two hands, very sensual pose, large breasts, curvy figure, big butt, voluptuous body, exposed skin, revealing clothing, single character, solo, no extra limbs, proper proportions, bedroom background, intimate setting, seductive atmosphere`
-          : `beautiful woman, attractive face, seductive expression, alluring pose, wearing ${stylishClothing}, photorealistic, professional photography, soft romantic lighting, glamour photography style, eye contact, sharp focus, attractive model, confident pose, single person, solo, perfect human anatomy, two arms, two hands, correct proportions, no extra limbs, bedroom background, beach setting, luxury suite, intimate atmosphere`;
+          ? `beautiful anime girl, ${hairColorDesc}, very attractive face, extremely seductive expression, detailed anime art, very erotic pose, wearing ${stylishClothing}, anime style, vibrant colors, high quality anime artwork, detailed facial features, anime eyes, perfect anatomy, correct human anatomy, two arms, two hands, very sensual pose, large breasts, curvy figure, big butt, voluptuous body, exposed skin, revealing clothing, single character, solo, no extra limbs, proper proportions, bedroom background, intimate setting, seductive atmosphere`
+          : `beautiful woman, ${hairColorDesc}, attractive face, seductive expression, alluring pose, wearing ${stylishClothing}, photorealistic, professional photography, soft romantic lighting, glamour photography style, eye contact, sharp focus, attractive model, confident pose, single person, solo, perfect human anatomy, two arms, two hands, correct proportions, no extra limbs, bedroom background, beach setting, luxury suite, intimate atmosphere`;
 
         console.log('🖼️ Testing avatar generation with prompt:', attractivePrompt.substring(0, 100) + '...');
 
