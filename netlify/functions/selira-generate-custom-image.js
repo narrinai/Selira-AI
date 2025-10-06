@@ -350,14 +350,11 @@ exports.handler = async (event, context) => {
     console.log(`🎨 [${requestId}] Full prompt:`, fullPrompt);
     console.log(`🎌 [${requestId}] Anime style:`, isAnimeStyle);
 
-    // Use different models based on style
-    // Absolute Reality v1.8.1 for realistic (NSFW-trained, uncensored)
-    // Flux Dev for anime (better at anime/illustration)
-    const modelVersion = isAnimeStyle
-      ? "6e4a938f85952bdabcc15aa329178c4d681c52bf25a0342403287dc26944661d" // Flux Dev
-      : "asiryan/absolutereality-v1.8.1"; // Absolute Reality v1.8.1
+    // Use FLUX Dev for both anime and realistic
+    // FLUX Dev by Black Forest Labs - no NSFW filter, works for both styles
+    const modelVersion = "black-forest-labs/flux-dev";
 
-    console.log(`🎨 [${requestId}] Using model: ${isAnimeStyle ? 'Flux Dev (anime)' : 'Absolute Reality v1.8.1 (realistic NSFW)'}`);
+    console.log(`🎨 [${requestId}] Using model: FLUX Dev (${isAnimeStyle ? 'anime' : 'realistic'})`);
 
     // Add progressive delay to prevent rate limiting
     // More requests = longer delay
@@ -385,8 +382,8 @@ exports.handler = async (event, context) => {
         },
         body: JSON.stringify({
           version: modelVersion,
-          input: isAnimeStyle ? {
-            // Flux Dev parameters (anime)
+          input: {
+            // FLUX Dev parameters - works for both anime and realistic
             prompt: fullPrompt,
             width: 1024,
             height: 1024,
@@ -396,15 +393,6 @@ exports.handler = async (event, context) => {
             output_format: "webp",
             output_quality: 90,
             disable_safety_checker: true
-          } : {
-            // Absolute Reality v1.8.1 parameters (realistic NSFW)
-            prompt: fullPrompt,
-            negative_prompt: 'low quality, blurry, bad anatomy, multiple people, crowd, group, deformed, extra limbs, extra arms, extra legs, anime, cartoon, illustration, drawing',
-            width: 768,
-            height: 768,
-            num_outputs: 1,
-            num_inference_steps: 25,
-            guidance_scale: 7.5
           }
         })
       });
