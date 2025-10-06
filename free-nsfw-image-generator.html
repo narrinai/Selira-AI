@@ -884,14 +884,6 @@
 
             <!-- Image Display Below Button -->
             <div id="previewArea" style="background: var(--bg-tertiary); border-radius: var(--radius-md); padding: 20px; min-height: 400px; display: flex; align-items: center; justify-content: center; position: relative;">
-              <!-- Blur Overlay (shown when no credits/subscription) -->
-              <div id="blurOverlay" style="display: none; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10; padding: 30px; text-align: center;">
-                <div style="font-size: 48px; margin-bottom: 16px;">🔒</div>
-                <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 12px; color: var(--text-primary);">Unlock Image Generation</h3>
-                <p style="color: var(--text-secondary); margin-bottom: 24px; line-height: 1.6;">Get credits or upgrade to a subscription plan to generate unlimited AI images with your favorite companions.</p>
-                <a href="/pricing" style="background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%); color: white; border: none; padding: 12px 24px; border-radius: var(--radius-sm); font-weight: 600; text-decoration: none; display: inline-block;">View Pricing Plans</a>
-              </div>
-
               <div id="placeholder" style="text-align: center; color: var(--text-muted); padding: 40px 20px; width: 100%;">
                 <p>Your generated image will appear here</p>
               </div>
@@ -993,15 +985,12 @@
 
         const canGenerate = data.plan !== 'Free' || data.creditsRemaining > 0 || (data.imagesGenerated || 0) < 2;
 
-        const blurOverlay = document.getElementById('blurOverlay');
         const generateBtn = document.getElementById('generateBtn');
         if (!canGenerate) {
-          blurOverlay.style.display = 'flex';
           generateBtn.disabled = true;
           generateBtn.style.opacity = '0.5';
           generateBtn.style.cursor = 'not-allowed';
         } else {
-          blurOverlay.style.display = 'none';
           generateBtn.disabled = false;
           generateBtn.style.opacity = '1';
           generateBtn.style.cursor = 'pointer';
@@ -1019,7 +1008,6 @@
         return data;
       } catch (error) {
         console.error('Error loading credits:', error);
-        document.getElementById('blurOverlay').style.display = 'flex';
         document.getElementById('generateBtn').disabled = true;
       }
     }
