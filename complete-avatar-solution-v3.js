@@ -210,7 +210,14 @@ async function generateAndDownloadAvatar(companion) {
       hairLength: companion.hair_length || 'long',
       hairColor: companion.hair_color || 'brown'
     };
-    console.log(`   Traits from Airtable: ${traits.style}, ${traits.sex}, ${traits.ethnicity}, ${traits.hairLength}, ${traits.hairColor}`);
+
+    // Debug: Show raw Airtable values
+    console.log(`   📋 Raw Airtable data:`);
+    console.log(`      companion_type: "${companion.companion_type}" (type: ${typeof companion.companion_type})`);
+    console.log(`      sex: "${companion.sex}"`);
+    console.log(`      ethnicity: "${companion.ethnicity}"`);
+
+    console.log(`   ✅ Traits from Airtable: ${traits.style}, ${traits.sex}, ${traits.ethnicity}, ${traits.hairLength}, ${traits.hairColor}`);
 
     // Get random sexy clothing based on companion description (extract category)
     const category = companion.description.toLowerCase().includes('cooking') ? 'cooking' :
@@ -276,6 +283,14 @@ async function generateAndDownloadAvatar(companion) {
     console.log(`   🎨 CUSTOM PROMPT (traits added by Netlify function): ${avatarPrompt.substring(0, 80)}...`);
     console.log(`   👤 TRAITS: ${traits.style}, ${traits.sex}, ${traits.ethnicity}, ${traits.hairLength}, ${traits.hairColor}`);
 
+    // Determine category and style for Netlify function
+    const requestCategory = traits.style === 'anime' ? 'anime-manga' : 'realistic';
+    const requestStyle = traits.style; // Should be 'realistic' or 'anime'
+
+    console.log(`   📤 Sending to Netlify function:`);
+    console.log(`      category: "${requestCategory}"`);
+    console.log(`      style: "${requestStyle}"`);
+
     // Use Netlify function which has access to Replicate API token
     // (now using uncensored Flux Dev model - no NSFW filter)
     const avatarResponse = await fetch('https://selira.ai/.netlify/functions/selira-generate-custom-image', {
@@ -284,8 +299,8 @@ async function generateAndDownloadAvatar(companion) {
       body: JSON.stringify({
         customPrompt: avatarPrompt,
         characterName: name,
-        category: traits.style === 'anime' ? 'anime-manga' : 'realistic',
-        style: traits.style,
+        category: requestCategory,
+        style: requestStyle,
         shotType: 'portrait',
         sex: traits.sex,
         ethnicity: traits.ethnicity,
