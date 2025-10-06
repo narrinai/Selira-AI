@@ -810,13 +810,13 @@
           <span>Affiliate Program</span>
         </a>
 
-      </nav>
+        <!-- Auth buttons for logged out users -->
+        <div id="sidebarAuthButtons" style="display: none; margin-top: 8px; padding: 0 10px;">
+          <a href="#" class="sidebar-auth-btn secondary" onclick="openLoginModal('login'); return false;">Login</a>
+          <a href="#" class="sidebar-auth-btn primary" onclick="openLoginModal('signup'); return false;">Register</a>
+        </div>
 
-      <!-- Auth buttons for logged out users -->
-      <div id="sidebarAuthButtons" style="padding: 16px; border-top: 1px solid var(--border); display: none; gap: 8px;">
-        <a href="#" class="sidebar-auth-btn secondary" onclick="openLoginModal('login'); return false;">Login</a>
-        <a href="#" class="sidebar-auth-btn primary" onclick="openLoginModal('signup'); return false;">Register</a>
-      </div>
+      </nav>
     </aside>
 
     <!-- Sidebar Overlay for Mobile -->
@@ -846,7 +846,7 @@
 
           <!-- User Actions -->
           <div class="user-actions">
-            <select class="dropdown-btn" style="border: none; background: none; color: var(--text-secondary);">
+            <select class="dropdown-btn" style="border: none; background: none; color: white; font-size: 13px;">
               <option>English</option>
             </select>
             <a href="#" class="user-btn secondary login-btn" onclick="openLoginModal('login'); return false;">Login</a>

@@ -878,6 +878,20 @@ class Auth0LoginModal {
   }
 
   updateSidebarNav(isAuthenticated) {
+    // Update sidebar Profile link visibility and auth buttons
+    const profileNavItem = document.getElementById('profileNavItem');
+    const sidebarAuthButtons = document.getElementById('sidebarAuthButtons');
+
+    if (isAuthenticated) {
+      // User is logged in - show Profile, hide auth buttons
+      if (profileNavItem) profileNavItem.style.display = 'flex';
+      if (sidebarAuthButtons) sidebarAuthButtons.style.display = 'none';
+    } else {
+      // User is logged out - hide Profile, show auth buttons
+      if (profileNavItem) profileNavItem.style.display = 'none';
+      if (sidebarAuthButtons) sidebarAuthButtons.style.display = 'flex';
+    }
+
     // Update sidebar Profile link text on mobile when logged in
     const sidebar = document.querySelector('.sidebar');
     if (!sidebar) return;

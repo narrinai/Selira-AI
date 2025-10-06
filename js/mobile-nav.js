@@ -147,7 +147,7 @@ function createMobileNav() {
             <span class="menu-icon">🤝</span>
             <span>Affiliate Program</span>
           </a>
-          <div class="mobile-menu-divider"></div>
+
           <a href="#" class="mobile-menu-link login-link" onclick="openLoginModal('login'); return false;">
             <span class="menu-icon">🔑</span>
             <span>Login</span>
@@ -155,6 +155,7 @@ function createMobileNav() {
           <a href="#" class="mobile-menu-btn-register signup-link" onclick="openLoginModal('signup'); return false;">
             Register
           </a>
+          <div class="mobile-menu-divider"></div>
         </nav>
       </div>
     </div>
