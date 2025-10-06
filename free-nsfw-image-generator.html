@@ -951,28 +951,27 @@
       { id: 'nude', label: 'Nude', prompt: 'nude, artistic nude' }
     ];
 
-    // Check authentication (using seliraAuth from auth0-login.js)
+    // Check authentication (using global helpers from auth0-login.js)
     async function checkAuthentication() {
       try {
-        // Wait for Auth0 to initialize (seliraAuth is the global Auth0 instance)
+        // Wait for auth0-login.js to load
         let attempts = 0;
-        while (typeof seliraAuth === 'undefined' && attempts < 10) {
-          await new Promise(resolve => setTimeout(resolve, 200));
+        while (!window.isUserAuthenticated && attempts < 20) {
+          await new Promise(resolve => setTimeout(resolve, 100));
           attempts++;
         }
 
-        if (typeof seliraAuth !== 'undefined' && seliraAuth && seliraAuth.auth0Client) {
-          const isAuthenticated = await seliraAuth.auth0Client.isAuthenticated();
-          if (isAuthenticated) {
-            const user = await seliraAuth.auth0Client.getUser();
-            console.log('✅ User authenticated:', user.email);
+        if (window.isUserAuthenticated && window.isUserAuthenticated()) {
+          const user = window.getCurrentUser();
+          if (user) {
+            console.log('✅ Image Generator: User authenticated:', user.email);
             return user;
           }
         }
-        console.log('ℹ️ User not authenticated');
+        console.log('ℹ️ Image Generator: User not authenticated');
         return null;
       } catch (error) {
-        console.error('❌ Auth check error:', error);
+        console.error('❌ Image Generator auth check error:', error);
         return null;
       }
     }
