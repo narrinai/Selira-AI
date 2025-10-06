@@ -28,6 +28,7 @@ function updateMobileNavAuthState(authDetail = null) {
   const profileBtn = document.getElementById('mobileProfileBtn');
   const profileText = profileBtn?.querySelector('.profile-text');
   const loginLinks = document.querySelectorAll('.mobile-menu-nav .login-link, .mobile-menu-nav .signup-link');
+  const profileLink = document.querySelector('.mobile-menu-nav .profile-link');
 
   if (!profileBtn || !profileText) return;
 
@@ -50,6 +51,8 @@ function updateMobileNavAuthState(authDetail = null) {
     profileBtn.style.width = 'auto';
     profileBtn.style.height = 'auto';
     profileBtn.style.border = '1px solid transparent';
+    // Show Profile link in menu for authenticated users
+    if (profileLink) profileLink.style.display = 'flex';
     // Hide login/signup links in menu
     loginLinks.forEach(link => link.style.display = 'none');
   } else {
@@ -64,6 +67,8 @@ function updateMobileNavAuthState(authDetail = null) {
     profileBtn.style.width = 'auto';
     profileBtn.style.height = 'auto';
     profileBtn.style.border = '1px solid transparent';
+    // Hide Profile link in menu for non-authenticated users
+    if (profileLink) profileLink.style.display = 'none';
     // Show login/signup links in menu
     loginLinks.forEach(link => link.style.display = 'flex');
   }
@@ -130,7 +135,7 @@ function createMobileNav() {
             <span>Image Generator</span>
           </a>
           <div class="mobile-menu-divider"></div>
-          <a href="/profile" class="mobile-menu-link">
+          <a href="/profile" class="mobile-menu-link profile-link" style="display: none;">
             <span class="menu-icon">👤</span>
             <span>Profile</span>
           </a>
