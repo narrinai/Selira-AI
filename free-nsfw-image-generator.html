@@ -1281,18 +1281,9 @@
       renderPoseOptions();
       renderOutfitOptions();
 
-      if (!userData) {
-        // User not logged in - open signup modal directly
-        console.log('📝 User not authenticated - opening signup modal');
-        if (typeof openLoginModal === 'function') {
-          openLoginModal('signup');
-        }
-      } else {
+      if (userData) {
         // User is logged in - load their credits
         await loadUserCredits();
-        // Hide blur overlay if it exists
-        const blurOverlay = document.getElementById('blurOverlay');
-        if (blurOverlay) blurOverlay.style.display = 'none';
       }
 
       // Setup event listeners
