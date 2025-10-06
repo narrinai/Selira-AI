@@ -2,25 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <meta http-equiv="Pragma" content="no-cache" />
-  <meta http-equiv="Expires" content="0" />
-  <title>NSFW AI Image Generator - Free Adult Image Generation | Selira AI</title>
-  <meta name="description" content="Free NSFW AI image generator. Create custom adult images with poses, outfits & prompts. Unlimited generation with Selira AI.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pricing - Free AI NSFW Chat & Image Generation | Selira</title>
+  <meta name="description" content="Free AI NSFW chat & adult image generation forever. No limits on AI sex chat. Premium features for enhanced adult AI companion experiences. Always free.">
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://selira.ai/free-nsfw-image-generator">
-  <meta property="og:title" content="Discover AI Characters - Selira AI">
-  <meta property="og:description" content="Browse thousands of AI characters by category. Find your perfect AI companion on Selira AI.">
+  <meta property="og:url" content="https://selira.ai/pricing">
+  <meta property="og:title" content="Pricing Plans - Selira AI">
+  <meta property="og:description" content="Unlock unlimited AI companion experiences with our flexible pricing plans.">
   <meta property="og:image" content="https://selira.ai/og-image.jpg">
   
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:url" content="https://selira.ai/free-nsfw-image-generator">
-  <meta property="twitter:title" content="Discover AI Characters | Selira AI">
-  <meta property="twitter:description" content="Browse thousands of AI characters by category on Selira AI.">
+  <meta property="twitter:url" content="https://selira.ai/pricing">
+  <meta property="twitter:title" content="Pricing Plans | Selira AI">
+  <meta property="twitter:description" content="Choose your perfect AI companion plan on Selira AI.">
   <meta property="twitter:image" content="https://selira.ai/og-image.jpg">
   
   <!-- Google Analytics -->
@@ -32,25 +29,18 @@
     gtag('config', 'G-XZXX201WKD');
   </script>
   
-  <!-- Force cache clear for Safari -->
-  <script>
-    // Unregister any service workers (Safari cache killer)
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then(registrations => {
-        registrations.forEach(registration => registration.unregister());
-      });
-    }
-  </script>
-
   <!-- Auth0 Authentication System -->
-  <script src="/js/auth0-login.js?v=20250203"></script>
-
+  <script src="/js/auth0-login.js?t=1759430184"></script>
+  
+  <!-- Selira AI Popup System -->
+  <script src="/js/selira-popups.js"></script>
+  
   <!-- Mobile Navigation System -->
   <script src="/js/mobile-nav.js"></script>
-
+  
   <!-- Age Verification System -->
   <script src="/js/age-verification.js"></script>
-
+  
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -67,7 +57,7 @@
     @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
     
     :root {
-      /* Selira dark theme - matching index.html */
+      /* Selira dark theme - matching category.html */
       --bg-primary: #0a0a0a;
       --bg-secondary: #1a1a1a;
       --bg-tertiary: #2a2a2a;
@@ -79,33 +69,20 @@
       --accent-hover: #c19456;
       --accent-secondary: #ec4899;
       --border: #333333;
+      --border-color: #333333;
       --success: #10b981;
       --error: #ef4444;
       --radius-sm: 8px;
       --radius-md: 12px;
       --radius-lg: 16px;
     }
-
+    
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
-    /* Prevent mobile zoom on form inputs */
-    input, textarea, select, button {
-      font-size: 16px !important;
-    }
-
-    /* Prevent zoom on focus for mobile devices */
-    @media screen and (max-width: 768px) {
-      input, textarea, select {
-        font-size: 16px !important;
-        transform-origin: left top;
-        transform: scale(1);
-      }
-    }
-
+    
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       background-color: var(--bg-primary);
@@ -113,13 +90,12 @@
       line-height: 1.6;
       overflow-x: hidden;
     }
-
-    /* Layout Container */
+    
     .app-container {
       display: flex;
       min-height: 100vh;
     }
-
+    
     /* Left Sidebar Navigation (Character.AI style) */
     .sidebar {
       width: 220px;
@@ -135,7 +111,7 @@
       z-index: 100;
       overflow-y: auto;
     }
-
+    
     .sidebar-logo {
       display: flex;
       align-items: center;
@@ -153,8 +129,6 @@
       text-decoration: none;
       color: inherit;
     }
-
-    /* Removed sidebar-logo-icon - using text only */
 
     .sidebar-logo-text {
       font-family: 'Playfair Display', serif;
@@ -201,15 +175,52 @@
       margin: 12px 0 4px;
       padding: 0 10px;
     }
-
+    
     /* Main Content Area */
     .main-content {
       flex: 1;
       margin-left: 220px;
       display: flex;
       flex-direction: column;
+      height: 100vh;
+      overflow-y: auto;
     }
-
+    
+    /* Mobile Header (hidden on desktop) */
+    .mobile-header {
+      display: none;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    
+    .mobile-menu-btn {
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 20px;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: var(--radius-sm);
+      transition: background 0.2s ease;
+    }
+    
+    .mobile-menu-btn:hover {
+      background: var(--bg-tertiary);
+    }
+    
+    .mobile-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    
     /* Top Header (Character.AI style) */
     .top-header {
       background: var(--bg-primary);
@@ -218,7 +229,7 @@
       top: 0;
       z-index: 40;
     }
-
+    
     .header-top {
       display: flex;
       justify-content: space-between;
@@ -226,33 +237,17 @@
       padding: 8px 40px;
       gap: 24px;
     }
-
+    
+    /* Search */
     .search-container {
+      position: relative;
       flex: 1;
       max-width: 600px;
-      position: relative;
     }
-
-    .search-input {
-      width: 100%;
-      padding: 10px 18px 10px 40px;
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: 25px;
-      font-size: 14px;
-      color: var(--text-primary);
-      transition: all 0.2s ease;
-    }
-
-    .search-input:focus {
-      outline: none;
-      border-color: var(--accent-primary);
-      box-shadow: 0 0 0 3px var(--accent-light);
-    }
-
+    
     .search-icon {
       position: absolute;
-      left: 14px;
+      left: 16px;
       top: 50%;
       transform: translateY(-50%);
       color: var(--text-muted);
@@ -264,13 +259,49 @@
     .search-icon:hover {
       color: var(--accent);
     }
-
+    
+    .search-input {
+      width: 100%;
+      padding: 10px 16px 10px 48px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+    
+    .search-input:focus {
+      border-color: var(--accent);
+    }
+    
+    .search-input::placeholder {
+      color: var(--text-muted);
+    }
+    
+    /* User Actions */
     .user-actions {
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 16px;
     }
-
+    
+    .dropdown-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      transition: all 0.2s ease;
+    }
+    
+    .dropdown-btn:hover {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+    
     .user-btn {
       padding: 8px 16px;
       border-radius: var(--radius-md);
@@ -280,298 +311,277 @@
       transition: all 0.2s ease;
       border: 1px solid transparent;
     }
-
-    .user-btn:hover {
-      background: var(--accent-hover);
-      transform: translateY(-1px);
-    }
-
+    
     .user-btn.secondary {
       color: var(--text-secondary);
       border-color: var(--border);
     }
-
+    
     .user-btn.secondary:hover {
       background: var(--bg-secondary);
       color: var(--text-primary);
     }
-
+    
     .signup-btn {
       background: var(--accent);
       color: white;
     }
-
+    
     .signup-btn:hover {
       background: var(--accent-hover);
       transform: translateY(-1px);
       box-shadow: 0 4px 12px rgba(212, 165, 116, 0.3);
     }
-
-
-    /* Character Grid */
-    .content-area {
-      padding: 30px;
+    
+    /* Pricing Section */
+    .pricing-section {
+      padding: 32px 40px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    /* Tab Navigation */
+    .pricing-tabs {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 40px;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      padding: 4px;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 40px;
+    }
+    
+    .tab-button {
       flex: 1;
+      padding: 12px 24px;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      font-weight: 500;
+      font-size: 13px;
+      transition: all 0.2s ease;
     }
-
-    .characters-grid {
+    
+    .tab-button.active {
+      background: var(--accent);
+      color: white;
+    }
+    
+    .tab-button:hover:not(.active) {
+      color: var(--text-primary);
+      background: var(--bg-tertiary);
+    }
+    
+    /* Tab Content */
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    /* Pricing Cards */
+    .pricing-cards {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      margin-bottom: 40px;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 0;
     }
-
-    .character-card {
+    
+    .pricing-card {
       background: var(--bg-secondary);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      overflow: hidden;
+      padding: 32px 24px;
+      position: relative;
       transition: all 0.3s ease;
-      cursor: pointer;
-      position: relative;
-    }
-
-    .character-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-      border-color: var(--accent);
-    }
-
-    .character-image {
-      width: 100%;
-      height: 320px;
-      object-fit: cover;
-      position: relative;
-    }
-
-    .character-image-placeholder {
-      width: 100%;
-      height: 320px;
-      background: var(--bg-tertiary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 48px;
-      color: var(--text-muted);
-    }
-
-    .character-favorite {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      width: 32px;
-      height: 32px;
-      background: rgba(255, 255, 255, 0.9);
-      border: none;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      font-size: 16px;
-    }
-
-    .character-favorite:hover {
-      background: white;
-      transform: scale(1.1);
-    }
-
-    .character-favorite.active {
-      color: #ef4444;
-    }
-
-    .character-stats-overlay {
-      position: absolute;
-      bottom: 8px;
-      left: 8px;
-      display: flex;
-      gap: 8px;
-    }
-
-    .stat-badge {
-      background: rgba(0, 0, 0, 0.7);
-      color: white;
-      padding: 4px 8px;
-      border-radius: var(--radius-sm);
-      font-size: 12px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .character-info {
-      padding: 16px;
-    }
-
-    /* Hide stats in character-info on desktop (shown in overlay) */
-    .character-stats {
-      display: none;
-    }
-
-    .character-name {
-      font-family: 'Playfair Display', serif;
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 4px;
-      line-height: 1.2;
-    }
-
-    .character-creator {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .character-description {
-      color: var(--text-secondary);
-      font-size: 14px;
-      line-height: 1.4;
-      margin-bottom: 12px;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .character-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 12px;
-    }
-
-    .character-tag {
-      background: rgba(212, 165, 116, 0.2);
-      color: var(--accent);
-      padding: 3px 8px;
-      border-radius: 12px;
-      font-size: 11px;
-      font-weight: 600;
-    }
-
-    .character-tag.nsfw {
-      background: #fee2e2;
-      color: #dc2626;
-    }
-
-    /* Loading States */
-    .loading-card {
-      background: var(--bg-secondary);
-      border-radius: var(--radius-lg);
-      padding: 20px;
-      text-align: center;
-      animation: pulse 1.5s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 0.8; }
-      50% { opacity: 0.4; }
-    }
-
-    .loading-grid {
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 60px 20px;
-    }
-
-    .spinner {
-      width: 40px;
-      height: 40px;
-      border: 4px solid var(--border);
-      border-top: 4px solid var(--accent);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 20px;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    /* Hide mobile header on desktop by default */
-    .mobile-header-container {
-      display: none;
-    }
-
-
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
-      20%, 40%, 60%, 80% { transform: translateX(10px); }
-    }
-
-    .shake-animation {
-      animation: shake 0.5s;
-    }
-
-    /* Blur Overlay for Preview */
-    .preview-blur-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(10, 10, 10, 0.85);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-radius: var(--radius-md);
+      min-height: 500px;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 10;
-      padding: 30px;
-      text-align: center;
+    }
+    
+    .pricing-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+    }
+    
+    .pricing-card.featured {
+      border-color: var(--accent);
+      transform: scale(1.02);
+    }
+    
+    .pricing-card.featured:hover {
+      transform: scale(1.02) translateY(-4px);
     }
 
-    .blur-overlay-icon {
-      font-size: 64px;
-      margin-bottom: 20px;
-      opacity: 0.8;
+    .pricing-card.current-plan {
+      border-color: #10b981;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, var(--bg-secondary) 100%);
     }
 
-    .blur-overlay-title {
+    .current-plan-badge {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 12px;
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      z-index: 2;
+    }
+
+    .card-badge {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: white;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      z-index: 1;
+    }
+
+    /* Adjust badge positioning when both are present - stack vertically with more spacing */
+    .pricing-card.featured.current-plan .card-badge {
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1;
+    }
+
+    .pricing-card.featured.current-plan .current-plan-badge {
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+    }
+    
+    .plan-name {
       font-family: 'Playfair Display', serif;
       font-size: 24px;
       font-weight: 700;
       color: var(--text-primary);
       margin-bottom: 12px;
     }
-
-    .blur-overlay-text {
-      font-size: 15px;
-      color: var(--text-secondary);
-      margin-bottom: 24px;
-      line-height: 1.6;
+    
+    .plan-price {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+      margin-bottom: 8px;
     }
-
-    .blur-overlay-btn {
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+    
+    .price-currency {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--accent);
+    }
+    
+    .price-amount {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    
+    .price-period {
+      font-size: 16px;
+      color: var(--text-secondary);
+    }
+    
+    .price-daily {
+      color: var(--text-secondary);
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
+    
+    .plan-description {
+      color: var(--text-secondary);
+      font-size: 13px;
+      margin-bottom: 24px;
+    }
+    
+    .plan-features {
+      list-style: none;
+      margin-bottom: 32px;
+      flex-grow: 1;
+    }
+    
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+      font-size: 13px;
+    }
+    
+    .feature-icon {
+      color: var(--success);
+      font-weight: 700;
+      width: 16px;
+    }
+    
+    .plan-button {
+      width: 100%;
+      padding: 14px 24px;
+      background: var(--accent);
       color: white;
       border: none;
-      padding: 14px 32px;
       border-radius: var(--radius-md);
+      font-weight: 600;
       font-size: 16px;
-      font-weight: 700;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.2s ease;
       text-decoration: none;
-      display: inline-block;
+      text-align: center;
+      display: block;
     }
-
-    .blur-overlay-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 24px rgba(212, 165, 116, 0.4);
+    
+    .plan-button:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
     }
-
-
-    /* Mobile Responsive */
+    
+    .plan-button.secondary {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+    
+    .plan-button.secondary:hover {
+      background: var(--bg-tertiary);
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+      .pricing-cards {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      
+      .pricing-section {
+        padding: 24px 20px;
+      }
+    }
+    
     @media (max-width: 768px) {
       .sidebar {
         transform: translateX(-100%);
@@ -586,24 +596,18 @@
         margin-left: 0;
       }
 
-      .mobile-header-container {
-        display: block;
-        position: sticky;
-        top: 0;
-        z-index: 100;
-        background: var(--bg-primary);
-      }
-
       .mobile-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 16px 10px;
+        padding: 16px 20px;
         background: var(--bg-primary);
         border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 100;
         height: 60px;
         box-sizing: border-box;
-        overflow-x: visible;
       }
 
       .mobile-menu-btn {
@@ -632,800 +636,46 @@
       .top-header {
         display: none;
       }
-
-      .login-btn {
-        display: none !important;
-      }
-
-      .characters-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-        padding: 0;
-      }
-
-      .content-area {
-        padding: 16px;
-        padding-top: 120px; /* Space for sticky mobile header container */
-      }
-
-      .character-card {
-        background: var(--bg-secondary);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        overflow: hidden;
-        aspect-ratio: 1;
-        position: relative;
-      }
-
-      .character-card img {
-        width: 100%;
-        height: 60%;
-        object-fit: cover;
-      }
-
-      .character-card .character-info {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
-        padding: 20px 12px 12px;
-        color: white;
-      }
-
-      .character-card .character-name {
-        font-size: 14px;
-        font-weight: 600;
-        margin-bottom: 4px;
-        color: white;
-        line-height: 1.2;
-      }
-
-      .character-card .character-title {
-        font-size: 12px;
-        color: rgba(255, 255, 255, 0.8);
-        margin-bottom: 8px;
-        line-height: 1.2;
-      }
-
-      .character-card .character-stats {
-        display: flex !important; /* Show stats in mobile character-info */
-        gap: 12px;
-        font-size: 11px;
-        color: rgba(255, 255, 255, 0.7);
-        margin-bottom: 6px;
-  
       
-      /* Image Generator Mobile Responsive */
-      .page-header h1 {
-        font-size: 2rem !important;
-      }
-
-      .page-header p {
-        font-size: 1rem !important;
-      }
-
-      #creditsInfo {
-        flex-direction: column !important;
-        align-items: flex-start !important;
-      }
-
-      /* Make generation container single column on mobile */
-      .content-area > div[style*="grid-template-columns: 1fr 1fr"] {
-        grid-template-columns: 1fr !important;
-        gap: 20px !important;
-      }
-
-      /* Form panel mobile adjustments */
-      .content-area > div > div[style*="padding: 30px"] {
-        padding: 20px !important;
-      }
-
-      /* Option grids mobile - smaller cards */
-      #poseOptions,
-      #outfitOptions {
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)) !important;
-      }
-
-      #poseOptions > div,
-      #outfitOptions > div {
-        padding: 12px !important;
-      }
-
-      #poseOptions > div span:first-child,
-      #outfitOptions > div span:first-child {
-        font-size: 24px !important;
-      }
-
-      #poseOptions > div div,
-      #outfitOptions > div div {
-        font-size: 12px !important;
-      }
-
-      /* Preview panel mobile */
-      .content-area > div > div:last-child {
-        position: relative !important;
-        top: 0 !important;
-      }
-
-      #previewArea {
-        min-height: 300px !important;
-      }
-
-      /* Blur overlay mobile adjustments */
-      .preview-blur-overlay {
-        padding: 20px !important;
-      }
-
-      .blur-overlay-icon {
-        font-size: 48px !important;
-        margin-bottom: 16px !important;
-      }
-
-      .blur-overlay-title {
-        font-size: 20px !important;
-        margin-bottom: 10px !important;
-      }
-
-      .blur-overlay-text {
-        font-size: 14px !important;
-        margin-bottom: 20px !important;
-      }
-
-      .blur-overlay-btn {
-        padding: 12px 24px !important;
-        font-size: 15px !important;
-        width: 100%;
-        max-width: 280px;
-      }
-
-
-    }
-
-      .character-card .character-description {
-        display: none;
-      }
-
-      /* Mobile adjustments for overlay elements */
-      .character-favorite {
-        width: 28px;
-        height: 28px;
-        top: 8px;
-        right: 8px;
-        font-size: 14px;
-      }
-
-      .character-stats-overlay {
-        display: none; /* Hide overlay stats on mobile, use character-info stats instead */
-      }
-
-      .character-card .character-creator {
-        font-size: 11px;
-        color: rgba(255, 255, 255, 0.6);
-        margin-bottom: 6px;
-      }
-
-      .character-tags {
-        display: flex;
-        gap: 4px;
-        flex-wrap: wrap;
-        margin-top: 6px;
-      }
-
-      .character-tag {
-        font-size: 10px;
-        padding: 2px 6px;
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 4px;
-        color: rgba(255, 255, 255, 0.8);
-      }
-
-      .character-tag.nsfw {
-        background: rgba(239, 68, 68, 0.3);
-        color: #ff9999;
-      }
-
-      /* Create Character Section Mobile */
-      .create-character-section {
-        position: static !important;
-        top: auto !important;
-        left: auto !important;
-        right: auto !important;
-        bottom: auto !important;
-        padding: 16px !important;
-        max-height: none !important;
-        overflow: visible !important;
-      }
-
-      .create-header h2 {
-        font-size: 28px !important;
-        margin-bottom: 16px !important;
-        line-height: 1.2 !important;
-      }
-
-      .create-header p {
-        font-size: 16px !important;
-        margin-bottom: 24px !important;
-        color: var(--text-secondary) !important;
-      }
-
-      .creation-progress {
-        padding: 0 20px !important;
-        margin-bottom: 32px !important;
-      }
-
-      .step-container {
-        padding: 0 20px !important;
-        max-width: 100% !important;
-        overflow: visible !important;
-      }
-
-      .creation-step h3 {
-        font-size: 22px !important;
-        margin-bottom: 24px !important;
-        font-weight: 700 !important;
-        color: var(--text-primary) !important;
-      }
-
-      .style-grid {
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 20px !important;
-      }
-
-      .style-option {
-        aspect-ratio: 1 !important;
-        padding: 20px !important;
-        min-height: 140px !important;
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        justify-content: center !important;
-      }
-
-      .style-option img {
-        height: 80px !important;
-        width: 80px !important;
-        border-radius: 50% !important;
-        margin-bottom: 12px !important;
-      }
-
-      .style-option span {
-        font-size: 14px !important;
-        font-weight: 600 !important;
-        text-align: center !important;
-        margin-top: 0 !important;
-      }
-
-      .step-buttons {
-        flex-direction: column !important;
-        gap: 16px !important;
-        margin-top: 32px !important;
-        padding: 0 20px !important;
-      }
-
-      .step-btn {
-        width: 100% !important;
-        padding: 16px 24px !important;
-        font-size: 16px !important;
-        font-weight: 600 !important;
-        border-radius: 12px !important;
-        min-height: 50px !important;
-      }
-
-      /* Create Tags Mobile */
-      .create-popular-tags {
-        gap: 6px !important;
-      }
-
-      .create-tag-button {
-        font-size: 12px !important;
-        padding: 6px 12px !important;
-      }
-
-      .create-tag-button.selected {
-        background: var(--accent) !important;
-        border-color: var(--accent) !important;
-        color: white !important;
-      }
-
-      .create-selected-tag {
-        font-size: 12px !important;
-        padding: 6px 8px !important;
-        background: var(--accent) !important;
-        color: white !important;
-        border-radius: 6px !important;
-        display: flex !important;
-        align-items: center !important;
-        gap: 4px !important;
-      }
-
-      .create-selected-tag .remove-tag {
-        background: none !important;
-        border: none !important;
-        color: white !important;
-        cursor: pointer !important;
-        font-size: 14px !important;
-        padding: 0 !important;
-        opacity: 0.8 !important;
-      }
-
-      #createTagSearchResults .tag-search-result {
-        padding: 8px 12px !important;
-        border-bottom: 1px solid var(--border) !important;
-        cursor: pointer !important;
-        font-size: 14px !important;
-      }
-
-      #createTagSearchResults .tag-search-result:hover {
-        background: var(--bg-secondary) !important;
-      }
-
-      /* Profile Section Default */
-      .profile-grid {
-        grid-template-columns: 1fr 1fr 1fr !important;
-      }
-
-      /* Profile Section Desktop */
-      @media (min-width: 1200px) {
-        .profile-section {
-          padding: 60px 40px;
-          max-width: 1400px;
-          margin: 0 auto;
-        }
-        
-        .profile-grid {
-          grid-template-columns: 2fr 1fr 1fr !important;
-          gap: 32px !important;
-          max-width: 1400px !important;
-        }
-        
-        .profile-info-card {
-          padding: 32px !important;
-        }
-        
-        .plan-card {
-          padding: 32px !important;
-        }
-        
-        .email-settings-card {
-          padding: 32px !important;
-        }
-      }
-
-      @media (min-width: 769px) and (max-width: 1199px) {
-        .profile-section {
-          padding: 40px 20px;
-          max-width: 1000px;
-          margin: 0 auto;
-        }
-        
-        .profile-grid {
-          grid-template-columns: 1fr 1fr !important;
-          gap: 24px !important;
-        }
-        
-        .email-settings-card {
-          grid-column: 1 / -1;
-          max-width: 600px;
-          margin: 0 auto;
-        }
-      }
-
-      /* Profile Section Mobile */
-      @media (max-width: 768px) {
-        .profile-section {
-          position: static !important;
-          top: auto !important;
-          left: auto !important;
-          right: auto !important;
-          bottom: auto !important;
-          padding: 20px !important;
-          height: auto !important;
-          overflow: visible !important;
-          max-width: 500px !important;
-          margin: 0 auto !important;
-          width: 100% !important;
-          box-sizing: border-box !important;
-        }
-      }
-
-      @media (max-width: 768px) {
-        .profile-header h2 {
-          font-size: 28px !important;
-          margin-bottom: 12px !important;
-        }
-
-        .profile-header p {
-          font-size: 16px !important;
-          margin-bottom: 24px !important;
-        }
-
-        .profile-grid {
-          grid-template-columns: 1fr !important;
-          gap: 16px !important;
-          justify-items: center !important;
-        }
-
-        .profile-info-card,
-        .plan-card,
-        .email-settings-card {
-          padding: 20px !important;
-          border-radius: 12px !important;
-          width: 100% !important;
-          max-width: 400px !important;
-          margin: 0 auto !important;
-        }
-
-        .profile-info-card h3,
-        .plan-card h3,
-        .email-settings-card h3 {
-          font-size: 18px !important;
-          margin-bottom: 16px !important;
-        }
-
-        .profile-info-card h3 span,
-        .plan-card h3 span,
-        .email-settings-card h3 span {
-          font-size: 18px !important;
-        }
-
-        .usage-stat-item {
-          padding: 12px !important;
-          border-radius: 8px !important;
-        }
-
-        .usage-stat-item .stat-value {
-          font-size: 20px !important;
-        }
-
-        .usage-stat-item .stat-label {
-          font-size: 12px !important;
-        }
-
-        .subscription-features li {
-          font-size: 13px !important;
-          padding: 6px 0 !important;
-        }
-
-        .upgrade-btn,
-        .manage-btn {
-          padding: 14px 20px !important;
-          font-size: 16px !important;
-          border-radius: 10px !important;
-          font-weight: 600 !important;
-        }
-
-        #userEmail,
-        #userPlan,
-        #userUsername,
-        #userDisplayName {
-          font-size: 14px !important;
-          padding: 12px !important;
-          border-radius: 8px !important;
-        }
-
-        #saveUsername,
-        #saveDisplayName {
-          padding: 10px 16px !important;
-          font-size: 12px !important;
-          border-radius: 8px !important;
-        }
-
-        .toggle-switch {
-          transform: scale(1.2) !important;
-        }
-      }
-
-      /* Filter section adjustments */
-      .filter-section {
-        padding: 12px 16px;
-        border-bottom: 1px solid var(--border);
-      }
-
-      .filter-row {
-        flex-wrap: wrap;
-        gap: 8px;
-        margin-bottom: 12px;
-      }
-
-      .filter-dropdown, .toggle-switch {
-        font-size: 12px;
-      }
-
-      .dropdown-btn {
-        padding: 6px 12px;
-        font-size: 12px;
-      }
-
-      .category-tabs {
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        padding-bottom: 4px;
-        gap: 8px;
-      }
-
-      .category-tab {
-        font-size: 13px;
-        padding: 8px 16px;
-        white-space: nowrap;
-        flex-shrink: 0;
-      }
-
-      .tag-filters {
-        gap: 8px;
-      }
-
-      .tag-pill {
-        font-size: 12px;
-        padding: 6px 12px;
-      }
-    }
-
-    /* Smaller mobile screens */
-    @media (max-width: 480px) {
-      .characters-grid {
-        gap: 8px;
-      }
-
-      .content-area {
-        padding: 12px;
-      }
-
-      .character-card .character-info {
-        padding: 16px 8px 8px;
-      }
-
-      .character-card .character-name {
-        font-size: 13px;
-      }
-
-      .character-card .character-title {
-        font-size: 11px;
-      }
-
-      .character-card .character-stats {
-        font-size: 10px;
-        gap: 8px;
-      }
-
-      .filter-section {
-        padding: 10px 12px;
-        display: none !important;
-      }
-
-      .mobile-header {
+      .header-top {
         padding: 16px 20px;
-      }
-
-      .mobile-filter-btn:hover {
-        background: var(--bg-secondary) !important;
-        border-color: var(--accent) !important;
-      }
-
-      /* Mobile Filter Bar */
-      .mobile-filter-bar {
-        display: none;
-      }
-
-      @media (max-width: 768px) {
-        .mobile-filter-bar {
-          display: flex;
-          gap: 8px;
-          padding: 12px;
-          background: var(--bg-primary);
-          border-bottom: 1px solid var(--border);
-        }
-
-        
-
-        .mobile-dropdown-btn {
-          width: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 10px 14px;
-          background: var(--bg-secondary);
-          border: 1px solid var(--border);
-          border-radius: 8px;
-          color: var(--text-primary);
-          font-size: 14px;
-          font-weight: 500;
-          cursor: pointer;
-          transition: all 0.2s ease;
-        }
-
-        .mobile-dropdown-btn:active {
-          background: var(--bg-tertiary);
-        }
-
-        .mobile-dropdown-menu {
-          display: none;
-          position: absolute;
-          top: 100%;
-          left: 0;
-          right: 0;
-          margin-top: 4px;
-          background: var(--bg-secondary);
-          border: 1px solid var(--border);
-          border-radius: 8px;
-          max-height: 300px;
-          overflow-y: auto;
-          z-index: 1000;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-
-        .mobile-dropdown-menu.show {
-          display: block;
-        }
-
-        .mobile-dropdown-item {
-          padding: 12px 14px;
-          color: var(--text-primary);
-          font-size: 14px;
-          cursor: pointer;
-          border-bottom: 1px solid var(--border);
-          transition: background 0.2s ease;
-        }
-
-        .mobile-dropdown-item:last-child {
-          border-bottom: none;
-        }
-
-        .mobile-dropdown-item:active {
-          background: var(--bg-tertiary);
-        }
-
-        .mobile-dropdown-item.selected {
-          background: var(--accent);
-          color: white;
-        }
-      }
-
-      /* Mobile Search Overlay */
-      .mobile-search-content {
-        height: 100%;
-        display: flex;
         flex-direction: column;
+        gap: 16px;
       }
-
-      .mobile-search-header {
-        display: flex;
-        align-items: center;
-        padding: 16px 20px;
-        background: var(--bg-primary);
-        border-bottom: 1px solid var(--border);
-        position: relative;
-        justify-content: center;
-      }
-
-      .mobile-search-close {
-        position: absolute;
-        left: 20px;
-        background: none;
-        border: none;
-        color: var(--text-primary);
-        font-size: 18px;
-        cursor: pointer;
-        padding: 8px;
-        width: 36px;
-        height: 36px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .mobile-search-header span {
-        font-weight: 600;
-        color: var(--text-primary);
-        font-size: 16px;
-      }
-
-      .mobile-search-input-container {
-        padding: 20px;
-      }
-
-      #mobileSearchInput {
-        width: 100%;
-        padding: 16px 20px;
-        background: var(--bg-secondary);
-        border: 1px solid var(--border);
-        border-radius: 25px;
-        font-size: 16px;
-        color: var(--text-primary);
-        box-sizing: border-box;
-      }
-
-      #mobileSearchInput:focus {
-        outline: none;
-        border-color: var(--accent);
-      }
-
-      /* Mobile Filter Overlay */
-      .mobile-filter-content {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-      }
-
-      .mobile-filter-header {
-        display: flex;
-        align-items: center;
-        padding: 16px 20px;
-        background: var(--bg-primary);
-        border-bottom: 1px solid var(--border);
-        position: relative;
-        justify-content: center;
-      }
-
-      .mobile-filter-close {
-        position: absolute;
-        left: 20px;
-        background: none;
-        border: none;
-        color: var(--text-primary);
-        font-size: 18px;
-        cursor: pointer;
-        padding: 8px;
-        width: 36px;
-        height: 36px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .mobile-filter-header span {
-        font-weight: 600;
-        color: var(--text-primary);
-        font-size: 16px;
-      }
-
-      .mobile-filter-body {
-        flex: 1;
-        padding: 20px;
-        overflow-y: auto;
-      }
-
       
-
-      .mobile-filter-tag {
-        background: var(--bg-secondary);
-        border: 1px solid var(--border);
-        color: var(--text-primary);
-        padding: 8px 16px;
-        border-radius: 20px;
-        font-size: 14px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        white-space: nowrap;
+      .search-container {
+        order: 2;
+        max-width: none;
       }
-
-      .mobile-filter-tag:hover {
-        border-color: var(--accent);
-        background: var(--bg-tertiary);
-      }
-
-      .mobile-filter-tag.active {
-        background: var(--accent);
-        color: white;
-        border-color: var(--accent);
-      }
-
-      .mobile-filter-tag.special {
-        background: #ec4899;
-        color: white;
-        border-color: #ec4899;
-      }
-
-      .loading-mobile-tags, .no-tags {
-        color: var(--text-secondary);
-        font-size: 14px;
-        padding: 16px;
-        text-align: center;
+      
+      .user-actions {
+        order: 1;
+        justify-content: center;
         width: 100%;
       }
+      
+      .pricing-section {
+        padding: 20px 16px;
+      }
+      
+      .pricing-card {
+        min-height: auto;
+        padding: 24px 20px;
+      }
+      
+      .pricing-card.featured {
+        transform: scale(1);
+      }
+      
+      .plan-name {
+        font-size: 20px;
+      }
+      
+      .price-amount {
+        font-size: 28px;
+      }
     }
-
+    
     /* Sidebar Overlay for Mobile */
     .sidebar-overlay {
       display: none;
@@ -1437,284 +687,19 @@
       background: rgba(0, 0, 0, 0.5);
       z-index: 99;
     }
-
+    
     .sidebar-overlay.open {
       display: block;
     }
-
-    /* Pricing Section */
-    .pricing-section {
-      padding: 60px 40px;
-      max-width: 100%;
-      margin: 0 auto;
-    }
-
-    .pricing-header {
-      text-align: center;
-      margin-bottom: 50px;
-    }
-
-    .pricing-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 42px;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 16px;
-    }
-
-    .pricing-subtitle {
-      color: var(--text-secondary);
-      font-size: 18px;
-      line-height: 1.6;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-    /* Default Pricing Cards Layout */
-    .pricing-cards {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      margin-bottom: 40px;
-      max-width: 1000px;
-      margin-left: auto;
-      margin-right: auto;
-      padding: 0 20px;
-    }
-
-    /* Desktop: Better spacing and card layout */
-    @media (min-width: 1200px) {
-      .pricing-cards {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 40px;
-        margin-bottom: 50px;
-        max-width: 1200px;
-        margin-left: auto;
-        margin-right: auto;
-        padding: 0;
-      }
-      
-      .pricing-section {
-        padding: 80px 40px;
-      }
-    }
-
-    /* Medium Desktop: Adjust for better spacing */
-    @media (min-width: 769px) and (max-width: 1199px) {
-      .pricing-cards {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(280px, 1fr));
-        gap: 24px;
-        margin-bottom: 40px;
-        max-width: 1000px;
-        margin-left: auto;
-        margin-right: auto;
-        padding: 0 20px;
-      }
-    }
-
-    .pricing-card {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 40px 32px;
-      position: relative;
-      transition: all 0.3s ease;
-      min-height: 600px;
-      display: flex;
-      flex-direction: column;
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     
-    /* Desktop: Enhanced pricing cards */
-    @media (min-width: 1200px) {
-      .pricing-card {
-        padding: 48px 40px;
-        min-height: 650px;
-      }
-      
-      .pricing-card.featured {
-        transform: scale(1.02);
-      }
-      
-      .pricing-card:hover {
-        transform: translateY(-8px);
-      }
-      
-      .pricing-card.featured:hover {
-        transform: scale(1.02) translateY(-8px);
-      }
+    .pricing-section {
+      animation: fadeIn 0.6s ease;
     }
-
-    .pricing-card.featured {
-      border-color: var(--accent);
-      transform: scale(1.05);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    }
-
-    .pricing-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-    }
-
-    .card-badge {
-      position: absolute;
-      top: -12px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--accent);
-      color: white;
-      padding: 6px 16px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-    }
-
-    .plan-name {
-      font-family: 'Playfair Display', serif;
-      font-size: 28px;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 12px;
-    }
-
-    .price-wrapper {
-      margin-bottom: 8px;
-    }
-
-    .original-price {
-      color: var(--text-muted);
-      text-decoration: line-through;
-      font-size: 16px;
-      margin-right: 8px;
-    }
-
-    .plan-price {
-      color: var(--accent);
-      display: flex;
-      align-items: baseline;
-      gap: 4px;
-    }
-
-    .price-currency {
-      font-size: 20px;
-      font-weight: 600;
-    }
-
-    .price-amount {
-      font-size: 36px;
-      font-weight: 700;
-    }
-
-    .price-period {
-      font-size: 16px;
-      color: var(--text-secondary);
-    }
-
-    .price-daily {
-      color: var(--text-secondary);
-      font-size: 14px;
-      margin-bottom: 16px;
-    }
-
-    .plan-description {
-      color: var(--text-secondary);
-      font-size: 14px;
-      margin-bottom: 24px;
-    }
-
-    .plan-features {
-      list-style: none;
-      margin-bottom: 32px;
-      flex-grow: 1;
-    }
-
-    .feature-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 12px;
-      color: var(--text-primary);
-    }
-
-    .feature-icon {
-      color: var(--success);
-      font-weight: 700;
-    }
-
-    .plan-button {
-      width: 100%;
-      padding: 12px 24px;
-      background: var(--accent);
-      color: white;
-      border: none;
-      border-radius: var(--radius-md);
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      text-decoration: none;
-      text-align: center;
-      display: block;
-    }
-
-    .plan-button:hover {
-      background: var(--accent-hover);
-    }
-
-    /* Tablet: 2 columns layout */
-    @media (min-width: 769px) and (max-width: 1199px) {
-      .pricing-cards {
-        grid-template-columns: repeat(2, 1fr) !important;
-        max-width: 800px !important;
-        gap: 32px !important;
-      }
-      
-      .pricing-card:nth-child(3) {
-        grid-column: 1 / -1;
-        max-width: 400px;
-        margin: 0 auto;
-      }
-    }
-
-    /* Mobile: Single column layout */
-    @media (max-width: 768px) {
-      .pricing-cards {
-        grid-template-columns: 1fr;
-        gap: 24px;
-        padding: 0;
-      }
-      
-      .pricing-section {
-        padding: 40px 20px;
-      }
-      
-      .pricing-title {
-        font-size: 32px;
-      }
-      
-      .pricing-subtitle {
-        font-size: 16px;
-      }
-      
-      .pricing-card {
-        min-height: auto;
-        padding: 32px 24px;
-      }
-      
-      .pricing-card.featured {
-        transform: scale(1);
-      }
-      
-      .pricing-card:hover {
-        transform: translateY(-2px);
-      }
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
   </style>
 
   <!-- Meta Pixel Code -->
@@ -1737,10 +722,17 @@
 
   <!-- Facebook Pixel Event Tracking -->
   <script src="/js/facebook-pixel-events.js"></script>
+
+  <!-- FirstPromoter Tracking Script -->
+  <script>(function(w){w.fpr=w.fpr||function(){w.fpr.q = w.fpr.q||[];w.fpr.q[arguments[0]=='set'?'unshift':'push'](arguments);};})(window);
+  fpr("init", {cid:"20yp5m1k"}); fpr("click");
+  </script>
+  <script src="https://cdn.firstpromoter.com/fpr.js" async></script>
+  <!-- End FirstPromoter Tracking Script -->
 </head>
 <body>
   <div class="app-container">
-    <!-- Left Sidebar Navigation (Character.AI style) -->
+    <!-- Left Sidebar Navigation -->
     <aside class="sidebar" id="sidebar">
       <!-- Logo -->
       <a href="/" class="sidebar-logo">
@@ -1749,7 +741,7 @@
 
       <!-- Navigation -->
       <nav class="sidebar-nav">
-        <a href="/" class="nav-item ">
+        <a href="/" class="nav-item">
           <span class="nav-item-icon">👥</span>
           <span>Discover</span>
         </a>
@@ -1761,21 +753,17 @@
           <span class="nav-item-icon">➕</span>
           <span>Create</span>
         </a>
+
         <div class="nav-section-title">Account</div>
 
-        <a href="/profile" class="nav-item" id="profileNavItem" style="display: none;">
+        <a href="/profile" class="nav-item">
           <span class="nav-item-icon">👤</span>
           <span>Profile</span>
         </a>
-        <a href="#" class="nav-item" id="registerNavItem" onclick="window.netlifyIdentity?.open('signup'); return false;">
-          <span class="nav-item-icon">✨</span>
-          <span>Register</span>
-        </a>
-        <a href="/pricing" class="nav-item">
+        <a href="/pricing" class="nav-item active">
           <span class="nav-item-icon">💎</span>
           <span>Pricing</span>
         </a>
-
       </nav>
     </aside>
 
@@ -1785,575 +773,1161 @@
     <!-- Main Content -->
     <main class="main-content">
       <!-- Mobile Header -->
-      <div class="mobile-header-container">
-        <div class="mobile-header">
-          <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
-          <div class="mobile-logo">Selira AI</div>
-          <div style="display: flex; align-items: center; gap: 6px;">
-            <button onclick="showMobileSearch()" class="mobile-search-btn" style="background: none; border: none; cursor: pointer; padding: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="11" cy="11" r="8" stroke="var(--text-primary)" stroke-width="2"/>
-                <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="var(--text-primary)" stroke-width="2"/>
-              </svg>
-            </button>
-            <button class="user-btn mobile-auth-btn" onclick="openLoginModal('signup'); return false;" style="padding: 10px 20px; font-size: 14px; border-radius: 25px; background: var(--accent); color: white; border: none; font-weight: 600; flex-shrink: 0;">Register</button>
-          </div>
-        </div>
-
-        <!-- Mobile Filter Bar (only visible on mobile) -->
-        <div class="mobile-filter-bar">
-                    <div class="mobile-dropdown-item" onclick="selectMobileStyle('realistic')">Realistic</div>
-            <div class="mobile-dropdown-item" onclick="selectMobileStyle('anime')">Anime</div>
-          </div>
-        </div>
-                    <!-- Dynamic tags will be added here -->
-          </div>
-        </div>
-      </div>
+      <div class="mobile-header">
+        <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+        <div class="mobile-logo">Selira AI</div>
       </div>
 
-      <!-- Top Header with Search -->
+      <!-- Top Header -->
       <header class="top-header">
         <div class="header-top">
           <!-- Search -->
           <div class="search-container">
             <div class="search-icon">🔍</div>
-            <input
-              type="text"
-              class="search-input"
-              placeholder="blonde"
+            <input 
+              type="text" 
+              class="search-input" 
+              placeholder="Search"
               id="searchInput"
             >
           </div>
 
           <!-- User Actions -->
           <div class="user-actions">
-            <select class="dropdown-btn" style="border: none; background: none; color: var(--text-secondary); font-size: 13px;">
+            <select class="dropdown-btn" style="border: none; background: none; color: var(--text-secondary);">
               <option>English</option>
             </select>
-            <a href="#" class="user-btn login-btn" onclick="openLoginModal('login'); return false;" style="margin-right: 8px;">Login</a>
+            <a href="#" class="user-btn secondary login-btn" onclick="openLoginModal('login'); return false;">Sign In</a>
             <a href="#" class="user-btn signup-btn" onclick="openLoginModal('signup'); return false;">Register</a>
           </div>
         </div>
       </header>
 
-      <!-- Content Area -->
-      <section class="content-area">
-        <!-- Page Header -->
-        <div class="page-header" style="margin-bottom: 32px;">
-          <h1 style="font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 12px; background: linear-gradient(135deg, var(--accent) 0%, var(--accent-secondary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">✨ AI Image Generator</h1>
-          <p style="color: var(--text-secondary); font-size: 1.1rem;">Create custom images with your favorite companions</p>
+      <!-- Pricing Section -->
+      <section class="pricing-section">
+        <!-- Tab Navigation -->
+        <div class="pricing-tabs">
+          <button class="tab-button" onclick="switchTab('subscriptions')">Subscription Plans</button>
+          <button class="tab-button active" onclick="switchTab('oneoff')">One-off Purchases</button>
         </div>
 
-        <!-- Credits Info -->
-        <div id="creditsInfo" style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 20px; margin-bottom: 30px; display: none; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
-          <div style="display: flex; align-items: center; gap: 12px;">
-            <span style="font-size: 24px;">🎨</span>
-            <div>
-              <h3 style="font-size: 14px; color: var(--text-secondary); font-weight: 500; margin-bottom: 4px;">Image Credits</h3>
-              <div id="creditsAmount" style="font-size: 24px; font-weight: 700; color: var(--accent);">Loading...</div>
+        <!-- Subscription Plans Tab -->
+        <div class="tab-content" id="subscriptions-tab">
+          <div class="pricing-cards">
+          <!-- Free -->
+          <div class="pricing-card">
+            <div class="plan-name">Free</div>
+            <div class="plan-price">
+              <span class="price-currency">$</span>
+              <span class="price-amount">0</span>
+              <span class="price-period">/month</span>
             </div>
+            <div class="plan-description">Everything you need to get started with AI companions</div>
+
+            <ul class="plan-features">
+              <li class="feature-item">
+                <span class="feature-icon">✓</span>
+                <span>Unlimited messaging</span>
+              </li>
+              <li class="feature-item">
+                <span class="feature-icon">✓</span>
+                <span>Unlimited companions</span>
+              </li>
+              <li class="feature-item">
+                <span class="feature-icon">✓</span>
+                <span>Unlimited memories</span>
+              </li>
+              <li class="feature-item">
+                <span class="feature-icon">✓</span>
+                <span>No ads</span>
+              </li>
+              <li class="feature-item">
+                <span class="feature-icon">✗</span>
+                <span>No image generation</span>
+              </li>
+            </ul>
+
+            <a href="#" class="plan-button secondary" onclick="handlePlanClick('free'); return false;">Start Free</a>
           </div>
-          <div style="display: flex; align-items: center; gap: 12px;">
-            <span style="font-size: 24px;">📊</span>
-            <div>
-              <h3 style="font-size: 14px; color: var(--text-secondary); font-weight: 500; margin-bottom: 4px;">Current Plan</h3>
-              <div id="planName" style="font-size: 18px; font-weight: 700; color: var(--accent);">Loading...</div>
+
+          <!-- Light Plan -->
+          <div class="pricing-card">
+            <div class="plan-name">Light</div>
+            <div class="plan-price">
+              <span class="price-currency">$</span>
+              <span class="price-amount">5.99</span>
+              <span class="price-period">/month</span>
             </div>
+            <div class="plan-description">Everything in Free plus limited AI image generation</div>
+
+            <ul class="plan-features">
+              <li class="feature-item">
+                <span class="feature-icon">✓</span>
+                <span>Unlimited messaging</span>
+              </li>
+              <li class="feature-item">
+                <span class="feature-icon">✓</span>
+                <span>Unlimited companions</span>
+              </li>
+              <li class="feature-item">
+                <span class="feature-icon">✓</span>
+                <span>Unlimited memories</span>
+              </li>
+              <li class="feature-item">
+                <span class="feature-icon">✓</span>
+                <span>No ads</span>
+              </li>
+              <li class="feature-item">
+                <span class="feature-icon">✓</span>
+                <span>Unlimited images - 5 per hour</span>
+              </li>
+            </ul>
+
+            <a href="#" class="plan-button" onclick="handlePlanClick('light'); return false;">Choose Light</a>
           </div>
-          <a href="/pricing" id="buyCreditsBtn" style="background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%); color: white; border: none; padding: 12px 24px; border-radius: var(--radius-sm); font-weight: 600; text-decoration: none; display: inline-block;">Get More Credits</a>
+
+          <!-- Basic Plan -->
+          <div class="pricing-card">
+            <div class="plan-name">Basic</div>
+            <div class="plan-price">
+              <span class="price-currency">$</span>
+              <span class="price-amount">9.99</span>
+              <span class="price-period">/month</span>
+            </div>
+            <div class="plan-description">Everything in Free plus AI image generation</div>
+
+            <ul class="plan-features">
+              <li class="feature-item">
+                <span class="feature-icon">✓</span>
+                <span>Unlimited messaging</span>
+              </li>
+              <li class="feature-item">
+                <span class="feature-icon">✓</span>
+                <span>Unlimited companions</span>
+              </li>
+              <li class="feature-item">
+                <span class="feature-icon">✓</span>
+                <span>Unlimited memories</span>
+              </li>
+              <li class="feature-item">
+                <span class="feature-icon">✓</span>
+                <span>No ads</span>
+              </li>
+              <li class="feature-item">
+                <span class="feature-icon">✓</span>
+                <span>Unlimited images - 10 per hour</span>
+              </li>
+            </ul>
+
+            <a href="#" class="plan-button" onclick="handlePlanClick('basic'); return false;">Choose Basic</a>
+          </div>
+
+          <!-- Premium Plan -->
+          <div class="pricing-card featured">
+            <div class="card-badge">Most Popular</div>
+            <div class="plan-name">Premium</div>
+            <div class="plan-price">
+              <span class="price-currency">$</span>
+              <span class="price-amount">19.99</span>
+              <span class="price-period">/month</span>
+            </div>
+            <div class="plan-description">The ultimate AI companion experience</div>
+
+            <ul class="plan-features">
+              <li class="feature-item">
+                <span class="feature-icon">✓</span>
+                <span>Unlimited messaging</span>
+              </li>
+              <li class="feature-item">
+                <span class="feature-icon">✓</span>
+                <span>Unlimited companions</span>
+              </li>
+              <li class="feature-item">
+                <span class="feature-icon">✓</span>
+                <span>Unlimited memories</span>
+              </li>
+              <li class="feature-item">
+                <span class="feature-icon">✓</span>
+                <span>No ads</span>
+              </li>
+              <li class="feature-item">
+                <span class="feature-icon">✓</span>
+                <span>Unlimited images - 20 per hour</span>
+              </li>
+              <li class="feature-item">
+                <span class="feature-icon">✓</span>
+                <span>Access to special companions</span>
+              </li>
+            </ul>
+
+            <a href="#" class="plan-button" onclick="handlePlanClick('premium'); return false;">Choose Premium</a>
+          </div>
+        </div>
         </div>
 
-        <!-- Alert Container -->
-        <div id="alertContainer"></div>
+        <!-- One-off Purchases Tab -->
+        <div class="tab-content active" id="oneoff-tab">
+          <div class="pricing-cards">
+            <!-- Light Pack -->
+            <div class="pricing-card">
+              <div class="plan-name">Light Pack</div>
+              <div class="plan-price">
+                <span class="price-currency">$</span>
+                <span class="price-amount">5.99</span>
+              </div>
+              <div class="price-daily">$0.12 per image</div>
+              <div class="plan-description">Perfect for trying out AI image generation</div>
 
-        <!-- Generation Container -->
-        <div style="display: flex; justify-content: center; align-items: flex-start; gap: 30px; flex-wrap: wrap;">
-          <!-- Form Panel -->
-          <div style="max-width: 600px; width: 100%; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 30px;">
-            <h2 style="margin-bottom: 24px; font-family: 'Playfair Display', serif;">Configure Your Image</h2>
-            
-            <div style="margin-bottom: 28px;">
-              <label style="display: block; font-weight: 600; margin-bottom: 10px; font-size: 15px;">Select Companion</label>
-              <div style="position: relative;">
-                <button id="companionPrev" style="position: absolute; left: -12px; top: 50%; transform: translateY(-50%); background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: 50%; width: 32px; height: 32px; cursor: pointer; z-index: 2; color: var(--text-primary); font-size: 16px; display: none;">‹</button>
-                <div id="companionCarousel" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; overflow: hidden;"></div>
-                <button id="companionNext" style="position: absolute; right: -12px; top: 50%; transform: translateY(-50%); background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: 50%; width: 32px; height: 32px; cursor: pointer; z-index: 2; color: var(--text-primary); font-size: 16px; display: none;">›</button>
-              </div>
-              <div style="text-align: center; margin-top: 8px;">
-                <span id="companionPageInfo" style="font-size: 12px; color: var(--text-muted);">Loading companions...</span>
-              </div>
+              <ul class="plan-features">
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span>50 image credits</span>
+                </li>
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span>Generate custom AI images</span>
+                </li>
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span>Realistic & anime styles</span>
+                </li>
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span>Credits never expire</span>
+                </li>
+              </ul>
+
+              <a href="#" class="plan-button" onclick="handleCreditPurchase('light'); return false;">Buy 50 Credits</a>
             </div>
 
-            <div style="margin-bottom: 28px;">
-              <label style="display: block; font-weight: 600; margin-bottom: 10px; font-size: 15px;">Pose</label>
-              <div id="poseOptions" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;"></div>
-            </div>
-
-            <div style="margin-bottom: 28px;">
-              <label style="display: block; font-weight: 600; margin-bottom: 10px; font-size: 15px;">Outfit</label>
-              <div id="outfitOptions" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;"></div>
-            </div>
-
-            <div>
-              <label for="customPrompt" style="display: block; font-weight: 600; margin-bottom: 10px; font-size: 15px;">Custom Prompt (Optional)</label>
-              <textarea id="customPrompt" placeholder="Add additional details like location, lighting, mood, etc..." style="width: 100%; padding: 12px 16px; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary); font-size: 15px; resize: vertical; min-height: 100px;"></textarea>
-              <small style="font-size: 13px; color: var(--text-muted); margin-top: 6px; display: block;">This will be added to the image generation prompt</small>
-            </div>
-          </div>
-
-          <!-- Preview Panel -->
-          <div style="position: sticky; top: 80px; height: fit-content; max-width: 600px; width: 100%;">
-            <div id="previewArea" style="background: var(--bg-tertiary); border-radius: var(--radius-md); padding: 20px; min-height: 400px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 16px; margin-bottom: 20px; position: relative;">
-              <!-- Blur Overlay (shown when no credits/subscription) -->
-              <div id="blurOverlay" class="preview-blur-overlay" style="display: none;">
-                <div class="blur-overlay-icon">🔒</div>
-                <h3 class="blur-overlay-title">Unlock Image Generation</h3>
-                <p class="blur-overlay-text">Get credits or upgrade to a subscription plan to generate unlimited AI images with your favorite companions.</p>
-                <a href="/pricing" class="blur-overlay-btn">View Pricing Plans</a>
+            <!-- Basic Pack -->
+            <div class="pricing-card featured">
+              <div class="card-badge">Best Value</div>
+              <div class="plan-name">Basic Pack</div>
+              <div class="plan-price">
+                <span class="price-currency">$</span>
+                <span class="price-amount">9.99</span>
               </div>
-              
-              <div id="placeholder" style="text-align: center; color: var(--text-muted);">
-                <div style="font-size: 64px; margin-bottom: 16px; opacity: 0.5;">🖼️</div>
-                <p>Your generated image will appear here</p>
-              </div>
-              <div id="loadingIndicator" style="display: none; text-align: center;">
-                <div style="width: 60px; height: 60px; border: 4px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
-                <div style="color: var(--text-secondary); margin-top: 16px;">Generating your image...<br>This may take 30-60 seconds</div>
-              </div>
-              <img id="generatedImage" style="width: 100%; border-radius: var(--radius-md); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4); display: none;" alt="Generated image">
+              <div class="price-daily">$0.10 per image</div>
+              <div class="plan-description">Great for regular image generation needs</div>
+
+              <ul class="plan-features">
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span>100 image credits</span>
+                </li>
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span>Generate custom AI images</span>
+                </li>
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span>Realistic & anime styles</span>
+                </li>
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span>Credits never expire</span>
+                </li>
+              </ul>
+
+              <a href="#" class="plan-button" onclick="handleCreditPurchase('basic'); return false;">Buy 100 Credits</a>
             </div>
 
-            <button id="generateBtn" style="width: 100%; background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%); color: white; border: none; padding: 16px 32px; border-radius: var(--radius-md); font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px;">
-              <span style="font-size: 20px;">✨</span>
-              <span>Generate Image</span>
-            </button>
+            <!-- Premium Pack -->
+            <div class="pricing-card">
+              <div class="plan-name">Premium Pack</div>
+              <div class="plan-price">
+                <span class="price-currency">$</span>
+                <span class="price-amount">19.99</span>
+              </div>
+              <div class="price-daily">$0.08 per image</div>
+              <div class="plan-description">For power users who generate lots of images</div>
 
-            <button id="downloadBtn" style="width: 100%; background: var(--bg-secondary); color: white; border: 1px solid var(--accent); padding: 14px 28px; border-radius: var(--radius-md); font-size: 16px; font-weight: 600; cursor: pointer; display: none; align-items: center; justify-content: center; gap: 10px; margin-top: 12px;">
-              <span>⬇️</span>
-              <span>Download Image</span>
-            </button>
+              <ul class="plan-features">
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span>250 image credits</span>
+                </li>
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span>Generate custom AI images</span>
+                </li>
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span>Realistic & anime styles</span>
+                </li>
+                <li class="feature-item">
+                  <span class="feature-icon">✓</span>
+                  <span>Credits never expire</span>
+                </li>
+              </ul>
+
+              <a href="#" class="plan-button" onclick="handleCreditPurchase('premium'); return false;">Buy 250 Credits</a>
+            </div>
           </div>
         </div>
       </section>
     </main>
   </div>
 
-
-
-  <!-- Image Generator Script -->
   <script>
-    // State
-    let userData = null;
-    let selectedCompanion = null;
-    let companions = [];
-    let selectedPose = null;
-    let selectedOutfit = null;
-    let generatedImageUrl = null;
+    // Mobile sidebar toggle
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebarOverlay');
 
-    // Pose options
-    const poses = [
-      { id: 'standing', emoji: '🧍', label: 'Standing', prompt: 'standing pose, full body' },
-      { id: 'sitting', emoji: '🪑', label: 'Sitting', prompt: 'sitting pose, relaxed' },
-      { id: 'lying', emoji: '🛋️', label: 'Lying Down', prompt: 'lying down, comfortable pose' },
-      { id: 'leaning', emoji: '💁', label: 'Leaning', prompt: 'leaning forward, confident pose' },
-      { id: 'kneeling', emoji: '🧎', label: 'Kneeling', prompt: 'kneeling pose' },
-      { id: 'portrait', emoji: '📸', label: 'Portrait', prompt: 'close-up portrait, face focus' }
-    ];
-
-    // Outfit options
-    const outfits = [
-      { id: 'casual', emoji: '👕', label: 'Casual', prompt: 'casual clothing, t-shirt and jeans' },
-      { id: 'dress', emoji: '👗', label: 'Dress', prompt: 'elegant dress' },
-      { id: 'bikini', emoji: '👙', label: 'Bikini', prompt: 'bikini, swimwear' },
-      { id: 'lingerie', emoji: '🩱', label: 'Lingerie', prompt: 'lingerie, intimate wear' },
-      { id: 'business', emoji: '👔', label: 'Business', prompt: 'business attire, professional outfit' },
-      { id: 'sportswear', emoji: '🏃', label: 'Sportswear', prompt: 'sportswear, athletic clothing' },
-      { id: 'nightwear', emoji: '🌙', label: 'Nightwear', prompt: 'nightwear, sleepwear' },
-      { id: 'nude', emoji: '🔞', label: 'Nude', prompt: 'nude, artistic nude' }
-    ];
-
-    // Check authentication
-    async function checkAuthentication() {
-      try {
-        if (typeof auth0Client === 'undefined') {
-          await new Promise(resolve => setTimeout(resolve, 1000));
-        }
-        if (typeof auth0Client !== 'undefined' && auth0Client) {
-          const isAuthenticated = await auth0Client.isAuthenticated();
-          if (isAuthenticated) {
-            return await auth0Client.getUser();
-          }
-        }
-        return null;
-      } catch (error) {
-        console.error('Auth check error:', error);
-        return null;
-      }
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('open');
     }
 
-    // Load user credits
-    async function loadUserCredits() {
-      try {
-        const response = await fetch('/.netlify/functions/selira-get-image-credits', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: userData.email, auth0_id: userData.sub })
-        });
-        if (!response.ok) throw new Error('Failed to load credits');
-        const data = await response.json();
-        document.getElementById('creditsInfo').style.display = 'flex';
-        
-        // Calculate if user can generate
-        const canGenerate = data.plan !== 'Free' || data.creditsRemaining > 0 || (data.imagesGenerated || 0) < 2;
-        
-        // Show/hide blur overlay based on ability to generate
-        const blurOverlay = document.getElementById('blurOverlay');
-        const generateBtn = document.getElementById('generateBtn');
-        if (!canGenerate) {
-          blurOverlay.style.display = 'flex';
-          generateBtn.disabled = true;
-          generateBtn.style.opacity = '0.5';
-          generateBtn.style.cursor = 'not-allowed';
-        } else {
-          blurOverlay.style.display = 'none';
-          generateBtn.disabled = false;
-          generateBtn.style.opacity = '1';
-          generateBtn.style.cursor = 'pointer';
-        }
-        
-        let creditsDisplay = data.plan === 'Free' 
-          ? (data.creditsRemaining > 0 ? `${data.creditsRemaining} Credits` : `${Math.max(0, 2 - (data.imagesGenerated || 0))} Free`)
-          : 'Unlimited';
-        document.getElementById('creditsAmount').textContent = creditsDisplay;
-        document.getElementById('planName').textContent = data.plan;
-        if (data.plan !== 'Free' || data.creditsRemaining > 0) {
-          document.getElementById('buyCreditsBtn').style.display = 'none';
-        }
-        
-        return data;
-      } catch (error) {
-        console.error('Error loading credits:', error);
-        // On error, show blur overlay as safety measure
-        document.getElementById('blurOverlay').style.display = 'flex';
-        document.getElementById('generateBtn').disabled = true;
-      }
-    }
-
-    // Companion carousel state
-    let currentCarouselPage = 0;
-    const companionsPerPage = 6;
-
-    // Load companions
-    async function loadCompanions() {
-      try {
-        const response = await fetch('/.netlify/functions/selira-characters-fetch?limit=1000');
-        if (!response.ok) throw new Error('Failed to load companions');
-        const data = await response.json();
-        companions = (data.characters || []).filter(c => c.slug && c.name);
-        renderCarousel();
-        updateCarouselNav();
-      } catch (error) {
-        console.error('Error loading companions:', error);
-        document.getElementById('companionPageInfo').textContent = 'Failed to load companions';
-      }
-    }
-
-    function renderCarousel() {
-      const carousel = document.getElementById('companionCarousel');
-      carousel.innerHTML = '';
-
-      const start = currentCarouselPage * companionsPerPage;
-      const end = start + companionsPerPage;
-      const pageCompanions = companions.slice(start, end);
-
-      if (pageCompanions.length === 0) {
-        carousel.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">No companions available</div>';
-        return;
-      }
-
-      pageCompanions.forEach(companion => {
-        const card = document.createElement('div');
-        card.style.cssText = 'background: var(--bg-tertiary); border: 2px solid var(--border); border-radius: var(--radius-sm); padding: 12px; text-align: center; cursor: pointer; transition: all 0.2s ease;';
-        card.dataset.companionSlug = companion.slug;
-
-        const avatar = companion.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${companion.name}`;
-        card.innerHTML = `
-          <img src="${avatar}" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-bottom: 8px;" onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=${companion.name}'">
-          <div style="font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${companion.name}</div>
-        `;
-
-        card.addEventListener('click', () => selectCompanion(companion));
-        card.addEventListener('mouseover', () => card.style.borderColor = 'var(--accent)');
-        card.addEventListener('mouseout', () => {
-          if (!selectedCompanion || selectedCompanion.slug !== companion.slug) {
-            card.style.borderColor = 'var(--border)';
+    // Initialize search functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const searchInput = document.getElementById('searchInput');
+      if (searchInput) {
+        searchInput.addEventListener('keyup', function(e) {
+          if (e.key === 'Enter' && this.value.trim()) {
+            window.location.href = `/search-results?q=${encodeURIComponent(this.value.trim())}`;
           }
         });
 
-        if (selectedCompanion && selectedCompanion.slug === companion.slug) {
-          card.style.borderColor = 'var(--accent)';
-          card.style.background = 'rgba(212, 165, 116, 0.1)';
+        // Also add click listener to search icon
+        const searchIcon = document.querySelector('.search-icon');
+        if (searchIcon) {
+          searchIcon.addEventListener('click', function() {
+            const query = searchInput.value.trim();
+            if (query) {
+              window.location.href = `/search-results?q=${encodeURIComponent(query)}`;
+            }
+          });
+        }
+      }
+    });
+    
+    // Close sidebar when clicking overlay
+    document.getElementById('sidebarOverlay').addEventListener('click', function() {
+      toggleSidebar();
+    });
+    
+    // Navigation functions for consistency with /category
+    function showMyCompanions() {
+      window.location.href = '/category';
+    }
+    
+    function showCreateCharacter() {
+      window.location.href = '/create';
+    }
+    
+    // Tab switching functionality
+    function switchTab(tabName) {
+      // Remove active class from all tabs and tab buttons
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.querySelectorAll('.tab-button').forEach(button => {
+        button.classList.remove('active');
+      });
+
+      // Add active class to selected tab
+      document.getElementById(tabName + '-tab').classList.add('active');
+
+      // Add active class to corresponding button
+      const buttonIndex = tabName === 'subscriptions' ? 0 : 1;
+      document.querySelectorAll('.tab-button')[buttonIndex].classList.add('active');
+    }
+    
+    // Handle plan button clicks
+    function handlePlanClick(planType) {
+      console.log('🚀 handlePlanClick called with planType:', planType);
+
+      // PRIORITY CHECK: Premium -> Basic/Light downgrade
+      if (planType === 'basic' || planType === 'light') {
+        // Check if user is currently on Premium
+        const premiumCard = document.querySelector('.pricing-card:nth-child(4)');
+        const targetButton = document.querySelector(`.pricing-card:nth-child(${planType === 'light' ? '2' : '3'}) .plan-button`);
+
+        console.log(`🔍 Checking for Premium -> ${planType.charAt(0).toUpperCase() + planType.slice(1)} downgrade:`, {
+          premiumCardExists: !!premiumCard,
+          premiumHasCurrentPlan: premiumCard ? premiumCard.classList.contains('current-plan') : false,
+          targetButtonExists: !!targetButton,
+          targetButtonText: targetButton ? targetButton.textContent : 'N/A'
+        });
+
+        if (premiumCard && premiumCard.classList.contains('current-plan')) {
+          console.log(`🎯 PREMIUM -> ${planType.toUpperCase()} DOWNGRADE DETECTED (current-plan class) - bypassing normal flow`);
+          downgradePlan(planType);
+          return;
         }
 
-        carousel.appendChild(card);
-      });
-
-      const totalPages = Math.ceil(companions.length / companionsPerPage);
-      document.getElementById('companionPageInfo').textContent = `${start + 1}-${Math.min(end, companions.length)} of ${companions.length} companions`;
-    }
-
-    function updateCarouselNav() {
-      const totalPages = Math.ceil(companions.length / companionsPerPage);
-      const prevBtn = document.getElementById('companionPrev');
-      const nextBtn = document.getElementById('companionNext');
-
-      prevBtn.style.display = currentCarouselPage > 0 ? 'block' : 'none';
-      nextBtn.style.display = currentCarouselPage < totalPages - 1 ? 'block' : 'none';
-    }
-
-    function selectCompanion(companion) {
-      selectedCompanion = companion;
-      // Re-render to update selection styling
-      renderCarousel();
-    }
-
-    // Render options
-    function renderPoseOptions() {
-      const container = document.getElementById('poseOptions');
-      container.innerHTML = '';
-      poses.forEach(pose => {
-        const card = document.createElement('div');
-        card.style.cssText = 'background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 12px; text-align: center; cursor: pointer; transition: all 0.2s ease; position: relative;';
-        card.dataset.poseId = pose.id;
-        card.innerHTML = `<div style="font-size: 13px; font-weight: 500; color: var(--text-primary);">${pose.label}</div>`;
-        card.addEventListener('click', () => selectPose(pose.id));
-        card.addEventListener('mouseover', () => card.style.borderColor = 'var(--accent)');
-        card.addEventListener('mouseout', () => { if (!card.classList.contains('selected')) card.style.borderColor = 'var(--border)'; });
-        container.appendChild(card);
-      });
-    }
-
-    function renderOutfitOptions() {
-      const container = document.getElementById('outfitOptions');
-      container.innerHTML = '';
-      outfits.forEach(outfit => {
-        const card = document.createElement('div');
-        card.style.cssText = 'background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 12px; text-align: center; cursor: pointer; transition: all 0.2s ease; position: relative;';
-        card.dataset.outfitId = outfit.id;
-        card.innerHTML = `<div style="font-size: 13px; font-weight: 500; color: var(--text-primary);">${outfit.label}</div>`;
-        card.addEventListener('click', () => selectOutfit(outfit.id));
-        card.addEventListener('mouseover', () => card.style.borderColor = 'var(--accent)');
-        card.addEventListener('mouseout', () => { if (!card.classList.contains('selected')) card.style.borderColor = 'var(--border)'; });
-        container.appendChild(card);
-      });
-    }
-
-    function selectPose(poseId) {
-      document.querySelectorAll('#poseOptions > div').forEach(card => {
-        card.classList.remove('selected');
-        card.style.borderColor = 'var(--border)';
-        card.style.background = 'var(--bg-tertiary)';
-      });
-      const card = document.querySelector(`[data-pose-id="${poseId}"]`);
-      if (card) {
-        card.classList.add('selected');
-        card.style.borderColor = 'var(--accent)';
-        card.style.background = 'rgba(212, 165, 116, 0.1)';
+        if (targetButton && targetButton.textContent.includes(`Downgrade to ${planType.charAt(0).toUpperCase() + planType.slice(1)}`)) {
+          console.log(`🎯 PREMIUM -> ${planType.toUpperCase()} DOWNGRADE DETECTED (button text) - bypassing normal flow`);
+          downgradePlan(planType);
+          return;
+        }
       }
-      selectedPose = poses.find(p => p.id === poseId);
-    }
 
-    function selectOutfit(outfitId) {
-      document.querySelectorAll('#outfitOptions > div').forEach(card => {
-        card.classList.remove('selected');
-        card.style.borderColor = 'var(--border)';
-        card.style.background = 'var(--bg-tertiary)';
-      });
-      const card = document.querySelector(`[data-outfit-id="${outfitId}"]`);
-      if (card) {
-        card.classList.add('selected');
-        card.style.borderColor = 'var(--accent)';
-        card.style.background = 'rgba(212, 165, 116, 0.1)';
-      }
-      selectedOutfit = outfits.find(o => o.id === outfitId);
-    }
+      // Check if user is logged in
+      const isLoggedIn = localStorage.getItem('auth0_token') || localStorage.getItem('user_uid');
 
-    async function generateImage() {
-      // First check if user is logged in
-      if (!userData) {
-        showAlert('Please log in to generate images', 'error');
-        const overlay = document.getElementById('blurOverlay');
-        overlay.classList.add('shake-animation');
-        setTimeout(() => overlay.classList.remove('shake-animation'), 500);
-        // Open login modal
+      if (!isLoggedIn) {
+        // User is not logged in - show registration popup
         if (typeof openLoginModal === 'function') {
-          setTimeout(() => openLoginModal('signup'), 600);
+          openLoginModal('signup');
+        } else {
+          // Fallback if auth0-login.js is not loaded
+          alert('Please sign up to choose a plan');
         }
         return;
       }
 
-      if (!selectedCompanion) return showAlert('Please select a companion', 'warning');
-      if (!selectedPose) return showAlert('Please select a pose', 'warning');
-      if (!selectedOutfit) return showAlert('Please select an outfit', 'warning');
+      // User is logged in - handle based on plan type
+      if (planType === 'free') {
+        // Free plan - check if it's a downgrade
+        // First check if we have current plan info, if not, try to load it
+        if (window.currentUserPlan === undefined) {
+          // Plan not loaded yet - load it first then handle the click
+          loadCurrentPlan().then(() => {
+            // After loading, check again
+            if (window.currentUserPlan && window.currentUserPlan !== 'free') {
+              downgradeToFree();
+            } else {
+              // Already free or couldn't determine plan - redirect to category page
+              window.location.href = '/category';
+            }
+          }).catch(() => {
+            // If loading fails, assume they want to downgrade and show the process
+            downgradeToFree();
+          });
+        } else if (window.currentUserPlan && window.currentUserPlan !== 'free') {
+          downgradeToFree();
+        } else {
+          // Already free or new user - redirect to category page
+          window.location.href = '/category';
+        }
+      } else {
+        // Paid plans - check if this is an upgrade or downgrade
+        handlePaidPlanSelection(planType);
+      }
+    }
 
-      // Double-check credits before generating
-      const creditsCheck = await loadUserCredits();
-      const canGenerate = creditsCheck && (creditsCheck.plan !== 'Free' || creditsCheck.creditsRemaining > 0 || (creditsCheck.imagesGenerated || 0) < 2);
-      if (!canGenerate) {
-        showAlert('You need credits or a subscription to generate images. Visit our pricing page!', 'error');
-        // Shake the blur overlay to draw attention
-        const overlay = document.getElementById('blurOverlay');
-        overlay.classList.add('shake-animation');
-        setTimeout(() => overlay.classList.remove('shake-animation'), 500);
+    // Handle paid plan selection (upgrade or downgrade)
+    async function handlePaidPlanSelection(planType) {
+      try {
+        console.log('🔄 Starting plan selection for:', planType);
+        console.log('🔍 Current window.currentUserPlan:', window.currentUserPlan);
+
+        // Try to determine current plan from button text as fallback
+        let detectedCurrentPlan = 'free';
+
+        // Check if any pricing card has "current plan" styling
+        const currentPlanCard = document.querySelector('.pricing-card.current-plan');
+        if (currentPlanCard) {
+          const planName = currentPlanCard.querySelector('.plan-name');
+          if (planName) {
+            detectedCurrentPlan = planName.textContent.toLowerCase();
+            console.log('🔍 Detected current plan from UI:', detectedCurrentPlan);
+          }
+        }
+
+        // Also check button texts for downgrade clues
+        const lightButton = document.querySelector('.pricing-card:nth-child(2) .plan-button');
+        const basicButton = document.querySelector('.pricing-card:nth-child(3) .plan-button');
+        const premiumButton = document.querySelector('.pricing-card:nth-child(4) .plan-button');
+
+        if (lightButton && lightButton.textContent.includes('Downgrade to Light')) {
+          detectedCurrentPlan = 'basic';  // or premium
+          console.log('🔍 Detected basic/premium plan from Light downgrade button');
+        } else if (basicButton && basicButton.textContent.includes('Downgrade to Basic')) {
+          detectedCurrentPlan = 'premium';
+          console.log('🔍 Detected premium plan from Basic downgrade button');
+        }
+
+        // Always load current plan to get the most up-to-date info
+        console.log('🔄 Loading current plan...');
+        await loadCurrentPlan();
+
+        // Use the loaded plan, fallback to detected plan
+        const currentPlan = window.currentUserPlan || detectedCurrentPlan;
+        const planHierarchy = { 'free': 0, 'light': 1, 'basic': 2, 'premium': 3 };
+
+        console.log('🔄 Plan comparison:', {
+          currentPlan,
+          detectedCurrentPlan,
+          targetPlan: planType,
+          currentLevel: planHierarchy[currentPlan],
+          targetLevel: planHierarchy[planType],
+          isUpgrade: planHierarchy[planType] > planHierarchy[currentPlan],
+          isDowngrade: planHierarchy[planType] < planHierarchy[currentPlan],
+          isSame: planHierarchy[planType] === planHierarchy[currentPlan]
+        });
+
+        // For Premium -> Basic specifically, force downgrade logic
+        if (currentPlan === 'premium' && planType === 'basic') {
+          console.log('🎯 FORCED DOWNGRADE: Premium -> Basic detected');
+          await downgradePlan(planType);
+          return;
+        }
+
+        // Determine if this is an upgrade or downgrade
+        if (planHierarchy[planType] > planHierarchy[currentPlan]) {
+          // This is an upgrade - use Stripe checkout
+          console.log('✅ Upgrade detected - using Stripe checkout');
+          initiateStripeCheckout(planType);
+        } else if (planHierarchy[planType] < planHierarchy[currentPlan]) {
+          // This is a downgrade - use subscription downgrade
+          console.log('✅ Downgrade detected - using subscription update');
+          await downgradePlan(planType);
+        } else {
+          // Same plan - shouldn't happen but handle gracefully
+          console.log('⚠️ Same plan selected');
+          alert('You are already on this plan');
+        }
+
+      } catch (error) {
+        console.error('❌ Error handling plan selection:', error);
+        // Fallback to Stripe checkout if we can't determine current plan
+        console.log('🔄 Falling back to Stripe checkout due to error');
+        initiateStripeCheckout(planType);
+      }
+    }
+
+    // Downgrade to a paid plan (Premium -> Basic)
+    async function downgradePlan(targetPlan) {
+      const confirmMessage = `Are you sure you want to downgrade to the ${targetPlan.charAt(0).toUpperCase() + targetPlan.slice(1)} plan?\n\nYour subscription will be updated immediately and you can continue using your current plan benefits until your next billing date.`;
+
+      if (!confirm(confirmMessage)) {
         return;
       }
 
-      document.getElementById('placeholder').style.display = 'none';
-      document.getElementById('generatedImage').style.display = 'none';
-      document.getElementById('loadingIndicator').style.display = 'block';
-      document.getElementById('downloadBtn').style.display = 'none';
-      document.getElementById('generateBtn').disabled = true;
+      // Delay to ensure confirm dialog is fully closed before showing success message
+      const showSuccessMessage = (message) => {
+        setTimeout(() => {
+          alert(message);
+        }, 500);
+      };
 
       try {
-        const customPrompt = document.getElementById('customPrompt').value.trim();
-        const fullPrompt = [selectedPose.prompt, selectedOutfit.prompt, customPrompt].filter(Boolean).join(', ');
+        const user = window.getCurrentUser();
+        if (!user) {
+          showSuccessMessage('Please log in to manage your subscription');
+          return;
+        }
 
-        const response = await fetch('/.netlify/functions/selira-generate-custom-image', {
+        console.log('🔄 Downgrading to', targetPlan, 'for user:', user.email);
+
+        // Show loading state on the target plan button
+        const cardIndex = targetPlan === 'light' ? '2' : targetPlan === 'basic' ? '3' : '4';
+        const targetCard = document.querySelector(`.pricing-card:nth-child(${cardIndex})`);
+        const targetButton = targetCard ? targetCard.querySelector('.plan-button') : null;
+        if (targetButton) {
+          const originalText = targetButton.textContent;
+          targetButton.textContent = 'Processing...';
+          targetButton.style.opacity = '0.7';
+        }
+
+        // Call the manage subscription function with downgrade action
+        const requestData = {
+          action: 'downgrade_plan',
+          targetPlan: targetPlan,
+          userEmail: user.email,
+          auth0Id: user.sub
+        };
+
+        console.log('🔄 Sending downgrade request:', requestData);
+
+        const response = await fetch('/.netlify/functions/selira-manage-subscription', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestData)
+        });
+
+        console.log('📊 Response status:', response.status);
+
+        let result;
+        try {
+          result = await response.json();
+        } catch (jsonError) {
+          console.error('❌ Failed to parse response as JSON:', jsonError);
+          const textResponse = await response.text();
+          console.error('❌ Raw response:', textResponse);
+          showSuccessMessage(`Server error: Unable to parse response. Status: ${response.status}`);
+          return;
+        }
+
+        console.log('📋 Parsed result:', result);
+
+        if (response.ok && result.success) {
+          console.log('✅ Plan downgrade successful:', result);
+
+          let successMessage = `Plan downgraded to ${targetPlan.charAt(0).toUpperCase() + targetPlan.slice(1)} successfully!`;
+
+          if (result.next_billing_date) {
+            successMessage += `\n\nYou can continue to use your current plan benefits until ${result.next_billing_date}`;
+          }
+
+          showSuccessMessage(successMessage);
+
+          // Reload the current plan display
+          await loadCurrentPlan();
+
+        } else {
+          console.error('❌ Downgrade failed:', result);
+          let alertMessage = `Failed to downgrade plan: ${result.error || 'Unknown error'}`;
+
+          if (result.details) {
+            alertMessage += `\n\nDetails: ${result.details}`;
+          }
+
+          showSuccessMessage(alertMessage);
+        }
+
+        // Restore button state
+        if (targetButton) {
+          targetButton.textContent = `Downgrade to ${targetPlan.charAt(0).toUpperCase() + targetPlan.slice(1)}`;
+          targetButton.style.opacity = '1';
+        }
+
+      } catch (error) {
+        console.error('❌ Error downgrading plan:', error);
+        showSuccessMessage('An error occurred while downgrading your plan. Please try again.');
+
+        // Restore button state
+        const cardIndex = targetPlan === 'light' ? '2' : targetPlan === 'basic' ? '3' : '4';
+        const targetCard = document.querySelector(`.pricing-card:nth-child(${cardIndex})`);
+        const targetButton = targetCard ? targetCard.querySelector('.plan-button') : null;
+        if (targetButton) {
+          targetButton.textContent = `Downgrade to ${targetPlan.charAt(0).toUpperCase() + targetPlan.slice(1)}`;
+          targetButton.style.opacity = '1';
+        }
+      }
+    }
+
+    // Initiate Stripe checkout for paid plans
+    async function initiateStripeCheckout(planType) {
+      try {
+        // Map plan types to Stripe price IDs
+        const priceIds = {
+          'light': 'prod_TBHHWm587HmPAi',
+          'basic': 'price_1S9KVADEKVIZZyJVXXjE2gYE',
+          'premium': 'price_1S9KVbDEKVIZZyJVDpWlXYhb'
+        };
+
+        const priceId = priceIds[planType];
+        if (!priceId) {
+          console.error('Invalid plan type:', planType);
+          alert('Invalid plan selected');
+          return;
+        }
+
+        // Get user info
+        const userEmail = localStorage.getItem('user_email');
+        const userId = localStorage.getItem('user_uid');
+
+        if (!userEmail || !userId) {
+          console.error('Missing user information');
+          alert('Please log in again to continue');
+          window.location.href = '/';
+          return;
+        }
+
+        // Create Stripe checkout session
+        const response = await fetch('/.netlify/functions/selira-create-checkout-session', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
           body: JSON.stringify({
-            customPrompt: fullPrompt,
-            characterName: selectedCompanion.name,
-            category: selectedCompanion.category,
-            sex: selectedCompanion.sex || 'female',
-            ethnicity: selectedCompanion.ethnicity || 'white',
-            hairLength: selectedCompanion.hairLength || 'long',
-            hairColor: selectedCompanion.hairColor || 'brown',
-            email: userData.email,
-            auth0_id: userData.sub,
-            source: 'image-generator'
+            priceId: priceId,
+            userEmail: userEmail,
+            userId: userId,
+            planName: planType,
+            successUrl: window.location.origin + '/profile?payment=success',
+            cancelUrl: window.location.origin + '/pricing'
           })
         });
 
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error || 'Image generation failed');
+        if (!response.ok) {
+          const error = await response.json();
+          console.error('Checkout session error:', error);
+          alert('Unable to start checkout process. Please try again.');
+          return;
+        }
 
-        generatedImageUrl = data.imageUrl;
-        document.getElementById('generatedImage').src = generatedImageUrl;
-        document.getElementById('generatedImage').style.display = 'block';
-        document.getElementById('loadingIndicator').style.display = 'none';
-        document.getElementById('downloadBtn').style.display = 'flex';
-        showAlert('Image generated successfully!', 'success');
-        await loadUserCredits();
+        const { sessionUrl } = await response.json();
+
+        if (sessionUrl) {
+          // Redirect to Stripe checkout
+          window.location.href = sessionUrl;
+        } else {
+          console.error('No session URL received');
+          alert('Unable to start checkout process. Please try again.');
+        }
+
       } catch (error) {
-        console.error('Generation error:', error);
-        document.getElementById('loadingIndicator').style.display = 'none';
-        document.getElementById('placeholder').style.display = 'block';
-        showAlert(error.message.includes('limit') ? error.message : 'Failed to generate image. Please try again.', 'warning');
-      } finally {
-        document.getElementById('generateBtn').disabled = false;
+        console.error('Error initiating checkout:', error);
+        alert('An error occurred. Please try again later.');
       }
     }
 
-    async function downloadImage() {
-      if (!generatedImageUrl) return;
+    // Downgrade to free plan
+    async function downgradeToFree() {
+      const confirmMessage = 'Are you sure you want to downgrade to the Free plan?\n\nYour current subscription will be canceled at the end of your current billing period, and you will keep access until then.';
+
+      if (!confirm(confirmMessage)) {
+        return;
+      }
+
+      // Delay to ensure confirm dialog is fully closed before showing success message
+      const showSuccessMessage = (message) => {
+        setTimeout(() => {
+          alert(message);
+        }, 500); // Increased delay to prevent overlap
+      };
+
       try {
-        const response = await fetch(generatedImageUrl);
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `selira-${selectedCompanion.slug}-${Date.now()}.webp`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-        showAlert('Image downloaded!', 'success');
+        const user = window.getCurrentUser();
+        if (!user) {
+          showSuccessMessage('Please log in to manage your subscription');
+          return;
+        }
+
+        console.log('🔄 Downgrading to free plan for user:', user.email);
+
+        // Show loading state
+        const freeButton = document.querySelector('.pricing-card:nth-child(1) .plan-button');
+        if (freeButton) {
+          const originalText = freeButton.textContent;
+          freeButton.textContent = 'Processing...';
+          freeButton.style.opacity = '0.7';
+        }
+
+        // Call the manage subscription function with cancel_at_period_end action
+        const requestData = {
+          action: 'cancel_at_period_end',
+          userEmail: user.email,
+          auth0Id: user.sub
+        };
+
+        console.log('🔄 Sending downgrade request:', requestData);
+
+        const response = await fetch('/.netlify/functions/selira-manage-subscription', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestData)
+        });
+
+        console.log('📊 Response status:', response.status);
+        console.log('📊 Response ok:', response.ok);
+
+        let result;
+        try {
+          result = await response.json();
+        } catch (jsonError) {
+          console.error('❌ Failed to parse response as JSON:', jsonError);
+          const textResponse = await response.text();
+          console.error('❌ Raw response:', textResponse);
+          showSuccessMessage(`Server error: Unable to parse response. Status: ${response.status}`);
+          return;
+        }
+
+        console.log('📋 Parsed result:', result);
+
+        if (response.ok && result.success) {
+          console.log('✅ Subscription downgrade successful:', result);
+
+          // Use delayed success message
+          showSuccessMessage(`Subscription canceled successfully!\n\nYou will keep access to your current plan until ${result.cancels_at || 'the end of your billing period'}, after which you will be automatically switched to the Free plan.`);
+
+          // Reload the current plan display
+          await loadCurrentPlan();
+
+        } else {
+          console.error('❌ Downgrade failed:', result);
+          let alertMessage = `Failed to downgrade subscription: ${result.error || 'Unknown error'}\n\nDetails: ${result.details || 'No additional details'}`;
+
+          if (result.debugInfo) {
+            console.log('🔍 Debug info:', result.debugInfo);
+            alertMessage += `\n\nDebug Info:\nUser Plan: ${result.debugInfo.userPlan || 'Unknown'}\nAvailable Fields: ${result.debugInfo.availableFields ? result.debugInfo.availableFields.join(', ') : 'None'}\nStripe Fields: ${result.debugInfo.stripeFields ? result.debugInfo.stripeFields.join(', ') : 'None'}`;
+          }
+
+          showSuccessMessage(alertMessage);
+        }
+
+        // Restore button state
+        if (freeButton) {
+          freeButton.textContent = 'Downgrade to Free';
+          freeButton.style.opacity = '1';
+        }
+
       } catch (error) {
-        console.error('Download error:', error);
-        showAlert('Failed to download image', 'error');
+        console.error('❌ Error downgrading subscription:', error);
+        showSuccessMessage('An error occurred while downgrading your subscription. Please try again.');
+
+        // Restore button state
+        const freeButton = document.querySelector('.pricing-card:nth-child(1) .plan-button');
+        if (freeButton) {
+          freeButton.textContent = 'Downgrade to Free';
+          freeButton.style.opacity = '1';
+        }
       }
     }
 
-    function showAlert(message, type = 'info') {
-      const container = document.getElementById('alertContainer');
-      const alert = document.createElement('div');
-      const emoji = type === 'error' ? '❌' : type === 'warning' ? '⚠️' : type === 'success' ? '✅' : 'ℹ️';
-      const bgColor = type === 'error' ? 'rgba(239, 68, 68, 0.1)' : type === 'warning' ? 'rgba(245, 158, 11, 0.1)' : type === 'success' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(59, 130, 246, 0.1)';
-      const borderColor = type === 'error' ? '#ef4444' : type === 'warning' ? '#f59e0b' : type === 'success' ? '#10b981' : '#3b82f6';
-      const textColor = type === 'error' ? '#ef4444' : type === 'warning' ? '#f59e0b' : type === 'success' ? '#10b981' : '#3b82f6';
-      alert.style.cssText = `padding: 16px; border-radius: var(--radius-sm); margin-bottom: 20px; display: flex; align-items: center; gap: 12px; font-size: 14px; background: ${bgColor}; border: 1px solid ${borderColor}; color: ${textColor};`;
-      alert.innerHTML = `<span>${emoji}</span><span>${message}</span>`;
-      container.appendChild(alert);
-      setTimeout(() => alert.remove(), 5000);
+    // Load current subscription info
+    async function loadCurrentPlan() {
+      try {
+        // Check if user is authenticated using the existing window functions
+        if (!window.isUserAuthenticated || !window.isUserAuthenticated()) {
+          console.log('🔄 User not authenticated, setting plan to free');
+          window.currentUserPlan = 'free';
+          return;
+        }
+
+        const user = window.getCurrentUser();
+        if (!user) {
+          console.log('🔄 No user data available, setting plan to free');
+          window.currentUserPlan = 'free';
+          return;
+        }
+
+        console.log('🔄 Loading current plan for user:', user.email);
+
+        const response = await fetch(`/.netlify/functions/selira-get-subscription-info?email=${encodeURIComponent(user.email)}&auth0_id=${encodeURIComponent(user.sub)}`);
+        const data = await response.json();
+
+        if (data.success && data.subscription) {
+          console.log('✅ Current plan loaded:', data.subscription.plan);
+          updatePricingDisplay(data.subscription);
+        } else {
+          // No subscription found - user is on free plan
+          console.log('✅ No subscription found - user is on free plan');
+          window.currentUserPlan = 'free';
+        }
+      } catch (error) {
+        console.error('❌ Error loading current plan:', error);
+        // Set to free plan as fallback
+        window.currentUserPlan = 'free';
+      }
     }
 
-    // Initialize
-    async function init() {
-      userData = await checkAuthentication();
+    // Update pricing cards to show current plan
+    function updatePricingDisplay(subscription) {
+      // Set global variable for current plan
+      window.currentUserPlan = (subscription.plan || 'Free').toLowerCase();
+      window.currentSubscription = subscription;
 
-      // Always load companions and render options, even if not logged in
-      await loadCompanions();
-      renderPoseOptions();
-      renderOutfitOptions();
+      // Remove all current plan indicators and remaining time displays
+      document.querySelectorAll('.pricing-card').forEach(card => {
+        card.classList.remove('current-plan');
+        const badge = card.querySelector('.current-plan-badge');
+        if (badge) badge.remove();
+        const timeRemaining = card.querySelector('.time-remaining');
+        if (timeRemaining) timeRemaining.remove();
+      });
 
-      if (!userData) {
-        // User not logged in - show blur overlay and disable generate button
-        document.getElementById('blurOverlay').style.display = 'flex';
-        document.getElementById('generateBtn').disabled = true;
-        document.getElementById('generateBtn').style.opacity = '0.5';
-        document.getElementById('generateBtn').style.cursor = 'not-allowed';
+      // Find and highlight the current plan
+      const currentPlan = window.currentUserPlan;
+      let cardSelector = '';
 
-        // Update blur overlay text for non-logged in users
-        const blurTitle = document.querySelector('.blur-overlay-title');
-        const blurText = document.querySelector('.blur-overlay-text');
-        if (blurTitle) blurTitle.textContent = 'Login to Generate Images';
-        if (blurText) blurText.innerHTML = 'Create a free account or log in to start generating custom AI images with your favorite companions.<br><br>Free users get 2 free images!';
+      if (currentPlan === 'free') {
+        cardSelector = '.pricing-card:nth-child(1)'; // First card (Free)
+      } else if (currentPlan === 'light') {
+        cardSelector = '.pricing-card:nth-child(2)'; // Second card (Light)
+      } else if (currentPlan === 'basic') {
+        cardSelector = '.pricing-card:nth-child(3)'; // Third card (Basic)
+      } else if (currentPlan === 'premium') {
+        cardSelector = '.pricing-card:nth-child(4)'; // Fourth card (Premium)
+      }
 
-        // Change blur overlay button to login instead of pricing
-        const blurBtn = document.querySelector('.blur-overlay-btn');
-        if (blurBtn) {
-          blurBtn.textContent = 'Login / Sign Up';
-          blurBtn.onclick = (e) => {
-            e.preventDefault();
-            if (typeof openLoginModal === 'function') {
-              openLoginModal('signup');
+      if (cardSelector) {
+        const currentCard = document.querySelector(cardSelector);
+        if (currentCard) {
+          currentCard.classList.add('current-plan');
+
+          // Add current plan badge
+          const badge = document.createElement('div');
+          badge.className = 'current-plan-badge';
+
+          // Check subscription status for badge text
+          if (subscription.subscription_status === 'canceling' || subscription.cancel_at_period_end) {
+            badge.textContent = 'Canceling at Period End';
+            badge.style.background = 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
+          } else {
+            badge.textContent = 'Current Plan';
+          }
+
+          currentCard.style.position = 'relative';
+          currentCard.appendChild(badge);
+
+          // Add remaining time display for paid plans
+          if (currentPlan !== 'free') {
+            // Prefer Stripe data if available, otherwise use Airtable data
+            const endDateString = subscription.current_period_end || subscription.plan_end_date;
+
+            if (endDateString) {
+              const timeDiv = document.createElement('div');
+              timeDiv.className = 'time-remaining';
+              timeDiv.style.cssText = 'margin: 32px auto 0; max-width: 600px; padding: 20px 24px; background: rgba(213, 166, 117, 0.1); border: 1px solid rgba(213, 166, 117, 0.2); border-radius: 16px; font-size: 15px; color: #fff; text-align: center; backdrop-filter: blur(10px);';
+
+              const endDate = new Date(endDateString);
+              const now = new Date();
+              const daysRemaining = Math.ceil((endDate - now) / (1000 * 60 * 60 * 24));
+
+              if (subscription.subscription_status === 'canceling' || subscription.cancel_at_period_end) {
+                timeDiv.innerHTML = `<div style="font-weight: 600; margin-bottom: 4px;">Benefits active until ${endDate.toLocaleDateString()}</div><div style="font-size: 12px; opacity: 0.7;">Your subscription will end on this date and you'll be moved to the Free plan</div>`;
+              } else {
+                timeDiv.innerHTML = `<div style="font-weight: 600; margin-bottom: 4px;">Next billing: ${endDate.toLocaleDateString()}</div><div style="font-size: 12px; opacity: 0.7;">${daysRemaining} ${daysRemaining === 1 ? 'day' : 'days'} remaining in current period</div>`;
+              }
+
+              // Insert after the pricing grid instead of inside the card
+              const pricingGrid = document.querySelector('.pricing-grid');
+              if (pricingGrid) {
+                pricingGrid.insertAdjacentElement('afterend', timeDiv);
+              }
             }
-          };
-        }
+          }
 
-        // Don't return - let page stay accessible but locked
-      } else {
-        // User is logged in - load their credits
-        await loadUserCredits();
+          // Update button text for current plan
+          const button = currentCard.querySelector('.plan-button');
+          if (button) {
+            if (currentPlan === 'free') {
+              button.textContent = 'Current Plan';
+              button.style.opacity = '0.7';
+              button.onclick = function() { return false; };
+            } else if (subscription.subscription_status === 'canceling' || subscription.cancel_at_period_end) {
+              button.textContent = 'Reactivate Subscription';
+              button.onclick = function() {
+                reactivateSubscription();
+                return false;
+              };
+            } else {
+              button.textContent = 'Manage Plan';
+              button.onclick = function() {
+                window.location.href = '/profile';
+                return false;
+              };
+            }
+          }
+        }
       }
 
-      // Setup event listeners
-      document.getElementById('companionPrev').addEventListener('click', () => {
-        if (currentCarouselPage > 0) {
-          currentCarouselPage--;
-          renderCarousel();
-          updateCarouselNav();
-        }
-      });
-      document.getElementById('companionNext').addEventListener('click', () => {
-        const totalPages = Math.ceil(companions.length / companionsPerPage);
-        if (currentCarouselPage < totalPages - 1) {
-          currentCarouselPage++;
-          renderCarousel();
-          updateCarouselNav();
-        }
-      });
-      document.getElementById('generateBtn').addEventListener('click', generateImage);
-      document.getElementById('downloadBtn').addEventListener('click', downloadImage);
+      // Update other plan buttons for upgrades/downgrades
+      updatePlanButtons(currentPlan, subscription);
     }
 
-    // Start after auth loads
-    setTimeout(init, 500);
+    // Update plan button texts based on current subscription
+    function updatePlanButtons(currentPlan, subscription) {
+      // Only update subscription tab cards, not credit pack buttons
+      const subscriptionTab = document.getElementById('subscriptions-tab');
+      if (!subscriptionTab) return;
+
+      const cards = subscriptionTab.querySelectorAll('.pricing-card');
+
+      cards.forEach((card, index) => {
+        const button = card.querySelector('.plan-button');
+        if (!button || card.classList.contains('current-plan')) return;
+
+        // Reset button onclick to default plan selection
+        button.onclick = function() {
+          const planTypes = ['free', 'light', 'basic', 'premium'];
+          handlePlanClick(planTypes[index]);
+          return false;
+        };
+
+        if (index === 0) { // Free
+          if (currentPlan !== 'free') {
+            button.textContent = 'Downgrade to Free';
+          } else {
+            button.textContent = 'Start Free';
+          }
+        } else if (index === 1) { // Basic
+          if (currentPlan === 'free') {
+            button.textContent = 'Upgrade to Basic';
+          } else if (currentPlan === 'premium') {
+            button.textContent = 'Downgrade to Basic';
+          } else {
+            button.textContent = 'Choose Basic';
+          }
+        } else if (index === 2) { // Premium
+          if (currentPlan === 'free' || currentPlan === 'basic') {
+            button.textContent = 'Upgrade to Premium';
+          } else {
+            button.textContent = 'Choose Premium';
+          }
+        }
+      });
+    }
+
+    // Reactivate subscription
+    async function reactivateSubscription() {
+      try {
+        const user = window.getCurrentUser();
+        if (!user) {
+          alert('Please log in to manage your subscription');
+          return;
+        }
+
+        console.log('🔄 Reactivating subscription for user:', user.email);
+
+        const response = await fetch('/.netlify/functions/selira-manage-subscription', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            action: 'reactivate',
+            userEmail: user.email,
+            auth0Id: user.sub
+          })
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          console.log('✅ Subscription reactivated successfully:', result);
+          alert('Subscription reactivated successfully! Your plan will continue as normal.');
+
+          // Reload the current plan display
+          await loadCurrentPlan();
+        } else {
+          console.error('❌ Reactivation failed:', result);
+          alert(`Failed to reactivate subscription: ${result.error || 'Unknown error'}`);
+        }
+
+      } catch (error) {
+        console.error('❌ Error reactivating subscription:', error);
+        alert('An error occurred while reactivating your subscription. Please try again.');
+      }
+    }
+
+    // Initialize current plan loading when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(loadCurrentPlan, 1000);
+
+      // Check URL parameter for tab selection
+      const urlParams = new URLSearchParams(window.location.search);
+      const tabParam = urlParams.get('tab');
+
+      if (tabParam === 'credits' || tabParam === 'oneoff') {
+        switchTab('oneoff');
+      } else if (tabParam === 'subscriptions') {
+        switchTab('subscriptions');
+      }
+      // Default is already set to oneoff tab
+    });
+
+    // Handle credit purchase
+    async function handleCreditPurchase(packageType) {
+      console.log('💳 Credit purchase initiated:', packageType);
+
+      // Track InitiateCheckout event for Meta Pixel
+      const packageDetails = {
+        'light': { credits: 50, value: 4.99 },
+        'basic': { credits: 100, value: 9.99 },
+        'premium': { credits: 250, value: 24.99 }
+      };
+
+      const details = packageDetails[packageType];
+      if (details && window.seliraPixelTracking) {
+        window.seliraPixelTracking.trackEvent('InitiateCheckout', {
+          content_name: `${details.credits} Image Credits`,
+          content_category: 'Image Credits',
+          value: details.value,
+          currency: 'USD',
+          content_type: 'product'
+        }, `checkout_credits_${packageType}_${Date.now()}`);
+      }
+
+      // Check if user is logged in
+      const isLoggedIn = localStorage.getItem('auth0_token') || localStorage.getItem('user_uid');
+
+      if (!isLoggedIn) {
+        // User is not logged in - show registration popup
+        if (typeof openLoginModal === 'function') {
+          openLoginModal('signup');
+        } else {
+          alert('Please sign up to purchase credits');
+        }
+        return;
+      }
+
+      try {
+        // Map package types to Stripe price IDs
+        const priceIds = {
+          'light': 'price_1SEvgFDEKVIZZyJVOpdIVcBG',
+          'basic': 'price_1SEvglDEKVIZZyJVQvKtNhmD',
+          'premium': 'price_1SEvhLDEKVIZZyJVvvjd7gSO'
+        };
+
+        const priceId = priceIds[packageType];
+        if (!priceId) {
+          console.error('Invalid package type:', packageType);
+          alert('Invalid package selected');
+          return;
+        }
+
+        // Get user info
+        const userEmail = localStorage.getItem('user_email');
+        const userId = localStorage.getItem('user_uid');
+
+        if (!userEmail || !userId) {
+          console.error('Missing user information');
+          alert('Please log in again to continue');
+          window.location.href = '/';
+          return;
+        }
+
+        // Store credit purchase info for tracking
+        localStorage.setItem('credits_purchased', JSON.stringify({
+          credits: details.credits,
+          amount: details.value,
+          packageType: packageType
+        }));
+
+        // Create Stripe checkout session
+        const response = await fetch('/.netlify/functions/selira-create-checkout-session', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            priceId: priceId,
+            userEmail: userEmail,
+            userId: userId,
+            mode: 'payment', // One-time payment
+            successUrl: window.location.origin + `/profile?purchase=credits&credits=${details.credits}&amount=${details.value}`,
+            cancelUrl: window.location.origin + '/pricing?tab=oneoff'
+          })
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          console.error('Checkout session error:', error);
+          alert('Unable to start checkout process. Please try again.');
+          return;
+        }
+
+        const { sessionUrl } = await response.json();
+
+        if (sessionUrl) {
+          // Redirect to Stripe checkout
+          window.location.href = sessionUrl;
+        } else {
+          console.error('No session URL received');
+          alert('Unable to start checkout process. Please try again.');
+        }
+
+      } catch (error) {
+        console.error('Error initiating credit purchase:', error);
+        alert('An error occurred. Please try again later.');
+      }
+    }
   </script>
 
   <!-- Email Verification Handler -->
   <script src="js/email-verification-handler.js"></script>
+  <script src="js/unverified-email-banner.js"></script>
 </body>
 </html>
