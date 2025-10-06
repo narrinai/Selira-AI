@@ -273,6 +273,7 @@ exports.handler = async (event, context) => {
     };
     
     // Hair color descriptions (with emphasis for better AI generation)
+    // For realistic style, map fantasy colors to natural colors to avoid anime bias
     const hairColorMap = {
       'brown': 'brown hair, brunette',
       'black': 'black hair, dark hair',
@@ -280,8 +281,11 @@ exports.handler = async (event, context) => {
       'red': 'red hair, ginger hair, vibrant red hair',
       'auburn': 'auburn hair, reddish-brown hair',
       'gray': 'gray hair, silver hair',
-      'white': 'white hair, platinum blonde hair',
-      'purple': 'purple hair, violet hair'
+      'white': isAnimeStyle ? 'white hair, platinum hair' : 'platinum blonde hair, very light blonde hair',
+      'purple': isAnimeStyle ? 'purple hair, violet hair' : 'dark brown hair with subtle highlights, brunette',
+      'pink': isAnimeStyle ? 'pink hair, rose hair' : 'light auburn hair, reddish-brown hair',
+      'blue': isAnimeStyle ? 'blue hair, azure hair' : 'black hair with blue tones, dark hair',
+      'green': isAnimeStyle ? 'green hair, emerald hair' : 'dark brown hair, brunette'
     };
     
     const ethnicityDesc = ethnicityMap[ethnicity] || 'diverse features';
