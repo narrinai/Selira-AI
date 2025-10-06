@@ -187,6 +187,41 @@
       padding: 0 10px;
     }
 
+    /* Sidebar Auth Buttons */
+    .sidebar-auth-btn {
+      display: block;
+      width: 100%;
+      padding: 8px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 13px;
+      text-align: center;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+      margin-bottom: 8px;
+    }
+
+    .sidebar-auth-btn.secondary {
+      background: transparent;
+      color: var(--text-secondary);
+      border-color: var(--border);
+    }
+
+    .sidebar-auth-btn.secondary:hover {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .sidebar-auth-btn.primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .sidebar-auth-btn.primary:hover {
+      background: var(--accent-hover, #c49563);
+    }
+
     /* Main Content Area */
     .main-content {
       flex: 1;
@@ -607,7 +642,7 @@
 
         <div class="nav-section-title">Account</div>
 
-        <a href="/profile" class="nav-item">
+        <a href="/profile" class="nav-item" id="profileNavItem" style="display: none;">
           <span class="nav-item-icon">👤</span>
           <span>Profile</span>
         </a>
@@ -619,7 +654,14 @@
           <span class="nav-item-icon">🤝</span>
           <span>Affiliate Program</span>
         </a>
+
       </nav>
+
+      <!-- Auth buttons for logged out users -->
+      <div id="sidebarAuthButtons" style="padding: 16px; border-top: 1px solid var(--border); display: none; gap: 8px;">
+        <a href="#" class="sidebar-auth-btn secondary" onclick="openLoginModal('login'); return false;">Login</a>
+        <a href="#" class="sidebar-auth-btn primary" onclick="openLoginModal('signup'); return false;">Register</a>
+      </div>
     </aside>
 
     <!-- Sidebar Overlay for Mobile -->
