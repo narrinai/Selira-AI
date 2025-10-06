@@ -1839,12 +1839,12 @@
         </a>
 
         <!-- Auth buttons for logged out users -->
-        <div id="sidebarAuthButtons" style="display: none;">
+        <div id="sidebarAuthButtons" style="display: none; flex-direction: column;">
           <a href="#" class="nav-item" onclick="openLoginModal('login'); return false;">
             <span class="nav-item-icon">🔑</span>
             <span>Login</span>
           </a>
-          <a href="#" class="sidebar-auth-btn primary" onclick="openLoginModal('signup'); return false;" style="margin: 8px 10px 0;">Register</a>
+          <a href="#" class="sidebar-auth-btn primary" onclick="openLoginModal('signup'); return false;" style="margin: 8px 10px 0; width: calc(100% - 20px);">Register</a>
         </div>
 
       </nav>
