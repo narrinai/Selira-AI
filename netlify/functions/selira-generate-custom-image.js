@@ -217,13 +217,21 @@ exports.handler = async (event, context) => {
     // Use explicit style if provided, otherwise auto-detect
     const categoryLower = (category || '').toLowerCase();
     const promptLower = customPrompt.toLowerCase();
-    const isAnimeStyle = style === 'anime' || (style !== 'realistic' && (
-                       categoryLower.includes('anime') || 
-                       promptLower.includes('anime') || 
-                       promptLower.includes('manga') ||
-                       promptLower.includes('waifu') ||
-                       promptLower.includes('kawaii')
-                     ));
+
+    // Determine if anime style - prioritize explicit style parameter
+    let isAnimeStyle = false;
+    if (style === 'anime' || style === 'animated') {
+      isAnimeStyle = true;
+    } else if (style === 'realistic') {
+      isAnimeStyle = false; // Explicitly realistic, don't auto-detect
+    } else if (!style) {
+      // Only auto-detect if style is not provided at all
+      isAnimeStyle = categoryLower.includes('anime') ||
+                     promptLower.includes('anime') ||
+                     promptLower.includes('manga') ||
+                     promptLower.includes('waifu') ||
+                     promptLower.includes('kawaii');
+    }
     
     // Character appearance based on creation flow data
     const genderDescription = sex === 'male' ? 
