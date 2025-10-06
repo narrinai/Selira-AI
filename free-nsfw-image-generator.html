@@ -1032,7 +1032,19 @@
           throw new Error(`Failed to load companions: ${response.status}`);
         }
         const data = await response.json();
-        companions = (data.characters || []).filter(c => c.slug && c.name);
+        // Map to consistent format (API uses capital Name, Slug)
+        companions = (data.characters || [])
+          .filter(c => c.Slug && c.Name)
+          .map(c => ({
+            slug: c.Slug,
+            name: c.Name,
+            avatar: c.Avatar_URL,
+            category: c.Category,
+            sex: c.sex,
+            ethnicity: c.ethnicity,
+            hairLength: c.hair_length,
+            hairColor: c.hair_color
+          }));
         console.log(`✅ Loaded ${companions.length} companions`);
         renderCarousel();
         updateCarouselNav();
