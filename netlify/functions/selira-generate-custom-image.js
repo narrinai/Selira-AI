@@ -351,13 +351,13 @@ exports.handler = async (event, context) => {
     console.log(`🎌 [${requestId}] Anime style:`, isAnimeStyle);
 
     // Use different models based on style
-    // Stable Diffusion XL Lightning for realistic (fast, no NSFW filter)
+    // Absolute Reality v1.8.1 for realistic (NSFW-trained, uncensored)
     // Flux Dev for anime (better at anime/illustration)
     const modelVersion = isAnimeStyle
       ? "6e4a938f85952bdabcc15aa329178c4d681c52bf25a0342403287dc26944661d" // Flux Dev
-      : "bytedance/sdxl-lightning-4step:5599ed30703defd1d160a25a63321b4dec97101d98b4674bcc56e41f62f35637"; // SDXL Lightning 4-step
+      : "asiryan/absolutereality-v1.8.1"; // Absolute Reality v1.8.1
 
-    console.log(`🎨 [${requestId}] Using model: ${isAnimeStyle ? 'Flux Dev (anime)' : 'SDXL Lightning (realistic)'}`);
+    console.log(`🎨 [${requestId}] Using model: ${isAnimeStyle ? 'Flux Dev (anime)' : 'Absolute Reality v1.8.1 (realistic NSFW)'}`);
 
     // Add progressive delay to prevent rate limiting
     // More requests = longer delay
@@ -397,15 +397,14 @@ exports.handler = async (event, context) => {
             output_quality: 90,
             disable_safety_checker: true
           } : {
-            // SDXL Lightning 4-step parameters (realistic, fast, no NSFW filter)
+            // Absolute Reality v1.8.1 parameters (realistic NSFW)
             prompt: fullPrompt,
-            width: 1024,
-            height: 1024,
-            scheduler: "K_EULER",
-            num_inference_steps: 4,
-            guidance_scale: 0,
+            negative_prompt: 'low quality, blurry, bad anatomy, multiple people, crowd, group, deformed, extra limbs, extra arms, extra legs, anime, cartoon, illustration, drawing',
+            width: 768,
+            height: 768,
             num_outputs: 1,
-            disable_safety_checker: true
+            num_inference_steps: 25,
+            guidance_scale: 7.5
           }
         })
       });
