@@ -864,25 +864,6 @@
           <p style="color: var(--text-secondary); font-size: 1.1rem;">Create custom images with your favorite companions</p>
         </div>
 
-        <!-- Credits Info -->
-        <div id="creditsInfo" style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 10px 16px; margin-bottom: 30px; display: none; justify-content: center; align-items: center; flex-wrap: wrap; gap: 20px; max-width: 900px; margin-left: auto; margin-right: auto;">
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <span style="font-size: 16px;">🎨</span>
-            <div>
-              <h3 style="font-size: 11px; color: var(--text-secondary); font-weight: 500; margin-bottom: 2px;">Credits</h3>
-              <div id="creditsAmount" style="font-size: 14px; font-weight: 700; color: var(--accent);">Loading...</div>
-            </div>
-          </div>
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <span style="font-size: 16px;">📊</span>
-            <div>
-              <h3 style="font-size: 11px; color: var(--text-secondary); font-weight: 500; margin-bottom: 2px;">Plan</h3>
-              <div id="planName" style="font-size: 14px; font-weight: 700; color: var(--accent);">Loading...</div>
-            </div>
-          </div>
-          <a href="/pricing" id="buyCreditsBtn" style="background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%); color: white; border: none; padding: 8px 16px; border-radius: var(--radius-sm); font-weight: 600; font-size: 12px; text-decoration: none; display: inline-block;">Get More Credits</a>
-        </div>
-
         <!-- Alert Container -->
         <div id="alertContainer"></div>
 
@@ -922,10 +903,29 @@
           <!-- Preview Panel -->
           <div style="position: sticky; top: 80px; height: fit-content; max-width: 800px; width: 100%;">
             <!-- Generate Button First -->
-            <button id="generateBtn" style="max-width: 300px; margin: 0 auto 20px auto; background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%); color: white; border: none; padding: 16px 32px; border-radius: var(--radius-md); font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px;">
+            <button id="generateBtn" style="max-width: 300px; margin: 0 auto 12px auto; background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%); color: white; border: none; padding: 16px 32px; border-radius: var(--radius-md); font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px;">
               <span style="font-size: 20px;">✨</span>
               <span>Generate Image</span>
             </button>
+
+            <!-- Credits Info -->
+            <div id="creditsInfo" style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 10px 16px; margin-bottom: 20px; display: none; justify-content: center; align-items: center; flex-wrap: wrap; gap: 20px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 16px;">🎨</span>
+                <div>
+                  <h3 style="font-size: 11px; color: var(--text-secondary); font-weight: 500; margin-bottom: 2px;">Credits</h3>
+                  <div id="creditsAmount" style="font-size: 14px; font-weight: 700; color: var(--accent);">Loading...</div>
+                </div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 16px;">📊</span>
+                <div>
+                  <h3 style="font-size: 11px; color: var(--text-secondary); font-weight: 500; margin-bottom: 2px;">Plan</h3>
+                  <div id="planName" style="font-size: 14px; font-weight: 700; color: var(--accent);">Loading...</div>
+                </div>
+              </div>
+              <a href="/pricing" id="buyCreditsBtn" style="background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%); color: white; border: none; padding: 8px 16px; border-radius: var(--radius-sm); font-weight: 600; font-size: 12px; text-decoration: none; display: inline-block;">Get More Credits</a>
+            </div>
 
             <!-- Image Display Below Button -->
             <div id="previewArea" style="background: var(--bg-tertiary); border-radius: var(--radius-md); padding: 20px; min-height: 400px; display: flex; align-items: center; justify-content: center; position: relative;">
