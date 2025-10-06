@@ -145,11 +145,10 @@ function createMobileNav() {
           <div class="mobile-menu-divider"></div>
           <a href="#" class="mobile-menu-link login-link" onclick="openLoginModal('login'); return false;">
             <span class="menu-icon">🔑</span>
-            <span>Sign In</span>
+            <span>Login</span>
           </a>
-          <a href="#" class="mobile-menu-link signup-link" onclick="openLoginModal('signup'); return false;">
-            <span class="menu-icon">✨</span>
-            <span>Register</span>
+          <a href="#" class="mobile-menu-btn-register signup-link" onclick="openLoginModal('signup'); return false;">
+            Register
           </a>
         </nav>
       </div>
@@ -352,13 +351,32 @@ function addMobileNavStyles() {
     .mobile-menu-link:hover {
       background: var(--bg-tertiary, #2a2a2a);
     }
-    
+
     .menu-icon {
       font-size: 20px;
       width: 24px;
       text-align: center;
     }
-    
+
+    .mobile-menu-btn-register {
+      display: block;
+      margin: 8px 20px;
+      padding: 12px 16px;
+      background: var(--accent, #d4a574);
+      color: white;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      text-align: center;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .mobile-menu-btn-register:hover {
+      background: var(--accent-hover, #c49563);
+    }
+
     .mobile-menu-divider {
       height: 1px;
       background: var(--border, #333333);

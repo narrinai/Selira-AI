@@ -202,6 +202,41 @@
       padding: 0 10px;
     }
 
+    /* Sidebar Auth Buttons */
+    .sidebar-auth-btn {
+      display: block;
+      width: 100%;
+      padding: 8px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 13px;
+      text-align: center;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+      margin-bottom: 8px;
+    }
+
+    .sidebar-auth-btn.secondary {
+      background: transparent;
+      color: var(--text-secondary);
+      border-color: var(--border);
+    }
+
+    .sidebar-auth-btn.secondary:hover {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .sidebar-auth-btn.primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .sidebar-auth-btn.primary:hover {
+      background: var(--accent-hover, #c49563);
+    }
+
     /* Main Content Area */
     .main-content {
       flex: 1;
@@ -1794,10 +1829,6 @@
           <span class="nav-item-icon">👤</span>
           <span>Profile</span>
         </a>
-        <a href="#" class="nav-item" id="registerNavItem" onclick="window.netlifyIdentity?.open('signup'); return false;">
-          <span class="nav-item-icon">✨</span>
-          <span>Register</span>
-        </a>
         <a href="/pricing" class="nav-item">
           <span class="nav-item-icon">💎</span>
           <span>Pricing</span>
@@ -1808,6 +1839,12 @@
         </a>
 
       </nav>
+
+      <!-- Auth buttons for logged out users -->
+      <div id="sidebarAuthButtons" style="padding: 16px; border-top: 1px solid var(--border); display: none; gap: 8px;">
+        <a href="#" class="sidebar-auth-btn secondary" onclick="openLoginModal('login'); return false;">Login</a>
+        <a href="#" class="sidebar-auth-btn primary" onclick="openLoginModal('signup'); return false;">Register</a>
+      </div>
     </aside>
 
     <!-- Sidebar Overlay for Mobile -->
@@ -5397,16 +5434,16 @@ Please be thorough and include important details from our conversations.`;
     function updateProfileNavVisibility() {
       const user = JSON.parse(localStorage.getItem('user') || '{}');
       const profileNavItem = document.getElementById('profileNavItem');
-      const registerNavItem = document.getElementById('registerNavItem');
+      const sidebarAuthButtons = document.getElementById('sidebarAuthButtons');
 
       if (user.email) {
-        // User is logged in - show Profile, hide Register
+        // User is logged in - show Profile, hide auth buttons
         if (profileNavItem) profileNavItem.style.display = 'flex';
-        if (registerNavItem) registerNavItem.style.display = 'none';
+        if (sidebarAuthButtons) sidebarAuthButtons.style.display = 'none';
       } else {
-        // User is logged out - hide Profile, show Register
+        // User is logged out - hide Profile, show auth buttons
         if (profileNavItem) profileNavItem.style.display = 'none';
-        if (registerNavItem) registerNavItem.style.display = 'flex';
+        if (sidebarAuthButtons) sidebarAuthButtons.style.display = 'flex';
       }
     }
 
