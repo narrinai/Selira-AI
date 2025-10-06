@@ -133,7 +133,7 @@ function createMobileNav() {
             <span>Pricing</span>
           </a>
           <a href="/free-nsfw-image-generator" class="mobile-menu-link">
-            <span class="menu-icon">🎨</span>
+            <span class="menu-icon">📸</span>
             <span>Image Generator</span>
           </a>
           <a href="https://selira.firstpromoter.com" class="mobile-menu-link" target="_blank">
