@@ -58,10 +58,10 @@ exports.handler = async (event, context) => {
     
     console.log('🎨 Generated prompt:', prompt);
     console.log('👤 Detected gender:', gender);
-    
-    // Use FLUX Schnell for fast generation (1-4 steps, ~8 seconds)
-    const model = "playgroundai/playground-v2.5-1024px-aesthetic:a45f82a1382bed5c7aeb861dac7c7d191b0fdf74d8d57c4a0e6ed7d4d0bf7d24";
-    
+
+    // Use Flux Dev (same as chat image generation) - proven to work reliably
+    const modelVersion = "6e4a938f85952bdabcc15aa329178c4d681c52bf25a0342403287dc26944661d";
+
     // Call Replicate API
     const replicateResponse = await fetch('https://api.replicate.com/v1/predictions', {
       method: 'POST',
@@ -70,13 +70,15 @@ exports.handler = async (event, context) => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        version: model,
+        version: modelVersion,
         input: {
           prompt: prompt,
-          width: 768,
-          height: 768,
-          num_outputs: 1,
-          num_inference_steps: 4
+          guidance_scale: 3.5,
+          num_inference_steps: 28,
+          aspect_ratio: "1:1",
+          output_format: "webp",
+          output_quality: 80,
+          disable_safety_checker: true
         }
       })
     });
@@ -89,11 +91,11 @@ exports.handler = async (event, context) => {
     
     const prediction = await replicateResponse.json();
     console.log('📊 Prediction created:', prediction.id);
-    
-    // Wait for the prediction to complete (max 10 seconds for Flux Schnell)
+
+    // Wait for the prediction to complete (Flux Dev takes 15-30 seconds)
     let result = prediction;
     let attempts = 0;
-    const maxAttempts = 15;
+    const maxAttempts = 40; // 40 seconds max (longer than chat to be safe)
     
     while (result.status !== 'succeeded' && result.status !== 'failed' && attempts < maxAttempts) {
       await new Promise(resolve => setTimeout(resolve, 1000));
