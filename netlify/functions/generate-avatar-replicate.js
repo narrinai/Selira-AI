@@ -119,14 +119,31 @@ exports.handler = async (event, context) => {
     }
     
     if (result.status === 'failed') {
+      console.error('❌ Generation failed. Full result:', JSON.stringify(result, null, 2));
       throw new Error('Image generation failed');
     }
-    
+
+    // Log the full output to debug URL issues
+    console.log('📊 Full Replicate output:', JSON.stringify(result.output, null, 2));
+
     const imageUrl = result.output?.[0];
     if (!imageUrl) {
+      console.error('❌ No image URL in output. Full result:', JSON.stringify(result, null, 2));
       throw new Error('No image URL in response');
     }
-    
+
+    // Verify the URL is accessible
+    console.log('🔍 Testing image URL accessibility:', imageUrl);
+    try {
+      const testResponse = await fetch(imageUrl, { method: 'HEAD' });
+      console.log('📊 URL test response:', testResponse.status, testResponse.statusText);
+      if (!testResponse.ok) {
+        console.warn('⚠️ URL returned non-200 status:', testResponse.status);
+      }
+    } catch (testError) {
+      console.error('⚠️ URL test failed:', testError.message);
+    }
+
     console.log('✅ Avatar generated successfully:', imageUrl);
     
     return {

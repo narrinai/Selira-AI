@@ -26,6 +26,15 @@ exports.handler = async (event, context) => {
   try {
     const { priceId, userEmail, userId, planName, successUrl, cancelUrl, mode } = JSON.parse(event.body || '{}');
 
+    // Extract FirstPromoter tracking ID from cookies
+    const cookies = event.headers.cookie || '';
+    const fpTidMatch = cookies.match(/_fprom_tid=([^;]+)/);
+    const fpTid = fpTidMatch ? fpTidMatch[1] : null;
+
+    if (fpTid) {
+      console.log('🎯 FirstPromoter tracking ID found:', fpTid);
+    }
+
     // Validate required fields
     if (!priceId || !userEmail || !userId || !successUrl || !cancelUrl) {
       console.error('❌ Missing required fields:', {
@@ -85,7 +94,8 @@ exports.handler = async (event, context) => {
       metadata: {
         user_id: userId,
         user_email: userEmail,
-        plan_name: planName || 'unknown'
+        plan_name: planName || 'unknown',
+        ...(fpTid && { fp_tid: fpTid }) // Add FirstPromoter tracking ID if available
       },
       success_url: successUrl,
       cancel_url: cancelUrl,
@@ -99,7 +109,8 @@ exports.handler = async (event, context) => {
         metadata: {
           user_id: userId,
           user_email: userEmail,
-          plan_name: planName || 'unknown'
+          plan_name: planName || 'unknown',
+          ...(fpTid && { fp_tid: fpTid }) // Add FirstPromoter tracking ID if available
         }
       };
     }
