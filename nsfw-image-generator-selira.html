@@ -665,6 +665,78 @@
       display: none;
     }
 
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+      20%, 40%, 60%, 80% { transform: translateX(10px); }
+    }
+
+    .shake-animation {
+      animation: shake 0.5s;
+    }
+
+    /* Blur Overlay for Preview */
+    .preview-blur-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(10, 10, 10, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .blur-overlay-icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+      opacity: 0.8;
+    }
+
+    .blur-overlay-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+
+    .blur-overlay-text {
+      font-size: 15px;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .blur-overlay-btn {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+      color: white;
+      border: none;
+      padding: 14px 32px;
+      border-radius: var(--radius-md);
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .blur-overlay-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(212, 165, 116, 0.4);
+    }
+
+
     /* Mobile Responsive */
     @media (max-width: 768px) {
       .sidebar {
@@ -788,7 +860,93 @@
         font-size: 11px;
         color: rgba(255, 255, 255, 0.7);
         margin-bottom: 6px;
+  
+      
+      /* Image Generator Mobile Responsive */
+      .page-header h1 {
+        font-size: 2rem !important;
       }
+
+      .page-header p {
+        font-size: 1rem !important;
+      }
+
+      #creditsInfo {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+      }
+
+      /* Make generation container single column on mobile */
+      .content-area > div[style*="grid-template-columns: 1fr 1fr"] {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+      }
+
+      /* Form panel mobile adjustments */
+      .content-area > div > div[style*="padding: 30px"] {
+        padding: 20px !important;
+      }
+
+      /* Option grids mobile - smaller cards */
+      #poseOptions,
+      #outfitOptions {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)) !important;
+      }
+
+      #poseOptions > div,
+      #outfitOptions > div {
+        padding: 12px !important;
+      }
+
+      #poseOptions > div span:first-child,
+      #outfitOptions > div span:first-child {
+        font-size: 24px !important;
+      }
+
+      #poseOptions > div div,
+      #outfitOptions > div div {
+        font-size: 12px !important;
+      }
+
+      /* Preview panel mobile */
+      .content-area > div > div:last-child {
+        position: relative !important;
+        top: 0 !important;
+      }
+
+      #previewArea {
+        min-height: 300px !important;
+      }
+
+      /* Blur overlay mobile adjustments */
+      .preview-blur-overlay {
+        padding: 20px !important;
+      }
+
+      .blur-overlay-icon {
+        font-size: 48px !important;
+        margin-bottom: 16px !important;
+      }
+
+      .blur-overlay-title {
+        font-size: 20px !important;
+        margin-bottom: 10px !important;
+      }
+
+      .blur-overlay-text {
+        font-size: 14px !important;
+        margin-bottom: 20px !important;
+      }
+
+      .blur-overlay-btn {
+        padding: 12px 24px !important;
+        font-size: 15px !important;
+        width: 100%;
+        max-width: 280px;
+      }
+
+
+    }
 
       .character-card .character-description {
         display: none;
@@ -1964,7 +2122,15 @@
 
           <!-- Preview Panel -->
           <div style="position: sticky; top: 80px; height: fit-content;">
-            <div id="previewArea" style="background: var(--bg-tertiary); border-radius: var(--radius-md); padding: 20px; min-height: 400px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 16px; margin-bottom: 20px;">
+            <div id="previewArea" style="background: var(--bg-tertiary); border-radius: var(--radius-md); padding: 20px; min-height: 400px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 16px; margin-bottom: 20px; position: relative;">
+              <!-- Blur Overlay (shown when no credits/subscription) -->
+              <div id="blurOverlay" class="preview-blur-overlay" style="display: none;">
+                <div class="blur-overlay-icon">🔒</div>
+                <h3 class="blur-overlay-title">Unlock Image Generation</h3>
+                <p class="blur-overlay-text">Get credits or upgrade to a subscription plan to generate unlimited AI images with your favorite companions.</p>
+                <a href="/pricing" class="blur-overlay-btn">View Pricing Plans</a>
+              </div>
+              
               <div id="placeholder" style="text-align: center; color: var(--text-muted);">
                 <div style="font-size: 64px; margin-bottom: 16px; opacity: 0.5;">🖼️</div>
                 <p>Your generated image will appear here</p>
@@ -5547,6 +5713,25 @@ Please be thorough and include important details from our conversations.`;
         if (!response.ok) throw new Error('Failed to load credits');
         const data = await response.json();
         document.getElementById('creditsInfo').style.display = 'flex';
+        
+        // Calculate if user can generate
+        const canGenerate = data.plan !== 'Free' || data.creditsRemaining > 0 || (data.imagesGenerated || 0) < 2;
+        
+        // Show/hide blur overlay based on ability to generate
+        const blurOverlay = document.getElementById('blurOverlay');
+        const generateBtn = document.getElementById('generateBtn');
+        if (!canGenerate) {
+          blurOverlay.style.display = 'flex';
+          generateBtn.disabled = true;
+          generateBtn.style.opacity = '0.5';
+          generateBtn.style.cursor = 'not-allowed';
+        } else {
+          blurOverlay.style.display = 'none';
+          generateBtn.disabled = false;
+          generateBtn.style.opacity = '1';
+          generateBtn.style.cursor = 'pointer';
+        }
+        
         let creditsDisplay = data.plan === 'Free' 
           ? (data.creditsRemaining > 0 ? `${data.creditsRemaining} Credits` : `${Math.max(0, 2 - (data.imagesGenerated || 0))} Free`)
           : 'Unlimited';
@@ -5555,8 +5740,13 @@ Please be thorough and include important details from our conversations.`;
         if (data.plan !== 'Free' || data.creditsRemaining > 0) {
           document.getElementById('buyCreditsBtn').style.display = 'none';
         }
+        
+        return data;
       } catch (error) {
         console.error('Error loading credits:', error);
+        // On error, show blur overlay as safety measure
+        document.getElementById('blurOverlay').style.display = 'flex';
+        document.getElementById('generateBtn').disabled = true;
       }
     }
 
@@ -5646,6 +5836,18 @@ Please be thorough and include important details from our conversations.`;
       if (!selectedCompanion) return showAlert('Please select a companion', 'warning');
       if (!selectedPose) return showAlert('Please select a pose', 'warning');
       if (!selectedOutfit) return showAlert('Please select an outfit', 'warning');
+
+      // Double-check credits before generating
+      const creditsCheck = await loadUserCredits();
+      const canGenerate = creditsCheck && (creditsCheck.plan !== 'Free' || creditsCheck.creditsRemaining > 0 || (creditsCheck.imagesGenerated || 0) < 2);
+      if (!canGenerate) {
+        showAlert('You need credits or a subscription to generate images. Visit our pricing page!', 'error');
+        // Shake the blur overlay to draw attention
+        const overlay = document.getElementById('blurOverlay');
+        overlay.classList.add('shake-animation');
+        setTimeout(() => overlay.classList.remove('shake-animation'), 500);
+        return;
+      }
 
       document.getElementById('placeholder').style.display = 'none';
       document.getElementById('generatedImage').style.display = 'none';
