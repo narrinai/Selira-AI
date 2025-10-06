@@ -40,15 +40,16 @@ function updateMobileNavAuthState(authDetail = null) {
 
   // Update profile button text and style
   if (isAuthenticated) {
-    profileText.textContent = 'Profile';
+    profileText.textContent = 'Upgrade';
     profileBtn.style.background = 'var(--accent, #d4a574)';
     profileBtn.style.color = 'white';
-    profileBtn.style.borderRadius = '25px';
-    profileBtn.style.padding = '10px 20px';
-    profileBtn.style.fontSize = '14px';
+    profileBtn.style.borderRadius = '8px';
+    profileBtn.style.padding = '8px 16px';
+    profileBtn.style.fontSize = '13px';
     profileBtn.style.fontWeight = '600';
     profileBtn.style.width = 'auto';
     profileBtn.style.height = 'auto';
+    profileBtn.style.border = '1px solid transparent';
     // Hide login/signup links in menu
     loginLinks.forEach(link => link.style.display = 'none');
   } else {
@@ -56,12 +57,13 @@ function updateMobileNavAuthState(authDetail = null) {
     profileText.textContent = 'Register';
     profileBtn.style.background = 'var(--accent, #d4a574)';
     profileBtn.style.color = 'white';
-    profileBtn.style.borderRadius = '25px';
-    profileBtn.style.padding = '10px 20px';
-    profileBtn.style.fontSize = '14px';
+    profileBtn.style.borderRadius = '8px';
+    profileBtn.style.padding = '8px 16px';
+    profileBtn.style.fontSize = '13px';
     profileBtn.style.fontWeight = '600';
     profileBtn.style.width = 'auto';
     profileBtn.style.height = 'auto';
+    profileBtn.style.border = '1px solid transparent';
     // Show login/signup links in menu
     loginLinks.forEach(link => link.style.display = 'flex');
   }
@@ -580,8 +582,8 @@ function attachMobileNavEvents() {
   // Profile button - handle both authenticated and non-authenticated states
   profileBtn.addEventListener('click', function() {
     if (window.isUserAuthenticated && window.isUserAuthenticated()) {
-      // User is authenticated, go to profile
-      window.location.href = '/profile';
+      // User is authenticated, go to pricing (Upgrade button)
+      window.location.href = '/pricing';
     } else {
       // User not authenticated, always open signup modal
       if (window.openLoginModal) {

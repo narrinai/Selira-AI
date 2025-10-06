@@ -707,19 +707,19 @@ class Auth0LoginModal {
       if (loginBtn) {
         loginBtn.href = '/pricing';
         loginBtn.textContent = 'Upgrade';
-        loginBtn.className = loginBtn.className.replace('login-btn', 'profile-btn') + ' inverted-btn';
+        loginBtn.className = 'user-btn signup-btn'; // Use same classes as Register button
         loginBtn.onclick = null; // Remove modal trigger
-        // Transparent button styling with gold border - inherit font-size from nav
-        loginBtn.style.background = 'transparent';
-        loginBtn.style.color = 'var(--accent, #d4a574)';
-        loginBtn.style.border = '2px solid var(--accent, #d4a574)';
-        loginBtn.style.borderRadius = '8px';
-        loginBtn.style.padding = '10px 24px';
-        loginBtn.style.fontSize = ''; // Remove inline font-size to inherit from nav
+        // Use same compact styling as Register button
+        loginBtn.style.background = 'var(--accent, #d4a574)';
+        loginBtn.style.color = 'white';
+        loginBtn.style.border = '1px solid transparent';
+        loginBtn.style.borderRadius = 'var(--radius-md, 8px)';
+        loginBtn.style.padding = '8px 16px';
+        loginBtn.style.fontSize = '13px';
         loginBtn.style.fontWeight = '600';
         loginBtn.style.textDecoration = 'none';
         loginBtn.style.transition = 'all 0.2s ease';
-        console.log('✅ Updated login button to transparent profile button:', loginBtn.textContent);
+        console.log('✅ Updated login button to compact green Upgrade button:', loginBtn.textContent);
       }
       
       // Hide/remove signup button
@@ -781,18 +781,22 @@ class Auth0LoginModal {
 
       if (isAuthenticated) {
         loginBtn.textContent = 'Upgrade';
-        loginBtn.className = loginBtn.className.replace('login-btn', 'profile-btn') + ' inverted-btn';
+        loginBtn.className = 'mobile-auth-btn'; // Use same class as Register button
         loginBtn.onclick = (e) => {
           e.preventDefault();
           // Always navigate to /pricing page
           window.location.href = '/pricing';
           return false;
         };
-        // Apply transparent button styling for mobile too
-        loginBtn.style.background = 'transparent';
-        loginBtn.style.color = 'var(--accent, #d4a574)';
-        loginBtn.style.border = '2px solid var(--accent, #d4a574)';
-        console.log('✅ Updated mobile header to show transparent Upgrade button');
+        // Use same compact green styling as Register button
+        loginBtn.style.background = 'var(--accent, #d4a574)';
+        loginBtn.style.color = 'white';
+        loginBtn.style.border = '1px solid transparent';
+        loginBtn.style.borderRadius = 'var(--radius-md, 8px)';
+        loginBtn.style.padding = '8px 16px';
+        loginBtn.style.fontSize = '13px';
+        loginBtn.style.fontWeight = '600';
+        console.log('✅ Updated mobile header to show compact green Upgrade button');
       } else {
         loginBtn.textContent = 'Register';
         // Keep mobile-auth-btn class, just remove profile-btn if it exists
