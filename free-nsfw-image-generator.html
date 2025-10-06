@@ -308,172 +308,6 @@
     }
 
 
-    /* Filter Section */
-    .filter-section {
-      padding: 12px 30px;
-      background: var(--bg-secondary);
-      border-bottom: 1px solid var(--border-light);
-    }
-
-    .filter-dropdown {
-      position: relative;
-    }
-
-    /* Dropdown styling moved to shared .tag-pill, .dropdown-btn rule below */
-
-    .dropdown-menu {
-      display: none;
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      z-index: 1000;
-      margin-top: 4px;
-    }
-
-    .dropdown-menu a {
-      display: block;
-      padding: 8px 12px;
-      color: var(--text-primary);
-      text-decoration: none;
-      font-size: 11px;
-      font-weight: 500;
-      transition: all 0.2s ease;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .dropdown-menu a:last-child {
-      border-bottom: none;
-    }
-
-    .dropdown-menu a:hover {
-      background: var(--bg-tertiary);
-      color: var(--accent);
-    }
-
-    .toggle-switch {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 14px;
-      font-weight: 500;
-    }
-
-    .switch {
-      position: relative;
-      width: 44px;
-      height: 24px;
-      background: var(--border-color);
-      border-radius: 12px;
-      cursor: pointer;
-      transition: background 0.2s ease;
-    }
-
-    .switch.active {
-      background: var(--accent);
-    }
-
-    .switch::after {
-      content: '';
-      position: absolute;
-      top: 2px;
-      left: 2px;
-      width: 20px;
-      height: 20px;
-      background: white;
-      border-radius: 50%;
-      transition: transform 0.2s ease;
-    }
-
-    .switch.active::after {
-      transform: translateX(20px);
-    }
-
-    /* Tag Filter Pills */
-    .tag-filters {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      align-items: center;
-    }
-
-    .filter-dropdown {
-      position: relative;
-      display: inline-block;
-    }
-
-    /* Smaller emoji in tags */
-    .tag-pill .tag-emoji {
-      font-size: 12px;
-    }
-
-    .tag-pill,
-    .dropdown-btn {
-      padding: 6px 14px;
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text-secondary);
-      cursor: pointer;
-      transition: all 0.2s ease;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .tag-pill:hover,
-    .dropdown-btn:hover {
-      background: var(--bg-tertiary);
-      color: var(--text-primary);
-      border-color: var(--accent);
-    }
-
-    .tag-pill.active {
-      background: var(--accent);
-      color: white;
-      border-color: var(--accent);
-    }
-
-    .dropdown-arrow {
-      font-size: 9px;
-      color: var(--text-secondary);
-    }
-
-    /* Green style for style filter button */
-    .style-filter-btn {
-      background: #10b981 !important;
-      color: white !important;
-      border-color: #10b981 !important;
-      font-size: 13px !important;
-      padding: 6px 14px !important;
-      border-radius: 20px !important;
-    }
-
-    .style-filter-btn:hover {
-      background: #059669 !important;
-      color: white !important;
-      border-color: #059669 !important;
-    }
-
-    .style-filter-btn .dropdown-arrow {
-      color: white !important;
-      font-size: 9px !important;
-    }
-
-    .tag-pill.category {
-      background: var(--accent);
-      color: white;
-      font-weight: 600;
-      border-color: var(--accent);
-    }
-
     /* Character Grid */
     .content-area {
       padding: 30px;
@@ -1382,10 +1216,7 @@
           border-bottom: 1px solid var(--border);
         }
 
-        .mobile-filter-dropdown {
-          position: relative;
-          flex: 1;
-        }
+        
 
         .mobile-dropdown-btn {
           width: 100%;
@@ -1554,11 +1385,7 @@
         overflow-y: auto;
       }
 
-      .mobile-filter-section {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-      }
+      
 
       .mobile-filter-tag {
         background: var(--bg-secondary);
@@ -1980,29 +1807,11 @@
 
         <!-- Mobile Filter Bar (only visible on mobile) -->
         <div class="mobile-filter-bar">
-        <div class="mobile-filter-dropdown">
-          <button class="mobile-dropdown-btn" id="mobileStyleFilter" onclick="toggleMobileStyleDropdown()">
-            <span id="mobileStyleText">Realistic</span>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" style="margin-left: 6px;">
-              <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-          </button>
-          <div class="mobile-dropdown-menu" id="mobileStyleMenu">
-            <div class="mobile-dropdown-item" onclick="selectMobileStyle('all')">All</div>
-            <div class="mobile-dropdown-item" onclick="selectMobileStyle('realistic')">Realistic</div>
+                    <div class="mobile-dropdown-item" onclick="selectMobileStyle('realistic')">Realistic</div>
             <div class="mobile-dropdown-item" onclick="selectMobileStyle('anime')">Anime</div>
           </div>
         </div>
-        <div class="mobile-filter-dropdown">
-          <button class="mobile-dropdown-btn" id="mobileTagFilter" onclick="toggleMobileTagDropdown()">
-            <span id="mobileTagText">All Tags</span>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" style="margin-left: 6px;">
-              <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-          </button>
-          <div class="mobile-dropdown-menu" id="mobileTagMenu">
-            <div class="mobile-dropdown-item" onclick="selectMobileTag('all')">All Tags</div>
-            <!-- Dynamic tags will be added here -->
+                    <!-- Dynamic tags will be added here -->
           </div>
         </div>
       </div>
@@ -2033,33 +1842,7 @@
         </div>
       </header>
 
-      <!-- Filter Section -->
-      <section class="filter-section">
-        <!-- Tag Pills Row - all on same line -->
-        <div class="tag-filters" id="tagFilters">
-          <!-- Style dropdown FIRST - green styling -->
-          <div class="filter-dropdown">
-            <button class="dropdown-btn style-filter-btn" id="styleDropdownBtn" onclick="toggleDropdown('style')">
-              <span>Realistic</span>
-              <span class="dropdown-arrow">▼</span>
-            </button>
-            <div class="dropdown-menu" id="styleDropdown">
-              <a href="#" onclick="setStyleFilter('all')">All</a>
-              <a href="#" onclick="setStyleFilter('realistic')">Realistic</a>
-              <a href="#" onclick="setStyleFilter('anime')">Anime</a>
-            </div>
-          </div>
-
-          <!-- Dynamic tags will be inserted here with All button first -->
-          <div id="dynamicTagFilters" style="display: contents;">
-            <!-- Loading placeholder -->
-            <span class="loading-tags" style="font-size: 11px;">Loading tags...</span>
-          </div>
-        </div>
-      </section>
-
-
-      <!-- Character Grid -->
+      <!-- Content Area -->
       <section class="content-area">
         <!-- Page Header -->
         <div class="page-header" style="margin-bottom: 32px;">
@@ -2090,27 +1873,31 @@
         <div id="alertContainer"></div>
 
         <!-- Generation Container -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+        <div style="display: flex; justify-content: center; align-items: flex-start; gap: 30px; flex-wrap: wrap;">
           <!-- Form Panel -->
-          <div style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 30px;">
+          <div style="max-width: 600px; width: 100%; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 30px;">
             <h2 style="margin-bottom: 24px; font-family: 'Playfair Display', serif;">Configure Your Image</h2>
             
             <div style="margin-bottom: 28px;">
               <label style="display: block; font-weight: 600; margin-bottom: 10px; font-size: 15px;">Select Companion</label>
-              <select id="companionSelect" style="width: 100%; padding: 12px 16px; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary); font-size: 15px;">
-                <option value="">Loading companions...</option>
-              </select>
-              <small style="font-size: 13px; color: var(--text-muted); margin-top: 6px; display: block;">Choose which companion to generate an image of</small>
+              <div style="position: relative;">
+                <button id="companionPrev" style="position: absolute; left: -12px; top: 50%; transform: translateY(-50%); background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: 50%; width: 32px; height: 32px; cursor: pointer; z-index: 2; color: var(--text-primary); font-size: 16px; display: none;">‹</button>
+                <div id="companionCarousel" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; overflow: hidden;"></div>
+                <button id="companionNext" style="position: absolute; right: -12px; top: 50%; transform: translateY(-50%); background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: 50%; width: 32px; height: 32px; cursor: pointer; z-index: 2; color: var(--text-primary); font-size: 16px; display: none;">›</button>
+              </div>
+              <div style="text-align: center; margin-top: 8px;">
+                <span id="companionPageInfo" style="font-size: 12px; color: var(--text-muted);">Loading companions...</span>
+              </div>
             </div>
 
             <div style="margin-bottom: 28px;">
               <label style="display: block; font-weight: 600; margin-bottom: 10px; font-size: 15px;">Pose</label>
-              <div id="poseOptions" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px;"></div>
+              <div id="poseOptions" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;"></div>
             </div>
 
             <div style="margin-bottom: 28px;">
               <label style="display: block; font-weight: 600; margin-bottom: 10px; font-size: 15px;">Outfit</label>
-              <div id="outfitOptions" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px;"></div>
+              <div id="outfitOptions" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;"></div>
             </div>
 
             <div>
@@ -2121,7 +1908,7 @@
           </div>
 
           <!-- Preview Panel -->
-          <div style="position: sticky; top: 80px; height: fit-content;">
+          <div style="position: sticky; top: 80px; height: fit-content; max-width: 600px; width: 100%;">
             <div id="previewArea" style="background: var(--bg-tertiary); border-radius: var(--radius-md); padding: 20px; min-height: 400px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 16px; margin-bottom: 20px; position: relative;">
               <!-- Blur Overlay (shown when no credits/subscription) -->
               <div id="blurOverlay" class="preview-blur-overlay" style="display: none;">
@@ -2938,12 +2725,7 @@
               <span>Filter by Tags</span>
             </div>
             <div class="mobile-filter-body">
-              <div class="mobile-filter-section">
-                <button class="mobile-filter-tag active" data-tag="all">All</button>
-                <div id="mobileFilterTags">
-                  <!-- Dynamic tags will be loaded here -->
-                  <span class="loading-mobile-tags">Loading tags...</span>
-                </div>
+              
                 <button class="mobile-filter-tag special" data-tag="unfiltered">🔥 Unfiltered</button>
               </div>
             </div>
@@ -3328,7 +3110,6 @@
         applyFilters();
         
         // Ensure filter section is visible
-        document.querySelector('.filter-section').style.display = 'block';
       }
     });
 
@@ -3353,7 +3134,6 @@
       if (e.state) {
         if (e.state.section === 'category') {
           // Show characters with optional filter
-          document.querySelector('.filter-section').style.display = 'block';
           
           if (e.state.filter) {
             const filterMap = {
@@ -3373,7 +3153,6 @@
           applyFilters();
         } else if (e.state.section === 'tag') {
           // Show characters filtered by tag
-          document.querySelector('.filter-section').style.display = 'block';
           // Strip emoji prefix from tag (Airtable tags don't have emojis)
           // This regex handles complex multi-codepoint emojis like 🧝‍♀️
           const tagClean = (e.state.tag || '').replace(/^[\u{1F000}-\u{1FFFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{FE00}-\u{FE0F}\u{200D}]+\s*/gu, '').trim();
@@ -3384,7 +3163,6 @@
         }
       } else {
         // Default to category view
-        document.querySelector('.filter-section').style.display = 'block';
         currentFilters.tags = [];
         updateActiveTag('All');
         currentTab = 'discover';
@@ -3736,7 +3514,6 @@
       closeSidebarOnMobile();
       
       // Hide filter section, show profile using full content area
-      const filterSection = document.querySelector('.filter-section');
       const grid = document.getElementById('charactersGrid');
 
       filterSection.style.display = 'none';
@@ -3997,7 +3774,6 @@
       closeSidebarOnMobile();
       
       // Hide filter section, show pricing using full content area
-      const filterSection = document.querySelector('.filter-section');
       const grid = document.getElementById('charactersGrid');
 
       filterSection.style.display = 'none';
@@ -4302,7 +4078,6 @@
       closeSidebarOnMobile();
       
       // Show filter section
-      const filterSection = document.querySelector('.filter-section');
       filterSection.style.display = 'block';
       
       // Update active nav item
@@ -4867,7 +4642,6 @@ Please be thorough and include important details from our conversations.`;
       closeSidebarOnMobile();
       
       // Hide filter section and show create character
-      const filterSection = document.querySelector('.filter-section');
       const grid = document.getElementById('charactersGrid');
       
       filterSection.style.display = 'none';
@@ -5750,25 +5524,82 @@ Please be thorough and include important details from our conversations.`;
       }
     }
 
+    // Companion carousel state
+    let currentCarouselPage = 0;
+    const companionsPerPage = 6;
+
     // Load companions
     async function loadCompanions() {
       try {
         const response = await fetch('/.netlify/functions/selira-characters-fetch?limit=1000');
         if (!response.ok) throw new Error('Failed to load companions');
         const data = await response.json();
-        companions = data.characters || [];
-        const select = document.getElementById('companionSelect');
-        select.innerHTML = '<option value="">Choose a companion...</option>';
-        companions.forEach(companion => {
-          const option = document.createElement('option');
-          option.value = companion.slug;
-          option.textContent = `${companion.name} - ${companion.title || ''}`;
-          option.dataset.companion = JSON.stringify(companion);
-          select.appendChild(option);
-        });
+        companions = (data.characters || []).filter(c => c.slug && c.name);
+        renderCarousel();
+        updateCarouselNav();
       } catch (error) {
         console.error('Error loading companions:', error);
+        document.getElementById('companionPageInfo').textContent = 'Failed to load companions';
       }
+    }
+
+    function renderCarousel() {
+      const carousel = document.getElementById('companionCarousel');
+      carousel.innerHTML = '';
+
+      const start = currentCarouselPage * companionsPerPage;
+      const end = start + companionsPerPage;
+      const pageCompanions = companions.slice(start, end);
+
+      if (pageCompanions.length === 0) {
+        carousel.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">No companions available</div>';
+        return;
+      }
+
+      pageCompanions.forEach(companion => {
+        const card = document.createElement('div');
+        card.style.cssText = 'background: var(--bg-tertiary); border: 2px solid var(--border); border-radius: var(--radius-sm); padding: 12px; text-align: center; cursor: pointer; transition: all 0.2s ease;';
+        card.dataset.companionSlug = companion.slug;
+
+        const avatar = companion.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${companion.name}`;
+        card.innerHTML = `
+          <img src="${avatar}" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-bottom: 8px;" onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=${companion.name}'">
+          <div style="font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${companion.name}</div>
+        `;
+
+        card.addEventListener('click', () => selectCompanion(companion));
+        card.addEventListener('mouseover', () => card.style.borderColor = 'var(--accent)');
+        card.addEventListener('mouseout', () => {
+          if (!selectedCompanion || selectedCompanion.slug !== companion.slug) {
+            card.style.borderColor = 'var(--border)';
+          }
+        });
+
+        if (selectedCompanion && selectedCompanion.slug === companion.slug) {
+          card.style.borderColor = 'var(--accent)';
+          card.style.background = 'rgba(212, 165, 116, 0.1)';
+        }
+
+        carousel.appendChild(card);
+      });
+
+      const totalPages = Math.ceil(companions.length / companionsPerPage);
+      document.getElementById('companionPageInfo').textContent = `${start + 1}-${Math.min(end, companions.length)} of ${companions.length} companions`;
+    }
+
+    function updateCarouselNav() {
+      const totalPages = Math.ceil(companions.length / companionsPerPage);
+      const prevBtn = document.getElementById('companionPrev');
+      const nextBtn = document.getElementById('companionNext');
+
+      prevBtn.style.display = currentCarouselPage > 0 ? 'block' : 'none';
+      nextBtn.style.display = currentCarouselPage < totalPages - 1 ? 'block' : 'none';
+    }
+
+    function selectCompanion(companion) {
+      selectedCompanion = companion;
+      // Re-render to update selection styling
+      renderCarousel();
     }
 
     // Render options
@@ -5777,9 +5608,9 @@ Please be thorough and include important details from our conversations.`;
       container.innerHTML = '';
       poses.forEach(pose => {
         const card = document.createElement('div');
-        card.style.cssText = 'background: var(--bg-tertiary); border: 2px solid var(--border); border-radius: var(--radius-sm); padding: 16px; text-align: center; cursor: pointer; transition: all 0.3s ease; position: relative;';
+        card.style.cssText = 'background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 12px; text-align: center; cursor: pointer; transition: all 0.2s ease; position: relative;';
         card.dataset.poseId = pose.id;
-        card.innerHTML = `<span style="font-size: 32px; margin-bottom: 8px; display: block;">${pose.emoji}</span><div style="font-size: 14px; font-weight: 500; color: var(--text-primary);">${pose.label}</div>`;
+        card.innerHTML = `<div style="font-size: 13px; font-weight: 500; color: var(--text-primary);">${pose.label}</div>`;
         card.addEventListener('click', () => selectPose(pose.id));
         card.addEventListener('mouseover', () => card.style.borderColor = 'var(--accent)');
         card.addEventListener('mouseout', () => { if (!card.classList.contains('selected')) card.style.borderColor = 'var(--border)'; });
@@ -5792,9 +5623,9 @@ Please be thorough and include important details from our conversations.`;
       container.innerHTML = '';
       outfits.forEach(outfit => {
         const card = document.createElement('div');
-        card.style.cssText = 'background: var(--bg-tertiary); border: 2px solid var(--border); border-radius: var(--radius-sm); padding: 16px; text-align: center; cursor: pointer; transition: all 0.3s ease; position: relative;';
+        card.style.cssText = 'background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 12px; text-align: center; cursor: pointer; transition: all 0.2s ease; position: relative;';
         card.dataset.outfitId = outfit.id;
-        card.innerHTML = `<span style="font-size: 32px; margin-bottom: 8px; display: block;">${outfit.emoji}</span><div style="font-size: 14px; font-weight: 500; color: var(--text-primary);">${outfit.label}</div>`;
+        card.innerHTML = `<div style="font-size: 13px; font-weight: 500; color: var(--text-primary);">${outfit.label}</div>`;
         card.addEventListener('click', () => selectOutfit(outfit.id));
         card.addEventListener('mouseover', () => card.style.borderColor = 'var(--accent)');
         card.addEventListener('mouseout', () => { if (!card.classList.contains('selected')) card.style.borderColor = 'var(--border)'; });
@@ -5983,9 +5814,20 @@ Please be thorough and include important details from our conversations.`;
       }
 
       // Setup event listeners
-      document.getElementById('companionSelect').addEventListener('change', (e) => {
-        const option = e.target.selectedOptions[0];
-        if (option.dataset.companion) selectedCompanion = JSON.parse(option.dataset.companion);
+      document.getElementById('companionPrev').addEventListener('click', () => {
+        if (currentCarouselPage > 0) {
+          currentCarouselPage--;
+          renderCarousel();
+          updateCarouselNav();
+        }
+      });
+      document.getElementById('companionNext').addEventListener('click', () => {
+        const totalPages = Math.ceil(companions.length / companionsPerPage);
+        if (currentCarouselPage < totalPages - 1) {
+          currentCarouselPage++;
+          renderCarousel();
+          updateCarouselNav();
+        }
       });
       document.getElementById('generateBtn').addEventListener('click', generateImage);
       document.getElementById('downloadBtn').addEventListener('click', downloadImage);
