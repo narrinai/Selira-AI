@@ -847,7 +847,7 @@
               <label style="display: block; font-weight: 600; margin-bottom: 10px; font-size: 15px;">Select Companion</label>
               <div style="position: relative;">
                 <button id="companionPrev" style="position: absolute; left: -12px; top: 50%; transform: translateY(-50%); background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: 50%; width: 32px; height: 32px; cursor: pointer; z-index: 2; color: var(--text-primary); font-size: 16px; display: none;">‹</button>
-                <div id="companionCarousel" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; overflow: hidden;"></div>
+                <div id="companionCarousel" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; overflow: hidden;"></div>
                 <button id="companionNext" style="position: absolute; right: -12px; top: 50%; transform: translateY(-50%); background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: 50%; width: 32px; height: 32px; cursor: pointer; z-index: 2; color: var(--text-primary); font-size: 16px; display: none;">›</button>
               </div>
               <div style="text-align: center; margin-top: 8px;">
@@ -874,7 +874,14 @@
 
           <!-- Preview Panel -->
           <div style="position: sticky; top: 80px; height: fit-content; max-width: 600px; width: 100%;">
-            <div id="previewArea" style="background: var(--bg-tertiary); border-radius: var(--radius-md); padding: 20px; min-height: 400px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 16px; margin-bottom: 20px; position: relative;">
+            <!-- Generate Button First -->
+            <button id="generateBtn" style="width: 100%; background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%); color: white; border: none; padding: 16px 32px; border-radius: var(--radius-md); font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 20px;">
+              <span style="font-size: 20px;">✨</span>
+              <span>Generate Image</span>
+            </button>
+
+            <!-- Image Display Below Button -->
+            <div id="previewArea" style="background: var(--bg-tertiary); border-radius: var(--radius-md); padding: 20px; min-height: 400px; display: flex; align-items: center; justify-content: center; position: relative;">
               <!-- Blur Overlay (shown when no credits/subscription) -->
               <div id="blurOverlay" style="display: none; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10; padding: 30px; text-align: center;">
                 <div style="font-size: 48px; margin-bottom: 16px;">🔒</div>
@@ -883,17 +890,10 @@
                 <a href="/pricing" style="background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%); color: white; border: none; padding: 12px 24px; border-radius: var(--radius-sm); font-weight: 600; text-decoration: none; display: inline-block;">View Pricing Plans</a>
               </div>
 
-              <!-- Generate Button First -->
-              <button id="generateBtn" style="width: 100%; background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%); color: white; border: none; padding: 16px 32px; border-radius: var(--radius-md); font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 20px;">
-                <span style="font-size: 20px;">✨</span>
-                <span>Generate Image</span>
-              </button>
-
-              <!-- Image Display Below Button -->
-              <div id="placeholder" style="text-align: center; color: var(--text-muted); padding: 40px 20px;">
+              <div id="placeholder" style="text-align: center; color: var(--text-muted); padding: 40px 20px; width: 100%;">
                 <p>Your generated image will appear here</p>
               </div>
-              <div id="loadingIndicator" style="display: none; text-align: center;">
+              <div id="loadingIndicator" style="display: none; text-align: center; width: 100%;">
                 <div style="width: 60px; height: 60px; border: 4px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
                 <div style="color: var(--text-secondary); margin-top: 16px;">Generating your image...<br>This may take 30-60 seconds</div>
               </div>
@@ -928,7 +928,7 @@
 
     // Companion carousel state
     let currentCarouselPage = 0;
-    const companionsPerPage = 6;
+    const companionsPerPage = 4;
 
     // Pose options
     const poses = [
@@ -1068,13 +1068,15 @@
 
       pageCompanions.forEach(companion => {
         const card = document.createElement('div');
-        card.style.cssText = 'background: var(--bg-tertiary); border: 2px solid var(--border); border-radius: var(--radius-sm); padding: 12px; text-align: center; cursor: pointer; transition: all 0.2s ease;';
+        card.style.cssText = 'background: var(--bg-tertiary); border: 2px solid var(--border); border-radius: var(--radius-md); overflow: hidden; cursor: pointer; transition: all 0.2s ease;';
         card.dataset.companionSlug = companion.slug;
 
         const avatar = companion.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${companion.name}`;
         card.innerHTML = `
-          <img src="${avatar}" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-bottom: 8px;" onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=${companion.name}'">
-          <div style="font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${companion.name}</div>
+          <img src="${avatar}" style="width: 100%; aspect-ratio: 3/4; object-fit: cover; display: block;" onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=${companion.name}'">
+          <div style="padding: 12px; text-align: center;">
+            <div style="font-size: 14px; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${companion.name}</div>
+          </div>
         `;
 
         card.addEventListener('click', () => selectCompanion(companion));
