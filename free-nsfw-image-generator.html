@@ -883,6 +883,13 @@
                 <a href="/pricing" style="background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%); color: white; border: none; padding: 12px 24px; border-radius: var(--radius-sm); font-weight: 600; text-decoration: none; display: inline-block;">View Pricing Plans</a>
               </div>
 
+              <!-- Generate Button First -->
+              <button id="generateBtn" style="width: 100%; background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%); color: white; border: none; padding: 16px 32px; border-radius: var(--radius-md); font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 20px;">
+                <span style="font-size: 20px;">✨</span>
+                <span>Generate Image</span>
+              </button>
+
+              <!-- Image Display Below Button -->
               <div id="placeholder" style="text-align: center; color: var(--text-muted);">
                 <div style="font-size: 64px; margin-bottom: 16px; opacity: 0.5;">🖼️</div>
                 <p>Your generated image will appear here</p>
@@ -893,11 +900,6 @@
               </div>
               <img id="generatedImage" style="width: 100%; border-radius: var(--radius-md); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4); display: none;" alt="Generated image">
             </div>
-
-            <button id="generateBtn" style="width: 100%; background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%); color: white; border: none; padding: 16px 32px; border-radius: var(--radius-md); font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px;">
-              <span style="font-size: 20px;">✨</span>
-              <span>Generate Image</span>
-            </button>
 
             <button id="downloadBtn" style="width: 100%; background: var(--bg-secondary); color: white; border: 1px solid var(--accent); padding: 14px 28px; border-radius: var(--radius-md); font-size: 16px; font-weight: 600; cursor: pointer; display: none; align-items: center; justify-content: center; gap: 10px; margin-top: 12px;">
               <span>⬇️</span>
