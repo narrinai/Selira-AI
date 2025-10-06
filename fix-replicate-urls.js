@@ -251,8 +251,19 @@ async function main() {
 
     console.log(`📦 Total companions fetched: ${allCompanions.length}\n`);
 
+    // Deduplicate by slug (in case pagination returned duplicates)
+    const uniqueCompanions = [];
+    const seenSlugs = new Set();
+    for (const companion of allCompanions) {
+      if (!seenSlugs.has(companion.slug)) {
+        seenSlugs.add(companion.slug);
+        uniqueCompanions.push(companion);
+      }
+    }
+    console.log(`📦 After deduplication: ${uniqueCompanions.length} unique companions\n`);
+
     // Filter companions with Replicate URLs ONLY (not empty avatars)
-    const companionsToFix = allCompanions.filter(char =>
+    const companionsToFix = uniqueCompanions.filter(char =>
       char.avatar_url && char.avatar_url.includes('replicate.delivery')
     );
 
