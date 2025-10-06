@@ -222,6 +222,9 @@ exports.handler = async (event, context) => {
     let isAnimeStyle = false;
     console.log(`🎨 [${requestId}] Style determination:`);
     console.log(`   style parameter: "${style}" (type: ${typeof style})`);
+    console.log(`   style === 'realistic': ${style === 'realistic'}`);
+    console.log(`   style === 'anime': ${style === 'anime'}`);
+    console.log(`   !style: ${!style}`);
     console.log(`   category: "${category}"`);
 
     if (style === 'anime' || style === 'animated') {
