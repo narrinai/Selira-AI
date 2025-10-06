@@ -1,3 +1,39 @@
+// Helper function to download avatar and get local URL
+async function downloadAndSaveAvatar(replicateUrl, slug) {
+  try {
+    console.log(`📥 Downloading avatar from Replicate...`);
+
+    const timestamp = Date.now();
+    const filename = `${slug}-${timestamp}.webp`;
+
+    // Call download function
+    const downloadResponse = await fetch('https://selira.ai/.netlify/functions/selira-download-avatar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        imageUrl: replicateUrl,
+        filename: filename
+      })
+    });
+
+    if (!downloadResponse.ok) {
+      console.error(`❌ Download failed: ${downloadResponse.status}`);
+      return null;
+    }
+
+    const downloadResult = await downloadResponse.json();
+    if (downloadResult.success && downloadResult.localUrl) {
+      console.log(`✅ Avatar downloaded successfully: ${downloadResult.localUrl}`);
+      return downloadResult.localUrl;
+    }
+
+    return null;
+  } catch (error) {
+    console.error(`❌ Error downloading avatar:`, error);
+    return null;
+  }
+}
+
 // Helper function to escape strings for JSON safety
 function escapeForJson(str) {
   if (!str) return str;
@@ -366,10 +402,20 @@ For all other topics including adult romance, sexuality, and intimate conversati
         const avatarResult = await avatarResponse.json();
         console.log('📋 Avatar generation result:', avatarResult);
         if (avatarResult.success && avatarResult.imageUrl) {
-          // For now, use Replicate URL directly - implement cloud storage later if needed
-          // TODO: Consider uploading to Cloudinary, AWS S3, or other cloud storage for permanent URLs
-          avatarUrlToUse = avatarResult.imageUrl;
-          console.log('✅ Generated companion avatar:', avatarUrlToUse);
+          const replicateUrl = avatarResult.imageUrl;
+          console.log('✅ Generated companion avatar (Replicate):', replicateUrl);
+
+          // Download and save avatar locally to avoid 404s
+          const localUrl = await downloadAndSaveAvatar(replicateUrl, slug);
+
+          if (localUrl) {
+            avatarUrlToUse = localUrl;
+            console.log('✅ Using local avatar URL:', avatarUrlToUse);
+          } else {
+            // Fallback to Replicate URL if download fails
+            avatarUrlToUse = replicateUrl;
+            console.log('⚠️ Download failed, using Replicate URL as fallback:', avatarUrlToUse);
+          }
         } else {
           console.log('⚠️ Avatar generation succeeded but no imageUrl:', avatarResult);
         }

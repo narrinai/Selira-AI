@@ -125,7 +125,7 @@ exports.handler = async (event, context) => {
       };
     }
 
-    const { customPrompt, characterName, category, style, shotType, sex, ethnicity, hairLength, hairColor, email, auth0_id, source } = body;
+    const { customPrompt, characterName, category, style, shotType, sex, ethnicity, hairLength, hairColor, email, auth0_id, source, skipAutoDownload } = body;
     
     console.log(`📋 [${requestId}] Received:`, {
       customPrompt,
@@ -461,24 +461,28 @@ exports.handler = async (event, context) => {
     
     console.log(`✅ [${requestId}] Custom image generated successfully:`, imageUrl);
 
-    // Trigger automatic download to /avatars/ (fire and forget)
-    try {
-      const downloadUrl = `${process.env.NETLIFY_FUNCTIONS_URL || 'https://selira.ai/.netlify/functions'}/selira-auto-download-avatars`;
+    // Trigger automatic download to /avatars/ (fire and forget) - skip if requested
+    if (!skipAutoDownload) {
+      try {
+        const downloadUrl = `${process.env.NETLIFY_FUNCTIONS_URL || 'https://selira.ai/.netlify/functions'}/selira-auto-download-avatars`;
 
-      // Fire and forget - don't await to avoid blocking the response
-      fetch(downloadUrl, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'User-Agent': 'Auto-Avatar-Download-Trigger'
-        }
-      }).catch(error => {
-        console.warn(`⚠️ [${requestId}] Avatar auto-download trigger failed (non-blocking):`, error.message);
-      });
+        // Fire and forget - don't await to avoid blocking the response
+        fetch(downloadUrl, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'User-Agent': 'Auto-Avatar-Download-Trigger'
+          }
+        }).catch(error => {
+          console.warn(`⚠️ [${requestId}] Avatar auto-download trigger failed (non-blocking):`, error.message);
+        });
 
-      console.log(`🚀 [${requestId}] Triggered automatic avatar download process`);
-    } catch (error) {
-      console.warn(`⚠️ [${requestId}] Error triggering avatar download (non-blocking):`, error.message);
+        console.log(`🚀 [${requestId}] Triggered automatic avatar download process`);
+      } catch (error) {
+        console.warn(`⚠️ [${requestId}] Error triggering avatar download (non-blocking):`, error.message);
+      }
+    } else {
+      console.log(`⏭️ [${requestId}] Skipping auto-download as requested`);
     }
 
     // Increment usage counter ONLY for chat-generated images (not companion creation)

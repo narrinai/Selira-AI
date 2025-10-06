@@ -177,7 +177,8 @@ async function generateNewAvatar(companion) {
         sex: traits.sex,
         ethnicity: traits.ethnicity,
         hairLength: traits.hairLength,
-        hairColor: traits.hairColor
+        hairColor: traits.hairColor,
+        skipAutoDownload: true // Prevent double downloads
       })
     });
 
