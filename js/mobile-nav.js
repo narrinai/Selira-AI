@@ -123,6 +123,10 @@ function createMobileNav() {
             <span class="menu-icon">➕</span>
             <span>Create</span>
           </a>
+          <a href="/free-nsfw-image-generator" class="mobile-menu-link">
+            <span class="menu-icon">📸</span>
+            <span>Image Generator</span>
+          </a>
           <div class="mobile-menu-divider"></div>
           <a href="/profile" class="mobile-menu-link">
             <span class="menu-icon">👤</span>
@@ -131,10 +135,6 @@ function createMobileNav() {
           <a href="/pricing" class="mobile-menu-link">
             <span class="menu-icon">💎</span>
             <span>Pricing</span>
-          </a>
-          <a href="/free-nsfw-image-generator" class="mobile-menu-link">
-            <span class="menu-icon">📸</span>
-            <span>Image Generator</span>
           </a>
           <a href="https://selira.firstpromoter.com" class="mobile-menu-link" target="_blank">
             <span class="menu-icon">🤝</span>
