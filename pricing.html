@@ -1408,7 +1408,7 @@
       try {
         // Map plan types to Stripe price IDs
         const priceIds = {
-          'light': 'price_1SEvgFDEKVIZZyJVOpdIVcBG',
+          'light': 'price_1SEuikDEKVIZZyJVq7p80aW7',
           'basic': 'price_1S9KVADEKVIZZyJVXXjE2gYE',
           'premium': 'price_1S9KVbDEKVIZZyJVDpWlXYhb'
         };
@@ -1742,16 +1742,24 @@
           } else {
             button.textContent = 'Start Free';
           }
-        } else if (index === 1) { // Basic
+        } else if (index === 1) { // Light
           if (currentPlan === 'free') {
+            button.textContent = 'Upgrade to Light';
+          } else if (currentPlan === 'basic' || currentPlan === 'premium') {
+            button.textContent = 'Downgrade to Light';
+          } else {
+            button.textContent = 'Choose Light';
+          }
+        } else if (index === 2) { // Basic
+          if (currentPlan === 'free' || currentPlan === 'light') {
             button.textContent = 'Upgrade to Basic';
           } else if (currentPlan === 'premium') {
             button.textContent = 'Downgrade to Basic';
           } else {
             button.textContent = 'Choose Basic';
           }
-        } else if (index === 2) { // Premium
-          if (currentPlan === 'free' || currentPlan === 'basic') {
+        } else if (index === 3) { // Premium
+          if (currentPlan === 'free' || currentPlan === 'light' || currentPlan === 'basic') {
             button.textContent = 'Upgrade to Premium';
           } else {
             button.textContent = 'Choose Premium';
