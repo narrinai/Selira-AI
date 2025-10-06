@@ -347,13 +347,13 @@ exports.handler = async (event, context) => {
     console.log(`🎌 [${requestId}] Anime style:`, isAnimeStyle);
 
     // Use different models based on style
-    // Playground AI v2.5 for realistic (better at photorealistic NSFW)
+    // Stable Diffusion XL Lightning for realistic (fast, no NSFW filter)
     // Flux Dev for anime (better at anime/illustration)
     const modelVersion = isAnimeStyle
       ? "6e4a938f85952bdabcc15aa329178c4d681c52bf25a0342403287dc26944661d" // Flux Dev
-      : "a45f82a1382bed5c7aeb861dac7c7d191b0fdf74d8d57c4a0e6ed7d4d0bf7d24"; // Playground AI v2.5
+      : "bytedance/sdxl-lightning-4step:5599ed30703defd1d160a25a63321b4dec97101d98b4674bcc56e41f62f35637"; // SDXL Lightning 4-step
 
-    console.log(`🎨 [${requestId}] Using model: ${isAnimeStyle ? 'Flux Dev (anime)' : 'Playground AI v2.5 (realistic)'}`);
+    console.log(`🎨 [${requestId}] Using model: ${isAnimeStyle ? 'Flux Dev (anime)' : 'SDXL Lightning (realistic)'}`);
 
     // Add progressive delay to prevent rate limiting
     // More requests = longer delay
@@ -393,14 +393,15 @@ exports.handler = async (event, context) => {
             output_quality: 90,
             disable_safety_checker: true
           } : {
-            // Playground AI v2.5 parameters (realistic)
+            // SDXL Lightning 4-step parameters (realistic, fast, no NSFW filter)
             prompt: fullPrompt,
             width: 1024,
             height: 1024,
-            scheduler: "DPMSolverMultistep",
-            num_inference_steps: 25,
-            guidance_scale: 3,
-            num_outputs: 1
+            scheduler: "K_EULER",
+            num_inference_steps: 4,
+            guidance_scale: 0,
+            num_outputs: 1,
+            disable_safety_checker: true
           }
         })
       });
