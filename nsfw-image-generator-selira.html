@@ -5833,6 +5833,19 @@ Please be thorough and include important details from our conversations.`;
     }
 
     async function generateImage() {
+      // First check if user is logged in
+      if (!userData) {
+        showAlert('Please log in to generate images', 'error');
+        const overlay = document.getElementById('blurOverlay');
+        overlay.classList.add('shake-animation');
+        setTimeout(() => overlay.classList.remove('shake-animation'), 500);
+        // Open login modal
+        if (typeof openLoginModal === 'function') {
+          setTimeout(() => openLoginModal('signup'), 600);
+        }
+        return;
+      }
+
       if (!selectedCompanion) return showAlert('Please select a companion', 'warning');
       if (!selectedPose) return showAlert('Please select a pose', 'warning');
       if (!selectedOutfit) return showAlert('Please select an outfit', 'warning');
@@ -5932,15 +5945,44 @@ Please be thorough and include important details from our conversations.`;
     // Initialize
     async function init() {
       userData = await checkAuthentication();
-      if (!userData) {
-        showAlert('Please log in to generate images', 'error');
-        setTimeout(() => window.location.href = '/', 3000);
-        return;
-      }
-      await loadUserCredits();
+
+      // Always load companions and render options, even if not logged in
       await loadCompanions();
       renderPoseOptions();
       renderOutfitOptions();
+
+      if (!userData) {
+        // User not logged in - show blur overlay and disable generate button
+        document.getElementById('blurOverlay').style.display = 'flex';
+        document.getElementById('generateBtn').disabled = true;
+        document.getElementById('generateBtn').style.opacity = '0.5';
+        document.getElementById('generateBtn').style.cursor = 'not-allowed';
+
+        // Update blur overlay text for non-logged in users
+        const blurTitle = document.querySelector('.blur-overlay-title');
+        const blurText = document.querySelector('.blur-overlay-text');
+        if (blurTitle) blurTitle.textContent = 'Login to Generate Images';
+        if (blurText) blurText.innerHTML = 'Create a free account or log in to start generating custom AI images with your favorite companions.<br><br>Free users get 2 free images!';
+
+        // Change blur overlay button to login instead of pricing
+        const blurBtn = document.querySelector('.blur-overlay-btn');
+        if (blurBtn) {
+          blurBtn.textContent = 'Login / Sign Up';
+          blurBtn.onclick = (e) => {
+            e.preventDefault();
+            if (typeof openLoginModal === 'function') {
+              openLoginModal('signup');
+            }
+          };
+        }
+
+        // Don't return - let page stay accessible but locked
+      } else {
+        // User is logged in - load their credits
+        await loadUserCredits();
+      }
+
+      // Setup event listeners
       document.getElementById('companionSelect').addEventListener('change', (e) => {
         const option = e.target.selectedOptions[0];
         if (option.dataset.companion) selectedCompanion = JSON.parse(option.dataset.companion);
