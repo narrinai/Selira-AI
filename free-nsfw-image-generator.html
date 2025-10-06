@@ -1024,14 +1024,18 @@
     // Load companions
     async function loadCompanions() {
       try {
+        console.log('📥 Loading companions...');
         const response = await fetch('/.netlify/functions/selira-characters-fetch?limit=1000');
-        if (!response.ok) throw new Error('Failed to load companions');
+        if (!response.ok) {
+          throw new Error(`Failed to load companions: ${response.status}`);
+        }
         const data = await response.json();
         companions = (data.characters || []).filter(c => c.slug && c.name);
+        console.log(`✅ Loaded ${companions.length} companions`);
         renderCarousel();
         updateCarouselNav();
       } catch (error) {
-        console.error('Error loading companions:', error);
+        console.error('❌ Error loading companions:', error);
         document.getElementById('companionPageInfo').textContent = 'Failed to load companions';
       }
     }
@@ -1261,22 +1265,17 @@
       renderOutfitOptions();
 
       if (!userData) {
-        document.getElementById('blurOverlay').style.display = 'flex';
-        document.getElementById('generateBtn').disabled = true;
-        document.getElementById('generateBtn').style.opacity = '0.5';
-        document.getElementById('generateBtn').style.cursor = 'not-allowed';
-
-        const blurOverlay = document.getElementById('blurOverlay');
-        blurOverlay.querySelector('h3').textContent = 'Login to Generate Images';
-        blurOverlay.querySelector('p').innerHTML = 'Create a free account or log in to start generating custom AI images with your favorite companions.<br><br>Free users get 2 free images!';
-        blurOverlay.querySelector('a').textContent = 'Login / Sign Up';
-        blurOverlay.querySelector('a').href = '#';
-        blurOverlay.querySelector('a').onclick = (e) => {
-          e.preventDefault();
-          if (typeof openLoginModal === 'function') openLoginModal('signup');
-        };
+        // User not logged in - open signup modal directly
+        console.log('📝 User not authenticated - opening signup modal');
+        if (typeof openLoginModal === 'function') {
+          openLoginModal('signup');
+        }
       } else {
+        // User is logged in - load their credits
         await loadUserCredits();
+        // Hide blur overlay if it exists
+        const blurOverlay = document.getElementById('blurOverlay');
+        if (blurOverlay) blurOverlay.style.display = 'none';
       }
 
       // Setup event listeners
