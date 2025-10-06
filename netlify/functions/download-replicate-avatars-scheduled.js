@@ -1,9 +1,9 @@
 // netlify/functions/download-replicate-avatars-scheduled.js
 // Scheduled function to download Replicate URLs and convert to local storage
-// Runs every 8 hours (0:00, 8:00, 16:00)
+// Runs at 19:00 CEST (17:00 UTC), then every 8 hours
 
 const fetch = require('node-fetch');
-const schedule = "0 */8 * * *"; // Run every 8 hours
+const schedule = "0 17,1,9 * * *"; // Run at 17:00, 01:00, 09:00 UTC = 19:00, 03:00, 11:00 CEST
 
 const handler = async (event, context) => {
   console.log('📥 Starting scheduled Replicate URL download (no regeneration)...');
