@@ -220,10 +220,16 @@ exports.handler = async (event, context) => {
 
     // Determine if anime style - prioritize explicit style parameter
     let isAnimeStyle = false;
+    console.log(`🎨 [${requestId}] Style determination:`);
+    console.log(`   style parameter: "${style}" (type: ${typeof style})`);
+    console.log(`   category: "${category}"`);
+
     if (style === 'anime' || style === 'animated') {
       isAnimeStyle = true;
+      console.log(`   ✅ ANIME style (explicit: style="${style}")`);
     } else if (style === 'realistic') {
       isAnimeStyle = false; // Explicitly realistic, don't auto-detect
+      console.log(`   ✅ REALISTIC style (explicit: style="realistic")`);
     } else if (!style) {
       // Only auto-detect if style is not provided at all
       isAnimeStyle = categoryLower.includes('anime') ||
@@ -231,7 +237,12 @@ exports.handler = async (event, context) => {
                      promptLower.includes('manga') ||
                      promptLower.includes('waifu') ||
                      promptLower.includes('kawaii');
+      console.log(`   ⚠️ AUTO-DETECTED: isAnimeStyle=${isAnimeStyle} (no style param provided)`);
+    } else {
+      console.log(`   ⚠️ UNKNOWN style value: "${style}" - defaulting to realistic`);
     }
+
+    console.log(`   🎯 FINAL DECISION: ${isAnimeStyle ? 'ANIME' : 'REALISTIC'}`);
     
     // Character appearance based on creation flow data
     const genderDescription = sex === 'male' ? 
