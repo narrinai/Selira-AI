@@ -1,7 +1,5 @@
 const fs = require('fs').promises;
 const path = require('path');
-const https = require('https');
-const { pipeline } = require('stream/promises');
 
 exports.handler = async (event, context) => {
   // Set CORS headers
@@ -165,8 +163,8 @@ exports.handler = async (event, context) => {
         if (recordId && recordId.startsWith('rec')) {
           const updateUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_ID}/${recordId}`;
 
-          // Use the Replicate URL directly - don't try to use local path in production
-          const avatarUrl = replicateUrl;
+          // Use local path if available, otherwise use Replicate URL
+          const avatarUrl = localAvatarPath || replicateUrl;
           
           const updateResponse = await fetch(updateUrl, {
             method: 'PATCH',
@@ -191,25 +189,31 @@ exports.handler = async (event, context) => {
       }
     }
 
-    // The download script will handle downloading the image later
-    // For now, return the Replicate URL which works immediately
-    
-    console.log('📁 Avatar generated with Replicate URL:', replicateUrl);
-    console.log('⏰ The daily download script will save this locally within 24 hours');
-    
+    // Return the best available URL
+    const finalAvatarUrl = localAvatarPath || replicateUrl;
+
+    if (localAvatarPath) {
+      console.log('✅ Avatar saved locally and available at:', localAvatarPath);
+    } else {
+      console.log('📁 Using Replicate URL:', replicateUrl);
+      console.log('⏰ The daily download script will save this locally within 24 hours');
+    }
+
     return {
       statusCode: 200,
       headers: {
         ...headers,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         success: true,
-        avatarUrl: replicateUrl,        // Return Replicate URL for immediate use
-        imageUrl: replicateUrl,          // Support both field names
-        localPath: null,
+        avatarUrl: finalAvatarUrl,       // Return best available URL
+        imageUrl: finalAvatarUrl,        // Support both field names
+        localPath: localAvatarPath,      // Null if not saved locally yet
         replicateUrl: replicateUrl,      // Keep for reference
-        message: 'Avatar generated successfully. It will be downloaded locally by the scheduled script.'
+        message: localAvatarPath
+          ? 'Avatar generated and saved locally successfully!'
+          : 'Avatar generated successfully. It will be downloaded locally by the scheduled script.'
       })
     };
 
@@ -226,30 +230,29 @@ exports.handler = async (event, context) => {
   }
 };
 
-// Helper function to download an image from a URL
-function downloadImage(url, filepath) {
-  return new Promise((resolve, reject) => {
-    const file = require('fs').createWriteStream(filepath);
-    
-    https.get(url, (response) => {
-      if (response.statusCode !== 200) {
-        reject(new Error(`Failed to download: ${response.statusCode}`));
-        return;
-      }
-      
-      response.pipe(file);
-      
-      file.on('finish', () => {
-        file.close();
-        resolve();
-      });
-      
-      file.on('error', (err) => {
-        fs.unlink(filepath, () => {}); // Delete the file on error
-        reject(err);
-      });
-    }).on('error', (err) => {
-      reject(err);
-    });
-  });
+// Helper function to download an image from a URL using fetch (handles redirects better)
+async function downloadImage(url, filepath) {
+  try {
+    console.log('📥 Downloading from:', url.substring(0, 80) + '...');
+
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`Failed to download: ${response.status} ${response.statusText}`);
+    }
+
+    const arrayBuffer = await response.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    await require('fs').promises.writeFile(filepath, buffer);
+
+    console.log(`✅ Downloaded ${(buffer.length / 1024).toFixed(1)} KB to ${filepath}`);
+  } catch (error) {
+    console.error('❌ Download error:', error.message);
+    // Try to clean up partial file
+    try {
+      await require('fs').promises.unlink(filepath);
+    } catch {}
+    throw error;
+  }
 }
