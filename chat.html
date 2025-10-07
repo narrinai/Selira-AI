@@ -3034,14 +3034,48 @@
     }
 
     // Get all active chat companions from localStorage
-    function getActiveChatCompanions() {
+    async function getActiveChatCompanions() {
       const companions = [];
       const keys = Object.keys(localStorage);
+
+      // Get current user to filter chats
+      const currentUser = window.getCurrentUser ? window.getCurrentUser() : null;
+      const currentUserEmail = currentUser?.email;
+      const currentUserAuth0Id = currentUser?.sub || currentUser?.auth0_id || currentUser?.id;
+
+      // If logged in, fetch actual user companions from database
+      let userCompanionSlugs = null;
+      if (currentUserEmail || currentUserAuth0Id) {
+        try {
+          const response = await fetch('/.netlify/functions/selira-user-companions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: currentUserEmail,
+              auth0_id: currentUserAuth0Id
+            })
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            userCompanionSlugs = new Set(data.companions.map(c => c.slug));
+            console.log('✅ Loaded user companions from database:', userCompanionSlugs.size);
+          }
+        } catch (error) {
+          console.warn('⚠️ Could not load user companions, showing all local chats:', error);
+        }
+      }
 
       // Find all chat_ keys in localStorage
       keys.forEach(key => {
         if (key.startsWith('chat_')) {
           const characterSlug = key.replace('chat_', '');
+
+          // If we have user companions from DB, only show those
+          if (userCompanionSlugs && !userCompanionSlugs.has(characterSlug)) {
+            return; // Skip this chat, user hasn't chatted with this companion
+          }
+
           const chatHistory = JSON.parse(localStorage.getItem(key) || '[]');
 
           // Only include if there are messages
@@ -3118,7 +3152,7 @@
       const chatList = document.getElementById('chatList');
       if (!chatList) return;
 
-      const activeCompanions = getActiveChatCompanions();
+      const activeCompanions = await getActiveChatCompanions();
 
       if (activeCompanions.length === 0) {
         chatList.innerHTML = `
