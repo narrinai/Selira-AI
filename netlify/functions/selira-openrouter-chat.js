@@ -70,8 +70,15 @@ exports.handler = async (event, context) => {
 
       // Add memory context if available
       if (memories && memories.length > 0) {
-        const memoryContext = memories.map(m => m.content || m.summary || m.text).join(' ');
-        systemPrompt += `\n\nIMPORTANT MEMORIES about this user: ${memoryContext}`;
+        // Sort memories by importance (highest first)
+        const sortedMemories = memories.sort((a, b) => (b.importance || 0) - (a.importance || 0));
+
+        // Format memories as structured context
+        const memoryContext = sortedMemories
+          .map(m => `- ${m.content || m.summary || m.text}`)
+          .join('\n');
+
+        systemPrompt += `\n\n[IMPORTANT MEMORIES ABOUT THIS USER - Reference these in your responses]:\n${memoryContext}\n\nRemember to acknowledge and use these memories naturally in conversation. For example, if you know their name, use it.`;
         console.log('🧠 Added memory context:', memories.length, 'memories');
       }
 
