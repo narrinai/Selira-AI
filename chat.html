@@ -2972,12 +2972,12 @@
             creator: char.Nickname || 'Selira',
             tags: Array.isArray(char.Tags) ? char.Tags.slice(0, 11) : (char.Tags || '').toString().split(',').filter(Boolean).slice(0, 11), // Get real tags
             character_url: char.Character_URL ? char.Character_URL.replace('narrin.ai', 'selira.ai') : null,
-            // Add appearance data
-            companion_type: char.companion_type,
-            sex: char.sex,
-            ethnicity: char.ethnicity,
-            hair_length: char.hair_length,
-            hair_color: char.hair_color
+            // Add appearance data - support both lowercase and capitalized field names
+            companion_type: char.companion_type || char.Companion_Type || char['Companion Type'],
+            sex: char.sex || char.Sex || char.Gender,
+            ethnicity: char.ethnicity || char.Ethnicity,
+            hair_length: char.hair_length || char.Hair_Length || char['Hair Length'],
+            hair_color: char.hair_color || char.Hair_Color || char['Hair Color']
           }));
           
           // Store characters globally
@@ -4361,15 +4361,19 @@
       // Ensure consistent style - companion_type should be 'realistic' or 'anime'
       let characterStyle = currentCharacter.companion_type;
 
+      console.log('🎨 RAW companion_type value:', currentCharacter.companion_type, 'type:', typeof currentCharacter.companion_type);
+      console.log('🎨 Full currentCharacter object:', currentCharacter);
+
       // Normalize companion_type values
       if (!characterStyle || (characterStyle !== 'realistic' && characterStyle !== 'anime')) {
+        console.warn('⚠️ Invalid or missing companion_type, using fallback from category');
         // Fallback to category-based detection
         characterStyle = (currentCharacter.category === 'anime-manga' ||
                          currentCharacter.category?.toLowerCase().includes('anime'))
                          ? 'anime' : 'realistic';
       }
 
-      console.log('🎨 Image style determined:', characterStyle, 'from companion_type:', currentCharacter.companion_type, 'category:', currentCharacter.category);
+      console.log('🎨 FINAL Image style:', characterStyle, '| companion_type:', currentCharacter.companion_type, '| category:', currentCharacter.category);
 
       // Get character traits - log what we have
       console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Current character data:', {
