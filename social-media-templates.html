@@ -599,28 +599,28 @@
         </div>
       </div>
 
-      <h3>Dark Background with Green Text</h3>
+      <h3>Dark Background with Purple Text</h3>
       <div class="template-grid">
         <div class="template-card">
           <div class="template-preview">
             <div style="width: 180px; height: 180px; background: #000000; margin: 20px auto; display: flex; align-items: center; justify-content: center; border-radius: 12px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);">
-              <div style="color: #10b981; font-family: 'Playfair Display', serif; font-weight: 700; font-size: 100px;">S</div>
+              <div style="color: #ce93d8; font-family: 'Playfair Display', serif; font-weight: 700; font-size: 100px;">S</div>
             </div>
           </div>
-          <div class="template-title">Square Profile - Green S</div>
+          <div class="template-title">Square Profile - Purple S</div>
           <div class="template-dimensions">1080x1080px</div>
-          <button class="download-btn" onclick="downloadTemplate('profile-square-green-s')">Download PNG</button>
+          <button class="download-btn" onclick="downloadTemplate('profile-square-purple-s')">Download PNG</button>
         </div>
 
         <div class="template-card">
           <div class="template-preview">
             <div style="width: 180px; height: 180px; background: #000000; margin: 20px auto; display: flex; align-items: center; justify-content: center; border-radius: 12px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);">
-              <div style="color: #10b981; font-family: 'Playfair Display', serif; font-weight: 700; font-size: 24px; text-align: center;">Selira AI</div>
+              <div style="color: #ce93d8; font-family: 'Playfair Display', serif; font-weight: 700; font-size: 24px; text-align: center;">Selira AI</div>
             </div>
           </div>
-          <div class="template-title">Square Profile - Green Text</div>
+          <div class="template-title">Square Profile - Purple Text</div>
           <div class="template-dimensions">1080x1080px</div>
-          <button class="download-btn" onclick="downloadTemplate('profile-square-green-text')">Download PNG</button>
+          <button class="download-btn" onclick="downloadTemplate('profile-square-purple-text')">Download PNG</button>
         </div>
       </div>
     </div>
@@ -1000,8 +1000,8 @@
       'logo-horizontal-dark': { width: 600, height: 150, type: 'horizontal', dark: true },
       'profile-circle': { width: 400, height: 400, type: 'profile', shape: 'circle' },
       'profile-square': { width: 400, height: 400, type: 'profile', shape: 'square' },
-      'profile-square-green-s': { width: 1080, height: 1080, type: 'profile-green', variant: 's' },
-      'profile-square-green-text': { width: 1080, height: 1080, type: 'profile-green', variant: 'text' },
+      'profile-square-purple-s': { width: 1080, height: 1080, type: 'profile-purple', variant: 's' },
+      'profile-square-purple-text': { width: 1080, height: 1080, type: 'profile-purple', variant: 'text' },
       'twitter-header': { width: 1500, height: 500, type: 'banner' },
       'twitter-header-dark': { width: 1500, height: 500, type: 'banner', dark: true },
       'linkedin-company': { width: 1128, height: 191, type: 'banner' },
@@ -1094,8 +1094,8 @@
         case 'profile':
           drawProfileContent(ctx, centerX, centerY, width, height, config.shape);
           break;
-        case 'profile-green':
-          drawProfileGreen(ctx, centerX, centerY, width, height, config.variant);
+        case 'profile-purple':
+          drawProfilePurple(ctx, centerX, centerY, width, height, config.variant);
           break;
         case 'banner':
           drawBannerContent(ctx, centerX, centerY, width, height, config.dark);
@@ -1109,13 +1109,13 @@
       }
     }
 
-    function drawProfileGreen(ctx, centerX, centerY, width, height, variant) {
+    function drawProfilePurple(ctx, centerX, centerY, width, height, variant) {
       // Black background
       ctx.fillStyle = '#000000';
       ctx.fillRect(0, 0, width, height);
 
       // Green text
-      ctx.fillStyle = '#10b981';
+      ctx.fillStyle = '#ce93d8';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
 
