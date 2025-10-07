@@ -774,6 +774,20 @@
       display: none !important;
     }
 
+    /* Line art icon styles */
+    .icon-line {
+      width: 40px;
+      height: 40px;
+      stroke-width: 2;
+      stroke: currentColor;
+      fill: none;
+    }
+
+    .icon-small {
+      width: 32px;
+      height: 32px;
+    }
+
     /* Responsive styles for affiliate page */
     @media (max-width: 768px) {
       .pricing-section h1 {
@@ -902,7 +916,11 @@
             <!-- Subscription Commission -->
             <div style="background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; position: relative; overflow: hidden;">
               <div style="position: absolute; top: -20px; right: -20px; width: 100px; height: 100px; background: var(--accent); opacity: 0.1; border-radius: 50%;"></div>
-              <div style="font-size: 32px; margin-bottom: 12px;">💰</div>
+              <div style="margin-bottom: 12px;">
+                <svg class="icon-line" style="color: var(--accent);" viewBox="0 0 24 24">
+                  <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                </svg>
+              </div>
               <div style="font-size: 28px; font-weight: 700; color: var(--accent); margin-bottom: 8px;">30%</div>
               <div style="font-size: 14px; color: var(--text-primary); font-weight: 600; margin-bottom: 4px;">Recurring Commission</div>
               <div style="font-size: 13px; color: var(--text-secondary);">On all subscription plans</div>
@@ -911,7 +929,11 @@
             <!-- One-off Commission -->
             <div style="background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; position: relative; overflow: hidden;">
               <div style="position: absolute; top: -20px; right: -20px; width: 100px; height: 100px; background: var(--accent-secondary); opacity: 0.1; border-radius: 50%;"></div>
-              <div style="font-size: 32px; margin-bottom: 12px;">💎</div>
+              <div style="margin-bottom: 12px;">
+                <svg class="icon-line" style="color: var(--accent-secondary);" viewBox="0 0 24 24">
+                  <path d="M6 3h12l4 6-10 13L2 9l4-6zM12 17l-4-7h8l-4 7z"/>
+                </svg>
+              </div>
               <div style="font-size: 28px; font-weight: 700; color: var(--accent-secondary); margin-bottom: 8px;">30%</div>
               <div style="font-size: 14px; color: var(--text-primary); font-weight: 600; margin-bottom: 4px;">First Charge</div>
               <div style="font-size: 13px; color: var(--text-secondary);">On one-off image packs</div>
@@ -923,19 +945,33 @@
           <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px;">
 
             <div style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; text-align: center;">
-              <div style="font-size: 24px; margin-bottom: 8px;">📊</div>
+              <div style="margin-bottom: 8px; display: flex; justify-content: center;">
+                <svg class="icon-line icon-small" style="color: var(--accent);" viewBox="0 0 24 24">
+                  <path d="M3 3v18h18M7 16l4-4 4 4 6-6"/>
+                </svg>
+              </div>
               <div style="font-size: 13px; color: var(--text-primary); font-weight: 600; margin-bottom: 4px;">Real-time Analytics</div>
               <div style="font-size: 12px; color: var(--text-secondary);">Track performance</div>
             </div>
 
             <div style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; text-align: center;">
-              <div style="font-size: 24px; margin-bottom: 8px;">💳</div>
+              <div style="margin-bottom: 8px; display: flex; justify-content: center;">
+                <svg class="icon-line icon-small" style="color: var(--accent);" viewBox="0 0 24 24">
+                  <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+                  <line x1="1" y1="10" x2="23" y2="10"/>
+                </svg>
+              </div>
               <div style="font-size: 13px; color: var(--text-primary); font-weight: 600; margin-bottom: 4px;">Monthly Payouts</div>
               <div style="font-size: 12px; color: var(--text-secondary);">Your preferred method</div>
             </div>
 
             <div style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; text-align: center;">
-              <div style="font-size: 24px; margin-bottom: 8px;">🎯</div>
+              <div style="margin-bottom: 8px; display: flex; justify-content: center;">
+                <svg class="icon-line icon-small" style="color: var(--accent);" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="10"/>
+                  <path d="M12 6v6l4 2"/>
+                </svg>
+              </div>
               <div style="font-size: 13px; color: var(--text-primary); font-weight: 600; margin-bottom: 4px;">Marketing Support</div>
               <div style="font-size: 12px; color: var(--text-secondary);">Materials provided</div>
             </div>
