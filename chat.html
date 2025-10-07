@@ -2846,31 +2846,51 @@
 
     // Simple toggle sidebar - matches index.html pattern
     function toggleSidebar() {
+      console.log('🍔 toggleSidebar called!');
       const sidebar = document.getElementById('sidebar');
       const overlay = document.getElementById('sidebarOverlay');
 
-      sidebar.classList.toggle('open');
-      overlay.classList.toggle('open');
+      console.log('🍔 Sidebar:', sidebar);
+      console.log('🍔 Overlay:', overlay);
+
+      if (sidebar && overlay) {
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('open');
+        console.log('🍔 After toggle - sidebar classes:', sidebar.className);
+        console.log('🍔 After toggle - overlay classes:', overlay.className);
+      } else {
+        console.error('❌ Sidebar or overlay not found!', {sidebar, overlay});
+      }
     }
 
     // Make it globally available
     window.toggleSidebar = toggleSidebar;
 
-    // Close sidebar when clicking overlay
-    document.getElementById('sidebarOverlay')?.addEventListener('click', function() {
-      toggleSidebar();
-    });
-
-    // Close sidebar when clicking on any link/chat item inside it on mobile
+    // Setup event listeners after DOM is ready
     document.addEventListener('DOMContentLoaded', function() {
+      console.log('🍔 Setting up mobile menu event listeners...');
+
+      // Close sidebar when clicking overlay
+      const overlay = document.getElementById('sidebarOverlay');
+      if (overlay) {
+        overlay.addEventListener('click', function() {
+          console.log('🍔 Overlay clicked');
+          toggleSidebar();
+        });
+        console.log('✅ Overlay click handler added');
+      }
+
+      // Close sidebar when clicking on any link/chat item inside it on mobile
       const sidebar = document.getElementById('sidebar');
       if (sidebar) {
         sidebar.addEventListener('click', function(event) {
           // If clicked element is a link or chat item, close the sidebar on mobile
           if ((event.target.tagName === 'A' || event.target.closest('.chat-item')) && window.innerWidth <= 768) {
+            console.log('🍔 Sidebar item clicked on mobile, closing...');
             toggleSidebar();
           }
         });
+        console.log('✅ Sidebar click handler added');
       }
     });
 
