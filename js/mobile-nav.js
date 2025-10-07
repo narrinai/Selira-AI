@@ -164,8 +164,15 @@ function createMobileNav() {
     <div class="mobile-search-overlay" id="mobileSearchOverlay">
       <div class="mobile-search-content">
         <div class="mobile-search-header">
-          <input type="text" class="mobile-search-input" placeholder="Search companions..." id="mobileSearchInput">
-          <button class="mobile-search-close" id="mobileSearchClose">✕</button>
+          <div class="mobile-search-input-wrapper">
+            <input type="text" class="mobile-search-input" placeholder="blonde" id="mobileSearchInput">
+            <button class="mobile-search-close" id="mobileSearchClose">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -413,43 +420,62 @@ function addMobileNavStyles() {
     .mobile-search-header {
       display: flex;
       align-items: center;
-      gap: 12px;
       padding: 16px;
       border-bottom: 1px solid var(--border, #333333);
     }
-    
+
+    .mobile-search-input-wrapper {
+      position: relative;
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+
     .mobile-search-input {
       flex: 1;
       background: var(--bg-secondary, #1a1a1a);
       border: 1px solid var(--border, #333333);
       border-radius: 12px;
-      padding: 12px 16px;
+      padding: 12px 48px 12px 16px;
       color: var(--text-primary, #ffffff);
       font-size: 16px;
       outline: none;
+      width: 100%;
     }
-    
+
     .mobile-search-input:focus {
       border-color: var(--accent, #ce93d8);
     }
-    
+
     .mobile-search-input::placeholder {
       color: var(--text-muted, #888888);
     }
-    
+
     .mobile-search-close {
+      position: absolute;
+      right: 8px;
       background: none;
       border: none;
-      color: var(--text-primary, #ffffff);
-      font-size: 20px;
+      color: var(--text-muted, #888888);
       cursor: pointer;
       padding: 8px;
       border-radius: 8px;
-      transition: background 0.2s ease;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    
+
+    .mobile-search-close svg {
+      stroke: var(--text-muted, #888888);
+    }
+
     .mobile-search-close:hover {
       background: var(--bg-tertiary, #2a2a2a);
+    }
+
+    .mobile-search-close:hover svg {
+      stroke: var(--text-primary, #ffffff);
     }
     
     /* Show mobile nav on mobile devices */
