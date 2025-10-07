@@ -424,11 +424,18 @@
     }
 
     .contact-icon {
-      font-size: 24px;
       color: var(--accent);
       margin-top: 4px;
       width: 32px;
-      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .contact-icon svg {
+      width: 24px;
+      height: 24px;
+      stroke: var(--accent);
     }
 
     .contact-details h4 {
@@ -846,11 +853,10 @@
           <span>Pricing</span>
         </a>
         <a href="/contact" class="nav-item active">
-          <span class="nav-item-icon">📧</span>
+          <span class="nav-item-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></span>
           <span>Contact</span>
         </a>
       </nav>
-    </aside>
       <!-- Footer Links (Desktop only) -->
       <div class="sidebar-footer-links">
         <a href="/contact" class="footer-link">Contact</a>
@@ -905,7 +911,7 @@
             <h2 class="section-title">Contact Information</h2>
 
             <div class="contact-item">
-              <div class="contact-icon">📧</div>
+              <div class="contact-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></div>
               <div class="contact-details">
                 <h4>Email</h4>
                 <a href="mailto:hello@selira.ai">hello@selira.ai</a>
@@ -913,7 +919,7 @@
             </div>
 
             <div class="contact-item">
-              <div class="contact-icon">⏱️</div>
+              <div class="contact-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
               <div class="contact-details">
                 <h4>Response Time</h4>
                 <p>We typically respond within 24-48 hours during business days.</p>
