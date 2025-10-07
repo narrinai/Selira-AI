@@ -3203,11 +3203,7 @@
           }
         }
 
-        // Debug: Check what's in localStorage for this companion
-        console.log(`🏷️ Sidebar item: ${companion.slug}`);
-        console.log(`   - Companion data: name="${companion.characterName}", avatar="${companion.avatar}"`);
-        console.log(`   - Cached data: name="${cachedName}", avatar="${cachedAvatar}"`);
-        console.log(`   - Final result: name="${characterName}", avatar="${avatarUrl}"`);
+        // Removed excessive debug logging for sidebar items
 
         html += `
           <div class="chat-item ${isActive ? 'active' : ''}"

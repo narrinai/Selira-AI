@@ -344,7 +344,7 @@ exports.handler = async (event, context) => {
       fullPrompt = `${hairColorDesc}, ${shotDesc} of ${genderDescription}, ${ethnicityDesc}, ${hairLengthDesc}, anime style, ${sanitizedPrompt}${contextualEnhancement}, detailed anime art, high quality anime illustration, vibrant colors, cel shading, clean background, single anime character, perfect anime anatomy, anime eyes`;
     } else {
       const shotDesc = isFullBody ? 'full body photograph' : 'portrait photograph';
-      fullPrompt = `${hairColorDesc}, realistic photography, ${shotDesc} of ${genderDescription}, ${ethnicityDesc}, ${hairLengthDesc}, ${sanitizedPrompt}${contextualEnhancement}, photorealistic, real photo, not anime, not cartoon, not illustration, not drawing, professional photography, high quality, professional lighting, clean background, single real person, perfect anatomy, realistic skin, realistic features`;
+      fullPrompt = `REALISTIC PHOTOGRAPHY, ${hairColorDesc}, ${shotDesc} of ${genderDescription}, ${ethnicityDesc}, ${hairLengthDesc}, ${sanitizedPrompt}${contextualEnhancement}, ultra realistic, photorealistic, real human photo, actual photograph, professional photography, realistic skin texture, realistic facial features, realistic proportions, high quality photo, professional studio lighting, clean background, single real person, perfect human anatomy, NO anime, NO cartoon, NO illustration, NO drawing, NO manga, NO cel shading, NO stylized art, real photograph only`;
     }
     
     console.log(`🎨 [${requestId}] Full prompt:`, fullPrompt);
