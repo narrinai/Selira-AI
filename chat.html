@@ -988,17 +988,11 @@
         font-size: 10px;
       }
 
-      /* Hide mobile-nav completely on desktop for chat page */
-      #selira-mobile-nav {
-        display: none !important;
-      }
-
-      /* Chat sidebar toggle button - replaces mobile-nav hamburger */
-      .chat-sidebar-toggle {
+      .mobile-menu-btn {
         position: fixed;
         left: 16px;
         top: 16px;
-        z-index: 10001; /* Higher than mobile-nav (which is 1001) */
+        z-index: 1001;
         background: rgba(26, 26, 26, 0.95);
         border: 1px solid var(--border);
         border-radius: 8px;
@@ -1014,25 +1008,10 @@
         justify-content: center;
       }
 
-      /* Show mobile-nav and chat sidebar toggle on mobile only */
+      /* Show hamburger menu on mobile */
       @media (max-width: 768px) {
-        #selira-mobile-nav {
-          display: block !important;
-        }
-
-        .chat-sidebar-toggle {
+        .mobile-menu-btn {
           display: flex;
-          top: 76px; /* Below mobile-nav bar (60px height + 16px padding) */
-        }
-
-        /* Hide the mobile-nav hamburger menu on chat page */
-        #mobileMenuBtn {
-          display: none !important;
-        }
-
-        /* Add top padding to chat content to account for mobile-nav */
-        .chat-main {
-          padding-top: 60px;
         }
       }
 
@@ -1604,8 +1583,8 @@
 
     <!-- Main Chat Area -->
     <main class="chat-main">
-      <!-- Chat Sidebar Toggle Button (replaces mobile-nav hamburger) -->
-      <button class="chat-sidebar-toggle" onclick="toggleSidebar()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+      <!-- Mobile Menu Button -->
+      <button class="mobile-menu-btn" onclick="toggleSidebar()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
 
       <!-- Chat Header -->
       <header class="chat-header" id="chatHeader">
