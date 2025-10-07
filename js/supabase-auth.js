@@ -314,6 +314,13 @@ class SupabaseAuthModal {
 
       if (error) throw error;
 
+      // Check if email is verified (for login only, not signup)
+      if (!isSignupMode && data.user && !data.user.email_confirmed_at) {
+        this.setLoading(false);
+        this.showError('Please verify your email address first. Check your inbox for the verification link.');
+        return;
+      }
+
       console.log('✅ Authentication successful:', data.user.email);
 
       this.user = data.user;
