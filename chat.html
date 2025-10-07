@@ -2883,7 +2883,7 @@
         const data = await response.json();
         
         if (data.success && data.characters) {
-          const characters = data.characters.slice(0, 10).map(char => ({
+          const characters = data.characters.map(char => ({
             id: char.Character_ID || char.Name,
             name: char.Name || 'Unknown',
             title: char.Character_Title || '',
