@@ -604,8 +604,23 @@ function attachMobileNavEvents() {
   
   // Menu toggle
   menuBtn.addEventListener('click', function() {
-    menuOverlay.classList.add('show');
-    menuBtn.classList.add('active');
+    // Check if we're on chat page - if so, use the chat sidebar instead
+    const chatSidebar = document.getElementById('sidebar');
+    const chatOverlay = document.getElementById('sidebarOverlay');
+
+    if (chatSidebar && chatOverlay && window.location.pathname.includes('chat')) {
+      // On chat page - toggle the chat sidebar
+      if (window.toggleSidebar) {
+        window.toggleSidebar();
+      } else {
+        chatSidebar.classList.toggle('open');
+        chatOverlay.classList.toggle('open');
+      }
+    } else {
+      // On other pages - use mobile menu
+      menuOverlay.classList.add('show');
+      menuBtn.classList.add('active');
+    }
   });
   
   // Menu close
