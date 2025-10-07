@@ -2800,12 +2800,13 @@
       }
     }
 
-    function toggleSidebar() {
+    // Make toggleSidebar available globally for onclick handler
+    window.toggleSidebar = function() {
       const sidebar = document.getElementById('sidebar');
       const overlay = document.querySelector('.sidebar-overlay');
-      
+
       sidebar.classList.toggle('open');
-      
+
       // Create overlay if it doesn't exist
       if (!overlay && sidebar.classList.contains('open')) {
         const newOverlay = document.createElement('div');
@@ -2818,7 +2819,7 @@
           setTimeout(() => overlay.remove(), 300);
         }
       }
-    }
+    };
 
     function closeSidebar() {
       const sidebar = document.getElementById('sidebar');
