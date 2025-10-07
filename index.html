@@ -75,8 +75,8 @@
       --text-primary: #ffffff;
       --text-secondary: #b3b3b3;
       --text-muted: #888888;
-      --accent: #d4a574;
-      --accent-hover: #c19456;
+      --accent: #ce93d8;
+      --accent-hover: #ba68c8;
       --accent-secondary: #ec4899;
       --border: #333333;
       --success: #10b981;
@@ -190,6 +190,12 @@
       font-size: 14px;
       width: 14px;
       text-align: center;
+    }
+
+    .nav-item-icon svg {
+      width: 18px;
+      height: 18px;
+      stroke: var(--accent);
     }
 
     .nav-section-title {
@@ -1807,41 +1813,41 @@
       <!-- Navigation -->
       <nav class="sidebar-nav">
         <a href="/" class="nav-item active">
-          <span class="nav-item-icon">👥</span>
+          <span class="nav-item-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></span>
           <span>Discover</span>
         </a>
         <a href="/my-companions" class="nav-item">
-          <span class="nav-item-icon">💬</span>
+          <span class="nav-item-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></span>
           <span>My Companions</span>
         </a>
         <a href="/create" class="nav-item">
-          <span class="nav-item-icon">➕</span>
+          <span class="nav-item-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
           <span>Create</span>
         </a>
         <a href="/free-nsfw-image-generator" class="nav-item">
-          <span class="nav-item-icon">📸</span>
+          <span class="nav-item-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg></span>
           <span>Image Generator</span>
         </a>
 
         <div class="nav-section-title">Account</div>
 
         <a href="/profile" class="nav-item" id="profileNavItem" style="display: none;">
-          <span class="nav-item-icon">👤</span>
+          <span class="nav-item-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span>
           <span>Profile</span>
         </a>
         <a href="/pricing" class="nav-item">
-          <span class="nav-item-icon">💎</span>
+          <span class="nav-item-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></span>
           <span>Pricing</span>
         </a>
         <a href="/affiliate-program" class="nav-item">
-          <span class="nav-item-icon">🤝</span>
+          <span class="nav-item-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span>
           <span>Affiliate Program</span>
         </a>
 
         <!-- Auth buttons for logged out users -->
         <div id="sidebarAuthButtons" style="display: none; flex-direction: column;">
           <a href="#" class="nav-item" onclick="openLoginModal('login'); return false;">
-            <span class="nav-item-icon">🔑</span>
+            <span class="nav-item-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg></span>
             <span>Login</span>
           </a>
           <a href="#" class="sidebar-auth-btn primary" onclick="openLoginModal('signup'); return false;" style="margin: 8px 10px 0; width: calc(100% - 20px);">Register</a>
@@ -1858,7 +1864,7 @@
       <!-- Mobile Header -->
       <div class="mobile-header-container">
         <div class="mobile-header">
-          <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+          <button class="mobile-menu-btn" onclick="toggleSidebar()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
           <div class="mobile-logo">Selira AI</div>
           <div style="display: flex; align-items: center; gap: 6px;">
             <button onclick="showMobileSearch()" class="mobile-search-btn" style="background: none; border: none; cursor: pointer; padding: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
@@ -1906,7 +1912,7 @@
         <div class="header-top">
           <!-- Search -->
           <div class="search-container">
-            <div class="search-icon">🔍</div>
+            <div class="search-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></div>
             <input
               type="text"
               class="search-input"
@@ -2436,7 +2442,7 @@
           <!-- Stats Overlay -->
           <div class="character-stats-overlay">
             <div class="stat-badge">
-              <span>💬</span>
+              <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></span>
               <span>${character.chats}</span>
             </div>
           </div>
@@ -2679,7 +2685,7 @@
         mobileSearchOverlay.innerHTML = `
           <div class="mobile-search-content">
             <div class="mobile-search-header">
-              <button onclick="hideMobileSearch()" class="mobile-search-close">✕</button>
+              <button onclick="hideMobileSearch()" class="mobile-search-close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
               <span>Search Companion Traits</span>
             </div>
             <div class="mobile-search-input-container">
@@ -2741,7 +2747,7 @@
         mobileFilterOverlay.innerHTML = `
           <div class="mobile-filter-content">
             <div class="mobile-filter-header">
-              <button onclick="hideMobileFilters()" class="mobile-filter-close">✕</button>
+              <button onclick="hideMobileFilters()" class="mobile-filter-close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
               <span>Filter by Tags</span>
             </div>
             <div class="mobile-filter-body">
@@ -3348,7 +3354,7 @@
           grid.innerHTML = `
             <div class="loading-grid">
               <div style="text-align: center; padding: 40px;">
-                <div style="font-size: 48px; margin-bottom: 16px;">💬</div>
+                <div style="font-size: 48px; margin-bottom: 16px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></div>
                 <h3 style="color: var(--text-primary); margin-bottom: 8px;">No companions yet</h3>
                 <p style="color: var(--text-secondary); margin-bottom: 20px;">Create or chat with characters to add them to your companions!</p>
                 <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
@@ -3400,7 +3406,7 @@
         grid.innerHTML = `
           <div class="loading-grid">
             <div style="text-align: center; padding: 40px;">
-              <div style="font-size: 48px; margin-bottom: 16px;">❌</div>
+              <div style="font-size: 48px; margin-bottom: 16px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></div>
               <h3 style="color: var(--text-primary); margin-bottom: 8px;">Error loading companions</h3>
               <p style="color: var(--text-secondary); margin-bottom: 20px;">${error.message}</p>
               <button class="user-btn" onclick="window.loadingCompanions = false; renderMyCompanions()">Try Again</button>
@@ -3584,7 +3590,7 @@
               height: fit-content;
             ">
               <h3 style="color: var(--text-primary); margin-bottom: 16px; font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 10px;">
-                <span style="font-size: 20px;">👤</span> Profile Information
+                <span style="font-size: 20px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span> Profile Information
               </h3>
               <div style="display: flex; flex-direction: column; gap: 12px;">
                 <div>
@@ -3622,10 +3628,10 @@
               height: fit-content;
             ">
               <h3 style="color: var(--text-primary); margin-bottom: 16px; font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 10px;">
-                <span style="font-size: 20px;">💎</span> Current Plan
+                <span style="font-size: 20px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></span> Current Plan
               </h3>
               <div style="
-                background: linear-gradient(135deg, #ec4899, #8b5cf6);
+                background: var(--accent);
                 color: white;
                 padding: 16px;
                 border-radius: 8px;
@@ -3660,7 +3666,7 @@
 
               <button onclick="showPricing()" style="
                 width: 100%;
-                background: linear-gradient(135deg, #ec4899, #8b5cf6);
+                background: var(--accent);
                 color: white;
                 border: none;
                 padding: 12px 16px;
@@ -4200,7 +4206,7 @@
 
           <div class="character-stats-overlay">
             <div class="stat-badge">
-              <span>💬</span>
+              <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></span>
               <span>${character.chats}</span>
             </div>
           </div>

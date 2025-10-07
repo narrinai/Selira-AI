@@ -42,8 +42,8 @@
       --text-primary: #ffffff;
       --text-secondary: #b3b3b3;
       --text-muted: #888888;
-      --accent: #d4a574;
-      --accent-hover: #c19456;
+      --accent: #ce93d8;
+      --accent-hover: #ba68c8;
       --accent-secondary: #ec4899;
       --border: #333333;
       --success: #10b981;
@@ -1486,7 +1486,7 @@
     <!-- Main Chat Area -->
     <main class="chat-main">
       <!-- Mobile Menu Button -->
-      <button class="mobile-menu-btn" onclick="toggleSidebar()" style="display: none;">☰</button>
+      <button class="mobile-menu-btn" onclick="toggleSidebar()" style="display: none;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
 
       <!-- Chat Header -->
       <header class="chat-header" id="chatHeader">
@@ -2934,7 +2934,7 @@
       if (activeCompanions.length === 0) {
         chatList.innerHTML = `
           <div class="no-chats" style="text-align: center; padding: 20px; color: var(--text-secondary); font-size: 14px;">
-            <div style="margin-bottom: 8px;">💬</div>
+            <div style="margin-bottom: 8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></div>
             <div>No active chats yet</div>
             <div style="font-size: 12px; margin-top: 4px;">Start a conversation!</div>
           </div>
