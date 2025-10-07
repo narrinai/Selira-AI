@@ -325,6 +325,17 @@ class SupabaseAuthModal {
 
       this.user = data.user;
 
+      // For signups: Check if email verification is required
+      if (isSignupMode && !data.user.email_confirmed_at) {
+        this.setLoading(false);
+        this.showVerificationMessage(
+          '✅ Account created! Please check your email to verify your account before logging in.',
+          email
+        );
+        console.log('📧 Email verification required - user needs to check inbox');
+        return;
+      }
+
       // Sync user to Airtable
       await this.syncUserToAirtable(this.user);
 
@@ -389,6 +400,33 @@ class SupabaseAuthModal {
     setTimeout(() => {
       successDiv.remove();
     }, 3000);
+  }
+
+  showVerificationMessage(message, email) {
+    // Remove existing messages
+    const existingError = document.querySelector('.auth0-error');
+    const existingSuccess = document.querySelector('.auth0-success');
+    if (existingError) existingError.remove();
+    if (existingSuccess) existingSuccess.remove();
+
+    // Create verification message with email info
+    const verificationDiv = document.createElement('div');
+    verificationDiv.className = 'auth0-success';
+    verificationDiv.style.textAlign = 'left';
+    verificationDiv.innerHTML = `
+      <div style="text-align: center; margin-bottom: 12px;">
+        <span style="font-size: 32px;">📧</span>
+      </div>
+      <strong style="display: block; margin-bottom: 8px; text-align: center;">Check Your Email</strong>
+      <p style="margin: 0 0 12px 0; font-size: 13px;">We sent a verification link to:</p>
+      <p style="margin: 0 0 12px 0; font-weight: 600; color: #ce93d8;">${email}</p>
+      <p style="margin: 0; font-size: 12px; color: #b3b3b3;">Click the link in the email to verify your account, then come back to login.</p>
+    `;
+
+    const form = document.querySelector('.auth0-form');
+    form?.insertBefore(verificationDiv, form.firstChild);
+
+    // Don't auto-remove - let user read it
   }
 
   setLoading(loading) {
