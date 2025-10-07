@@ -46,13 +46,14 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const { message, character_slug, auth0_id, user_email, local_history, memories } = JSON.parse(event.body);
+    const { message, character_slug, auth0_id, user_email, local_history, memories, unfiltered } = JSON.parse(event.body);
 
     console.log('🚀 Chat request:', {
       character_slug,
       user_email,
       historyLength: local_history?.length || 0,
-      memoriesCount: memories?.length || 0
+      memoriesCount: memories?.length || 0,
+      unfilteredMode: unfiltered || false
     });
 
     let aiResponse;
@@ -128,7 +129,7 @@ Stay in character at all times.`;
           'X-Title': 'Selira AI'
         },
         body: JSON.stringify({
-          model: 'mistralai/mistral-nemo',
+          model: unfiltered ? 'sao10k/l3-euryale-70b' : 'mistralai/mistral-nemo',
           messages: messages,
           max_tokens: 500,
           temperature: 0.7
@@ -138,9 +139,9 @@ Stay in character at all times.`;
       if (openrouterResponse.ok) {
         const openrouterData = await openrouterResponse.json();
         aiResponse = openrouterData.choices[0].message.content;
-        modelUsed = 'mistralai/mistral-nemo';
+        modelUsed = unfiltered ? 'sao10k/l3-euryale-70b' : 'mistralai/mistral-nemo';
         tokensUsed = openrouterData.usage?.total_tokens || 0;
-        console.log('✅ Real AI response generated via OpenRouter');
+        console.log(`✅ Real AI response generated via OpenRouter (${modelUsed})`);
       } else {
         throw new Error(`OpenRouter API failed: ${openrouterResponse.status}`);
       }

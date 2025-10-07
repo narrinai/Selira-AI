@@ -681,6 +681,38 @@
       font-size: 12px;
     }
 
+    /* Unfiltered Mode Toggle */
+    .unfiltered-toggle {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 10px;
+      background: rgba(206, 147, 216, 0.1);
+      border: 1px solid rgba(206, 147, 216, 0.2);
+      border-radius: 6px;
+      font-size: 10px;
+      color: var(--accent);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+
+    .unfiltered-toggle:hover {
+      background: rgba(206, 147, 216, 0.2);
+      border-color: rgba(206, 147, 216, 0.4);
+    }
+
+    .unfiltered-toggle.active {
+      background: linear-gradient(135deg, #ce93d8 0%, #ec4899 100%);
+      border-color: #ce93d8;
+      color: white;
+    }
+
+    .unfiltered-toggle .toggle-icon {
+      font-size: 11px;
+    }
+
     /* Character Search Modal */
     .search-modal {
       position: fixed;
@@ -1550,6 +1582,10 @@
           <button class="request-image-btn" onclick="requestImage()" title="Get Image Suggestions">
             + Image Gen
           </button>
+          <div class="unfiltered-toggle" id="unfilteredToggle" onclick="toggleUnfilteredMode()" title="Toggle Unfiltered Mode">
+            <span class="toggle-icon" id="toggleIcon">🔒</span>
+            <span id="toggleText">Filtered</span>
+          </div>
           <div class="image-credits-display" id="imageCreditsDisplay" style="display: none;">
             <span class="credits-icon">💳</span>
             <span id="imageCreditsText">Loading...</span>
@@ -1735,6 +1771,46 @@
       }
     }
 
+    // ===== UNFILTERED MODE TOGGLE =====
+    function toggleUnfilteredMode() {
+      const toggle = document.getElementById('unfilteredToggle');
+      const icon = document.getElementById('toggleIcon');
+      const text = document.getElementById('toggleText');
+
+      // Get current state
+      const isUnfiltered = localStorage.getItem('unfilteredMode') === 'true';
+
+      // Toggle state
+      const newState = !isUnfiltered;
+      localStorage.setItem('unfilteredMode', newState.toString());
+
+      // Update UI
+      if (newState) {
+        toggle.classList.add('active');
+        icon.textContent = '🔓';
+        text.textContent = 'Unfiltered';
+        console.log('🔓 Unfiltered mode ENABLED - using uncensored model');
+      } else {
+        toggle.classList.remove('active');
+        icon.textContent = '🔒';
+        text.textContent = 'Filtered';
+        console.log('🔒 Unfiltered mode DISABLED - using standard model');
+      }
+    }
+
+    function loadUnfilteredToggleState() {
+      const isUnfiltered = localStorage.getItem('unfilteredMode') === 'true';
+      const toggle = document.getElementById('unfilteredToggle');
+      const icon = document.getElementById('toggleIcon');
+      const text = document.getElementById('toggleText');
+
+      if (isUnfiltered) {
+        toggle.classList.add('active');
+        icon.textContent = '🔓';
+        text.textContent = 'Unfiltered';
+      }
+    }
+
     // Initialize chat interface
     document.addEventListener('DOMContentLoaded', function() {
       console.log('🚀 Selira AI Chat interface loading...');
@@ -1748,6 +1824,9 @@
 
       // Load image credits display
       loadImageCredits();
+
+      // Load unfiltered toggle state
+      loadUnfilteredToggleState();
 
       // Refresh sidebar periodically (every 30 seconds)
       setInterval(updateActiveChatsSidebar, 30000);
@@ -2267,7 +2346,8 @@
             user_email: user_email, // Add user email for message saving
             model: 'mistralai/mistral-nemo',
             local_history: chatHistory, // Send localStorage history for context
-            memories: window.currentMemories || [] // Send loaded memories for AI context
+            memories: window.currentMemories || [], // Send loaded memories for AI context
+            unfiltered: localStorage.getItem('unfilteredMode') === 'true' // Send unfiltered mode state
           })
         });
         
