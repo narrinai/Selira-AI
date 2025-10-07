@@ -120,12 +120,17 @@ class Auth0LoginModal {
       await this.auth0Client.handleRedirectCallback();
       this.user = await this.auth0Client.getUser();
       this.updateAuthState(true);
-      
-      // Sync user to Airtable (don't block login flow if it fails)
-      this.syncUserToAirtable(this.user).catch(error => {
+
+      // Sync user to Airtable BEFORE redirecting (critical for new users)
+      // Wait for sync to complete, but don't block login if it fails
+      try {
+        await this.syncUserToAirtable(this.user);
+        console.log('✅ User synced to Airtable successfully');
+      } catch (error) {
         console.error('⚠️ User sync failed but continuing login:', error);
-      });
-      
+        // Continue anyway - user can still use the site
+      }
+
       // Get return URL from localStorage (where user was before login)
       const returnUrl = localStorage.getItem('auth_return_url');
 
