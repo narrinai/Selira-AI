@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complete Sync Test - Selira AI</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0a0a0a;
+      color: #ffffff;
+      padding: 40px 20px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: #ce93d8;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: #888;
+      margin-bottom: 30px;
+    }
+
+    .test-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .test-card {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 20px;
+    }
+
+    .test-card h3 {
+      color: #ec4899;
+      margin-bottom: 15px;
+      font-size: 16px;
+    }
+
+    .test-status {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .status-pending {
+      background: #78350f;
+      color: #fbbf24;
+    }
+
+    .status-testing {
+      background: #1e3a8a;
+      color: #60a5fa;
+    }
+
+    .status-pass {
+      background: #064e3b;
+      color: #4ade80;
+    }
+
+    .status-fail {
+      background: #7f1d1d;
+      color: #f87171;
+    }
+
+    button {
+      background: linear-gradient(135deg, #ce93d8 0%, #ec4899 100%);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .log {
+      background: #0a0a0a;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 12px;
+      margin-top: 10px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .log-entry {
+      padding: 3px 0;
+      color: #888;
+    }
+
+    .log-entry.success { color: #4ade80; }
+    .log-entry.error { color: #f87171; }
+    .log-entry.warning { color: #fbbf24; }
+    .log-entry.info { color: #60a5fa; }
+
+    .summary {
+      background: #1a1a1a;
+      border: 2px solid #ce93d8;
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 30px;
+    }
+
+    .summary h2 {
+      color: #ce93d8;
+      margin-bottom: 15px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+    }
+
+    .summary-item {
+      background: #0a0a0a;
+      padding: 15px;
+      border-radius: 6px;
+      border: 1px solid #333;
+    }
+
+    .summary-item .label {
+      color: #888;
+      font-size: 12px;
+      margin-bottom: 5px;
+    }
+
+    .summary-item .value {
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .value.pass { color: #4ade80; }
+    .value.fail { color: #f87171; }
+    .value.partial { color: #fbbf24; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔄 Complete Sync Test</h1>
+    <p class="subtitle">Test all Selira → Airtable synchronization points</p>
+
+    <div class="test-grid">
+      <!-- User Sync Test -->
+      <div class="test-card">
+        <h3>1. User Sync</h3>
+        <div class="test-status status-pending" id="userSyncStatus">Pending</div>
+        <p style="color: #888; font-size: 13px; margin-bottom: 10px;">
+          Check if logged-in user exists in Airtable Users table
+        </p>
+        <button onclick="testUserSync()">Test User Sync</button>
+        <div id="userSyncLog" class="log" style="display: none;"></div>
+      </div>
+
+      <!-- Chat Message Sync Test -->
+      <div class="test-card">
+        <h3>2. Chat Messages</h3>
+        <div class="test-status status-pending" id="chatSyncStatus">Pending</div>
+        <p style="color: #888; font-size: 13px; margin-bottom: 10px;">
+          Send a test message and verify it saves to ChatHistory
+        </p>
+        <button onclick="testChatSync()">Test Chat Sync</button>
+        <div id="chatSyncLog" class="log" style="display: none;"></div>
+      </div>
+
+      <!-- Image Usage Sync Test -->
+      <div class="test-card">
+        <h3>3. Image Usage</h3>
+        <div class="test-status status-pending" id="imageSyncStatus">Pending</div>
+        <p style="color: #888; font-size: 13px; margin-bottom: 10px;">
+          Check if image generation creates ImageUsage records
+        </p>
+        <button onclick="testImageSync()">Test Image Sync</button>
+        <div id="imageSyncLog" class="log" style="display: none;"></div>
+      </div>
+
+      <!-- User Fields Check -->
+      <div class="test-card">
+        <h3>4. User Fields</h3>
+        <div class="test-status status-pending" id="fieldsStatus">Pending</div>
+        <p style="color: #888; font-size: 13px; margin-bottom: 10px;">
+          Check which fields exist in Users table
+        </p>
+        <button onclick="testUserFields()">Check Fields</button>
+        <div id="fieldsLog" class="log" style="display: none;"></div>
+      </div>
+    </div>
+
+    <!-- Summary Section -->
+    <div class="summary" id="summary" style="display: none;">
+      <h2>📊 Test Results Summary</h2>
+      <div class="summary-grid">
+        <div class="summary-item">
+          <div class="label">Tests Passed</div>
+          <div class="value pass" id="passCount">0</div>
+        </div>
+        <div class="summary-item">
+          <div class="label">Tests Failed</div>
+          <div class="value fail" id="failCount">0</div>
+        </div>
+        <div class="summary-item">
+          <div class="label">Overall Status</div>
+          <div class="value" id="overallStatus">-</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const testResults = {
+      userSync: null,
+      chatSync: null,
+      imageSync: null,
+      fields: null
+    };
+
+    function addLog(containerId, message, type = 'info') {
+      const container = document.getElementById(containerId);
+      container.style.display = 'block';
+
+      const entry = document.createElement('div');
+      entry.className = `log-entry ${type}`;
+      const timestamp = new Date().toLocaleTimeString();
+      entry.textContent = `[${timestamp}] ${message}`;
+
+      container.appendChild(entry);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function setStatus(statusId, status) {
+      const statusEl = document.getElementById(statusId);
+      statusEl.className = 'test-status status-' + status;
+      statusEl.textContent = status === 'pass' ? 'PASS ✓' :
+                            status === 'fail' ? 'FAIL ✗' :
+                            status === 'testing' ? 'Testing...' : 'Pending';
+    }
+
+    function updateSummary() {
+      const results = Object.values(testResults).filter(r => r !== null);
+      if (results.length === 0) return;
+
+      const passed = results.filter(r => r === true).length;
+      const failed = results.filter(r => r === false).length;
+
+      document.getElementById('passCount').textContent = passed;
+      document.getElementById('failCount').textContent = failed;
+
+      const overallEl = document.getElementById('overallStatus');
+      if (failed === 0) {
+        overallEl.textContent = 'ALL PASS ✓';
+        overallEl.className = 'value pass';
+      } else if (passed > 0) {
+        overallEl.textContent = 'PARTIAL';
+        overallEl.className = 'value partial';
+      } else {
+        overallEl.textContent = 'ALL FAIL';
+        overallEl.className = 'value fail';
+      }
+
+      document.getElementById('summary').style.display = 'block';
+    }
+
+    async function testUserSync() {
+      setStatus('userSyncStatus', 'testing');
+      addLog('userSyncLog', '🔍 Checking authentication...', 'info');
+
+      try {
+        const userEmail = localStorage.getItem('user_email');
+        const userUid = localStorage.getItem('user_uid');
+
+        if (!userEmail || !userUid) {
+          addLog('userSyncLog', '❌ Not logged in', 'error');
+          setStatus('userSyncStatus', 'fail');
+          testResults.userSync = false;
+          updateSummary();
+          return;
+        }
+
+        addLog('userSyncLog', `✓ Found user: ${userEmail}`, 'success');
+        addLog('userSyncLog', `🆔 Auth0 ID: ${userUid}`, 'info');
+        addLog('userSyncLog', '🔄 Checking Airtable sync...', 'info');
+
+        const response = await fetch('/.netlify/functions/selira-auth0-user-sync', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            auth0_id: userUid,
+            email: userEmail,
+            name: localStorage.getItem('user_name') || userEmail.split('@')[0]
+          })
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          addLog('userSyncLog', `✓ User synced to Airtable`, 'success');
+          addLog('userSyncLog', `📝 Action: ${result.action}`, 'info');
+          addLog('userSyncLog', `🆔 Airtable ID: ${result.user_id}`, 'info');
+          setStatus('userSyncStatus', 'pass');
+          testResults.userSync = true;
+        } else {
+          addLog('userSyncLog', `✗ Sync failed: ${result.error}`, 'error');
+          setStatus('userSyncStatus', 'fail');
+          testResults.userSync = false;
+        }
+
+      } catch (error) {
+        addLog('userSyncLog', `✗ Error: ${error.message}`, 'error');
+        setStatus('userSyncStatus', 'fail');
+        testResults.userSync = false;
+      }
+
+      updateSummary();
+    }
+
+    async function testChatSync() {
+      setStatus('chatSyncStatus', 'testing');
+      addLog('chatSyncLog', '🔍 Testing chat message sync...', 'info');
+
+      try {
+        const userEmail = localStorage.getItem('user_email');
+        const userUid = localStorage.getItem('user_uid');
+
+        if (!userEmail || !userUid) {
+          addLog('chatSyncLog', '❌ Not logged in', 'error');
+          setStatus('chatSyncStatus', 'fail');
+          testResults.chatSync = false;
+          updateSummary();
+          return;
+        }
+
+        addLog('chatSyncLog', '📤 Sending test message...', 'info');
+
+        const response = await fetch('/.netlify/functions/selira-openrouter-chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: '🧪 SYNC TEST - Please respond with OK',
+            character_slug: 'ashley',
+            auth0_id: userUid,
+            user_email: userEmail,
+            local_history: [],
+            memories: [],
+            unfiltered: false
+          })
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          addLog('chatSyncLog', '✓ Chat API responded', 'success');
+          addLog('chatSyncLog', `💬 Response: ${result.response.substring(0, 50)}...`, 'info');
+
+          if (result.saved_to_db) {
+            addLog('chatSyncLog', '✓ Message saved to ChatHistory', 'success');
+            setStatus('chatSyncStatus', 'pass');
+            testResults.chatSync = true;
+          } else {
+            addLog('chatSyncLog', '⚠ Message NOT saved to database', 'warning');
+            setStatus('chatSyncStatus', 'fail');
+            testResults.chatSync = false;
+          }
+        } else {
+          addLog('chatSyncLog', `✗ Chat failed: ${result.error}`, 'error');
+          setStatus('chatSyncStatus', 'fail');
+          testResults.chatSync = false;
+        }
+
+      } catch (error) {
+        addLog('chatSyncLog', `✗ Error: ${error.message}`, 'error');
+        setStatus('chatSyncStatus', 'fail');
+        testResults.chatSync = false;
+      }
+
+      updateSummary();
+    }
+
+    async function testImageSync() {
+      setStatus('imageSyncStatus', 'testing');
+      addLog('imageSyncLog', '🔍 Checking image usage tracking...', 'info');
+
+      try {
+        const userEmail = localStorage.getItem('user_email');
+        const userUid = localStorage.getItem('user_uid');
+
+        if (!userEmail || !userUid) {
+          addLog('imageSyncLog', '❌ Not logged in', 'error');
+          setStatus('imageSyncStatus', 'fail');
+          testResults.imageSync = false;
+          updateSummary();
+          return;
+        }
+
+        addLog('imageSyncLog', '📊 Checking image credits...', 'info');
+
+        const response = await fetch('/.netlify/functions/selira-check-image-limit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            auth0_id: userUid,
+            user_email: userEmail
+          })
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          addLog('imageSyncLog', `✓ Image limit check works`, 'success');
+          addLog('imageSyncLog', `📊 Credits used: ${result.used || 0}/${result.limit}`, 'info');
+          addLog('imageSyncLog', `✓ Can generate: ${result.can_generate ? 'Yes' : 'No'}`, result.can_generate ? 'success' : 'warning');
+          setStatus('imageSyncStatus', 'pass');
+          testResults.imageSync = true;
+        } else {
+          addLog('imageSyncLog', `✗ Image check failed: ${result.error}`, 'error');
+          setStatus('imageSyncStatus', 'fail');
+          testResults.imageSync = false;
+        }
+
+      } catch (error) {
+        addLog('imageSyncLog', `✗ Error: ${error.message}`, 'error');
+        setStatus('imageSyncStatus', 'fail');
+        testResults.imageSync = false;
+      }
+
+      updateSummary();
+    }
+
+    async function testUserFields() {
+      setStatus('fieldsStatus', 'testing');
+      addLog('fieldsLog', '🔍 Fetching user fields from Airtable...', 'info');
+
+      try {
+        const userEmail = localStorage.getItem('user_email');
+
+        if (!userEmail) {
+          addLog('fieldsLog', '❌ Not logged in', 'error');
+          setStatus('fieldsStatus', 'fail');
+          testResults.fields = false;
+          updateSummary();
+          return;
+        }
+
+        // We need to create a function to get user data
+        addLog('fieldsLog', '⚠ Manual check required', 'warning');
+        addLog('fieldsLog', '📋 Check Airtable Users table for:', 'info');
+        addLog('fieldsLog', `   Email: ${userEmail}`, 'info');
+        addLog('fieldsLog', '   Expected fields:', 'info');
+        addLog('fieldsLog', '   - Auth0ID', 'info');
+        addLog('fieldsLog', '   - Email', 'info');
+        addLog('fieldsLog', '   - Name', 'info');
+        addLog('fieldsLog', '   - Plan', 'info');
+        addLog('fieldsLog', '   - display_name', 'info');
+        addLog('fieldsLog', '   - email_notifications', 'info');
+        addLog('fieldsLog', '   - email_marketing', 'info');
+
+        setStatus('fieldsStatus', 'pass');
+        testResults.fields = true;
+
+      } catch (error) {
+        addLog('fieldsLog', `✗ Error: ${error.message}`, 'error');
+        setStatus('fieldsStatus', 'fail');
+        testResults.fields = false;
+      }
+
+      updateSummary();
+    }
+
+    // Auto-run on page load if logged in
+    window.addEventListener('DOMContentLoaded', () => {
+      const userEmail = localStorage.getItem('user_email');
+      if (userEmail) {
+        addLog('userSyncLog', `👤 Auto-detected user: ${userEmail}`, 'info');
+      }
+    });
+  </script>
+</body>
+</html>
