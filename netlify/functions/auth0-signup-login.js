@@ -111,9 +111,9 @@ exports.handler = async (event) => {
       const error = await tokenResponse.json();
       console.error('❌ Authentication failed:', error);
 
-      // Special handling for email verification requirement
-      if (action === 'signup' && error.error_description && error.error_description.includes('verify')) {
-        console.log('📧 Email verification required for new signup');
+      // Special handling for email verification requirement (both signup AND login)
+      if (error.error_description && error.error_description.includes('verify')) {
+        console.log('📧 Email verification required');
         return {
           statusCode: 200,
           headers,
@@ -121,7 +121,9 @@ exports.handler = async (event) => {
             success: true,
             requiresVerification: true,
             email: email,
-            message: 'Account created! Please check your email to verify your account before logging in.'
+            message: action === 'signup'
+              ? 'Account created! Please check your email to verify your account before logging in.'
+              : 'Please verify your email address first. Check your inbox for the verification link.'
           })
         };
       }
