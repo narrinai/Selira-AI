@@ -28,19 +28,15 @@ jobs:
           node-version: '18'
 
       - name: Install dependencies
-        run: |
-          npm install node-fetch@2
-          npm install dotenv
-
-      - name: Create .env file
-        run: |
-          echo "AIRTABLE_TOKEN=${{ secrets.AIRTABLE_TOKEN_SELIRA }}" >> .env
-          echo "AIRTABLE_BASE_ID=${{ secrets.AIRTABLE_BASE_ID_SELIRA }}" >> .env
-          echo "REPLICATE_API_TOKEN=${{ secrets.REPLICATE_API_TOKEN_SELIRA }}" >> .env
+        run: npm install node-fetch@2
 
       - name: Download existing Replicate URLs
         run: node download-replicate-avatars.js
         continue-on-error: true
+        env:
+          AIRTABLE_TOKEN: ${{ secrets.AIRTABLE_TOKEN_SELIRA }}
+          AIRTABLE_BASE_ID: ${{ secrets.AIRTABLE_BASE_ID_SELIRA }}
+          REPLICATE_API_TOKEN: ${{ secrets.REPLICATE_API_TOKEN_SELIRA }}
 
       - name: Commit and push new avatars
         id: commit

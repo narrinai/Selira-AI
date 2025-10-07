@@ -3,7 +3,9 @@
 const fetch = require('node-fetch');
 const fs = require('fs');
 const path = require('path');
-require('dotenv').config();
+
+// Try to load .env if it exists (for local runs), but don't fail if it doesn't
+try { require('dotenv').config(); } catch (e) { /* dotenv not required for GitHub Actions */ }
 
 async function downloadImage(url, filename) {
   try {
