@@ -31,9 +31,9 @@ jobs:
 
       - name: Create .env file
         run: |
-          echo "AIRTABLE_TOKEN=${{ secrets.AIRTABLE_TOKEN }}" >> .env
-          echo "AIRTABLE_BASE_ID=${{ secrets.AIRTABLE_BASE_ID }}" >> .env
-          echo "REPLICATE_API_TOKEN=${{ secrets.REPLICATE_API_TOKEN }}" >> .env
+          echo "AIRTABLE_TOKEN=${{ secrets.AIRTABLE_TOKEN_SELIRA }}" >> .env
+          echo "AIRTABLE_BASE_ID=${{ secrets.AIRTABLE_BASE_ID_SELIRA }}" >> .env
+          echo "REPLICATE_API_TOKEN=${{ secrets.REPLICATE_API_TOKEN_SELIRA }}" >> .env
 
       - name: Download existing Replicate URLs
         run: node download-replicate-avatars.js
