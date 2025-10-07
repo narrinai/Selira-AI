@@ -1516,6 +1516,27 @@
       window.location.href = '/create';
     }
 
+    // Search functionality
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+      searchInput.addEventListener('keyup', function(e) {
+        if (e.key === 'Enter' && this.value.trim()) {
+          window.location.href = `/search-results?q=${encodeURIComponent(this.value.trim())}`;
+        }
+      });
+
+      // Also add click listener to search icon
+      const searchIcon = document.querySelector('.search-icon');
+      if (searchIcon) {
+        searchIcon.addEventListener('click', function() {
+          const query = searchInput.value.trim();
+          if (query) {
+            window.location.href = `/search-results?q=${encodeURIComponent(query)}`;
+          }
+        });
+      }
+    }
+
     // Logout function
     function logout() {
       // Preserve age verification when clearing storage
