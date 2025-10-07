@@ -5121,7 +5121,7 @@ Please be thorough and include important details from our conversations.`;
 
       const allItem = '<div class="mobile-dropdown-item" onclick="selectMobileTag(\'all\')">All Tags</div>';
       const tagItems = createAvailableTags.slice(0, 20).map(tag => {
-        ${tag}</div>`;
+        return `<div class="mobile-dropdown-item" onclick="selectMobileTag('${tag}')">${tag}</div>`;
       }).join('');
 
       menu.innerHTML = allItem + tagItems;
