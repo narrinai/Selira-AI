@@ -513,6 +513,10 @@ class SupabaseAuthModal {
       this.updateSidebarNav(false);
     }
 
+    // Make navigation visible now that auth state is determined
+    if (navMenu) navMenu.style.visibility = 'visible';
+    if (mobileMenu) mobileMenu.style.visibility = 'visible';
+
     // Store auth state
     if (isAuthenticated && this.user) {
       localStorage.setItem('user_email', this.user.email);
