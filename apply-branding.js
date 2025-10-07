@@ -40,19 +40,31 @@ function applyBranding(filePath) {
     console.log('  ✓ Updated --accent-hover color');
   }
 
-  // 2. Add SVG icon styling to sidebar if not present
-  if (content.includes('.nav-item-icon') && !content.includes('.nav-item-icon svg')) {
-    const navItemIconRegex = /(\.nav-item-icon\s*\{[^}]*\})/;
-    if (content.match(navItemIconRegex)) {
-      content = content.replace(navItemIconRegex, `$1
+  // 2. Update nav-item-icon styling for proper alignment
+  if (content.includes('.nav-item-icon')) {
+    // Update existing .nav-item-icon to include flexbox properties
+    const navItemIconRegex = /(\.nav-item-icon\s*\{)([^}]*)(width:\s*)(\d+px)([^}]*\})/;
+    if (content.match(navItemIconRegex) && !content.includes('display: flex')) {
+      content = content.replace(navItemIconRegex,
+        '$1$2$3 18px;\n      height: 18px;\n      text-align: center;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      flex-shrink: 0;$5');
+      changes++;
+      console.log('  ✓ Updated nav-item-icon with flexbox alignment');
+    }
+
+    // Add SVG icon styling if not present
+    if (!content.includes('.nav-item-icon svg')) {
+      const navItemIconEndRegex = /(\.nav-item-icon\s*\{[^}]*\})/;
+      if (content.match(navItemIconEndRegex)) {
+        content = content.replace(navItemIconEndRegex, `$1
 
     .nav-item-icon svg {
       width: 18px;
       height: 18px;
       stroke: var(--accent);
     }`);
-      changes++;
-      console.log('  ✓ Added SVG icon styling');
+        changes++;
+        console.log('  ✓ Added SVG icon styling');
+      }
     }
   }
 
