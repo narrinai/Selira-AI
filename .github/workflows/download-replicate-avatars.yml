@@ -5,9 +5,9 @@ name: Download Replicate Avatars
 
 on:
   schedule:
-    # Run every 30 minutes (48 times per day)
-    # Fast response time but higher resource usage
-    - cron: '*/30 * * * *'
+    # Run every 2 hours (12 times per day)
+    # Good balance between responsiveness and resource usage
+    - cron: '0 */2 * * *'
   workflow_dispatch: # Allow manual trigger
 
 permissions:
@@ -61,7 +61,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Trigger Netlify Deploy
-        if: steps.commit.outputs.has_changes == 'true' && steps.commit.outputs.avatar_count >= '3'
+        if: steps.commit.outputs.has_changes == 'true'
         run: |
           curl -X POST -d '{}' ${{ secrets.NETLIFY_BUILD_HOOK_SELIRA }}
           echo "✅ Netlify deploy triggered for ${{ steps.commit.outputs.avatar_count }} avatars!"
