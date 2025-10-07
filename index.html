@@ -2811,8 +2811,7 @@
 
       if (tags.length > 0) {
         const tagButtons = tags.map(tag => {
-          const emoji = getTagEmoji(tag);
-          return `<button class="mobile-filter-tag" data-tag="${tag}">${emoji ? emoji + ' ' : ''}${tag}</button>`;
+          ${tag}</button>`;
         }).join('');
         container.innerHTML = tagButtons;
       } else {
@@ -5122,8 +5121,7 @@ Please be thorough and include important details from our conversations.`;
 
       const allItem = '<div class="mobile-dropdown-item" onclick="selectMobileTag(\'all\')">All Tags</div>';
       const tagItems = createAvailableTags.slice(0, 20).map(tag => {
-        const emoji = getTagEmoji(tag);
-        return `<div class="mobile-dropdown-item" onclick="selectMobileTag('${tag}')">${emoji ? emoji + ' ' : ''}${tag}</div>`;
+        ${tag}</div>`;
       }).join('');
 
       menu.innerHTML = allItem + tagItems;
