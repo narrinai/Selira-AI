@@ -145,6 +145,7 @@ exports.handler = async (event) => {
             SupabaseID: supabase_id,
             Name: name || defaultDisplayName,
             display_name: defaultDisplayName,
+            Plan: 'Free',
             email_notifications: true,
             email_marketing: true
           }
