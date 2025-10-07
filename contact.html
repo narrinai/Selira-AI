@@ -744,6 +744,34 @@
       transform: translateY(-1px);
       box-shadow: 0 4px 12px rgba(212, 165, 116, 0.3);
     }
+    /* Sidebar Footer Links (Desktop only) */
+    .sidebar-footer-links {
+      margin-top: auto;
+      padding: 16px 10px 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .footer-link {
+      color: rgba(255, 255, 255, 0.5);
+      text-decoration: none;
+      font-size: 11px;
+      line-height: 1.4;
+      transition: color 0.2s ease;
+    }
+
+    .footer-link:hover {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    /* Hide footer links on mobile */
+    @media (max-width: 768px) {
+      .sidebar-footer-links {
+        display: none;
+      }
+    }
   </style>
 
   <!-- Meta Pixel Code -->
@@ -821,6 +849,12 @@
           <span class="nav-item-icon">📧</span>
           <span>Contact</span>
         </a>
+      <!-- Footer Links (Desktop only) -->
+      <div class="sidebar-footer-links">
+        <a href="/contact" class="footer-link">Contact</a>
+        <a href="/privacy-policy" class="footer-link">Privacy Policy</a>
+        <a href="/terms-and-conditions" class="footer-link">Terms & Conditions</a>
+      </div>
       </nav>
     </aside>
 

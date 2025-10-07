@@ -753,6 +753,34 @@
     .pricing-section {
       animation: fadeIn 0.6s ease;
     }
+    /* Sidebar Footer Links (Desktop only) */
+    .sidebar-footer-links {
+      margin-top: auto;
+      padding: 16px 10px 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .footer-link {
+      color: rgba(255, 255, 255, 0.5);
+      text-decoration: none;
+      font-size: 11px;
+      line-height: 1.4;
+      transition: color 0.2s ease;
+    }
+
+    .footer-link:hover {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    /* Hide footer links on mobile */
+    @media (max-width: 768px) {
+      .sidebar-footer-links {
+        display: none;
+      }
+    }
   </style>
 
   <!-- Meta Pixel Code -->
@@ -834,6 +862,12 @@
           </a>
           <a href="#" class="sidebar-auth-btn primary" onclick="openLoginModal('signup'); return false;" style="margin: 8px 10px 0; width: calc(100% - 20px);">Register</a>
         </div>
+      <!-- Footer Links (Desktop only) -->
+      <div class="sidebar-footer-links">
+        <a href="/contact" class="footer-link">Contact</a>
+        <a href="/privacy-policy" class="footer-link">Privacy Policy</a>
+        <a href="/terms-and-conditions" class="footer-link">Terms & Conditions</a>
+      </div>
 
       </nav>
     </aside>
