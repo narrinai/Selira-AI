@@ -90,7 +90,7 @@ function addPopupStyles() {
       font-family: 'Playfair Display', serif;
       font-size: 18px;
       font-weight: 600;
-      color: var(--accent, #d4a574);
+      color: var(--accent, #ce93d8);
       margin: 0;
     }
     
@@ -124,13 +124,13 @@ function addPopupStyles() {
     }
     
     .popup-btn-primary {
-      background: var(--accent, #d4a574);
+      background: var(--accent, #ce93d8);
       color: white;
       min-width: 80px;
     }
     
     .popup-btn-primary:hover {
-      background: var(--accent-hover, #c19456);
+      background: var(--accent-hover, #ba68c8);
       transform: translateY(-1px);
     }
     

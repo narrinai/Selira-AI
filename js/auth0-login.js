@@ -217,7 +217,7 @@ class Auth0LoginModal {
         
         <div class="auth0-modal-header">
           <div class="auth0-logo">
-            <span class="logo-icon">🌟</span>
+            <span class="logo-icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"></path></svg></span>
             <h2>${title}</h2>
           </div>
           <p class="auth0-subtitle">${subtitle}</p>
@@ -414,6 +414,14 @@ class Auth0LoginModal {
         throw new Error(data.error || 'Authentication failed');
       }
 
+      // Handle email verification requirement for signups
+      if (data.requiresVerification) {
+        console.log('📧 Email verification required');
+        this.setLoading(false);
+        this.showVerificationMessage(data.message || 'Please check your email to verify your account.');
+        return;
+      }
+
       console.log('✅ Authentication successful:', data.user.email);
 
       // Store user data
@@ -507,6 +515,26 @@ class Auth0LoginModal {
     setTimeout(() => {
       successDiv.remove();
     }, 3000);
+  }
+
+  showVerificationMessage(message) {
+    // Remove existing errors
+    const existingError = document.querySelector('.auth0-error');
+    if (existingError) {
+      existingError.remove();
+    }
+
+    // Create verification message (success style, but informational)
+    const verificationDiv = document.createElement('div');
+    verificationDiv.className = 'auth0-success';
+    verificationDiv.innerHTML = `
+      <strong>📧 Check your email!</strong><br>
+      ${message}<br><br>
+      <small>After verifying, you can <a href="#" onclick="switchToLogin(event)" style="color: #6ee7b7; text-decoration: underline;">login here</a>.</small>
+    `;
+
+    const form = document.querySelector('.auth0-form');
+    form?.insertBefore(verificationDiv, form.firstChild);
   }
 
   setLoading(loading) {
@@ -710,7 +738,7 @@ class Auth0LoginModal {
         loginBtn.className = 'user-btn signup-btn'; // Use same classes as Register button
         loginBtn.onclick = null; // Remove modal trigger
         // Use same compact styling as Register button
-        loginBtn.style.background = 'var(--accent, #d4a574)';
+        loginBtn.style.background = 'var(--accent, #ce93d8)';
         loginBtn.style.color = 'white';
         loginBtn.style.border = '1px solid transparent';
         loginBtn.style.borderRadius = 'var(--radius-md, 8px)';
@@ -789,7 +817,7 @@ class Auth0LoginModal {
           return false;
         };
         // Use same compact green styling as Register button
-        loginBtn.style.background = 'var(--accent, #d4a574)';
+        loginBtn.style.background = 'var(--accent, #ce93d8)';
         loginBtn.style.color = 'white';
         loginBtn.style.border = '1px solid transparent';
         loginBtn.style.borderRadius = 'var(--radius-md, 8px)';
@@ -1092,8 +1120,8 @@ const AUTH0_STYLES = `
 .profile-btn.inverted-btn,
 .inverted-btn {
   background: transparent !important;
-  color: var(--accent, #d4a574) !important;
-  border: 2px solid var(--accent, #d4a574) !important;
+  color: var(--accent, #ce93d8) !important;
+  border: 2px solid var(--accent, #ce93d8) !important;
   border-radius: 8px !important;
   padding: 10px 24px !important;
   font-weight: 600 !important;
@@ -1104,7 +1132,7 @@ const AUTH0_STYLES = `
 
 .profile-btn.inverted-btn:hover,
 .inverted-btn:hover {
-  background: var(--accent, #d4a574) !important;
+  background: var(--accent, #ce93d8) !important;
   color: #ffffff !important;
   transform: translateY(-2px) !important;
   box-shadow: 0 4px 12px rgba(212, 165, 116, 0.3) !important;
@@ -1133,7 +1161,7 @@ const AUTH0_STYLES = `
 
 .auth0-modal-content {
   background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
-  border: 1px solid #d4a574;
+  border: 1px solid #ce93d8;
   border-radius: 20px;
   padding: 24px;
   width: 90%;
@@ -1187,8 +1215,13 @@ const AUTH0_STYLES = `
 }
 
 .logo-icon {
-  font-size: 36px;
-  color: #d4a574;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-icon svg {
+  stroke: #ce93d8;
 }
 
 .auth0-logo h2 {
@@ -1232,7 +1265,7 @@ const AUTH0_STYLES = `
 
 .auth0-social-btn:hover {
   background: rgba(255, 255, 255, 0.1);
-  border-color: #d4a574;
+  border-color: #ce93d8;
   transform: translateY(-2px);
 }
 
@@ -1268,7 +1301,7 @@ const AUTH0_STYLES = `
 
 .auth0-email-btn:hover {
   background: rgba(255, 255, 255, 0.1);
-  border-color: #d4a574;
+  border-color: #ce93d8;
   transform: translateY(-2px);
 }
 
@@ -1316,7 +1349,7 @@ const AUTH0_STYLES = `
 
 .auth0-input:focus {
   outline: none;
-  border-color: #d4a574;
+  border-color: #ce93d8;
   box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.1);
 }
 
@@ -1325,7 +1358,7 @@ const AUTH0_STYLES = `
 }
 
 .auth0-submit-btn {
-  background: #d4a574;
+  background: #ce93d8;
   border: none;
   border-radius: 10px;
   padding: 12px;
@@ -1341,9 +1374,9 @@ const AUTH0_STYLES = `
 }
 
 .auth0-submit-btn:hover:not(:disabled) {
-  background: #c19456;
+  background: #ba68c8;
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(212, 165, 116, 0.3);
+  box-shadow: 0 8px 25px rgba(206, 147, 216, 0.3);
 }
 
 .auth0-submit-btn:disabled {
@@ -1380,7 +1413,7 @@ const AUTH0_STYLES = `
 }
 
 .auth0-terms a {
-  color: #d4a574;
+  color: #ce93d8;
   text-decoration: none;
 }
 
@@ -1400,7 +1433,7 @@ const AUTH0_STYLES = `
 }
 
 .auth0-switch-link {
-  color: #d4a574;
+  color: #ce93d8;
   text-decoration: none;
   font-weight: 600;
   margin-left: 4px;
@@ -1408,7 +1441,7 @@ const AUTH0_STYLES = `
 
 .auth0-switch-link:hover {
   text-decoration: underline;
-  color: #c19456;
+  color: #ba68c8;
 }
 
 .auth0-forgot-password {
@@ -1418,7 +1451,7 @@ const AUTH0_STYLES = `
 }
 
 .auth0-forgot-link {
-  color: #d4a574;
+  color: #ce93d8;
   text-decoration: none;
   font-size: 12px;
   font-weight: 500;
@@ -1426,7 +1459,7 @@ const AUTH0_STYLES = `
 
 .auth0-forgot-link:hover {
   text-decoration: underline;
-  color: #c19456;
+  color: #ba68c8;
 }
 
 .auth0-error {

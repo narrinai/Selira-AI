@@ -34,8 +34,8 @@
         top: 0;
         left: 0;
         right: 0;
-        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-        border-bottom: 2px solid #f59e0b;
+        background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+        border-bottom: 2px solid #ce93d8;
         padding: 16px 20px;
         z-index: 9999;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -51,19 +51,19 @@
           flex-wrap: wrap;
         ">
           <div style="display: flex; align-items: center; gap: 14px; flex: 1; min-width: 280px;">
-            <span style="font-size: 24px; flex-shrink: 0;">⚠️</span>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7b1fa2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
             <div>
-              <div style="color: #92400e; font-size: 15px; font-weight: 700; margin-bottom: 4px;">
+              <div style="color: #7b1fa2; font-size: 15px; font-weight: 700; margin-bottom: 4px;">
                 Email Verification Required
               </div>
-              <div style="color: #78350f; font-size: 14px; line-height: 1.4;">
+              <div style="color: #6a1b9a; font-size: 14px; line-height: 1.4;">
                 Please verify your email to sign in. Check your inbox${userEmail ? ` at <strong>${userEmail}</strong>` : ''} or click resend below.
               </div>
             </div>
           </div>
           <div style="display: flex; gap: 12px; align-items: center;">
             <button id="resendVerificationBtn" style="
-              background: #f59e0b;
+              background: #ce93d8;
               color: white;
               border: none;
               padding: 10px 20px;
@@ -73,14 +73,14 @@
               cursor: pointer;
               transition: all 0.3s ease;
               white-space: nowrap;
-              box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+              box-shadow: 0 2px 8px rgba(206, 147, 216, 0.3);
             ">
               Resend Email
             </button>
             <button id="closeBannerBtn" style="
               background: transparent;
               border: none;
-              color: #92400e;
+              color: #7b1fa2;
               font-size: 24px;
               cursor: pointer;
               padding: 4px 8px;
@@ -118,9 +118,9 @@
         }
       }
       #resendVerificationBtn:hover {
-        background: #d97706;
+        background: #ba68c8;
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+        box-shadow: 0 4px 12px rgba(206, 147, 216, 0.4);
       }
       #closeBannerBtn:hover {
         opacity: 0.7;

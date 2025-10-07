@@ -42,7 +42,7 @@ function updateMobileNavAuthState(authDetail = null) {
   // Update profile button text and style
   if (isAuthenticated) {
     profileText.textContent = 'Upgrade';
-    profileBtn.style.background = 'var(--accent, #d4a574)';
+    profileBtn.style.background = 'var(--accent, #ce93d8)';
     profileBtn.style.color = 'white';
     profileBtn.style.borderRadius = '8px';
     profileBtn.style.padding = '8px 16px';
@@ -58,7 +58,7 @@ function updateMobileNavAuthState(authDetail = null) {
   } else {
     // Always show "Register" on mobile header button
     profileText.textContent = 'Register';
-    profileBtn.style.background = 'var(--accent, #d4a574)';
+    profileBtn.style.background = 'var(--accent, #ce93d8)';
     profileBtn.style.color = 'white';
     profileBtn.style.borderRadius = '8px';
     profileBtn.style.padding = '8px 16px';
@@ -119,37 +119,37 @@ function createMobileNav() {
         </div>
         <nav class="mobile-menu-nav">
           <a href="/category" class="mobile-menu-link">
-            <span class="menu-icon">🔍</span>
+            <span class="menu-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></span>
             <span>Discover</span>
           </a>
           <a href="/my-companions" class="mobile-menu-link">
-            <span class="menu-icon">💬</span>
+            <span class="menu-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></span>
             <span>My Companions</span>
           </a>
           <a href="/create" class="mobile-menu-link">
-            <span class="menu-icon">➕</span>
+            <span class="menu-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
             <span>Create</span>
           </a>
           <a href="/free-nsfw-image-generator" class="mobile-menu-link">
-            <span class="menu-icon">📸</span>
+            <span class="menu-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg></span>
             <span>Image Generator</span>
           </a>
           <div class="mobile-menu-divider"></div>
           <a href="/profile" class="mobile-menu-link profile-link" style="display: none;">
-            <span class="menu-icon">👤</span>
+            <span class="menu-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span>
             <span>Profile</span>
           </a>
           <a href="/pricing" class="mobile-menu-link">
-            <span class="menu-icon">💎</span>
+            <span class="menu-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></span>
             <span>Pricing</span>
           </a>
           <a href="https://selira.firstpromoter.com" class="mobile-menu-link" target="_blank">
-            <span class="menu-icon">🤝</span>
+            <span class="menu-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span>
             <span>Affiliate Program</span>
           </a>
 
           <a href="#" class="mobile-menu-link login-link" onclick="openLoginModal('login'); return false;">
-            <span class="menu-icon">🔑</span>
+            <span class="menu-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg></span>
             <span>Login</span>
           </a>
           <a href="#" class="mobile-menu-btn-register signup-link" onclick="openLoginModal('signup'); return false;">
@@ -221,7 +221,7 @@ function addMobileNavStyles() {
       font-family: 'Playfair Display', serif;
       font-size: 20px;
       font-weight: 700;
-      color: var(--accent, #d4a574);
+      color: var(--accent, #ce93d8);
       text-decoration: none;
     }
     
@@ -321,7 +321,7 @@ function addMobileNavStyles() {
       font-family: 'Playfair Display', serif;
       font-size: 24px;
       font-weight: 700;
-      color: var(--accent, #d4a574);
+      color: var(--accent, #ce93d8);
     }
     
     .mobile-menu-close {
@@ -359,16 +359,21 @@ function addMobileNavStyles() {
     }
 
     .menu-icon {
-      font-size: 20px;
       width: 24px;
-      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .menu-icon svg {
+      stroke: var(--accent, #ce93d8);
     }
 
     .mobile-menu-btn-register {
       display: block;
       margin: 8px 20px;
       padding: 12px 16px;
-      background: var(--accent, #d4a574);
+      background: var(--accent, #ce93d8);
       color: white;
       border: 1px solid transparent;
       border-radius: 8px;
@@ -425,7 +430,7 @@ function addMobileNavStyles() {
     }
     
     .mobile-search-input:focus {
-      border-color: var(--accent, #d4a574);
+      border-color: var(--accent, #ce93d8);
     }
     
     .mobile-search-input::placeholder {
