@@ -773,6 +773,22 @@
     .pricing-card .current-plan-badge {
       display: none !important;
     }
+
+    /* Responsive styles for affiliate page */
+    @media (max-width: 768px) {
+      .pricing-section h1 {
+        font-size: 28px !important;
+      }
+
+      .pricing-section > div > div:nth-child(2),
+      .pricing-section > div > div:nth-child(3) {
+        grid-template-columns: 1fr !important;
+      }
+
+      .pricing-section > div > div:nth-child(4) > div {
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -868,57 +884,103 @@
 
       <!-- Affiliate Program Section -->
       <section class="pricing-section">
-        <div style="max-width: 700px; margin: 0 auto;">
+        <div style="max-width: 900px; margin: 0 auto;">
 
-          <!-- Commissions Card -->
-          <div class="pricing-card" style="text-align: left; padding: 20px;">
-            <div class="plan-name" style="text-align: center; margin-bottom: 16px; font-size: 20px;">
-              Earn Generous Commissions
+          <!-- Hero Section -->
+          <div style="text-align: center; margin-bottom: 40px;">
+            <h1 style="font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 700; color: var(--text-primary); margin-bottom: 12px; letter-spacing: -0.02em;">
+              Affiliate Program
+            </h1>
+            <p style="font-size: 16px; color: var(--text-secondary); max-width: 600px; margin: 0 auto;">
+              Partner with Selira and earn <span style="color: var(--accent); font-weight: 600;">30% commission</span> on every sale
+            </p>
+          </div>
+
+          <!-- Commission Cards Grid -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 32px;">
+
+            <!-- Subscription Commission -->
+            <div style="background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; position: relative; overflow: hidden;">
+              <div style="position: absolute; top: -20px; right: -20px; width: 100px; height: 100px; background: var(--accent); opacity: 0.1; border-radius: 50%;"></div>
+              <div style="font-size: 32px; margin-bottom: 12px;">💰</div>
+              <div style="font-size: 28px; font-weight: 700; color: var(--accent); margin-bottom: 8px;">30%</div>
+              <div style="font-size: 14px; color: var(--text-primary); font-weight: 600; margin-bottom: 4px;">Recurring Commission</div>
+              <div style="font-size: 13px; color: var(--text-secondary);">On all subscription plans</div>
             </div>
 
-            <ul class="plan-features" style="margin-bottom: 16px;">
-              <li class="feature-item" style="font-size: 14px; margin-bottom: 8px;">
-                <span class="feature-icon">•</span>
-                <span><strong>30% recurring commission</strong> on all subscription plans</span>
-              </li>
-              <li class="feature-item" style="font-size: 14px; margin-bottom: 8px;">
-                <span class="feature-icon">•</span>
-                <span><strong>30% commission</strong> for first charge on one-off image packs</span>
-              </li>
-              <li class="feature-item" style="font-size: 14px; margin-bottom: 8px;">
-                <span class="feature-icon">•</span>
-                <span>Real-time tracking and analytics dashboard</span>
-              </li>
-              <li class="feature-item" style="font-size: 14px; margin-bottom: 8px;">
-                <span class="feature-icon">•</span>
-                <span>Monthly payouts via your preferred method</span>
-              </li>
-              <li class="feature-item" style="font-size: 14px; margin-bottom: 0;">
-                <span class="feature-icon">•</span>
-                <span>Marketing materials and support provided</span>
-              </li>
-            </ul>
-
-            <div style="text-align: center;">
-              <a href="https://selira.firstpromoter.com" target="_blank" rel="noopener"
-                 style="display: inline-block; padding: 12px 32px; background: var(--accent); color: white; text-decoration: none; border-radius: var(--radius-md); font-weight: 600; font-size: 15px; transition: all 0.2s ease;">
-                Join Affiliate Program →
-              </a>
+            <!-- One-off Commission -->
+            <div style="background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; position: relative; overflow: hidden;">
+              <div style="position: absolute; top: -20px; right: -20px; width: 100px; height: 100px; background: var(--accent-secondary); opacity: 0.1; border-radius: 50%;"></div>
+              <div style="font-size: 32px; margin-bottom: 12px;">💎</div>
+              <div style="font-size: 28px; font-weight: 700; color: var(--accent-secondary); margin-bottom: 8px;">30%</div>
+              <div style="font-size: 14px; color: var(--text-primary); font-weight: 600; margin-bottom: 4px;">First Charge</div>
+              <div style="font-size: 13px; color: var(--text-secondary);">On one-off image packs</div>
             </div>
+
+          </div>
+
+          <!-- Features Grid -->
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px;">
+
+            <div style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; text-align: center;">
+              <div style="font-size: 24px; margin-bottom: 8px;">📊</div>
+              <div style="font-size: 13px; color: var(--text-primary); font-weight: 600; margin-bottom: 4px;">Real-time Analytics</div>
+              <div style="font-size: 12px; color: var(--text-secondary);">Track performance</div>
+            </div>
+
+            <div style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; text-align: center;">
+              <div style="font-size: 24px; margin-bottom: 8px;">💳</div>
+              <div style="font-size: 13px; color: var(--text-primary); font-weight: 600; margin-bottom: 4px;">Monthly Payouts</div>
+              <div style="font-size: 12px; color: var(--text-secondary);">Your preferred method</div>
+            </div>
+
+            <div style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; text-align: center;">
+              <div style="font-size: 24px; margin-bottom: 8px;">🎯</div>
+              <div style="font-size: 13px; color: var(--text-primary); font-weight: 600; margin-bottom: 4px;">Marketing Support</div>
+              <div style="font-size: 12px; color: var(--text-secondary);">Materials provided</div>
+            </div>
+
           </div>
 
           <!-- How It Works -->
-          <div class="pricing-card" style="text-align: left; margin-top: 20px; padding: 20px;">
-            <div class="plan-name" style="text-align: center; margin-bottom: 16px; font-size: 20px;">
+          <div style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px;">
+            <h3 style="font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 600; color: var(--text-primary); text-align: center; margin-bottom: 20px;">
               How It Works
+            </h3>
+
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 24px;">
+
+              <div style="text-align: center;">
+                <div style="width: 48px; height: 48px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 18px; font-weight: 700; color: white;">1</div>
+                <div style="font-size: 13px; color: var(--text-primary); font-weight: 500;">Sign up via FirstPromoter</div>
+              </div>
+
+              <div style="text-align: center;">
+                <div style="width: 48px; height: 48px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 18px; font-weight: 700; color: white;">2</div>
+                <div style="font-size: 13px; color: var(--text-primary); font-weight: 500;">Get your referral link</div>
+              </div>
+
+              <div style="text-align: center;">
+                <div style="width: 48px; height: 48px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 18px; font-weight: 700; color: white;">3</div>
+                <div style="font-size: 13px; color: var(--text-primary); font-weight: 500;">Share with audience</div>
+              </div>
+
+              <div style="text-align: center;">
+                <div style="width: 48px; height: 48px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 18px; font-weight: 700; color: white;">4</div>
+                <div style="font-size: 13px; color: var(--text-primary); font-weight: 500;">Earn 30% commission</div>
+              </div>
+
             </div>
 
-            <ol style="color: var(--text-secondary); font-size: 14px; line-height: 1.6; padding-left: 20px; margin: 0;">
-              <li style="margin-bottom: 8px;">Sign up for our affiliate program via FirstPromoter</li>
-              <li style="margin-bottom: 8px;">Get your unique referral link and marketing materials</li>
-              <li style="margin-bottom: 8px;">Share Selira AI with your audience</li>
-              <li>Earn 30% commission on every sale you generate</li>
-            </ol>
+            <!-- CTA Button -->
+            <div style="text-align: center;">
+              <a href="https://selira.firstpromoter.com" target="_blank" rel="noopener"
+                 style="display: inline-block; padding: 14px 40px; background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%); color: white; text-decoration: none; border-radius: var(--radius-md); font-weight: 600; font-size: 16px; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(212, 165, 116, 0.3);"
+                 onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(212, 165, 116, 0.4)';"
+                 onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(212, 165, 116, 0.3)';">
+                Join Affiliate Program →
+              </a>
+            </div>
           </div>
 
         </div>
