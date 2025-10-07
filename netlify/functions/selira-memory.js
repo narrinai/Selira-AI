@@ -32,15 +32,16 @@ exports.handler = async (event, context) => {
       // Step 1: Get user email if not provided
       let emailToSearch = user_email;
       if (!emailToSearch && user_uid) {
-        console.log('👤 Getting email from Auth0ID:', user_uid);
-        const userLookupUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula={Auth0ID}='${user_uid}'&maxRecords=1`;
+        console.log('👤 Getting email from user ID (SupabaseID or Auth0ID):', user_uid);
+        // Support both Supabase and Auth0 user lookups
+        const userLookupUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula=OR({SupabaseID}='${user_uid}',{Auth0ID}='${user_uid}')&maxRecords=1`;
         const userResponse = await fetch(userLookupUrl, {
           headers: {
             'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
             'Content-Type': 'application/json'
           }
         });
-        
+
         if (userResponse.ok) {
           const userData = await userResponse.json();
           if (userData.records.length > 0) {
@@ -76,15 +77,15 @@ exports.handler = async (event, context) => {
       const chatData = await chatResponse.json();
       console.log('📊 Found', chatData.records.length, 'total records');
       
-      // Step 3: Get user record ID from Auth0ID lookup
-      const userLookupUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula={Auth0ID}='${user_uid}'&maxRecords=1`;
+      // Step 3: Get user record ID from SupabaseID or Auth0ID lookup
+      const userLookupUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula=OR({SupabaseID}='${user_uid}',{Auth0ID}='${user_uid}')&maxRecords=1`;
       const userLookupResponse = await fetch(userLookupUrl, {
         headers: {
           'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
           'Content-Type': 'application/json'
         }
       });
-      
+
       let userRecordId = null;
       if (userLookupResponse.ok) {
         const userData = await userLookupResponse.json();
@@ -93,9 +94,9 @@ exports.handler = async (event, context) => {
           console.log('✅ Found user record ID:', userRecordId);
         }
       }
-      
+
       if (!userRecordId) {
-        console.log('❌ No user record found for Auth0ID:', user_uid);
+        console.log('❌ No user record found for user ID:', user_uid);
         return {
           statusCode: 404,
           headers: { 'Content-Type': 'application/json' },

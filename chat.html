@@ -2337,32 +2337,32 @@
       const typingIndicator = addTypingIndicator();
 
       try {
-        // Use authenticated user data
-        const auth0_id = user.sub || user.uid || user.auth0_id;
+        // Use authenticated user data (support both Supabase and Auth0)
+        const user_id = user.id || user.sub || user.uid || user.auth0_id; // Supabase uses .id, Auth0 uses .sub
         const user_email = user.email;
 
         console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Authenticated user:', {
-          auth0_id: auth0_id,
+          user_id: user_id,
           email: user_email
         });
 
         // Memory sync for authenticated users
         console.log('🧠 Memory sync enabled - loading memories...');
-        await loadMemoriesForContext(currentCharacter.slug, auth0_id);
-        
+        await loadMemoriesForContext(currentCharacter.slug, user_id);
+
         // Get chat history for context
         const chatHistory = getChatHistoryForContext(currentCharacter.slug);
-        
+
         // Call OpenRouter chat API
         const unfilteredMode = localStorage.getItem('unfilteredMode') === 'true';
         console.log('🤖 Sending message to AI:', {
           character: currentCharacter.slug,
-          auth0_id: auth0_id,
+          user_id: user_id,
           message: message.substring(0, 50) + '...',
           history_length: chatHistory.length,
           mode: unfilteredMode ? 'UNCENSORED 🔓' : 'CENSORED 🔒'
         });
-        
+
         const response = await fetch('/.netlify/functions/selira-openrouter-chat', {
           method: 'POST',
           headers: {
@@ -2371,8 +2371,8 @@
           body: JSON.stringify({
             message: message,
             character_slug: currentCharacter.slug,
-            auth0_id: auth0_id,
-            user_email: user_email, // Add user email for message saving
+            user_id: user_id, // Changed from auth0_id to support both Supabase and Auth0
+            user_email: user_email,
             model: 'mistralai/mistral-nemo',
             local_history: chatHistory, // Send localStorage history for context
             memories: window.currentMemories || [], // Send loaded memories for AI context
@@ -2408,7 +2408,7 @@
         
         // Memory saving re-enabled now that functions are working
         console.log('🧠 Memory saving enabled - saving important memories...');
-        await saveMemoryIfImportant(currentCharacter.slug, message, data.response, auth0_id);
+        await saveMemoryIfImportant(currentCharacter.slug, message, data.response, user_id);
         
       } catch (error) {
         console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Error sending message:', error);

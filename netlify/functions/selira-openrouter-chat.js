@@ -46,11 +46,12 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const { message, character_slug, auth0_id, user_email, local_history, memories, unfiltered } = JSON.parse(event.body);
+    const { message, character_slug, user_id, auth0_id, user_email, local_history, memories, unfiltered } = JSON.parse(event.body);
 
     console.log('🚀 Chat request:', {
       character_slug,
       user_email,
+      user_id: user_id || auth0_id, // Support both Supabase and Auth0
       historyLength: local_history?.length || 0,
       memoriesCount: memories?.length || 0,
       unfilteredMode: unfiltered || false
