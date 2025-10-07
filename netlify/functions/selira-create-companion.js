@@ -238,14 +238,12 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Simple text-based creator identification for now
-    const displayName = createdBy || userEmail || 'Unknown User';
-
-    // Get the user record ID for linking in Created_By field
+    // Get the user record ID and display_name for linking in Created_By field
     let userRecordId = null;
+    let displayName = 'Unknown User';
     if (userEmail) {
       try {
-        console.log('🔍 Looking up user record for Created_By field...');
+        console.log('🔍 Looking up user record for Created_By field and display_name...');
         const userLookupResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula={Email}="${userEmail}"`, {
           method: 'GET',
           headers: {
@@ -258,7 +256,9 @@ exports.handler = async (event, context) => {
           const userLookupData = await userLookupResponse.json();
           if (userLookupData.records && userLookupData.records.length > 0) {
             userRecordId = userLookupData.records[0].id;
+            displayName = userLookupData.records[0].fields.display_name || userEmail || 'Unknown User';
             console.log('✅ Found user record ID:', userRecordId);
+            console.log('✅ Using display_name:', displayName);
           }
         }
       } catch (error) {

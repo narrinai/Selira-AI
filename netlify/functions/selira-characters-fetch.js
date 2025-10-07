@@ -266,7 +266,7 @@ exports.handler = async (event, context) => {
           if (userResponse.ok) {
             const userData = await userResponse.json();
             userData.records.forEach(record => {
-              const name = record.fields.Name || record.fields.Nickname || record.fields.Username || 'Unknown User';
+              const name = record.fields.display_name || record.fields.Name || 'Unknown User';
               userMap[record.id] = name;
             });
           }

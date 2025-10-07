@@ -1131,14 +1131,12 @@
 
         #userEmail,
         #userPlan,
-        #userUsername,
         #userDisplayName {
           font-size: 14px !important;
           padding: 12px !important;
           border-radius: 8px !important;
         }
 
-        #saveUsername,
         #saveDisplayName {
           padding: 10px 16px !important;
           font-size: 12px !important;
@@ -3613,13 +3611,6 @@
                   <div id="userPlan" style="color: var(--text-primary); font-weight: 600; font-size: 13px; padding: 10px; background: var(--bg-tertiary); border-radius: 6px; border: 1px solid var(--border);">Free</div>
                 </div>
                 <div>
-                  <label style="display: block; color: var(--text-secondary); font-size: 11px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Username</label>
-                  <div style="display: flex; gap: 8px; align-items: center;">
-                    <input id="userUsername" style="color: var(--text-primary); font-weight: 600; font-size: 13px; padding: 10px; background: var(--bg-tertiary); border-radius: 6px; border: 1px solid var(--border); flex: 1; box-sizing: border-box;" placeholder="Generating...">
-                    <button id="saveUsername" onclick="saveUsername()" style="background: var(--accent); color: white; border: none; padding: 8px 12px; border-radius: 6px; font-size: 11px; cursor: pointer; white-space: nowrap;">Save</button>
-                  </div>
-                </div>
-                <div>
                   <label style="display: block; color: var(--text-secondary); font-size: 11px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Display Name</label>
                   <div style="display: flex; gap: 8px; align-items: center;">
                     <input id="userDisplayName" style="color: var(--text-primary); font-weight: 600; font-size: 13px; padding: 10px; background: var(--bg-tertiary); border-radius: 6px; border: 1px solid var(--border); flex: 1; box-sizing: border-box;" placeholder="Generating...">
@@ -4487,25 +4478,18 @@ Please be thorough and include important details from our conversations.`;
         // Update email
         document.getElementById('userEmail').textContent = userEmail;
         
-        // Get or generate username and display name
-        let username = localStorage.getItem('user_username');
+        // Get or generate display name
         let displayName = localStorage.getItem('user_display_name');
-        
-        if (!username) {
-          username = generateUsername();
-          localStorage.setItem('user_username', username);
+
+        if (!displayName) {
+          displayName = generateUsername();
+          localStorage.setItem('user_display_name', displayName);
           // Save to Airtable
           if (userUid) {
-            saveUsernameToAirtable(userUid, username, username);
+            saveDisplayNameToAirtable(userUid, displayName);
           }
         }
-        
-        if (!displayName) {
-          displayName = username; // Initially same as username
-          localStorage.setItem('user_display_name', displayName);
-        }
-        
-        document.getElementById('userUsername').value = username;
+
         document.getElementById('userDisplayName').value = displayName;
         
         // Get plan info from localStorage or fetch from Airtable
@@ -4551,43 +4535,32 @@ Please be thorough and include important details from our conversations.`;
 
     // Setup event listeners for profile editing
     function setupProfileEditListeners() {
-      const usernameInput = document.getElementById('userUsername');
       const displayNameInput = document.getElementById('userDisplayName');
-      
-      if (usernameInput) {
-        usernameInput.addEventListener('blur', async () => {
-          const newUsername = usernameInput.value.trim();
-          if (newUsername && newUsername !== localStorage.getItem('user_username')) {
-            await saveUsernameToAirtable(localStorage.getItem('user_uid'), newUsername, null);
-            localStorage.setItem('user_username', newUsername);
-          }
-        });
-      }
-      
+
       if (displayNameInput) {
         displayNameInput.addEventListener('blur', async () => {
           const newDisplayName = displayNameInput.value.trim();
           if (newDisplayName && newDisplayName !== localStorage.getItem('user_display_name')) {
-            await saveUsernameToAirtable(localStorage.getItem('user_uid'), null, newDisplayName);
+            await saveDisplayNameToAirtable(localStorage.getItem('user_uid'), newDisplayName);
             localStorage.setItem('user_display_name', newDisplayName);
           }
         });
       }
     }
 
-    // Save username/display name to Airtable
-    async function saveUsernameToAirtable(userUid, username, displayName) {
+    // Save display name to Airtable
+    async function saveDisplayNameToAirtable(userUid, displayName) {
       try {
         if (!userUid) {
           console.warn('⚠️ No user UID - cannot save to Airtable');
           return;
         }
 
-        const updateData = {};
-        if (username) updateData.Username = username;
-        if (displayName) updateData.Display_Name = displayName;
+        const updateData = {
+          display_name: displayName
+        };
 
-        console.log('💾 Saving user data to Airtable:', updateData);
+        console.log('💾 Saving display name to Airtable:', updateData);
 
         const response = await fetch('/.netlify/functions/user-management', {
           method: 'POST',
@@ -4600,49 +4573,13 @@ Please be thorough and include important details from our conversations.`;
         });
 
         if (response.ok) {
-          console.log('✅ User data saved to Airtable');
+          console.log('✅ Display name saved to Airtable');
         } else {
-          console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Failed to save user data');
+          console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Failed to save display name');
         }
 
       } catch (error) {
         console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Error saving to Airtable:', error);
-      }
-    }
-
-    // Save username via button click
-    async function saveUsername() {
-      const usernameInput = document.getElementById('userUsername');
-      const saveBtn = document.getElementById('saveUsername');
-      const newUsername = usernameInput.value.trim();
-      
-      if (!newUsername) {
-        alert('Username cannot be empty');
-        return;
-      }
-      
-      saveBtn.textContent = 'Saving...';
-      saveBtn.disabled = true;
-      
-      try {
-        await saveUsernameToAirtable(localStorage.getItem('user_uid'), newUsername, null);
-        localStorage.setItem('user_username', newUsername);
-        saveBtn.textContent = 'Saved!';
-        saveBtn.style.background = '#10b981';
-        
-        setTimeout(() => {
-          saveBtn.textContent = 'Save';
-          saveBtn.style.background = 'var(--accent)';
-          saveBtn.disabled = false;
-        }, 2000);
-      } catch (error) {
-        saveBtn.textContent = 'Error';
-        saveBtn.style.background = '#ef4444';
-        setTimeout(() => {
-          saveBtn.textContent = 'Save';
-          saveBtn.style.background = 'var(--accent)';
-          saveBtn.disabled = false;
-        }, 2000);
       }
     }
 
@@ -4651,21 +4588,21 @@ Please be thorough and include important details from our conversations.`;
       const displayNameInput = document.getElementById('userDisplayName');
       const saveBtn = document.getElementById('saveDisplayName');
       const newDisplayName = displayNameInput.value.trim();
-      
+
       if (!newDisplayName) {
         alert('Display name cannot be empty');
         return;
       }
-      
+
       saveBtn.textContent = 'Saving...';
       saveBtn.disabled = true;
-      
+
       try {
-        await saveUsernameToAirtable(localStorage.getItem('user_uid'), null, newDisplayName);
+        await saveDisplayNameToAirtable(localStorage.getItem('user_uid'), newDisplayName);
         localStorage.setItem('user_display_name', newDisplayName);
         saveBtn.textContent = 'Saved!';
         saveBtn.style.background = '#10b981';
-        
+
         setTimeout(() => {
           saveBtn.textContent = 'Save';
           saveBtn.style.background = 'var(--accent)';
