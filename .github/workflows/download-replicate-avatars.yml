@@ -58,5 +58,5 @@ jobs:
       - name: Trigger Netlify Deploy
         if: steps.commit.outputs.has_changes == 'true'
         run: |
-          curl -X POST -d '{}' https://api.netlify.com/build_hooks/${{ secrets.NETLIFY_BUILD_HOOK }}
+          curl -X POST -d '{}' ${{ secrets.NETLIFY_BUILD_HOOK_SELIRA }}
           echo "✅ Netlify deploy triggered!"
