@@ -988,6 +988,11 @@
         font-size: 10px;
       }
 
+      /* Hide mobile-nav completely on desktop for chat page */
+      #selira-mobile-nav {
+        display: none !important;
+      }
+
       /* Chat sidebar toggle button - replaces mobile-nav hamburger */
       .chat-sidebar-toggle {
         position: fixed;
@@ -1009,8 +1014,12 @@
         justify-content: center;
       }
 
-      /* Show chat sidebar toggle on mobile */
+      /* Show mobile-nav and chat sidebar toggle on mobile only */
       @media (max-width: 768px) {
+        #selira-mobile-nav {
+          display: block !important;
+        }
+
         .chat-sidebar-toggle {
           display: flex;
         }
