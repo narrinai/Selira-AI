@@ -3045,21 +3045,22 @@
 
       // If logged in, fetch actual user companions from database
       let userCompanionSlugs = null;
-      if (currentUserEmail || currentUserAuth0Id) {
+      if (currentUserEmail) {
         try {
-          const response = await fetch('/.netlify/functions/selira-user-companions', {
+          const response = await fetch('/.netlify/functions/selira-get-my-companions', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              email: currentUserEmail,
-              auth0_id: currentUserAuth0Id
+              user_email: currentUserEmail
             })
           });
 
           if (response.ok) {
             const data = await response.json();
-            userCompanionSlugs = new Set(data.companions.map(c => c.slug));
-            console.log('✅ Loaded user companions from database:', userCompanionSlugs.size);
+            if (data.success && data.companions) {
+              userCompanionSlugs = new Set(data.companions.map(c => c.slug || c.Slug));
+              console.log('✅ Loaded user companions from database:', userCompanionSlugs.size, 'companions');
+            }
           }
         } catch (error) {
           console.warn('⚠️ Could not load user companions, showing all local chats:', error);
