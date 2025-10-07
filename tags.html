@@ -1759,7 +1759,7 @@
         // Personality traits
         'wise': '🧙‍♂️',
         'funny': '😄',
-        'helpful': '🤝',
+        'helpful': '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>',
         'mysterious': '🎭',
         'romantic': '💕',
         'creative': '🎨',
@@ -2074,7 +2074,7 @@
         const response = await fetch(url.toString());
         
         if (!response.ok) {
-          console.error('❌ HTTP Error:', response.status, response.statusText);
+          console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> HTTP Error:', response.status, response.statusText);
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         
@@ -2089,7 +2089,7 @@
         processCharacterData(data.characters);
 
       } catch (error) {
-        console.error('❌ Error loading characters:', error);
+        console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Error loading characters:', error);
         showErrorState('Failed to load characters. Please try again.', error.message);
       }
     }
@@ -2108,7 +2108,7 @@
         // Alternative API format
         characters = data.records.map(record => record.fields || record);
       } else {
-        console.error('❌ Invalid data format:', data);
+        console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Invalid data format:', data);
         characters = [];
       }
 
@@ -2153,7 +2153,7 @@
         const tags = tagsField.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
         // Debug: log if this contains 'elf' tag
         if (tags.some(t => t.toLowerCase().includes('elf'))) {
-          console.log('🔍 Found character with elf-related tag:', tags);
+          console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Found character with elf-related tag:', tags);
         }
         return tags;
       }
@@ -2179,8 +2179,8 @@
     }
 
     function applyTagFilters() {
-      console.log('🔍 TAG FILTER DEBUG - Active tags:', activeTags);
-      console.log('🔍 TAG FILTER DEBUG - Total characters:', allCharacters.length);
+      console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> TAG FILTER DEBUG - Active tags:', activeTags);
+      console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> TAG FILTER DEBUG - Total characters:', allCharacters.length);
 
       if (activeTags.length === 0) {
         filteredCharacters = [...allCharacters];
@@ -2195,14 +2195,14 @@
 
           // Debug logging for specific problematic tags
           if (activeTags.some(tag => tag.toLowerCase() === 'elf')) {
-            console.log('🔍 Character:', character.name, '| Tags:', character.tags, '| Match:', hasAllTags);
+            console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Character:', character.name, '| Tags:', character.tags, '| Match:', hasAllTags);
           }
 
           return hasAllTags;
         });
       }
 
-      console.log('🔍 TAG FILTER DEBUG - Filtered characters:', filteredCharacters.length);
+      console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> TAG FILTER DEBUG - Filtered characters:', filteredCharacters.length);
 
       // Sort alphabetically
       filteredCharacters.sort((a, b) => a.name.localeCompare(b.name));
@@ -2318,7 +2318,7 @@
             <img src="${character.avatarUrl}" 
                  alt="${character.name}" 
                  onload="console.log('✅ Avatar loaded for ${character.name}');"
-                 onerror="console.error('❌ Avatar failed for ${character.name}'); this.style.display='none'; this.parentNode.innerHTML='👤';">
+                 onerror="console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Avatar failed for ${character.name}'); this.style.display='none'; this.parentNode.innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>';">
           </div>
           <div class="character-name">${character.name}</div>
           <div class="character-title">${character.title}</div>

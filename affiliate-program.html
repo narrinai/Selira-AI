@@ -162,8 +162,13 @@
 
     .nav-item-icon {
       font-size: 14px;
-      width: 14px;
+      width: 18px;
+      height: 18px;
       text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
     }
 
     .nav-item-icon svg {
@@ -338,6 +343,11 @@
       transition: all 0.2s ease;
       font-size: 13px;
       font-weight: 600;
+    }
+
+    .dropdown-btn span {
+      line-height: 1;
+      display: inline;
     }
 
     .dropdown-btn:hover {
@@ -1104,7 +1114,7 @@
         const premiumCard = document.querySelector('.pricing-card:nth-child(4)');
         const targetButton = document.querySelector(`.pricing-card:nth-child(${planType === 'light' ? '2' : '3'}) .plan-button`);
 
-        console.log(`🔍 Checking for Premium -> ${planType.charAt(0).toUpperCase() + planType.slice(1)} downgrade:`, {
+        console.log(`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Checking for Premium -> ${planType.charAt(0).toUpperCase() + planType.slice(1)} downgrade:`, {
           premiumCardExists: !!premiumCard,
           premiumHasCurrentPlan: premiumCard ? premiumCard.classList.contains('current-plan') : false,
           targetButtonExists: !!targetButton,
@@ -1172,7 +1182,7 @@
     async function handlePaidPlanSelection(planType) {
       try {
         console.log('🔄 Starting plan selection for:', planType);
-        console.log('🔍 Current window.currentUserPlan:', window.currentUserPlan);
+        console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Current window.currentUserPlan:', window.currentUserPlan);
 
         // Try to determine current plan from button text as fallback
         let detectedCurrentPlan = 'free';
@@ -1183,7 +1193,7 @@
           const planName = currentPlanCard.querySelector('.plan-name');
           if (planName) {
             detectedCurrentPlan = planName.textContent.toLowerCase();
-            console.log('🔍 Detected current plan from UI:', detectedCurrentPlan);
+            console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Detected current plan from UI:', detectedCurrentPlan);
           }
         }
 
@@ -1194,10 +1204,10 @@
 
         if (lightButton && lightButton.textContent.includes('Downgrade to Light')) {
           detectedCurrentPlan = 'basic';  // or premium
-          console.log('🔍 Detected basic/premium plan from Light downgrade button');
+          console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Detected basic/premium plan from Light downgrade button');
         } else if (basicButton && basicButton.textContent.includes('Downgrade to Basic')) {
           detectedCurrentPlan = 'premium';
-          console.log('🔍 Detected premium plan from Basic downgrade button');
+          console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Detected premium plan from Basic downgrade button');
         }
 
         // Always load current plan to get the most up-to-date info
@@ -1242,7 +1252,7 @@
         }
 
       } catch (error) {
-        console.error('❌ Error handling plan selection:', error);
+        console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Error handling plan selection:', error);
         // Fallback to Stripe checkout if we can't determine current plan
         console.log('🔄 Falling back to Stripe checkout due to error');
         initiateStripeCheckout(planType);
@@ -1307,9 +1317,9 @@
         try {
           result = await response.json();
         } catch (jsonError) {
-          console.error('❌ Failed to parse response as JSON:', jsonError);
+          console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Failed to parse response as JSON:', jsonError);
           const textResponse = await response.text();
-          console.error('❌ Raw response:', textResponse);
+          console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Raw response:', textResponse);
           showSuccessMessage(`Server error: Unable to parse response. Status: ${response.status}`);
           return;
         }
@@ -1331,7 +1341,7 @@
           await loadCurrentPlan();
 
         } else {
-          console.error('❌ Downgrade failed:', result);
+          console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Downgrade failed:', result);
           let alertMessage = `Failed to downgrade plan: ${result.error || 'Unknown error'}`;
 
           if (result.details) {
@@ -1348,7 +1358,7 @@
         }
 
       } catch (error) {
-        console.error('❌ Error downgrading plan:', error);
+        console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Error downgrading plan:', error);
         showSuccessMessage('An error occurred while downgrading your plan. Please try again.');
 
         // Restore button state
@@ -1485,9 +1495,9 @@
         try {
           result = await response.json();
         } catch (jsonError) {
-          console.error('❌ Failed to parse response as JSON:', jsonError);
+          console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Failed to parse response as JSON:', jsonError);
           const textResponse = await response.text();
-          console.error('❌ Raw response:', textResponse);
+          console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Raw response:', textResponse);
           showSuccessMessage(`Server error: Unable to parse response. Status: ${response.status}`);
           return;
         }
@@ -1504,11 +1514,11 @@
           await loadCurrentPlan();
 
         } else {
-          console.error('❌ Downgrade failed:', result);
+          console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Downgrade failed:', result);
           let alertMessage = `Failed to downgrade subscription: ${result.error || 'Unknown error'}\n\nDetails: ${result.details || 'No additional details'}`;
 
           if (result.debugInfo) {
-            console.log('🔍 Debug info:', result.debugInfo);
+            console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Debug info:', result.debugInfo);
             alertMessage += `\n\nDebug Info:\nUser Plan: ${result.debugInfo.userPlan || 'Unknown'}\nAvailable Fields: ${result.debugInfo.availableFields ? result.debugInfo.availableFields.join(', ') : 'None'}\nStripe Fields: ${result.debugInfo.stripeFields ? result.debugInfo.stripeFields.join(', ') : 'None'}`;
           }
 
@@ -1522,7 +1532,7 @@
         }
 
       } catch (error) {
-        console.error('❌ Error downgrading subscription:', error);
+        console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Error downgrading subscription:', error);
         showSuccessMessage('An error occurred while downgrading your subscription. Please try again.');
 
         // Restore button state
@@ -1565,7 +1575,7 @@
           window.currentUserPlan = 'free';
         }
       } catch (error) {
-        console.error('❌ Error loading current plan:', error);
+        console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Error loading current plan:', error);
         // Set to free plan as fallback
         window.currentUserPlan = 'free';
       }
@@ -1759,12 +1769,12 @@
           // Reload the current plan display
           await loadCurrentPlan();
         } else {
-          console.error('❌ Reactivation failed:', result);
+          console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Reactivation failed:', result);
           alert(`Failed to reactivate subscription: ${result.error || 'Unknown error'}`);
         }
 
       } catch (error) {
-        console.error('❌ Error reactivating subscription:', error);
+        console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Error reactivating subscription:', error);
         alert('An error occurred while reactivating your subscription. Please try again.');
       }
     }

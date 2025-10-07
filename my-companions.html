@@ -173,8 +173,13 @@
 
     .nav-item-icon {
       font-size: 14px;
-      width: 14px;
+      width: 18px;
+      height: 18px;
       text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
     }
 
     .nav-item-icon svg {
@@ -869,7 +874,7 @@
 
           return;
         }
-        console.log('🔍 Loading companions for user:', userEmail);
+        console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Loading companions for user:', userEmail);
         // Call the working API
         const response = await fetch('/.netlify/functions/selira-get-my-companions', {
           method: 'POST',
@@ -926,7 +931,7 @@
 
             <!-- Stats for mobile (shown in character-info, hidden overlay on mobile) -->
             <div class="character-stats">
-              <span>💬 ${character.chats}</span>
+              <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> ${character.chats}</span>
             </div>
 
             <div class="character-tags">
@@ -938,7 +943,7 @@
         </div>
       `).join('');
       } catch (error) {
-        console.error('❌ Error loading companions:', error);
+        console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Error loading companions:', error);
         grid.innerHTML = `
           <div class="loading-grid">
             <div style="text-align: center; padding: 40px;">

@@ -1912,7 +1912,7 @@
 
       console.log(`🎲 Selected ${selected.length} new suggestions:`, selected);
       console.log(`📝 Open-ended prompt: "${openEndedPrompt}"`);
-      console.log(`🔍 All suggestions (${suggestions.length}):`, suggestions);
+      console.log(`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> All suggestions (${suggestions.length}):`, suggestions);
       console.log(`✅ ${usedSuggestions.size} total used`);
       return selected;
     }
@@ -2045,7 +2045,7 @@
           headerImage.src = fixAvatarUrl(currentCharacter.avatar);
           headerImage.style.display = 'block';
           headerImage.onerror = function() {
-            console.warn('❌ Header avatar failed to load:', currentCharacter.avatar);
+            console.warn('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Header avatar failed to load:', currentCharacter.avatar);
             this.src = '/avatars/default-avatar.webp';
             this.style.display = 'block';
             // Update currentCharacter.avatar to the fallback for modal functionality
@@ -2072,7 +2072,7 @@
           sidebarImage.src = fixAvatarUrl(currentCharacter.avatar);
           sidebarImage.style.display = 'block';
           sidebarImage.onerror = function() {
-            console.warn('❌ Sidebar avatar failed to load:', currentCharacter.avatar);
+            console.warn('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Sidebar avatar failed to load:', currentCharacter.avatar);
             this.src = '/avatars/default-avatar.webp';
             this.style.display = 'block';
           };
@@ -2188,7 +2188,7 @@
         helpMessage.innerHTML = `
           <div class="message-content">
             <div class="message-text">
-              <div style="margin-bottom: 12px;">I'd love to send you a picture! 📸</div>
+              <div style="margin-bottom: 12px;">I'd love to send you a picture! <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg></div>
               <div style="margin-bottom: 12px;">Click the <strong>+ Image Gen</strong> button below to generate an image of me. You can choose from suggestions or type exactly what you want to see!</div>
               <div style="margin-top: 16px;">
                 <button onclick="document.getElementById('imageGenBtn').click()" style="
@@ -2235,7 +2235,7 @@
         const auth0_id = user.sub || user.uid || user.auth0_id;
         const user_email = user.email;
 
-        console.log('👤 Authenticated user:', {
+        console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Authenticated user:', {
           auth0_id: auth0_id,
           email: user_email
         });
@@ -2302,7 +2302,7 @@
         await saveMemoryIfImportant(currentCharacter.slug, message, data.response, auth0_id);
         
       } catch (error) {
-        console.error('❌ Error sending message:', error);
+        console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Error sending message:', error);
         
         // Remove typing indicator
         if (typingIndicator && typingIndicator.parentNode) {
@@ -2359,7 +2359,7 @@
         
         // Skip for anonymous users
         if (auth0_id === 'anonymous') {
-          console.log('👤 Anonymous user - no chat history to load');
+          console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Anonymous user - no chat history to load');
           return;
         }
         
@@ -2390,7 +2390,7 @@
         }
         
       } catch (error) {
-        console.error('❌ Error loading chat history:', error);
+        console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Error loading chat history:', error);
       }
     }
 
@@ -2439,7 +2439,7 @@
         console.log('💾 Saved conversation to localStorage:', characterSlug, chatHistory.length, 'messages');
         
       } catch (error) {
-        console.error('❌ Error saving to localStorage:', error);
+        console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Error saving to localStorage:', error);
       }
     }
 
@@ -2482,7 +2482,7 @@
           
         } else {
           console.log('💭 No chat history in localStorage for:', characterSlug);
-          console.log('🔍 Checking localStorage keys:', Object.keys(localStorage).filter(k => k.startsWith('chat_')));
+          console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Checking localStorage keys:', Object.keys(localStorage).filter(k => k.startsWith('chat_')));
 
           // Add automatic greeting message for new chats (only once per session)
           let character = allCharacters.find(c => c.slug === characterSlug);
@@ -2535,7 +2535,7 @@
         }
         
       } catch (error) {
-        console.error('❌ Error loading from localStorage:', error);
+        console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Error loading from localStorage:', error);
       }
     }
 
@@ -2566,7 +2566,7 @@
         return contextHistory;
         
       } catch (error) {
-        console.error('❌ Error getting context history:', error);
+        console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Error getting context history:', error);
         return [];
       }
     }
@@ -2686,7 +2686,7 @@
         return cleanHistory;
         
       } catch (error) {
-        console.error('❌ Error cleaning chat history:', error);
+        console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Error cleaning chat history:', error);
         return [];
       }
     }
@@ -2824,7 +2824,7 @@
           }
         }
       } catch (error) {
-        console.error('❌ Error loading characters:', error);
+        console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Error loading characters:', error);
         // Keep demo data as fallback
       }
     }
@@ -3026,7 +3026,7 @@
             <div class="chat-avatar">
               <img src="${fixAvatarUrl(avatarUrl)}"
                    alt="${characterName}"
-                   onerror="this.src='/avatars/default-avatar.webp'; console.warn('❌ Chat item avatar failed for ${companion.slug}');">
+                   onerror="this.src='/avatars/default-avatar.webp'; console.warn('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Chat item avatar failed for ${companion.slug}');">
             </div>
             <div class="chat-info">
               <div class="chat-name">${characterName}</div>
@@ -3082,7 +3082,7 @@
             }
           }
         } catch (error) {
-          console.error('❌ Error loading character:', error);
+          console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Error loading character:', error);
         }
       }
 
@@ -3138,7 +3138,7 @@
 
         console.log('✅ Switched to companion:', character.name);
       } else {
-        console.error('❌ Character not found:', slug);
+        console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Character not found:', slug);
         // Still load the chat history even if character data not found
         loadChatHistoryFromStorage(slug);
       }
@@ -3588,7 +3588,7 @@
       try {
         // Skip saving for anonymous users
         if (auth0_id === 'anonymous') {
-          console.log('👤 Anonymous user - skipping chat save');
+          console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Anonymous user - skipping chat save');
           return;
         }
         
@@ -3619,18 +3619,18 @@
         } else {
           const errorData = await response.text();
           console.log('⚠️ Failed to save chat message:', response.status);
-          console.log('❌ Error details:', errorData);
+          console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Error details:', errorData);
           
           // Try to parse error for better debugging
           try {
             const errorJson = JSON.parse(errorData);
-            console.log('🔍 Parsed error:', errorJson);
+            console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Parsed error:', errorJson);
           } catch (e) {
-            console.log('🔍 Raw error response:', errorData.substring(0, 200));
+            console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Raw error response:', errorData.substring(0, 200));
           }
         }
       } catch (error) {
-        console.error('❌ Error saving chat message:', error);
+        console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Error saving chat message:', error);
       }
     }
 
@@ -3639,7 +3639,7 @@
       const urlParams = new URLSearchParams(window.location.search);
       const characterSlug = urlParams.get('char');
       
-      console.log('🔍 Checking URL for character:', characterSlug);
+      console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Checking URL for character:', characterSlug);
       console.log('📦 Available characters:', loadedCharacters.map(c => ({ name: c.name, slug: c.slug })));
       
       if (characterSlug && loadedCharacters.length > 0) {
@@ -3656,8 +3656,8 @@
           // Load this character without updating URL (we're already on the right URL)
           selectCharacterFromSidebarSilent(character.slug, character.name, fixAvatarUrl(character.avatar), character.title);
         } else {
-          console.log('❌ Character not found in loaded data, searching API for:', characterSlug);
-          console.log('🔍 Available slugs:', loadedCharacters.map(c => c.slug));
+          console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Character not found in loaded data, searching API for:', characterSlug);
+          console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Available slugs:', loadedCharacters.map(c => c.slug));
           // Try to find by fetching specific character from API
           loadSpecificCharacterFromAPI(characterSlug);
         }
@@ -3737,7 +3737,7 @@
               console.log('🔄 New character not found yet, retrying in 500ms...');
               setTimeout(() => loadSpecificCharacterFromAPI(characterSlug, retryCount + 1), 500);
             } else {
-              console.log('❌ Character not found in API after retries');
+              console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Character not found in API after retries');
               // For new characters, don't load fallback - show error instead
               if (isNewCharacter) {
                 showCharacterNotFoundError(characterSlug);
@@ -3760,7 +3760,7 @@
           }
         }
       } catch (error) {
-        console.error('❌ Error loading specific character:', error);
+        console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Error loading specific character:', error);
         if (isNewCharacter && retryCount < 3) {
           console.log('🔄 Error loading new character, retrying in 500ms...');
           setTimeout(() => loadSpecificCharacterFromAPI(characterSlug, retryCount + 1), 500);
@@ -3786,7 +3786,7 @@
 
     // Show error when new character cannot be found
     function showCharacterNotFoundError(characterSlug) {
-      console.log('❌ New character not found, showing error for:', characterSlug);
+      console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> New character not found, showing error for:', characterSlug);
 
       // Clear chat display
       clearChatDisplay();
@@ -3907,7 +3907,7 @@
           // Don't load fallback immediately for new characters, let the API loading handle it
           return;
         } else {
-          console.log('❌ No direct match, using first character');
+          console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> No direct match, using first character');
           loadFallbackCharacter();
         }
       }
@@ -4166,7 +4166,7 @@
                              (currentCharacter.category === 'anime-manga' ? 'anime' : 'realistic');
 
       // Get character traits - log what we have
-      console.log('🔍 Current character data:', {
+      console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Current character data:', {
         name: currentCharacter.name,
         ethnicity: currentCharacter.ethnicity,
         hair_length: currentCharacter.hair_length,
@@ -4321,19 +4321,19 @@
           if (loadingMsg) {
             const messageText = loadingMsg.querySelector('.message-text');
             if (messageText) {
-              messageText.textContent = `❌ Sorry, I couldn't generate that image: ${error.error}`;
+              messageText.textContent = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Sorry, I couldn't generate that image: ${error.error}`;
             }
           }
         }
         
       } catch (error) {
-        console.error('❌ Image generation error:', error);
+        console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Image generation error:', error);
         // Replace loading with error
         const loadingMsg = document.getElementById(loadingId);
         if (loadingMsg) {
           const messageText = loadingMsg.querySelector('.message-text');
           if (messageText) {
-            messageText.textContent = `❌ Sorry, there was an error generating your image. ${error.message || ''}`;
+            messageText.textContent = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Sorry, there was an error generating your image. ${error.message || ''}`;
           }
         }
       } finally {
@@ -4363,7 +4363,7 @@
         console.log('💾 Saved user message to localStorage:', characterSlug);
         
       } catch (error) {
-        console.error('❌ Error saving user message to localStorage:', error);
+        console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Error saving user message to localStorage:', error);
       }
     }
 
@@ -4412,7 +4412,7 @@
         console.log('💾 Saved image message to localStorage:', characterSlug);
 
       } catch (error) {
-        console.error('❌ Error saving image message to localStorage:', error);
+        console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Error saving image message to localStorage:', error);
       }
     }
 
@@ -4631,7 +4631,7 @@
           console.log('⚠️ Memory loading failed:', response.status);
         }
       } catch (error) {
-        console.error('❌ Memory loading error:', error);
+        console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Memory loading error:', error);
       }
     }
 
@@ -4667,7 +4667,7 @@
           console.log('⚠️ Memory analysis failed:', response.status);
         }
       } catch (error) {
-        console.error('❌ Memory saving error:', error);
+        console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Memory saving error:', error);
       }
     }
 
@@ -4721,7 +4721,7 @@
         };
         console.log('✅ Header avatar click handler added');
       } else {
-        console.log('❌ Header avatar element not found');
+        console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Header avatar element not found');
       }
 
       // Sidebar avatar

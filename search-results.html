@@ -159,8 +159,13 @@
 
     .nav-item-icon {
       font-size: 14px;
-      width: 14px;
+      width: 18px;
+      height: 18px;
       text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
     }
 
     .nav-item-icon svg {
@@ -294,6 +299,11 @@
       padding: 8px 12px;
       font-size: 13px;
       cursor: pointer;
+    }
+
+    .dropdown-btn span {
+      line-height: 1;
+      display: inline;
     }
 
     .user-btn {
@@ -727,7 +737,7 @@
   </div>
 
   <script>
-    console.log('🔍 SEARCH-RESULTS.HTML SCRIPT LOADED!');
+    console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> SEARCH-RESULTS.HTML SCRIPT LOADED!');
 
     // ===== GLOBAL VARIABLES =====
     let currentPage = 1;
@@ -757,7 +767,7 @@
       }
 
       const searchTerms = query.toLowerCase().trim().split(' ').filter(term => term.length > 0);
-      console.log('🔍 Searching for terms:', searchTerms);
+      console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Searching for terms:', searchTerms);
 
       const results = characters.filter(character => {
         // Build searchable text from all character fields
@@ -830,7 +840,7 @@
         console.log(`✅ Finished loading all ${allLoadedCharacters.length} characters`);
         processCharacterData(allLoadedCharacters);
       } catch (error) {
-        console.error('❌ Error loading characters:', error);
+        console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Error loading characters:', error);
         showErrorState('Failed to load characters. Please try again.', error.message);
       }
     }
@@ -872,7 +882,7 @@
       const blondeInTags = allCharacters.filter(c =>
         c.tags?.some(tag => tag.toLowerCase().includes('blonde'))
       );
-      console.log(`🔍 Characters with 'blonde' in tags: ${blondeInTags.length}`);
+      console.log(`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Characters with 'blonde' in tags: ${blondeInTags.length}`);
 
       const blondeInDescription = allCharacters.filter(c =>
         c.description?.toLowerCase().includes('blonde')
@@ -910,7 +920,7 @@
       }
       filteredCharacters.sort((a, b) => a.name.localeCompare(b.name));
       currentPage = 1;
-      console.log(`🔍 Search results: ${filteredCharacters.length}/${allCharacters.length} characters`);
+      console.log(`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Search results: ${filteredCharacters.length}/${allCharacters.length} characters`);
     }
 
     // ===== CHARACTER CARD CREATION =====
@@ -1001,7 +1011,7 @@
       const grid = document.getElementById('characterGrid');
 
       if (!grid) {
-        console.error('❌ characterGrid element not found!');
+        console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> characterGrid element not found!');
         return;
       }
 
