@@ -1604,9 +1604,9 @@
           <button class="request-image-btn" onclick="requestImage()" title="Get Image Suggestions">
             + Image Gen
           </button>
-          <div class="unfiltered-toggle" id="unfilteredToggle" onclick="toggleUnfilteredMode()" title="Toggle Censorship Mode">
+          <div class="unfiltered-toggle active" id="unfilteredToggle" onclick="toggleUnfilteredMode()" title="Toggle Censorship Mode">
             <div class="toggle-switch"></div>
-            <span class="toggle-label" id="toggleText">Censored</span>
+            <span class="toggle-label" id="toggleText">Uncensored</span>
           </div>
           <div class="image-credits-display" id="imageCreditsDisplay" style="display: none;">
             <span class="credits-icon">💳</span>
@@ -1818,7 +1818,15 @@
     }
 
     function loadUnfilteredToggleState() {
-      const isUnfiltered = localStorage.getItem('unfilteredMode') === 'true';
+      // Default to uncensored if not set
+      const storedValue = localStorage.getItem('unfilteredMode');
+      const isUnfiltered = storedValue === null ? true : storedValue === 'true';
+
+      // Set default value if not exists
+      if (storedValue === null) {
+        localStorage.setItem('unfilteredMode', 'true');
+      }
+
       const toggle = document.getElementById('unfilteredToggle');
       const text = document.getElementById('toggleText');
 
