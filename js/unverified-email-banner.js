@@ -17,6 +17,9 @@
     // Don't show if user dismissed it this session
     if (sessionStorage.getItem('unverifiedBannerDismissed') === 'true') return;
 
+    // Don't show if email was just verified
+    if (sessionStorage.getItem('emailJustVerified') === 'true') return;
+
     // Remove existing banner if any
     const existing = document.getElementById('unverifiedEmailBanner');
     if (existing) existing.remove();
