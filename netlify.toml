@@ -10,6 +10,5 @@ directory = "netlify/functions"
 node_bundler = "esbuild"
 
 # Scheduled function to download Replicate URLs every 8 hours
-[[functions]]
-  name = "download-replicate-avatars-scheduled"
-  schedule = "0 */8 * * *"
+[functions."download-replicate-avatars-scheduled"]
+schedule = "0 */8 * * *"
