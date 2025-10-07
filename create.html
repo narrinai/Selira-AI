@@ -704,12 +704,15 @@
     }
     
     .btn-success {
-      background: var(--success);
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-secondary) 100%);
       color: white;
+      border: none;
     }
-    
+
     .btn-success:hover {
-      background: #059669;
+      background: linear-gradient(135deg, var(--accent-hover) 0%, #d946a6 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(206, 147, 216, 0.3);
     }
     
     /* Navigation Buttons */
