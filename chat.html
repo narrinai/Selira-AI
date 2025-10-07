@@ -886,17 +886,23 @@
       .sidebar {
         position: fixed !important;
         left: -220px !important;
-        top: 0;
+        top: 0 !important;
+        bottom: 0 !important;
         z-index: 9999 !important;
         transition: left 0.3s ease !important;
-        height: 100vh;
-        height: 100dvh;
-        width: 220px;
-        transform: translateZ(0); /* Force GPU acceleration */
+        height: 100vh !important;
+        height: 100dvh !important;
+        width: 220px !important;
+        max-width: 220px !important;
+        transform: translateZ(0) !important; /* Force GPU acceleration */
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
       }
 
       .sidebar.open {
         left: 0 !important;
+        transform: translateX(0) !important;
       }
 
       .chat-main {
