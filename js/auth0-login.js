@@ -499,20 +499,21 @@ class Auth0LoginModal {
   }
 
   showSuccess(message) {
-    // Show success notification
+    // Show success notification with Selira branding
     const successDiv = document.createElement('div');
     successDiv.style.cssText = `
       position: fixed;
       top: 20px;
       right: 20px;
-      background: #10b981;
+      background: linear-gradient(135deg, #ce93d8 0%, #ec4899 100%);
       color: white;
       padding: 16px 24px;
-      border-radius: 8px;
+      border-radius: 12px;
       font-size: 14px;
       font-weight: 600;
       z-index: 10000;
       animation: slideIn 0.3s ease;
+      box-shadow: 0 4px 12px rgba(206, 147, 216, 0.3);
     `;
     successDiv.textContent = message;
     document.body.appendChild(successDiv);
@@ -535,7 +536,7 @@ class Auth0LoginModal {
     verificationDiv.innerHTML = `
       <strong>📧 Check your email!</strong><br>
       ${message}<br><br>
-      <small>After verifying, you can <a href="#" onclick="switchToLogin(event)" style="color: #6ee7b7; text-decoration: underline;">login here</a>.</small>
+      <small>After verifying, you can <a href="#" onclick="switchToLogin(event)" style="color: #e9d5ff; text-decoration: underline;">login here</a>.</small>
     `;
 
     const form = document.querySelector('.auth0-form');
@@ -1479,11 +1480,11 @@ const AUTH0_STYLES = `
 }
 
 .auth0-success {
-  background: rgba(16, 185, 129, 0.1);
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  background: rgba(206, 147, 216, 0.1);
+  border: 1px solid rgba(206, 147, 216, 0.3);
   border-radius: 8px;
   padding: 12px;
-  color: #6ee7b7;
+  color: #e9d5ff;
   font-size: 14px;
   text-align: center;
   margin-bottom: 16px;
