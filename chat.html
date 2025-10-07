@@ -685,32 +685,54 @@
     .unfiltered-toggle {
       display: flex;
       align-items: center;
-      gap: 4px;
-      padding: 6px 10px;
-      background: rgba(206, 147, 216, 0.1);
-      border: 1px solid rgba(206, 147, 216, 0.2);
-      border-radius: 6px;
+      gap: 6px;
       font-size: 10px;
-      color: var(--accent);
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
       user-select: none;
     }
 
-    .unfiltered-toggle:hover {
-      background: rgba(206, 147, 216, 0.2);
-      border-color: rgba(206, 147, 216, 0.4);
+    .toggle-switch {
+      position: relative;
+      width: 32px;
+      height: 18px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 9px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
-    .unfiltered-toggle.active {
+    .toggle-switch::before {
+      content: '';
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #fff;
+      top: 1px;
+      left: 1px;
+      transition: transform 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .unfiltered-toggle.active .toggle-switch {
       background: linear-gradient(135deg, #ce93d8 0%, #ec4899 100%);
       border-color: #ce93d8;
-      color: white;
     }
 
-    .unfiltered-toggle .toggle-icon {
-      font-size: 11px;
+    .unfiltered-toggle.active .toggle-switch::before {
+      transform: translateX(14px);
+    }
+
+    .toggle-label {
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.6);
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .unfiltered-toggle.active .toggle-label {
+      color: var(--accent);
+      font-weight: 600;
     }
 
     /* Character Search Modal */
@@ -1583,8 +1605,8 @@
             + Image Gen
           </button>
           <div class="unfiltered-toggle" id="unfilteredToggle" onclick="toggleUnfilteredMode()" title="Toggle Censorship Mode">
-            <span class="toggle-icon" id="toggleIcon">🔒</span>
-            <span id="toggleText">Censored</span>
+            <div class="toggle-switch"></div>
+            <span class="toggle-label" id="toggleText">Censored</span>
           </div>
           <div class="image-credits-display" id="imageCreditsDisplay" style="display: none;">
             <span class="credits-icon">💳</span>
@@ -1774,7 +1796,6 @@
     // ===== UNFILTERED MODE TOGGLE =====
     function toggleUnfilteredMode() {
       const toggle = document.getElementById('unfilteredToggle');
-      const icon = document.getElementById('toggleIcon');
       const text = document.getElementById('toggleText');
 
       // Get current state
@@ -1787,12 +1808,10 @@
       // Update UI
       if (newState) {
         toggle.classList.add('active');
-        icon.textContent = '🔓';
         text.textContent = 'Uncensored';
         console.log('🔓 Unfiltered mode ENABLED - using uncensored model');
       } else {
         toggle.classList.remove('active');
-        icon.textContent = '🔒';
         text.textContent = 'Censored';
         console.log('🔒 Unfiltered mode DISABLED - using standard model');
       }
@@ -1801,12 +1820,10 @@
     function loadUnfilteredToggleState() {
       const isUnfiltered = localStorage.getItem('unfilteredMode') === 'true';
       const toggle = document.getElementById('unfilteredToggle');
-      const icon = document.getElementById('toggleIcon');
       const text = document.getElementById('toggleText');
 
       if (isUnfiltered) {
         toggle.classList.add('active');
-        icon.textContent = '🔓';
         text.textContent = 'Uncensored';
       }
     }
