@@ -1137,7 +1137,7 @@
         display: none;
       }
 
-      .sidebar-overlay.show {
+      .sidebar-overlay.open {
         display: block;
       }
     }
@@ -1574,6 +1574,9 @@
         </div>
       </div>
     </aside>
+
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <!-- Main Chat Area -->
     <main class="chat-main">
@@ -2841,81 +2844,31 @@
       }
     }
 
-    // Make toggleSidebar available globally for onclick handler
-    window.toggleSidebar = function() {
-      console.log('🍔 toggleSidebar called!');
+    // Simple toggle sidebar - matches index.html pattern
+    function toggleSidebar() {
       const sidebar = document.getElementById('sidebar');
-      const overlay = document.querySelector('.sidebar-overlay');
-
-      console.log('🍔 Sidebar element:', sidebar);
-      console.log('🍔 Current classes:', sidebar?.className);
+      const overlay = document.getElementById('sidebarOverlay');
 
       sidebar.classList.toggle('open');
-      console.log('🍔 After toggle:', sidebar?.className);
-
-      // Create overlay if it doesn't exist
-      if (!overlay && sidebar.classList.contains('open')) {
-        const newOverlay = document.createElement('div');
-        newOverlay.className = 'sidebar-overlay show';
-        newOverlay.onclick = closeSidebar;
-        document.body.appendChild(newOverlay);
-        console.log('🍔 Overlay created');
-      } else if (overlay) {
-        overlay.classList.toggle('show', sidebar.classList.contains('open'));
-        if (!sidebar.classList.contains('open')) {
-          setTimeout(() => overlay.remove(), 300);
-        }
-      }
-    };
-
-    // Also add event listener as backup
-    document.addEventListener('DOMContentLoaded', function() {
-      const mobileBtn = document.querySelector('.mobile-menu-btn');
-      if (mobileBtn) {
-        console.log('🍔 Mobile button found, adding click listener');
-        mobileBtn.addEventListener('click', function(e) {
-          console.log('🍔 Button clicked via event listener!');
-          e.preventDefault();
-          e.stopPropagation();
-          window.toggleSidebar();
-        });
-      } else {
-        console.log('❌ Mobile button NOT found');
-      }
-    });
-
-    function closeSidebar() {
-      const sidebar = document.getElementById('sidebar');
-      const overlay = document.querySelector('.sidebar-overlay');
-      
-      sidebar.classList.remove('open');
-      if (overlay) {
-        overlay.classList.remove('show');
-        setTimeout(() => overlay.remove(), 300);
-      }
+      overlay.classList.toggle('open');
     }
 
-    // Close sidebar when clicking outside on mobile
-    document.addEventListener('click', function(e) {
-      const sidebar = document.getElementById('sidebar');
-      const mobileBtn = document.querySelector('.mobile-menu-btn');
-      
-      if (window.innerWidth <= 768 && 
-          !sidebar.contains(e.target) && 
-          !mobileBtn.contains(e.target) && 
-          sidebar.classList.contains('open')) {
-        closeSidebar();
-      }
+    // Make it globally available
+    window.toggleSidebar = toggleSidebar;
+
+    // Close sidebar when clicking overlay
+    document.getElementById('sidebarOverlay')?.addEventListener('click', function() {
+      toggleSidebar();
     });
 
-    // Close sidebar when clicking on any link inside it
+    // Close sidebar when clicking on any link/chat item inside it on mobile
     document.addEventListener('DOMContentLoaded', function() {
       const sidebar = document.getElementById('sidebar');
       if (sidebar) {
         sidebar.addEventListener('click', function(event) {
           // If clicked element is a link or chat item, close the sidebar on mobile
           if ((event.target.tagName === 'A' || event.target.closest('.chat-item')) && window.innerWidth <= 768) {
-            closeSidebar();
+            toggleSidebar();
           }
         });
       }
