@@ -5,8 +5,9 @@ name: Download Replicate Avatars
 
 on:
   schedule:
-    # Run every 4 hours (at 00:00, 04:00, 08:00, 12:00, 16:00, 20:00 UTC)
-    - cron: '0 */4 * * *'
+    # Run every 30 minutes (48 times per day)
+    # Fast response time but higher resource usage
+    - cron: '*/30 * * * *'
   workflow_dispatch: # Allow manual trigger
 
 permissions:
@@ -47,16 +48,20 @@ jobs:
           if git diff --staged --quiet; then
             echo "No new avatars to commit"
             echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "avatar_count=0" >> $GITHUB_OUTPUT
           else
-            git commit -m "Auto-download Replicate avatars"
+            AVATAR_COUNT=$(git diff --staged --name-only | grep -c "avatars/" || echo 0)
+            echo "avatar_count=$AVATAR_COUNT" >> $GITHUB_OUTPUT
+            git commit -m "Auto-download Replicate avatars ($AVATAR_COUNT new)"
             git push
             echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "✅ Committed $AVATAR_COUNT new avatars"
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Trigger Netlify Deploy
-        if: steps.commit.outputs.has_changes == 'true'
+        if: steps.commit.outputs.has_changes == 'true' && steps.commit.outputs.avatar_count >= '3'
         run: |
           curl -X POST -d '{}' ${{ secrets.NETLIFY_BUILD_HOOK_SELIRA }}
-          echo "✅ Netlify deploy triggered!"
+          echo "✅ Netlify deploy triggered for ${{ steps.commit.outputs.avatar_count }} avatars!"
