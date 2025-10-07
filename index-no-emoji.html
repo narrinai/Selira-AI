@@ -459,58 +459,35 @@
 
     .tag-pill,
     .dropdown-btn {
-      padding: 6px 14px;
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      font-size: 13px;
+      padding: 10px 20px;
+      background: var(--accent);
+      border: none;
+      border-radius: 50px;
+      font-size: 14px;
       font-weight: 500;
-      color: var(--text-secondary);
+      color: white;
       cursor: pointer;
       transition: all 0.2s ease;
       text-decoration: none;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
     }
 
     .tag-pill:hover,
     .dropdown-btn:hover {
-      background: var(--bg-tertiary);
-      color: var(--text-primary);
-      border-color: var(--accent);
+      background: var(--accent-hover);
+      color: white;
     }
 
     .tag-pill.active {
       background: var(--accent);
       color: white;
-      border-color: var(--accent);
     }
 
     .dropdown-arrow {
-      font-size: 9px;
-      color: var(--text-secondary);
-    }
-
-    /* Style filter button uses same design as tag pills */
-    .style-filter-btn {
-      background: var(--bg-secondary) !important;
-      color: var(--text-secondary) !important;
-      border: 1px solid var(--border) !important;
-      font-size: 13px !important;
-      padding: 6px 14px !important;
-      border-radius: 20px !important;
-    }
-
-    .style-filter-btn:hover {
-      background: var(--bg-tertiary) !important;
-      color: var(--text-primary) !important;
-      border-color: var(--accent) !important;
-    }
-
-    .style-filter-btn .dropdown-arrow {
-      color: var(--text-secondary) !important;
-      font-size: 9px !important;
+      font-size: 10px;
+      color: white;
     }
 
     .tag-pill.category {
