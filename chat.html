@@ -2157,14 +2157,13 @@
         `;
         suggestionContainer.appendChild(upgradeNotice);
       } else {
-        // Show suggestions with plan info
+        // Show suggestions with remaining images info (without plan badge)
         const planInfo = document.createElement('div');
         planInfo.className = 'image-plan-info';
         const usingCredits = permissions.usingCredits || permissions.imageCreditsRemaining > 0;
         const timeText = (permissions.plan === 'Free' && !usingCredits) ? '' : (usingCredits ? '' : ' this hour');
         const creditsText = usingCredits ? ' credits' : '';
         planInfo.innerHTML = `
-          <span class="plan-badge">${permissions.plan} Plan</span>
           <span class="plan-remaining">${permissions.remaining || 0}${creditsText} images left${timeText}</span>
         `;
         suggestionContainer.appendChild(planInfo);
