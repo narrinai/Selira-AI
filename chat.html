@@ -3994,8 +3994,8 @@
         highlightCorrectChatItem(character.slug);
 
         // Refresh sidebar after character loads
-        displayCompanionChats();
-        
+        updateActiveChatsSidebar();
+
         // Load chat history for this character
         loadChatHistoryFromStorage(character.slug);
         
