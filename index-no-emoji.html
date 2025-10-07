@@ -492,9 +492,9 @@
       color: var(--text-secondary);
     }
 
-    /* Pink/Purple style for style filter button */
+    /* Purple style for style filter button */
     .style-filter-btn {
-      background: linear-gradient(135deg, #e91e63, #9c27b0) !important;
+      background: var(--accent) !important;
       color: white !important;
       border: none !important;
       font-size: 13px !important;
@@ -503,7 +503,7 @@
     }
 
     .style-filter-btn:hover {
-      background: linear-gradient(135deg, #c2185b, #7b1fa2) !important;
+      background: var(--accent-hover) !important;
       color: white !important;
       border: none !important;
     }
@@ -4621,7 +4621,7 @@ Please be thorough and include important details from our conversations.`;
         await saveUsernameToAirtable(localStorage.getItem('user_uid'), newUsername, null);
         localStorage.setItem('user_username', newUsername);
         saveBtn.textContent = 'Saved!';
-        saveBtn.style.background = 'linear-gradient(135deg, #e91e63, #9c27b0)';
+        saveBtn.style.background = 'var(--success)';
         
         setTimeout(() => {
           saveBtn.textContent = 'Save';
@@ -4657,7 +4657,7 @@ Please be thorough and include important details from our conversations.`;
         await saveUsernameToAirtable(localStorage.getItem('user_uid'), null, newDisplayName);
         localStorage.setItem('user_display_name', newDisplayName);
         saveBtn.textContent = 'Saved!';
-        saveBtn.style.background = 'linear-gradient(135deg, #e91e63, #9c27b0)';
+        saveBtn.style.background = 'var(--success)';
         
         setTimeout(() => {
           saveBtn.textContent = 'Save';
