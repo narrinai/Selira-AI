@@ -460,43 +460,40 @@
 
     .tag-pill,
     .dropdown-btn {
-      padding: 10px 20px;
-      background: var(--accent);
-      border: none;
-      border-radius: 50px;
-      font-size: 14px;
+      padding: 6px 14px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 13px;
       font-weight: 500;
-      color: white;
+      color: var(--text-secondary);
       cursor: pointer;
       transition: all 0.2s ease;
       text-decoration: none;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
     }
 
     .tag-pill:hover,
     .dropdown-btn:hover {
-      background: var(--accent-hover);
-      color: white;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      border-color: var(--accent);
     }
 
-    .tag-pill.active {
+    .tag-pill.active,
+    .dropdown-btn.active {
       background: var(--accent);
       color: white;
+      border-color: var(--accent);
     }
 
     .dropdown-arrow {
-      font-size: 10px;
-      color: white;
+      font-size: 9px;
+      color: inherit;
     }
 
-    .tag-pill.category {
-      background: var(--accent);
-      color: white;
-      font-weight: 600;
-      border-color: var(--accent);
-    }
 
     /* Character Grid */
     .content-area {
@@ -1919,9 +1916,9 @@
       <section class="filter-section">
         <!-- Tag Pills Row - all on same line -->
         <div class="tag-filters" id="tagFilters">
-          <!-- Style dropdown FIRST - green styling -->
+          <!-- Style dropdown FIRST -->
           <div class="filter-dropdown">
-            <button class="dropdown-btn style-filter-btn" id="styleDropdownBtn" onclick="toggleDropdown('style')">
+            <button class="dropdown-btn style-filter-btn active" id="styleDropdownBtn" onclick="toggleDropdown('style')">
               <span>Realistic</span>
               <span class="dropdown-arrow">▼</span>
             </button>
