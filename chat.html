@@ -1022,11 +1022,17 @@
 
         .chat-sidebar-toggle {
           display: flex;
+          top: 76px; /* Below mobile-nav bar (60px height + 16px padding) */
         }
 
         /* Hide the mobile-nav hamburger menu on chat page */
         #mobileMenuBtn {
           display: none !important;
+        }
+
+        /* Add top padding to chat content to account for mobile-nav */
+        .chat-main {
+          padding-top: 60px;
         }
       }
 
