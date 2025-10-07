@@ -988,11 +988,12 @@
         font-size: 10px;
       }
 
-      .mobile-menu-btn {
+      /* Chat sidebar toggle button - replaces mobile-nav hamburger */
+      .chat-sidebar-toggle {
         position: fixed;
         left: 16px;
         top: 16px;
-        z-index: 1001;
+        z-index: 10001; /* Higher than mobile-nav (which is 1001) */
         background: rgba(26, 26, 26, 0.95);
         border: 1px solid var(--border);
         border-radius: 8px;
@@ -1008,10 +1009,15 @@
         justify-content: center;
       }
 
-      /* Show hamburger menu on mobile */
+      /* Show chat sidebar toggle on mobile */
       @media (max-width: 768px) {
-        .mobile-menu-btn {
+        .chat-sidebar-toggle {
           display: flex;
+        }
+
+        /* Hide the mobile-nav hamburger menu on chat page */
+        #mobileMenuBtn {
+          display: none !important;
         }
       }
 
@@ -1583,8 +1589,8 @@
 
     <!-- Main Chat Area -->
     <main class="chat-main">
-      <!-- Mobile Menu Button -->
-      <button class="mobile-menu-btn" onclick="toggleSidebar()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+      <!-- Chat Sidebar Toggle Button (replaces mobile-nav hamburger) -->
+      <button class="chat-sidebar-toggle" onclick="toggleSidebar()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
 
       <!-- Chat Header -->
       <header class="chat-header" id="chatHeader">
