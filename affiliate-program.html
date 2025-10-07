@@ -768,10 +768,10 @@
   <!-- End FirstPromoter Tracking Script -->
 
   <style>
-    @media (max-width: 768px) {
-      .pricing-section > div > div {
-        grid-template-columns: 1fr !important;
-      }
+    /* Remove current plan badge and featured styling for affiliate page */
+    .pricing-card .card-badge,
+    .pricing-card .current-plan-badge {
+      display: none !important;
     }
   </style>
 </head>
@@ -868,58 +868,56 @@
 
       <!-- Affiliate Program Section -->
       <section class="pricing-section">
-        <div style="max-width: 1100px; margin: 0 auto;">
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start;">
+        <div style="max-width: 700px; margin: 0 auto;">
 
-            <!-- Left: Commissions Card -->
-            <div class="pricing-card featured" style="text-align: left;">
-              <div class="plan-name" style="text-align: center; margin-bottom: 24px;">
-                Earn Generous Commissions
-              </div>
-
-              <ul class="plan-features" style="margin-bottom: 24px;">
-                <li class="feature-item" style="font-size: 15px;">
-                  <span class="feature-icon">💰</span>
-                  <span><strong>30% recurring commission</strong> on all subscription plans</span>
-                </li>
-                <li class="feature-item" style="font-size: 15px;">
-                  <span class="feature-icon">💎</span>
-                  <span><strong>30% commission</strong> for first charge on one-off image packs</span>
-                </li>
-                <li class="feature-item" style="font-size: 15px;">
-                  <span class="feature-icon">📊</span>
-                  <span>Real-time tracking and analytics dashboard</span>
-                </li>
-                <li class="feature-item" style="font-size: 15px;">
-                  <span class="feature-icon">💳</span>
-                  <span>Monthly payouts via your preferred method</span>
-                </li>
-                <li class="feature-item" style="font-size: 15px;">
-                  <span class="feature-icon">🎯</span>
-                  <span>Marketing materials and support provided</span>
-                </li>
-              </ul>
-
-              <a href="https://selira.firstpromoter.com" class="plan-button" target="_blank" rel="noopener">
-                Join Affiliate Program →
-              </a>
+          <!-- Commissions Card -->
+          <div class="pricing-card" style="text-align: left; padding: 24px;">
+            <div class="plan-name" style="text-align: center; margin-bottom: 20px; font-size: 22px;">
+              Earn Generous Commissions
             </div>
 
-            <!-- Right: How It Works Card -->
-            <div class="pricing-card" style="text-align: left;">
-              <div class="plan-name" style="text-align: center; margin-bottom: 24px;">
-                How It Works
-              </div>
+            <ul class="plan-features" style="margin-bottom: 20px;">
+              <li class="feature-item" style="font-size: 14px; margin-bottom: 10px;">
+                <span class="feature-icon">•</span>
+                <span><strong>30% recurring commission</strong> on all subscription plans</span>
+              </li>
+              <li class="feature-item" style="font-size: 14px; margin-bottom: 10px;">
+                <span class="feature-icon">•</span>
+                <span><strong>30% commission</strong> for first charge on one-off image packs</span>
+              </li>
+              <li class="feature-item" style="font-size: 14px; margin-bottom: 10px;">
+                <span class="feature-icon">•</span>
+                <span>Real-time tracking and analytics dashboard</span>
+              </li>
+              <li class="feature-item" style="font-size: 14px; margin-bottom: 10px;">
+                <span class="feature-icon">•</span>
+                <span>Monthly payouts via your preferred method</span>
+              </li>
+              <li class="feature-item" style="font-size: 14px; margin-bottom: 0;">
+                <span class="feature-icon">•</span>
+                <span>Marketing materials and support provided</span>
+              </li>
+            </ul>
 
-              <ol style="color: var(--text-secondary); font-size: 15px; line-height: 1.8; padding-left: 20px; margin: 0;">
-                <li style="margin-bottom: 12px;">Sign up for our affiliate program via FirstPromoter</li>
-                <li style="margin-bottom: 12px;">Get your unique referral link and marketing materials</li>
-                <li style="margin-bottom: 12px;">Share Selira AI with your audience</li>
-                <li>Earn 30% commission on every sale you generate</li>
-              </ol>
-            </div>
-
+            <a href="https://selira.firstpromoter.com" class="plan-button" target="_blank" rel="noopener" style="max-width: 300px; margin: 0 auto; display: block;">
+              Join Affiliate Program →
+            </a>
           </div>
+
+          <!-- How It Works -->
+          <div class="pricing-card" style="text-align: left; margin-top: 24px; padding: 24px;">
+            <div class="plan-name" style="text-align: center; margin-bottom: 20px; font-size: 22px;">
+              How It Works
+            </div>
+
+            <ol style="color: var(--text-secondary); font-size: 14px; line-height: 1.7; padding-left: 20px; margin: 0;">
+              <li style="margin-bottom: 10px;">Sign up for our affiliate program via FirstPromoter</li>
+              <li style="margin-bottom: 10px;">Get your unique referral link and marketing materials</li>
+              <li style="margin-bottom: 10px;">Share Selira AI with your audience</li>
+              <li>Earn 30% commission on every sale you generate</li>
+            </ol>
+          </div>
+
         </div>
       </section>
   </div>
