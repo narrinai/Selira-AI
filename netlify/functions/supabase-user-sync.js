@@ -1,8 +1,9 @@
 // Supabase User Sync to Airtable
 // Creates or updates user in Airtable Users table with SupabaseID
 
-const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN;
-const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
+// Use Selira Airtable base (not old Narrin base)
+const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA || process.env.AIRTABLE_TOKEN;
+const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA || process.env.AIRTABLE_BASE_ID;
 
 exports.handler = async (event) => {
   const headers = {
