@@ -457,10 +457,6 @@
       display: inline-block;
     }
 
-    /* Smaller emoji in tags */
-    .tag-pill .tag-emoji {
-      font-size: 12px;
-    }
 
     .tag-pill,
     .dropdown-btn {
@@ -497,31 +493,6 @@
       color: var(--text-secondary);
     }
 
-    /* Green style for style filter button */
-    .style-filter-btn {
-      background: var(--accent) !important !important;
-      color: white !important;
-      border-color: #10b981 !important;
-      font-size: 13px !important;
-      padding: 6px 14px !important;
-      border-radius: 20px !important;
-    }
-
-    .style-filter-btn.active {
-      background: var(--accent) !important;
-      color: white !important;
-    }
-
-    .style-filter-btn:hover {
-      background: #059669 !important;
-      color: white !important;
-      border-color: #059669 !important;
-    }
-
-    .style-filter-btn .dropdown-arrow {
-      color: white !important;
-      font-size: 9px !important;
-    }
 
     .tag-pill.category {
       background: var(--accent);
@@ -1951,9 +1922,9 @@
       <section class="filter-section">
         <!-- Tag Pills Row - all on same line -->
         <div class="tag-filters" id="tagFilters">
-          <!-- Style dropdown FIRST - green styling -->
+          <!-- Style dropdown FIRST -->
           <div class="filter-dropdown">
-            <button class="dropdown-btn style-filter-btn" id="styleDropdownBtn" onclick="toggleDropdown('style')">
+            <button class="dropdown-btn style-filter-btn active" id="styleDropdownBtn" onclick="toggleDropdown('style')">
               <span>Realistic</span>
               <span class="dropdown-arrow">▼</span>
             </button>
@@ -5242,8 +5213,7 @@ Please be thorough and include important details from our conversations.`;
       // Create tag pills with "All" button first
       const allButton = '<a href="#" class="tag-pill active" data-tag="all">All</a>';
       const tagPills = filteredTags.map(tag => {
-        const emoji = getTagEmoji(tag);
-        return `<a href="#" class="tag-pill" data-tag="${tag}">${emoji ? emoji + ' ' : ''}${tag}</a>`;
+        return `<a href="#" class="tag-pill" data-tag="${tag}">${tag}</a>`;
       }).join('');
 
       dynamicFilters.innerHTML = allButton + tagPills;
