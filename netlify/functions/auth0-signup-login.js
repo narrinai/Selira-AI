@@ -77,8 +77,34 @@ exports.handler = async (event) => {
       const signupData = await signupResponse.json();
       console.log('✅ Account created:', signupData);
 
-      // For signup, check if email verification is required
-      // If the user needs to verify email, we'll handle that in the token step
+      // CRITICAL: Sync user to Airtable immediately after signup
+      // This ensures user exists in Airtable even if email verification is required
+      if (signupData._id || signupData.Id) {
+        const auth0UserId = signupData._id || signupData.Id;
+        console.log('🔄 Syncing new user to Airtable:', auth0UserId);
+
+        try {
+          const syncResponse = await fetch(`https://${process.env.URL || 'https://selira.ai'}/.netlify/functions/selira-auth0-user-sync`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              auth0_id: auth0UserId,
+              email: email,
+              name: signupData.name || signupData.username || email.split('@')[0]
+            })
+          });
+
+          if (syncResponse.ok) {
+            const syncResult = await syncResponse.json();
+            console.log('✅ New user synced to Airtable:', syncResult);
+          } else {
+            console.error('⚠️ Airtable sync failed but continuing');
+          }
+        } catch (syncError) {
+          console.error('⚠️ Airtable sync error:', syncError);
+          // Don't block signup if sync fails
+        }
+      }
     }
 
     // Step 2: Get access token (for both signup and login)

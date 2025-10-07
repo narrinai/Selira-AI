@@ -422,6 +422,7 @@ class Auth0LoginModal {
       // Handle email verification requirement for signups
       if (data.requiresVerification) {
         console.log('📧 Email verification required');
+        // Note: User is already synced to Airtable by backend during signup
         this.setLoading(false);
         this.showVerificationMessage(data.message || 'Please check your email to verify your account.');
         return;
