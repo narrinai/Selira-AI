@@ -1582,9 +1582,9 @@
           <button class="request-image-btn" onclick="requestImage()" title="Get Image Suggestions">
             + Image Gen
           </button>
-          <div class="unfiltered-toggle" id="unfilteredToggle" onclick="toggleUnfilteredMode()" title="Toggle Unfiltered Mode">
+          <div class="unfiltered-toggle" id="unfilteredToggle" onclick="toggleUnfilteredMode()" title="Toggle Censorship Mode">
             <span class="toggle-icon" id="toggleIcon">🔒</span>
-            <span id="toggleText">Filtered</span>
+            <span id="toggleText">Censored</span>
           </div>
           <div class="image-credits-display" id="imageCreditsDisplay" style="display: none;">
             <span class="credits-icon">💳</span>
@@ -1788,12 +1788,12 @@
       if (newState) {
         toggle.classList.add('active');
         icon.textContent = '🔓';
-        text.textContent = 'Unfiltered';
+        text.textContent = 'Uncensored';
         console.log('🔓 Unfiltered mode ENABLED - using uncensored model');
       } else {
         toggle.classList.remove('active');
         icon.textContent = '🔒';
-        text.textContent = 'Filtered';
+        text.textContent = 'Censored';
         console.log('🔒 Unfiltered mode DISABLED - using standard model');
       }
     }
@@ -1807,7 +1807,7 @@
       if (isUnfiltered) {
         toggle.classList.add('active');
         icon.textContent = '🔓';
-        text.textContent = 'Unfiltered';
+        text.textContent = 'Uncensored';
       }
     }
 
