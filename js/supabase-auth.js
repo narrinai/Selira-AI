@@ -12,9 +12,15 @@ class SupabaseAuthModal {
 
   async init() {
     try {
-      console.log('🔄 Loading Supabase configuration for Selira AI...');
+      console.log('🔄 Initializing Supabase auth for Selira AI...');
 
-      // Get Supabase config from environment (loaded via script tag)
+      // Wait for Supabase SDK to load
+      if (typeof supabase === 'undefined') {
+        console.error('❌ Supabase SDK not loaded');
+        return;
+      }
+
+      // Get config
       if (!window.SUPABASE_CONFIG) {
         throw new Error('Supabase config not loaded');
       }
@@ -730,11 +736,397 @@ class SupabaseAuthModal {
   }
 }
 
+// ===== SUPABASE MODAL STYLES (SELIRA THEME) =====
+const SUPABASE_STYLES = `
+<style>
+.auth0-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.auth0-modal-overlay[style*="flex"] {
+  opacity: 1;
+}
+
+.auth0-modal-content {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  border: 1px solid #ce93d8;
+  border-radius: 20px;
+  padding: 24px;
+  width: 90%;
+  max-width: 380px;
+  max-height: 95vh;
+  overflow-y: auto;
+  position: relative;
+  transform: scale(0.9) translateY(20px);
+  transition: all 0.3s ease;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.auth0-modal-overlay[style*="flex"] .auth0-modal-content {
+  transform: scale(1) translateY(0);
+}
+
+.auth0-modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  color: #b3b3b3;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.auth0-modal-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.auth0-modal-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.auth0-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.logo-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-icon svg {
+  stroke: #ce93d8;
+}
+
+.auth0-logo h2 {
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+  font-family: 'Playfair Display', serif;
+}
+
+.auth0-subtitle {
+  color: #b3b3b3;
+  font-size: 14px;
+  margin: 0;
+  font-weight: 500;
+}
+
+.auth0-social-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.auth0-social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border: 1px solid #333333;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.auth0-social-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #ce93d8;
+  transform: translateY(-2px);
+}
+
+.social-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.auth0-google-btn:hover {
+  background: rgba(66, 133, 244, 0.1);
+  border-color: #4285f4;
+}
+
+.auth0-divider {
+  display: flex;
+  align-items: center;
+  margin: 12px 0;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.auth0-divider::before,
+.auth0-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #333333;
+}
+
+.auth0-divider span {
+  padding: 0 16px;
+}
+
+.auth0-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.auth0-input-group {
+  position: relative;
+}
+
+.auth0-input {
+  width: 100%;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid #333333;
+  border-radius: 10px;
+  color: #ffffff;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.auth0-input:focus {
+  outline: none;
+  border-color: #ce93d8;
+  box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.1);
+}
+
+.auth0-input::placeholder {
+  color: #b3b3b3;
+}
+
+.auth0-submit-btn {
+  background: #ce93d8;
+  border: none;
+  border-radius: 10px;
+  padding: 12px;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+}
+
+.auth0-submit-btn:hover:not(:disabled) {
+  background: #ba68c8;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(206, 147, 216, 0.3);
+}
+
+.auth0-submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.btn-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.auth0-terms {
+  font-size: 11px;
+  color: #b3b3b3;
+  text-align: center;
+  line-height: 1.4;
+  margin-top: 8px;
+}
+
+.auth0-terms a {
+  color: #ce93d8;
+  text-decoration: none;
+}
+
+.auth0-terms a:hover {
+  text-decoration: underline;
+}
+
+.auth0-switch-mode {
+  font-size: 13px;
+  color: #b3b3b3;
+  text-align: center;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #333333;
+  display: block !important;
+  visibility: visible !important;
+}
+
+.auth0-switch-link {
+  color: #ce93d8;
+  text-decoration: none;
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+.auth0-switch-link:hover {
+  text-decoration: underline;
+  color: #ba68c8;
+}
+
+.auth0-forgot-password {
+  text-align: right;
+  margin-top: -2px;
+  margin-bottom: 8px;
+}
+
+.auth0-forgot-link {
+  color: #ce93d8;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.auth0-forgot-link:hover {
+  text-decoration: underline;
+  color: #ba68c8;
+}
+
+.auth0-error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 8px;
+  padding: 12px;
+  color: #fca5a5;
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.auth0-success {
+  background: rgba(206, 147, 216, 0.1);
+  border: 1px solid rgba(206, 147, 216, 0.3);
+  border-radius: 8px;
+  padding: 12px;
+  color: #e9d5ff;
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 480px) {
+  .auth0-modal-content {
+    padding: 20px;
+    margin: 16px;
+    width: calc(100% - 32px);
+    max-height: 95vh;
+  }
+
+  .auth0-logo h2 {
+    font-size: 18px;
+  }
+
+  .auth0-social-btn {
+    padding: 10px 14px;
+    font-size: 12px;
+    gap: 8px;
+  }
+
+  .social-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .auth0-input {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .auth0-submit-btn {
+    padding: 10px;
+    font-size: 13px;
+    min-height: 40px;
+  }
+}
+
+@media (max-height: 700px) {
+  .auth0-modal-content {
+    padding: 16px;
+    max-height: 95vh;
+  }
+
+  .auth0-modal-header {
+    margin-bottom: 16px;
+  }
+
+  .auth0-social-buttons {
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+
+  .auth0-divider {
+    margin: 12px 0;
+  }
+}
+</style>
+`;
+
 // ===== INITIALIZE SUPABASE =====
 let seliraAuth = null;
 
-// Load Supabase config first, then initialize
-(async function() {
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', async function() {
+  console.log('🔄 DOM ready, initializing Supabase auth...');
+
+  // Inject Supabase styles
+  document.head.insertAdjacentHTML('beforeend', SUPABASE_STYLES);
+
   try {
     // Fetch Supabase config from Netlify function
     const response = await fetch('/.netlify/functions/supabase-config');
@@ -755,12 +1147,15 @@ let seliraAuth = null;
   } catch (error) {
     console.error('❌ Failed to load Supabase config:', error);
   }
-})();
+});
 
 // ===== GLOBAL AUTH FUNCTIONS FOR SELIRA =====
 window.openLoginModal = function(mode = 'login') {
+  console.log('🌍 openLoginModal called with mode:', mode);
   if (seliraAuth) {
     seliraAuth.openModal(mode);
+  } else {
+    console.error('❌ seliraAuth not initialized yet');
   }
 };
 
