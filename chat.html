@@ -2843,10 +2843,15 @@
 
     // Make toggleSidebar available globally for onclick handler
     window.toggleSidebar = function() {
+      console.log('🍔 toggleSidebar called!');
       const sidebar = document.getElementById('sidebar');
       const overlay = document.querySelector('.sidebar-overlay');
 
+      console.log('🍔 Sidebar element:', sidebar);
+      console.log('🍔 Current classes:', sidebar?.className);
+
       sidebar.classList.toggle('open');
+      console.log('🍔 After toggle:', sidebar?.className);
 
       // Create overlay if it doesn't exist
       if (!overlay && sidebar.classList.contains('open')) {
@@ -2854,6 +2859,7 @@
         newOverlay.className = 'sidebar-overlay show';
         newOverlay.onclick = closeSidebar;
         document.body.appendChild(newOverlay);
+        console.log('🍔 Overlay created');
       } else if (overlay) {
         overlay.classList.toggle('show', sidebar.classList.contains('open'));
         if (!sidebar.classList.contains('open')) {
@@ -2861,6 +2867,22 @@
         }
       }
     };
+
+    // Also add event listener as backup
+    document.addEventListener('DOMContentLoaded', function() {
+      const mobileBtn = document.querySelector('.mobile-menu-btn');
+      if (mobileBtn) {
+        console.log('🍔 Mobile button found, adding click listener');
+        mobileBtn.addEventListener('click', function(e) {
+          console.log('🍔 Button clicked via event listener!');
+          e.preventDefault();
+          e.stopPropagation();
+          window.toggleSidebar();
+        });
+      } else {
+        console.log('❌ Mobile button NOT found');
+      }
+    });
 
     function closeSidebar() {
       const sidebar = document.getElementById('sidebar');
