@@ -2811,7 +2811,7 @@
 
       if (tags.length > 0) {
         const tagButtons = tags.map(tag => {
-          ${tag}</button>`;
+          return `<button class="mobile-tag-btn" onclick="filterByTag('${tag}')">${tag}</button>`;
         }).join('');
         container.innerHTML = tagButtons;
       } else {
