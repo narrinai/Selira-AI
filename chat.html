@@ -872,8 +872,18 @@
       font-size: 12px;
     }
 
+    /* Hide mobile-nav on desktop for chat page */
+    #selira-mobile-nav {
+      display: none !important;
+    }
+
     /* Mobile Responsive */
     @media (max-width: 768px) {
+      /* Show mobile-nav on mobile */
+      #selira-mobile-nav {
+        display: block !important;
+      }
+
       body {
         overflow: hidden;
       }
@@ -881,23 +891,25 @@
       .app-container {
         height: 100vh;
         height: 100dvh; /* Use dynamic viewport height */
+        padding-top: 60px; /* Account for mobile-nav */
       }
 
       .sidebar {
         position: fixed !important;
         left: -220px !important;
-        top: 0 !important;
+        top: 60px !important; /* Below mobile-nav bar */
         bottom: 0 !important;
-        z-index: 9999 !important;
+        z-index: 10000 !important; /* Higher than mobile-nav (1000) */
         transition: left 0.3s ease !important;
-        height: 100vh !important;
-        height: 100dvh !important;
+        height: calc(100vh - 60px) !important;
+        height: calc(100dvh - 60px) !important;
         width: 220px !important;
         max-width: 220px !important;
         transform: translateZ(0) !important; /* Force GPU acceleration */
         display: flex !important;
         visibility: visible !important;
         opacity: 1 !important;
+        background: var(--bg-secondary) !important;
       }
 
       .sidebar.open {
@@ -1137,17 +1149,24 @@
       /* Sidebar overlay */
       .sidebar-overlay {
         position: fixed;
-        top: 0;
+        top: 60px; /* Below mobile-nav on mobile */
         left: 0;
         right: 0;
         bottom: 0;
         background: rgba(0, 0, 0, 0.5);
-        z-index: 9998;
+        z-index: 9999; /* Higher than mobile-nav, below sidebar */
         display: none;
       }
 
       .sidebar-overlay.open {
         display: block;
+      }
+
+      /* On desktop, overlay should cover full screen (no mobile-nav) */
+      @media (min-width: 769px) {
+        .sidebar-overlay {
+          top: 0;
+        }
       }
     }
 
