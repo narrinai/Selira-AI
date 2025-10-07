@@ -1,0 +1,54 @@
+# GitHub Action to download and fix expired Replicate URLs
+# Runs every 4 hours to ensure avatars are downloaded before they expire
+
+name: Download Replicate Avatars
+
+on:
+  schedule:
+    # Run every 4 hours (at 00:00, 04:00, 08:00, 12:00, 16:00, 20:00 UTC)
+    - cron: '0 */4 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  download-avatars:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: |
+          npm install node-fetch@2
+          npm install dotenv
+
+      - name: Create .env file
+        run: |
+          echo "AIRTABLE_TOKEN=${{ secrets.AIRTABLE_TOKEN }}" >> .env
+          echo "AIRTABLE_BASE_ID=${{ secrets.AIRTABLE_BASE_ID }}" >> .env
+          echo "REPLICATE_API_TOKEN=${{ secrets.REPLICATE_API_TOKEN }}" >> .env
+
+      - name: Download existing Replicate URLs
+        run: node download-replicate-avatars.js
+        continue-on-error: true
+
+      - name: Commit and push new avatars
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          git add avatars/
+          if git diff --staged --quiet; then
+            echo "No new avatars to commit"
+          else
+            git commit -m "Auto-download Replicate avatars [skip ci]"
+            git push
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
