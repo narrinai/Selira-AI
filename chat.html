@@ -1486,7 +1486,7 @@
   <script src="https://cdn.firstpromoter.com/fpr.js" async></script>
   <!-- End FirstPromoter Tracking Script -->
 </head>
-<body>
+<body class="chat-page">
   <!-- Avatar Modal -->
   <div class="avatar-modal" id="avatarModal">
     <div class="avatar-modal-content">
@@ -3661,6 +3661,12 @@
 
           // Then send the greeting message after a delay
           setTimeout(() => {
+            // Check if greeting was already added by loadChatFromStorage
+            if (greetingAddedFor.has(slug)) {
+              console.log('⏭️ Greeting already added by loadChatFromStorage, skipping');
+              return;
+            }
+
             let greetingMessage = currentCharacter.greeting;
 
             // If no greeting is set, generate one based on character traits
@@ -3671,6 +3677,7 @@
 
             if (greetingMessage) {
               addMessage(greetingMessage, 'ai');
+              greetingAddedFor.add(slug);
             }
           }, 200);
         }, 500);
