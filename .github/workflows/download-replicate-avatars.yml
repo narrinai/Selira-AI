@@ -43,15 +43,24 @@ jobs:
         continue-on-error: true
 
       - name: Commit and push new avatars
+        id: commit
         run: |
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
           git add avatars/
           if git diff --staged --quiet; then
             echo "No new avatars to commit"
+            echo "has_changes=false" >> $GITHUB_OUTPUT
           else
-            git commit -m "Auto-download Replicate avatars [skip ci]"
+            git commit -m "Auto-download Replicate avatars"
             git push
+            echo "has_changes=true" >> $GITHUB_OUTPUT
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Trigger Netlify Deploy
+        if: steps.commit.outputs.has_changes == 'true'
+        run: |
+          curl -X POST -d '{}' https://api.netlify.com/build_hooks/${{ secrets.NETLIFY_BUILD_HOOK }}
+          echo "✅ Netlify deploy triggered!"
