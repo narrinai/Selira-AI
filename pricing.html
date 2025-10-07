@@ -1272,15 +1272,14 @@
         }
       }
 
-      // Check if user is logged in
-      const isLoggedIn = localStorage.getItem('auth0_token') || localStorage.getItem('user_uid');
+      // Check if user is logged in (using Supabase auth)
+      const isLoggedIn = window.isUserAuthenticated ? window.isUserAuthenticated() : false;
 
       if (!isLoggedIn) {
         // User is not logged in - show registration popup
         if (typeof openLoginModal === 'function') {
           openLoginModal('signup');
         } else {
-          // Fallback if auth0-login.js is not loaded
           alert('Please sign up to choose a plan');
         }
         return;
@@ -1436,7 +1435,7 @@
           action: 'downgrade_plan',
           targetPlan: targetPlan,
           userEmail: user.email,
-          auth0Id: user.sub
+          auth0Id: user.id || user.sub // Supabase uses .id, Auth0 uses .sub
         };
 
         console.log('🔄 Sending downgrade request:', requestData);
@@ -1613,7 +1612,7 @@
         const requestData = {
           action: 'cancel_at_period_end',
           userEmail: user.email,
-          auth0Id: user.sub
+          auth0Id: user.id || user.sub // Supabase uses .id, Auth0 uses .sub
         };
 
         console.log('🔄 Sending downgrade request:', requestData);
@@ -1701,7 +1700,8 @@
 
         console.log('🔄 Loading current plan for user:', user.email);
 
-        const response = await fetch(`/.netlify/functions/selira-get-subscription-info?email=${encodeURIComponent(user.email)}&auth0_id=${encodeURIComponent(user.sub)}`);
+        const userId = user.id || user.sub; // Supabase uses .id, Auth0 uses .sub
+        const response = await fetch(`/.netlify/functions/selira-get-subscription-info?email=${encodeURIComponent(user.email)}&auth0_id=${encodeURIComponent(userId)}`);
         const data = await response.json();
 
         if (data.success && data.subscription) {
@@ -1894,7 +1894,7 @@
           body: JSON.stringify({
             action: 'reactivate',
             userEmail: user.email,
-            auth0Id: user.sub
+            auth0Id: user.id || user.sub // Supabase uses .id, Auth0 uses .sub
           })
         });
 
@@ -1955,8 +1955,8 @@
         }, `checkout_credits_${packageType}_${Date.now()}`);
       }
 
-      // Check if user is logged in
-      const isLoggedIn = localStorage.getItem('auth0_token') || localStorage.getItem('user_uid');
+      // Check if user is logged in (using Supabase auth)
+      const isLoggedIn = window.isUserAuthenticated ? window.isUserAuthenticated() : false;
 
       if (!isLoggedIn) {
         // User is not logged in - show registration popup

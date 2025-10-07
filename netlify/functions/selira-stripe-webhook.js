@@ -174,15 +174,15 @@ async function handleCheckoutCompleted(session) {
       }
     }
 
-    // If not found by email and we have userId, try by Auth0ID
+    // If not found by email and we have userId, try by SupabaseID or Auth0ID
     if (users.length === 0 && userId) {
-      console.log('🔄 Email search failed, trying Auth0ID:', userId);
+      console.log('🔄 Email search failed, trying SupabaseID or Auth0ID:', userId);
       users = await base('Users').select({
-        filterByFormula: `{Auth0ID} = '${userId}'`
+        filterByFormula: `OR({SupabaseID} = '${userId}', {Auth0ID} = '${userId}')`
       }).firstPage();
 
       if (users.length > 0) {
-        console.log('✅ Found user by Auth0ID:', userId);
+        console.log('✅ Found user by ID:', userId);
       }
     }
 

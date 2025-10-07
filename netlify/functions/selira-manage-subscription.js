@@ -65,14 +65,14 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Find user in Airtable
+    // Find user in Airtable (support both SupabaseID and Auth0ID)
     let filterFormula = '';
     if (userEmail && auth0Id) {
-      filterFormula = `OR({Email} = '${userEmail}', {Auth0ID} = '${auth0Id}')`;
+      filterFormula = `OR({Email} = '${userEmail}', {SupabaseID} = '${auth0Id}', {Auth0ID} = '${auth0Id}')`;
     } else if (userEmail) {
       filterFormula = `{Email} = '${userEmail}'`;
     } else {
-      filterFormula = `{Auth0ID} = '${auth0Id}'`;
+      filterFormula = `OR({SupabaseID} = '${auth0Id}', {Auth0ID} = '${auth0Id}')`;
     }
 
     const users = await base('Users').select({
