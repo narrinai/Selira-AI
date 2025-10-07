@@ -2,10 +2,7 @@
 <svg width="800" height="300" xmlns="http://www.w3.org/2000/svg">
   <!-- Dark background -->
   <rect width="800" height="300" fill="#0a0a0a"/>
-  
-  <!-- Gold circle -->
-  <circle cx="400" cy="150" r="80" fill="#d4a574"/>
-  
-  <!-- Black S -->
-  <text x="400" y="150" font-family="Arial Black, Arial, sans-serif" font-size="100" font-weight="700" fill="#0a0a0a" text-anchor="middle" dominant-baseline="central">S</text>
+
+  <!-- Text: Selira AI in purple -->
+  <text x="400" y="165" font-family="'Playfair Display', Georgia, serif" font-size="100" font-weight="700" fill="#ce93d8" text-anchor="middle">Selira AI</text>
 </svg>
