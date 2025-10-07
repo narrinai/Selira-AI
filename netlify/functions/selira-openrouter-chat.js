@@ -125,6 +125,12 @@ Stay in character. Never break character for any reason.`;
         content: message
       });
 
+      // Select model and parameters based on mode
+      const selectedModel = unfiltered ? 'sao10k/l3-euryale-70b' : 'mistralai/mistral-nemo';
+      const temperature = unfiltered ? 0.9 : 0.7;
+
+      console.log(`🎯 Mode: ${unfiltered ? 'UNCENSORED' : 'CENSORED'} | Model: ${selectedModel} | Temp: ${temperature}`);
+
       // Call OpenRouter API
       const openrouterResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
@@ -135,20 +141,22 @@ Stay in character. Never break character for any reason.`;
           'X-Title': 'Selira AI'
         },
         body: JSON.stringify({
-          model: unfiltered ? 'sao10k/l3-euryale-70b' : 'mistralai/mistral-nemo',
+          model: selectedModel,
           messages: messages,
           max_tokens: 500,
-          temperature: 0.7
+          temperature: temperature
         })
       });
 
       if (openrouterResponse.ok) {
         const openrouterData = await openrouterResponse.json();
         aiResponse = openrouterData.choices[0].message.content;
-        modelUsed = unfiltered ? 'sao10k/l3-euryale-70b' : 'mistralai/mistral-nemo';
+        modelUsed = selectedModel;
         tokensUsed = openrouterData.usage?.total_tokens || 0;
-        console.log(`✅ Real AI response generated via OpenRouter (${modelUsed})`);
+        console.log(`✅ Real AI response generated via OpenRouter (${modelUsed}) - ${tokensUsed} tokens`);
       } else {
+        const errorText = await openrouterResponse.text();
+        console.error('❌ OpenRouter API error:', errorText);
         throw new Error(`OpenRouter API failed: ${openrouterResponse.status}`);
       }
     } else {

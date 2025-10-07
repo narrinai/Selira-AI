@@ -2352,11 +2352,13 @@
         const chatHistory = getChatHistoryForContext(currentCharacter.slug);
         
         // Call OpenRouter chat API
-        console.log('🤖 Sending message to AI:', { 
-          character: currentCharacter.slug, 
+        const unfilteredMode = localStorage.getItem('unfilteredMode') === 'true';
+        console.log('🤖 Sending message to AI:', {
+          character: currentCharacter.slug,
           auth0_id: auth0_id,
           message: message.substring(0, 50) + '...',
-          history_length: chatHistory.length
+          history_length: chatHistory.length,
+          mode: unfilteredMode ? 'UNCENSORED 🔓' : 'CENSORED 🔒'
         });
         
         const response = await fetch('/.netlify/functions/selira-openrouter-chat', {
