@@ -1296,6 +1296,13 @@
       margin-right: 10px;
       font-size: 18px;
       color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .image-upgrade-feature-icon svg {
+      stroke: var(--accent);
     }
 
     .image-upgrade-buttons {
@@ -1381,6 +1388,13 @@
     .upgrade-notice-icon {
       font-size: 24px;
       flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .upgrade-notice-icon svg {
+      stroke: var(--accent);
     }
 
     .upgrade-notice-text {
@@ -1492,15 +1506,30 @@
 
       <div class="image-upgrade-features">
         <div class="image-upgrade-feature">
-          <div class="image-upgrade-feature-icon">💳</div>
+          <div class="image-upgrade-feature-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+              <line x1="1" y1="10" x2="23" y2="10"></line>
+            </svg>
+          </div>
           <div><strong>One-time purchase</strong> - Pay once, use forever</div>
         </div>
         <div class="image-upgrade-feature">
-          <div class="image-upgrade-feature-icon">🎯</div>
+          <div class="image-upgrade-feature-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <circle cx="12" cy="12" r="6"></circle>
+              <circle cx="12" cy="12" r="2"></circle>
+            </svg>
+          </div>
           <div>Custom poses, scenarios & styles</div>
         </div>
         <div class="image-upgrade-feature">
-          <div class="image-upgrade-feature-icon">⚡</div>
+          <div class="image-upgrade-feature-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+          </div>
           <div>From $0.08 per image (250 credits)</div>
         </div>
       </div>
@@ -2052,7 +2081,12 @@
         upgradeNotice.className = 'image-upgrade-notice';
         upgradeNotice.innerHTML = `
           <div class="upgrade-notice-content">
-            <span class="upgrade-notice-icon">🔒</span>
+            <span class="upgrade-notice-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+            </span>
             <div class="upgrade-notice-text">
               <div class="upgrade-notice-title">${permissions.plan === 'Guest' ? 'Login Required' : 'Upgrade Required'}</div>
               <div class="upgrade-notice-subtitle">${permissions.plan === 'Guest' ? 'Sign up to generate images' : 'Image generation requires Basic plan or higher'}</div>
