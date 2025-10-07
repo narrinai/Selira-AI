@@ -97,6 +97,12 @@ function addUpgradePopupCSS() {
     .benefit-icon {
       font-size: 1.125rem;
       filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .benefit-icon svg {
+      stroke: #ce93d8;
     }
     .upgrade-actions {
       display: flex;
@@ -246,19 +252,42 @@ function getUpgradeContent(usage, quota, type) {
   const benefitsContent = `
     <div class="upgrade-benefits">
       <div class="benefit-item">
-        <span class="benefit-icon">💬</span>
+        <span class="benefit-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+        </span>
         <span class="benefit-text">Unlimited Chat Messages</span>
       </div>
       <div class="benefit-item">
-        <span class="benefit-icon">🎙️</span>
+        <span class="benefit-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+            <line x1="12" y1="19" x2="12" y2="23"></line>
+            <line x1="8" y1="23" x2="16" y2="23"></line>
+          </svg>
+        </span>
         <span class="benefit-text">Voice Messages (Text-to-Speech)</span>
       </div>
       <div class="benefit-item">
-        <span class="benefit-icon">🎧</span>
+        <span class="benefit-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
+            <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path>
+          </svg>
+        </span>
         <span class="benefit-text">Voice Input (Speech-to-Text)</span>
       </div>
       <div class="benefit-item">
-        <span class="benefit-icon">🤝</span>
+        <span class="benefit-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+        </span>
         <span class="benefit-text">Unlimited Active Companions</span>
       </div>
     </div>
