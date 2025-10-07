@@ -61,14 +61,14 @@ exports.handler = async (event, context) => {
     // Get user profile to check their plan
     console.log('👤 Getting user profile for image limit check', { email, auth0_id });
 
-    // Try Email first
+    // Try Email first, then SupabaseID or Auth0ID
     let filterFormula = '';
     if (email) {
       filterFormula = `{Email} = '${email}'`;
       console.log('🔍 Trying lookup by Email:', email);
     } else if (auth0_id) {
-      filterFormula = `{Auth0ID} = '${auth0_id}'`;
-      console.log('🔍 Trying lookup by Auth0ID:', auth0_id);
+      filterFormula = `OR({SupabaseID} = '${auth0_id}', {Auth0ID} = '${auth0_id}')`;
+      console.log('🔍 Trying lookup by SupabaseID or Auth0ID:', auth0_id);
     }
 
     console.log('🔍 Filter formula:', filterFormula);

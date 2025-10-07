@@ -60,11 +60,11 @@ exports.handler = async (event, context) => {
     // Find the user by Auth0ID to get their Airtable record ID
     const getUserRecord = () => {
       return new Promise((resolve, reject) => {
-        // userId might be Auth0ID (auth0|xxx) or Airtable record ID (recXXX)
+        // userId might be SupabaseID (UUID), Auth0ID (auth0|xxx) or Airtable record ID (recXXX)
         const isAirtableRecordId = userId.startsWith('rec');
         const path = isAirtableRecordId
           ? `/v0/${AIRTABLE_BASE_ID}/Users/${userId}`
-          : `/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula={Auth0ID}="${userId}"&maxRecords=1`;
+          : `/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula=OR({SupabaseID}="${userId}",{Auth0ID}="${userId}")&maxRecords=1`;
 
         const options = {
           hostname: 'api.airtable.com',

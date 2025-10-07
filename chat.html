@@ -4069,7 +4069,7 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             email: user.email,
-            auth0_id: user.sub || user.auth0_id
+            auth0_id: user.id || user.sub || user.auth0_id // Supabase uses .id, Auth0 uses .sub
           })
         });
 
@@ -4332,7 +4332,7 @@
         // Get user info for rate limiting
         const user = window.getCurrentUser ? window.getCurrentUser() : null;
         const userEmail = user?.email;
-        const userAuth0Id = user?.sub || user?.auth0_id;
+        const userAuth0Id = user?.id || user?.sub || user?.auth0_id; // Supabase uses .id, Auth0 uses .sub
 
         const response = await fetch('/.netlify/functions/selira-generate-custom-image', {
           method: 'POST',
