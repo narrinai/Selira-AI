@@ -443,6 +443,17 @@ class Auth0LoginModal {
         console.log(`🔐 Token expiration set to ${Math.floor(extendedExpiration / (24*60*60))} days`);
       }
 
+      // Sync user to Airtable FIRST (before any UI updates)
+      // This is CRITICAL - must complete before page reload
+      console.log('🔄 Syncing user to Airtable...');
+      try {
+        await this.syncUserToAirtable(this.user);
+        console.log('✅ User synced to Airtable successfully');
+      } catch (error) {
+        console.error('⚠️ User sync failed but continuing:', error);
+        // Continue anyway - don't block user from logging in
+      }
+
       // Track registration event for Facebook Pixel
       if (isSignupMode) {
         localStorage.setItem('just_registered', 'true');
@@ -463,15 +474,9 @@ class Auth0LoginModal {
       // Show success message
       this.showSuccess(isSignupMode ? 'Account created successfully! 🎉' : 'Welcome back! 👋');
 
-      // Sync user to Airtable BEFORE reloading (blocking)
-      try {
-        await this.syncUserToAirtable(this.user);
-        console.log('✅ User synced to Airtable - reloading page');
-      } catch (error) {
-        console.error('⚠️ User sync failed but continuing:', error);
-      }
-
       // Reload page to ensure all auth state is properly set
+      // Sync has already completed above, safe to reload now
+      console.log('🔄 Reloading page in 500ms...');
       setTimeout(() => {
         window.location.reload();
       }, 500);

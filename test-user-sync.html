@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test User Sync - Selira AI Diagnostics</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0a0a0a;
+      color: #ffffff;
+      padding: 40px 20px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: #ce93d8;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: #888;
+      margin-bottom: 30px;
+    }
+
+    .section {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .section h2 {
+      color: #ec4899;
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+
+    button {
+      background: linear-gradient(135deg, #ce93d8 0%, #ec4899 100%);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: transform 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .log {
+      background: #0a0a0a;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 15px;
+      margin-top: 15px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .log-entry {
+      padding: 4px 0;
+      border-bottom: 1px solid #222;
+    }
+
+    .log-entry:last-child {
+      border-bottom: none;
+    }
+
+    .success { color: #4ade80; }
+    .error { color: #f87171; }
+    .warning { color: #fbbf24; }
+    .info { color: #60a5fa; }
+
+    .status {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-left: 10px;
+    }
+
+    .status.ok { background: #064e3b; color: #4ade80; }
+    .status.fail { background: #7f1d1d; color: #f87171; }
+    .status.pending { background: #78350f; color: #fbbf24; }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      background: #0a0a0a;
+      border: 1px solid #333;
+      border-radius: 6px;
+      color: white;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #ce93d8;
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: #888;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔍 User Sync Diagnostics</h1>
+    <p class="subtitle">Test Auth0 to Airtable user synchronization</p>
+
+    <!-- Current User Check -->
+    <div class="section">
+      <h2>1. Check Current User</h2>
+      <p style="color: #888; margin-bottom: 15px;">Check if you're logged in and synced to Airtable</p>
+      <button onclick="checkCurrentUser()">Check Current User</button>
+      <div id="currentUserLog" class="log" style="display: none;"></div>
+    </div>
+
+    <!-- Manual Sync Test -->
+    <div class="section">
+      <h2>2. Manual Sync Test</h2>
+      <p style="color: #888; margin-bottom: 15px;">Manually sync a user to Airtable (for testing or fixing missing users)</p>
+
+      <div class="input-group">
+        <label>Auth0 ID (e.g., google-oauth2|123456789 or auth0|abc123)</label>
+        <input type="text" id="auth0Id" placeholder="google-oauth2|117093701363665404068">
+      </div>
+
+      <div class="input-group">
+        <label>Email</label>
+        <input type="email" id="email" placeholder="user@example.com">
+      </div>
+
+      <div class="input-group">
+        <label>Name</label>
+        <input type="text" id="name" placeholder="John Doe">
+      </div>
+
+      <button onclick="manualSync()">Sync User to Airtable</button>
+      <div id="manualSyncLog" class="log" style="display: none;"></div>
+    </div>
+
+    <!-- Recent Logs -->
+    <div class="section">
+      <h2>3. View Netlify Function Logs</h2>
+      <p style="color: #888; margin-bottom: 15px;">To see detailed sync logs, run in terminal:</p>
+      <div class="log">
+        <div style="color: #ce93d8;">netlify functions:log selira-auth0-user-sync</div>
+      </div>
+      <p style="color: #888; margin-top: 10px; font-size: 13px;">Or check logs at: <a href="https://app.netlify.com" target="_blank" style="color: #ec4899;">Netlify Dashboard</a></p>
+    </div>
+  </div>
+
+  <script>
+    function addLog(containerId, message, type = 'info') {
+      const container = document.getElementById(containerId);
+      container.style.display = 'block';
+
+      const entry = document.createElement('div');
+      entry.className = `log-entry ${type}`;
+
+      const timestamp = new Date().toLocaleTimeString();
+      entry.textContent = `[${timestamp}] ${message}`;
+
+      container.appendChild(entry);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function clearLog(containerId) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+    }
+
+    async function checkCurrentUser() {
+      clearLog('currentUserLog');
+      addLog('currentUserLog', '🔍 Checking authentication state...', 'info');
+
+      try {
+        // Check localStorage tokens
+        const accessToken = localStorage.getItem('auth0_access_token');
+        const userEmail = localStorage.getItem('user_email');
+        const userUid = localStorage.getItem('user_uid');
+
+        if (!accessToken || !userEmail || !userUid) {
+          addLog('currentUserLog', '❌ Not logged in - no auth tokens found', 'error');
+          addLog('currentUserLog', '💡 Please login first to test sync', 'warning');
+          return;
+        }
+
+        addLog('currentUserLog', `✅ Found auth tokens for: ${userEmail}`, 'success');
+        addLog('currentUserLog', `🆔 Auth0 ID: ${userUid}`, 'info');
+
+        // Try to sync current user
+        addLog('currentUserLog', '🔄 Attempting to sync to Airtable...', 'info');
+
+        const response = await fetch('/.netlify/functions/selira-auth0-user-sync', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            auth0_id: userUid,
+            email: userEmail,
+            name: localStorage.getItem('user_name') || userEmail.split('@')[0]
+          })
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          if (result.action === 'created') {
+            addLog('currentUserLog', '✅ User created in Airtable!', 'success');
+            addLog('currentUserLog', `📝 User ID: ${result.user_id}`, 'info');
+          } else if (result.action === 'updated') {
+            addLog('currentUserLog', '✅ User already exists in Airtable (updated)', 'success');
+            addLog('currentUserLog', `📝 User ID: ${result.user_id}`, 'info');
+          }
+          addLog('currentUserLog', '🎉 Sync successful!', 'success');
+        } else {
+          addLog('currentUserLog', `❌ Sync failed: ${result.error}`, 'error');
+          if (result.details) {
+            addLog('currentUserLog', `📋 Details: ${JSON.stringify(result.details)}`, 'error');
+          }
+        }
+
+      } catch (error) {
+        addLog('currentUserLog', `❌ Error: ${error.message}`, 'error');
+      }
+    }
+
+    async function manualSync() {
+      clearLog('manualSyncLog');
+
+      const auth0Id = document.getElementById('auth0Id').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const name = document.getElementById('name').value.trim();
+
+      if (!auth0Id || !email || !name) {
+        addLog('manualSyncLog', '❌ Please fill in all fields', 'error');
+        return;
+      }
+
+      addLog('manualSyncLog', '🔄 Syncing user to Airtable...', 'info');
+      addLog('manualSyncLog', `📧 Email: ${email}`, 'info');
+      addLog('manualSyncLog', `🆔 Auth0 ID: ${auth0Id}`, 'info');
+
+      try {
+        const response = await fetch('/.netlify/functions/selira-auth0-user-sync', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            auth0_id: auth0Id,
+            email: email,
+            name: name
+          })
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          if (result.action === 'created') {
+            addLog('manualSyncLog', '✅ New user created in Airtable!', 'success');
+          } else if (result.action === 'updated') {
+            addLog('manualSyncLog', '✅ Existing user updated in Airtable', 'success');
+          }
+          addLog('manualSyncLog', `📝 Airtable User ID: ${result.user_id}`, 'success');
+          addLog('manualSyncLog', '🎉 Sync completed successfully!', 'success');
+
+          // Clear form
+          document.getElementById('auth0Id').value = '';
+          document.getElementById('email').value = '';
+          document.getElementById('name').value = '';
+        } else {
+          addLog('manualSyncLog', `❌ Sync failed: ${result.error}`, 'error');
+          if (result.details) {
+            addLog('manualSyncLog', `📋 Details: ${JSON.stringify(result.details)}`, 'error');
+          }
+        }
+
+      } catch (error) {
+        addLog('manualSyncLog', `❌ Error: ${error.message}`, 'error');
+      }
+    }
+  </script>
+</body>
+</html>
