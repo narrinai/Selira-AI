@@ -3223,8 +3223,8 @@
 
     // Switch to a companion from the sidebar
     async function switchToCompanion(slug) {
-      // Reset greeting flag when switching characters
-      greetingAddedFor.clear();
+      // Don't clear greeting flag - we want to track across character switches
+      // greetingAddedFor.clear();
 
       // Find character in loaded data
       let character = loadedCharacters.find(c => c.slug === slug);

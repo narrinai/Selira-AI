@@ -198,7 +198,7 @@ function addMobileNavStyles() {
       top: 0;
       left: 0;
       right: 0;
-      z-index: 1000;
+      z-index: 999998;
     }
     
     .mobile-nav-bar {
@@ -293,7 +293,7 @@ function addMobileNavStyles() {
       background: rgba(0, 0, 0, 0.8);
       backdrop-filter: blur(4px);
       display: none;
-      z-index: 1001;
+      z-index: 999999;
     }
     
     .mobile-menu-overlay.show {
@@ -410,7 +410,7 @@ function addMobileNavStyles() {
       bottom: 0;
       background: var(--bg-primary, #0a0a0a);
       display: none;
-      z-index: 1001;
+      z-index: 999999;
     }
     
     .mobile-search-overlay.show {
