@@ -65,44 +65,48 @@ exports.handler = async (event, context) => {
     const imageBuffer = await downloadImage(imageUrl);
     console.log(`✅ Downloaded ${imageBuffer.length} bytes`);
 
-    // Upload to Imgur (instant availability, no deploy needed)
-    console.log(`📦 Uploading to Imgur for instant availability...`);
+    // Upload to ImgBB (instant availability, free API key)
+    console.log(`📦 Uploading to ImgBB for instant availability...`);
 
-    const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID;
+    const IMGBB_API_KEY = process.env.IMGBB_API_KEY;
     let finalUrl = null;
 
-    if (IMGUR_CLIENT_ID) {
+    if (IMGBB_API_KEY) {
       try {
         const base64Image = imageBuffer.toString('base64');
 
-        const imgurResponse = await fetch('https://api.imgur.com/3/image', {
+        // ImgBB requires form data
+        const formData = new URLSearchParams();
+        formData.append('key', IMGBB_API_KEY);
+        formData.append('image', base64Image);
+        formData.append('name', filename);
+
+        const imgbbResponse = await fetch('https://api.imgbb.com/1/upload', {
           method: 'POST',
           headers: {
-            'Authorization': `Client-ID ${IMGUR_CLIENT_ID}`,
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded',
           },
-          body: JSON.stringify({
-            image: base64Image,
-            type: 'base64',
-            name: filename,
-            title: filename
-          })
+          body: formData
         });
 
-        if (imgurResponse.ok) {
-          const imgurData = await imgurResponse.json();
-          finalUrl = imgurData.data.link;
-          console.log('✅ Uploaded to Imgur successfully:', finalUrl);
+        if (imgbbResponse.ok) {
+          const imgbbData = await imgbbResponse.json();
+          if (imgbbData.success && imgbbData.data && imgbbData.data.url) {
+            finalUrl = imgbbData.data.url;
+            console.log('✅ Uploaded to ImgBB successfully:', finalUrl);
+          } else {
+            console.log('⚠️ ImgBB upload succeeded but no URL returned');
+          }
         } else {
-          const errorText = await imgurResponse.text();
-          console.log(`⚠️ Imgur upload failed: ${imgurResponse.status}`);
+          const errorText = await imgbbResponse.text();
+          console.log(`⚠️ ImgBB upload failed: ${imgbbResponse.status}`);
           console.log(`   Error: ${errorText.substring(0, 200)}`);
         }
-      } catch (imgurError) {
-        console.log('⚠️ Imgur upload failed:', imgurError.message);
+      } catch (imgbbError) {
+        console.log('⚠️ ImgBB upload failed:', imgbbError.message);
       }
     } else {
-      console.log('⚠️ IMGUR_CLIENT_ID not configured');
+      console.log('⚠️ IMGBB_API_KEY not configured');
     }
 
     // Fallback: also upload to GitHub for backup (async, non-blocking)
