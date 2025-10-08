@@ -106,6 +106,18 @@ exports.handler = async (event, context) => {
 
         if (githubResponse.ok) {
           console.log('✅ Uploaded to GitHub successfully');
+
+          // Trigger Netlify deploy to make avatar available immediately
+          const NETLIFY_BUILD_HOOK = process.env.NETLIFY_BUILD_HOOK;
+          if (NETLIFY_BUILD_HOOK) {
+            try {
+              console.log('🚀 Triggering Netlify deploy...');
+              await fetch(NETLIFY_BUILD_HOOK, { method: 'POST' });
+              console.log('✅ Netlify deploy triggered');
+            } catch (deployError) {
+              console.log('⚠️ Failed to trigger deploy (non-critical):', deployError.message);
+            }
+          }
         } else {
           const errorText = await githubResponse.text();
           console.log(`⚠️ GitHub upload failed: ${githubResponse.status}`);
