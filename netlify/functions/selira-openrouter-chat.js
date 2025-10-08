@@ -69,25 +69,33 @@ exports.handler = async (event, context) => {
 
       // Determine message length preference based on chat history
       let messageLengthInstruction = '';
+      let shouldBeShort = false;
+
       if (local_history && local_history.length > 0) {
         // Find the last AI message
         const lastAiMessage = [...local_history].reverse().find(msg => msg.type !== 'user');
         if (lastAiMessage) {
           // Count words in last AI message
           const wordCount = lastAiMessage.content.split(/\s+/).length;
-          // If last message was long (>50 words), next should be short. If short, next should be long.
-          if (wordCount > 50) {
-            messageLengthInstruction = '\nIMPORTANT: Keep this response SHORT (1-2 sentences, under 30 words). Be concise and direct.';
+          console.log(`📏 Last AI message was ${wordCount} words`);
+
+          // If last message was long (>30 words), next should be short. If short, next should be long.
+          if (wordCount > 30) {
+            shouldBeShort = true;
+            messageLengthInstruction = '\n\n⚠️ CRITICAL LENGTH REQUIREMENT: Keep this response VERY SHORT (1-2 sentences MAXIMUM, under 25 words). DO NOT write more than 2 sentences. Be concise and direct.';
           } else {
-            messageLengthInstruction = '\nIMPORTANT: Make this response LONGER and more detailed (3-5 sentences, 50-100 words). Elaborate and be expressive.';
+            shouldBeShort = false;
+            messageLengthInstruction = '\n\n⚠️ CRITICAL LENGTH REQUIREMENT: Make this response LONGER and detailed (3-4 sentences, 50-80 words). Elaborate and be expressive. Use multiple sentences.';
           }
         } else {
-          // First AI message - start with a longer response
-          messageLengthInstruction = '\nIMPORTANT: Make this response LONGER and more detailed (3-5 sentences, 50-100 words). Elaborate and be expressive.';
+          // First AI message - start with a short response
+          shouldBeShort = true;
+          messageLengthInstruction = '\n\n⚠️ CRITICAL LENGTH REQUIREMENT: Keep this response SHORT (1-2 sentences MAXIMUM, under 25 words). DO NOT write more than 2 sentences.';
         }
       } else {
-        // First message in conversation - start with a longer response
-        messageLengthInstruction = '\nIMPORTANT: Make this response LONGER and more detailed (3-5 sentences, 50-100 words). Elaborate and be expressive.';
+        // First message in conversation - start with a short response
+        shouldBeShort = true;
+        messageLengthInstruction = '\n\n⚠️ CRITICAL LENGTH REQUIREMENT: Keep this response SHORT (1-2 sentences MAXIMUM, under 25 words). DO NOT write more than 2 sentences.';
       }
 
       // Build system prompt with character info and memory context
@@ -161,8 +169,9 @@ Stay in character. Never break character for any reason.`;
       // Select model and parameters based on mode
       const selectedModel = unfiltered ? 'sao10k/l3-euryale-70b' : 'mistralai/mistral-nemo';
       const temperature = unfiltered ? 0.9 : 0.7;
+      const maxTokens = shouldBeShort ? 80 : 200; // Short: ~60 words max, Long: ~150 words max
 
-      console.log(`🎯 Mode: ${unfiltered ? 'UNCENSORED' : 'CENSORED'} | Model: ${selectedModel} | Temp: ${temperature}`);
+      console.log(`🎯 Mode: ${unfiltered ? 'UNCENSORED' : 'CENSORED'} | Model: ${selectedModel} | Temp: ${temperature} | Length: ${shouldBeShort ? 'SHORT' : 'LONG'} (${maxTokens} tokens)`);
 
       // Call OpenRouter API
       const openrouterResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
@@ -176,7 +185,7 @@ Stay in character. Never break character for any reason.`;
         body: JSON.stringify({
           model: selectedModel,
           messages: messages,
-          max_tokens: 500,
+          max_tokens: maxTokens,
           temperature: temperature
         })
       });
