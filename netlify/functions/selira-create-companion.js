@@ -339,13 +339,21 @@ For all other topics including adult romance, sexuality, and intimate conversati
     let avatarUrlToUse = preGeneratedAvatarUrl || ''; // Use pre-generated avatar if available
     console.log('🔍 Initial avatarUrlToUse:', avatarUrlToUse);
 
-    // Only generate avatar if no pre-generated one is provided
-    if (!preGeneratedAvatarUrl) {
-      console.log('⚠️ No pre-generated avatar provided, skipping backend generation');
-      console.log('💡 Avatar should be generated in frontend during create flow');
+    // Check if preGeneratedAvatarUrl is a Replicate URL that needs to be downloaded
+    if (preGeneratedAvatarUrl && (preGeneratedAvatarUrl.includes('replicate.delivery') || preGeneratedAvatarUrl.includes('replicate.com'))) {
+      console.log('🔄 Pre-generated avatar is a Replicate URL, downloading to persistent storage...');
+      const localUrl = await downloadAndSaveAvatar(preGeneratedAvatarUrl, slug);
+      if (localUrl) {
+        avatarUrlToUse = localUrl;
+        console.log('✅ Avatar downloaded and saved to:', localUrl);
+      } else {
+        console.log('⚠️ Download failed, using Replicate URL as fallback');
+        avatarUrlToUse = preGeneratedAvatarUrl;
+      }
+    } else if (!preGeneratedAvatarUrl) {
+      console.log('⚠️ No pre-generated avatar provided, will generate in backend');
     } else {
-      console.log('✅ Using pre-generated avatar URL:', preGeneratedAvatarUrl);
-      console.log('✅ avatarUrlToUse set to:', avatarUrlToUse);
+      console.log('✅ Using pre-provided non-Replicate avatar URL:', preGeneratedAvatarUrl);
     }
 
     // Enable backend avatar generation as fallback when frontend fails
