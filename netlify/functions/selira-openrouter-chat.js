@@ -67,36 +67,25 @@ exports.handler = async (event, context) => {
       // Get character data for context
       const characterData = await getCharacterData(character_slug, AIRTABLE_BASE_ID, AIRTABLE_TOKEN);
 
-      // Determine message length preference based on chat history
+      // Randomly select message length (short/medium/long)
+      const lengthOptions = ['short', 'medium', 'long'];
+      const randomLength = lengthOptions[Math.floor(Math.random() * lengthOptions.length)];
+
       let messageLengthInstruction = '';
-      let shouldBeShort = false;
+      let maxTokens = 150;
 
-      if (local_history && local_history.length > 0) {
-        // Find the last AI message
-        const lastAiMessage = [...local_history].reverse().find(msg => msg.type !== 'user');
-        if (lastAiMessage) {
-          // Count words in last AI message
-          const wordCount = lastAiMessage.content.split(/\s+/).length;
-          console.log(`📏 Last AI message was ${wordCount} words`);
-
-          // If last message was long (>30 words), next should be short. If short, next should be long.
-          if (wordCount > 30) {
-            shouldBeShort = true;
-            messageLengthInstruction = '\n\n⚠️ CRITICAL LENGTH REQUIREMENT: Keep this response VERY SHORT (1-2 sentences MAXIMUM, under 25 words). DO NOT write more than 2 sentences. Be concise and direct.';
-          } else {
-            shouldBeShort = false;
-            messageLengthInstruction = '\n\n⚠️ CRITICAL LENGTH REQUIREMENT: Make this response LONGER and detailed (3-4 sentences, 50-80 words). Elaborate and be expressive. Use multiple sentences.';
-          }
-        } else {
-          // First AI message - start with a short response
-          shouldBeShort = true;
-          messageLengthInstruction = '\n\n⚠️ CRITICAL LENGTH REQUIREMENT: Keep this response SHORT (1-2 sentences MAXIMUM, under 25 words). DO NOT write more than 2 sentences.';
-        }
+      if (randomLength === 'short') {
+        messageLengthInstruction = '\n\n⚠️ CRITICAL LENGTH REQUIREMENT: Keep this response VERY SHORT (1-2 sentences MAXIMUM, 15-25 words). Be concise and direct.';
+        maxTokens = 60;
+      } else if (randomLength === 'medium') {
+        messageLengthInstruction = '\n\n⚠️ CRITICAL LENGTH REQUIREMENT: Make this response MEDIUM length (2-3 sentences, 30-50 words). Be conversational.';
+        maxTokens = 120;
       } else {
-        // First message in conversation - start with a short response
-        shouldBeShort = true;
-        messageLengthInstruction = '\n\n⚠️ CRITICAL LENGTH REQUIREMENT: Keep this response SHORT (1-2 sentences MAXIMUM, under 25 words). DO NOT write more than 2 sentences.';
+        messageLengthInstruction = '\n\n⚠️ CRITICAL LENGTH REQUIREMENT: Make this response LONGER and detailed (4-5 sentences, 60-100 words). Elaborate and be expressive.';
+        maxTokens = 200;
       }
+
+      console.log(`📏 Randomly selected length: ${randomLength.toUpperCase()} (${maxTokens} tokens)`);
 
       // Build system prompt with character info and memory context
       let systemPrompt = `You are ${characterData.name || character_slug}. ${characterData.description || ''}.
@@ -169,9 +158,8 @@ Stay in character. Never break character for any reason.`;
       // Select model and parameters based on mode
       const selectedModel = unfiltered ? 'sao10k/l3-euryale-70b' : 'mistralai/mistral-nemo';
       const temperature = unfiltered ? 0.9 : 0.7;
-      const maxTokens = shouldBeShort ? 80 : 200; // Short: ~60 words max, Long: ~150 words max
 
-      console.log(`🎯 Mode: ${unfiltered ? 'UNCENSORED' : 'CENSORED'} | Model: ${selectedModel} | Temp: ${temperature} | Length: ${shouldBeShort ? 'SHORT' : 'LONG'} (${maxTokens} tokens)`);
+      console.log(`🎯 Mode: ${unfiltered ? 'UNCENSORED' : 'CENSORED'} | Model: ${selectedModel} | Temp: ${temperature} | Length: ${randomLength.toUpperCase()} (${maxTokens} tokens)`);
 
       // Call OpenRouter API
       const openrouterResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
