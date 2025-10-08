@@ -65,69 +65,65 @@ exports.handler = async (event, context) => {
     const imageBuffer = await downloadImage(imageUrl);
     console.log(`✅ Downloaded ${imageBuffer.length} bytes`);
 
-    // We don't need to save locally - just upload to GitHub directly
-    console.log(`📦 Image ready for GitHub upload`);
+    // Upload to Imgur (instant availability, no deploy needed)
+    console.log(`📦 Uploading to Imgur for instant availability...`);
 
-    // Generate local URL (will work after GitHub upload)
-    const localUrl = `https://selira.ai/avatars/${filename}`;
+    const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID;
+    let finalUrl = null;
 
-    // Upload to GitHub via API (persistent storage)
+    if (IMGUR_CLIENT_ID) {
+      try {
+        const base64Image = imageBuffer.toString('base64');
+
+        const imgurResponse = await fetch('https://api.imgur.com/3/image', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Client-ID ${IMGUR_CLIENT_ID}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            image: base64Image,
+            type: 'base64',
+            name: filename,
+            title: filename
+          })
+        });
+
+        if (imgurResponse.ok) {
+          const imgurData = await imgurResponse.json();
+          finalUrl = imgurData.data.link;
+          console.log('✅ Uploaded to Imgur successfully:', finalUrl);
+        } else {
+          const errorText = await imgurResponse.text();
+          console.log(`⚠️ Imgur upload failed: ${imgurResponse.status}`);
+          console.log(`   Error: ${errorText.substring(0, 200)}`);
+        }
+      } catch (imgurError) {
+        console.log('⚠️ Imgur upload failed:', imgurError.message);
+      }
+    } else {
+      console.log('⚠️ IMGUR_CLIENT_ID not configured');
+    }
+
+    // Fallback: also upload to GitHub for backup (async, non-blocking)
     const GITHUB_TOKEN = process.env.GITHUB_TOKEN_SELIRA || process.env.GITHUB_TOKEN;
     const GITHUB_OWNER = process.env.GITHUB_OWNER || 'narrinai';
     const GITHUB_REPO = process.env.GITHUB_REPO || 'Selira-AI';
 
-    console.log('🔑 GitHub config check:', {
-      hasToken: !!GITHUB_TOKEN,
-      tokenPrefix: GITHUB_TOKEN ? GITHUB_TOKEN.substring(0, 4) + '...' : 'none',
-      owner: GITHUB_OWNER,
-      repo: GITHUB_REPO
-    });
-
     if (GITHUB_TOKEN) {
-      try {
-        console.log('📤 Uploading to GitHub via API...');
-
-        // Convert buffer to base64
-        const base64Image = imageBuffer.toString('base64');
-        const githubUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/avatars/${filename}`;
-
-        const githubResponse = await fetch(githubUrl, {
-          method: 'PUT',
-          headers: {
-            'Authorization': `token ${GITHUB_TOKEN}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            message: `Auto-save avatar: ${filename}`,
-            content: base64Image,
-            branch: 'main'
-          })
-        });
-
-        if (githubResponse.ok) {
-          console.log('✅ Uploaded to GitHub successfully');
-
-          // Trigger Netlify deploy to make avatar available immediately
-          const NETLIFY_BUILD_HOOK = process.env.NETLIFY_BUILD_HOOK;
-          if (NETLIFY_BUILD_HOOK) {
-            try {
-              console.log('🚀 Triggering Netlify deploy...');
-              await fetch(NETLIFY_BUILD_HOOK, { method: 'POST' });
-              console.log('✅ Netlify deploy triggered');
-            } catch (deployError) {
-              console.log('⚠️ Failed to trigger deploy (non-critical):', deployError.message);
-            }
-          }
-        } else {
-          const errorText = await githubResponse.text();
-          console.log(`⚠️ GitHub upload failed: ${githubResponse.status}`);
-          console.log(`   Error: ${errorText.substring(0, 200)}`);
-        }
-      } catch (githubError) {
-        console.log('⚠️ GitHub upload failed (non-critical):', githubError.message);
-      }
-    } else {
-      console.log('⚠️ GITHUB_TOKEN not configured - avatar not saved persistently');
+      // Upload to GitHub in background (don't wait for it)
+      fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/avatars/${filename}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `token ${GITHUB_TOKEN}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: `Backup avatar: ${filename}`,
+          content: imageBuffer.toString('base64'),
+          branch: 'main'
+        })
+      }).then(() => console.log('✅ Backup to GitHub complete')).catch(e => console.log('⚠️ GitHub backup failed'));
     }
 
     return {
@@ -135,7 +131,7 @@ exports.handler = async (event, context) => {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       body: JSON.stringify({
         success: true,
-        localUrl: localUrl,
+        localUrl: finalUrl || `https://selira.ai/avatars/${filename}`,
         filename: filename,
         size: imageBuffer.length
       })
