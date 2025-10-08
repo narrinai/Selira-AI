@@ -1865,13 +1865,13 @@
     }
 
     function loadUnfilteredToggleState() {
-      // Default to uncensored if not set
+      // Default to censored if not set
       const storedValue = localStorage.getItem('unfilteredMode');
-      const isUnfiltered = storedValue === null ? true : storedValue === 'true';
+      const isUnfiltered = storedValue === null ? false : storedValue === 'true';
 
       // Set default value if not exists
       if (storedValue === null) {
-        localStorage.setItem('unfilteredMode', 'true');
+        localStorage.setItem('unfilteredMode', 'false');
       }
 
       const toggle = document.getElementById('unfilteredToggle');

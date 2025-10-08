@@ -473,7 +473,7 @@ class Auth0LoginModal {
       this.setLoading(false);
 
       // Show success message
-      this.showSuccess(isSignupMode ? 'Account created successfully! 🎉' : 'Welcome back! 👋');
+      this.showSuccess(isSignupMode ? 'Account created successfully!' : 'Welcome back!');
 
       // Reload page to ensure all auth state is properly set
       // Sync has already completed above, safe to reload now
@@ -540,8 +540,7 @@ class Auth0LoginModal {
     const verificationDiv = document.createElement('div');
     verificationDiv.className = 'auth0-success';
     verificationDiv.innerHTML = `
-      <strong>📧 Check your email!</strong><br>
-      ${message}<br><br>
+      <strong>Check your email to verify your account.</strong><br>
       <small>After verifying, you can <a href="#" onclick="switchToLogin(event)" style="color: #e9d5ff; text-decoration: underline;">login here</a>.</small>
     `;
 
@@ -1079,7 +1078,7 @@ class Auth0LoginModal {
       console.log('✅ Password reset link sent successfully');
 
       // Show success message
-      this.showForgotPasswordSuccess('Check your email for the password reset link! 📧');
+      this.showForgotPasswordSuccess('Check your email for the password reset link.');
 
       // Don't auto-close the modal - let user close it manually
 
