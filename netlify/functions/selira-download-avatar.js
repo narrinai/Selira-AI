@@ -1,11 +1,11 @@
 /**
  * Download Avatar from Replicate URL
- * Saves avatar to /avatars/ folder via GitHub commit
+ * Saves avatar to /avatars/ folder via GitHub API
  */
 
 const https = require('https');
 const http = require('http');
-const { execSync } = require('child_process');
+const fetch = require('node-fetch');
 const fs = require('fs');
 const path = require('path');
 
@@ -89,32 +89,44 @@ exports.handler = async (event, context) => {
     // Generate local URL
     const localUrl = `https://selira.ai/avatars/${filename}`;
 
-    // Try to commit via git (if in local environment)
-    try {
-      // Check if we're in a git repository
-      const isGitRepo = fs.existsSync(path.join(process.cwd(), '.git'));
+    // Upload to GitHub via API (persistent storage)
+    const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+    const GITHUB_OWNER = process.env.GITHUB_OWNER || 'narrinai';
+    const GITHUB_REPO = process.env.GITHUB_REPO || 'Selira-AI';
 
-      if (isGitRepo) {
-        console.log('📦 Committing to git...');
+    if (GITHUB_TOKEN) {
+      try {
+        console.log('📤 Uploading to GitHub via API...');
 
-        // Add the file
-        execSync(`git add "${finalPath}"`, { stdio: 'inherit' });
+        // Convert buffer to base64
+        const base64Image = imageBuffer.toString('base64');
+        const githubUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/avatars/${filename}`;
 
-        // Commit
-        execSync(`git commit -m "Auto-save avatar: ${filename}"`, { stdio: 'inherit' });
+        const githubResponse = await fetch(githubUrl, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `token ${GITHUB_TOKEN}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            message: `Auto-save avatar: ${filename}`,
+            content: base64Image,
+            branch: 'main'
+          })
+        });
 
-        // Push (if configured)
-        try {
-          execSync('git push origin main', { stdio: 'inherit' });
-          console.log('✅ Pushed to GitHub');
-        } catch (pushError) {
-          console.log('⚠️ Git push skipped (not configured or failed)');
+        if (githubResponse.ok) {
+          console.log('✅ Uploaded to GitHub successfully');
+        } else {
+          const errorText = await githubResponse.text();
+          console.log(`⚠️ GitHub upload failed: ${githubResponse.status}`);
+          console.log(`   Error: ${errorText.substring(0, 200)}`);
         }
-      } else {
-        console.log('ℹ️ Not a git repository, skipping git commit');
+      } catch (githubError) {
+        console.log('⚠️ GitHub upload failed (non-critical):', githubError.message);
       }
-    } catch (gitError) {
-      console.log('⚠️ Git operations failed (non-critical):', gitError.message);
+    } else {
+      console.log('⚠️ GITHUB_TOKEN not configured - avatar not saved persistently');
     }
 
     return {
