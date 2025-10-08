@@ -68,7 +68,7 @@ exports.handler = async (event, context) => {
     // Upload to ImgBB (instant availability, free API key)
     console.log(`📦 Uploading to ImgBB for instant availability...`);
 
-    const IMGBB_API_KEY = process.env.IMGBB_API_KEY;
+    const IMGBB_API_KEY = process.env.IMGBB_API_KEY_SELIRA || process.env.IMGBB_API_KEY;
     let finalUrl = null;
 
     if (IMGBB_API_KEY) {
