@@ -1865,6 +1865,15 @@
     }
 
     function loadUnfilteredToggleState() {
+      // Migration: Reset to censored default if user hasn't explicitly set it since 2025-10-08
+      const settingsVersion = localStorage.getItem('unfilteredMode_version');
+      if (!settingsVersion || settingsVersion !== '2025-10-08') {
+        // Reset to new default (censored)
+        localStorage.setItem('unfilteredMode', 'false');
+        localStorage.setItem('unfilteredMode_version', '2025-10-08');
+        console.log('🔄 Migrated unfiltered mode setting to new default (censored)');
+      }
+
       // Default to censored if not set
       const storedValue = localStorage.getItem('unfilteredMode');
       const isUnfiltered = storedValue === null ? false : storedValue === 'true';
@@ -1880,6 +1889,11 @@
       if (isUnfiltered) {
         toggle.classList.add('active');
         text.textContent = 'Uncensored';
+        console.log('🔓 Unfiltered mode loaded as ENABLED');
+      } else {
+        toggle.classList.remove('active');
+        text.textContent = 'Censored';
+        console.log('🔒 Unfiltered mode loaded as DISABLED (censored)');
       }
     }
 
