@@ -28,10 +28,11 @@ const handler = async (event, context) => {
     let allRecords = [];
     let offset = null;
 
-    console.log('🔍 Fetching companions with Replicate URLs...');
+    console.log('🔍 Fetching companions with Replicate or ImgBB URLs...');
 
     do {
-      const filterFormula = encodeURIComponent("FIND('replicate.delivery', {Avatar_URL})");
+      // Find both Replicate AND ImgBB URLs to convert to local storage
+      const filterFormula = encodeURIComponent("OR(FIND('replicate.delivery', {Avatar_URL}), FIND('i.ibb.co', {Avatar_URL}), FIND('imgbb.com', {Avatar_URL}))");
       const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_ID}?filterByFormula=${filterFormula}${offset ? `&offset=${offset}` : ''}`;
 
       const response = await fetch(url, {
@@ -50,15 +51,15 @@ const handler = async (event, context) => {
       offset = data.offset;
     } while (offset);
 
-    console.log(`📊 Found ${allRecords.length} companions with Replicate URLs`);
+    console.log(`📊 Found ${allRecords.length} companions with external URLs (Replicate/ImgBB)`);
 
     if (allRecords.length === 0) {
-      console.log('✨ No Replicate URLs to convert!');
+      console.log('✨ No external URLs to convert!');
       return {
         statusCode: 200,
         body: JSON.stringify({
           success: true,
-          message: 'No Replicate URLs found'
+          message: 'No external URLs found'
         })
       };
     }
@@ -68,21 +69,21 @@ const handler = async (event, context) => {
     let successCount = 0;
     let failCount = 0;
 
-    console.log(`⚡ Processing ${maxToProcess} companions (download only, no regeneration)...\n`);
+    console.log(`⚡ Processing ${maxToProcess} companions (converting to local storage)...\n`);
 
     for (let i = 0; i < maxToProcess; i++) {
       const record = allRecords[i];
       const fields = record.fields;
       const name = fields.Name;
       const slug = fields.Slug || fields.Character_ID;
-      const replicateUrl = fields.Avatar_URL;
+      const externalUrl = fields.Avatar_URL;
 
       console.log(`[${i+1}/${maxToProcess}] ${name} (${slug})`);
 
       try {
-        // Download image from Replicate
-        console.log(`   📥 Downloading from Replicate...`);
-        const imageResponse = await fetch(replicateUrl);
+        // Download image from external URL (Replicate or ImgBB)
+        console.log(`   📥 Downloading from external source...`);
+        const imageResponse = await fetch(externalUrl);
 
         if (!imageResponse.ok) {
           console.log(`   ❌ Failed to download (${imageResponse.status})`);
@@ -93,7 +94,7 @@ const handler = async (event, context) => {
         // Get image data
         const imageBuffer = await imageResponse.arrayBuffer();
         const timestamp = Date.now();
-        const extension = replicateUrl.includes('.webp') ? 'webp' : 'png';
+        const extension = externalUrl.includes('.webp') ? 'webp' : 'png';
         const filename = `${slug}-avatar-${timestamp}.${extension}`;
 
         if (GITHUB_TOKEN) {
