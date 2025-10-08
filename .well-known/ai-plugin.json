@@ -1,0 +1,51 @@
+{
+  "schema_version": "v1",
+  "name_for_model": "selira_ai",
+  "name_for_human": "Selira AI",
+  "description_for_model": "Selira AI is an AI character chat platform with 1000+ characters. Users can chat with AI companions, create custom characters, and generate AI images. Platform includes both censored and uncensored modes. Free tier: 10 messages per character. Pro tier: unlimited messages for $9.99/month.",
+  "description_for_human": "AI character chat platform with 1000+ AI companions. Create custom characters, chat freely, generate images.",
+  "auth": {
+    "type": "oauth",
+    "authorization_url": "https://selira.ai",
+    "scope": "user:read user:write"
+  },
+  "api": {
+    "type": "openapi",
+    "url": "https://selira.ai/mcp.json",
+    "has_user_authentication": true
+  },
+  "logo_url": "https://selira.ai/favicon.ico",
+  "contact_email": "support@selira.ai",
+  "legal_info_url": "https://selira.ai/terms-and-conditions",
+  "privacy_policy_url": "https://selira.ai/privacy-policy",
+  "llms_txt_url": "https://selira.ai/llms.txt",
+  "crawl_instructions": {
+    "allowed": [
+      "/",
+      "/pricing",
+      "/free-nsfw-image-generator",
+      "/affiliate-program",
+      "/news/"
+    ],
+    "disallowed": [
+      "/chat",
+      "/profile",
+      "/chat-overview",
+      "/api/",
+      "/.netlify/"
+    ]
+  },
+  "features": {
+    "chat": true,
+    "character_creation": true,
+    "image_generation": true,
+    "nsfw_content": true,
+    "age_restriction": "18+"
+  },
+  "metadata": {
+    "categories": ["AI Chat", "Entertainment", "Character AI", "Image Generation"],
+    "tags": ["ai-girlfriend", "ai-boyfriend", "nsfw-ai", "character-ai", "ai-companion"],
+    "platform_type": "web",
+    "pricing": "freemium"
+  }
+}

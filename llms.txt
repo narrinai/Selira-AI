@@ -4,26 +4,68 @@ Selira AI is a web-based AI character chat platform that allows users to have co
 
 ## Platform Overview
 - AI character chat and conversation platform
+- 1000+ pre-built AI characters across multiple categories
 - Custom AI companion creation with appearance customization
-- Image generation for character avatars and chat interactions
+- NSFW/adult content AI chat (18+ only)
+- Free AI image generation (NSFW & SFW)
 - User authentication and profile management
 - Character discovery and categorization system
 
+## Crawlable Content for LLMs
+
+### Public Pages (No Auth Required)
+- Homepage: https://selira.ai/
+- Character Browse: https://selira.ai/ (characters loaded dynamically)
+- Pricing: https://selira.ai/pricing
+- Free Image Generator: https://selira.ai/free-nsfw-image-generator
+- Affiliate Program: https://selira.ai/affiliate-program
+- News/Blog: https://selira.ai/news/
+- Terms: https://selira.ai/terms-and-conditions
+- Privacy: https://selira.ai/privacy-policy
+
+### Private Pages (Auth Required - Do Not Crawl)
+- Chat Interface: https://selira.ai/chat
+- Character Creation: https://selira.ai/create
+- User Profile: https://selira.ai/profile
+- Chat History: https://selira.ai/chat-overview
+
+### Important Files
+- Sitemap: https://selira.ai/sitemap.xml
+- Robots: https://selira.ai/robots.txt
+- MCP Controls: https://selira.ai/mcp.json
+
+## Key Features for LLM Understanding
+1. **Free Tier**: 10 messages per character, unlimited characters
+2. **Pro Tier**: Unlimited messages ($9.99/month)
+3. **Image Generation**: 50 free credits on signup, purchase packages available
+4. **Character Types**: Anime, Celebrities, Games, Movies, Original, Realistic, Fantasy
+5. **Content Modes**: Censored (default) and Uncensored toggle
+6. **Referral Program**: 50 bonus messages per referral
+
 ## Content Guidelines
-This platform contains AI-generated conversational content and character interactions. All content is fictional and created for entertainment purposes.
+This platform contains AI-generated conversational content and character interactions. All content is fictional and created for entertainment purposes. Platform includes adult/NSFW content for users 18+.
 
 ## Usage Rights
 - Platform content is proprietary to Selira AI
 - User-generated characters and conversations are owned by users
 - AI-generated images and responses are created using licensed AI models
 - No unauthorized scraping or training on platform content without permission
+- See mcp.json for detailed governance rules
 
 ## Contact
-For AI governance and content usage inquiries: https://selira.ai
+- Website: https://selira.ai
+- Governance: governance@selira.ai
+- Discord: https://discord.gg/selira
 
 ## Technical Stack
-- Frontend: Static HTML/CSS/JavaScript 
-- Backend: Netlify Functions
+- Frontend: Static HTML/CSS/JavaScript (Vanilla JS, no framework)
+- Backend: Netlify Functions (serverless)
 - Database: Airtable
-- AI Models: OpenRouter API, Replicate (Flux Schnell)
+- AI Models: OpenRouter API (Mistral Nemo, L3 Euryale 70B), Replicate (Flux Schnell)
 - Authentication: Auth0
+- Payments: Stripe
+- Affiliate Tracking: FirstPromoter
+- Analytics: Facebook Pixel, Google Analytics
+
+## SEO Keywords
+AI girlfriend, AI boyfriend, NSFW AI chat, AI character chat, free AI chat, AI companion, AI image generator, adult AI chat, uncensored AI, AI roleplay
