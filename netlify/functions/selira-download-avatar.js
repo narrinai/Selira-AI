@@ -6,8 +6,6 @@
 const https = require('https');
 const http = require('http');
 const fetch = require('node-fetch');
-const fs = require('fs');
-const path = require('path');
 
 async function downloadImage(url) {
   return new Promise((resolve, reject) => {
@@ -67,26 +65,10 @@ exports.handler = async (event, context) => {
     const imageBuffer = await downloadImage(imageUrl);
     console.log(`✅ Downloaded ${imageBuffer.length} bytes`);
 
-    // Save to /tmp first (Netlify functions have /tmp writable)
-    const tmpPath = path.join('/tmp', filename);
-    fs.writeFileSync(tmpPath, imageBuffer);
-    console.log(`💾 Saved to temp: ${tmpPath}`);
+    // We don't need to save locally - just upload to GitHub directly
+    console.log(`📦 Image ready for GitHub upload`);
 
-    // Determine the avatars directory path
-    // In build context, we want to write to the site's avatars folder
-    const avatarsDir = path.join(process.cwd(), 'avatars');
-
-    // Ensure avatars directory exists
-    if (!fs.existsSync(avatarsDir)) {
-      fs.mkdirSync(avatarsDir, { recursive: true });
-    }
-
-    // Copy to avatars directory
-    const finalPath = path.join(avatarsDir, filename);
-    fs.copyFileSync(tmpPath, finalPath);
-    console.log(`✅ Saved to: ${finalPath}`);
-
-    // Generate local URL
+    // Generate local URL (will work after GitHub upload)
     const localUrl = `https://selira.ai/avatars/${filename}`;
 
     // Upload to GitHub via API (persistent storage)
