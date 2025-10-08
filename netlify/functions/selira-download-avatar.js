@@ -94,6 +94,13 @@ exports.handler = async (event, context) => {
     const GITHUB_OWNER = process.env.GITHUB_OWNER || 'narrinai';
     const GITHUB_REPO = process.env.GITHUB_REPO || 'Selira-AI';
 
+    console.log('🔑 GitHub config check:', {
+      hasToken: !!GITHUB_TOKEN,
+      tokenPrefix: GITHUB_TOKEN ? GITHUB_TOKEN.substring(0, 4) + '...' : 'none',
+      owner: GITHUB_OWNER,
+      repo: GITHUB_REPO
+    });
+
     if (GITHUB_TOKEN) {
       try {
         console.log('📤 Uploading to GitHub via API...');
