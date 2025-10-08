@@ -12,3 +12,24 @@ node_bundler = "esbuild"
 # Scheduled function to download Replicate URLs every 8 hours
 [functions."download-replicate-avatars-scheduled"]
 schedule = "0 */8 * * *"
+
+# Headers for LLM crawling files
+[[headers]]
+for = "/llms.txt"
+[headers.values]
+Content-Type = "text/plain; charset=utf-8"
+Cache-Control = "public, max-age=3600"
+
+[[headers]]
+for = "/mcp.json"
+[headers.values]
+Content-Type = "application/json; charset=utf-8"
+Cache-Control = "public, max-age=3600"
+Access-Control-Allow-Origin = "*"
+
+[[headers]]
+for = "/.well-known/*"
+[headers.values]
+Content-Type = "application/json; charset=utf-8"
+Cache-Control = "public, max-age=3600"
+Access-Control-Allow-Origin = "*"
