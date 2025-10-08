@@ -2,62 +2,168 @@
   "version": "1.0",
   "platform": "Selira AI",
   "domain": "selira.ai",
+  "llms_txt": "https://selira.ai/llms.txt",
+  "last_updated": "2025-10-08",
+
   "governance": {
     "llm_access": "restricted",
     "content_scraping": "prohibited",
     "model_training": "explicit_permission_required",
     "data_usage": "user_owned_with_platform_rights"
   },
+
+  "crawlable_endpoints": {
+    "public_pages": [
+      {
+        "url": "https://selira.ai/",
+        "type": "homepage",
+        "crawl_allowed": true,
+        "description": "Main landing page with character browsing"
+      },
+      {
+        "url": "https://selira.ai/pricing",
+        "type": "pricing",
+        "crawl_allowed": true,
+        "description": "Pricing plans and features"
+      },
+      {
+        "url": "https://selira.ai/free-nsfw-image-generator",
+        "type": "tool",
+        "crawl_allowed": true,
+        "description": "Free AI image generation tool"
+      },
+      {
+        "url": "https://selira.ai/affiliate-program",
+        "type": "marketing",
+        "crawl_allowed": true,
+        "description": "Affiliate program information"
+      },
+      {
+        "url": "https://selira.ai/news/",
+        "type": "blog",
+        "crawl_allowed": true,
+        "description": "News and blog articles"
+      }
+    ],
+    "restricted_pages": [
+      {
+        "url": "https://selira.ai/chat",
+        "type": "application",
+        "crawl_allowed": false,
+        "reason": "Requires authentication, contains private user data"
+      },
+      {
+        "url": "https://selira.ai/profile",
+        "type": "user_data",
+        "crawl_allowed": false,
+        "reason": "Private user information"
+      },
+      {
+        "url": "https://selira.ai/chat-overview",
+        "type": "user_data",
+        "crawl_allowed": false,
+        "reason": "Private chat history"
+      }
+    ],
+    "api_endpoints": {
+      "public": [],
+      "authenticated": [
+        "/.netlify/functions/characters",
+        "/.netlify/functions/selira-openrouter-chat",
+        "/.netlify/functions/selira-flux-image",
+        "/.netlify/functions/save-chat-message",
+        "/.netlify/functions/get-chat-history"
+      ],
+      "note": "All API endpoints require authentication and are not crawlable"
+    }
+  },
+
   "content_types": {
     "ai_conversations": {
       "description": "AI character chat interactions",
       "access_level": "user_private",
-      "training_permission": false
+      "training_permission": false,
+      "location": "Stored in Airtable, not exposed via API"
     },
     "user_profiles": {
-      "description": "User account and preference data", 
+      "description": "User account and preference data",
       "access_level": "private",
-      "training_permission": false
+      "training_permission": false,
+      "location": "Auth0 and Airtable"
     },
     "character_data": {
       "description": "AI character definitions and appearance data",
-      "access_level": "platform_proprietary", 
-      "training_permission": false
+      "access_level": "platform_proprietary",
+      "training_permission": false,
+      "total_count": "1000+",
+      "categories": ["Anime", "Celebrities", "Games", "Movies", "Original", "Realistic", "Fantasy"]
     },
     "generated_images": {
       "description": "AI-generated character avatars and chat images",
       "access_level": "user_owned",
-      "training_permission": false
+      "training_permission": false,
+      "model_used": "Flux Schnell via Replicate"
+    },
+    "marketing_content": {
+      "description": "Public marketing pages, blog posts, landing pages",
+      "access_level": "public",
+      "training_permission": true,
+      "note": "May be used for understanding Selira AI's features and offerings"
     }
   },
+
   "permitted_usage": [
-    "User personal conversations",
+    "User personal conversations with AI characters",
     "Character interaction for entertainment",
-    "Platform improvement and optimization"
+    "Platform improvement and optimization",
+    "Public marketing content for understanding the platform",
+    "SEO indexing of public pages"
   ],
+
   "prohibited_usage": [
-    "Unauthorized content scraping",
-    "Model training without explicit permission", 
-    "Commercial use of user conversations",
+    "Unauthorized content scraping or bulk data extraction",
+    "Model training on user conversations without explicit permission",
+    "Commercial use of user conversations or character definitions",
     "Character data extraction for competing platforms",
-    "Bulk conversation harvesting"
+    "Bulk conversation harvesting or chat history extraction",
+    "Automated account creation for data collection",
+    "Reverse engineering of AI prompts or system instructions"
   ],
+
   "contact": {
     "governance_email": "governance@selira.ai",
+    "support_email": "support@selira.ai",
     "platform_url": "https://selira.ai",
     "privacy_policy": "https://selira.ai/privacy-policy",
     "terms_of_service": "https://selira.ai/terms-and-conditions"
   },
+
   "technical_controls": {
     "rate_limiting": true,
     "authentication_required": true,
     "content_encryption": false,
-    "access_logging": true
+    "access_logging": true,
+    "api_key_required": false,
+    "cloudflare_protection": false,
+    "cors_enabled": true
   },
+
   "compliance": {
     "gdpr_compliant": true,
     "ccpa_compliant": true,
     "coppa_considerations": true,
-    "content_moderation": true
+    "age_restriction": "18+",
+    "content_moderation": true,
+    "adult_content_warning": true
+  },
+
+  "metadata": {
+    "character_count": "1000+",
+    "user_count": "Growing community",
+    "languages": ["English"],
+    "pricing_model": "Freemium (Free tier + Pro subscription)",
+    "free_tier_limits": "10 messages per character",
+    "pro_tier_price": "$9.99/month",
+    "payment_processor": "Stripe"
   }
 }
