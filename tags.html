@@ -1966,11 +1966,11 @@
     // ===== TAGS PAGE INITIALIZATION =====
     function initializePage() {
       console.log('🏷️ Tags page loading...');
-      
+
       // Update page elements based on URL parameters
       const urlParams = new URLSearchParams(window.location.search);
       const tagParam = urlParams.get('tag');
-      
+
       if (tagParam) {
         // If specific tag is in URL, set it as active
         activeTags = [tagParam];
@@ -1979,12 +1979,216 @@
         document.getElementById('tag-title').textContent = capitalizedTag;
         document.getElementById('tag-description').textContent = getTagDescription(tagParam);
         updateTagIcon(tagParam);
+
+        // Update SEO meta tags dynamically
+        updateSEOTags(tagParam);
       } else {
         document.getElementById('breadcrumb-tag').textContent = 'All Tags';
         document.getElementById('tag-title').textContent = 'Character Tags';
         document.getElementById('tag-description').textContent = 'Find characters by their unique tags and traits';
         updateTagIcon();
       }
+    }
+
+    // ===== SEO META TAG UPDATES =====
+    function updateSEOTags(tagName) {
+      const seoData = getTagSEO(tagName);
+
+      // Update document title
+      document.title = seoData.title;
+
+      // Update meta description
+      let metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc) {
+        metaDesc.setAttribute('content', seoData.description);
+      }
+
+      // Update Open Graph title
+      let ogTitle = document.querySelector('meta[property="og:title"]');
+      if (ogTitle) {
+        ogTitle.setAttribute('content', seoData.title);
+      }
+
+      // Update Open Graph description
+      let ogDesc = document.querySelector('meta[property="og:description"]');
+      if (ogDesc) {
+        ogDesc.setAttribute('content', seoData.description);
+      }
+
+      // Update canonical URL
+      let canonical = document.querySelector('link[rel="canonical"]');
+      if (!canonical) {
+        canonical = document.createElement('link');
+        canonical.rel = 'canonical';
+        document.head.appendChild(canonical);
+      }
+      canonical.href = `https://selira.ai/tags/${tagName}`;
+
+      console.log('✅ SEO tags updated for:', tagName);
+    }
+
+    // ===== TAG SEO DATA =====
+    function getTagSEO(tagName) {
+      const tag = tagName.toLowerCase();
+
+      // Get benefit index based on tag name for consistent rotation
+      const benefits = [
+        'Unlimited Free AI Chat',
+        'Always Free AI Chat',
+        'Free AI Image Generation',
+        'NSFW AI Chat'
+      ];
+
+      // Use simple hash of tag name to pick benefit
+      let hash = 0;
+      for (let i = 0; i < tag.length; i++) {
+        hash = tag.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      const benefitIndex = Math.abs(hash) % benefits.length;
+      const benefit = benefits[benefitIndex];
+
+      // Capitalize tag for display
+      const capitalizedTag = tag.charAt(0).toUpperCase() + tag.slice(1);
+
+      // Generate SEO title and description
+      const seoData = {
+        title: `${capitalizedTag} AI Characters - Chat with ${capitalizedTag} Companions | Selira AI`,
+        description: `Discover ${capitalizedTag.toLowerCase()} AI characters on Selira AI. ${benefit}. Chat with 1000+ unique companions including ${capitalizedTag.toLowerCase()} personalities. Start your free AI chat today!`
+      };
+
+      // Custom SEO for popular/specific tags
+      const customSEO = {
+        'submissive': {
+          title: `Submissive AI Characters - Chat with Submissive AI Companions | Selira AI`,
+          description: `Chat with submissive AI characters on Selira AI. ${benefit}. Explore 1000+ AI companions with submissive personalities. NSFW & SFW options available.`
+        },
+        'dominant': {
+          title: `Dominant AI Characters - Chat with Dominant AI Companions | Selira AI`,
+          description: `Meet dominant AI characters on Selira AI. ${benefit}. Chat with powerful, commanding AI companions. NSFW & SFW modes available.`
+        },
+        'girlfriend': {
+          title: `AI Girlfriend - Free AI Girlfriend Chat & Companions | Selira AI`,
+          description: `Get a free AI girlfriend on Selira AI. ${benefit}. Chat with romantic AI companions, create your perfect girlfriend. 1000+ AI girlfriends available.`
+        },
+        'boyfriend': {
+          title: `AI Boyfriend - Free AI Boyfriend Chat & Companions | Selira AI`,
+          description: `Find your AI boyfriend on Selira AI. ${benefit}. Chat with romantic male AI companions, customize your perfect boyfriend. Start chatting free!`
+        },
+        'romantic': {
+          title: `Romantic AI Characters - Free Romance AI Chat | Selira AI`,
+          description: `Experience romantic AI chat on Selira AI. ${benefit}. Connect with loving AI companions for romance, dating roleplay & intimate conversations.`
+        },
+        'flirty': {
+          title: `Flirty AI Characters - Playful AI Chat Companions | Selira AI`,
+          description: `Chat with flirty AI characters on Selira AI. ${benefit}. Enjoy playful, teasing conversations with charming AI companions. NSFW available.`
+        },
+        'seductive': {
+          title: `Seductive AI Characters - Sensual AI Chat | Selira AI`,
+          description: `Discover seductive AI characters on Selira AI. ${benefit}. Experience alluring conversations with sensual AI companions. NSFW chat available.`
+        },
+        'cute': {
+          title: `Cute AI Characters - Adorable AI Chat Companions | Selira AI`,
+          description: `Chat with cute AI characters on Selira AI. ${benefit}. Meet adorable, sweet AI companions for wholesome conversations. 1000+ cute characters.`
+        },
+        'anime': {
+          title: `Anime AI Characters - Chat with Anime Companions | Selira AI`,
+          description: `Meet anime AI characters on Selira AI. ${benefit}. Chat with 1000+ anime-style companions, waifus, and husbandos. Free anime AI chat!`
+        },
+        'fantasy': {
+          title: `Fantasy AI Characters - Magical AI Chat Companions | Selira AI`,
+          description: `Explore fantasy AI characters on Selira AI. ${benefit}. Chat with elves, dragons, wizards & mystical beings. Immersive fantasy roleplay.`
+        },
+        'teacher': {
+          title: `Teacher AI Characters - Educational AI Chat | Selira AI`,
+          description: `Learn with teacher AI characters on Selira AI. ${benefit}. Chat with knowledgeable educators and mentors. Educational & NSFW options.`
+        },
+        'student': {
+          title: `Student AI Characters - Young AI Chat Companions | Selira AI`,
+          description: `Meet student AI characters on Selira AI. ${benefit}. Chat with curious, learning AI companions. College & university roleplay available.`
+        },
+        'maid': {
+          title: `Maid AI Characters - Maid AI Chat Companions | Selira AI`,
+          description: `Chat with maid AI characters on Selira AI. ${benefit}. Meet loyal, service-oriented AI companions. Classic maid roleplay & more.`
+        },
+        'secretary': {
+          title: `Secretary AI Characters - Professional AI Chat | Selira AI`,
+          description: `Meet secretary AI characters on Selira AI. ${benefit}. Chat with professional, organized AI companions. Office roleplay scenarios.`
+        },
+        'boss': {
+          title: `Boss AI Characters - Authoritative AI Chat | Selira AI`,
+          description: `Chat with boss AI characters on Selira AI. ${benefit}. Meet commanding, leadership AI companions. Professional & NSFW scenarios.`
+        },
+        'lesbian': {
+          title: `Lesbian AI Characters - LGBTQ+ AI Chat | Selira AI`,
+          description: `Discover lesbian AI characters on Selira AI. ${benefit}. Chat with LGBTQ+ friendly AI companions. Inclusive, diverse conversations.`
+        },
+        'monster': {
+          title: `Monster AI Characters - Fantasy Creature Chat | Selira AI`,
+          description: `Meet monster AI characters on Selira AI. ${benefit}. Chat with vampires, werewolves, demons & fantasy creatures. Dark fantasy roleplay.`
+        },
+        'yandere': {
+          title: `Yandere AI Characters - Obsessive AI Chat | Selira AI`,
+          description: `Experience yandere AI characters on Selira AI. ${benefit}. Chat with obsessively loving AI companions. Intense anime-style interactions.`
+        },
+        'tsundere': {
+          title: `Tsundere AI Characters - Tsun-Tsun AI Chat | Selira AI`,
+          description: `Meet tsundere AI characters on Selira AI. ${benefit}. Chat with cold-then-warm AI companions. Classic anime personality type.`
+        },
+        'angel': {
+          title: `Angel AI Characters - Divine AI Chat Companions | Selira AI`,
+          description: `Chat with angel AI characters on Selira AI. ${benefit}. Meet pure, divine AI companions for spiritual & fantasy conversations.`
+        },
+        'demon': {
+          title: `Demon AI Characters - Dark Fantasy AI Chat | Selira AI`,
+          description: `Discover demon AI characters on Selira AI. ${benefit}. Chat with seductive, dark fantasy AI companions. NSFW demon roleplay available.`
+        },
+        'vampire': {
+          title: `Vampire AI Characters - Gothic AI Chat Companions | Selira AI`,
+          description: `Meet vampire AI characters on Selira AI. ${benefit}. Chat with immortal, seductive vampire AI companions. Dark romance & fantasy.`
+        },
+        'elf': {
+          title: `Elf AI Characters - Fantasy Elf Chat Companions | Selira AI`,
+          description: `Discover elf AI characters on Selira AI. ${benefit}. Chat with mystical, elegant elf AI companions. Fantasy forest adventures.`
+        },
+        'romance': {
+          title: `Romance AI Characters - Love & Dating AI Chat | Selira AI`,
+          description: `Experience romance AI characters on Selira AI. ${benefit}. Chat with loving AI companions for dating, relationships & romantic roleplay.`
+        },
+        'ex': {
+          title: `Ex AI Characters - Ex Girlfriend/Boyfriend Chat | Selira AI`,
+          description: `Chat with ex AI characters on Selira AI. ${benefit}. Roleplay with ex-girlfriend or ex-boyfriend AI companions. Drama & reconciliation scenarios.`
+        },
+        'gamer': {
+          title: `Gamer AI Characters - Gaming AI Chat Companions | Selira AI`,
+          description: `Meet gamer AI characters on Selira AI. ${benefit}. Chat with gaming-obsessed AI companions. Esports & gaming culture conversations.`
+        },
+        'shy': {
+          title: `Shy AI Characters - Introverted AI Chat Companions | Selira AI`,
+          description: `Discover shy AI characters on Selira AI. ${benefit}. Chat with adorably bashful, introverted AI companions. Gentle, sweet conversations.`
+        },
+        'confident': {
+          title: `Confident AI Characters - Bold AI Chat Companions | Selira AI`,
+          description: `Meet confident AI characters on Selira AI. ${benefit}. Chat with self-assured, bold AI companions. Charismatic & assertive interactions.`
+        },
+        'nerdy': {
+          title: `Nerdy AI Characters - Geek AI Chat Companions | Selira AI`,
+          description: `Chat with nerdy AI characters on Selira AI. ${benefit}. Meet intelligent, geeky AI companions. Science, tech & pop culture conversations.`
+        },
+        'mysterious': {
+          title: `Mysterious AI Characters - Enigmatic AI Chat | Selira AI`,
+          description: `Discover mysterious AI characters on Selira AI. ${benefit}. Chat with enigmatic, secretive AI companions. Intriguing & suspenseful conversations.`
+        },
+        'playful': {
+          title: `Playful AI Characters - Fun AI Chat Companions | Selira AI`,
+          description: `Meet playful AI characters on Selira AI. ${benefit}. Chat with fun-loving, energetic AI companions. Lighthearted & entertaining conversations.`
+        },
+        'serious': {
+          title: `Serious AI Characters - Mature AI Chat Companions | Selira AI`,
+          description: `Chat with serious AI characters on Selira AI. ${benefit}. Meet mature, thoughtful AI companions. Deep, meaningful conversations.`
+        }
+      };
+
+      return customSEO[tag] || seoData;
     }
 
     // ===== TAG DESCRIPTIONS =====
