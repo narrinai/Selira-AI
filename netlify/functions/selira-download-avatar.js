@@ -90,7 +90,7 @@ exports.handler = async (event, context) => {
     const localUrl = `https://selira.ai/avatars/${filename}`;
 
     // Upload to GitHub via API (persistent storage)
-    const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+    const GITHUB_TOKEN = process.env.GITHUB_TOKEN_SELIRA || process.env.GITHUB_TOKEN;
     const GITHUB_OWNER = process.env.GITHUB_OWNER || 'narrinai';
     const GITHUB_REPO = process.env.GITHUB_REPO || 'Selira-AI';
 
