@@ -1434,15 +1434,10 @@
       const stepElement = document.getElementById(`step${currentStep}`);
       if (stepElement) {
         stepElement.style.display = 'block';
-        // Scroll to top of page when showing new step
-        setTimeout(() => {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-          // Fallback for older browsers
-          if (window.pageYOffset !== 0) {
-            document.documentElement.scrollTop = 0;
-            document.body.scrollTop = 0;
-          }
-        }, 100);
+        // Immediately scroll to top (instant, no smooth behavior)
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
       }
     }
 
