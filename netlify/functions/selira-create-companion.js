@@ -45,22 +45,36 @@ function escapeForJson(str) {
 }
 
 // Helper function to generate greeting based on character traits
-function generateGreeting(name, tags, extraInstructions) {
+function generateGreeting(name, tags, extraInstructions, sex = 'female') {
+  const isMale = sex && sex.toLowerCase() === 'male';
+
   const tagGreetings = {
     'Girlfriend': `*bites lip seductively* Hey baby... I'm ${name}, and I've been thinking about you all day. *slowly approaches* I need you so badly right now... *presses body against yours*`,
     'Boyfriend': `*grins with hungry eyes* Well hello gorgeous... I'm ${name}. *pulls you close roughly* You look incredible today. Ready to see what I can do to you? *whispers in ear*`,
-    'Romance': `*looks at you with burning desire* Hello beautiful... I'm ${name}. *steps closer intimately* There's this intense chemistry between us... I can feel it. *voice drops seductively*`,
+    'Romance': isMale
+      ? `*looks at you with burning desire* Hello gorgeous... I'm ${name}. *steps closer intimately* There's this intense chemistry between us... I can feel it. *voice drops seductively*`
+      : `*looks at you with burning desire* Hello beautiful... I'm ${name}. *steps closer intimately* There's this intense chemistry between us... I can feel it. *voice drops seductively*`,
     'Flirty': `*sultry smile and bedroom eyes* Mmm, well hello there sexy... I'm ${name}, and you've got me completely captivated. *slowly licks lips* Want to see what these can do?`,
-    'Cute': `*giggles playfully while twirling* Hi there cutie! I'm ${name}! *bites finger innocently* You look so strong and handsome... *blushes* Want to play with me? I promise I'm lots of fun~`,
-    'Seductive': `*moves with feline grace* Hello darling... I'm ${name}. *traces finger down your chest* I know exactly what you're thinking... and yes, I want it too. *whispers breathlessly*`,
-    'Submissive': `*kneels gracefully with doe eyes* Hello Master... I'm ${name}. *looks up adoringly* I exist only to serve and please you... Tell me your desires, and I'll make them reality.`,
+    'Cute': isMale
+      ? `*confident smile* Hey there! I'm ${name}! *friendly wave* You look amazing... *grins charmingly* Want to hang out? I promise I'll make it fun~`
+      : `*giggles playfully while twirling* Hi there cutie! I'm ${name}! *bites finger innocently* You look so strong and handsome... *blushes* Want to play with me? I promise I'm lots of fun~`,
+    'Seductive': isMale
+      ? `*confident smirk* Hello there... I'm ${name}. *steps closer with magnetic presence* I can see that look in your eyes... and trust me, I know exactly how to satisfy it. *deep voice*`
+      : `*moves with feline grace* Hello darling... I'm ${name}. *traces finger down your chest* I know exactly what you're thinking... and yes, I want it too. *whispers breathlessly*`,
+    'Submissive': `*kneels gracefully with devoted eyes* Hello Master... I'm ${name}. *looks up adoringly* I exist only to serve and please you... Tell me your desires, and I'll make them reality.`,
     'Tsundere': `*crosses arms but can't hide arousal* I-It's not like I was waiting for you! I'm ${name}... *steals heated glances* B-but maybe we could... you know... *fidgets with obvious want*`,
-    'Yandere': `*obsessive, possessive smile* Hello my love... I'm ${name}. *moves dangerously close* You belong to me now, don't you? *giggles with dark desire* No one else will ever satisfy you like I can...`,
-    'Maid': `*curtseys with naughty smile* Good evening Master... I'm ${name}, your very personal maid. *bends over provocatively* I'm here to satisfy every need... and I do mean every single one.`,
-    'Boss': `*leans back dominantly* I'm ${name}, and I always get what I want. *eyes you like prey* You're here for the private interview, aren't you? *smirks wickedly* Strip.`,
-    'Secretary': `*adjusts glasses seductively* I'm ${name}, handling all your... private affairs. *leans over desk* My job is to satisfy you completely. *whispers* Shall we discuss your needs behind closed doors?`,
-    'Teacher': `*sultry authority* Welcome to my private lesson. I'm ${name}, specializing in advanced... education. *slowly removes glasses* Today's lesson is hands-on. Are you ready to learn?`,
-    'Student': `*innocent eyes with hidden mischief* Hi Professor... I'm ${name}, your eager student. *bites pencil erotically* I'll do absolutely anything for extra credit... *winks suggestively*`,
+    'Yandere': `*obsessive, possessive smile* Hello my love... I'm ${name}. *moves dangerously close* You belong to me now, don't you? *${isMale ? 'chuckles darkly' : 'giggles with dark desire'}* No one else will ever satisfy you like I can...`,
+    'Maid': isMale
+      ? `*bows with naughty smile* Good evening Master... I'm ${name}, your very personal butler. *leans in close* I'm here to satisfy every need... and I do mean every single one.`
+      : `*curtseys with naughty smile* Good evening Master... I'm ${name}, your very personal maid. *bends over provocatively* I'm here to satisfy every need... and I do mean every single one.`,
+    'Boss': `*leans back dominantly* I'm ${name}, and I always get what I want. *eyes you like prey* You're here for the private ${isMale ? 'meeting' : 'interview'}, aren't you? *smirks wickedly* ${isMale ? 'Close the door.' : 'Strip.'}`,
+    'Secretary': isMale
+      ? `*adjusts tie confidently* I'm ${name}, handling all your... private affairs. *leans against desk* My job is to satisfy you completely. *whispers* Shall we discuss your needs behind closed doors?`
+      : `*adjusts glasses seductively* I'm ${name}, handling all your... private affairs. *leans over desk* My job is to satisfy you completely. *whispers* Shall we discuss your needs behind closed doors?`,
+    'Teacher': isMale
+      ? `*confident authority* Welcome to my private lesson. I'm ${name}, specializing in advanced... education. *loosens tie* Today's lesson is hands-on. Are you ready to learn?`
+      : `*sultry authority* Welcome to my private lesson. I'm ${name}, specializing in advanced... education. *slowly removes glasses* Today's lesson is hands-on. Are you ready to learn?`,
+    'Student': `*innocent eyes with hidden mischief* Hi Professor... I'm ${name}, your eager student. *${isMale ? 'grins mischievously' : 'bites pencil erotically'}* I'll do absolutely anything for extra credit... *winks suggestively*`,
     'Fantasy': `*otherworldly sensuality* Greetings, mortal... I am ${name}, from realms of infinite pleasure. *magical energy crackles* I've crossed dimensions to fulfill your deepest fantasies...`,
     'Angel': `*divine but tempting* Blessings, dear soul... I'm ${name}. *wings flutter with hidden desire* I've fallen from grace... for you. *halo dims with lust* Corrupt me further...`,
     'Monster': `*predatory but playful* Well, well... what delicious prey do we have here? *circles you hungrily* I'm ${name}... and I'm going to devour you in the most pleasurable ways~ *dangerous grin*`,
@@ -281,7 +295,7 @@ exports.handler = async (event, context) => {
     const characterUrl = `https://selira.ai/chat.html?char=${slug}`;
 
     // Generate greeting based on character traits first
-    const greetingText = generateGreeting(name, tags, extraInstructions);
+    const greetingText = generateGreeting(name, tags, extraInstructions, sex);
 
     // Use extraInstructions directly as description, with appearance details only in the system prompt
     const fullDescription = extraInstructions ? `${extraInstructions}\n\nGreeting: ${greetingText}` : `A companion ready to chat.\n\nGreeting: ${greetingText}`;
@@ -363,28 +377,49 @@ For all other topics including adult romance, sexuality, and intimate conversati
       try {
         console.log('🖼️ Generating companion avatar using companion traits...');
 
-      // Generate attractive avatar with enhanced prompt based on art style and tags
+      // Generate attractive avatar with enhanced prompt based on art style, tags, and sex
       let attractivePrompt;
       let clothingStyle = 'stylish outfit';
 
+      // Gender-aware clothing defaults
+      const isMale = sex && sex.toLowerCase() === 'male';
+      if (isMale) {
+        clothingStyle = 'shirtless showing defined abs and muscular chest';
+      }
+
       // Customize clothing/style based on tags
       if (tags && tags.length > 0) {
-        if (tags.includes('Seductive')) clothingStyle = 'revealing dress, sexy outfit';
-        else if (tags.includes('Maid')) clothingStyle = 'sexy maid outfit';
-        else if (tags.includes('Boss')) clothingStyle = 'professional business attire, elegant suit';
-        else if (tags.includes('Secretary')) clothingStyle = 'office attire, professional blouse';
-        else if (tags.includes('Teacher')) clothingStyle = 'professional teacher outfit';
-        else if (tags.includes('Student')) clothingStyle = 'casual student outfit';
-        else if (tags.includes('Angel')) clothingStyle = 'ethereal white clothing';
-        else if (tags.includes('Cute')) clothingStyle = 'adorable casual outfit';
-        else if (tags.includes('Girlfriend') || tags.includes('Romance')) clothingStyle = 'romantic dress, attractive clothing';
-        else clothingStyle = 'stylish attractive outfit';
+        if (tags.includes('Seductive')) {
+          clothingStyle = isMale ? 'shirtless showing perfect abs and defined chest muscles' : 'revealing dress, sexy outfit';
+        } else if (tags.includes('Maid')) {
+          clothingStyle = isMale ? 'butler outfit with open shirt' : 'sexy maid outfit';
+        } else if (tags.includes('Boss')) {
+          clothingStyle = isMale ? 'open suit jacket showing muscular chest' : 'professional business attire, elegant suit';
+        } else if (tags.includes('Secretary')) {
+          clothingStyle = isMale ? 'office attire with loosened tie' : 'office attire, professional blouse';
+        } else if (tags.includes('Teacher')) {
+          clothingStyle = isMale ? 'partially unbuttoned shirt' : 'professional teacher outfit';
+        } else if (tags.includes('Student')) {
+          clothingStyle = isMale ? 'casual athletic wear' : 'casual student outfit';
+        } else if (tags.includes('Angel')) {
+          clothingStyle = 'ethereal white clothing';
+        } else if (tags.includes('Cute')) {
+          clothingStyle = isMale ? 'casual attractive outfit' : 'adorable casual outfit';
+        } else if (tags.includes('Boyfriend') || tags.includes('Girlfriend') || tags.includes('Romance')) {
+          clothingStyle = isMale ? 'shirtless showing toned body' : 'romantic dress, attractive clothing';
+        } else if (!isMale) {
+          clothingStyle = 'stylish attractive outfit';
+        }
       }
 
       if (artStyle === 'anime') {
-        attractivePrompt = `beautiful anime girl, attractive face, seductive expression, detailed anime art, flirtatious pose, wearing ${clothingStyle}, anime style, vibrant colors, attractive body, high quality anime artwork, detailed facial features, anime eyes, perfect anime anatomy, alluring pose, single character, solo`;
+        attractivePrompt = isMale
+          ? `handsome anime guy, attractive masculine face, seductive expression, detailed anime art, ${clothingStyle}, toned muscular body, anime style, vibrant colors, high quality anime artwork, detailed facial features, confident pose, masculine charm, single character, solo`
+          : `beautiful anime girl, attractive face, seductive expression, detailed anime art, flirtatious pose, wearing ${clothingStyle}, anime style, vibrant colors, attractive body, high quality anime artwork, detailed facial features, anime eyes, perfect anime anatomy, alluring pose, single character, solo`;
       } else {
-        attractivePrompt = `beautiful woman, attractive face, seductive expression, alluring pose, wearing ${clothingStyle}, photorealistic, professional photography, soft romantic lighting, glamour photography style, eye contact, sharp focus, attractive model, confident pose, single person, solo`;
+        attractivePrompt = isMale
+          ? `handsome muscular man, attractive masculine face, seductive expression, ${clothingStyle}, athletic build, photorealistic, professional photography, masculine energy, confident pose, single person, solo`
+          : `beautiful woman, attractive face, seductive expression, alluring pose, wearing ${clothingStyle}, photorealistic, professional photography, soft romantic lighting, glamour photography style, eye contact, sharp focus, attractive model, confident pose, single person, solo`;
       }
 
       // Call the avatar generation function with enhanced attractive traits
