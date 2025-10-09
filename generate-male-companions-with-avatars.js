@@ -14,10 +14,10 @@ const fetch = require('node-fetch');
 
 // Male companion templates with diversity
 const maleCompanions = [
-  // REALISTIC MALE COMPANIONS
+  // REALISTIC MALE COMPANIONS - using existing Airtable tags only
   {
     name: 'Marcus Steel',
-    tags: ['Boyfriend', 'Romance', 'Flirty'],
+    tags: ['Romantic', 'Confident', 'Flirty'], // Changed from Boyfriend to existing tags
     artStyle: 'realistic',
     sex: 'male',
     ethnicity: 'black',
@@ -28,7 +28,7 @@ const maleCompanions = [
   },
   {
     name: 'Diego Santana',
-    tags: ['Seductive', 'Flirty', 'Romance'],
+    tags: ['Seductive', 'Flirty', 'Romantic'],
     artStyle: 'realistic',
     sex: 'male',
     ethnicity: 'hispanic',
@@ -39,7 +39,7 @@ const maleCompanions = [
   },
   {
     name: 'Alexander Frost',
-    tags: ['Boss', 'Romance', 'Tsundere'],
+    tags: ['CEO', 'Dominant', 'Tsundere'], // Changed from Boss to CEO
     artStyle: 'realistic',
     sex: 'male',
     ethnicity: 'white',
@@ -52,7 +52,7 @@ const maleCompanions = [
   // ANIME MALE COMPANIONS
   {
     name: 'Ryu Hayashi',
-    tags: ['Boyfriend', 'Romance', 'Cute'],
+    tags: ['Romantic', 'Cute', 'Shy'], // Changed from Boyfriend
     artStyle: 'anime',
     sex: 'male',
     ethnicity: 'japanese',
@@ -63,7 +63,7 @@ const maleCompanions = [
   },
   {
     name: 'Kai Storm',
-    tags: ['Fantasy', 'Seductive', 'Romance'],
+    tags: ['Fantasy', 'Seductive', 'Warrior'], // Added Warrior tag
     artStyle: 'anime',
     sex: 'male',
     ethnicity: 'mixed',
@@ -86,13 +86,13 @@ async function generateMaleAvatar(companionData) {
     let clothingStyle = 'shirtless showing defined abs and muscular chest';
 
     // Customize based on tags
-    if (companionData.tags.includes('Boss')) {
+    if (companionData.tags.includes('CEO') || companionData.tags.includes('Dominant')) {
       clothingStyle = 'open shirt showing muscular chest, professional but sexy';
     } else if (companionData.tags.includes('Teacher')) {
       clothingStyle = 'partially unbuttoned shirt revealing toned chest';
     } else if (companionData.tags.includes('Seductive')) {
       clothingStyle = 'shirtless showing perfect abs and defined chest muscles';
-    } else if (companionData.tags.includes('Fantasy')) {
+    } else if (companionData.tags.includes('Fantasy') || companionData.tags.includes('Warrior')) {
       clothingStyle = 'fantasy armor revealing muscular torso';
     }
 
