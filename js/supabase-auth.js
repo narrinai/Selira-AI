@@ -1223,16 +1223,29 @@ window.openLoginModal = function(mode = 'login', event = null) {
   const overlay = document.getElementById('sidebarOverlay') || document.querySelector('.sidebar-overlay');
 
   console.log('📱 Sidebar element found:', !!sidebar, 'Overlay found:', !!overlay);
+  if (sidebar) {
+    console.log('📱 Sidebar has open class:', sidebar.classList.contains('open'));
+    console.log('📱 Sidebar classes:', sidebar.className);
+  }
+  if (overlay) {
+    console.log('📱 Overlay has open class:', overlay.classList.contains('open'));
+    console.log('📱 Overlay has show class:', overlay.classList.contains('show'));
+    console.log('📱 Overlay classes:', overlay.className);
+  }
 
   // Only manipulate sidebar if it's actually open (mobile only)
   if (sidebar && sidebar.classList.contains('open')) {
     console.log('📱 Closing mobile sidebar');
     sidebar.classList.remove('open');
+  } else if (sidebar) {
+    console.log('⚠️ Sidebar found but not open');
   }
 
   if (overlay && (overlay.classList.contains('open') || overlay.classList.contains('show'))) {
     console.log('📱 Hiding overlay');
     overlay.classList.remove('show', 'open');
+  } else if (overlay) {
+    console.log('⚠️ Overlay found but not open/show');
   }
 
   if (seliraAuth) {
