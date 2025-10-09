@@ -1582,11 +1582,20 @@
 
     // ===== NAME GENERATOR =====
     function generateCharacterName() {
-      const firstNames = [
+      const sex = characterCreationState.sex;
+
+      const femaleFirstNames = [
         'Zoe', 'Savannah', 'Avery', 'Luna', 'Aria', 'Maya', 'Sophia', 'Isabella', 'Mia', 'Emma',
         'Olivia', 'Ava', 'Charlotte', 'Amelia', 'Harper', 'Evelyn', 'Abigail', 'Emily', 'Scarlett', 'Madison',
         'Lily', 'Chloe', 'Victoria', 'Grace', 'Ella', 'Riley', 'Natalie', 'Hannah', 'Addison', 'Brooklyn',
         'Jade', 'Ruby', 'Aurora', 'Jasmine', 'Violet', 'Ivy', 'Rose', 'Hazel', 'Willow', 'Daisy'
+      ];
+
+      const maleFirstNames = [
+        'Liam', 'Noah', 'Oliver', 'Elijah', 'James', 'William', 'Benjamin', 'Lucas', 'Henry', 'Alexander',
+        'Mason', 'Michael', 'Ethan', 'Daniel', 'Jacob', 'Logan', 'Jackson', 'Sebastian', 'Jack', 'Aiden',
+        'Owen', 'Samuel', 'Matthew', 'Joseph', 'Levi', 'Mateo', 'David', 'John', 'Wyatt', 'Carter',
+        'Julian', 'Luke', 'Grayson', 'Isaac', 'Jayden', 'Theodore', 'Gabriel', 'Anthony', 'Dylan', 'Leo'
       ];
 
       const lastNames = [
@@ -1597,6 +1606,7 @@
         'Lopez', 'Gonzalez', 'Hernandez', 'Perez', 'Rivera', 'Torres', 'Flores', 'Ramirez', 'Morales', 'Cruz'
       ];
 
+      const firstNames = sex === 'male' ? maleFirstNames : femaleFirstNames;
       const randomFirstName = firstNames[Math.floor(Math.random() * firstNames.length)];
       const randomLastName = lastNames[Math.floor(Math.random() * lastNames.length)];
 
