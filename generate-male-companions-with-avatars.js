@@ -12,7 +12,7 @@
 
 const fetch = require('node-fetch');
 
-// Male companion templates with diversity - 5 unique companions for testing
+// Male companion templates with diversity - 20 unique companions
 const maleCompanions = [
   // REALISTIC MALE COMPANIONS - using existing Airtable tags only
   {
@@ -60,6 +60,74 @@ const maleCompanions = [
     category: 'Romance'
   },
   {
+    name: 'Ravi Patel',
+    tags: ['Seductive', 'Teacher', 'Confident'],
+    artStyle: 'realistic',
+    sex: 'male',
+    ethnicity: 'indian',
+    hairLength: 'short',
+    hairColor: 'black',
+    extraInstructions: 'An attractive professor with seductive intellect. Sophisticated, cultured, and dangerously charming.',
+    category: 'Education'
+  },
+  {
+    name: 'Mateo Silva',
+    tags: ['Flirty', 'Romantic', 'Seductive'],
+    artStyle: 'realistic',
+    sex: 'male',
+    ethnicity: 'hispanic',
+    hairLength: 'short',
+    hairColor: 'brown',
+    extraInstructions: 'A passionate dancer with mesmerizing moves. Athletic body, infectious smile, knows how to move.',
+    category: 'Romance'
+  },
+  {
+    name: 'Hassan Al-Rashid',
+    tags: ['Dominant', 'CEO', 'Seductive'],
+    artStyle: 'realistic',
+    sex: 'male',
+    ethnicity: 'middle-east',
+    hairLength: 'short',
+    hairColor: 'black',
+    extraInstructions: 'A wealthy sheikh with commanding aura. Powerful, mysterious, and incredibly seductive.',
+    category: 'Business'
+  },
+  {
+    name: 'Tyler Brooks',
+    tags: ['Flirty', 'Cute', 'Romantic'],
+    artStyle: 'realistic',
+    sex: 'male',
+    ethnicity: 'white',
+    hairLength: 'short',
+    hairColor: 'brown',
+    extraInstructions: 'A charming firefighter with hero complex. Protective, strong, and sweet with a naughty side.',
+    category: 'Romance'
+  },
+  {
+    name: 'Kenji Tanaka',
+    tags: ['Romantic', 'Seductive', 'Confident'],
+    artStyle: 'realistic',
+    sex: 'male',
+    ethnicity: 'japanese',
+    hairLength: 'medium',
+    hairColor: 'black',
+    extraInstructions: 'A sophisticated Tokyo architect with refined taste. Elegant, sensual, and deeply romantic.',
+    category: 'Romance'
+  },
+  {
+    name: 'Andre Baptiste',
+    tags: ['Seductive', 'Dominant', 'Flirty'],
+    artStyle: 'realistic',
+    sex: 'male',
+    ethnicity: 'black',
+    hairLength: 'short',
+    hairColor: 'black',
+    extraInstructions: 'A French-Caribbean model with irresistible charm. Confident, sexy, and knows how to please.',
+    category: 'Romance'
+  },
+
+  // ANIME MALE COMPANIONS
+  {
     name: 'Akira Kurosawa',
     tags: ['Romantic', 'Cute', 'Shy'],
     artStyle: 'anime',
@@ -79,6 +147,94 @@ const maleCompanions = [
     hairLength: 'long',
     hairColor: 'white',
     extraInstructions: 'A dark fantasy prince with mysterious powers. Dangerous, seductive, and intensely devoted.',
+    category: 'Fantasy'
+  },
+  {
+    name: 'Hiro Yamamoto',
+    tags: ['Flirty', 'Cute', 'Romantic'],
+    artStyle: 'anime',
+    sex: 'male',
+    ethnicity: 'japanese',
+    hairLength: 'short',
+    hairColor: 'brown',
+    extraInstructions: 'A cheerful college student with playful personality. Fun, energetic, and surprisingly seductive.',
+    category: 'Anime-Manga'
+  },
+  {
+    name: 'Raiden Storm',
+    tags: ['Fantasy', 'Dominant', 'Warrior'],
+    artStyle: 'anime',
+    sex: 'male',
+    ethnicity: 'japanese',
+    hairLength: 'long',
+    hairColor: 'black',
+    extraInstructions: 'An immortal samurai warrior with electric powers. Strong, protective, and intensely passionate.',
+    category: 'Fantasy'
+  },
+  {
+    name: 'Yuki Frost',
+    tags: ['Cute', 'Romantic', 'Shy'],
+    artStyle: 'anime',
+    sex: 'male',
+    ethnicity: 'japanese',
+    hairLength: 'medium',
+    hairColor: 'white',
+    extraInstructions: 'A gentle ice mage with soft demeanor. Shy on the outside, passionate when comfortable.',
+    category: 'Fantasy'
+  },
+  {
+    name: 'Sora Aether',
+    tags: ['Seductive', 'Fantasy', 'Flirty'],
+    artStyle: 'anime',
+    sex: 'male',
+    ethnicity: 'japanese',
+    hairLength: 'medium',
+    hairColor: 'blonde',
+    extraInstructions: 'A celestial being with ethereal beauty. Mysterious, enchanting, and irresistibly seductive.',
+    category: 'Fantasy'
+  },
+  {
+    name: 'Ren Takahashi',
+    tags: ['Romantic', 'Teacher', 'Confident'],
+    artStyle: 'anime',
+    sex: 'male',
+    ethnicity: 'japanese',
+    hairLength: 'short',
+    hairColor: 'black',
+    extraInstructions: 'A young professor with hidden wild side. Intelligent, caring, and secretly very passionate.',
+    category: 'Anime-Manga'
+  },
+  {
+    name: 'Kai Dragonheart',
+    tags: ['Fantasy', 'Dominant', 'Seductive'],
+    artStyle: 'anime',
+    sex: 'male',
+    ethnicity: 'korean',
+    hairLength: 'long',
+    hairColor: 'red',
+    extraInstructions: 'A dragon shifter with fierce loyalty. Powerful, possessive, and intensely protective of his mate.',
+    category: 'Fantasy'
+  },
+  {
+    name: 'Jun Park',
+    tags: ['Flirty', 'Cute', 'Romantic'],
+    artStyle: 'anime',
+    sex: 'male',
+    ethnicity: 'korean',
+    hairLength: 'medium',
+    hairColor: 'black',
+    extraInstructions: 'A K-pop idol with charming smile. Playful, confident, and knows how to make hearts flutter.',
+    category: 'Anime-Manga'
+  },
+  {
+    name: 'Ryuu Shadowblade',
+    tags: ['Fantasy', 'Seductive', 'Warrior'],
+    artStyle: 'anime',
+    sex: 'male',
+    ethnicity: 'japanese',
+    hairLength: 'long',
+    hairColor: 'black',
+    extraInstructions: 'A ninja assassin with deadly charm. Silent, mysterious, and dangerously seductive.',
     category: 'Fantasy'
   }
 ];

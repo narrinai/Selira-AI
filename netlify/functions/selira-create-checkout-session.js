@@ -82,7 +82,7 @@ exports.handler = async (event, context) => {
 
     // Build session config based on mode
     const sessionConfig = {
-      payment_method_types: ['card'],
+      payment_method_types: ['card', 'ideal', 'bancontact', 'sofort'],
       line_items: [
         {
           price: priceId,
@@ -101,6 +101,20 @@ exports.handler = async (event, context) => {
       cancel_url: cancelUrl,
       allow_promotion_codes: true,
       billing_address_collection: 'auto',
+      // Enable automatic tax calculation
+      automatic_tax: {
+        enabled: true,
+      },
+      // Save payment method for future use and enable SCA retry logic
+      payment_intent_data: checkoutMode === 'payment' ? {
+        setup_future_usage: 'off_session',
+        metadata: {
+          user_id: userId,
+          user_email: userEmail,
+          plan_name: planName || 'unknown',
+          ...(fpTid && { fp_tid: fpTid })
+        }
+      } : undefined,
     };
 
     // Add subscription_data only for subscription mode
@@ -111,6 +125,12 @@ exports.handler = async (event, context) => {
           user_email: userEmail,
           plan_name: planName || 'unknown',
           ...(fpTid && { fp_tid: fpTid }) // Add FirstPromoter tracking ID if available
+        }
+      };
+      // For subscriptions, enable Smart Retries for failed payments
+      sessionConfig.payment_method_options = {
+        card: {
+          setup_future_usage: 'off_session',
         }
       };
     }

@@ -1205,16 +1205,33 @@ document.addEventListener('DOMContentLoaded', async function() {
 });
 
 // ===== GLOBAL AUTH FUNCTIONS FOR SELIRA =====
-window.openLoginModal = function(mode = 'login') {
-  console.log('🌍 openLoginModal called with mode:', mode);
+window.openLoginModal = function(mode = 'login', event = null) {
+  console.log('🌍 openLoginModal called with mode:', mode, 'event:', !!event);
 
-  // Close mobile sidebar if open
-  const sidebar = document.getElementById('sidebar');
-  const overlay = document.getElementById('sidebarOverlay');
-  if (sidebar && sidebar.classList.contains('open')) {
+  // Stop event propagation to prevent sidebar overlay click handler from interfering
+  if (event) {
+    event.stopPropagation();
+    event.preventDefault();
+    console.log('✋ Event propagation stopped');
+  }
+
+  // Close mobile sidebar if open (with multiple selector fallbacks and more aggressive closing)
+  const sidebar = document.getElementById('sidebar') || document.querySelector('.sidebar') || document.querySelector('aside.sidebar');
+  const overlay = document.getElementById('sidebarOverlay') || document.querySelector('.sidebar-overlay');
+
+  console.log('📱 Sidebar element found:', !!sidebar, 'Overlay found:', !!overlay);
+
+  if (sidebar) {
+    console.log('📱 Sidebar classes before:', sidebar.className);
     sidebar.classList.remove('open');
-    if (overlay) overlay.classList.remove('show');
-    console.log('📱 Mobile sidebar closed before opening auth modal');
+    console.log('📱 Sidebar classes after:', sidebar.className);
+  }
+
+  if (overlay) {
+    console.log('📱 Overlay classes before:', overlay.className);
+    overlay.classList.remove('show');
+    overlay.classList.remove('open'); // Also remove 'open' class
+    console.log('📱 Overlay classes after:', overlay.className);
   }
 
   if (seliraAuth) {
