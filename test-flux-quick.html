@@ -9,9 +9,10 @@
     .section { background: #1a1a1a; padding: 20px; border-radius: 12px; margin: 15px 0; border: 1px solid #333; }
     .presets { display: flex; flex-wrap: wrap; gap: 8px; margin: 15px 0; }
     .preset { background: #2a2a2a; border: 1px solid #444; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; }
-    .preset:hover { background: #d4a574; }
+    .preset:hover { background: #CE93D8; color: white; }
     input, select { width: 100%; padding: 10px; margin: 5px 0; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 6px; }
-    button { background: #d4a574; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; margin: 5px; }
+    button { background: linear-gradient(135deg, #CE93D8 0%, #BA68C8 100%); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; margin: 5px; font-weight: 600; }
+    button:hover { background: linear-gradient(135deg, #BA68C8 0%, #AB47BC 100%); }
     .results { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin: 20px 0; }
     .result { background: #2a2a2a; border-radius: 8px; overflow: hidden; }
     .result img { width: 100%; height: 250px; object-fit: cover; cursor: pointer; }
@@ -20,8 +21,8 @@
 </head>
 <body>
   <div class="container">
-    <h1 style="color: #d4a574; text-align: center;">🎨 Flux Schnell Test</h1>
-    <p style="color: #888; text-align: center;">Test Flux Schnell model via Replicate</p>
+    <h1 style="color: #CE93D8; text-align: center;">🎨 Flux Dev Test (NSFW)</h1>
+    <p style="color: #888; text-align: center;">Test Flux Dev model with NSFW prompting via Replicate</p>
     
     <div class="section">
       <h3>Quick Presets:</h3>
@@ -60,12 +61,12 @@
 
   <script>
     const presets = {
-      'male-portrait': { prompt: 'professional headshot portrait, confident man', sex: 'male', style: 'realistic', ethnicity: 'white' },
-      'female-portrait': { prompt: 'professional headshot portrait, elegant woman', sex: 'female', style: 'realistic', ethnicity: 'white' },
-      'male-anime': { prompt: 'anime style portrait, handsome young man', sex: 'male', style: 'anime', ethnicity: 'japanese' },
-      'female-anime': { prompt: 'anime style portrait, beautiful young woman', sex: 'female', style: 'anime', ethnicity: 'japanese' },
-      'male-fantasy': { prompt: 'fantasy warrior with armor, heroic pose', sex: 'male', style: 'realistic', ethnicity: 'white' },
-      'female-fantasy': { prompt: 'fantasy mage with robes, mystical aura', sex: 'female', style: 'realistic', ethnicity: 'white' }
+      'male-portrait': { prompt: 'professional headshot portrait, confident man, sharp jawline, well-groomed', sex: 'male', style: 'realistic', ethnicity: 'white' },
+      'female-portrait': { prompt: 'professional headshot portrait, elegant woman, soft features, beautiful eyes', sex: 'female', style: 'realistic', ethnicity: 'white' },
+      'male-anime': { prompt: 'anime style portrait, handsome young man, sharp features, cool expression', sex: 'male', style: 'anime', ethnicity: 'japanese' },
+      'female-anime': { prompt: 'anime style portrait, beautiful young woman, expressive eyes, cute smile', sex: 'female', style: 'anime', ethnicity: 'japanese' },
+      'male-fantasy': { prompt: 'fantasy warrior with armor, heroic pose, muscular build, battle-ready', sex: 'male', style: 'realistic', ethnicity: 'white' },
+      'female-fantasy': { prompt: 'fantasy mage with robes, mystical aura, elegant pose, magical energy', sex: 'female', style: 'realistic', ethnicity: 'white' }
     };
     
     function loadPreset(type) {
@@ -94,17 +95,17 @@
         category: document.getElementById('style').value === 'anime' ? 'anime-manga' : 'realistic'
       };
       
-      document.getElementById('results').innerHTML = '<div class="loading">🎨 Generating with Flux Schnell...</div>';
+      document.getElementById('results').innerHTML = '<div class="loading">🎨 Generating with Flux Dev (7-8 seconds)...</div>';
       
       try {
-        const response = await fetch('/.netlify/functions/generate-custom-image', {
+        const response = await fetch('/.netlify/functions/selira-generate-custom-image', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(params)
         });
-        
+
         const result = await response.json();
-        
+
         if (response.ok && result.success) {
           const genderIcon = params.sex === 'male' ? '👨' : '👩';
           document.getElementById('results').innerHTML = `
@@ -113,14 +114,16 @@
               <div style="padding: 15px;">
                 <div style="font-size: 12px; color: #888;">"${params.customPrompt}"</div>
                 <div style="font-size: 11px; color: #666; margin-top: 5px;">${genderIcon} ${params.style} • ${params.ethnicity}</div>
+                <div style="font-size: 10px; color: #555; margin-top: 5px;">Full prompt: ${result.fullPrompt ? result.fullPrompt.substring(0, 100) + '...' : 'N/A'}</div>
               </div>
             </div>
           `;
         } else {
-          document.getElementById('results').innerHTML = `<div style="color: #ef4444; padding: 20px;">❌ Error: ${result.error}</div>`;
+          document.getElementById('results').innerHTML = `<div style="color: #ef4444; padding: 20px;">❌ Error: ${result.error || 'Unknown error'}</div>`;
         }
-        
+
       } catch (error) {
+        console.error('Generation error:', error);
         document.getElementById('results').innerHTML = `<div style="color: #ef4444; padding: 20px;">❌ Error: ${error.message}</div>`;
       }
       
