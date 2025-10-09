@@ -1131,6 +1131,8 @@
             hairColor: c.hair_color
           }));
         console.log(`✅ Loaded ${companions.length} companions`);
+        // Shuffle companions array on initial load
+        companions = companions.sort(() => Math.random() - 0.5);
         renderCarousel();
         updateCarouselNav();
       } catch (error) {
