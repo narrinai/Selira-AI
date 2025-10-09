@@ -268,7 +268,10 @@ class SupabaseAuthModal {
       const { error } = await this.supabase.auth.signInWithOAuth({
         provider: provider,
         options: {
-          redirectTo: window.location.origin + window.location.pathname
+          redirectTo: window.location.origin + window.location.pathname,
+          queryParams: {
+            prompt: 'select_account' // Force Google account picker
+          }
         }
       });
 
