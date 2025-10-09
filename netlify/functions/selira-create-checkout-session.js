@@ -100,10 +100,12 @@ exports.handler = async (event, context) => {
       success_url: successUrl,
       cancel_url: cancelUrl,
       allow_promotion_codes: true,
-      billing_address_collection: 'auto',
-      // Enable automatic tax calculation
-      automatic_tax: {
-        enabled: true,
+      billing_address_collection: 'required',
+      // Configure payment method options for better 3D Secure support
+      payment_method_options: {
+        card: {
+          request_three_d_secure: 'automatic',
+        }
       },
       // Save payment method for future use and enable SCA retry logic
       payment_intent_data: checkoutMode === 'payment' ? {
@@ -127,12 +129,8 @@ exports.handler = async (event, context) => {
           ...(fpTid && { fp_tid: fpTid }) // Add FirstPromoter tracking ID if available
         }
       };
-      // For subscriptions, enable Smart Retries for failed payments
-      sessionConfig.payment_method_options = {
-        card: {
-          setup_future_usage: 'off_session',
-        }
-      };
+      // For subscriptions, enable Smart Retries and save payment method for future charges
+      sessionConfig.payment_method_options.card.setup_future_usage = 'off_session';
     }
 
     // Create Stripe checkout session
