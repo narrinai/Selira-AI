@@ -986,8 +986,32 @@
         <!-- Step Content -->
         <div class="step-container">
           
-          <!-- Step 1: Style Selection -->
+          <!-- Step 1: Sex & Style Selection -->
           <div class="creation-step active" id="step1">
+            <!-- Sex Selection -->
+            <div style="margin-bottom: 40px;">
+              <h3 style="color: var(--text-primary); margin-bottom: 20px; font-size: 20px; font-weight: 700; text-align: center;">Choose Gender</h3>
+              <div class="style-grid" style="max-width: 600px; margin: 0 auto;">
+                <div class="style-option" data-sex="female" onclick="selectSexStep('female')" style="border: 3px solid var(--accent);">
+                  <div class="image-container" style="height: 200px; background: linear-gradient(135deg, #CE93D8 0%, #BA68C8 100%);">
+                    <div style="display: flex; align-items: center; justify-content: center; height: 100%; font-size: 80px;">👩</div>
+                  </div>
+                  <div style="padding: 12px; text-align: center;">
+                    <h4 style="color: var(--text-primary); font-size: 18px; font-weight: 700;">Female Companion</h4>
+                  </div>
+                </div>
+                <div class="style-option" data-sex="male" onclick="selectSexStep('male')">
+                  <div class="image-container" style="height: 200px; background: linear-gradient(135deg, #64B5F6 0%, #42A5F5 100%);">
+                    <div style="display: flex; align-items: center; justify-content: center; height: 100%; font-size: 80px;">👨</div>
+                  </div>
+                  <div style="padding: 12px; text-align: center;">
+                    <h4 style="color: var(--text-primary); font-size: 18px; font-weight: 700;">Male Companion</h4>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Art Style Selection -->
             <h3 style="color: var(--text-primary); margin-bottom: 20px; font-size: 20px; font-weight: 700; text-align: center;">Choose Art Style</h3>
             <div class="style-grid">
               <div class="style-option" data-style="realistic" onclick="selectStyleStep('realistic')">
@@ -1522,11 +1546,28 @@
     }
 
     // ===== STEP SELECTION FUNCTIONS =====
+    function selectSexStep(sex) {
+      characterCreationState.sex = sex;
+
+      // Update visual selection
+      document.querySelectorAll('[data-sex]').forEach(option => {
+        option.style.border = '2px solid var(--border)';
+      });
+      document.querySelector(`[data-sex="${sex}"]`).style.border = '3px solid var(--accent)';
+
+      console.log('Selected sex:', sex);
+
+      // Filter available tags based on sex
+      updateAvailableTags();
+
+      // Note: Don't auto-advance - user needs to select style too
+    }
+
     function selectStyleStep(style) {
       characterCreationState.style = style;
 
       // Update visual selection
-      document.querySelectorAll('.style-option').forEach(option => {
+      document.querySelectorAll('[data-style]').forEach(option => {
         option.style.border = '2px solid var(--border)';
       });
       document.querySelector(`[data-style="${style}"]`).style.border = '2px solid var(--accent)';
