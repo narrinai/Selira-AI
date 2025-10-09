@@ -60,12 +60,12 @@ exports.handler = async (event, context) => {
       fields: {
         'Name': `Tag Seed Batch ${Math.floor(i / batchSize) + 1}`,
         'Slug': `tag-seed-batch-${Math.floor(i / batchSize) + 1}-${Date.now()}`,
-        'Title': 'Tag Seeder',
-        'Description': 'Temporary character to populate tag options in multi-select field',
+        'Character_Title': 'Tag Seeder',
+        'Character_Description': 'Temporary character to populate tag options',
         'Category': 'Fantasy',
         'Tags': batch, // Multi-select field with our new tags
         'Visibility': 'private', // Hide from users
-        'Sex': 'female'
+        'sex': 'female'
       }
     };
 
