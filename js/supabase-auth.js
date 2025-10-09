@@ -1215,35 +1215,28 @@ window.openLoginModal = function(mode = 'login', event = null) {
     console.log('✋ Event propagation stopped');
   }
 
-  // Close mobile sidebar if open - try multiple approaches
+  // Only close sidebar on mobile (when it has the 'open' class)
   const sidebar = document.getElementById('sidebar') || document.querySelector('.sidebar') || document.querySelector('aside.sidebar');
   const overlay = document.getElementById('sidebarOverlay') || document.querySelector('.sidebar-overlay');
 
   console.log('📱 Sidebar element found:', !!sidebar, 'Overlay found:', !!overlay);
 
-  if (sidebar) {
-    console.log('📱 Sidebar classes before:', sidebar.className);
+  // Only manipulate sidebar if it's actually open (mobile only)
+  if (sidebar && sidebar.classList.contains('open')) {
+    console.log('📱 Closing mobile sidebar');
     sidebar.classList.remove('open');
-    sidebar.style.transform = ''; // Also clear any inline transforms
-    console.log('📱 Sidebar classes after:', sidebar.className);
   }
 
-  if (overlay) {
-    console.log('📱 Overlay classes before:', overlay.className);
-    overlay.classList.remove('show');
-    overlay.classList.remove('open');
-    overlay.style.display = ''; // Also clear display style
-    console.log('📱 Overlay classes after:', overlay.className);
+  if (overlay && (overlay.classList.contains('open') || overlay.classList.contains('show'))) {
+    console.log('📱 Hiding overlay');
+    overlay.classList.remove('show', 'open');
   }
 
-  // Small delay to ensure sidebar closes before modal opens
-  setTimeout(() => {
-    if (seliraAuth) {
-      seliraAuth.openModal(mode);
-    } else {
-      console.error('❌ seliraAuth not initialized yet');
-    }
-  }, 50);
+  if (seliraAuth) {
+    seliraAuth.openModal(mode);
+  } else {
+    console.error('❌ seliraAuth not initialized yet');
+  }
 };
 
 window.openSignupModal = function() {
