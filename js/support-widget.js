@@ -10,7 +10,7 @@
   const widgetHTML = `
     <!-- Support Widget Button -->
     <div id="supportWidgetBtn" class="support-widget-btn" title="Hulp nodig?">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="10"></circle>
         <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
         <line x1="12" y1="17" x2="12.01" y2="17"></line>
@@ -73,8 +73,8 @@
         position: fixed;
         bottom: 24px;
         right: 24px;
-        width: 56px;
-        height: 56px;
+        width: 48px;
+        height: 48px;
         background: linear-gradient(135deg, #ce93d8 0%, #ba68c8 100%);
         border-radius: 50%;
         display: flex;
@@ -88,8 +88,8 @@
       }
 
       .support-widget-btn:hover {
-        transform: scale(1.1);
-        box-shadow: 0 6px 20px rgba(206, 147, 216, 0.6);
+        transform: scale(1.05);
+        box-shadow: 0 6px 16px rgba(206, 147, 216, 0.5);
       }
 
       .support-widget-chat {
