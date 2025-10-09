@@ -363,7 +363,7 @@ async function downgradePlan(stripe, user, userData, targetPlan) {
     });
 
     // Validate target plan
-    const validPlans = ['basic', 'premium'];
+    const validPlans = ['light', 'basic', 'premium'];
     if (!validPlans.includes(targetPlan)) {
       throw new Error(`Invalid target plan: ${targetPlan}`);
     }
@@ -372,13 +372,14 @@ async function downgradePlan(stripe, user, userData, targetPlan) {
     const currentPlan = (userData.Plan || 'free').toLowerCase();
 
     // Validate it's actually a downgrade
-    const planHierarchy = { 'free': 0, 'basic': 1, 'premium': 2 };
+    const planHierarchy = { 'free': 0, 'light': 1, 'basic': 2, 'premium': 3 };
     if (planHierarchy[targetPlan] >= planHierarchy[currentPlan]) {
       throw new Error('This is not a valid downgrade');
     }
 
     // Map plan names to Stripe price IDs
     const priceIds = {
+      'light': 'price_1SEuikDEKVIZZyJVq7p80aW7',
       'basic': 'price_1S9KVADEKVIZZyJVXXjE2gYE',
       'premium': 'price_1S9KVbDEKVIZZyJVDpWlXYhb'
     };
