@@ -89,22 +89,14 @@ exports.handler = async (event, context) => {
       }
     }
 
-    // Prepare data for Airtable - minimal version with only fields that exist
-    // Start with just Message, add other fields if they exist in your Airtable
+    // Prepare data for Airtable with exact field names from screenshot
     const supportData = {
-      Message: message.trim()
+      Message: message.trim(),
+      Page_URL: url || '',
+      User_Agent: userAgent || '',
+      Anonymous_Name: name || 'Anonymous',
+      Anonymous_Email: email || ''
     };
-
-    // Try to add optional fields - if they fail, the message will still be saved
-    if (name) {
-      supportData.Name = name;
-    }
-    if (email) {
-      supportData.Email = email;
-    }
-    if (url) {
-      supportData.URL = url;
-    }
 
     console.log('💾 Support data to save:', JSON.stringify(supportData, null, 2));
 
