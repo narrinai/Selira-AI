@@ -109,49 +109,12 @@ class FacebookPixelTracking {
   }
 
   // Track InitiateCheckout - when user clicks upgrade to Basic/Premium
+  // NOTE: This is now a stub. InitiateCheckout should be triggered manually
+  // from pricing.html and affiliate-program.html AFTER authentication check
   trackInitiateCheckout() {
-    // Listen for upgrade popup opens
-    const checkForUpgradeButtons = () => {
-      // Find all upgrade buttons dynamically
-      const upgradeButtons = document.querySelectorAll(
-        '[data-upgrade], .upgrade-btn, .premium-btn, .basic-btn, [onclick*="upgrade"], [onclick*="pricing"]'
-      );
-
-      upgradeButtons.forEach(button => {
-        if (!button.dataset.pixelTracked) {
-          button.addEventListener('click', () => {
-            const planType = button.textContent.toLowerCase().includes('premium') ? 'Premium' : 'Basic';
-
-            this.trackEvent('InitiateCheckout', {
-              content_name: `${planType} Plan`,
-              content_category: 'Subscription',
-              value: planType === 'Premium' ? 9.99 : 4.99,
-              currency: 'USD',
-              content_type: 'product'
-            }, `checkout_${planType}_${Date.now()}`);
-          });
-          button.dataset.pixelTracked = 'true';
-        }
-      });
-    };
-
-    // Check initially and on DOM changes
-    checkForUpgradeButtons();
-
-    // Use MutationObserver to catch dynamically added buttons
-    const observer = new MutationObserver(checkForUpgradeButtons);
-    observer.observe(document.body, { childList: true, subtree: true });
-
-    // Also listen for pricing page visits
-    if (window.location.pathname.includes('/pricing')) {
-      setTimeout(() => {
-        this.trackEvent('InitiateCheckout', {
-          content_name: 'Pricing Page Visit',
-          content_category: 'Subscription',
-          content_type: 'product'
-        }, 'checkout_pricing_visit');
-      }, 500);
-    }
+    // Removed automatic tracking to prevent false events
+    // InitiateCheckout is now triggered explicitly in checkout flows after auth check
+    console.log('✅ InitiateCheckout tracking ready (manual trigger only)');
   }
 
   // Track CompleteRegistration - when user successfully registers

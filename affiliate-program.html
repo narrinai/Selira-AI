@@ -1802,7 +1802,20 @@
     async function handleCreditPurchase(packageType) {
       console.log('💳 Credit purchase initiated:', packageType);
 
-      // Track InitiateCheckout event for Meta Pixel
+      // Check if user is logged in FIRST
+      const isLoggedIn = localStorage.getItem('auth0_token') || localStorage.getItem('user_uid');
+
+      if (!isLoggedIn) {
+        // User is not logged in - show registration popup
+        if (typeof openLoginModal === 'function') {
+          openLoginModal('signup');
+        } else {
+          alert('Please sign up to purchase credits');
+        }
+        return;
+      }
+
+      // Track InitiateCheckout event AFTER authentication check
       const packageDetails = {
         'light': { credits: 50, value: 4.99 },
         'basic': { credits: 100, value: 9.99 },
@@ -1818,19 +1831,6 @@
           currency: 'USD',
           content_type: 'product'
         }, `checkout_credits_${packageType}_${Date.now()}`);
-      }
-
-      // Check if user is logged in
-      const isLoggedIn = localStorage.getItem('auth0_token') || localStorage.getItem('user_uid');
-
-      if (!isLoggedIn) {
-        // User is not logged in - show registration popup
-        if (typeof openLoginModal === 'function') {
-          openLoginModal('signup');
-        } else {
-          alert('Please sign up to purchase credits');
-        }
-        return;
       }
 
       try {
