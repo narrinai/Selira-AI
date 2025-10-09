@@ -88,6 +88,18 @@ exports.handler = async (event, context) => {
         await handlePaymentSucceeded(stripeEvent.data.object);
         break;
 
+      case 'invoice.payment_failed':
+        await handlePaymentFailed(stripeEvent.data.object);
+        break;
+
+      case 'payment_intent.payment_failed':
+        await handlePaymentIntentFailed(stripeEvent.data.object);
+        break;
+
+      case 'charge.failed':
+        await handleChargeFailed(stripeEvent.data.object);
+        break;
+
       case 'customer.subscription.updated':
         await handleSubscriptionUpdated(stripeEvent.data.object);
         break;
@@ -462,6 +474,72 @@ async function handleSubscriptionCanceled(subscription) {
 
   } catch (error) {
     console.error('❌ Error handling subscription canceled:', error);
+  }
+}
+
+async function handlePaymentFailed(invoice) {
+  try {
+    console.log('❌ Processing invoice payment failed:', invoice.id);
+    console.log('🔍 Failure details:', {
+      attemptCount: invoice.attempt_count,
+      nextPaymentAttempt: invoice.next_payment_attempt,
+      customer: invoice.customer
+    });
+
+    const customerId = invoice.customer;
+
+    // Find user by Stripe customer ID
+    const users = await base('Users').select({
+      filterByFormula: `{stripe_customer_id} = '${customerId}'`
+    }).firstPage();
+
+    if (users.length === 0) {
+      console.error('❌ User not found for customer:', customerId);
+      return;
+    }
+
+    const user = users[0];
+
+    // Update user payment status
+    await base('Users').update(user.id, {
+      'subscription_status': 'past_due',
+      'last_payment_error': invoice.last_finalization_error?.message || 'Payment failed'
+    });
+
+    console.log('⚠️ Marked subscription as past_due for user:', user.fields.Email);
+
+  } catch (error) {
+    console.error('❌ Error handling payment failed:', error);
+  }
+}
+
+async function handlePaymentIntentFailed(paymentIntent) {
+  try {
+    console.log('❌ Processing payment intent failed:', paymentIntent.id);
+    console.log('🔍 Failure code:', paymentIntent.last_payment_error?.code);
+    console.log('🔍 Failure message:', paymentIntent.last_payment_error?.message);
+    console.log('🔍 Decline code:', paymentIntent.last_payment_error?.decline_code);
+
+    // Log for monitoring - Stripe will retry automatically
+    console.log('📊 Payment intent failure logged for monitoring');
+
+  } catch (error) {
+    console.error('❌ Error handling payment intent failed:', error);
+  }
+}
+
+async function handleChargeFailed(charge) {
+  try {
+    console.log('❌ Processing charge failed:', charge.id);
+    console.log('🔍 Failure code:', charge.failure_code);
+    console.log('🔍 Failure message:', charge.failure_message);
+    console.log('🔍 Decline code:', charge.outcome?.network_status);
+
+    // Log for monitoring
+    console.log('📊 Charge failure logged for monitoring');
+
+  } catch (error) {
+    console.error('❌ Error handling charge failed:', error);
   }
 }
 
