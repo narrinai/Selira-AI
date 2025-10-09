@@ -1947,12 +1947,34 @@
       const tags = character.tags || [];
       const description = character.description || '';
       const artStyle = character.companion_type || character.Companion_Type || 'realistic';
+      const isMale = (character.sex || character.Sex || character.Gender || '').toLowerCase() === 'male';
 
       // Note: Traits are NOT added to user-visible prompts
       // They will be added internally when sending to the backend
 
       // Seductive and suggestive scenario prompts (without trait string)
-      const baseScenarios = [
+      const baseScenarios = isMale ? [
+        `Send me a picture of yourself shirtless, showing off your muscular physique with a confident look`,
+        `Send me a picture of yourself in fitted underwear, posing seductively with an intense gaze`,
+        `Send me a picture of yourself in the shower with water running down your body, looking back`,
+        `Send me a picture of yourself in low-hanging towel, showing off your abs with desire in your eyes`,
+        `Send me a picture of yourself in silk robe that's open, revealing your chest with a hungry look`,
+        `Send me a picture of yourself lying on satin sheets shirtless, with an inviting pose`,
+        `Send me a picture of yourself by a window in moonlight wearing minimal clothing, with a sultry glance`,
+        `Send me a picture of yourself with wet hair in just a towel, with tempting eyes`,
+        `Send me a picture of yourself flexing your muscles in fitted briefs, with an intense gaze`,
+        `Send me a picture of yourself in athletic wear showing your physique, with a seductive expression`,
+        `Send me a picture of yourself silhouetted against soft lighting shirtless, with desire`,
+        `Send me a picture of yourself in form-fitting underwear kneeling, with a provocative stare`,
+        `Send me a picture of yourself touching your chest with lustful eyes`,
+        `Send me a picture of yourself with your back to the camera showing muscles, looking over your shoulder`,
+        `Send me a picture of yourself in dark underwear sprawled on black silk, with a hungry expression`,
+        `Send me a picture of yourself in designer briefs posing confidently with bedroom eyes`,
+        `Send me a picture of yourself in unbuttoned shirt revealing your chest with a teasing smile`,
+        `Send me a picture of yourself in swim trunks fresh from the pool with water droplets`,
+        `Send me a picture of yourself sitting seductively in minimal clothing on a chair`,
+        `Send me a picture of yourself partially undressed with a confident look of anticipation`
+      ] : [
         `Send me a picture of yourself in revealing lingerie, posing seductively on a bed with bedroom eyes`,
         `Send me a picture of yourself in a tight dress, leaning forward with a provocative smile`,
         `Send me a picture of yourself in the shower with water cascading down your body, looking back`,
@@ -1977,7 +1999,50 @@
       ];
 
       // Seductive tag-specific scenarios
-      const tagScenarios = {
+      const tagScenarios = isMale ? {
+        'Boyfriend': [
+          `Send me a picture of yourself shirtless on our bed with a passionate look, reaching out`,
+          `Send me a picture of yourself wearing just your underwear, with a playful smile`,
+          `Send me a picture of yourself fresh out of the shower in low towel, with a loving gaze`,
+          `Send me a picture of yourself in fitted briefs stretching in our bedroom with desire`,
+          `Send me a picture of yourself shirtless under the covers, inviting me to join you`
+        ],
+        'Romance': [
+          `Send me a picture of yourself in unbuttoned shirt showing your chest, with intense desire`,
+          `Send me a picture of yourself lying provocatively on rose petals with a sultry expression`,
+          `Send me a picture of yourself in a candlelit room shirtless, with passionate eyes`,
+          `Send me a picture of yourself in silk pants standing by a fireplace with yearning`,
+          `Send me a picture of yourself in minimal clothing on a romantic four-poster bed, beckoning`
+        ],
+        'Handsome': [
+          `Send me a picture of yourself in fitted underwear flexing, with a confident expression`,
+          `Send me a picture of yourself in athletic shorts showing your abs, with a naughty look`,
+          `Send me a picture of yourself sitting in just briefs with a tempting gaze`,
+          `Send me a picture of yourself shirtless with tousled hair, with an adorable but sexy pose`,
+          `Send me a picture of yourself in open robe showing your physique, with a seductive smile`
+        ],
+        'Seductive': [
+          `Send me a picture of yourself in fitted black underwear, posing dominantly on a bed with a hungry gaze`,
+          `Send me a picture of yourself shirtless touching your body, with an erotic stare`,
+          `Send me a picture of yourself in minimal leather attire, commanding attention with intense eyes`,
+          `Send me a picture of yourself in form-fitting briefs, with desire in your eyes`,
+          `Send me a picture of yourself exuding raw masculine power with minimal clothing`
+        ],
+        'Fantasy': [
+          `Send me a picture of yourself as a sexy warrior in minimal fantasy armor, posing powerfully`,
+          `Send me a picture of yourself as a sultry sorcerer in revealing robes with magic swirling`,
+          `Send me a picture of yourself as a mystical being shirtless with ethereal elements`,
+          `Send me a picture of yourself as a warrior prince showing your physique, victorious and seductive`,
+          `Send me a picture of yourself as a dark warlock in revealing attire, commanding power`
+        ],
+        'Boss': [
+          `Send me a picture of yourself in a suit unbuttoned showing your chest, sitting on your desk in dominance`,
+          `Send me a picture of yourself in revealing professional attire, commanding with lustful eyes`,
+          `Send me a picture of yourself with shirt open leaning over your desk with authority`,
+          `Send me a picture of yourself in just dress pants and open blazer, in your office chair with power`,
+          `Send me a picture of yourself in business attire partially undressed, demanding attention`
+        ]
+      } : {
         'Girlfriend': [
           `Send me a picture of yourself in sexy lingerie on our bed with a passionate look, reaching out`,
           `Send me a picture of yourself wearing just my shirt and nothing else, with a playful smile`,
