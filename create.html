@@ -1700,6 +1700,16 @@
         console.log(`🏷️  Showing all tags (${createAvailableTags.length})`);
       }
 
+      // Update name input placeholder based on sex
+      const nameInput = document.getElementById('characterName');
+      if (nameInput) {
+        if (sex === 'male') {
+          nameInput.placeholder = 'e.g., Liam Johnson, Noah Garcia, Oliver Smith...';
+        } else {
+          nameInput.placeholder = 'e.g., Zoe Sanchez, Savannah Liu, Avery Smith...';
+        }
+      }
+
       // Repopulate tag UI if we're on Step 6
       if (characterCreationState.currentStep === 6) {
         populatePopularTags(createAvailableTags);
