@@ -368,10 +368,10 @@ exports.handler = async (event, context) => {
     let fullPrompt;
     if (isAnimeStyle) {
       const shotDesc = isFullBody ? 'full body anime illustration' : 'anime portrait';
-      fullPrompt = `${shotDesc} of ${genderDescription}, ${ethnicityDesc}, ${hairPart}, anime style, ${sanitizedPrompt}${contextualEnhancement}, detailed anime art, high quality anime illustration, vibrant colors, cel shading, clean background, single anime character, perfect anime anatomy, anime eyes, subject in sharp focus, rim lighting on character, subject stands out from background, dramatic lighting on subject, character well-lit and prominent`;
+      fullPrompt = `${shotDesc} of ${genderDescription}, ${ethnicityDesc}, ${hairPart}, anime style, ${sanitizedPrompt}${contextualEnhancement}, BRIGHT ILLUMINATION, VIVID LIGHTING, HIGH CONTRAST, detailed anime art, high quality anime illustration, vibrant colors, cel shading, single anime character, perfect anime anatomy, anime eyes, KEY LIGHT on subject, FILL LIGHT brightening character, RIM LIGHT separating subject from background, STUDIO LIGHTING setup, character is BRIGHTLY LIT, background is DARKER than subject, DRAMATIC CONTRAST between character and background, subject POPS OUT visually, professional lighting, WELL-EXPOSED character, NO dark shadows on face, BRIGHT and CLEAR visibility`;
     } else {
       const shotDesc = isFullBody ? 'full body photograph' : 'portrait photograph';
-      fullPrompt = `REALISTIC PHOTOGRAPHY, ${shotDesc} of ${genderDescription}, ${ethnicityDesc}, ${hairPart}, ${sanitizedPrompt}${contextualEnhancement}, ultra realistic, photorealistic, real human photo, actual photograph, professional photography, realistic skin texture, realistic facial features, realistic proportions, high quality photo, professional studio lighting, clean background, single real person, perfect human anatomy, NO anime, NO cartoon, NO illustration, NO drawing, NO manga, NO cel shading, NO stylized art, real photograph only, subject in sharp focus, rim lighting on subject, subject clearly separated from background, dramatic lighting highlighting the subject, main subject well-lit and prominent, shallow depth of field, bokeh background effect`;
+      fullPrompt = `REALISTIC PHOTOGRAPHY, ${shotDesc} of ${genderDescription}, ${ethnicityDesc}, ${hairPart}, ${sanitizedPrompt}${contextualEnhancement}, BRIGHT ILLUMINATION, VIVID LIGHTING, HIGH CONTRAST, ultra realistic, photorealistic, real human photo, actual photograph, professional photography, realistic skin texture, realistic facial features, realistic proportions, high quality photo, single real person, perfect human anatomy, NO anime, NO cartoon, NO illustration, NO drawing, NO manga, NO cel shading, NO stylized art, real photograph only, KEY LIGHT on subject, FILL LIGHT brightening subject, BACK LIGHT rim lighting, RIM LIGHT separating subject from background, PROFESSIONAL STUDIO LIGHTING, subject is BRIGHTLY LIT, background is DARKER and BLURRED, DRAMATIC CONTRAST between subject and background, subject POPS OUT from background, shallow depth of field, bokeh background, WELL-EXPOSED subject, NO dark shadows on face, GOLDEN HOUR LIGHTING quality, BRIGHT and CLEAR subject, subject is LUMINOUS and RADIANT`;
     }
     
     console.log(`🎨 [${requestId}] Full prompt:`, fullPrompt);
@@ -410,15 +410,15 @@ exports.handler = async (event, context) => {
         body: JSON.stringify({
           version: modelVersion,
           input: {
-            // FLUX Dev parameters - works for both anime and realistic
+            // FLUX Dev parameters - optimized for bright, high-contrast images
             prompt: fullPrompt,
             width: 1024,
             height: 1024,
-            num_inference_steps: 28,
-            guidance_scale: 3.5,
+            num_inference_steps: 35, // More steps for better quality and lighting
+            guidance_scale: 7.5, // Higher guidance for better adherence to lighting prompts
             num_outputs: 1,
             output_format: "webp",
-            output_quality: 90,
+            output_quality: 95, // Higher quality
             disable_safety_checker: true
           }
         })
