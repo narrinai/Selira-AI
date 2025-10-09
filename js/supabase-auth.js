@@ -1202,6 +1202,55 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Initialize auth modal
     seliraAuth = new SupabaseAuthModal();
 
+    // Add proper click handlers to sidebar auth buttons
+    setTimeout(() => {
+      const sidebarAuthButtons = document.getElementById('sidebarAuthButtons');
+      if (sidebarAuthButtons) {
+        const loginLink = sidebarAuthButtons.querySelector('a.nav-item');
+        const registerLink = sidebarAuthButtons.querySelector('a.sidebar-auth-btn, .sidebar-auth-btn');
+
+        if (loginLink) {
+          // Remove inline onclick to prevent conflicts
+          loginLink.removeAttribute('onclick');
+          loginLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('🔵 Sidebar login clicked - closing sidebar first');
+
+            // Force close sidebar immediately
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            if (sidebar) sidebar.classList.remove('open');
+            if (overlay) overlay.classList.remove('open', 'show');
+
+            // Then open modal
+            window.openLoginModal('login');
+          });
+          console.log('✅ Added proper click handler to sidebar login button');
+        }
+
+        if (registerLink) {
+          // Remove inline onclick to prevent conflicts
+          registerLink.removeAttribute('onclick');
+          registerLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('🔵 Sidebar register clicked - closing sidebar first');
+
+            // Force close sidebar immediately
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            if (sidebar) sidebar.classList.remove('open');
+            if (overlay) overlay.classList.remove('open', 'show');
+
+            // Then open modal
+            window.openLoginModal('signup');
+          });
+          console.log('✅ Added proper click handler to sidebar register button');
+        }
+      }
+    }, 1000); // Wait for DOM to be fully ready
+
   } catch (error) {
     console.error('❌ Failed to load Supabase config:', error);
   }
