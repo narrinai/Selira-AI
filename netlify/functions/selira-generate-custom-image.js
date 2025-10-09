@@ -254,19 +254,20 @@ exports.handler = async (event, context) => {
     
     // Ethnicity descriptions
     const ethnicityMap = {
-      'white': 'Caucasian/European features',
-      'black': 'African/Black features',
-      'indian': 'South Asian/Indian features', 
-      'middle-east': 'Middle Eastern features',
-      'hispanic': 'Hispanic/Latino features',
-      'korean': 'Korean features',
-      'chinese': 'Chinese features', 
-      'japanese': 'Japanese features',
-      'vietnamese': 'Vietnamese features'
+      'white': 'Caucasian/European features, pale skin',
+      'black': 'African American features, dark brown skin, BLACK skin tone',
+      'indian': 'South Asian/Indian features, brown skin',
+      'middle-east': 'Middle Eastern features, olive skin',
+      'hispanic': 'Hispanic/Latino features, tan skin',
+      'korean': 'Korean features, light skin',
+      'chinese': 'Chinese features, light skin',
+      'japanese': 'Japanese features, light skin',
+      'vietnamese': 'Vietnamese features, light skin'
     };
-    
+
     // Hair length descriptions
     const hairMap = {
+      'bald': 'bald head, shaved head, NO hair',
       'short': 'short hair',
       'medium': 'medium length hair, shoulder-length hair',
       'long': 'long hair, flowing hair'
@@ -290,8 +291,11 @@ exports.handler = async (event, context) => {
     
     const ethnicityDesc = ethnicityMap[ethnicity] || 'diverse features';
     const hairLengthDesc = hairMap[hairLength] || 'styled hair';
-    const hairColorDesc = hairColorMap[hairColor] || 'brown hair';
-    
+
+    // Only add hair color if not bald
+    const isBald = hairLength === 'bald' || promptLower.includes('bald');
+    const hairColorDesc = isBald ? '' : (hairColorMap[hairColor] || 'brown hair');
+
     // Smart context enhancement based on keywords
     let contextualEnhancement = '';
     
@@ -334,17 +338,18 @@ exports.handler = async (event, context) => {
 
     console.log(`✨ [${requestId}] Using full custom prompt: "${sanitizedPrompt}"`);
 
-    // Build character-aware prompt - PUT HAIR COLOR FIRST for better AI adherence
-    const characterAppearance = `${hairColorDesc}, ${genderDescription}, ${ethnicityDesc}, ${hairLengthDesc}`;
+    // Build character-aware prompt - PUT HAIR COLOR FIRST for better AI adherence (unless bald)
+    const hairPart = isBald ? hairLengthDesc : `${hairColorDesc}, ${hairLengthDesc}`;
+    const characterAppearance = `${hairPart}, ${genderDescription}, ${ethnicityDesc}`;
 
     // Build full prompt with character appearance and context
     let fullPrompt;
     if (isAnimeStyle) {
       const shotDesc = isFullBody ? 'full body anime illustration' : 'anime portrait';
-      fullPrompt = `${hairColorDesc}, ${shotDesc} of ${genderDescription}, ${ethnicityDesc}, ${hairLengthDesc}, anime style, ${sanitizedPrompt}${contextualEnhancement}, detailed anime art, high quality anime illustration, vibrant colors, cel shading, clean background, single anime character, perfect anime anatomy, anime eyes`;
+      fullPrompt = `${shotDesc} of ${genderDescription}, ${ethnicityDesc}, ${hairPart}, anime style, ${sanitizedPrompt}${contextualEnhancement}, detailed anime art, high quality anime illustration, vibrant colors, cel shading, clean background, single anime character, perfect anime anatomy, anime eyes`;
     } else {
       const shotDesc = isFullBody ? 'full body photograph' : 'portrait photograph';
-      fullPrompt = `REALISTIC PHOTOGRAPHY, ${hairColorDesc}, ${shotDesc} of ${genderDescription}, ${ethnicityDesc}, ${hairLengthDesc}, ${sanitizedPrompt}${contextualEnhancement}, ultra realistic, photorealistic, real human photo, actual photograph, professional photography, realistic skin texture, realistic facial features, realistic proportions, high quality photo, professional studio lighting, clean background, single real person, perfect human anatomy, NO anime, NO cartoon, NO illustration, NO drawing, NO manga, NO cel shading, NO stylized art, real photograph only`;
+      fullPrompt = `REALISTIC PHOTOGRAPHY, ${shotDesc} of ${genderDescription}, ${ethnicityDesc}, ${hairPart}, ${sanitizedPrompt}${contextualEnhancement}, ultra realistic, photorealistic, real human photo, actual photograph, professional photography, realistic skin texture, realistic facial features, realistic proportions, high quality photo, professional studio lighting, clean background, single real person, perfect human anatomy, NO anime, NO cartoon, NO illustration, NO drawing, NO manga, NO cel shading, NO stylized art, real photograph only`;
     }
     
     console.log(`🎨 [${requestId}] Full prompt:`, fullPrompt);

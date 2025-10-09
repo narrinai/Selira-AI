@@ -48,11 +48,21 @@
       </select>
       <select id="ethnicity">
         <option value="white">White</option>
-        <option value="black">Black</option>
+        <option value="black">Black (African American)</option>
+        <option value="indian">Indian</option>
         <option value="korean">Korean</option>
         <option value="japanese">Japanese</option>
+        <option value="chinese">Chinese</option>
+        <option value="hispanic">Hispanic</option>
+        <option value="middle-east">Middle Eastern</option>
       </select>
-      
+      <select id="hairLength">
+        <option value="bald">Bald</option>
+        <option value="short">Short Hair</option>
+        <option value="medium" selected>Medium Hair</option>
+        <option value="long">Long Hair</option>
+      </select>
+
       <button onclick="generate()">🎨 Generate</button>
       <button onclick="clear()">🗑️ Clear</button>
     </div>
@@ -62,12 +72,12 @@
 
   <script>
     const presets = {
-      'male-portrait': { prompt: 'professional headshot portrait, confident man, sharp jawline, well-groomed', sex: 'male', style: 'realistic', ethnicity: 'white' },
-      'female-portrait': { prompt: 'professional headshot portrait, elegant woman, soft features, beautiful eyes', sex: 'female', style: 'realistic', ethnicity: 'white' },
-      'male-anime': { prompt: 'anime style portrait, handsome young man, sharp features, cool expression', sex: 'male', style: 'anime', ethnicity: 'japanese' },
-      'female-anime': { prompt: 'anime style portrait, beautiful young woman, expressive eyes, cute smile', sex: 'female', style: 'anime', ethnicity: 'japanese' },
-      'male-fantasy': { prompt: 'fantasy warrior with armor, heroic pose, muscular build, battle-ready', sex: 'male', style: 'realistic', ethnicity: 'white' },
-      'female-fantasy': { prompt: 'fantasy mage with robes, mystical aura, elegant pose, magical energy', sex: 'female', style: 'realistic', ethnicity: 'white' }
+      'male-portrait': { prompt: 'professional headshot portrait, confident man, sharp jawline, well-groomed', sex: 'male', style: 'realistic', ethnicity: 'white', hairLength: 'short' },
+      'female-portrait': { prompt: 'professional headshot portrait, elegant woman, soft features, beautiful eyes', sex: 'female', style: 'realistic', ethnicity: 'white', hairLength: 'long' },
+      'male-anime': { prompt: 'anime style portrait, handsome young man, sharp features, cool expression', sex: 'male', style: 'anime', ethnicity: 'japanese', hairLength: 'medium' },
+      'female-anime': { prompt: 'anime style portrait, beautiful young woman, expressive eyes, cute smile', sex: 'female', style: 'anime', ethnicity: 'japanese', hairLength: 'long' },
+      'male-fantasy': { prompt: 'fantasy warrior with armor, heroic pose, muscular build, battle-ready', sex: 'male', style: 'realistic', ethnicity: 'white', hairLength: 'short' },
+      'female-fantasy': { prompt: 'fantasy mage with robes, mystical aura, elegant pose, magical energy', sex: 'female', style: 'realistic', ethnicity: 'white', hairLength: 'long' }
     };
     
     function loadPreset(type) {
@@ -76,6 +86,7 @@
       document.getElementById('sex').value = preset.sex;
       document.getElementById('style').value = preset.style;
       document.getElementById('ethnicity').value = preset.ethnicity;
+      document.getElementById('hairLength').value = preset.hairLength;
       console.log('Loaded preset:', type);
     }
     
@@ -84,14 +95,15 @@
       btn.textContent = '🎨 Generating...';
       btn.disabled = true;
       
+      const hairLength = document.getElementById('hairLength').value;
       const params = {
         customPrompt: document.getElementById('prompt').value,
         characterName: 'Test Character',
         sex: document.getElementById('sex').value,
         style: document.getElementById('style').value,
         ethnicity: document.getElementById('ethnicity').value,
-        hairLength: 'medium',
-        hairColor: 'brown',
+        hairLength: hairLength,
+        hairColor: hairLength === 'bald' ? 'none' : 'brown',
         shotType: 'portrait',
         category: document.getElementById('style').value === 'anime' ? 'anime-manga' : 'realistic'
       };
