@@ -345,8 +345,7 @@ async function createMaleCompanion(companionData, avatarUrl) {
         hairColor: companionData.hairColor,
         extraInstructions: companionData.extraInstructions,
         visibility: 'public',
-        createdBy: 'Male Companion Script with Avatars',
-        userEmail: 'admin@selira.ai',
+        // No userEmail/createdBy - Created_By field will remain empty for system-generated companions
         preGeneratedAvatarUrl: avatarUrl // Pass the pre-generated avatar
       })
     });

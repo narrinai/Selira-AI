@@ -254,7 +254,9 @@ exports.handler = async (event, context) => {
 
     // Get the user record ID and display_name for linking in Created_By field
     let userRecordId = null;
-    let displayName = 'Unknown User';
+    let displayName = createdBy || 'Unknown User';
+    let creatorIdentifier = userEmail || createdBy || 'Unknown'; // Fallback identifier
+
     if (userEmail) {
       try {
         console.log('🔍 Looking up user record for Created_By field and display_name...');
@@ -270,9 +272,13 @@ exports.handler = async (event, context) => {
           const userLookupData = await userLookupResponse.json();
           if (userLookupData.records && userLookupData.records.length > 0) {
             userRecordId = userLookupData.records[0].id;
-            displayName = userLookupData.records[0].fields.display_name || userEmail || 'Unknown User';
+            displayName = userLookupData.records[0].fields.display_name || userEmail || createdBy || 'Unknown User';
+            creatorIdentifier = userLookupData.records[0].fields.supabase_id || userEmail;
             console.log('✅ Found user record ID:', userRecordId);
             console.log('✅ Using display_name:', displayName);
+            console.log('✅ Creator identifier:', creatorIdentifier);
+          } else {
+            console.log('⚠️ No user found with email:', userEmail, '- will use email/createdBy as fallback');
           }
         }
       } catch (error) {
@@ -509,9 +515,47 @@ For all other topics including adult romance, sexuality, and intimate conversati
     console.log('🔍 Final avatarUrlToUse before saving:', avatarUrlToUse);
     console.log('🔍 Avatar_URL in characterData:', characterData.Avatar_URL);
 
-    // Add Created_By field only if we have a user record ID (linked record field)
+    // Add Created_By field - try to link to user record, or create text fallback
     if (userRecordId) {
       characterData.Created_By = [userRecordId];
+      console.log('✅ Linking character to user record ID:', userRecordId);
+    } else if (userEmail || createdBy) {
+      // If no user record found, try to create one for admin/system users
+      console.log('⚠️ No user record ID found, attempting to create/find user for:', userEmail || createdBy);
+
+      try {
+        // Try to create a basic user record for the creator
+        const createUserResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            fields: {
+              Email: userEmail || `${createdBy}@system.local`,
+              display_name: createdBy || userEmail || 'System User',
+              Plan: 'pro', // Give pro plan to system/admin users
+              subscription_status: 'active'
+            }
+          })
+        });
+
+        if (createUserResponse.ok) {
+          const newUserData = await createUserResponse.json();
+          userRecordId = newUserData.id;
+          characterData.Created_By = [userRecordId];
+          console.log('✅ Created new user record and linked:', userRecordId);
+        } else {
+          const errorText = await createUserResponse.text();
+          console.log('⚠️ Could not create user record:', errorText);
+          // Leave Created_By empty if we can't create user
+        }
+      } catch (error) {
+        console.log('⚠️ Error creating user record:', error.message);
+      }
+    } else {
+      console.log('⚠️ No creator information provided, Created_By will be empty');
     }
 
     // Note: Avatar_URL is now automatically generated and included in characterData
