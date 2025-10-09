@@ -44,32 +44,15 @@
 
         <form id="supportWidgetForm" class="support-widget-form">
           <div class="support-form-field">
-            <input
-              type="text"
-              id="supportName"
-              placeholder="Je naam (optioneel)"
-              class="support-input"
-              maxlength="100"
-            />
-          </div>
-          <div class="support-form-field">
-            <input
-              type="email"
-              id="supportEmail"
-              placeholder="Je email (optioneel, voor antwoord)"
-              class="support-input"
-              maxlength="200"
-            />
-          </div>
-          <div class="support-form-field">
             <textarea
               id="supportMessage"
-              placeholder="Je vraag of feedback..."
+              placeholder="Typ je vraag of feedback hier..."
               class="support-textarea"
-              rows="4"
+              rows="5"
               required
               maxlength="2000"
             ></textarea>
+            <div class="support-char-count" id="supportCharCount">0 / 2000</div>
           </div>
           <button type="submit" class="support-submit-btn" id="supportSubmitBtn">
             <span id="supportSubmitText">Verstuur</span>
@@ -273,7 +256,14 @@
 
       .support-textarea {
         resize: vertical;
-        min-height: 80px;
+        min-height: 100px;
+      }
+
+      .support-char-count {
+        text-align: right;
+        font-size: 12px;
+        color: #999;
+        margin-top: 4px;
       }
 
       .support-submit-btn {
@@ -352,14 +342,26 @@
       chat.classList.remove('open');
     });
 
+    // Character counter
+    const messageTextarea = document.getElementById('supportMessage');
+    const charCount = document.getElementById('supportCharCount');
+
+    messageTextarea.addEventListener('input', () => {
+      const length = messageTextarea.value.length;
+      charCount.textContent = `${length} / 2000`;
+      if (length > 1900) {
+        charCount.style.color = '#f44336';
+      } else {
+        charCount.style.color = '#999';
+      }
+    });
+
     // Handle form submission
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const submitBtn = document.getElementById('supportSubmitBtn');
       const submitText = document.getElementById('supportSubmitText');
-      const name = document.getElementById('supportName').value.trim();
-      const email = document.getElementById('supportEmail').value.trim();
       const message = document.getElementById('supportMessage').value.trim();
 
       if (!message) return;
@@ -371,24 +373,30 @@
       // Add user message to chat
       addMessage(message, 'user');
 
-      // Get user info if logged in
-      let userInfo = {};
+      // Get user info from localStorage (auto-filled for logged-in users)
+      let userInfo = {
+        userId: null,
+        userName: 'Anonymous',
+        userEmail: null
+      };
+
       try {
         const user = JSON.parse(localStorage.getItem('user') || '{}');
-        userInfo.userId = user.email || null;
-        userInfo.userName = user.display_name || name || 'Anonymous';
+        userInfo.userId = user.email || user.supabase_id || null;
+        userInfo.userName = user.display_name || user.name || 'Anonymous';
+        userInfo.userEmail = user.email || null;
       } catch (e) {
-        userInfo.userName = name || 'Anonymous';
+        console.log('No user data found in localStorage');
       }
 
       try {
-        // Send to backend
+        // Send to backend with auto-filled user info
         const response = await fetch('/.netlify/functions/support-message', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            name: name || userInfo.userName,
-            email: email,
+            name: userInfo.userName,
+            email: userInfo.userEmail,
             message: message,
             userId: userInfo.userId,
             url: window.location.href,
