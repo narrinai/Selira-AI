@@ -163,14 +163,14 @@ function addAgeVerificationStyles() {
     }
 
     .age-btn-confirm {
-      background: #10b981;
+      background: linear-gradient(135deg, #CE93D8 0%, #BA68C8 100%);
       color: white;
     }
 
     .age-btn-confirm:hover {
-      background: #059669;
+      background: linear-gradient(135deg, #BA68C8 0%, #AB47BC 100%);
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+      box-shadow: 0 4px 12px rgba(206, 147, 216, 0.4);
     }
 
     .age-btn-deny {
@@ -198,11 +198,12 @@ function addAgeVerificationStyles() {
     }
 
     .age-verification-disclaimer a {
-      color: #d4a574;
+      color: #CE93D8;
       text-decoration: none;
     }
 
     .age-verification-disclaimer a:hover {
+      color: #BA68C8;
       text-decoration: underline;
     }
 
