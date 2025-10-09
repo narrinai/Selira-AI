@@ -27,44 +27,39 @@ async function downloadImage(url, filename) {
   }
 }
 
-// EXACT COPY from complete-avatar-solution-v3.js
-function getStylishClothing(style, category = 'default') {
+// Gender-aware clothing selection
+function getStylishClothing(style, category = 'default', sex = 'female') {
   const categoryClothing = {
-    // Anime & Manga specific - sexy anime wear
+    // Anime & Manga specific
     'anime-manga': {
-      female: ['revealing school uniform', 'skimpy magical girl outfit', 'short kimono', 'sexy sailor uniform', 'provocative maid outfit', 'barely-there anime outfit', 'revealing dress', 'seductive costume']
+      female: ['revealing school uniform', 'skimpy magical girl outfit', 'short kimono', 'sexy sailor uniform', 'provocative maid outfit', 'barely-there anime outfit', 'revealing dress', 'seductive costume'],
+      male: ['open shirt showing abs', 'tight pants', 'revealing anime outfit', 'shirtless with pants', 'muscular hero costume']
     },
     anime: {
-      female: ['extremely revealing school uniform', 'micro bikini', 'ultra-short kimono', 'barely-there top', 'almost naked maid outfit', 'tiny lingerie set', 'string bikini', 'see-through outfit', 'exposed breasts lingerie', 'topless with mini skirt', 'transparent clothing', 'nipple-revealing top']
-    },
-    manga: {
-      female: ['sexy manga outfit', 'revealing uniform', 'skimpy dress', 'provocative attire']
+      female: ['extremely revealing school uniform', 'micro bikini', 'ultra-short kimono', 'barely-there top', 'almost naked maid outfit', 'tiny lingerie set', 'string bikini', 'see-through outfit'],
+      male: ['shirtless', 'tight swim trunks', 'revealing martial arts gi', 'open vest showing chest', 'tight athletic wear']
     },
 
-    // Cooking & Food - sexy chef wear
-    cooking: {
-      female: ['sexy apron only', 'revealing chef outfit', 'apron over lingerie', 'skimpy kitchen wear', 'provocative cooking attire']
-    },
-    food: {
-      female: ['sexy waitress outfit', 'revealing server uniform', 'skimpy restaurant attire', 'provocative service wear']
-    },
-
-    // Fitness & Sports - sexy athletic wear
+    // Fitness & Sports
     fitness: {
-      female: ['revealing sports bra and micro shorts', 'tight yoga pants and crop sports bra', 'skimpy gym wear', 'barely-there workout outfit', 'sexy athletic bikini', 'revealing compression wear']
+      female: ['revealing sports bra and micro shorts', 'tight yoga pants and crop sports bra', 'skimpy gym wear', 'barely-there workout outfit', 'sexy athletic bikini'],
+      male: ['shirtless with gym shorts', 'tight tank top', 'revealing athletic wear', 'swim trunks showing abs', 'compression shorts']
     },
     sports: {
-      female: ['sexy cheerleader outfit', 'skimpy volleyball bikini', 'short tennis skirt', 'revealing athletic uniform', 'provocative sporty crop top']
+      female: ['sexy cheerleader outfit', 'skimpy volleyball bikini', 'short tennis skirt', 'revealing athletic uniform'],
+      male: ['shirtless athlete', 'tight swim briefs', 'revealing sports uniform', 'muscular swimmer outfit']
     },
 
-    // Professional & Business - sexy professional attire
+    // Professional & Business
     business: {
-      female: ['sexy secretary outfit', 'revealing business dress', 'low-cut office attire', 'provocative work suit', 'seductive corporate wear']
+      female: ['sexy secretary outfit', 'revealing business dress', 'low-cut office attire', 'provocative work suit'],
+      male: ['unbuttoned dress shirt', 'tight business suit', 'revealing professional attire', 'open collar showing chest']
     },
 
-    // Default fallback - extremely sexy companion clothing for anime
+    // Default fallback
     default: {
-      female: ['ultra-revealing lingerie', 'micro string bikini', 'see-through dress', 'topless with tiny shorts', 'exposed breasts outfit', 'barely covered privates', 'transparent lingerie', 'nipple-revealing top', 'almost completely naked', 'tiny thong bikini', 'exposed cleavage outfit']
+      female: ['ultra-revealing lingerie', 'micro string bikini', 'see-through dress', 'topless with tiny shorts', 'barely covered outfit', 'transparent lingerie', 'tiny thong bikini'],
+      male: ['shirtless showing abs', 'tight underwear', 'revealing swim trunks', 'open shirt muscular chest', 'barely covered lower body', 'athletic shorts shirtless']
     }
   };
 
@@ -83,9 +78,9 @@ function getStylishClothing(style, category = 'default') {
     }
   }
 
-  // Select female clothing (since all companions are female)
-  const femaleClothing = clothingOptions.female || categoryClothing.default.female;
-  return femaleClothing[Math.floor(Math.random() * femaleClothing.length)];
+  // Select clothing based on gender
+  const genderClothing = clothingOptions[sex] || clothingOptions.female || categoryClothing.default[sex] || categoryClothing.default.female;
+  return genderClothing[Math.floor(Math.random() * genderClothing.length)];
 }
 
 async function generateNewAvatar(companion) {
@@ -103,9 +98,9 @@ async function generateNewAvatar(companion) {
 
     console.log(`   Traits: ${traits.style}, ${traits.sex}, ${traits.ethnicity}, ${traits.hairLength} ${traits.hairColor} hair`);
 
-    // Get random sexy clothing - EXACT same as complete-avatar-solution-v3.js
+    // Get random sexy clothing - gender-aware
     const category = 'default'; // Use default for most explicit clothing
-    const stylishClothing = getStylishClothing(traits.style, category);
+    const stylishClothing = getStylishClothing(traits.style, category, traits.sex);
     console.log(`   Clothing: ${stylishClothing}`);
 
     // EXACT same character-aware prompt building as complete-avatar-solution-v3.js
@@ -153,12 +148,20 @@ async function generateNewAvatar(companion) {
     const hairColorDesc = hairColorMap[traits.hairColor] || 'brown hair';
 
     // Build simple prompt WITHOUT traits (Netlify function will add traits from parameters)
-    // Just include clothing and style keywords
+    // Just include clothing and style keywords - gender-aware
     let avatarPrompt;
     if (isAnimeStyle) {
-      avatarPrompt = `very attractive face, extremely seductive expression, detailed anime art, very erotic pose, wearing ${stylishClothing}, vibrant colors, high quality anime artwork, detailed facial features, anime eyes, perfect anatomy, correct human anatomy, two arms, two hands, very sensual pose, large breasts, curvy figure, big butt, voluptuous body, exposed skin, revealing clothing, single character, solo, no extra limbs, proper proportions, bedroom background, intimate setting, seductive atmosphere`;
+      if (traits.sex === 'male') {
+        avatarPrompt = `very attractive face, extremely seductive expression, detailed anime art, very erotic pose, wearing ${stylishClothing}, vibrant colors, high quality anime artwork, detailed facial features, anime eyes, perfect anatomy, correct human anatomy, two arms, two hands, very sensual pose, muscular chest, abs visible, athletic build, masculine physique, exposed skin, revealing clothing, single character, solo, no extra limbs, proper proportions, bedroom background, intimate setting, seductive atmosphere`;
+      } else {
+        avatarPrompt = `very attractive face, extremely seductive expression, detailed anime art, very erotic pose, wearing ${stylishClothing}, vibrant colors, high quality anime artwork, detailed facial features, anime eyes, perfect anatomy, correct human anatomy, two arms, two hands, very sensual pose, large breasts, curvy figure, big butt, voluptuous body, exposed skin, revealing clothing, single character, solo, no extra limbs, proper proportions, bedroom background, intimate setting, seductive atmosphere`;
+      }
     } else {
-      avatarPrompt = `attractive face, seductive expression, alluring pose, wearing ${stylishClothing}, photorealistic, professional photography, soft romantic lighting, glamour photography style, eye contact, sharp focus, attractive model, confident pose, single person, solo, perfect human anatomy, two arms, two hands, correct proportions, no extra limbs, bedroom background, beach setting, luxury suite, intimate atmosphere`;
+      if (traits.sex === 'male') {
+        avatarPrompt = `attractive face, seductive expression, alluring pose, wearing ${stylishClothing}, photorealistic, professional photography, soft romantic lighting, glamour photography style, eye contact, sharp focus, attractive model, confident pose, single person, solo, perfect human anatomy, two arms, two hands, correct proportions, no extra limbs, muscular chest, abs visible, athletic masculine body, bedroom background, beach setting, luxury suite, intimate atmosphere`;
+      } else {
+        avatarPrompt = `attractive face, seductive expression, alluring pose, wearing ${stylishClothing}, photorealistic, professional photography, soft romantic lighting, glamour photography style, eye contact, sharp focus, attractive model, confident pose, single person, solo, perfect human anatomy, two arms, two hands, correct proportions, no extra limbs, bedroom background, beach setting, luxury suite, intimate atmosphere`;
+      }
     }
 
     console.log(`   🎨 CUSTOM PROMPT (traits added by Netlify function): ${avatarPrompt.substring(0, 80)}...`);
