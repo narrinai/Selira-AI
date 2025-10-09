@@ -55,32 +55,39 @@ exports.handler = async (event, context) => {
   for (let i = 0; i < allTags.length; i += batchSize) {
     const batch = allTags.slice(i, i + batchSize);
 
-    const records = batch.map(tag => ({
+    // Create a dummy character with these tags to populate the multi-select field
+    const dummyCharacter = {
       fields: {
-        'Tag': tag,
-        'Status': 'Active'
+        'Name': `Tag Seed Batch ${Math.floor(i / batchSize) + 1}`,
+        'Slug': `tag-seed-batch-${Math.floor(i / batchSize) + 1}-${Date.now()}`,
+        'Title': 'Tag Seeder',
+        'Description': 'Temporary character to populate tag options in multi-select field',
+        'Category': 'Fantasy',
+        'Tags': batch, // Multi-select field with our new tags
+        'Visibility': 'private', // Hide from users
+        'Sex': 'female'
       }
-    }));
+    };
 
     try {
-      const response = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Tags`, {
+      const response = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ records })
+        body: JSON.stringify(dummyCharacter)
       });
 
       if (response.ok) {
         const result = await response.json();
-        successCount += result.records.length;
+        successCount += batch.length;
         const batchNum = Math.floor(i / batchSize) + 1;
-        console.log(`✅ Batch ${batchNum}: Added ${result.records.length} tags`);
+        console.log(`✅ Batch ${batchNum}: Added ${batch.length} tags via dummy character`);
 
-        result.records.forEach(record => {
-          console.log(`   - ${record.fields.Tag}`);
-          results.push({ tag: record.fields.Tag, status: 'success' });
+        batch.forEach(tag => {
+          console.log(`   - ${tag}`);
+          results.push({ tag: tag, status: 'success' });
         });
       } else {
         const error = await response.json();
