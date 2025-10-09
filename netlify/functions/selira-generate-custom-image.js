@@ -365,13 +365,28 @@ exports.handler = async (event, context) => {
     const characterAppearance = `${hairPart}, ${genderDescription}, ${ethnicityDesc}`;
 
     // Build full prompt with character appearance and context
+    // Different styles for male vs female
+    const isMale = sex === 'male';
     let fullPrompt;
+
     if (isAnimeStyle) {
       const shotDesc = isFullBody ? 'full body anime illustration' : 'anime portrait';
-      fullPrompt = `${shotDesc} of ${genderDescription}, ${ethnicityDesc}, ${hairPart}, anime style, ${sanitizedPrompt}${contextualEnhancement}, BRIGHT ILLUMINATION, VIVID LIGHTING, HIGH CONTRAST, detailed anime art, high quality anime illustration, vibrant colors, cel shading, single anime character, perfect anime anatomy, anime eyes, KEY LIGHT on subject, FILL LIGHT brightening character, RIM LIGHT separating subject from background, STUDIO LIGHTING setup, character is BRIGHTLY LIT, background is DARKER than subject, DRAMATIC CONTRAST between character and background, subject POPS OUT visually, professional lighting, WELL-EXPOSED character, NO dark shadows on face, BRIGHT and CLEAR visibility`;
+      if (isMale) {
+        // Male anime: bright vibrant lighting, warm colors
+        fullPrompt = `${shotDesc} of ${genderDescription}, ${ethnicityDesc}, ${hairPart}, anime style, ${sanitizedPrompt}${contextualEnhancement}, bright vibrant lighting, colorful anime style, high quality detailed anime art, sharp focus, vibrant colors, cel shading, single anime character, perfect anime anatomy, anime eyes, warm color palette, well-lit scene`;
+      } else {
+        // Female anime: soft feminine style
+        fullPrompt = `${shotDesc} of ${genderDescription}, ${ethnicityDesc}, ${hairPart}, anime style, ${sanitizedPrompt}${contextualEnhancement}, detailed anime art, high quality anime illustration, vibrant colors, cel shading, clean background, single anime character, perfect anime anatomy, anime eyes`;
+      }
     } else {
       const shotDesc = isFullBody ? 'full body photograph' : 'portrait photograph';
-      fullPrompt = `REALISTIC PHOTOGRAPHY, ${shotDesc} of ${genderDescription}, ${ethnicityDesc}, ${hairPart}, ${sanitizedPrompt}${contextualEnhancement}, BRIGHT ILLUMINATION, VIVID LIGHTING, HIGH CONTRAST, ultra realistic, photorealistic, real human photo, actual photograph, professional photography, realistic skin texture, realistic facial features, realistic proportions, high quality photo, single real person, perfect human anatomy, NO anime, NO cartoon, NO illustration, NO drawing, NO manga, NO cel shading, NO stylized art, real photograph only, KEY LIGHT on subject, FILL LIGHT brightening subject, BACK LIGHT rim lighting, RIM LIGHT separating subject from background, PROFESSIONAL STUDIO LIGHTING, subject is BRIGHTLY LIT, background is DARKER and BLURRED, DRAMATIC CONTRAST between subject and background, subject POPS OUT from background, shallow depth of field, bokeh background, WELL-EXPOSED subject, NO dark shadows on face, GOLDEN HOUR LIGHTING quality, BRIGHT and CLEAR subject, subject is LUMINOUS and RADIANT`;
+      if (isMale) {
+        // Male realistic: bright warm professional photography
+        fullPrompt = `REALISTIC PHOTOGRAPHY, ${shotDesc} of ${genderDescription}, ${ethnicityDesc}, ${hairPart}, ${sanitizedPrompt}${contextualEnhancement}, BRIGHT warm lighting, professional photography, soft romantic glow, glamour photo shoot, golden hour lighting, sharp focus, ultra realistic, photorealistic, real human photo, actual photograph, professional photography, realistic skin texture, realistic facial features, realistic proportions, high quality photo, well-lit professional portrait, warm tones, single real person, perfect human anatomy, NO anime, NO cartoon, NO illustration, NO drawing, NO manga, NO cel shading, NO stylized art, real photograph only`;
+      } else {
+        // Female realistic: classic professional studio
+        fullPrompt = `REALISTIC PHOTOGRAPHY, ${shotDesc} of ${genderDescription}, ${ethnicityDesc}, ${hairPart}, ${sanitizedPrompt}${contextualEnhancement}, ultra realistic, photorealistic, real human photo, actual photograph, professional photography, realistic skin texture, realistic facial features, realistic proportions, high quality photo, professional studio lighting, clean background, single real person, perfect human anatomy, NO anime, NO cartoon, NO illustration, NO drawing, NO manga, NO cel shading, NO stylized art, real photograph only`;
+      }
     }
     
     console.log(`🎨 [${requestId}] Full prompt:`, fullPrompt);
