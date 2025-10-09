@@ -1458,8 +1458,13 @@
       if (stepElement) {
         stepElement.style.display = 'block';
 
-        // Update images based on selected sex for steps 2, 3, 4
+        // Update images based on selected sex for steps 2, 3, 4, 5
         updateStepImages(currentStep);
+
+        // Update tags when showing step 6 (Final Details)
+        if (currentStep === 6) {
+          updateAvailableTags();
+        }
 
         // Immediately scroll to top (instant, no smooth behavior)
         window.scrollTo(0, 0);
