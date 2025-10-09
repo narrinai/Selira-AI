@@ -90,7 +90,8 @@ exports.handler = async (event, context) => {
         },
       ],
       mode: checkoutMode,
-      customer_email: userEmail,
+      // Don't prefill customer_email to allow payment method selection (Link vs Apple Pay vs Card)
+      // customer_email: userEmail,
       metadata: {
         user_id: userId,
         user_email: userEmail,
@@ -101,6 +102,10 @@ exports.handler = async (event, context) => {
       cancel_url: cancelUrl,
       allow_promotion_codes: true,
       billing_address_collection: 'required',
+      // Allow Link to be shown as an option alongside other payment methods
+      consent_collection: {
+        terms_of_service: 'none'
+      },
       // Save payment method for future use and enable SCA retry logic
       payment_intent_data: checkoutMode === 'payment' ? {
         setup_future_usage: 'off_session',
