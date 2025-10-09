@@ -297,10 +297,7 @@
 
       // Disable form
       submitBtn.disabled = true;
-      submitText.textContent = 'Versturen...';
-
-      // Add user message to chat
-      addMessage(message, 'user');
+      submitText.textContent = 'Sending...';
 
       // Get user info from localStorage (auto-filled for logged-in users)
       let userInfo = {
