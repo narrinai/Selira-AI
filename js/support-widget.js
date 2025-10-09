@@ -9,7 +9,7 @@
   // Create widget HTML
   const widgetHTML = `
     <!-- Support Widget Button -->
-    <div id="supportWidgetBtn" class="support-widget-btn" title="Hulp nodig?">
+    <div id="supportWidgetBtn" class="support-widget-btn" title="Need help?">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="10"></circle>
         <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
@@ -20,12 +20,9 @@
     <!-- Support Widget Chat Window -->
     <div id="supportWidgetChat" class="support-widget-chat">
       <div class="support-widget-header">
-        <div>
-          <h3>💬 Support & Feedback</h3>
-          <p class="support-widget-subtitle">We helpen je graag!</p>
-        </div>
-        <button id="supportWidgetClose" class="support-widget-close" title="Sluiten">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <h3>Support</h3>
+        <button id="supportWidgetClose" class="support-widget-close" title="Close">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="18" y1="6" x2="6" y2="18"></line>
             <line x1="6" y1="6" x2="18" y2="18"></line>
           </svg>
@@ -33,34 +30,21 @@
       </div>
 
       <div class="support-widget-body">
-        <div class="support-widget-messages" id="supportWidgetMessages">
-          <div class="support-message support-message-bot">
-            <div class="support-message-avatar">🤖</div>
-            <div class="support-message-content">
-              <p>Hoi! Hoe kunnen we je helpen? Stel gerust je vraag of deel je feedback.</p>
-            </div>
-          </div>
-        </div>
-
         <form id="supportWidgetForm" class="support-widget-form">
-          <div class="support-form-field">
-            <textarea
-              id="supportMessage"
-              placeholder="Typ je vraag of feedback hier..."
-              class="support-textarea"
-              rows="5"
-              required
-              maxlength="2000"
-            ></textarea>
+          <textarea
+            id="supportMessage"
+            placeholder="How can we help you?"
+            class="support-textarea"
+            rows="3"
+            required
+            maxlength="2000"
+          ></textarea>
+          <div class="support-widget-footer">
             <div class="support-char-count" id="supportCharCount">0 / 2000</div>
+            <button type="submit" class="support-submit-btn" id="supportSubmitBtn">
+              <span id="supportSubmitText">Send</span>
+            </button>
           </div>
-          <button type="submit" class="support-submit-btn" id="supportSubmitBtn">
-            <span id="supportSubmitText">Verstuur</span>
-            <svg id="supportSubmitIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="22" y1="2" x2="11" y2="13"></line>
-              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-            </svg>
-          </button>
         </form>
       </div>
     </div>
@@ -94,19 +78,19 @@
 
       .support-widget-chat {
         position: fixed;
-        bottom: 96px;
+        bottom: 84px;
         right: 24px;
-        width: 380px;
+        width: 300px;
         max-width: calc(100vw - 48px);
-        max-height: calc(100vh - 140px);
         background: #1a1a1a;
         border: 1px solid #333333;
-        border-radius: 16px;
+        border-radius: 12px;
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
         display: none;
         flex-direction: column;
         z-index: 9999;
         animation: slideUp 0.3s ease;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       }
 
       @keyframes slideUp {
@@ -125,177 +109,103 @@
       }
 
       .support-widget-header {
-        padding: 20px;
+        padding: 12px 16px;
         background: linear-gradient(135deg, #ce93d8 0%, #ba68c8 100%);
-        border-radius: 16px 16px 0 0;
+        border-radius: 12px 12px 0 0;
         color: white;
         display: flex;
         justify-content: space-between;
-        align-items: flex-start;
+        align-items: center;
       }
 
       .support-widget-header h3 {
         margin: 0;
-        font-size: 18px;
+        font-size: 14px;
         font-weight: 600;
-      }
-
-      .support-widget-subtitle {
-        margin: 4px 0 0 0;
-        font-size: 13px;
-        opacity: 0.9;
+        font-family: 'Inter', sans-serif;
       }
 
       .support-widget-close {
-        background: rgba(255, 255, 255, 0.2);
+        background: transparent;
         border: none;
-        border-radius: 8px;
-        width: 32px;
-        height: 32px;
+        width: 24px;
+        height: 24px;
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
         color: white;
         transition: all 0.2s ease;
+        opacity: 0.8;
       }
 
       .support-widget-close:hover {
-        background: rgba(255, 255, 255, 0.3);
+        opacity: 1;
       }
 
       .support-widget-body {
-        padding: 20px;
+        padding: 14px;
         display: flex;
         flex-direction: column;
-        gap: 16px;
-        overflow-y: auto;
-        max-height: calc(100vh - 220px);
-      }
-
-      .support-widget-messages {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-      }
-
-      .support-message {
-        display: flex;
-        gap: 10px;
-        animation: fadeIn 0.3s ease;
-      }
-
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-
-      .support-message-bot {
-        align-items: flex-start;
-      }
-
-      .support-message-user {
-        align-items: flex-end;
-        flex-direction: row-reverse;
-      }
-
-      .support-message-avatar {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 20px;
-        flex-shrink: 0;
-      }
-
-      .support-message-content {
-        background: #2a2a2a;
-        color: #ffffff;
-        padding: 12px 16px;
-        border-radius: 12px;
-        max-width: 70%;
-        border: 1px solid #333333;
-      }
-
-      .support-message-user .support-message-content {
-        background: linear-gradient(135deg, #ce93d8 0%, #ba68c8 100%);
-        color: white;
-        border: none;
-      }
-
-      .support-message-content p {
-        margin: 0;
-        font-size: 14px;
-        line-height: 1.5;
       }
 
       .support-widget-form {
         display: flex;
         flex-direction: column;
-        gap: 12px;
+        gap: 8px;
       }
 
-      .support-form-field {
-        display: flex;
-        flex-direction: column;
-      }
-
-      .support-input,
       .support-textarea {
-        padding: 12px;
+        padding: 10px;
         background: #2a2a2a;
         border: 1px solid #333333;
         border-radius: 8px;
-        font-size: 14px;
-        font-family: inherit;
+        font-size: 13px;
+        font-family: 'Inter', sans-serif;
         color: #ffffff;
         transition: border-color 0.2s ease;
+        resize: none;
+        min-height: 70px;
       }
 
-      .support-input::placeholder,
       .support-textarea::placeholder {
         color: #888888;
       }
 
-      .support-input:focus,
       .support-textarea:focus {
         outline: none;
         border-color: #ce93d8;
       }
 
-      .support-textarea {
-        resize: vertical;
-        min-height: 100px;
+      .support-widget-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
       }
 
       .support-char-count {
-        text-align: right;
-        font-size: 12px;
+        font-size: 11px;
         color: #888888;
-        margin-top: 4px;
+        font-family: 'Inter', sans-serif;
       }
 
       .support-submit-btn {
         background: linear-gradient(135deg, #ce93d8 0%, #ba68c8 100%);
         color: white;
         border: none;
-        padding: 12px 24px;
-        border-radius: 8px;
-        font-size: 14px;
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 13px;
         font-weight: 600;
+        font-family: 'Inter', sans-serif;
         cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
         transition: all 0.2s ease;
+        white-space: nowrap;
       }
 
       .support-submit-btn:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(206, 147, 216, 0.4);
+        opacity: 0.9;
       }
 
       .support-submit-btn:disabled {
@@ -306,17 +216,24 @@
       .support-success-message {
         background: #10b981;
         color: white;
-        padding: 12px;
-        border-radius: 8px;
+        padding: 10px 12px;
+        border-radius: 6px;
         text-align: center;
-        font-size: 14px;
+        font-size: 13px;
+        font-family: 'Inter', sans-serif;
         animation: fadeIn 0.3s ease;
         border: 1px solid #059669;
+        margin-bottom: 10px;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
       }
 
       @media (max-width: 480px) {
         .support-widget-chat {
-          bottom: 90px;
+          bottom: 84px;
           right: 16px;
           left: 16px;
           width: auto;
@@ -343,7 +260,7 @@
     const chat = document.getElementById('supportWidgetChat');
     const closeBtn = document.getElementById('supportWidgetClose');
     const form = document.getElementById('supportWidgetForm');
-    const messagesContainer = document.getElementById('supportWidgetMessages');
+    const bodyContainer = document.querySelector('.support-widget-body');
 
     // Toggle chat
     btn.addEventListener('click', () => {
@@ -417,39 +334,42 @@
         });
 
         if (response.ok) {
-          // Show success
-          addMessage('Bedankt voor je bericht! We nemen zo snel mogelijk contact op. 😊', 'bot');
+          // Show success message
+          const successMsg = document.createElement('div');
+          successMsg.className = 'support-success-message';
+          successMsg.textContent = 'Message sent! We\'ll get back to you soon. 😊';
+          bodyContainer.insertBefore(successMsg, form);
           form.reset();
 
-          // Close chat after 3 seconds
+          // Close chat after 2 seconds
           setTimeout(() => {
             chat.classList.remove('open');
-          }, 3000);
+            // Remove success message after closing
+            setTimeout(() => successMsg.remove(), 500);
+          }, 2000);
         } else {
-          addMessage('Er ging iets mis. Probeer het later opnieuw.', 'bot');
+          const errorMsg = document.createElement('div');
+          errorMsg.className = 'support-success-message';
+          errorMsg.style.background = '#ef4444';
+          errorMsg.style.borderColor = '#dc2626';
+          errorMsg.textContent = 'Something went wrong. Please try again.';
+          bodyContainer.insertBefore(errorMsg, form);
+          setTimeout(() => errorMsg.remove(), 3000);
         }
       } catch (error) {
         console.error('Support message error:', error);
-        addMessage('Er ging iets mis. Probeer het later opnieuw.', 'bot');
+        const errorMsg = document.createElement('div');
+        errorMsg.className = 'support-success-message';
+        errorMsg.style.background = '#ef4444';
+        errorMsg.style.borderColor = '#dc2626';
+        errorMsg.textContent = 'Something went wrong. Please try again.';
+        bodyContainer.insertBefore(errorMsg, form);
+        setTimeout(() => errorMsg.remove(), 3000);
       } finally {
         submitBtn.disabled = false;
-        submitText.textContent = 'Verstuur';
+        submitText.textContent = 'Send';
       }
     });
-
-    // Helper to add message to chat
-    function addMessage(text, type) {
-      const messageHTML = `
-        <div class="support-message support-message-${type}">
-          <div class="support-message-avatar">${type === 'bot' ? '🤖' : '👤'}</div>
-          <div class="support-message-content">
-            <p>${text}</p>
-          </div>
-        </div>
-      `;
-      messagesContainer.insertAdjacentHTML('beforeend', messageHTML);
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
   }
 
   // Initialize when DOM is ready
