@@ -68,9 +68,14 @@ class SupabaseAuthModal {
       this.supabase.auth.onAuthStateChange(async (event, session) => {
         console.log('🔄 Auth state changed:', event);
 
-        if (session) {
+        // Only sync on actual sign-in events, not on initial session or token refresh
+        if (session && (event === 'SIGNED_IN' || event === 'USER_UPDATED')) {
           this.user = session.user;
           await this.syncUserToAirtable(this.user);
+          this.updateAuthState(true);
+        } else if (session) {
+          // For other events with session (INITIAL_SESSION, TOKEN_REFRESHED), just update state
+          this.user = session.user;
           this.updateAuthState(true);
         } else {
           this.user = null;
@@ -355,11 +360,6 @@ class SupabaseAuthModal {
 
       // Show success message
       this.showSuccess(isSignupMode ? 'Account created successfully! 🎉' : 'Welcome back! 👋');
-
-      // Reload page to ensure all auth state is properly set
-      setTimeout(() => {
-        window.location.reload();
-      }, 500);
 
     } catch (error) {
       console.error('❌ Email/password authentication failed:', error);
