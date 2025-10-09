@@ -420,12 +420,12 @@ For all other topics including adult romance, sexuality, and intimate conversati
 
       if (artStyle === 'anime') {
         attractivePrompt = isMale
-          ? `handsome anime guy, attractive masculine face, seductive expression, detailed anime art, ${clothingStyle}, toned muscular body, anime style, vibrant colors, high quality anime artwork, detailed facial features, confident pose, masculine charm, single character, solo`
-          : `beautiful anime girl, attractive face, seductive expression, detailed anime art, flirtatious pose, wearing ${clothingStyle}, anime style, vibrant colors, attractive body, high quality anime artwork, detailed facial features, anime eyes, perfect anime anatomy, alluring pose, single character, solo`;
+          ? `handsome anime guy, attractive masculine face, seductive expression, detailed anime art, ${clothingStyle}, toned muscular body, anime style, vibrant colors, high quality anime artwork, detailed facial features, confident pose, masculine charm, single character, solo, subject in sharp focus, rim lighting on character, subject stands out from background, dramatic lighting on subject, character well-lit and prominent`
+          : `beautiful anime girl, attractive face, seductive expression, detailed anime art, flirtatious pose, wearing ${clothingStyle}, anime style, vibrant colors, attractive body, high quality anime artwork, detailed facial features, anime eyes, perfect anime anatomy, alluring pose, single character, solo, subject in sharp focus, rim lighting on character, subject stands out from background, dramatic lighting on subject, character well-lit and prominent`;
       } else {
         attractivePrompt = isMale
-          ? `handsome muscular man, attractive masculine face, seductive expression, ${clothingStyle}, athletic build, photorealistic, professional photography, masculine energy, confident pose, single person, solo`
-          : `beautiful woman, attractive face, seductive expression, alluring pose, wearing ${clothingStyle}, photorealistic, professional photography, soft romantic lighting, glamour photography style, eye contact, sharp focus, attractive model, confident pose, single person, solo`;
+          ? `handsome muscular man, attractive masculine face, seductive expression, ${clothingStyle}, athletic build, photorealistic, professional photography, masculine energy, confident pose, single person, solo, subject in sharp focus, rim lighting on subject, subject clearly separated from background, dramatic lighting highlighting the subject, main subject well-lit and prominent, shallow depth of field, bokeh background effect`
+          : `beautiful woman, attractive face, seductive expression, alluring pose, wearing ${clothingStyle}, photorealistic, professional photography, soft romantic lighting, glamour photography style, eye contact, sharp focus, attractive model, confident pose, single person, solo, subject in sharp focus, rim lighting on subject, subject clearly separated from background, dramatic lighting highlighting the subject, main subject well-lit and prominent, shallow depth of field, bokeh background effect`;
       }
 
       // Call the avatar generation function with enhanced attractive traits

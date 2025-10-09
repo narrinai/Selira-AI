@@ -277,9 +277,9 @@ async function generateMaleAvatar(companionData) {
 
     let attractivePrompt;
     if (companionData.artStyle === 'anime') {
-      attractivePrompt = `handsome anime guy, attractive masculine face, seductive bedroom eyes, ${clothingStyle}, toned muscular body, ${backgroundScene}, detailed anime art style, vibrant colors, high quality anime illustration, confident seductive pose, masculine charm, single male character, solo portrait`;
+      attractivePrompt = `handsome anime guy, attractive masculine face, seductive bedroom eyes, ${clothingStyle}, toned muscular body, ${backgroundScene}, detailed anime art style, vibrant colors, high quality anime illustration, confident seductive pose, masculine charm, single male character, solo portrait, subject in sharp focus, rim lighting on character, subject stands out from background, dramatic lighting on subject, character well-lit and prominent`;
     } else {
-      attractivePrompt = `handsome muscular man, attractive masculine face, seductive intense gaze, ${clothingStyle}, athletic build with defined muscles, ${backgroundScene}, photorealistic photography, professional portrait, masculine energy and charm, confident seductive pose, high quality photo, warm lighting, single male person, solo`;
+      attractivePrompt = `handsome muscular man, attractive masculine face, seductive intense gaze, ${clothingStyle}, athletic build with defined muscles, ${backgroundScene}, photorealistic photography, professional portrait, masculine energy and charm, confident seductive pose, high quality photo, warm lighting, single male person, solo, subject in sharp focus, rim lighting on subject, subject clearly separated from background, dramatic lighting highlighting the subject, main subject well-lit and prominent, shallow depth of field, bokeh background effect`;
     }
 
     console.log(`📋 Using NSFW prompt: ${attractivePrompt.substring(0, 100)}...`);
