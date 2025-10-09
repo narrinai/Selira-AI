@@ -1980,7 +1980,20 @@
       <section class="filter-section">
         <!-- Tag Pills Row - all on same line -->
         <div class="tag-filters" id="tagFilters">
-          <!-- Style dropdown FIRST -->
+          <!-- Sex dropdown FIRST -->
+          <div class="filter-dropdown">
+            <button class="dropdown-btn sex-filter-btn active" id="sexDropdownBtn" onclick="toggleDropdown('sex')">
+              <span>Female</span>
+              <span class="dropdown-arrow">▼</span>
+            </button>
+            <div class="dropdown-menu" id="sexDropdown">
+              <a href="#" onclick="setSexFilter('female')">Female</a>
+              <a href="#" onclick="setSexFilter('male')">Male</a>
+              <a href="#" onclick="setSexFilter('all')">All</a>
+            </div>
+          </div>
+
+          <!-- Style dropdown SECOND -->
           <div class="filter-dropdown">
             <button class="dropdown-btn style-filter-btn active" id="styleDropdownBtn" onclick="toggleDropdown('style')">
               <span>Realistic</span>
@@ -2022,6 +2035,7 @@
       search: '',
       category: 'all',
       tags: [],
+      sex: 'female', // Default to female
       style: 'realistic', // Default to realistic
       animated: undefined, // undefined = show all, true = only animated, false = only realistic
       unfiltered: undefined // undefined = show all, true = only unfiltered, false = only safe
@@ -2563,6 +2577,13 @@
         }
 
 
+        // Sex filter (sex field from Airtable)
+        if (currentFilters.sex) {
+          if (character.sex && character.sex.toLowerCase() !== currentFilters.sex.toLowerCase()) {
+            return false;
+          }
+        }
+
         // Style filter (companion_type field from Airtable)
         if (currentFilters.style) {
           if (currentFilters.style === 'anime') {
@@ -2645,6 +2666,27 @@
       }
     }
 
+
+    function setSexFilter(sex) {
+      currentFilters.sex = sex === 'all' ? undefined : sex;
+
+      // Update button text
+      const dropdownBtn = document.getElementById('sexDropdownBtn');
+      if (dropdownBtn) {
+        const sexLabels = {
+          'all': 'All',
+          'female': 'Female',
+          'male': 'Male'
+        };
+        dropdownBtn.querySelector('span:first-child').textContent = sexLabels[sex] || 'Female';
+      }
+
+      // Hide dropdown
+      document.getElementById('sexDropdown').style.display = 'none';
+
+      console.log('Sex filter changed to:', currentFilters.sex);
+      applyFilters();
+    }
 
     function setStyleFilter(style) {
       currentFilters.style = style === 'all' ? undefined : style;
