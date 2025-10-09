@@ -1517,15 +1517,9 @@
           if (img) {
             let newSrc;
             if (sex === 'male') {
-              // Use asian-male.png as fallback for korean, chinese, japanese, vietnamese
-              const asianEthnicities = ['korean', 'chinese', 'japanese', 'vietnamese'];
-              if (asianEthnicities.includes(ethnicity)) {
-                newSrc = `/images/asian-male.png`;
-              } else {
-                // middle-east becomes middle-eastern
-                const ethnicityKey = ethnicity === 'middle-east' ? 'middle-eastern' : ethnicity;
-                newSrc = `/images/${ethnicityKey}-male.png`;
-              }
+              // Use specific male ethnicity images
+              const ethnicityKey = ethnicity === 'middle-east' ? 'middle-eastern' : ethnicity;
+              newSrc = `/images/${ethnicityKey}-male.png`;
             } else {
               newSrc = `/images/${ethnicity}-et.png`;
             }
