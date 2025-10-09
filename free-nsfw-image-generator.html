@@ -1359,29 +1359,16 @@
         // Draw the image
         ctx.drawImage(img, 0, 0);
 
-        // Load Selira logo
-        const logo = new Image();
-        await new Promise((resolve, reject) => {
-          logo.onload = resolve;
-          logo.onerror = () => {
-            console.warn('Logo failed to load, will use text only');
-            resolve(); // Continue anyway
-          };
-          logo.src = '/images/selira-ai-logo-purple.png';
-        });
-
-        console.log('Logo loaded:', logo.width, 'x', logo.height);
-
         // Add watermark background (bottom right)
         const watermarkPadding = 30;
-        const watermarkHeight = 60;
-        const watermarkWidth = logo.width > 0 ? 180 : 160;
+        const watermarkHeight = 50;
+        const watermarkWidth = 150;
         const x = canvas.width - watermarkWidth - watermarkPadding;
         const y = canvas.height - watermarkHeight - watermarkPadding;
 
-        // Dark background with rounded corners
-        const radius = 12;
-        ctx.fillStyle = 'rgba(20, 20, 30, 0.85)';
+        // Black background with rounded corners
+        const radius = 10;
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
         ctx.beginPath();
         ctx.moveTo(x + radius, y);
         ctx.lineTo(x + watermarkWidth - radius, y);
@@ -1395,28 +1382,12 @@
         ctx.closePath();
         ctx.fill();
 
-        // Draw logo if loaded successfully
-        if (logo.width > 0) {
-          const logoHeight = 35;
-          const logoWidth = (logo.width / logo.height) * logoHeight;
-          const logoX = x + 15;
-          const logoY = y + (watermarkHeight - logoHeight) / 2;
-          ctx.drawImage(logo, logoX, logoY, logoWidth, logoHeight);
-
-          // Add text "Selira.ai" next to logo in pink/purple
-          ctx.fillStyle = '#CE93D8'; // Pink/purple color
-          ctx.font = 'bold 22px Arial, sans-serif';
-          ctx.textAlign = 'left';
-          ctx.textBaseline = 'middle';
-          ctx.fillText('Selira.ai', logoX + logoWidth + 10, y + watermarkHeight / 2);
-        } else {
-          // Fallback to text only if logo fails
-          ctx.fillStyle = '#CE93D8'; // Pink/purple color
-          ctx.font = 'bold 24px Arial, sans-serif';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText('Selira.ai', x + watermarkWidth / 2, y + watermarkHeight / 2);
-        }
+        // Add text "Selira.ai" in pink/purple
+        ctx.fillStyle = '#CE93D8'; // Pink/purple color
+        ctx.font = 'bold 24px Arial, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('Selira.ai', x + watermarkWidth / 2, y + watermarkHeight / 2);
 
         console.log('Watermark added, converting to blob...');
 
