@@ -116,11 +116,12 @@ async function generateMaleAvatar(companionData) {
     backgroundScene = randomBackgrounds[Math.floor(Math.random() * randomBackgrounds.length)];
     console.log(`🎲 Selected random background: ${backgroundScene.substring(0, 60)}...`);
 
+    // Simple short prompt - let the main function add the rest
     let attractivePrompt;
     if (companionData.artStyle === 'anime') {
-      attractivePrompt = `NSFW anime male, handsome shirtless muscular anime guy with defined abs and chest, NO SHIRT ON, seductive bedroom eyes, toned athletic body, ${backgroundScene}, detailed anime art, high quality anime illustration, vibrant colors, cel shading, perfect anatomy, confident alluring pose, masculine energy, single character solo`;
+      attractivePrompt = `shirtless with bare muscular chest showing defined abs and pecs, NO shirt on, seductive pose, ${backgroundScene}`;
     } else {
-      attractivePrompt = `NSFW realistic male photo, handsome shirtless muscular man with visible defined abs and pecs, NO SHIRT, bare chest showing muscles, seductive intense gaze, athletic physique, ${backgroundScene}, photorealistic professional photography, glamour male model shoot, dramatic studio lighting, high contrast, sharp focus, well-defined muscles clearly visible, professional fitness photography, single person solo`;
+      attractivePrompt = `shirtless bare chest showing defined abs and pecs, NO shirt, muscular build, seductive pose, ${backgroundScene}`;
     }
 
     console.log(`📋 Using NSFW prompt: ${attractivePrompt.substring(0, 100)}...`);
