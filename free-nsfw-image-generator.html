@@ -986,7 +986,9 @@
                 <div style="width: 60px; height: 60px; border: 4px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
                 <div style="color: var(--text-secondary); margin-top: 16px;">Generating your image...<br>This may take 7-8 seconds</div>
               </div>
-              <img id="generatedImage" style="max-width: 450px; width: 100%; border-radius: var(--radius-md); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4); display: none;" alt="Generated image">
+              <div id="imageContainer" style="display: none; position: relative; max-width: 450px; width: 100%;">
+                <img id="generatedImage" style="width: 100%; border-radius: var(--radius-md); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4); cursor: pointer;" alt="Generated image" onclick="window.open(this.src, '_blank')">
+              </div>
             </div>
 
             <!-- Download Button -->
@@ -1281,7 +1283,7 @@
       }
 
       document.getElementById('placeholder').style.display = 'none';
-      document.getElementById('generatedImage').style.display = 'none';
+      document.getElementById('imageContainer').style.display = 'none';
       document.getElementById('loadingIndicator').style.display = 'block';
       document.getElementById('downloadBtn').style.display = 'none';
       document.getElementById('generateBtn').disabled = true;
@@ -1312,7 +1314,7 @@
 
         generatedImageUrl = data.imageUrl;
         document.getElementById('generatedImage').src = generatedImageUrl;
-        document.getElementById('generatedImage').style.display = 'block';
+        document.getElementById('imageContainer').style.display = 'block';
         document.getElementById('loadingIndicator').style.display = 'none';
         document.getElementById('downloadBtn').style.display = 'flex';
         showAlert('Image generated successfully!', 'success');
@@ -1330,17 +1332,60 @@
     async function downloadImage() {
       if (!generatedImageUrl) return;
       try {
-        const response = await fetch(generatedImageUrl);
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `selira-${selectedCompanion.slug}-${Date.now()}.webp`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-        showAlert('Image downloaded!', 'success');
+        // Create canvas to add watermark
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Load the generated image
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+
+        await new Promise((resolve, reject) => {
+          img.onload = resolve;
+          img.onerror = reject;
+          img.src = generatedImageUrl;
+        });
+
+        // Set canvas size to match image
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        // Draw the image
+        ctx.drawImage(img, 0, 0);
+
+        // Add watermark background (bottom right)
+        const watermarkPadding = 30;
+        const watermarkHeight = 40;
+        const watermarkWidth = 140;
+        const x = canvas.width - watermarkWidth - watermarkPadding;
+        const y = canvas.height - watermarkHeight - watermarkPadding;
+
+        // Semi-transparent background
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+        ctx.beginPath();
+        ctx.roundRect(x, y, watermarkWidth, watermarkHeight, 8);
+        ctx.fill();
+
+        // Add text "Selira AI"
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 20px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('Selira AI', x + watermarkWidth / 2, y + watermarkHeight / 2);
+
+        // Convert canvas to blob
+        canvas.toBlob((blob) => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `selira-${selectedCompanion.slug}-${Date.now()}.webp`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(url);
+          showAlert('Image downloaded with watermark!', 'success');
+        }, 'image/webp', 0.95);
+
       } catch (error) {
         console.error('Download error:', error);
         showAlert('Failed to download image', 'error');
