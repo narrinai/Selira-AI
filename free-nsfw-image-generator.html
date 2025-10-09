@@ -1082,7 +1082,7 @@
         document.getElementById('creditsInfo').style.display = 'flex';
         document.getElementById('planInfo').style.display = 'flex';
 
-        const canGenerate = data.plan !== 'Free' || data.creditsRemaining > 0 || (data.imagesGenerated || 0) < 2;
+        const canGenerate = data.plan !== 'Free' || data.creditsRemaining > 0 || (data.imagesGenerated || 0) < 1;
 
         const generateBtn = document.getElementById('generateBtn');
         if (!canGenerate) {
@@ -1096,7 +1096,7 @@
         }
 
         let creditsDisplay = data.plan === 'Free'
-          ? (data.creditsRemaining > 0 ? `${data.creditsRemaining} Credits` : `${Math.max(0, 2 - (data.imagesGenerated || 0))} Free`)
+          ? (data.creditsRemaining > 0 ? `${data.creditsRemaining} Credits` : `${Math.max(0, 1 - (data.imagesGenerated || 0))} Free`)
           : 'Unlimited';
         document.getElementById('creditsAmount').textContent = creditsDisplay;
         document.getElementById('planName').textContent = data.plan;
@@ -1276,7 +1276,7 @@
       if (!selectedOutfit) return showAlert('Please select an outfit', 'warning');
 
       const creditsCheck = await loadUserCredits();
-      const canGenerate = creditsCheck && (creditsCheck.plan !== 'Free' || creditsCheck.creditsRemaining > 0 || (creditsCheck.imagesGenerated || 0) < 2);
+      const canGenerate = creditsCheck && (creditsCheck.plan !== 'Free' || creditsCheck.creditsRemaining > 0 || (creditsCheck.imagesGenerated || 0) < 1);
       if (!canGenerate) {
         showAlert('You need credits or a subscription to generate images. Visit our pricing page!', 'error');
         return;

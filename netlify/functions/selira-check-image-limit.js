@@ -124,13 +124,13 @@ exports.handler = async (event, context) => {
         };
       }
 
-      // No credits, check lifetime usage (2 free images)
+      // No credits, check lifetime usage (1 free image)
       const lifetimeUsage = userRecord.fields.images_generated || 0;
 
-      console.log(`📊 Free plan user lifetime usage from images_generated field: ${lifetimeUsage}/2`);
+      console.log(`📊 Free plan user lifetime usage from images_generated field: ${lifetimeUsage}/1`);
 
-      // Free plan gets 2 total images (lifetime)
-      if (lifetimeUsage >= 2) {
+      // Free plan gets 1 total image (lifetime)
+      if (lifetimeUsage >= 1) {
         return {
           statusCode: 403,
           headers: {
@@ -138,9 +138,9 @@ exports.handler = async (event, context) => {
             'Access-Control-Allow-Origin': '*'
           },
           body: JSON.stringify({
-            error: 'You\'ve used your 2 free images. Upgrade to Basic or Premium for unlimited image generation!',
+            error: 'You\'ve used your 1 free image. Upgrade to Basic or Premium for unlimited image generation!',
             plan: userPlan,
-            limit: 2,
+            limit: 1,
             usage: lifetimeUsage,
             remaining: 0,
             canGenerate: false,
@@ -158,9 +158,9 @@ exports.handler = async (event, context) => {
         },
         body: JSON.stringify({
           canGenerate: true,
-          limit: 2,
+          limit: 1,
           usage: lifetimeUsage,
-          remaining: 2 - lifetimeUsage,
+          remaining: 1 - lifetimeUsage,
           plan: userPlan,
           userId: userId,
           isFreeUser: true
