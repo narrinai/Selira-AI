@@ -1848,10 +1848,18 @@
     let createSelectedTags = [];
     const createMaxTags = 5;
     let allTagsVisible = false;
+    // All available tags with gender categories
+    const allAvailableTags = {
+      female: ['Girlfriend', 'Lesbian', 'Maid', 'Mommy', 'Wife', 'Milf', 'Sister', 'Daughter', 'Step-mom', 'Step-sister', 'Dominatrix', 'Princess', 'Nurse', 'Bunny Girl'],
+      male: ['Boyfriend', 'Daddy', 'Husband', 'Dilf', 'Brother', 'Son', 'Step-dad', 'Step-brother', 'Gay', 'Prince', 'Warrior', 'Knight', 'CEO', 'Master'],
+      universal: ['Ex', 'Romance', 'Companion', 'Fantasy', 'Flirty', 'Cute', 'Seductive', 'Submissive', 'Dominant', 'Switch', 'Shy', 'Confident', 'Playful', 'Mysterious', 'Romantic', 'Jealous', 'Childhood Friend', 'Roommate', 'Neighbor', 'Coworker', 'Tsundere', 'Yandere', 'Boss', 'Student', 'Secretary', 'Teacher', 'Angel', 'Elf', 'Monster', 'Vampire', 'Demon', 'Alien', 'Celebrity', 'Idol', 'Gamer', 'Cheating']
+    };
+
+    // Default to all tags (will be filtered based on sex selection)
     let createAvailableTags = [
-      // Complete list from Airtable
-      'Girlfriend', 'Boyfriend', 'Ex', 'Romance', 'Companion', 'Fantasy', 'Flirty', 'Cute', 'Seductive', 'Submissive',
-      'Tsundere', 'Yandere', 'Maid', 'Boss', 'Student', 'Secretary', 'Teacher', 'Angel', 'Elf', 'Monster', 'Lesbian', 'Cheating'
+      ...allAvailableTags.female,
+      ...allAvailableTags.male,
+      ...allAvailableTags.universal
     ];
 
     // Load tags from Airtable
