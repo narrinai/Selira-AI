@@ -89,23 +89,16 @@ exports.handler = async (event, context) => {
       }
     }
 
-    // Prepare data for Airtable with linked record
+    // Prepare data for Airtable - use simple text fields for now
     const supportData = {
       Message: message.trim(),
       Page_URL: url || '',
-      User_Agent: userAgent || ''
+      User_Agent: userAgent || '',
+      User_Name: name || 'Anonymous',
+      User_Email: email || ''
     };
 
-    // Add user as linked record if found, otherwise store as text fields
-    if (userRecordId) {
-      supportData.User = [userRecordId]; // Linked record to Users table
-      console.log('✅ Linking message to user record:', userRecordId);
-    } else {
-      // Fallback: store as text fields for anonymous users
-      supportData.Anonymous_Name = name || 'Anonymous';
-      supportData.Anonymous_Email = email || '';
-      console.log('⚠️ No user record - storing as anonymous message');
-    }
+    console.log('💾 Support data to save:', JSON.stringify(supportData, null, 2));
 
     console.log('💾 Saving to Airtable Support_Messages table...');
 
