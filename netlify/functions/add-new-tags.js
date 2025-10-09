@@ -4,7 +4,7 @@
  */
 
 const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA || process.env.AIRTABLE_TOKEN;
-const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID || 'appij4FrojvJ9m5wu';
+const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA || process.env.AIRTABLE_BASE_ID || 'appij4FrojvJ9m5wu';
 
 const newTags = {
   female: [
