@@ -82,7 +82,7 @@ exports.handler = async (event, context) => {
 
     // Build session config based on mode
     const sessionConfig = {
-      payment_method_types: ['card'],
+      payment_method_types: ['card', 'paypal', 'klarna', 'affirm'],
       line_items: [
         {
           price: priceId,
@@ -90,8 +90,7 @@ exports.handler = async (event, context) => {
         },
       ],
       mode: checkoutMode,
-      // Don't prefill customer_email to allow payment method selection (Link vs Apple Pay vs Card)
-      // customer_email: userEmail,
+      customer_email: userEmail,
       metadata: {
         user_id: userId,
         user_email: userEmail,
@@ -101,10 +100,12 @@ exports.handler = async (event, context) => {
       success_url: successUrl,
       cancel_url: cancelUrl,
       allow_promotion_codes: true,
-      billing_address_collection: 'required',
-      // Allow Link to be shown as an option alongside other payment methods
-      consent_collection: {
-        terms_of_service: 'none'
+      billing_address_collection: 'auto',
+      // Configure payment method options to show all options upfront
+      payment_method_options: {
+        card: {
+          request_three_d_secure: 'automatic',
+        }
       },
       // Save payment method for future use and enable SCA retry logic
       payment_intent_data: checkoutMode === 'payment' ? {
