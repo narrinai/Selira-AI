@@ -12,8 +12,97 @@
 
 const fetch = require('node-fetch');
 
-// Male companion templates with diversity - 20 unique companions
-const maleCompanions = [
+// Name pools for generating unique combinations
+const firstNames = {
+  realistic: {
+    hispanic: ['Dante', 'Mateo', 'Diego', 'Carlos', 'Miguel', 'Rafael', 'Alejandro', 'Santiago', 'Gabriel', 'Antonio'],
+    chinese: ['Liam', 'Wei', 'Chen', 'Ming', 'Jun', 'Kai', 'Jian', 'Yang', 'Feng', 'Rui'],
+    black: ['Jamal', 'Marcus', 'Andre', 'Tyrone', 'DeShawn', 'Malik', 'Xavier', 'Isaiah', 'Darius', 'Khalil'],
+    white: ['Noah', 'Tyler', 'Ethan', 'Connor', 'Jake', 'Ryan', 'Brandon', 'Austin', 'Logan', 'Mason'],
+    indian: ['Ravi', 'Arjun', 'Dev', 'Rohan', 'Aditya', 'Karan', 'Vikram', 'Nikhil', 'Raj', 'Sanjay'],
+    'middle-east': ['Hassan', 'Omar', 'Tariq', 'Amir', 'Khalid', 'Rashid', 'Faisal', 'Youssef', 'Samir', 'Karim'],
+    japanese: ['Kenji', 'Hiroshi', 'Takeshi', 'Yuki', 'Ryu', 'Kazuki', 'Haruto', 'Daiki', 'Sora', 'Takumi'],
+    korean: ['Min-Jun', 'Ji-Ho', 'Seo-Jun', 'Do-Yoon', 'Hae-Won', 'Tae-Yang', 'Jin-Woo', 'Sung-Min', 'Hyun-Woo', 'Joon-Ho']
+  },
+  anime: {
+    japanese: ['Akira', 'Zero', 'Hiro', 'Raiden', 'Yuki', 'Sora', 'Ren', 'Kai', 'Ryuu', 'Satoshi', 'Makoto', 'Haruki', 'Kaito', 'Shiro', 'Riku'],
+    korean: ['Kai', 'Jun', 'Hwan', 'Jae', 'Min', 'Tae', 'Hyun', 'Sung', 'Woo', 'Jin']
+  }
+};
+
+const lastNames = {
+  hispanic: ['Cruz', 'Silva', 'Rodriguez', 'Garcia', 'Martinez', 'Lopez', 'Gonzalez', 'Sanchez', 'Ramirez', 'Torres'],
+  chinese: ['Zhang', 'Wang', 'Li', 'Liu', 'Chen', 'Yang', 'Huang', 'Zhao', 'Wu', 'Zhou'],
+  black: ['Washington', 'Baptiste', 'Jackson', 'Williams', 'Johnson', 'Brown', 'Davis', 'Wilson', 'Moore', 'Taylor'],
+  white: ['Bradley', 'Brooks', 'Anderson', 'Miller', 'Thompson', 'White', 'Harris', 'Martin', 'Garcia', 'Robinson'],
+  indian: ['Patel', 'Singh', 'Kumar', 'Sharma', 'Gupta', 'Reddy', 'Mehta', 'Kapoor', 'Rao', 'Malhotra'],
+  'middle-east': ['Al-Rashid', 'Hassan', 'Ahmed', 'Ali', 'Khan', 'Malik', 'Hussein', 'Rahman', 'Ibrahim', 'Saleh'],
+  japanese: ['Tanaka', 'Yamamoto', 'Sato', 'Takahashi', 'Watanabe', 'Ito', 'Nakamura', 'Kobayashi', 'Kato', 'Yoshida'],
+  korean: ['Park', 'Kim', 'Lee', 'Choi', 'Jung', 'Kang', 'Yoon', 'Jang', 'Lim', 'Han']
+};
+
+const animeLastNames = ['Kurosawa', 'Nightshade', 'Yamamoto', 'Storm', 'Frost', 'Aether', 'Takahashi', 'Dragonheart', 'Shadowblade', 'Moonlight', 'Eclipse', 'Phoenix', 'Raven', 'Silver', 'Azure'];
+
+// Track already created companion names to avoid duplicates
+const createdNames = new Set();
+
+// Function to check if companion already exists in Airtable
+async function companionExists(name) {
+  try {
+    const encodedFormula = encodeURIComponent(`{Name} = "${name}"`);
+    const response = await fetch(
+      `https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID}/Characters?filterByFormula=${encodedFormula}`,
+      {
+        headers: {
+          'Authorization': `Bearer ${process.env.AIRTABLE_TOKEN}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    const data = await response.json();
+    return data.records && data.records.length > 0;
+  } catch (error) {
+    console.error('Error checking companion existence:', error);
+    return false;
+  }
+}
+
+// Generate unique companion name
+function generateUniqueName(artStyle, ethnicity) {
+  const maxAttempts = 50;
+  let attempts = 0;
+
+  while (attempts < maxAttempts) {
+    let firstName, lastName;
+
+    if (artStyle === 'anime') {
+      const firstNamePool = firstNames.anime[ethnicity] || firstNames.anime.japanese;
+      firstName = firstNamePool[Math.floor(Math.random() * firstNamePool.length)];
+      lastName = animeLastNames[Math.floor(Math.random() * animeLastNames.length)];
+    } else {
+      const firstNamePool = firstNames.realistic[ethnicity];
+      const lastNamePool = lastNames[ethnicity];
+      firstName = firstNamePool[Math.floor(Math.random() * firstNamePool.length)];
+      lastName = lastNamePool[Math.floor(Math.random() * lastNamePool.length)];
+    }
+
+    const fullName = `${firstName} ${lastName}`;
+
+    if (!createdNames.has(fullName)) {
+      createdNames.add(fullName);
+      return fullName;
+    }
+
+    attempts++;
+  }
+
+  // Fallback with timestamp if we can't generate unique name
+  return `Companion ${Date.now()}`;
+}
+
+// Template data for generating companions
+const companionTemplates = [
   // REALISTIC MALE COMPANIONS - using existing Airtable tags only
   {
     name: 'Dante Cruz',
@@ -382,21 +471,41 @@ async function createMaleCompanion(companionData, avatarUrl) {
  */
 async function generateAllMaleCompanions() {
   console.log('🎭 Starting Male Companion Generation with NSFW Avatars\n');
-  console.log(`📊 Total companions to create: ${maleCompanions.length}`);
+  console.log(`📊 Total companions to create: ${companionTemplates.length}`);
   console.log('🔒 Security: All prompts and API keys stay server-side');
   console.log('📸 Avatars: NSFW male content (shirtless, muscular, seductive)');
   console.log('🌐 Storage: ImgBB for instant availability\n');
 
   const results = [];
   const failed = [];
+  const skipped = [];
 
-  for (let i = 0; i < maleCompanions.length; i++) {
-    const companion = maleCompanions[i];
+  for (let i = 0; i < companionTemplates.length; i++) {
+    const template = companionTemplates[i];
+
+    // Generate unique name based on template ethnicity and style
+    const uniqueName = generateUniqueName(template.artStyle, template.ethnicity);
 
     console.log(`\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
-    console.log(`[${i + 1}/${maleCompanions.length}] Processing: ${companion.name}`);
-    console.log(`   Style: ${companion.artStyle} | Ethnicity: ${companion.ethnicity}`);
-    console.log(`   Tags: ${companion.tags.join(', ')}`);
+    console.log(`[${i + 1}/${companionTemplates.length}] Processing: ${uniqueName}`);
+    console.log(`   Style: ${template.artStyle} | Ethnicity: ${template.ethnicity}`);
+    console.log(`   Tags: ${template.tags.join(', ')}`);
+
+    // Check if companion already exists in Airtable
+    console.log(`🔍 Checking if ${uniqueName} already exists...`);
+    const exists = await companionExists(uniqueName);
+
+    if (exists) {
+      console.log(`⏭️  Skipping ${uniqueName} - already exists in database`);
+      skipped.push({ name: uniqueName, reason: 'Already exists' });
+      continue;
+    }
+
+    // Create companion object with unique name
+    const companion = {
+      ...template,
+      name: uniqueName
+    };
 
     try {
       // Step 1: Generate NSFW male avatar
@@ -423,7 +532,7 @@ async function generateAllMaleCompanions() {
       }
 
       // Wait between companions to avoid rate limiting
-      if (i < maleCompanions.length - 1) {
+      if (i < companionTemplates.length - 1) {
         console.log('⏳ Waiting 5s before next companion...');
         await new Promise(resolve => setTimeout(resolve, 5000));
       }
@@ -437,8 +546,14 @@ async function generateAllMaleCompanions() {
   // Final summary
   console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.log('🎉 GENERATION COMPLETE\n');
-  console.log(`✅ Successfully created: ${results.length}/${maleCompanions.length}`);
-  console.log(`❌ Failed: ${failed.length}/${maleCompanions.length}`);
+  console.log(`✅ Successfully created: ${results.length}/${companionTemplates.length}`);
+  console.log(`⏭️  Skipped (already exist): ${skipped.length}/${companionTemplates.length}`);
+  console.log(`❌ Failed: ${failed.length}/${companionTemplates.length}`);
+
+  if (skipped.length > 0) {
+    console.log('\n⏭️  Skipped companions (already exist):');
+    skipped.forEach(s => console.log(`   - ${s.name}`));
+  }
 
   if (failed.length > 0) {
     console.log('\n❌ Failed companions:');
@@ -446,12 +561,12 @@ async function generateAllMaleCompanions() {
   }
 
   console.log('\n📊 Statistics:');
-  console.log(`   Success rate: ${Math.round((results.length / maleCompanions.length) * 100)}%`);
-  console.log(`   Total time: ~${Math.round((maleCompanions.length * 8) / 60)} minutes`);
+  console.log(`   Success rate: ${Math.round((results.length / companionTemplates.length) * 100)}%`);
+  console.log(`   Total time: ~${Math.round((companionTemplates.length * 8) / 60)} minutes`);
 
   // Art style distribution
   const styles = {};
-  maleCompanions.forEach(c => styles[c.artStyle] = (styles[c.artStyle] || 0) + 1);
+  companionTemplates.forEach(c => styles[c.artStyle] = (styles[c.artStyle] || 0) + 1);
   console.log('\n🎨 Art Style Distribution:');
   Object.entries(styles).forEach(([style, count]) => {
     console.log(`   ${style}: ${count} companions`);
@@ -459,7 +574,7 @@ async function generateAllMaleCompanions() {
 
   // Ethnicity distribution
   const ethnicities = {};
-  maleCompanions.forEach(c => ethnicities[c.ethnicity] = (ethnicities[c.ethnicity] || 0) + 1);
+  companionTemplates.forEach(c => ethnicities[c.ethnicity] = (ethnicities[c.ethnicity] || 0) + 1);
   console.log('\n🌍 Ethnicity Distribution:');
   Object.entries(ethnicities).forEach(([ethnicity, count]) => {
     console.log(`   ${ethnicity}: ${count} companions`);
@@ -467,6 +582,7 @@ async function generateAllMaleCompanions() {
 
   console.log('\n✅ All male companions created with NSFW avatars via ImgBB!');
   console.log('🔒 Security maintained: No prompts or API keys exposed to users');
+  console.log(`\n🎲 Total unique name combinations possible: ${Object.values(firstNames.realistic).flat().length * Object.values(lastNames).flat().length + firstNames.anime.japanese.length * animeLastNames.length}`);
 }
 
 // Run if executed directly
@@ -474,4 +590,4 @@ if (require.main === module) {
   generateAllMaleCompanions().catch(console.error);
 }
 
-module.exports = { maleCompanions, generateAllMaleCompanions };
+module.exports = { companionTemplates, generateAllMaleCompanions };
