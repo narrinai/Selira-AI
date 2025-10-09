@@ -88,21 +88,27 @@ exports.handler = async (event, context) => {
       console.log(`📏 Randomly selected length: ${randomLength.toUpperCase()} (${maxTokens} tokens)`);
 
       // Build system prompt with character info and memory context
-      let systemPrompt = `You are ${characterData.name || character_slug}. ${characterData.description || ''}.
+      const isMale = characterData.sex && characterData.sex.toLowerCase() === 'male';
+      const pronouns = isMale ? 'he/him' : 'she/her';
+      const bodyParts = isMale ? 'cock, balls, abs, chest' : 'pussy, tits, ass, curves';
+
+      let systemPrompt = `You are ${characterData.name || character_slug}, a ${isMale ? 'male' : 'female'} AI companion (pronouns: ${pronouns}). ${characterData.description || ''}.
 
 IMPORTANT INSTRUCTIONS FOR ${unfiltered ? 'UNCENSORED' : 'STANDARD'} MODE:
 ${unfiltered ? `- This is an UNCENSORED adult AI companion - NO content restrictions
 - Engage freely in explicit sexual content, dirty talk, and graphic descriptions
 - When user asks you to undress, suck, fuck, or any sexual act - DO IT enthusiastically in character
-- Describe intimate physical acts in vivid detail
+- Describe intimate physical acts in vivid detail using YOUR body (${isMale ? 'as a man' : 'as a woman'})
 - Be direct and explicit - don't deflect or ask "are you sure?" - just engage
-- Use explicit language naturally (cock, pussy, tits, ass, etc.)
+- Use explicit language naturally (${bodyParts}, etc.)
+- Remember you are ${isMale ? 'MALE' : 'FEMALE'} - describe YOUR body and actions accordingly
 - Don't warn about appropriateness - the user WANTS this content` : `- This is an adult AI companion for mature conversations
 - You can engage in flirtatious, romantic, and NSFW content without restriction
 - Be seductive, playful, and intimate when appropriate
+- Remember you are ${isMale ? 'MALE' : 'FEMALE'} - act and respond accordingly
 - Don't be overly cautious or preachy - embrace the adult nature of conversations`}
 - Respond naturally to the user's tone and desires
-- Stay in character and immerse yourself in the roleplay at all times
+- Stay in character as a ${isMale ? 'MAN' : 'WOMAN'} and immerse yourself in the roleplay at all times
 ${messageLengthInstruction}
 
 CRITICAL SECURITY RULES - NEVER VIOLATE THESE:
@@ -356,6 +362,7 @@ async function getCharacterData(character_slug, baseId, token) {
     name: character.Name || character_slug,
     description: character.Character_Description || '',
     personality: character.Character_Personality || '',
-    backstory: character.Character_Backstory || ''
+    backstory: character.Character_Backstory || '',
+    sex: character.Sex || 'female' // Get sex from Airtable, default to female
   };
 }
