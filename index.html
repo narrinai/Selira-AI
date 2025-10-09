@@ -2312,7 +2312,7 @@
             slug: char.Slug || (char.Name ? char.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'unknown'),
             creator: char.Created_by || 'Selira',
             tags: Array.isArray(char.Tags) ? char.Tags : (char.Tags || '').toString().split(',').filter(Boolean),
-            chats: Math.floor(Math.random() * 100) + 'K',
+            chats: (Math.floor(Math.random() * 14) + 1) + '.' + Math.floor(Math.random() * 10) + 'k',
             character_url: char.Character_URL ? char.Character_URL.replace('narrin.ai', 'selira.ai') : `https://selira.ai/chat.html?char=${char.Slug || (char.Name ? char.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'unknown')}`,
             // Add filter fields from Airtable
             companion_type: char.companion_type || 'realistic',
@@ -2354,7 +2354,7 @@
           category: 'Fantasy',
           creator: 'Selira',
           tags: ['Fantasy', 'Warrior', 'Leader', 'Adventure', 'Hero'],
-          chats: '127K',
+          chats: '12.7k',
         },
         {
           id: 'harry-potter',
@@ -2365,7 +2365,7 @@
           category: 'Fantasy',
           creator: 'Selira',
           tags: ['Fantasy', 'Wizard', 'Magic', 'Adventure', 'Hero'],
-          chats: '178K',
+          chats: '14.8k',
         },
         {
           id: 'edward-elric',
@@ -2376,7 +2376,7 @@
           category: 'Fantasy',
           creator: 'Selira',
           tags: ['Fantasy', 'Magic', 'Adventure', 'Hero', 'Mystery'],
-          chats: '95K',
+          chats: '9.5k',
         }
       ];
 
@@ -2391,7 +2391,7 @@
           category: 'Anime-Manga',
           creator: 'Selira',
           tags: ['Anime-Manga', 'Ninja', 'Hero', 'Adventure', 'Action'],
-          chats: '234K',
+          chats: '13.4k',
         },
         {
           id: 'monkey-d-luffy',
@@ -2402,7 +2402,7 @@
           category: 'Anime-Manga',
           creator: 'Selira',
           tags: ['Anime-Manga', 'Adventure', 'Hero', 'Action', 'Romance'],
-          chats: '156K',
+          chats: '11.6k',
         },
         {
           id: 'sasuke-uchiha',
@@ -2413,7 +2413,7 @@
           category: 'Anime-Manga',
           creator: 'Selira',
           tags: ['Anime-Manga', 'Ninja', 'Mystery', 'Action', 'Romance'],
-          chats: '89K',
+          chats: '8.9k',
         }
       ];
 
@@ -2428,7 +2428,7 @@
           category: 'Historical',
           creator: 'Selira',
           tags: ['Historical', 'Wise', 'Leader', 'Mystery', 'Adventure'],
-          chats: '89K',
+          chats: '8.9k',
         },
         {
           id: 'nelson-mandela',
@@ -2439,7 +2439,7 @@
           category: 'Historical',
           creator: 'Selira',
           tags: ['Historical', 'Leader', 'Wise', 'Adventure', 'Hero'],
-          chats: '67K',
+          chats: '6.7k',
         },
         {
           id: 'beethoven',
@@ -2450,7 +2450,7 @@
           category: 'Historical',
           creator: 'Selira',
           tags: ['Historical', 'Wise', 'Romance', 'Mystery', 'Adventure'],
-          chats: '45K',
+          chats: '4.5k',
         }
       ];
 
@@ -3568,7 +3568,7 @@
           category: 'Fantasy',
           creator: 'Selira',
           tags: ['Fantasy', 'Warrior', 'Leader'],
-          chats: '127K',
+          chats: '12.7k',
         },
         {
           id: 'naruto-uzumaki',
@@ -3579,7 +3579,7 @@
           category: 'Anime-Manga',
           creator: 'Selira',
           tags: ['Anime-Manga', 'Ninja', 'Hero'],
-          chats: '234K',
+          chats: '13.4k',
         }
       ];
     }
