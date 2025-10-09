@@ -126,10 +126,23 @@ exports.handler = async (event, context) => {
 
     const responseText = await airtableResponse.text();
     console.log('📡 Airtable response status:', airtableResponse.status);
+    console.log('📡 Airtable response body:', responseText);
 
     if (!airtableResponse.ok) {
       console.error('❌ Airtable API error:', responseText);
-      throw new Error(`Airtable error: ${airtableResponse.status}`);
+      console.error('❌ Support data sent:', JSON.stringify(supportData, null, 2));
+
+      let errorMessage = `Airtable error: ${airtableResponse.status}`;
+      try {
+        const errorData = JSON.parse(responseText);
+        if (errorData.error && errorData.error.message) {
+          errorMessage = errorData.error.message;
+        }
+      } catch (e) {
+        // If not JSON, use status code
+      }
+
+      throw new Error(errorMessage);
     }
 
     const result = JSON.parse(responseText);
