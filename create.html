@@ -1555,12 +1555,34 @@
       });
       document.querySelector(`[data-sex="${sex}"]`).style.border = '3px solid var(--accent)';
 
-      console.log('Selected sex:', sex);
+      console.log('✅ Selected sex:', sex);
 
       // Filter available tags based on sex
       updateAvailableTags();
 
       // Note: Don't auto-advance - user needs to select style too
+    }
+
+    // Update available tags based on selected sex
+    function updateAvailableTags() {
+      const sex = characterCreationState.sex;
+
+      if (sex === 'female') {
+        createAvailableTags = [...allAvailableTags.female, ...allAvailableTags.universal];
+        console.log(`🏷️  Showing ${allAvailableTags.female.length} female + ${allAvailableTags.universal.length} universal tags`);
+      } else if (sex === 'male') {
+        createAvailableTags = [...allAvailableTags.male, ...allAvailableTags.universal];
+        console.log(`🏷️  Showing ${allAvailableTags.male.length} male + ${allAvailableTags.universal.length} universal tags`);
+      } else {
+        // Default: show all tags
+        createAvailableTags = [...allAvailableTags.female, ...allAvailableTags.male, ...allAvailableTags.universal];
+        console.log(`🏷️  Showing all tags (${createAvailableTags.length})`);
+      }
+
+      // Repopulate tag UI if we're on Step 5
+      if (characterCreationState.currentStep === 5) {
+        populatePopularTags(createAvailableTags);
+      }
     }
 
     function selectStyleStep(style) {
@@ -1889,10 +1911,10 @@
     let createSelectedTags = [];
     const createMaxTags = 5;
     let allTagsVisible = false;
-    // All available tags with gender categories
+    // All available tags with gender categories (Title Case to match existing Airtable tags)
     const allAvailableTags = {
-      female: ['Girlfriend', 'Lesbian', 'Maid', 'Mommy', 'Wife', 'Milf', 'Sister', 'Daughter', 'Step-mom', 'Step-sister', 'Dominatrix', 'Princess', 'Nurse', 'Bunny Girl'],
-      male: ['Boyfriend', 'Daddy', 'Husband', 'Dilf', 'Brother', 'Son', 'Step-dad', 'Step-brother', 'Gay', 'Prince', 'Warrior', 'Knight', 'CEO', 'Master'],
+      female: ['Girlfriend', 'Lesbian', 'Maid', 'Mommy', 'Wife', 'Milf', 'Sister', 'Daughter', 'Step-Mom', 'Step-Sister', 'Dominatrix', 'Princess', 'Nurse', 'Bunny Girl'],
+      male: ['Boyfriend', 'Daddy', 'Husband', 'Dilf', 'Brother', 'Son', 'Step-Dad', 'Step-Brother', 'Gay', 'Prince', 'Warrior', 'Knight', 'CEO', 'Master'],
       universal: ['Ex', 'Romance', 'Companion', 'Fantasy', 'Flirty', 'Cute', 'Seductive', 'Submissive', 'Dominant', 'Switch', 'Shy', 'Confident', 'Playful', 'Mysterious', 'Romantic', 'Jealous', 'Childhood Friend', 'Roommate', 'Neighbor', 'Coworker', 'Tsundere', 'Yandere', 'Boss', 'Student', 'Secretary', 'Teacher', 'Angel', 'Elf', 'Monster', 'Vampire', 'Demon', 'Alien', 'Celebrity', 'Idol', 'Gamer', 'Cheating']
     };
 
