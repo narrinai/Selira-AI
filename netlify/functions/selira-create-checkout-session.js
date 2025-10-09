@@ -129,8 +129,8 @@ exports.handler = async (event, context) => {
           ...(fpTid && { fp_tid: fpTid }) // Add FirstPromoter tracking ID if available
         }
       };
-      // For subscriptions, enable Smart Retries and save payment method for future charges
-      sessionConfig.payment_method_options.card.setup_future_usage = 'off_session';
+      // For subscriptions, save payment method for future recurring charges
+      sessionConfig.payment_method_collection = 'always';
     }
 
     // Create Stripe checkout session
