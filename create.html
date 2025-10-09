@@ -1481,17 +1481,17 @@
         const animeImg = document.querySelector('[data-style="anime"] img.lazy-image');
 
         if (sex === 'male') {
-          // Use male style examples
+          // Use attractive male style examples
           if (realisticImg) {
-            realisticImg.setAttribute('data-src', '/images/realistic-male.png');
+            realisticImg.setAttribute('data-src', '/images/realistic-male-style.png');
             if (realisticImg.classList.contains('loaded')) {
-              realisticImg.src = '/images/realistic-male.png';
+              realisticImg.src = '/images/realistic-male-style.png';
             }
           }
           if (animeImg) {
-            animeImg.setAttribute('data-src', '/images/anime-male.png');
+            animeImg.setAttribute('data-src', '/images/anime-male-style.png');
             if (animeImg.classList.contains('loaded')) {
-              animeImg.src = '/images/anime-male.png';
+              animeImg.src = '/images/anime-male-style.png';
             }
           }
         } else {
