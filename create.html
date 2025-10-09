@@ -2012,8 +2012,20 @@
         });
         
         if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || `HTTP ${response.status}`);
+          let errorMessage = `HTTP ${response.status}`;
+          try {
+            const errorData = await response.json();
+            console.error('❌ Backend error response:', errorData);
+            errorMessage = errorData.error || errorData.details || errorMessage;
+
+            // Add more specific error details if available
+            if (errorData.details) {
+              errorMessage += `\n\nDetails: ${errorData.details}`;
+            }
+          } catch (e) {
+            console.error('❌ Could not parse error response');
+          }
+          throw new Error(errorMessage);
         }
         
         const result = await response.json();
