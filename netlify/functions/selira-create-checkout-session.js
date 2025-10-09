@@ -80,9 +80,14 @@ exports.handler = async (event, context) => {
     const checkoutMode = mode || 'subscription';
     console.log('🔄 Creating checkout session for:', { userEmail, planName, priceId, mode: checkoutMode });
 
+    // Payment methods based on mode - one-time payments support more methods
+    const paymentMethodTypes = checkoutMode === 'payment'
+      ? ['card'] // One-time payments: keep it simple to avoid errors
+      : ['card']; // Subscriptions: card only (PayPal/Klarna don't support recurring)
+
     // Build session config based on mode
     const sessionConfig = {
-      payment_method_types: ['card', 'paypal', 'klarna', 'affirm'],
+      payment_method_types: paymentMethodTypes,
       line_items: [
         {
           price: priceId,
