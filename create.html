@@ -975,8 +975,8 @@
         <!-- Progress Bar -->
         <div class="creation-progress">
           <div style="display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 11px; color: var(--text-secondary); text-transform: uppercase; font-weight: 600;">
-            <span id="stepIndicator">Step 1 of 4</span>
-            <span id="stepTitle">Choose Style</span>
+            <span id="stepIndicator">Step 1 of 6</span>
+            <span id="stepTitle">Choose Gender</span>
           </div>
           <div class="progress-bar">
             <div id="progressFill"></div>
@@ -986,33 +986,34 @@
         <!-- Step Content -->
         <div class="step-container">
           
-          <!-- Step 1: Sex & Style Selection -->
+          <!-- Step 1: Gender Selection -->
           <div class="creation-step active" id="step1">
-            <!-- Sex Selection -->
-            <div style="margin-bottom: 40px;">
-              <h3 style="color: var(--text-primary); margin-bottom: 20px; font-size: 20px; font-weight: 700; text-align: center;">Choose Gender</h3>
-              <div class="style-grid" style="max-width: 600px; margin: 0 auto;">
-                <div class="style-option" data-sex="female" onclick="selectSexStep('female')" style="border: 3px solid var(--accent);">
-                  <div class="image-container" style="height: 200px; background: linear-gradient(135deg, #CE93D8 0%, #BA68C8 100%);">
-                    <div style="display: flex; align-items: center; justify-content: center; height: 100%; font-size: 80px;">👩</div>
-                  </div>
-                  <div style="padding: 12px; text-align: center;">
-                    <h4 style="color: var(--text-primary); font-size: 18px; font-weight: 700;">Female Companion</h4>
-                  </div>
+            <h3 style="color: var(--text-primary); margin-bottom: 30px; font-size: 28px; font-weight: 700; text-align: center;">Choose Gender</h3>
+            <div class="style-grid" style="max-width: 700px; margin: 0 auto;">
+              <div class="style-option" data-sex="female" onclick="selectSexStep('female')" style="border: 3px solid var(--accent);">
+                <div class="image-container" style="height: 320px;">
+                  <div class="image-placeholder" style="height: 320px;">👩</div>
+                  <img class="lazy-image" data-src="/images/brown-hair-female.png" alt="Female Companion" loading="lazy" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
                 </div>
-                <div class="style-option" data-sex="male" onclick="selectSexStep('male')">
-                  <div class="image-container" style="height: 200px; background: linear-gradient(135deg, #64B5F6 0%, #42A5F5 100%);">
-                    <div style="display: flex; align-items: center; justify-content: center; height: 100%; font-size: 80px;">👨</div>
-                  </div>
-                  <div style="padding: 12px; text-align: center;">
-                    <h4 style="color: var(--text-primary); font-size: 18px; font-weight: 700;">Male Companion</h4>
-                  </div>
+                <div style="padding: 16px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 20px; font-weight: 700;">Female Companion</h4>
+                </div>
+              </div>
+              <div class="style-option" data-sex="male" onclick="selectSexStep('male')">
+                <div class="image-container" style="height: 320px;">
+                  <div class="image-placeholder" style="height: 320px;">👨</div>
+                  <img class="lazy-image" data-src="/images/realistic-male.png" alt="Male Companion" loading="lazy" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div style="padding: 16px; text-align: center;">
+                  <h4 style="color: var(--text-primary); font-size: 20px; font-weight: 700;">Male Companion</h4>
                 </div>
               </div>
             </div>
+          </div>
 
-            <!-- Art Style Selection -->
-            <h3 style="color: var(--text-primary); margin-bottom: 20px; font-size: 20px; font-weight: 700; text-align: center;">Choose Art Style</h3>
+          <!-- Step 2: Art Style Selection -->
+          <div class="creation-step" id="step2">
+            <h3 style="color: var(--text-primary); margin-bottom: 30px; font-size: 28px; font-weight: 700; text-align: center;">Choose Art Style</h3>
             <div class="style-grid">
               <div class="style-option" data-style="realistic" onclick="selectStyleStep('realistic')">
                 <div class="image-container" style="height: 320px;">
@@ -1043,8 +1044,8 @@
             </div>
           </div>
 
-          <!-- Step 2: Ethnicity Selection -->
-          <div class="creation-step" id="step2">
+          <!-- Step 3: Ethnicity Selection -->
+          <div class="creation-step" id="step3">
             <h3 style="color: var(--text-primary); margin-bottom: 20px; font-size: 24px; font-weight: 700; text-align: center;">Choose Ethnicity</h3>
             <div class="ethnicity-grid">
               <div class="ethnicity-option" data-ethnicity="white" onclick="selectEthnicityStep('white')">
@@ -1131,8 +1132,8 @@
             </div>
           </div>
 
-          <!-- Step 3: Hair Length -->
-          <div class="creation-step" id="step3">
+          <!-- Step 4: Hair Length -->
+          <div class="creation-step" id="step4">
             <h3 style="color: var(--text-primary); margin-bottom: 40px; font-size: 28px; font-weight: 700; text-align: center;">Choose Hair Length</h3>
             <div class="ethnicity-grid">
               <div class="ethnicity-option" data-hair="short" onclick="selectHairStep('short')" style="border-color: var(--accent);">
@@ -1168,8 +1169,8 @@
             </div>
           </div>
 
-          <!-- Step 4: Hair Color -->
-          <div class="creation-step" id="step4">
+          <!-- Step 5: Hair Color -->
+          <div class="creation-step" id="step5">
             <h3 style="color: var(--text-primary); margin-bottom: 20px; font-size: 24px; font-weight: 700; text-align: center;">Choose Hair Color</h3>
             <div class="ethnicity-grid">
               <div class="ethnicity-option" data-hair-color="brown" onclick="selectHairColorStep('brown')" style="border-color: var(--accent);">
@@ -1247,8 +1248,8 @@
             </div>
           </div>
 
-          <!-- Step 5: Final Details -->
-          <div class="creation-step" id="step5">
+          <!-- Step 6: Final Details -->
+          <div class="creation-step" id="step6">
             <h3 style="color: var(--text-primary); margin-bottom: 30px; font-size: 28px; font-weight: 700; text-align: center;">Final Details</h3>
             <div style="max-width: 600px; margin: 0 auto; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px;">
               
@@ -1425,7 +1426,7 @@
       currentStep: 1
     };
 
-    let totalSteps = 5;
+    let totalSteps = 6;
 
     // ===== STEP NAVIGATION =====
     function nextStep() {
@@ -1474,7 +1475,7 @@
       const sex = characterCreationState.sex;
       const suffix = sex === 'male' ? '-male' : '';
 
-      if (step === 2) {
+      if (step === 3) {
         // Ethnicity images
         const ethnicities = ['white', 'black', 'indian', 'middle-east', 'hispanic', 'korean', 'chinese', 'japanese', 'vietnamese'];
         ethnicities.forEach(ethnicity => {
@@ -1500,7 +1501,7 @@
             }
           }
         });
-      } else if (step === 3) {
+      } else if (step === 4) {
         // Hair length images
         const hairLengths = ['short', 'medium', 'long'];
         hairLengths.forEach(length => {
@@ -1515,7 +1516,7 @@
             }
           }
         });
-      } else if (step === 4) {
+      } else if (step === 5) {
         // Hair color images
         const hairColors = ['brown', 'black', 'red', 'gray', 'blonde', 'auburn', 'white', 'purple'];
         hairColors.forEach(color => {
@@ -1597,11 +1598,12 @@
       
       // Update step title
       const stepTitles = {
-        1: 'Choose Style',
-        2: 'Choose Ethnicity', 
-        3: 'Choose Hair Length',
-        4: 'Choose Hair Color',
-        5: 'Final Details'
+        1: 'Choose Gender',
+        2: 'Choose Style',
+        3: 'Choose Ethnicity',
+        4: 'Choose Hair Length',
+        5: 'Choose Hair Color',
+        6: 'Final Details'
       };
       document.getElementById('stepTitle').textContent = stepTitles[currentStep];
       
@@ -1649,8 +1651,8 @@
         console.log(`🏷️  Showing all tags (${createAvailableTags.length})`);
       }
 
-      // Repopulate tag UI if we're on Step 5
-      if (characterCreationState.currentStep === 5) {
+      // Repopulate tag UI if we're on Step 6
+      if (characterCreationState.currentStep === 6) {
         populatePopularTags(createAvailableTags);
       }
     }
@@ -2276,17 +2278,17 @@
     // Progressive image preloading for upcoming steps
     function preloadStepImages(stepNumber) {
       const stepImageMap = {
-        2: [
+        3: [
           '/images/white-et.png',
           '/images/black-et.png',
           '/images/indian-et.png'
         ],
-        3: [
+        4: [
           '/images/short-hair.png',
           '/images/medium-hair.png',
           '/images/long-hair.png'
         ],
-        4: [
+        5: [
           '/images/brown-hair-female.png',
           '/images/black-hair-female.png',
           '/images/blonde-hair-female.png'
