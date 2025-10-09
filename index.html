@@ -2579,7 +2579,9 @@
 
         // Sex filter (sex field from Airtable)
         if (currentFilters.sex) {
-          if (character.sex && character.sex.toLowerCase() !== currentFilters.sex.toLowerCase()) {
+          // Default to 'female' if sex field is missing (for backwards compatibility)
+          const characterSex = (character.sex || 'female').toLowerCase();
+          if (characterSex !== currentFilters.sex.toLowerCase()) {
             return false;
           }
         }
