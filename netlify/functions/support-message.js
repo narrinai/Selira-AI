@@ -93,8 +93,7 @@ exports.handler = async (event, context) => {
     const supportData = {
       Message: message.trim(),
       Page_URL: url || '',
-      User_Agent: userAgent || '',
-      Status: 'New'
+      User_Agent: userAgent || ''
     };
 
     // Add user as linked record if found, otherwise store as text fields
