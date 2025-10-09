@@ -987,7 +987,7 @@
                 <div style="color: var(--text-secondary); margin-top: 16px;">Generating your image...<br>This may take 7-8 seconds</div>
               </div>
               <div id="imageContainer" style="display: none; position: relative; max-width: 450px; width: 100%;">
-                <img id="generatedImage" style="width: 100%; border-radius: var(--radius-md); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4); cursor: pointer;" alt="Generated image" onclick="window.open(this.src, '_blank')">
+                <img id="generatedImage" style="width: 100%; border-radius: var(--radius-md); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4); cursor: pointer;" alt="Generated image">
               </div>
             </div>
 
@@ -1342,9 +1342,15 @@
 
         await new Promise((resolve, reject) => {
           img.onload = resolve;
-          img.onerror = reject;
-          img.src = generatedImageUrl;
+          img.onerror = (err) => {
+            console.error('Image load error:', err);
+            reject(err);
+          };
+          // Add timestamp to bypass cache and potential CORS issues
+          img.src = generatedImageUrl + (generatedImageUrl.includes('?') ? '&' : '?') + 't=' + Date.now();
         });
+
+        console.log('Image loaded for watermark:', img.width, 'x', img.height);
 
         // Set canvas size to match image
         canvas.width = img.width;
@@ -1355,40 +1361,60 @@
 
         // Add watermark background (bottom right)
         const watermarkPadding = 30;
-        const watermarkHeight = 40;
-        const watermarkWidth = 140;
+        const watermarkHeight = 50;
+        const watermarkWidth = 160;
         const x = canvas.width - watermarkWidth - watermarkPadding;
         const y = canvas.height - watermarkHeight - watermarkPadding;
 
-        // Semi-transparent background
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+        // Semi-transparent background with rounded corners (manual)
+        const radius = 10;
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
         ctx.beginPath();
-        ctx.roundRect(x, y, watermarkWidth, watermarkHeight, 8);
+        ctx.moveTo(x + radius, y);
+        ctx.lineTo(x + watermarkWidth - radius, y);
+        ctx.arcTo(x + watermarkWidth, y, x + watermarkWidth, y + radius, radius);
+        ctx.lineTo(x + watermarkWidth, y + watermarkHeight - radius);
+        ctx.arcTo(x + watermarkWidth, y + watermarkHeight, x + watermarkWidth - radius, y + watermarkHeight, radius);
+        ctx.lineTo(x + radius, y + watermarkHeight);
+        ctx.arcTo(x, y + watermarkHeight, x, y + watermarkHeight - radius, radius);
+        ctx.lineTo(x, y + radius);
+        ctx.arcTo(x, y, x + radius, y, radius);
+        ctx.closePath();
         ctx.fill();
 
         // Add text "Selira AI"
         ctx.fillStyle = '#FFFFFF';
-        ctx.font = 'bold 20px Arial';
+        ctx.font = 'bold 24px Arial, sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText('Selira AI', x + watermarkWidth / 2, y + watermarkHeight / 2);
 
+        console.log('Watermark added, converting to blob...');
+
         // Convert canvas to blob
         canvas.toBlob((blob) => {
+          if (!blob) {
+            console.error('Failed to create blob from canvas');
+            showAlert('Failed to create watermarked image', 'error');
+            return;
+          }
+
+          console.log('Blob created, size:', blob.size);
           const url = window.URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
-          a.download = `selira-${selectedCompanion.slug}-${Date.now()}.webp`;
+          a.download = `selira-${selectedCompanion.slug}-${Date.now()}.png`;
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);
           window.URL.revokeObjectURL(url);
           showAlert('Image downloaded with watermark!', 'success');
-        }, 'image/webp', 0.95);
+        }, 'image/png', 1.0);
 
       } catch (error) {
         console.error('Download error:', error);
-        showAlert('Failed to download image', 'error');
+        console.error('Error stack:', error.stack);
+        showAlert('Failed to download image: ' + error.message, 'error');
       }
     }
 
@@ -1435,6 +1461,13 @@
       });
       document.getElementById('generateBtn').addEventListener('click', generateImage);
       document.getElementById('downloadBtn').addEventListener('click', downloadImage);
+
+      // Make generated image clickable to open in new tab
+      document.getElementById('generatedImage').addEventListener('click', function() {
+        if (generatedImageUrl) {
+          window.open(generatedImageUrl, '_blank');
+        }
+      });
     }
 
     setTimeout(init, 500);
