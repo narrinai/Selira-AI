@@ -330,6 +330,8 @@
           })
         });
 
+        const data = await response.json();
+
         if (response.ok) {
           // Show success message
           const successMsg = document.createElement('div');
@@ -345,13 +347,16 @@
             setTimeout(() => successMsg.remove(), 500);
           }, 2000);
         } else {
+          // Log error details for debugging
+          console.error('❌ Support message failed:', data);
+
           const errorMsg = document.createElement('div');
           errorMsg.className = 'support-success-message';
           errorMsg.style.background = '#ef4444';
           errorMsg.style.borderColor = '#dc2626';
           errorMsg.textContent = 'Something went wrong. Please try again.';
           bodyContainer.insertBefore(errorMsg, form);
-          setTimeout(() => errorMsg.remove(), 3000);
+          setTimeout(() => errorMsg.remove(), 5000);
         }
       } catch (error) {
         console.error('Support message error:', error);
@@ -361,7 +366,7 @@
         errorMsg.style.borderColor = '#dc2626';
         errorMsg.textContent = 'Something went wrong. Please try again.';
         bodyContainer.insertBefore(errorMsg, form);
-        setTimeout(() => errorMsg.remove(), 3000);
+        setTimeout(() => errorMsg.remove(), 5000);
       } finally {
         submitBtn.disabled = false;
         submitText.textContent = 'Send';

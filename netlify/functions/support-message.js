@@ -133,16 +133,34 @@ exports.handler = async (event, context) => {
       console.error('❌ Support data sent:', JSON.stringify(supportData, null, 2));
 
       let errorMessage = `Airtable error: ${airtableResponse.status}`;
+      let errorDetails = '';
       try {
         const errorData = JSON.parse(responseText);
         if (errorData.error && errorData.error.message) {
           errorMessage = errorData.error.message;
+          errorDetails = JSON.stringify(errorData.error, null, 2);
         }
       } catch (e) {
         // If not JSON, use status code
+        errorDetails = responseText;
       }
 
-      throw new Error(errorMessage);
+      console.error('❌ Full error details:', errorDetails);
+
+      // Return detailed error to help debug
+      return {
+        statusCode: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          success: false,
+          error: errorMessage,
+          debug: {
+            status: airtableResponse.status,
+            supportData: supportData,
+            errorDetails: errorDetails.substring(0, 500) // Limit size
+          }
+        })
+      };
     }
 
     const result = JSON.parse(responseText);
