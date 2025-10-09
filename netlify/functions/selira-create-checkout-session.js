@@ -82,7 +82,7 @@ exports.handler = async (event, context) => {
 
     // Build session config based on mode
     const sessionConfig = {
-      payment_method_types: ['card', 'ideal'],
+      payment_method_types: ['card'],
       line_items: [
         {
           price: priceId,
