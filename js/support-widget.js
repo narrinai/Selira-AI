@@ -75,13 +75,13 @@
         right: 24px;
         width: 56px;
         height: 56px;
-        background: linear-gradient(135deg, #d4a574 0%, #c9954d 100%);
+        background: linear-gradient(135deg, #ce93d8 0%, #ba68c8 100%);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        box-shadow: 0 4px 12px rgba(212, 165, 116, 0.4);
+        box-shadow: 0 4px 12px rgba(206, 147, 216, 0.4);
         transition: all 0.3s ease;
         z-index: 9998;
         color: white;
@@ -89,7 +89,7 @@
 
       .support-widget-btn:hover {
         transform: scale(1.1);
-        box-shadow: 0 6px 20px rgba(212, 165, 116, 0.6);
+        box-shadow: 0 6px 20px rgba(206, 147, 216, 0.6);
       }
 
       .support-widget-chat {
@@ -99,9 +99,10 @@
         width: 380px;
         max-width: calc(100vw - 48px);
         max-height: calc(100vh - 140px);
-        background: white;
+        background: #1a1a1a;
+        border: 1px solid #333333;
         border-radius: 16px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
         display: none;
         flex-direction: column;
         z-index: 9999;
@@ -125,7 +126,7 @@
 
       .support-widget-header {
         padding: 20px;
-        background: linear-gradient(135deg, #d4a574 0%, #c9954d 100%);
+        background: linear-gradient(135deg, #ce93d8 0%, #ba68c8 100%);
         border-radius: 16px 16px 0 0;
         color: white;
         display: flex;
@@ -210,15 +211,18 @@
       }
 
       .support-message-content {
-        background: #f5f5f5;
+        background: #2a2a2a;
+        color: #ffffff;
         padding: 12px 16px;
         border-radius: 12px;
         max-width: 70%;
+        border: 1px solid #333333;
       }
 
       .support-message-user .support-message-content {
-        background: linear-gradient(135deg, #d4a574 0%, #c9954d 100%);
+        background: linear-gradient(135deg, #ce93d8 0%, #ba68c8 100%);
         color: white;
+        border: none;
       }
 
       .support-message-content p {
@@ -241,17 +245,24 @@
       .support-input,
       .support-textarea {
         padding: 12px;
-        border: 1px solid #e0e0e0;
+        background: #2a2a2a;
+        border: 1px solid #333333;
         border-radius: 8px;
         font-size: 14px;
         font-family: inherit;
+        color: #ffffff;
         transition: border-color 0.2s ease;
+      }
+
+      .support-input::placeholder,
+      .support-textarea::placeholder {
+        color: #888888;
       }
 
       .support-input:focus,
       .support-textarea:focus {
         outline: none;
-        border-color: #d4a574;
+        border-color: #ce93d8;
       }
 
       .support-textarea {
@@ -262,12 +273,12 @@
       .support-char-count {
         text-align: right;
         font-size: 12px;
-        color: #999;
+        color: #888888;
         margin-top: 4px;
       }
 
       .support-submit-btn {
-        background: linear-gradient(135deg, #d4a574 0%, #c9954d 100%);
+        background: linear-gradient(135deg, #ce93d8 0%, #ba68c8 100%);
         color: white;
         border: none;
         padding: 12px 24px;
@@ -284,7 +295,7 @@
 
       .support-submit-btn:hover {
         transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(212, 165, 116, 0.4);
+        box-shadow: 0 4px 12px rgba(206, 147, 216, 0.4);
       }
 
       .support-submit-btn:disabled {
@@ -293,13 +304,14 @@
       }
 
       .support-success-message {
-        background: #4caf50;
+        background: #10b981;
         color: white;
         padding: 12px;
         border-radius: 8px;
         text-align: center;
         font-size: 14px;
         animation: fadeIn 0.3s ease;
+        border: 1px solid #059669;
       }
 
       @media (max-width: 480px) {
