@@ -262,9 +262,13 @@ async function main() {
     }
     console.log(`📦 After deduplication: ${uniqueCompanions.length} unique companions\n`);
 
-    // Filter companions with Replicate URLs ONLY (not empty avatars)
+    // Filter companions with Replicate URLs OR imgbb URLs (not empty avatars)
     const companionsToFix = uniqueCompanions.filter(char =>
-      char.avatar_url && char.avatar_url.includes('replicate.delivery')
+      char.avatar_url && (
+        char.avatar_url.includes('replicate.delivery') ||
+        char.avatar_url.includes('i.ibb.co') ||
+        char.avatar_url.includes('ibb.co')
+      )
     );
 
     if (companionsToFix.length === 0) {
@@ -272,7 +276,7 @@ async function main() {
       return;
     }
 
-    console.log(`📊 Found ${companionsToFix.length} companions with Replicate URLs to fix:\n`);
+    console.log(`📊 Found ${companionsToFix.length} companions with external URLs (Replicate/imgbb) to fix:\n`);
     companionsToFix.forEach((c, i) => {
       console.log(`   ${i + 1}. ${c.name} (${c.slug})`);
     });

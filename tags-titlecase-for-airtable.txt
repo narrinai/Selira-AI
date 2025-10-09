@@ -1,4 +1,4 @@
-Tags to add to Airtable (Title Case) - 42 total
+Tags to add to Airtable (Title Case) - 40 total
 
 Female-only (14):
 1. Mommy
@@ -28,7 +28,7 @@ Male-only (14):
 23. CEO
 24. Master
 
-Universal (36):
+Universal (34):
 25. Dominant
 26. Switch
 27. Shy
@@ -44,8 +44,6 @@ Universal (36):
 37. Vampire
 38. Demon
 39. Alien
-40. Celebrity
-41. Idol
-42. Gamer
+40. Gamer
 
 Note: Copy-paste exact capitalization including hyphens (Step-Mom, Step-Dad, etc.)

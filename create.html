@@ -1417,7 +1417,7 @@
       name: '',
       style: '',
       ethnicity: '',
-      sex: 'female', // Fixed to female
+      sex: 'female', // Default to female, updated in Step 1
       hairLength: '',
       hairColor: '',
       category: 'fantasy',
@@ -1458,10 +1458,80 @@
       const stepElement = document.getElementById(`step${currentStep}`);
       if (stepElement) {
         stepElement.style.display = 'block';
+
+        // Update images based on selected sex for steps 2, 3, 4
+        updateStepImages(currentStep);
+
         // Immediately scroll to top (instant, no smooth behavior)
         window.scrollTo(0, 0);
         document.documentElement.scrollTop = 0;
         document.body.scrollTop = 0;
+      }
+    }
+
+    // Update thumbnail images based on selected sex
+    function updateStepImages(step) {
+      const sex = characterCreationState.sex;
+      const suffix = sex === 'male' ? '-male' : '';
+
+      if (step === 2) {
+        // Ethnicity images
+        const ethnicities = ['white', 'black', 'indian', 'middle-east', 'hispanic', 'korean', 'chinese', 'japanese', 'vietnamese'];
+        ethnicities.forEach(ethnicity => {
+          const img = document.querySelector(`[data-ethnicity="${ethnicity}"] img.lazy-image`);
+          if (img) {
+            let newSrc;
+            if (sex === 'male') {
+              // Use asian-male.png as fallback for korean, chinese, japanese, vietnamese
+              const asianEthnicities = ['korean', 'chinese', 'japanese', 'vietnamese'];
+              if (asianEthnicities.includes(ethnicity)) {
+                newSrc = `/images/asian-male.png`;
+              } else {
+                // middle-east becomes middle-eastern
+                const ethnicityKey = ethnicity === 'middle-east' ? 'middle-eastern' : ethnicity;
+                newSrc = `/images/${ethnicityKey}-male.png`;
+              }
+            } else {
+              newSrc = `/images/${ethnicity}-et.png`;
+            }
+            img.setAttribute('data-src', newSrc);
+            if (img.classList.contains('loaded')) {
+              img.src = newSrc;
+            }
+          }
+        });
+      } else if (step === 3) {
+        // Hair length images
+        const hairLengths = ['short', 'medium', 'long'];
+        hairLengths.forEach(length => {
+          const img = document.querySelector(`[data-hair="${length}"] img.lazy-image`);
+          if (img) {
+            const newSrc = sex === 'male'
+              ? `/images/${length}-hair-male.png`
+              : `/images/${length}-hair.png`;
+            img.setAttribute('data-src', newSrc);
+            if (img.classList.contains('loaded')) {
+              img.src = newSrc;
+            }
+          }
+        });
+      } else if (step === 4) {
+        // Hair color images
+        const hairColors = ['brown', 'black', 'red', 'gray', 'blonde', 'auburn', 'white', 'purple'];
+        hairColors.forEach(color => {
+          const img = document.querySelector(`[data-hair-color="${color}"] img.lazy-image`);
+          if (img) {
+            // Handle gray/grey spelling difference
+            const colorKey = color === 'gray' ? 'grey' : color;
+            const newSrc = sex === 'male'
+              ? `/images/${colorKey}-hair-male.png`
+              : `/images/${colorKey}-hair-female.png`;
+            img.setAttribute('data-src', newSrc);
+            if (img.classList.contains('loaded')) {
+              img.src = newSrc;
+            }
+          }
+        });
       }
     }
 
@@ -1755,7 +1825,7 @@
             category: style === 'anime' ? 'anime-manga' : 'realistic',
             style: style,
             shotType: 'portrait',
-            sex: 'female',
+            sex: characterCreationState.sex,
             ethnicity: ethnicity,
             hairLength: hairLength,
             hairColor: hairColor
@@ -1915,7 +1985,7 @@
     const allAvailableTags = {
       female: ['Girlfriend', 'Lesbian', 'Maid', 'Mommy', 'Wife', 'Milf', 'Sister', 'Daughter', 'Step-Mom', 'Step-Sister', 'Dominatrix', 'Princess', 'Nurse', 'Bunny Girl'],
       male: ['Boyfriend', 'Daddy', 'Husband', 'Dilf', 'Brother', 'Son', 'Step-Dad', 'Step-Brother', 'Gay', 'Prince', 'Warrior', 'Knight', 'CEO', 'Master'],
-      universal: ['Ex', 'Romance', 'Companion', 'Fantasy', 'Flirty', 'Cute', 'Seductive', 'Submissive', 'Dominant', 'Switch', 'Shy', 'Confident', 'Playful', 'Mysterious', 'Romantic', 'Jealous', 'Childhood Friend', 'Roommate', 'Neighbor', 'Coworker', 'Tsundere', 'Yandere', 'Boss', 'Student', 'Secretary', 'Teacher', 'Angel', 'Elf', 'Monster', 'Vampire', 'Demon', 'Alien', 'Celebrity', 'Idol', 'Gamer', 'Cheating']
+      universal: ['Ex', 'Romance', 'Companion', 'Fantasy', 'Flirty', 'Cute', 'Seductive', 'Submissive', 'Dominant', 'Switch', 'Shy', 'Confident', 'Playful', 'Mysterious', 'Romantic', 'Jealous', 'Childhood Friend', 'Roommate', 'Neighbor', 'Coworker', 'Tsundere', 'Yandere', 'Boss', 'Student', 'Secretary', 'Teacher', 'Angel', 'Elf', 'Monster', 'Vampire', 'Demon', 'Alien', 'Gamer', 'Cheating']
     };
 
     // Default to all tags (will be filtered based on sex selection)
