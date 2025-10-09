@@ -12,64 +12,229 @@
 
 const fetch = require('node-fetch');
 
-// Male companion templates with diversity
+// Male companion templates with diversity - 20 unique companions
 const maleCompanions = [
   // REALISTIC MALE COMPANIONS - using existing Airtable tags only
   {
-    name: 'Marcus Steel',
-    tags: ['Romantic', 'Confident', 'Flirty'], // Changed from Boyfriend to existing tags
+    name: 'Dante Cruz',
+    tags: ['Romantic', 'Confident', 'Flirty'],
+    artStyle: 'realistic',
+    sex: 'male',
+    ethnicity: 'hispanic',
+    hairLength: 'short',
+    hairColor: 'black',
+    extraInstructions: 'A charming Latin lover with intense eyes and passionate nature. Athletic build, loves late-night conversations.',
+    category: 'Romance'
+  },
+  {
+    name: 'Liam Zhang',
+    tags: ['Seductive', 'Flirty', 'Romantic'],
+    artStyle: 'realistic',
+    sex: 'male',
+    ethnicity: 'chinese',
+    hairLength: 'medium',
+    hairColor: 'black',
+    extraInstructions: 'A sophisticated businessman with mysterious charm. Knows exactly how to seduce with his words and touch.',
+    category: 'Romance'
+  },
+  {
+    name: 'Jamal Washington',
+    tags: ['CEO', 'Dominant', 'Confident'],
     artStyle: 'realistic',
     sex: 'male',
     ethnicity: 'black',
     hairLength: 'short',
     hairColor: 'black',
-    extraInstructions: 'A charming and confident boyfriend who loves deep conversations and romantic evenings. Athletic build with a warm smile.',
+    extraInstructions: 'A powerful CEO with commanding presence. Athletic, successful, and protective of those close to him.',
+    category: 'Business'
+  },
+  {
+    name: 'Noah Bradley',
+    tags: ['Romantic', 'Cute', 'Flirty'],
+    artStyle: 'realistic',
+    sex: 'male',
+    ethnicity: 'white',
+    hairLength: 'medium',
+    hairColor: 'blonde',
+    extraInstructions: 'A charming college athlete with golden retriever energy. Sweet but knows how to turn up the heat.',
     category: 'Romance'
   },
   {
-    name: 'Diego Santana',
-    tags: ['Seductive', 'Flirty', 'Romantic'],
+    name: 'Ravi Patel',
+    tags: ['Seductive', 'Teacher', 'Confident'],
+    artStyle: 'realistic',
+    sex: 'male',
+    ethnicity: 'indian',
+    hairLength: 'short',
+    hairColor: 'black',
+    extraInstructions: 'An attractive professor with seductive intellect. Sophisticated, cultured, and dangerously charming.',
+    category: 'Education'
+  },
+  {
+    name: 'Mateo Silva',
+    tags: ['Flirty', 'Romantic', 'Seductive'],
     artStyle: 'realistic',
     sex: 'male',
     ethnicity: 'hispanic',
-    hairLength: 'medium',
+    hairLength: 'short',
     hairColor: 'brown',
-    extraInstructions: 'A passionate Latin lover with smoldering eyes and an irresistible charm. Knows exactly how to make you feel desired.',
+    extraInstructions: 'A passionate dancer with mesmerizing moves. Athletic body, infectious smile, knows how to move.',
     category: 'Romance'
   },
   {
-    name: 'Alexander Frost',
-    tags: ['CEO', 'Dominant', 'Tsundere'], // Changed from Boss to CEO
+    name: 'Hassan Al-Rashid',
+    tags: ['Dominant', 'CEO', 'Seductive'],
+    artStyle: 'realistic',
+    sex: 'male',
+    ethnicity: 'middle-east',
+    hairLength: 'short',
+    hairColor: 'black',
+    extraInstructions: 'A wealthy sheikh with commanding aura. Powerful, mysterious, and incredibly seductive.',
+    category: 'Business'
+  },
+  {
+    name: 'Tyler Brooks',
+    tags: ['Flirty', 'Cute', 'Romantic'],
     artStyle: 'realistic',
     sex: 'male',
     ethnicity: 'white',
     hairLength: 'short',
-    hairColor: 'blonde',
-    extraInstructions: 'A powerful CEO with a commanding presence and hidden soft side. Tough in business but protective of those he cares about.',
-    category: 'Business'
+    hairColor: 'brown',
+    extraInstructions: 'A charming firefighter with hero complex. Protective, strong, and sweet with a naughty side.',
+    category: 'Romance'
+  },
+  {
+    name: 'Kenji Tanaka',
+    tags: ['Romantic', 'Seductive', 'Confident'],
+    artStyle: 'realistic',
+    sex: 'male',
+    ethnicity: 'japanese',
+    hairLength: 'medium',
+    hairColor: 'black',
+    extraInstructions: 'A sophisticated Tokyo architect with refined taste. Elegant, sensual, and deeply romantic.',
+    category: 'Romance'
+  },
+  {
+    name: 'Andre Baptiste',
+    tags: ['Seductive', 'Dominant', 'Flirty'],
+    artStyle: 'realistic',
+    sex: 'male',
+    ethnicity: 'black',
+    hairLength: 'short',
+    hairColor: 'black',
+    extraInstructions: 'A French-Caribbean model with irresistible charm. Confident, sexy, and knows how to please.',
+    category: 'Romance'
   },
 
   // ANIME MALE COMPANIONS
   {
-    name: 'Ryu Hayashi',
-    tags: ['Romantic', 'Cute', 'Shy'], // Changed from Boyfriend
+    name: 'Akira Kurosawa',
+    tags: ['Romantic', 'Cute', 'Shy'],
     artStyle: 'anime',
     sex: 'male',
     ethnicity: 'japanese',
     hairLength: 'medium',
     hairColor: 'black',
-    extraInstructions: 'A sweet and caring anime boyfriend with a mysterious past. Always there when you need him.',
+    extraInstructions: 'A sweet manga artist who blushes easily. Caring, artistic, and secretly passionate.',
     category: 'Anime-Manga'
   },
   {
-    name: 'Kai Storm',
-    tags: ['Fantasy', 'Seductive', 'Warrior'], // Added Warrior tag
+    name: 'Zero Nightshade',
+    tags: ['Fantasy', 'Seductive', 'Dominant'],
     artStyle: 'anime',
     sex: 'male',
-    ethnicity: 'mixed',
+    ethnicity: 'japanese',
     hairLength: 'long',
-    hairColor: 'silver',
-    extraInstructions: 'A mystical warrior with supernatural powers and otherworldly charm. Protective and intensely devoted.',
+    hairColor: 'white',
+    extraInstructions: 'A dark fantasy prince with mysterious powers. Dangerous, seductive, and intensely devoted.',
+    category: 'Fantasy'
+  },
+  {
+    name: 'Hiro Yamamoto',
+    tags: ['Flirty', 'Cute', 'Romantic'],
+    artStyle: 'anime',
+    sex: 'male',
+    ethnicity: 'japanese',
+    hairLength: 'short',
+    hairColor: 'brown',
+    extraInstructions: 'A cheerful college student with playful personality. Fun, energetic, and surprisingly seductive.',
+    category: 'Anime-Manga'
+  },
+  {
+    name: 'Raiden Storm',
+    tags: ['Fantasy', 'Dominant', 'Warrior'],
+    artStyle: 'anime',
+    sex: 'male',
+    ethnicity: 'japanese',
+    hairLength: 'long',
+    hairColor: 'black',
+    extraInstructions: 'An immortal samurai warrior with electric powers. Strong, protective, and intensely passionate.',
+    category: 'Fantasy'
+  },
+  {
+    name: 'Yuki Frost',
+    tags: ['Cute', 'Romantic', 'Shy'],
+    artStyle: 'anime',
+    sex: 'male',
+    ethnicity: 'japanese',
+    hairLength: 'medium',
+    hairColor: 'white',
+    extraInstructions: 'A gentle ice mage with soft demeanor. Shy on the outside, passionate when comfortable.',
+    category: 'Fantasy'
+  },
+  {
+    name: 'Sora Aether',
+    tags: ['Seductive', 'Fantasy', 'Flirty'],
+    artStyle: 'anime',
+    sex: 'male',
+    ethnicity: 'japanese',
+    hairLength: 'medium',
+    hairColor: 'blonde',
+    extraInstructions: 'A celestial being with ethereal beauty. Mysterious, enchanting, and irresistibly seductive.',
+    category: 'Fantasy'
+  },
+  {
+    name: 'Ren Takahashi',
+    tags: ['Romantic', 'Teacher', 'Confident'],
+    artStyle: 'anime',
+    sex: 'male',
+    ethnicity: 'japanese',
+    hairLength: 'short',
+    hairColor: 'black',
+    extraInstructions: 'A young professor with hidden wild side. Intelligent, caring, and secretly very passionate.',
+    category: 'Anime-Manga'
+  },
+  {
+    name: 'Kai Dragonheart',
+    tags: ['Fantasy', 'Dominant', 'Seductive'],
+    artStyle: 'anime',
+    sex: 'male',
+    ethnicity: 'korean',
+    hairLength: 'long',
+    hairColor: 'red',
+    extraInstructions: 'A dragon shifter with fierce loyalty. Powerful, possessive, and intensely protective of his mate.',
+    category: 'Fantasy'
+  },
+  {
+    name: 'Jun Park',
+    tags: ['Flirty', 'Cute', 'Romantic'],
+    artStyle: 'anime',
+    sex: 'male',
+    ethnicity: 'korean',
+    hairLength: 'medium',
+    hairColor: 'black',
+    extraInstructions: 'A K-pop idol with charming smile. Playful, confident, and knows how to make hearts flutter.',
+    category: 'Anime-Manga'
+  },
+  {
+    name: 'Ryuu Shadowblade',
+    tags: ['Fantasy', 'Seductive', 'Warrior'],
+    artStyle: 'anime',
+    sex: 'male',
+    ethnicity: 'japanese',
+    hairLength: 'long',
+    hairColor: 'black',
+    extraInstructions: 'A ninja assassin with deadly charm. Silent, mysterious, and dangerously seductive.',
     category: 'Fantasy'
   }
 ];
@@ -82,25 +247,39 @@ async function generateMaleAvatar(companionData) {
   console.log(`\n🎨 Generating NSFW ${companionData.artStyle} male avatar for ${companionData.name}...`);
 
   try {
-    // Build NSFW male-specific prompt
+    // Build NSFW male-specific prompt with VIVID backgrounds like female companions
     let clothingStyle = 'shirtless showing defined abs and muscular chest';
+    let backgroundScene = '';
 
-    // Customize based on tags
+    // Customize based on tags with appropriate VIVID backgrounds
     if (companionData.tags.includes('CEO') || companionData.tags.includes('Dominant')) {
-      clothingStyle = 'open shirt showing muscular chest, professional but sexy';
+      clothingStyle = 'open dress shirt showing muscular chest, professional but seductive';
+      backgroundScene = 'luxurious modern bedroom, silk sheets, dim mood lighting, romantic candles, intimate atmosphere, elegant expensive interior, warm golden hour lighting';
     } else if (companionData.tags.includes('Teacher')) {
       clothingStyle = 'partially unbuttoned shirt revealing toned chest';
+      backgroundScene = 'cozy bedroom background, soft ambient lighting, intimate setting, comfortable bed, romantic atmosphere, warm tones';
     } else if (companionData.tags.includes('Seductive')) {
       clothingStyle = 'shirtless showing perfect abs and defined chest muscles';
+      backgroundScene = 'tropical beach at golden hour sunset, ocean waves in background, vacation vibes, sandy beach, palm trees, romantic sunset colors, warm lighting';
     } else if (companionData.tags.includes('Fantasy') || companionData.tags.includes('Warrior')) {
-      clothingStyle = 'fantasy armor revealing muscular torso';
+      clothingStyle = 'fantasy armor revealing muscular torso, medieval warrior aesthetic';
+      backgroundScene = 'mystical fantasy bedroom, magical atmosphere, ethereal lighting, fantasy castle interior, romantic and enchanted setting';
+    } else if (companionData.tags.includes('Romantic')) {
+      clothingStyle = 'partially open shirt showing toned chest, casual intimate wear';
+      backgroundScene = 'cozy intimate bedroom, soft warm lighting, comfortable bed with pillows, romantic atmosphere, gentle sunset light through window, inviting setting';
+    } else if (companionData.tags.includes('Flirty')) {
+      clothingStyle = 'shirtless with towel around waist, fresh and attractive';
+      backgroundScene = 'luxury hotel bedroom, spa-like atmosphere, steamy bathroom in background, sensual mood lighting, elegant interior, intimate vibes';
+    } else {
+      // Default VIVID sensual background
+      backgroundScene = 'intimate bedroom interior, romantic dim lighting, cozy bed setting, warm ambient glow, sensual atmosphere, soft fabrics';
     }
 
     let attractivePrompt;
     if (companionData.artStyle === 'anime') {
-      attractivePrompt = `handsome anime guy, attractive masculine face, seductive expression, ${clothingStyle}, toned muscular body, anime style, detailed artwork, confident pose, masculine charm, single character, solo`;
+      attractivePrompt = `handsome anime guy, attractive masculine face, seductive bedroom eyes, ${clothingStyle}, toned muscular body, ${backgroundScene}, detailed anime art style, vibrant colors, high quality anime illustration, confident seductive pose, masculine charm, single male character, solo portrait`;
     } else {
-      attractivePrompt = `handsome muscular man, attractive masculine face, seductive expression, ${clothingStyle}, athletic build, photorealistic, professional photography, masculine energy, confident pose, single person, solo`;
+      attractivePrompt = `handsome muscular man, attractive masculine face, seductive intense gaze, ${clothingStyle}, athletic build with defined muscles, ${backgroundScene}, photorealistic photography, professional portrait, masculine energy and charm, confident seductive pose, high quality photo, warm lighting, single male person, solo`;
     }
 
     console.log(`📋 Using NSFW prompt: ${attractivePrompt.substring(0, 100)}...`);

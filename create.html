@@ -1917,25 +1917,44 @@
     }
 
     async function createCharacter() {
+      // Prevent double-clicking by immediately disabling the button
+      const createBtn = document.getElementById('createFinalBtn');
+
+      // Check if already creating (prevent duplicate submissions)
+      if (createBtn.disabled) {
+        console.log('⚠️ Already creating companion, ignoring duplicate click');
+        return;
+      }
+
+      // Immediately disable button to prevent double-clicks
+      const originalText = createBtn.textContent;
+      createBtn.disabled = true;
+      createBtn.style.opacity = '0.7';
+      createBtn.style.cursor = 'not-allowed';
+
       const name = document.getElementById('characterName').value.trim();
       const extraInstructions = document.getElementById('extraInstructions')?.value.trim() || '';
 
       if (!name) {
         alert('Please fill in the character name.');
+        // Re-enable button on validation error
+        createBtn.disabled = false;
+        createBtn.style.opacity = '1';
+        createBtn.style.cursor = 'pointer';
         return;
       }
 
       if (createSelectedTags.length === 0) {
         alert('Please select at least one tag for your character.');
+        // Re-enable button on validation error
+        createBtn.disabled = false;
+        createBtn.style.opacity = '1';
+        createBtn.style.cursor = 'pointer';
         return;
       }
 
       // Show loading state
-      const createBtn = document.getElementById('createFinalBtn');
-      const originalText = createBtn.textContent;
       createBtn.textContent = '⏳ Creating...';
-      createBtn.disabled = true;
-      createBtn.style.opacity = '0.7';
 
       // Get user info for creator identification
       let userEmail = 'anonymous';
