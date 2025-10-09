@@ -1475,7 +1475,41 @@
       const sex = characterCreationState.sex;
       const suffix = sex === 'male' ? '-male' : '';
 
-      if (step === 3) {
+      if (step === 2) {
+        // Art style images - use male/female specific images
+        const realisticImg = document.querySelector('[data-style="realistic"] img.lazy-image');
+        const animeImg = document.querySelector('[data-style="anime"] img.lazy-image');
+
+        if (sex === 'male') {
+          // Use male style examples
+          if (realisticImg) {
+            realisticImg.setAttribute('data-src', '/images/realistic-male.png');
+            if (realisticImg.classList.contains('loaded')) {
+              realisticImg.src = '/images/realistic-male.png';
+            }
+          }
+          if (animeImg) {
+            animeImg.setAttribute('data-src', '/images/anime-male.png');
+            if (animeImg.classList.contains('loaded')) {
+              animeImg.src = '/images/anime-male.png';
+            }
+          }
+        } else {
+          // Use female style examples (existing avatars)
+          if (realisticImg) {
+            realisticImg.setAttribute('data-src', '/avatars/siya-moore-avatar-1759239495866.webp');
+            if (realisticImg.classList.contains('loaded')) {
+              realisticImg.src = '/avatars/siya-moore-avatar-1759239495866.webp';
+            }
+          }
+          if (animeImg) {
+            animeImg.setAttribute('data-src', 'https://selira.ai/avatars/keya-hassan-avatar-1759243120064.webp');
+            if (animeImg.classList.contains('loaded')) {
+              animeImg.src = 'https://selira.ai/avatars/keya-hassan-avatar-1759243120064.webp';
+            }
+          }
+        }
+      } else if (step === 3) {
         // Ethnicity images
         const ethnicities = ['white', 'black', 'indian', 'middle-east', 'hispanic', 'korean', 'chinese', 'japanese', 'vietnamese'];
         ethnicities.forEach(ethnicity => {
