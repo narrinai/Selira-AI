@@ -1666,7 +1666,10 @@
       // Filter available tags based on sex
       updateAvailableTags();
 
-      // Note: Don't auto-advance - user needs to select style too
+      // Auto-advance to next step after brief delay
+      setTimeout(() => {
+        nextStep();
+      }, 500);
     }
 
     // Update available tags based on selected sex
