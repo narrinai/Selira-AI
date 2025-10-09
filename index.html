@@ -2000,9 +2000,9 @@
               <span class="dropdown-arrow">▼</span>
             </button>
             <div class="dropdown-menu" id="sexDropdown">
-              <a href="/?sex=female" onclick="setSexFilter('female'); return false;">Female</a>
-              <a href="/?sex=male" onclick="setSexFilter('male'); return false;">Male</a>
-              <a href="/" onclick="setSexFilter('all'); return false;">All</a>
+              <a href="#" onclick="setSexFilter('female'); return false;">Female</a>
+              <a href="#" onclick="setSexFilter('male'); return false;">Male</a>
+              <a href="#" onclick="setSexFilter('all'); return false;">All</a>
             </div>
           </div>
 
@@ -2704,15 +2704,6 @@
         dropdownBtn.querySelector('span:first-child').textContent = sexLabels[sex] || 'Female';
       }
 
-      // Update URL with query parameter
-      const url = new URL(window.location);
-      if (sex === 'all') {
-        url.searchParams.delete('sex');
-      } else {
-        url.searchParams.set('sex', sex);
-      }
-      window.history.pushState({}, '', url);
-
       // Hide dropdown
       document.getElementById('sexDropdown').style.display = 'none';
 
@@ -3332,25 +3323,6 @@
     // ===== INITIAL URL HANDLING =====
     function handleInitialURL() {
       const currentURL = window.location.pathname + window.location.search;
-      const urlParams = new URLSearchParams(window.location.search);
-
-      // Check for sex filter in URL
-      const sexParam = urlParams.get('sex');
-      if (sexParam && ['male', 'female', 'all'].includes(sexParam)) {
-        console.log('🔗 Detected sex filter in URL:', sexParam);
-        currentFilters.sex = sexParam === 'all' ? undefined : sexParam;
-
-        // Update button text
-        const dropdownBtn = document.getElementById('sexDropdownBtn');
-        if (dropdownBtn) {
-          const sexLabels = {
-            'all': 'All',
-            'female': 'Female',
-            'male': 'Male'
-          };
-          dropdownBtn.querySelector('span:first-child').textContent = sexLabels[sexParam] || 'Female';
-        }
-      }
 
       if (currentURL.includes('/tags/')) {
         // Extract tag from URL
