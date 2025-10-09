@@ -58,17 +58,55 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Prepare data for Airtable
+    // Try to find user record by email for linked record
+    let userRecordId = null;
+    if (email || userId) {
+      try {
+        console.log('🔍 Looking up user record by email:', email || userId);
+        const searchEmail = email || userId;
+        const userLookupResponse = await fetch(
+          `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula={Email}="${searchEmail}"`,
+          {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+              'Content-Type': 'application/json'
+            }
+          }
+        );
+
+        if (userLookupResponse.ok) {
+          const userLookupData = await userLookupResponse.json();
+          if (userLookupData.records && userLookupData.records.length > 0) {
+            userRecordId = userLookupData.records[0].id;
+            console.log('✅ Found user record ID:', userRecordId);
+          } else {
+            console.log('⚠️ No user found with email:', searchEmail);
+          }
+        }
+      } catch (error) {
+        console.log('⚠️ Could not lookup user record:', error.message);
+      }
+    }
+
+    // Prepare data for Airtable with linked record
     const supportData = {
-      Name: name || 'Anonymous',
-      Email: email || '',
       Message: message.trim(),
-      User_ID: userId || '',
       Page_URL: url || '',
       User_Agent: userAgent || '',
-      Status: 'New',
-      Created_At: new Date().toISOString()
+      Status: 'New'
     };
+
+    // Add user as linked record if found, otherwise store as text fields
+    if (userRecordId) {
+      supportData.User = [userRecordId]; // Linked record to Users table
+      console.log('✅ Linking message to user record:', userRecordId);
+    } else {
+      // Fallback: store as text fields for anonymous users
+      supportData.Anonymous_Name = name || 'Anonymous';
+      supportData.Anonymous_Email = email || '';
+      console.log('⚠️ No user record - storing as anonymous message');
+    }
 
     console.log('💾 Saving to Airtable Support_Messages table...');
 
