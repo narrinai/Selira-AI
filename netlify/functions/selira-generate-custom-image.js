@@ -296,10 +296,10 @@ exports.handler = async (event, context) => {
     const isBald = hairLength === 'bald' || promptLower.includes('bald');
     const hairColorDesc = isBald ? '' : (hairColorMap[hairColor] || 'brown hair');
 
-    // Smart context enhancement based on keywords
+    // Smart context enhancement with random diverse backgrounds
     let contextualEnhancement = '';
-    
-    // Location contexts
+
+    // Location contexts - check if keywords exist in prompt
     if (promptLower.includes('beach')) {
       contextualEnhancement += ', sunny day, ocean background, vacation vibes, tropical setting';
     } else if (promptLower.includes('bedroom') || promptLower.includes('bed')) {
@@ -308,6 +308,28 @@ exports.handler = async (event, context) => {
       contextualEnhancement += ', professional environment, modern office setting';
     } else if (promptLower.includes('park') || promptLower.includes('outdoor')) {
       contextualEnhancement += ', natural outdoor setting, pleasant lighting';
+    } else {
+      // If no specific background mentioned, add random diverse background
+      const randomBackgrounds = [
+        ', luxury penthouse interior, city skyline view, elegant modern setting, warm ambient lighting',
+        ', tropical beach at sunset, golden hour, ocean waves, romantic atmosphere, vacation vibes',
+        ', cozy coffee shop, warm lighting, artistic atmosphere, urban setting',
+        ', rooftop terrace at dusk, city lights in background, romantic evening atmosphere',
+        ', art gallery interior, sophisticated setting, modern architecture, soft gallery lighting',
+        ', private library with bookshelves, intellectual atmosphere, warm reading lights',
+        ', infinity pool edge, resort setting, tropical paradise, crystal clear water',
+        ', garden terrace with flowers, natural outdoor setting, soft sunlight, botanical vibes',
+        ', modern loft apartment, industrial chic, large windows, natural daylight',
+        ', spa retreat setting, tranquil atmosphere, zen garden view, peaceful ambiance',
+        ', luxury yacht deck, ocean view, sunny day, nautical elegance',
+        ', scenic mountain lodge, fireplace, cozy rustic charm, warm interior',
+        ', urban rooftop bar, nightlife atmosphere, city panorama, stylish setting',
+        ', botanical conservatory, lush greenery, natural light, exotic plants',
+        ', private beach cabana, tropical paradise, ocean breeze, intimate setting'
+      ];
+      const randomBg = randomBackgrounds[Math.floor(Math.random() * randomBackgrounds.length)];
+      contextualEnhancement += randomBg;
+      console.log(`🎲 [${requestId}] Selected random background:`, randomBg);
     }
     
     // Pose contexts
