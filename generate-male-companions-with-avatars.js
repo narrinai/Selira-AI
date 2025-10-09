@@ -12,7 +12,7 @@
 
 const fetch = require('node-fetch');
 
-// Male companion templates with diversity - 20 unique companions
+// Male companion templates with diversity - 5 unique companions for testing
 const maleCompanions = [
   // REALISTIC MALE COMPANIONS - using existing Airtable tags only
   {
@@ -60,74 +60,6 @@ const maleCompanions = [
     category: 'Romance'
   },
   {
-    name: 'Ravi Patel',
-    tags: ['Seductive', 'Teacher', 'Confident'],
-    artStyle: 'realistic',
-    sex: 'male',
-    ethnicity: 'indian',
-    hairLength: 'short',
-    hairColor: 'black',
-    extraInstructions: 'An attractive professor with seductive intellect. Sophisticated, cultured, and dangerously charming.',
-    category: 'Education'
-  },
-  {
-    name: 'Mateo Silva',
-    tags: ['Flirty', 'Romantic', 'Seductive'],
-    artStyle: 'realistic',
-    sex: 'male',
-    ethnicity: 'hispanic',
-    hairLength: 'short',
-    hairColor: 'brown',
-    extraInstructions: 'A passionate dancer with mesmerizing moves. Athletic body, infectious smile, knows how to move.',
-    category: 'Romance'
-  },
-  {
-    name: 'Hassan Al-Rashid',
-    tags: ['Dominant', 'CEO', 'Seductive'],
-    artStyle: 'realistic',
-    sex: 'male',
-    ethnicity: 'middle-east',
-    hairLength: 'short',
-    hairColor: 'black',
-    extraInstructions: 'A wealthy sheikh with commanding aura. Powerful, mysterious, and incredibly seductive.',
-    category: 'Business'
-  },
-  {
-    name: 'Tyler Brooks',
-    tags: ['Flirty', 'Cute', 'Romantic'],
-    artStyle: 'realistic',
-    sex: 'male',
-    ethnicity: 'white',
-    hairLength: 'short',
-    hairColor: 'brown',
-    extraInstructions: 'A charming firefighter with hero complex. Protective, strong, and sweet with a naughty side.',
-    category: 'Romance'
-  },
-  {
-    name: 'Kenji Tanaka',
-    tags: ['Romantic', 'Seductive', 'Confident'],
-    artStyle: 'realistic',
-    sex: 'male',
-    ethnicity: 'japanese',
-    hairLength: 'medium',
-    hairColor: 'black',
-    extraInstructions: 'A sophisticated Tokyo architect with refined taste. Elegant, sensual, and deeply romantic.',
-    category: 'Romance'
-  },
-  {
-    name: 'Andre Baptiste',
-    tags: ['Seductive', 'Dominant', 'Flirty'],
-    artStyle: 'realistic',
-    sex: 'male',
-    ethnicity: 'black',
-    hairLength: 'short',
-    hairColor: 'black',
-    extraInstructions: 'A French-Caribbean model with irresistible charm. Confident, sexy, and knows how to please.',
-    category: 'Romance'
-  },
-
-  // ANIME MALE COMPANIONS
-  {
     name: 'Akira Kurosawa',
     tags: ['Romantic', 'Cute', 'Shy'],
     artStyle: 'anime',
@@ -148,94 +80,6 @@ const maleCompanions = [
     hairColor: 'white',
     extraInstructions: 'A dark fantasy prince with mysterious powers. Dangerous, seductive, and intensely devoted.',
     category: 'Fantasy'
-  },
-  {
-    name: 'Hiro Yamamoto',
-    tags: ['Flirty', 'Cute', 'Romantic'],
-    artStyle: 'anime',
-    sex: 'male',
-    ethnicity: 'japanese',
-    hairLength: 'short',
-    hairColor: 'brown',
-    extraInstructions: 'A cheerful college student with playful personality. Fun, energetic, and surprisingly seductive.',
-    category: 'Anime-Manga'
-  },
-  {
-    name: 'Raiden Storm',
-    tags: ['Fantasy', 'Dominant', 'Warrior'],
-    artStyle: 'anime',
-    sex: 'male',
-    ethnicity: 'japanese',
-    hairLength: 'long',
-    hairColor: 'black',
-    extraInstructions: 'An immortal samurai warrior with electric powers. Strong, protective, and intensely passionate.',
-    category: 'Fantasy'
-  },
-  {
-    name: 'Yuki Frost',
-    tags: ['Cute', 'Romantic', 'Shy'],
-    artStyle: 'anime',
-    sex: 'male',
-    ethnicity: 'japanese',
-    hairLength: 'medium',
-    hairColor: 'white',
-    extraInstructions: 'A gentle ice mage with soft demeanor. Shy on the outside, passionate when comfortable.',
-    category: 'Fantasy'
-  },
-  {
-    name: 'Sora Aether',
-    tags: ['Seductive', 'Fantasy', 'Flirty'],
-    artStyle: 'anime',
-    sex: 'male',
-    ethnicity: 'japanese',
-    hairLength: 'medium',
-    hairColor: 'blonde',
-    extraInstructions: 'A celestial being with ethereal beauty. Mysterious, enchanting, and irresistibly seductive.',
-    category: 'Fantasy'
-  },
-  {
-    name: 'Ren Takahashi',
-    tags: ['Romantic', 'Teacher', 'Confident'],
-    artStyle: 'anime',
-    sex: 'male',
-    ethnicity: 'japanese',
-    hairLength: 'short',
-    hairColor: 'black',
-    extraInstructions: 'A young professor with hidden wild side. Intelligent, caring, and secretly very passionate.',
-    category: 'Anime-Manga'
-  },
-  {
-    name: 'Kai Dragonheart',
-    tags: ['Fantasy', 'Dominant', 'Seductive'],
-    artStyle: 'anime',
-    sex: 'male',
-    ethnicity: 'korean',
-    hairLength: 'long',
-    hairColor: 'red',
-    extraInstructions: 'A dragon shifter with fierce loyalty. Powerful, possessive, and intensely protective of his mate.',
-    category: 'Fantasy'
-  },
-  {
-    name: 'Jun Park',
-    tags: ['Flirty', 'Cute', 'Romantic'],
-    artStyle: 'anime',
-    sex: 'male',
-    ethnicity: 'korean',
-    hairLength: 'medium',
-    hairColor: 'black',
-    extraInstructions: 'A K-pop idol with charming smile. Playful, confident, and knows how to make hearts flutter.',
-    category: 'Anime-Manga'
-  },
-  {
-    name: 'Ryuu Shadowblade',
-    tags: ['Fantasy', 'Seductive', 'Warrior'],
-    artStyle: 'anime',
-    sex: 'male',
-    ethnicity: 'japanese',
-    hairLength: 'long',
-    hairColor: 'black',
-    extraInstructions: 'A ninja assassin with deadly charm. Silent, mysterious, and dangerously seductive.',
-    category: 'Fantasy'
   }
 ];
 
@@ -247,39 +91,36 @@ async function generateMaleAvatar(companionData) {
   console.log(`\n🎨 Generating NSFW ${companionData.artStyle} male avatar for ${companionData.name}...`);
 
   try {
-    // Build NSFW male-specific prompt with VIVID backgrounds like female companions
-    let clothingStyle = 'shirtless showing defined abs and muscular chest';
+    // Build NSFW male-specific prompt with diverse random backgrounds
     let backgroundScene = '';
 
-    // Customize based on tags with appropriate VIVID backgrounds
-    if (companionData.tags.includes('CEO') || companionData.tags.includes('Dominant')) {
-      clothingStyle = 'open dress shirt showing muscular chest, professional but seductive';
-      backgroundScene = 'luxurious modern bedroom, silk sheets, dim mood lighting, romantic candles, intimate atmosphere, elegant expensive interior, warm golden hour lighting';
-    } else if (companionData.tags.includes('Teacher')) {
-      clothingStyle = 'partially unbuttoned shirt revealing toned chest';
-      backgroundScene = 'cozy bedroom background, soft ambient lighting, intimate setting, comfortable bed, romantic atmosphere, warm tones';
-    } else if (companionData.tags.includes('Seductive')) {
-      clothingStyle = 'shirtless showing perfect abs and defined chest muscles';
-      backgroundScene = 'tropical beach at golden hour sunset, ocean waves in background, vacation vibes, sandy beach, palm trees, romantic sunset colors, warm lighting';
-    } else if (companionData.tags.includes('Fantasy') || companionData.tags.includes('Warrior')) {
-      clothingStyle = 'fantasy armor revealing muscular torso, medieval warrior aesthetic';
-      backgroundScene = 'mystical fantasy bedroom, magical atmosphere, ethereal lighting, fantasy castle interior, romantic and enchanted setting';
-    } else if (companionData.tags.includes('Romantic')) {
-      clothingStyle = 'partially open shirt showing toned chest, casual intimate wear';
-      backgroundScene = 'cozy intimate bedroom, soft warm lighting, comfortable bed with pillows, romantic atmosphere, gentle sunset light through window, inviting setting';
-    } else if (companionData.tags.includes('Flirty')) {
-      clothingStyle = 'shirtless with towel around waist, fresh and attractive';
-      backgroundScene = 'luxury hotel bedroom, spa-like atmosphere, steamy bathroom in background, sensual mood lighting, elegant interior, intimate vibes';
-    } else {
-      // Default VIVID sensual background
-      backgroundScene = 'intimate bedroom interior, romantic dim lighting, cozy bed setting, warm ambient glow, sensual atmosphere, soft fabrics';
-    }
+    // Random diverse backgrounds to prevent repetition
+    const randomBackgrounds = [
+      'luxury penthouse bedroom, city skyline view through windows, modern elegant interior, ambient mood lighting, silky sheets',
+      'tropical beach at golden hour sunset, ocean waves, sandy beach, palm trees, vacation paradise atmosphere',
+      'modern gym environment, fitness equipment in background, athletic setting, professional sports lighting',
+      'rooftop terrace at dusk, city lights twinkling, urban skyline, romantic evening atmosphere',
+      'cozy mountain cabin bedroom, fireplace glowing, rustic wooden interior, warm intimate setting',
+      'luxury yacht bedroom cabin, ocean view through portholes, nautical elegance, intimate quarters',
+      'infinity pool edge at resort, tropical paradise, crystal clear water, luxury vacation setting',
+      'modern loft apartment, industrial chic, floor-to-ceiling windows, natural daylight streaming in',
+      'spa retreat bedroom, zen atmosphere, minimalist design, tranquil peaceful setting',
+      'private beach cabana, tropical island, ocean breeze, intimate paradise hideaway',
+      'art gallery loft, sophisticated modern space, large windows, artistic atmosphere',
+      'luxury hotel suite bedroom, five-star elegance, king bed, romantic mood lighting',
+      'garden terrace with city view, outdoor lounge, evening atmosphere, romantic setting',
+      'modern penthouse living room, floor-to-ceiling windows, stunning view, sophisticated interior',
+      'beachfront villa bedroom, ocean view, tropical luxury, romantic sunset ambiance'
+    ];
+
+    backgroundScene = randomBackgrounds[Math.floor(Math.random() * randomBackgrounds.length)];
+    console.log(`🎲 Selected random background: ${backgroundScene.substring(0, 60)}...`);
 
     let attractivePrompt;
     if (companionData.artStyle === 'anime') {
-      attractivePrompt = `handsome anime guy, attractive masculine face, seductive bedroom eyes, ${clothingStyle}, toned muscular body, ${backgroundScene}, bright vibrant lighting, colorful anime style, high quality detailed anime art, sharp focus, confident seductive pose, masculine charm, warm color palette, well-lit scene, single male character, solo portrait`;
+      attractivePrompt = `NSFW anime male, handsome shirtless muscular anime guy with defined abs and chest, NO SHIRT ON, seductive bedroom eyes, toned athletic body, ${backgroundScene}, detailed anime art, high quality anime illustration, vibrant colors, cel shading, perfect anatomy, confident alluring pose, masculine energy, single character solo`;
     } else {
-      attractivePrompt = `handsome muscular man, attractive masculine face, seductive intense gaze, ${clothingStyle}, athletic build with defined muscles, ${backgroundScene}, BRIGHT warm lighting, professional photography, soft romantic glow, glamour photo shoot, golden hour lighting, sharp focus, confident seductive pose, masculine energy and charm, well-lit professional portrait, warm tones, single male person, solo`;
+      attractivePrompt = `NSFW realistic male photo, handsome shirtless muscular man with visible defined abs and pecs, NO SHIRT, bare chest showing muscles, seductive intense gaze, athletic physique, ${backgroundScene}, photorealistic professional photography, glamour male model shoot, dramatic studio lighting, high contrast, sharp focus, well-defined muscles clearly visible, professional fitness photography, single person solo`;
     }
 
     console.log(`📋 Using NSFW prompt: ${attractivePrompt.substring(0, 100)}...`);
