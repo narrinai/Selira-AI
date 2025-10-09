@@ -464,6 +464,12 @@ class SupabaseAuthModal {
   }
 
   openModal(mode = 'login') {
+    // Prevent opening modal if already open (debounce)
+    if (this.isOpen) {
+      console.log('⚠️ Modal already open, ignoring duplicate openModal call');
+      return;
+    }
+
     this.createModal(mode);
     const modal = document.getElementById('auth0-modal');
 
@@ -1201,6 +1207,16 @@ document.addEventListener('DOMContentLoaded', async function() {
 // ===== GLOBAL AUTH FUNCTIONS FOR SELIRA =====
 window.openLoginModal = function(mode = 'login') {
   console.log('🌍 openLoginModal called with mode:', mode);
+
+  // Close mobile sidebar if open
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  if (sidebar && sidebar.classList.contains('open')) {
+    sidebar.classList.remove('open');
+    if (overlay) overlay.classList.remove('show');
+    console.log('📱 Mobile sidebar closed before opening auth modal');
+  }
+
   if (seliraAuth) {
     seliraAuth.openModal(mode);
   } else {
@@ -1209,6 +1225,14 @@ window.openLoginModal = function(mode = 'login') {
 };
 
 window.openSignupModal = function() {
+  // Close mobile sidebar if open
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  if (sidebar && sidebar.classList.contains('open')) {
+    sidebar.classList.remove('open');
+    if (overlay) overlay.classList.remove('show');
+  }
+
   if (seliraAuth) {
     seliraAuth.openModal('signup');
   }
