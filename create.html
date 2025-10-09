@@ -1516,8 +1516,13 @@
             let newSrc;
             if (sex === 'male') {
               // Use specific male ethnicity images
-              const ethnicityKey = ethnicity === 'middle-east' ? 'middle-eastern' : ethnicity;
-              newSrc = `/images/${ethnicityKey}-male.png`;
+              // Use blonde-hair-male.png for white/caucasian
+              if (ethnicity === 'white') {
+                newSrc = `/images/blonde-hair-male.png`;
+              } else {
+                const ethnicityKey = ethnicity === 'middle-east' ? 'middle-eastern' : ethnicity;
+                newSrc = `/images/${ethnicityKey}-male.png`;
+              }
             } else {
               newSrc = `/images/${ethnicity}-et.png`;
             }
