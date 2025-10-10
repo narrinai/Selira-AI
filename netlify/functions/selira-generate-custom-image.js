@@ -350,14 +350,23 @@ exports.handler = async (event, context) => {
       auth0_id: auth0_id ? auth0_id.substring(0, 15) + '...' : 'none'
     });
 
-    // ROUTE TO PROMPTCHAN FOR UNCENSORED IMAGES
+    // ROUTE TO PROMPTCHAN FOR UNCENSORED IMAGES WITH REPLICATE FALLBACK
     if (uncensored === true) {
       console.log(`🔓 [${requestId}] Uncensored mode - routing to Promptchan API`);
-      return await generateWithPromptchan(body, requestId, corsHeaders, email, auth0_id);
+      const promptchanResult = await generateWithPromptchan(body, requestId, corsHeaders, email, auth0_id);
+
+      // If Promptchan fails (500 error), fall back to Replicate
+      if (promptchanResult.statusCode === 500) {
+        console.log(`⚠️ [${requestId}] Promptchan failed, falling back to Replicate (censored)`);
+        // Continue to Replicate below (don't return, let it fall through)
+      } else {
+        // Promptchan succeeded, return the result
+        return promptchanResult;
+      }
     }
 
-    // Otherwise continue with Replicate (censored)
-    console.log(`🔒 [${requestId}] Censored mode - using Replicate API`);
+    // Replicate (censored) - either explicitly requested or fallback from Promptchan failure
+    console.log(`🔒 [${requestId}] Using Replicate API ${uncensored ? '(fallback from Promptchan)' : '(censored mode)'}`);
     
     if (!customPrompt) {
       return {
