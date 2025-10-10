@@ -1931,9 +1931,9 @@
             </svg>
           </button>
           <div class="mobile-dropdown-menu" id="mobileContentMenu">
+            <div class="mobile-dropdown-item" onclick="selectMobileContent('all')">All</div>
             <div class="mobile-dropdown-item" onclick="selectMobileContent('censored')">Censored</div>
             <div class="mobile-dropdown-item" onclick="selectMobileContent('unfiltered')">Unfiltered</div>
-            <div class="mobile-dropdown-item" onclick="selectMobileContent('all')">All</div>
           </div>
         </div>
         <div class="mobile-filter-dropdown">
@@ -5240,6 +5240,12 @@ Please be thorough and include important details from our conversations.`;
       const contentText = document.getElementById('mobileContentText');
       const menu = document.getElementById('mobileContentMenu');
 
+      // Remove selected class from all items
+      menu.querySelectorAll('.mobile-dropdown-item').forEach(item => item.classList.remove('selected'));
+
+      // Add selected class to clicked item
+      event.target.classList.add('selected');
+
       if (content === 'all') {
         contentText.textContent = 'All';
         currentFilters.content = undefined;
@@ -5257,6 +5263,12 @@ Please be thorough and include important details from our conversations.`;
       const styleText = document.getElementById('mobileStyleText');
       const menu = document.getElementById('mobileStyleMenu');
 
+      // Remove selected class from all items
+      menu.querySelectorAll('.mobile-dropdown-item').forEach(item => item.classList.remove('selected'));
+
+      // Add selected class to clicked item
+      event.target.classList.add('selected');
+
       if (style === 'all') {
         styleText.textContent = 'All Styles';
         currentFilters.style = null;
@@ -5273,6 +5285,12 @@ Please be thorough and include important details from our conversations.`;
     function selectMobileSex(sex) {
       const sexText = document.getElementById('mobileSexText');
       const menu = document.getElementById('mobileSexMenu');
+
+      // Remove selected class from all items
+      menu.querySelectorAll('.mobile-dropdown-item').forEach(item => item.classList.remove('selected'));
+
+      // Add selected class to clicked item
+      event.target.classList.add('selected');
 
       if (sex === 'all') {
         sexText.textContent = 'All';
@@ -5296,6 +5314,12 @@ Please be thorough and include important details from our conversations.`;
     function selectMobileTag(tag) {
       const tagText = document.getElementById('mobileTagText');
       const menu = document.getElementById('mobileTagMenu');
+
+      // Remove selected class from all items
+      menu.querySelectorAll('.mobile-dropdown-item').forEach(item => item.classList.remove('selected'));
+
+      // Add selected class to clicked item
+      event.target.classList.add('selected');
 
       if (tag === 'all') {
         tagText.textContent = 'All Tags';
