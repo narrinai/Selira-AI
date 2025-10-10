@@ -55,6 +55,13 @@ function addUpgradePopupCSS() {
       background: linear-gradient(135deg, #14b8a6 0%, #f97316 100%);
       border-radius: 16px 16px 0 0;
     }
+    .upgrade-header-image {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 12px 12px 0 0;
+      margin: -1.5rem -1.5rem 1rem -1.5rem;
+    }
     .upgrade-header {
       margin-bottom: 1rem;
     }
@@ -167,6 +174,11 @@ function addUpgradePopupCSS() {
         padding: 1.25rem;
         max-width: none;
         max-height: 75vh;
+      }
+
+      .upgrade-header-image {
+        height: 140px;
+        margin: -1.25rem -1.25rem 1rem -1.25rem;
       }
 
       .upgrade-title {
@@ -304,13 +316,14 @@ function getUpgradeContent(usage, quota, type) {
   
   return `
     <div class="upgrade-modal">
+      <img src="/avatars/rosalie-di-matteo-1759673517718-1759737913017.webp" alt="Upgrade" class="upgrade-header-image" />
       <div class="upgrade-header">
         <h3 class="upgrade-title">${titles[type] || titles.messages}</h3>
         <p class="upgrade-subtitle">${subtitles[type] || subtitles.messages}</p>
       </div>
-      
+
       ${benefitsContent}
-      
+
       <div class="upgrade-actions">
         <button class="upgrade-btn secondary" onclick="closeUpgradePrompt()">Maybe Later</button>
         <a href="profile.html" class="upgrade-btn primary">View Plans</a>
