@@ -339,7 +339,8 @@
         console.log('📊 Response:', result);
 
         if (!response.ok) {
-          throw new Error(result.error || 'Failed to create payment');
+          console.error('❌ Full error response:', result);
+          throw new Error(result.details || result.error || 'Failed to create payment');
         }
 
         if (result.invoice_url) {
@@ -361,13 +362,8 @@
     }
 
     // Log configuration on page load
-    console.log('🔧 NOWPayments Configuration:', NOWPAYMENTS_CONFIG);
-    console.log('\n📝 Setup Checklist:');
-    console.log('1. API Key configured:', NOWPAYMENTS_CONFIG.apiKey !== 'YOUR_API_KEY_HERE' ? '✅' : '❌');
-    console.log('2. Light plan link:', NOWPAYMENTS_CONFIG.plans.light.paymentLink ? '✅' : '❌');
-    console.log('3. Basic plan link:', NOWPAYMENTS_CONFIG.plans.basic.paymentLink ? '✅' : '❌');
-    console.log('4. Premium plan link:', NOWPAYMENTS_CONFIG.plans.premium.paymentLink ? '✅' : '❌');
-    console.log('\n💡 Tip: Maak payment links aan op https://account.nowpayments.io/payment-tools/payment-link');
+    console.log('✅ NOWPayments API Integration Ready');
+    console.log('📋 Using Netlify Functions for payment processing');
   </script>
 
   <!-- Optional: NOWPayments Widget Integration -->
