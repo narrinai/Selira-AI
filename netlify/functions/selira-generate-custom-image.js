@@ -139,13 +139,14 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   const negativePrompt = 'clothes, clothing, dressed, covered, censored, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white';
 
   // Randomize body type for variety (all still sexy and NSFW, just different body types)
+  // Note: Sliders must be integers, not floats
   const bodyTypes = [
-    { name: 'extreme_curvy', weight: -0.4, breast: 1, ass: 1 },      // Huge tits, huge ass, slim waist
-    { name: 'very_curvy', weight: -0.2, breast: 0.8, ass: 0.9 },     // Big tits, big ass, slim
-    { name: 'curvy_athletic', weight: -0.3, breast: 0.6, ass: 0.7 }, // Athletic with curves
-    { name: 'slim_busty', weight: -0.5, breast: 0.9, ass: 0.5 },     // Very slim with big tits
-    { name: 'thicc', weight: 0.1, breast: 0.7, ass: 0.9 },           // Thicc/voluptuous
-    { name: 'balanced_sexy', weight: -0.1, breast: 0.7, ass: 0.8 }   // Balanced sexy proportions
+    { name: 'extreme_curvy', weight: 0, breast: 1, ass: 1 },      // Slim waist, huge tits/ass
+    { name: 'very_curvy', weight: 0, breast: 1, ass: 1 },         // Big tits, big ass
+    { name: 'curvy_athletic', weight: 0, breast: 1, ass: 1 },     // Athletic with curves
+    { name: 'slim_busty', weight: -1, breast: 1, ass: 0 },        // Very slim with big tits
+    { name: 'thicc', weight: 0, breast: 1, ass: 1 },              // Thicc/voluptuous
+    { name: 'balanced_sexy', weight: 0, breast: 1, ass: 1 }       // Balanced sexy proportions
   ];
   const randomBodyType = bodyTypes[Math.floor(Math.random() * bodyTypes.length)];
 
