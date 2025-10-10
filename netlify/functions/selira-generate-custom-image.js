@@ -157,8 +157,8 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   const attractiveAges = [20, 22, 24, 26, 28, 30];
   const randomAge = attractiveAges[Math.floor(Math.random() * attractiveAges.length)];
 
-  // Randomize detail level for variety
-  const detailLevels = [1.2, 1.5, 1.8, 2.0];
+  // Randomize detail level for variety (must be integer)
+  const detailLevels = [1, 2];
   const randomDetail = detailLevels[Math.floor(Math.random() * detailLevels.length)];
 
   // Randomize creativity for variety
