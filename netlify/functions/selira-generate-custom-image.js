@@ -173,7 +173,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     prompt: enhancedPrompt,
     negative_prompt: negativePrompt, // What to avoid
     style: promptchanStyle,
-    quality: 'Standard', // Standard quality for faster generation (10-15 sec instead of 30-60 sec)
+    quality: 'Max', // Max quality - faster than Extreme (15-20 sec instead of 30-60 sec)
     image_size: '768x512', // Landscape format
     creativity: randomCreativity, // Random creativity for variety (70-90)
     seed: -1, // Random seed for variety
