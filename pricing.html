@@ -1118,6 +1118,9 @@
               </ul>
 
               <a href="#" class="plan-button" onclick="handleCreditPurchase('light'); return false;">Buy 50 Credits</a>
+              <a href="#" class="plan-button secondary" onclick="handleCryptoPurchase('light'); return false;" style="margin-top: 12px;">
+                💰 Buy with Crypto
+              </a>
             </div>
 
             <!-- Basic Pack -->
@@ -1151,6 +1154,9 @@
               </ul>
 
               <a href="#" class="plan-button" onclick="handleCreditPurchase('basic'); return false;">Buy 100 Credits</a>
+              <a href="#" class="plan-button secondary" onclick="handleCryptoPurchase('basic'); return false;" style="margin-top: 12px;">
+                💰 Buy with Crypto
+              </a>
             </div>
 
             <!-- Premium Pack -->
@@ -1183,6 +1189,9 @@
               </ul>
 
               <a href="#" class="plan-button" onclick="handleCreditPurchase('premium'); return false;">Buy 250 Credits</a>
+              <a href="#" class="plan-button secondary" onclick="handleCryptoPurchase('premium'); return false;" style="margin-top: 12px;">
+                💰 Buy with Crypto
+              </a>
             </div>
           </div>
         </div>
@@ -2153,6 +2162,71 @@
 
       } catch (error) {
         console.error('Error initiating credit purchase:', error);
+        alert('An error occurred. Please try again later.');
+      }
+    }
+
+    // Handle crypto credit purchase
+    async function handleCryptoPurchase(packageType) {
+      console.log('💰 Crypto purchase initiated:', packageType);
+
+      // Check if user is logged in
+      const isLoggedIn = window.isUserAuthenticated ? window.isUserAuthenticated() : false;
+
+      if (!isLoggedIn) {
+        // User is not logged in - show registration popup
+        if (typeof openLoginModal === 'function') {
+          openLoginModal('signup');
+        } else {
+          alert('Please sign up to purchase credits');
+        }
+        return;
+      }
+
+      try {
+        // Get user info
+        const userEmail = localStorage.getItem('user_email');
+        const userId = localStorage.getItem('user_uid');
+
+        if (!userEmail || !userId) {
+          console.error('Missing user information');
+          alert('Please log in again to continue');
+          window.location.href = '/';
+          return;
+        }
+
+        console.log('👤 Creating crypto invoice for:', { packageType, userEmail, userId });
+
+        // Call Netlify Function to create NOWPayments invoice
+        const response = await fetch('/.netlify/functions/create-nowpayments-invoice', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            planType: packageType,
+            userEmail: userEmail,
+            userId: userId
+          })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          console.error('Error creating crypto invoice:', result);
+          alert(`Error: ${result.details || result.error || 'Failed to create payment'}\n\nPlease try again or contact support.`);
+          return;
+        }
+
+        if (result.invoice_url) {
+          console.log('✅ Redirecting to crypto checkout:', result.invoice_url);
+          // Redirect to NOWPayments checkout
+          window.location.href = result.invoice_url;
+        } else {
+          console.error('No invoice URL received');
+          alert('Unable to start crypto checkout. Please try again.');
+        }
+
+      } catch (error) {
+        console.error('Error initiating crypto purchase:', error);
         alert('An error occurred. Please try again later.');
       }
     }
