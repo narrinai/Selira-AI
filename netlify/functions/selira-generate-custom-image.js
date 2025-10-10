@@ -73,40 +73,58 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   // Use same prompt processing as censored/Replicate version
   const sanitizedPrompt = customPrompt.trim();
 
-  // Smart context enhancement with random diverse backgrounds (same as censored)
+  // Smart context enhancement - only add backgrounds if prompt is very minimal
   let contextualEnhancement = '';
   const promptLower = customPrompt.toLowerCase();
 
-  // Location contexts - check if keywords exist in prompt
-  if (promptLower.includes('beach')) {
-    contextualEnhancement += ', sunny day, ocean background, vacation vibes, tropical setting';
-  } else if (promptLower.includes('bedroom') || promptLower.includes('bed')) {
-    contextualEnhancement += ', cozy interior, soft lighting, intimate setting';
-  } else if (promptLower.includes('office') || promptLower.includes('work')) {
-    contextualEnhancement += ', professional environment, modern office setting';
-  } else if (promptLower.includes('park') || promptLower.includes('outdoor')) {
-    contextualEnhancement += ', natural outdoor setting, pleasant lighting';
+  // Check if prompt already has detailed instructions (poses, positions, etc.)
+  const hasDetailedInstructions = promptLower.includes('position') ||
+                                   promptLower.includes('pose') ||
+                                   promptLower.includes('cowgirl') ||
+                                   promptLower.includes('doggy') ||
+                                   promptLower.includes('missionary') ||
+                                   promptLower.includes('blowjob') ||
+                                   promptLower.includes('standing') ||
+                                   promptLower.includes('sitting') ||
+                                   promptLower.includes('lying') ||
+                                   promptLower.includes('kneeling') ||
+                                   customPrompt.length > 50; // If custom prompt is long, trust it
+
+  // Only add context if prompt is minimal and doesn't have specific instructions
+  if (!hasDetailedInstructions) {
+    // Location contexts - check if keywords exist in prompt
+    if (promptLower.includes('beach')) {
+      contextualEnhancement += ', sunny day, ocean background, vacation vibes, tropical setting';
+    } else if (promptLower.includes('bedroom') || promptLower.includes('bed')) {
+      contextualEnhancement += ', cozy interior, soft lighting, intimate setting';
+    } else if (promptLower.includes('office') || promptLower.includes('work')) {
+      contextualEnhancement += ', professional environment, modern office setting';
+    } else if (promptLower.includes('park') || promptLower.includes('outdoor')) {
+      contextualEnhancement += ', natural outdoor setting, pleasant lighting';
+    } else {
+      // If no specific background mentioned, add random diverse background
+      const randomBackgrounds = [
+        ', luxury penthouse interior, city skyline view, elegant modern setting, warm ambient lighting',
+        ', tropical beach at sunset, golden hour, ocean waves, romantic atmosphere, vacation vibes',
+        ', cozy coffee shop, warm lighting, artistic atmosphere, urban setting',
+        ', rooftop terrace at dusk, city lights in background, romantic evening atmosphere',
+        ', art gallery interior, sophisticated setting, modern architecture, soft gallery lighting',
+        ', private library with bookshelves, intellectual atmosphere, warm reading lights',
+        ', infinity pool edge, resort setting, tropical paradise, crystal clear water',
+        ', garden terrace with flowers, natural outdoor setting, soft sunlight, botanical vibes',
+        ', modern loft apartment, industrial chic, large windows, natural daylight',
+        ', spa retreat setting, tranquil atmosphere, zen garden view, peaceful ambiance',
+        ', luxury yacht deck, ocean view, sunny day, nautical elegance',
+        ', scenic mountain lodge, fireplace, cozy rustic charm, warm interior',
+        ', urban rooftop bar, nightlife atmosphere, city panorama, stylish setting',
+        ', botanical conservatory, lush greenery, natural light, exotic plants',
+        ', private beach cabana, tropical paradise, ocean breeze, intimate setting'
+      ];
+      const randomBg = randomBackgrounds[Math.floor(Math.random() * randomBackgrounds.length)];
+      contextualEnhancement += randomBg;
+    }
   } else {
-    // If no specific background mentioned, add random diverse background
-    const randomBackgrounds = [
-      ', luxury penthouse interior, city skyline view, elegant modern setting, warm ambient lighting',
-      ', tropical beach at sunset, golden hour, ocean waves, romantic atmosphere, vacation vibes',
-      ', cozy coffee shop, warm lighting, artistic atmosphere, urban setting',
-      ', rooftop terrace at dusk, city lights in background, romantic evening atmosphere',
-      ', art gallery interior, sophisticated setting, modern architecture, soft gallery lighting',
-      ', private library with bookshelves, intellectual atmosphere, warm reading lights',
-      ', infinity pool edge, resort setting, tropical paradise, crystal clear water',
-      ', garden terrace with flowers, natural outdoor setting, soft sunlight, botanical vibes',
-      ', modern loft apartment, industrial chic, large windows, natural daylight',
-      ', spa retreat setting, tranquil atmosphere, zen garden view, peaceful ambiance',
-      ', luxury yacht deck, ocean view, sunny day, nautical elegance',
-      ', scenic mountain lodge, fireplace, cozy rustic charm, warm interior',
-      ', urban rooftop bar, nightlife atmosphere, city panorama, stylish setting',
-      ', botanical conservatory, lush greenery, natural light, exotic plants',
-      ', private beach cabana, tropical paradise, ocean breeze, intimate setting'
-    ];
-    const randomBg = randomBackgrounds[Math.floor(Math.random() * randomBackgrounds.length)];
-    contextualEnhancement += randomBg;
+    console.log(`📝 [${requestId}] User provided detailed instructions - skipping auto background`);
   }
 
   // Add NSFW enhancement keywords for explicit content (extra NSFW on top of base prompt)
