@@ -164,21 +164,30 @@ function addUpgradePopupCSS() {
     @media (max-width: 768px) {
       .upgrade-modal {
         margin: 1rem;
-        padding: 1.5rem;
+        padding: 1.25rem;
         max-width: none;
-        max-height: 90vh;
+        max-height: 75vh;
       }
-      
+
       .upgrade-title {
-        font-size: 1.25rem;
+        font-size: 1.15rem;
       }
-      
+
+      .upgrade-subtitle {
+        font-size: 0.85rem;
+      }
+
       .upgrade-actions {
         flex-direction: column;
       }
-      
+
       .upgrade-benefits-list {
         grid-template-columns: 1fr;
+      }
+
+      .benefit-item {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.75rem;
       }
     }
   `;
