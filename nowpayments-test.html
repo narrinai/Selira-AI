@@ -268,17 +268,17 @@
         light: {
           name: 'Light Pack (50 credits)',
           price: 5.99,
-          paymentLink: 'https://nowpayments.io/payment/?iid=4502391149' // ✅ CONFIGURED
+          paymentLink: null // Using API instead
         },
         basic: {
           name: 'Basic Pack (100 credits)',
           price: 9.99,
-          paymentLink: 'https://nowpayments.io/payment/?iid=4424412690' // ✅ CONFIGURED
+          paymentLink: null // Using API instead
         },
         premium: {
           name: 'Premium Pack (250 credits)',
           price: 19.99,
-          paymentLink: 'https://nowpayments.io/payment/?iid=4581907604' // ✅ CONFIGURED
+          paymentLink: null // Using API instead
         }
       }
     };
@@ -310,65 +310,53 @@
 
       console.log('💳 Creating NOWPayments payment for:', plan.name);
 
-      // Check if API key is configured
-      if (NOWPAYMENTS_CONFIG.apiKey === 'YOUR_API_KEY_HERE') {
-        alert('⚠️ NOWPayments API Key niet geconfigureerd!\n\n' +
-              'Ga naar je NOWPayments dashboard:\n' +
-              '1. https://account.nowpayments.io/settings/api-keys\n' +
-              '2. Kopieer je API key\n' +
-              '3. Plak deze in de NOWPAYMENTS_CONFIG.apiKey variabele\n\n' +
-              'Of maak een payment link aan in je dashboard en vul de URL in bij paymentLink.');
-        return;
-      }
+      // Show loading indicator
+      const button = event.target;
+      const originalText = button.textContent;
+      button.textContent = '⏳ Creating payment...';
+      button.disabled = true;
 
       try {
         // Get user info (from your auth system)
         const userEmail = localStorage.getItem('user_email') || 'test@example.com';
-        const userId = localStorage.getItem('user_uid') || 'test_user_123';
+        const userId = localStorage.getItem('user_uid') || 'test_user_' + Date.now();
 
-        // Create payment via your backend (recommended for security)
-        // OR directly via NOWPayments API (for testing only)
-        const paymentData = {
-          price_amount: plan.price,
-          price_currency: 'usd',
-          pay_currency: 'btc', // Default to Bitcoin, user can change on checkout
-          order_id: `selira_${planType}_${Date.now()}`,
-          order_description: `Selira AI ${plan.name} Subscription`,
-          ipn_callback_url: `${window.location.origin}/.netlify/functions/nowpayments-webhook`,
-          success_url: `${window.location.origin}/profile?payment=success&plan=${planType}`,
-          cancel_url: `${window.location.origin}/pricing`,
-          // Optional: pass user info for tracking
-          customer_email: userEmail,
-          // Custom metadata
-          case: JSON.stringify({
-            userId: userId,
+        console.log('👤 User info:', { userEmail, userId });
+
+        // Call backend Netlify Function to create invoice
+        const response = await fetch('/.netlify/functions/create-nowpayments-invoice', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
             planType: planType,
-            email: userEmail
+            userEmail: userEmail,
+            userId: userId
           })
-        };
+        });
 
-        console.log('📤 Payment data:', paymentData);
+        const result = await response.json();
 
-        // Show loading state
-        alert('🔄 NOWPayments integratie in ontwikkeling...\n\n' +
-              'Voor productie heb je nodig:\n' +
-              '1. Een Netlify Function die de NOWPayments API aanroept\n' +
-              '2. Webhook handler voor payment confirmations\n' +
-              '3. Database update om subscription te activeren\n\n' +
-              'Momenteel kun je handmatig payment links maken in je NOWPayments dashboard.');
+        console.log('📊 Response:', result);
 
-        // In production: call your backend function
-        // const response = await fetch('/.netlify/functions/create-nowpayments-checkout', {
-        //   method: 'POST',
-        //   headers: { 'Content-Type': 'application/json' },
-        //   body: JSON.stringify(paymentData)
-        // });
-        // const result = await response.json();
-        // window.location.href = result.invoice_url;
+        if (!response.ok) {
+          throw new Error(result.error || 'Failed to create payment');
+        }
+
+        if (result.invoice_url) {
+          console.log('✅ Redirecting to payment page:', result.invoice_url);
+          // Redirect to NOWPayments checkout
+          window.location.href = result.invoice_url;
+        } else {
+          throw new Error('No invoice URL received');
+        }
 
       } catch (error) {
         console.error('❌ Error creating payment:', error);
-        alert('Er ging iets mis bij het aanmaken van de betaling. Check de console voor details.');
+        alert(`❌ Error: ${error.message}\n\nCheck console for details.`);
+
+        // Restore button
+        button.textContent = originalText;
+        button.disabled = false;
       }
     }
 
