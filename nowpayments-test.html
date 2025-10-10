@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NOWPayments Integration Test - Selira AI</title>
+  <style>
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #1a1a1a;
+      --bg-tertiary: #2a2a2a;
+      --text-primary: #ffffff;
+      --text-secondary: #b3b3b3;
+      --accent: #ce93d8;
+      --accent-hover: #ba68c8;
+      --border: #333333;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: var(--accent);
+      text-align: center;
+    }
+
+    .description {
+      text-align: center;
+      color: var(--text-secondary);
+      margin-bottom: 40px;
+      font-size: 14px;
+    }
+
+    .test-section {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      margin-bottom: 24px;
+    }
+
+    .test-section h2 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+    }
+
+    .test-section p {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .payment-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-top: 24px;
+    }
+
+    .payment-option {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 24px;
+    }
+
+    .payment-option h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+
+    .payment-option .price {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+
+    .payment-option ul {
+      list-style: none;
+      margin-bottom: 20px;
+    }
+
+    .payment-option li {
+      padding: 8px 0;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .payment-option li::before {
+      content: "✓ ";
+      color: #10b981;
+      font-weight: bold;
+      margin-right: 8px;
+    }
+
+    /* NOWPayments button styling */
+    .crypto-payment-btn {
+      width: 100%;
+      padding: 14px 24px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      text-align: center;
+      display: block;
+      margin-top: 12px;
+    }
+
+    .crypto-payment-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+    }
+
+    .info-box {
+      background: rgba(206, 147, 216, 0.1);
+      border: 1px solid rgba(206, 147, 216, 0.2);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-top: 24px;
+    }
+
+    .info-box h4 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--accent);
+    }
+
+    .info-box p {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 0;
+    }
+
+    code {
+      background: var(--bg-tertiary);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 12px;
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🚀 NOWPayments Integration Test</h1>
+    <p class="description">Test crypto payment buttons voor Selira AI premium plans</p>
+
+    <!-- Instructions -->
+    <div class="test-section">
+      <h2>📋 Setup Instructies</h2>
+      <p>Om deze test werkend te krijgen heb je nodig:</p>
+      <ol style="color: var(--text-secondary); font-size: 14px; margin-left: 20px;">
+        <li style="margin-bottom: 8px;">Je <code>API Key</code> van NOWPayments dashboard</li>
+        <li style="margin-bottom: 8px;">Je <code>IPN Secret</code> voor webhooks (optioneel voor testing)</li>
+        <li style="margin-bottom: 8px;">Product IDs aanmaken in NOWPayments dashboard voor elk plan</li>
+      </ol>
+    </div>
+
+    <!-- Payment Options -->
+    <div class="test-section">
+      <h2>💳 Test Payment Buttons</h2>
+      <p>Klik op een button om de crypto payment flow te testen:</p>
+
+      <div class="payment-buttons">
+        <!-- Light Plan -->
+        <div class="payment-option">
+          <h3>Light Plan</h3>
+          <div class="price">$5.99/maand</div>
+          <ul>
+            <li>Unlimited messaging</li>
+            <li>Unlimited companions</li>
+            <li>5 images per uur</li>
+          </ul>
+
+          <!-- Method 1: Simple Payment Link -->
+          <a href="#" class="crypto-payment-btn" onclick="openNOWPaymentsCheckout('light'); return false;">
+            💰 Betaal met Crypto (Light)
+          </a>
+        </div>
+
+        <!-- Basic Plan -->
+        <div class="payment-option">
+          <h3>Basic Plan</h3>
+          <div class="price">$9.99/maand</div>
+          <ul>
+            <li>Unlimited messaging</li>
+            <li>Unlimited companions</li>
+            <li>10 images per uur</li>
+          </ul>
+
+          <a href="#" class="crypto-payment-btn" onclick="openNOWPaymentsCheckout('basic'); return false;">
+            💰 Betaal met Crypto (Basic)
+          </a>
+        </div>
+
+        <!-- Premium Plan -->
+        <div class="payment-option">
+          <h3>Premium Plan</h3>
+          <div class="price">$19.99/maand</div>
+          <ul>
+            <li>Unlimited messaging</li>
+            <li>Unlimited companions</li>
+            <li>20 images per uur</li>
+            <li>Special companions</li>
+          </ul>
+
+          <a href="#" class="crypto-payment-btn" onclick="openNOWPaymentsCheckout('premium'); return false;">
+            💰 Betaal met Crypto (Premium)
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Info Box -->
+    <div class="info-box">
+      <h4>ℹ️ Volgende Stappen</h4>
+      <p><strong>1. NOWPayments API Key invullen:</strong> Scroll naar beneden in de console (F12) en vul je API key in bij <code>NOWPAYMENTS_API_KEY</code></p>
+      <p><strong>2. Payment Link testen:</strong> Momenteel gebruikt dit een demo payment link. Je moet in je NOWPayments dashboard:</p>
+      <ul style="margin-left: 20px; margin-top: 8px;">
+        <li>Een payment link maken voor elk plan (Light $5.99, Basic $9.99, Premium $19.99)</li>
+        <li>De URLs vervangen in de JavaScript hieronder</li>
+        <li>Of de NOWPayments API gebruiken om dynamisch payments aan te maken</li>
+      </ul>
+      <p style="margin-top: 12px;"><strong>3. Webhook Setup:</strong> Voor productie moet je een webhook endpoint maken die NOWPayments notificaties ontvangt om subscriptions te activeren</p>
+    </div>
+  </div>
+
+  <script>
+    // ⚠️ CONFIGURATION REQUIRED ⚠️
+    // Vul hier je NOWPayments credentials in
+    const NOWPAYMENTS_CONFIG = {
+      apiKey: 'YOUR_API_KEY_HERE', // Vul je API key in van https://account.nowpayments.io/settings/api-keys
+      ipnSecret: 'YOUR_IPN_SECRET_HERE', // Optioneel: voor webhook verification
+
+      // Plan prices in USD
+      plans: {
+        light: {
+          name: 'Light Pack (50 credits)',
+          price: 5.99,
+          paymentLink: 'https://nowpayments.io/payment/?iid=4502391149' // ✅ CONFIGURED
+        },
+        basic: {
+          name: 'Basic Plan',
+          price: 9.99,
+          paymentLink: null // Vul in: payment link van NOWPayments dashboard
+        },
+        premium: {
+          name: 'Premium Plan',
+          price: 19.99,
+          paymentLink: null // Vul in: payment link van NOWPayments dashboard
+        }
+      }
+    };
+
+    // Method 1: Open NOWPayments checkout (using payment links)
+    function openNOWPaymentsCheckout(planType) {
+      const plan = NOWPAYMENTS_CONFIG.plans[planType];
+
+      if (!plan) {
+        alert('Invalid plan type');
+        return;
+      }
+
+      console.log('🚀 Opening NOWPayments checkout for:', plan.name);
+
+      // Check if payment link is configured
+      if (plan.paymentLink) {
+        // Open the pre-configured payment link
+        window.open(plan.paymentLink, '_blank');
+      } else {
+        // If no payment link: create payment via API
+        createNOWPayment(planType);
+      }
+    }
+
+    // Method 2: Create payment via NOWPayments API
+    async function createNOWPayment(planType) {
+      const plan = NOWPAYMENTS_CONFIG.plans[planType];
+
+      console.log('💳 Creating NOWPayments payment for:', plan.name);
+
+      // Check if API key is configured
+      if (NOWPAYMENTS_CONFIG.apiKey === 'YOUR_API_KEY_HERE') {
+        alert('⚠️ NOWPayments API Key niet geconfigureerd!\n\n' +
+              'Ga naar je NOWPayments dashboard:\n' +
+              '1. https://account.nowpayments.io/settings/api-keys\n' +
+              '2. Kopieer je API key\n' +
+              '3. Plak deze in de NOWPAYMENTS_CONFIG.apiKey variabele\n\n' +
+              'Of maak een payment link aan in je dashboard en vul de URL in bij paymentLink.');
+        return;
+      }
+
+      try {
+        // Get user info (from your auth system)
+        const userEmail = localStorage.getItem('user_email') || 'test@example.com';
+        const userId = localStorage.getItem('user_uid') || 'test_user_123';
+
+        // Create payment via your backend (recommended for security)
+        // OR directly via NOWPayments API (for testing only)
+        const paymentData = {
+          price_amount: plan.price,
+          price_currency: 'usd',
+          pay_currency: 'btc', // Default to Bitcoin, user can change on checkout
+          order_id: `selira_${planType}_${Date.now()}`,
+          order_description: `Selira AI ${plan.name} Subscription`,
+          ipn_callback_url: `${window.location.origin}/.netlify/functions/nowpayments-webhook`,
+          success_url: `${window.location.origin}/profile?payment=success&plan=${planType}`,
+          cancel_url: `${window.location.origin}/pricing`,
+          // Optional: pass user info for tracking
+          customer_email: userEmail,
+          // Custom metadata
+          case: JSON.stringify({
+            userId: userId,
+            planType: planType,
+            email: userEmail
+          })
+        };
+
+        console.log('📤 Payment data:', paymentData);
+
+        // Show loading state
+        alert('🔄 NOWPayments integratie in ontwikkeling...\n\n' +
+              'Voor productie heb je nodig:\n' +
+              '1. Een Netlify Function die de NOWPayments API aanroept\n' +
+              '2. Webhook handler voor payment confirmations\n' +
+              '3. Database update om subscription te activeren\n\n' +
+              'Momenteel kun je handmatig payment links maken in je NOWPayments dashboard.');
+
+        // In production: call your backend function
+        // const response = await fetch('/.netlify/functions/create-nowpayments-checkout', {
+        //   method: 'POST',
+        //   headers: { 'Content-Type': 'application/json' },
+        //   body: JSON.stringify(paymentData)
+        // });
+        // const result = await response.json();
+        // window.location.href = result.invoice_url;
+
+      } catch (error) {
+        console.error('❌ Error creating payment:', error);
+        alert('Er ging iets mis bij het aanmaken van de betaling. Check de console voor details.');
+      }
+    }
+
+    // Log configuration on page load
+    console.log('🔧 NOWPayments Configuration:', NOWPAYMENTS_CONFIG);
+    console.log('\n📝 Setup Checklist:');
+    console.log('1. API Key configured:', NOWPAYMENTS_CONFIG.apiKey !== 'YOUR_API_KEY_HERE' ? '✅' : '❌');
+    console.log('2. Light plan link:', NOWPAYMENTS_CONFIG.plans.light.paymentLink ? '✅' : '❌');
+    console.log('3. Basic plan link:', NOWPAYMENTS_CONFIG.plans.basic.paymentLink ? '✅' : '❌');
+    console.log('4. Premium plan link:', NOWPAYMENTS_CONFIG.plans.premium.paymentLink ? '✅' : '❌');
+    console.log('\n💡 Tip: Maak payment links aan op https://account.nowpayments.io/payment-tools/payment-link');
+  </script>
+
+  <!-- Optional: NOWPayments Widget Integration -->
+  <!-- Als je hun hosted widget wilt gebruiken, uncomment dit: -->
+  <!--
+  <script src="https://nowpayments.io/embeds/button.js"></script>
+  <div id="np-button-container"></div>
+  <script>
+    window.addEventListener('load', () => {
+      const button = document.createElement('button');
+      button.id = 'np-button';
+      button.className = 'nowpayments-button';
+      button.setAttribute('data-np-amount', '9.99');
+      button.setAttribute('data-np-currency', 'usd');
+      button.setAttribute('data-np-pay-currency', 'btc');
+      button.setAttribute('data-np-order-id', 'ORDER-12345');
+      button.setAttribute('data-np-order-description', 'Selira AI Basic Plan');
+      button.textContent = 'Pay with Crypto';
+
+      document.getElementById('np-button-container').appendChild(button);
+
+      // Initialize NOWPayments button
+      if (window.NOWPaymentsButton) {
+        window.NOWPaymentsButton.init();
+      }
+    });
+  </script>
+  -->
+</body>
+</html>
