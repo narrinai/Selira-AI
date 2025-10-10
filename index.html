@@ -2713,6 +2713,12 @@
       document.getElementById('sexDropdown').style.display = 'none';
 
       console.log('Sex filter changed to:', currentFilters.sex);
+
+      // Refresh tag filters to show only tags with 5+ companions for selected sex
+      if (createAvailableTags && createAvailableTags.length > 0) {
+        populateTagFilters(createAvailableTags);
+      }
+
       applyFilters();
     }
 
@@ -5196,6 +5202,12 @@ Please be thorough and include important details from our conversations.`;
       }
 
       menu.classList.remove('show');
+
+      // Refresh tag filters to show only tags with 5+ companions for selected sex
+      if (createAvailableTags && createAvailableTags.length > 0) {
+        populateTagFilters(createAvailableTags);
+      }
+
       applyFilters();
       console.log('⚧️ Mobile sex filter:', sex);
     }
