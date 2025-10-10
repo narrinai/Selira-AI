@@ -892,14 +892,20 @@
         </div>
       `;
       try {
-        // Wait for Supabase auth to be ready
-        if (window.supabase && typeof window.checkAuth === 'function') {
-          await window.checkAuth();
+        // Wait for Supabase auth to be ready - give it time to load
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        // Try multiple times to get user data (for slow mobile connections)
+        let user = null;
+        let userEmail = null;
+        for (let i = 0; i < 5; i++) {
+          user = JSON.parse(localStorage.getItem('user') || '{}');
+          userEmail = user.email;
+          if (userEmail) break;
+          console.log(`⏳ Waiting for auth... attempt ${i + 1}/5`);
+          await new Promise(resolve => setTimeout(resolve, 300));
         }
 
-        // Get user email from auth
-        const user = JSON.parse(localStorage.getItem('user') || '{}');
-        const userEmail = user.email;
         if (!userEmail) {
           grid.innerHTML = `
             <div class="loading-grid">

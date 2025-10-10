@@ -2706,9 +2706,12 @@
 
       // Debug: Count companions with is_unfiltered
       if (currentFilters.content === 'uncensored') {
-        const unfilteredCount = allCharacters.filter(c => c.is_unfiltered === true).length;
-        console.log('🔍 Total companions with is_unfiltered=true:', unfilteredCount);
-        console.log('🔍 Sample is_unfiltered values:', allCharacters.slice(0, 5).map(c => ({ name: c.name, is_unfiltered: c.is_unfiltered })));
+        const unfilteredTruthy = allCharacters.filter(c => !!(c.is_unfiltered)).length;
+        const unfilteredStrict = allCharacters.filter(c => c.is_unfiltered === true).length;
+        console.log('🔍 Total companions with is_unfiltered (truthy):', unfilteredTruthy);
+        console.log('🔍 Total companions with is_unfiltered===true:', unfilteredStrict);
+        console.log('🔍 Sample is_unfiltered values:', allCharacters.slice(0, 10).map(c => ({ name: c.name, is_unfiltered: c.is_unfiltered, type: typeof c.is_unfiltered })));
+        console.log('🔍 Filtered result:', filteredCharacters.length, 'companions shown');
       }
     }
 
