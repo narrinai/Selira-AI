@@ -1040,6 +1040,22 @@
                 </div>
               </div>
             </div>
+
+            <!-- Censorship Toggle for Avatar Generation -->
+            <div style="margin-top: 40px; padding: 20px; background: var(--bg-secondary); border-radius: var(--radius-md); border: 1px solid var(--border);">
+              <div style="display: flex; align-items: center; justify-content: center; gap: 16px;">
+                <span style="color: var(--text-secondary); font-size: 14px; font-weight: 500;">Avatar Image Generation:</span>
+                <div class="unfiltered-toggle active" id="createFlowUncensoredToggle" onclick="toggleCreateFlowCensorship()" title="Toggle censorship for avatar generation" style="cursor: pointer; user-select: none; display: flex; align-items: center; gap: 8px;">
+                  <div class="toggle-switch" style="position: relative; width: 44px; height: 24px; background: linear-gradient(135deg, #ce93d8 0%, #ec4899 100%); border-radius: 12px; transition: background 0.3s ease; border: 1px solid rgba(206, 147, 216, 0.3);">
+                    <div style="position: absolute; top: 2px; left: calc(100% - 22px); width: 20px; height: 20px; background: white; border-radius: 50%; transition: left 0.3s ease; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);"></div>
+                  </div>
+                  <span class="toggle-label" id="createFlowToggleText" style="font-size: 14px; color: var(--accent); font-weight: 600;">Uncensored</span>
+                </div>
+              </div>
+              <p style="text-align: center; color: var(--text-muted); font-size: 12px; margin-top: 12px; line-height: 1.5;">
+                Uncensored mode uses Promptchan for NSFW avatars. Censored mode uses Replicate for safe-for-work images.
+              </p>
+            </div>
           </div>
 
           <!-- Step 3: Ethnicity Selection -->
@@ -1421,7 +1437,8 @@
       hairColor: '',
       category: 'fantasy',
       description: '',
-      currentStep: 1
+      currentStep: 1,
+      uncensored: true // Default to uncensored avatar generation (Promptchan)
     };
 
     let totalSteps = 6;
@@ -1733,6 +1750,36 @@
       }, 500);
     }
 
+    // Toggle censorship for create flow avatar generation
+    function toggleCreateFlowCensorship() {
+      const toggle = document.getElementById('createFlowUncensoredToggle');
+      const text = document.getElementById('createFlowToggleText');
+      const toggleSwitch = toggle.querySelector('.toggle-switch');
+      const toggleDot = toggleSwitch.querySelector('div');
+
+      // Toggle state
+      characterCreationState.uncensored = !characterCreationState.uncensored;
+
+      // Update UI
+      if (characterCreationState.uncensored) {
+        toggle.classList.add('active');
+        toggleSwitch.style.background = 'linear-gradient(135deg, #ce93d8 0%, #ec4899 100%)';
+        toggleSwitch.style.borderColor = 'rgba(206, 147, 216, 0.3)';
+        toggleDot.style.left = 'calc(100% - 22px)';
+        text.textContent = 'Uncensored';
+        text.style.color = 'var(--accent)';
+        console.log('🔓 Create flow: Uncensored mode - will use Promptchan for avatar');
+      } else {
+        toggle.classList.remove('active');
+        toggleSwitch.style.background = 'var(--bg-tertiary)';
+        toggleSwitch.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+        toggleDot.style.left = '2px';
+        text.textContent = 'Censored';
+        text.style.color = 'rgba(255, 255, 255, 0.6)';
+        console.log('🔒 Create flow: Censored mode - will use Replicate for avatar');
+      }
+    }
+
     function selectEthnicityStep(ethnicity) {
       characterCreationState.ethnicity = ethnicity;
 
@@ -1889,7 +1936,8 @@
             sex: characterCreationState.sex,
             ethnicity: ethnicity,
             hairLength: hairLength,
-            hairColor: hairColor
+            hairColor: hairColor,
+            uncensored: characterCreationState.uncensored // Use toggle state for avatar generation
           })
         });
 
