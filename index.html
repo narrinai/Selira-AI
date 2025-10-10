@@ -1252,12 +1252,12 @@
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 10px 14px;
+          padding: 10px 10px;
           background: var(--bg-secondary);
           border: 1px solid var(--border);
           border-radius: 8px;
           color: var(--text-primary);
-          font-size: 14px;
+          font-size: 13px;
           font-weight: 500;
           cursor: pointer;
           transition: all 0.2s ease;
@@ -1924,16 +1924,16 @@
         <!-- Mobile Filter Bar (only visible on mobile) -->
         <div class="mobile-filter-bar">
         <div class="mobile-filter-dropdown">
-          <button class="mobile-dropdown-btn" id="mobileStyleFilter" onclick="toggleMobileStyleDropdown()">
-            <span id="mobileStyleText">Realistic</span>
+          <button class="mobile-dropdown-btn" id="mobileContentFilter" onclick="toggleMobileContentDropdown()">
+            <span id="mobileContentText">Censored</span>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" style="margin-left: 6px;">
               <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
             </svg>
           </button>
-          <div class="mobile-dropdown-menu" id="mobileStyleMenu">
-            <div class="mobile-dropdown-item" onclick="selectMobileStyle('all')">All</div>
-            <div class="mobile-dropdown-item" onclick="selectMobileStyle('realistic')">Realistic</div>
-            <div class="mobile-dropdown-item" onclick="selectMobileStyle('anime')">Anime</div>
+          <div class="mobile-dropdown-menu" id="mobileContentMenu">
+            <div class="mobile-dropdown-item" onclick="selectMobileContent('censored')">Censored</div>
+            <div class="mobile-dropdown-item" onclick="selectMobileContent('unfiltered')">Unfiltered</div>
+            <div class="mobile-dropdown-item" onclick="selectMobileContent('all')">All</div>
           </div>
         </div>
         <div class="mobile-filter-dropdown">
@@ -1947,6 +1947,19 @@
             <div class="mobile-dropdown-item" onclick="selectMobileSex('all')">All</div>
             <div class="mobile-dropdown-item" onclick="selectMobileSex('female')">Female</div>
             <div class="mobile-dropdown-item" onclick="selectMobileSex('male')">Male</div>
+          </div>
+        </div>
+        <div class="mobile-filter-dropdown">
+          <button class="mobile-dropdown-btn" id="mobileStyleFilter" onclick="toggleMobileStyleDropdown()">
+            <span id="mobileStyleText">Realistic</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" style="margin-left: 6px;">
+              <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <div class="mobile-dropdown-menu" id="mobileStyleMenu">
+            <div class="mobile-dropdown-item" onclick="selectMobileStyle('all')">All</div>
+            <div class="mobile-dropdown-item" onclick="selectMobileStyle('realistic')">Realistic</div>
+            <div class="mobile-dropdown-item" onclick="selectMobileStyle('anime')">Anime</div>
           </div>
         </div>
         <div class="mobile-filter-dropdown">
@@ -1993,7 +2006,20 @@
       <section class="filter-section">
         <!-- Tag Pills Row - all on same line -->
         <div class="tag-filters" id="tagFilters">
-          <!-- Sex dropdown FIRST -->
+          <!-- Content Filter FIRST -->
+          <div class="filter-dropdown">
+            <button class="dropdown-btn content-filter-btn active" id="contentDropdownBtn" onclick="toggleDropdown('content')">
+              <span>Censored</span>
+              <span class="dropdown-arrow">▼</span>
+            </button>
+            <div class="dropdown-menu" id="contentDropdown">
+              <a href="#" onclick="setContentFilter('censored'); return false;">Censored</a>
+              <a href="#" onclick="setContentFilter('unfiltered'); return false;">Unfiltered</a>
+              <a href="#" onclick="setContentFilter('all'); return false;">All</a>
+            </div>
+          </div>
+
+          <!-- Sex dropdown SECOND -->
           <div class="filter-dropdown">
             <button class="dropdown-btn sex-filter-btn active" id="sexDropdownBtn" onclick="toggleDropdown('sex')">
               <span>Female</span>
@@ -2006,7 +2032,7 @@
             </div>
           </div>
 
-          <!-- Style dropdown SECOND -->
+          <!-- Style dropdown THIRD -->
           <div class="filter-dropdown">
             <button class="dropdown-btn style-filter-btn active" id="styleDropdownBtn" onclick="toggleDropdown('style')">
               <span>Realistic</span>
@@ -2048,6 +2074,7 @@
       search: '',
       category: 'all',
       tags: [],
+      content: 'censored', // Default to censored (hide is_unfiltered companions)
       sex: 'female', // Default to female
       style: 'realistic', // Default to realistic
       animated: undefined, // undefined = show all, true = only animated, false = only realistic
@@ -2625,13 +2652,13 @@
           }
         }
 
-        // Unfiltered content filter (is_unfiltered field from Airtable)
-        if (currentFilters.unfiltered !== undefined) {
-          if (currentFilters.unfiltered && !character.is_unfiltered) {
-            return false;
+        // Content filter (is_unfiltered field from Airtable)
+        if (currentFilters.content) {
+          if (currentFilters.content === 'censored' && character.is_unfiltered === true) {
+            return false; // Hide unfiltered companions when censored is selected
           }
-          if (!currentFilters.unfiltered && character.is_unfiltered) {
-            return false;
+          if (currentFilters.content === 'unfiltered' && character.is_unfiltered !== true) {
+            return false; // Hide censored companions when unfiltered is selected
           }
         }
 
@@ -2694,6 +2721,27 @@
       }
     }
 
+
+    function setContentFilter(content) {
+      currentFilters.content = content === 'all' ? undefined : content;
+
+      // Update button text
+      const dropdownBtn = document.getElementById('contentDropdownBtn');
+      if (dropdownBtn) {
+        const contentLabels = {
+          'all': 'All',
+          'censored': 'Censored',
+          'unfiltered': 'Unfiltered'
+        };
+        dropdownBtn.querySelector('span:first-child').textContent = contentLabels[content] || 'Censored';
+      }
+
+      // Hide dropdown
+      document.getElementById('contentDropdown').style.display = 'none';
+
+      console.log('Content filter changed to:', currentFilters.content);
+      applyFilters();
+    }
 
     function setSexFilter(sex) {
       currentFilters.sex = sex === 'all' ? undefined : sex;
@@ -5145,10 +5193,23 @@ Please be thorough and include important details from our conversations.`;
     }
 
     // ===== MOBILE FILTER DROPDOWNS =====
+    function toggleMobileContentDropdown() {
+      const menu = document.getElementById('mobileContentMenu');
+      const sexMenu = document.getElementById('mobileSexMenu');
+      const styleMenu = document.getElementById('mobileStyleMenu');
+      const tagMenu = document.getElementById('mobileTagMenu');
+      sexMenu.classList.remove('show');
+      styleMenu.classList.remove('show');
+      tagMenu.classList.remove('show');
+      menu.classList.toggle('show');
+    }
+
     function toggleMobileStyleDropdown() {
       const menu = document.getElementById('mobileStyleMenu');
+      const contentMenu = document.getElementById('mobileContentMenu');
       const sexMenu = document.getElementById('mobileSexMenu');
       const tagMenu = document.getElementById('mobileTagMenu');
+      contentMenu.classList.remove('show');
       sexMenu.classList.remove('show');
       tagMenu.classList.remove('show');
       menu.classList.toggle('show');
@@ -5156,8 +5217,10 @@ Please be thorough and include important details from our conversations.`;
 
     function toggleMobileSexDropdown() {
       const menu = document.getElementById('mobileSexMenu');
+      const contentMenu = document.getElementById('mobileContentMenu');
       const styleMenu = document.getElementById('mobileStyleMenu');
       const tagMenu = document.getElementById('mobileTagMenu');
+      contentMenu.classList.remove('show');
       styleMenu.classList.remove('show');
       tagMenu.classList.remove('show');
       menu.classList.toggle('show');
@@ -5165,11 +5228,30 @@ Please be thorough and include important details from our conversations.`;
 
     function toggleMobileTagDropdown() {
       const menu = document.getElementById('mobileTagMenu');
+      const contentMenu = document.getElementById('mobileContentMenu');
       const styleMenu = document.getElementById('mobileStyleMenu');
       const sexMenu = document.getElementById('mobileSexMenu');
+      contentMenu.classList.remove('show');
       styleMenu.classList.remove('show');
       sexMenu.classList.remove('show');
       menu.classList.toggle('show');
+    }
+
+    function selectMobileContent(content) {
+      const contentText = document.getElementById('mobileContentText');
+      const menu = document.getElementById('mobileContentMenu');
+
+      if (content === 'all') {
+        contentText.textContent = 'All';
+        currentFilters.content = undefined;
+      } else {
+        contentText.textContent = content.charAt(0).toUpperCase() + content.slice(1);
+        currentFilters.content = content;
+      }
+
+      menu.classList.remove('show');
+      applyFilters();
+      console.log('🔒 Mobile content filter:', content);
     }
 
     function selectMobileStyle(style) {
