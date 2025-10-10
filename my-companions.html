@@ -892,6 +892,11 @@
         </div>
       `;
       try {
+        // Wait for Supabase auth to be ready
+        if (window.supabase && typeof window.checkAuth === 'function') {
+          await window.checkAuth();
+        }
+
         // Get user email from auth
         const user = JSON.parse(localStorage.getItem('user') || '{}');
         const userEmail = user.email;

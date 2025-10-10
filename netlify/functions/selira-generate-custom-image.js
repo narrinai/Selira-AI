@@ -133,10 +133,21 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     console.log(`📝 [${requestId}] User provided detailed instructions - skipping auto background`);
   }
 
-  // Add NSFW enhancement keywords for explicit content (extra NSFW on top of base prompt)
-  const nsfwEnhancement = sex === 'male'
-    ? ', completely naked, fully nude, no clothes, exposed penis, hard erect cock, bare naked body, muscular physique, genitals fully exposed, explicit nudity, pornographic, XXX rated, adult content, full frontal nudity, sensual, intimate, aroused'
-    : ', completely naked, fully nude, no clothes, exposed breasts, exposed pussy, bare naked body, beautiful curves, breasts visible, nipples visible, pussy visible, genitals fully exposed, explicit nudity, pornographic, XXX rated, adult content, full frontal nudity, sensual, intimate, aroused, legs spread';
+  // Add NSFW enhancement keywords - sensual for companion creation, explicit for image generator
+  const isCompanionCreation = source === 'companion-creation';
+
+  let nsfwEnhancement;
+  if (isCompanionCreation) {
+    // Sensual and alluring for companion avatars, not explicit porn
+    nsfwEnhancement = sex === 'male'
+      ? ', naked, nude, bare chest, muscular body, confident pose, seductive expression, sensual, intimate, artistic nude photography, tasteful nudity'
+      : ', naked, nude, bare breasts, beautiful curves, elegant pose, seductive gaze, alluring expression, sensual, intimate, artistic nude photography, soft lighting, tasteful nudity, natural beauty';
+  } else {
+    // More explicit for image generator
+    nsfwEnhancement = sex === 'male'
+      ? ', completely naked, fully nude, no clothes, exposed penis, hard erect cock, bare naked body, muscular physique, genitals fully exposed, explicit nudity, pornographic, XXX rated, adult content, full frontal nudity, sensual, intimate, aroused'
+      : ', completely naked, fully nude, no clothes, exposed breasts, exposed pussy, bare naked body, beautiful curves, breasts visible, nipples visible, pussy visible, genitals fully exposed, explicit nudity, pornographic, XXX rated, adult content, full frontal nudity, sensual, intimate, aroused, legs spread';
+  }
 
   // Build prompt with shot description (same structure as censored version)
   let shotDesc, enhancedPrompt;
