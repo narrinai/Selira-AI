@@ -102,8 +102,8 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
 
   // Add NSFW enhancement keywords for EXTREMELY explicit content with variety
   const nsfwEnhancement = sex === 'male'
-    ? `completely naked, totally nude, full frontal nudity, ${randomPose}, exposed penis, hard erect cock, balls visible, no clothes whatsoever, bare naked body, genitals fully exposed, masturbating, stroking hard cock, sexual, pornographic XXX, explicit hardcore porn, aroused and hard, precum dripping, intense orgasm, ${randomSetting}`
-    : `completely naked, totally nude, full frontal nudity, ${randomPose}, exposed large breasts, huge tits, nipples erect and visible, exposed wet pussy, vagina spread open, pussy lips glistening, legs spread very wide, no clothes whatsoever, bare naked body, tits and pussy completely exposed, masturbating intensely, fingering wet pussy deep, rubbing clit, touching herself everywhere, sexual, pornographic XXX, explicit hardcore porn, extremely aroused and wet, pussy dripping and glistening, intense orgasm face, ${randomSetting}`;
+    ? `completely naked, totally nude, full frontal nudity, ${randomPose}, exposed penis, hard erect cock, balls visible, no clothes whatsoever, bare naked body, muscular toned physique, athletic abs, genitals fully exposed, masturbating sensually, stroking hard cock slowly, sexual pleasure, pornographic XXX, explicit hardcore porn, aroused and hard, precum dripping, intense orgasm face, passionate expression, ${randomSetting}`
+    : `completely naked, totally nude, full frontal nudity, ${randomPose}, massive huge perfect breasts, giant tits bouncing, huge round boobs, erect pink nipples, slim tiny waist, flat toned stomach, wide curvy hips, huge round bubble butt, thick thighs, perfect hourglass figure, extreme curves, voluptuous body, exposed dripping wet pussy, vagina spread open wide, glistening pink pussy lips, puffy swollen pussy, legs spread very wide, no clothes whatsoever, bare naked body, tits and pussy completely exposed, masturbating sensually, fingering wet pussy deep and slow, rubbing swollen clit, touching huge breasts, sexual pleasure, pornographic XXX, explicit hardcore porn, extremely aroused and wet, pussy dripping and glistening with arousal, intense orgasm face, passionate seductive expression, ${randomSetting}`;
 
   // Enhanced lighting for warmer, more vibrant images
   const lightingEnhancement = 'golden hour sunlight streaming through windows, warm orange and pink tones, soft diffused lighting, professional glamour lighting, vibrant saturated colors, rich warm color palette, high contrast shadows, cinematic color grading, warm skin tones, glowing highlights, romantic ambiance lighting, luxury photography lighting';
@@ -113,29 +113,48 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
 
   console.log(`✨ [${requestId}] Promptchan enhanced prompt:`, enhancedPrompt);
 
-  // Determine Promptchan style based on our style parameter
+  // Determine Promptchan style based on our style parameter with variety
   let promptchanStyle = 'Photo XL+ v2'; // Warmer, more vibrant than Hyperreal
   let promptchanFilter = 'Analog'; // Warmer tones than Studio
 
   if (style === 'anime' || style === 'animated') {
-    promptchanStyle = 'Anime XL+'; // Warmer anime style (not Hardcore XL which is too cold)
-    promptchanFilter = 'Anime Studio'; // Better for anime
+    // Randomly choose between anime styles for variety
+    const animeStyles = ['Anime XL+', 'Hardcore XL', 'Anime XL'];
+    promptchanStyle = animeStyles[Math.floor(Math.random() * animeStyles.length)];
+
+    // Randomly choose anime filter for variety
+    const animeFilters = ['Anime Studio', 'Manga'];
+    promptchanFilter = animeFilters[Math.floor(Math.random() * animeFilters.length)];
+  } else {
+    // Randomly choose between realistic styles for variety
+    const realisticStyles = ['Photo XL+ v2', 'Hyperreal XL+ v2', 'Photo XL+', 'Cinematic XL'];
+    promptchanStyle = realisticStyles[Math.floor(Math.random() * realisticStyles.length)];
+
+    // Randomly choose realistic filter for variety
+    const realisticFilters = ['Analog', 'Professional', 'Flash', 'Studio'];
+    promptchanFilter = realisticFilters[Math.floor(Math.random() * realisticFilters.length)];
   }
 
-  // Build Promptchan API request with warmer, more vibrant settings
+  // Add negative prompt to reduce unwanted elements
+  const negativePrompt = 'clothes, clothing, dressed, covered, censored, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white';
+
+  // Build Promptchan API request with ALL available parameters for best results
   const promptchanRequest = {
     prompt: enhancedPrompt,
+    negative_prompt: negativePrompt, // What to avoid
     style: promptchanStyle,
     quality: 'Extreme', // Good quality balance (+1 Gem, Max was too slow and cold)
     image_size: '768x512', // Landscape format
-    creativity: 85, // Maximum creativity for most variety
+    creativity: 90, // Maximum creativity for most variety (30-100)
     seed: -1, // Random seed for variety
-    filter: promptchanFilter, // Analog for warm tones, Anime Studio for anime
+    filter: promptchanFilter, // Random filter for variety
     emotion: 'Orgasm Face', // Most sexual emotion
-    detail: 1.5, // Good detail without being too clinical
-    age_slider: 25, // Good age for attractive appearance
-    breast_slider: 0.8, // Enhanced breasts for female
-    ass_slider: 0.7 // Enhanced curves
+    detail: 1.8, // High detail for sexy results (-2 to 2)
+    age_slider: 24, // Young attractive appearance (18-80)
+    weight_slider: -0.4, // Slim/thin body for hourglass figure (-1 to 1)
+    breast_slider: sex === 'male' ? 0 : 1, // MAXIMUM breasts for female (huge tits) (-1 to 1)
+    ass_slider: sex === 'male' ? 0.3 : 1, // MAXIMUM ass for extreme curves (-1 to 1)
+    restore_faces: false // Don't use face restoration - we want natural sensual expressions
   };
 
   console.log(`📤 [${requestId}] Promptchan request:`, promptchanRequest);
