@@ -1400,6 +1400,9 @@
               Create Companion
             </button>
           </div>
+          <div id="creationTimeMessage" style="display: none; text-align: center; color: var(--text-muted); font-size: 13px; margin-top: 12px;">
+            This may take 7-8 seconds
+          </div>
         </div>
       </div>
     </main>
@@ -1676,6 +1679,10 @@
       if (backBtn) backBtn.style.display = currentStep > 1 ? 'block' : 'none';
       if (continueBtn) continueBtn.style.display = currentStep < totalSteps ? 'block' : 'none';
       if (createBtn) createBtn.style.display = currentStep === totalSteps ? 'block' : 'none';
+
+      // Show/hide time message based on step
+      const timeMessage = document.getElementById('creationTimeMessage');
+      if (timeMessage) timeMessage.style.display = 'none';
     }
 
     // ===== STEP SELECTION FUNCTIONS =====
@@ -2001,6 +2008,16 @@
 
       // Show loading state
       createBtn.textContent = '⏳ Creating...';
+      const timeMessage = document.getElementById('creationTimeMessage');
+      if (timeMessage) {
+        // Only show time message if using uncensored mode (faster Promptchan)
+        if (characterCreationState.uncensored) {
+          timeMessage.textContent = 'This may take 5-7 seconds';
+        } else {
+          timeMessage.textContent = 'This may take 30-60 seconds';
+        }
+        timeMessage.style.display = 'block';
+      }
 
       // Get user info for creator identification
       let userEmail = 'anonymous';
