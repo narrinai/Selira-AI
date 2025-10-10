@@ -1485,9 +1485,16 @@
         }
 
         // Immediately scroll to top (instant, no smooth behavior)
-        window.scrollTo(0, 0);
-        document.documentElement.scrollTop = 0;
-        document.body.scrollTop = 0;
+        // Use setTimeout to ensure DOM is updated first
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          document.documentElement.scrollTop = 0;
+          document.body.scrollTop = 0;
+          // For mobile Safari
+          if (window.pageYOffset > 0) {
+            window.scrollTo({ top: 0, behavior: 'instant' });
+          }
+        }, 0);
       }
     }
 
