@@ -1837,10 +1837,14 @@
       // Auto-advance to next step and start avatar generation
       setTimeout(() => {
         nextStep();
-        // Start avatar generation once we have all appearance data
-        console.log('🔄 About to start avatar generation after hair color selection');
-        console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Character state:', characterCreationState);
-        generateAvatarPreview();
+        // Start avatar generation only for censored companions (Replicate is fast)
+        // Skip for uncensored (Promptchan is slow - will generate on final submit instead)
+        if (!characterCreationState.uncensored) {
+          console.log('🔄 Generating avatar preview with Replicate (fast)');
+          generateAvatarPreview();
+        } else {
+          console.log('⏭️ Skipping avatar preview for uncensored companion (Promptchan is slow - will generate on submit)');
+        }
       }, 500);
     }
 
@@ -2010,11 +2014,14 @@
       createBtn.textContent = '⏳ Creating...';
       const timeMessage = document.getElementById('creationTimeMessage');
       if (timeMessage) {
-        // Only show time message if using uncensored mode (faster Promptchan)
-        if (characterCreationState.uncensored) {
-          timeMessage.textContent = 'This may take 5-7 seconds';
+        // If avatar was already pre-generated (censored mode), creation is fast
+        // If uncensored, avatar will be generated now (slower)
+        if (preGeneratedAvatarUrl) {
+          timeMessage.textContent = 'Almost done...';
+        } else if (characterCreationState.uncensored) {
+          timeMessage.textContent = 'Generating avatar with Promptchan... (30-60 seconds)';
         } else {
-          timeMessage.textContent = 'This may take 30-60 seconds';
+          timeMessage.textContent = 'Generating avatar with Replicate... (5-10 seconds)';
         }
         timeMessage.style.display = 'block';
       }
