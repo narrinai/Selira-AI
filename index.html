@@ -2375,6 +2375,11 @@
       // Initial render with shuffled characters
       applyFilters();
       renderCharacters();
+
+      // Refresh tag filters now that characters are loaded
+      if (createAvailableTags && createAvailableTags.length > 0) {
+        populateTagFilters(createAvailableTags);
+      }
     }
 
     function getDemoCharacters() {
@@ -5250,13 +5255,7 @@ Please be thorough and include important details from our conversations.`;
 
         if (!response.ok) {
           console.warn('⚠️ Failed to load tags from API, using fallback');
-          populateTagFilters(createAvailableTags);
-
-          // Update mobile filter tags if overlay exists
-          const mobileFilterOverlay = document.getElementById('mobileFilterOverlay');
-          if (mobileFilterOverlay) {
-            populateMobileFilterTags();
-          }
+          // Don't populate filters yet - wait for characters to load
           return;
         }
 
@@ -5269,30 +5268,16 @@ Please be thorough and include important details from our conversations.`;
             sample: data.tags.slice(0, 10)
           });
 
-          // Also populate the filter pills
-          populateTagFilters(data.tags);
+          // Don't populate filter pills yet - wait for characters to load
+          // This will be done in loadCharacters() after allCharacters is populated
 
-          // Update mobile filter tags if overlay exists
-          const mobileFilterOverlay = document.getElementById('mobileFilterOverlay');
-          if (mobileFilterOverlay) {
-            populateMobileFilterTags();
-          }
-
-          // Populate mobile filter dropdown
+          // Populate mobile filter dropdown (doesn't need character counts)
           populateMobileTagDropdown();
         }
       } catch (error) {
         console.warn('⚠️ Error loading tags from API:', error.message);
         console.log('📝 Using fallback tags instead');
-
-        // Use fallback tags for filters too
-        populateTagFilters(createAvailableTags);
-
-        // Update mobile filter tags if overlay exists
-        const mobileFilterOverlay = document.getElementById('mobileFilterOverlay');
-        if (mobileFilterOverlay) {
-          populateMobileFilterTags();
-        }
+        // Don't populate filters yet - wait for characters to load
       }
     }
 
