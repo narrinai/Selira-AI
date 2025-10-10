@@ -232,6 +232,14 @@
         to { opacity: 1; }
       }
 
+      /* Hide support widget on chat page on mobile */
+      @media (max-width: 768px) {
+        body.chat-page .support-widget-btn,
+        body.chat-page .support-widget-chat {
+          display: none !important;
+        }
+      }
+
       @media (max-width: 480px) {
         .support-widget-chat {
           bottom: 84px;
