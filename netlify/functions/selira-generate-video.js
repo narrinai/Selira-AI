@@ -191,77 +191,20 @@ exports.handler = async (event, context) => {
       throw new Error('Invalid response from Replicate API');
     }
 
-    // Wait for the prediction to complete (max 120 seconds for video)
-    let result = prediction;
-    let attempts = 0;
-    const maxAttempts = 120; // 2 minutes max
-
-    while (result.status !== 'succeeded' && result.status !== 'failed' && attempts < maxAttempts) {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      attempts++;
-
-      try {
-        const statusResponse = await fetch(`https://api.replicate.com/v1/predictions/${prediction.id}`, {
-          headers: {
-            'Authorization': `Token ${REPLICATE_API_TOKEN}`,
-            'Accept': 'application/json'
-          }
-        });
-
-        if (!statusResponse.ok) {
-          console.error(`❌ [${requestId}] Status check failed:`, statusResponse.status);
-          const errorText = await statusResponse.text();
-          console.error(`❌ [${requestId}] Status check error:`, errorText);
-
-          if (attempts >= maxAttempts - 1) {
-            throw new Error(`Status check failed after ${attempts} attempts: ${statusResponse.status}`);
-          }
-          continue;
-        }
-
-        result = await statusResponse.json();
-
-        // Log progress every 10 seconds
-        if (attempts % 10 === 0) {
-          console.log(`⏳ [${requestId}] Status [${attempts}/${maxAttempts}]:`, result.status);
-        }
-      } catch (statusError) {
-        console.error(`❌ [${requestId}] Error checking status:`, statusError);
-        if (attempts >= maxAttempts - 1) {
-          throw statusError;
-        }
-        continue;
-      }
-    }
-
-    if (attempts >= maxAttempts) {
-      throw new Error('Timeout waiting for video generation (2 minutes)');
-    }
-
-    if (result.status === 'failed') {
-      console.error('❌ Generation failed. Full result:', JSON.stringify(result, null, 2));
-      const errorMsg = result.error || 'Video generation failed';
-      throw new Error(errorMsg);
-    }
-
-    const videoUrl = result.output;
-    if (!videoUrl) {
-      throw new Error('No video URL in response');
-    }
-
-    console.log(`✅ [${requestId}] Video generated successfully:`, videoUrl);
-    console.log(`⏱️ [${requestId}] Generation took ${attempts} seconds`);
+    // Return prediction ID immediately so client can poll
+    // Don't wait for completion to avoid Netlify timeout
+    console.log(`✅ [${requestId}] Prediction started, returning ID for client polling`);
 
     return {
-      statusCode: 200,
+      statusCode: 202, // Accepted - processing
       headers: {
         ...corsHeaders,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         success: true,
-        videoUrl: videoUrl,
-        generationTime: attempts,
+        predictionId: prediction.id,
+        status: prediction.status,
         settings: {
           motion_bucket_id,
           frames_per_second,

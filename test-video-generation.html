@@ -410,11 +410,15 @@
     // Load example avatars from Airtable
     async function loadExampleAvatars() {
       try {
-        const response = await fetch('/.netlify/functions/characters');
+        const response = await fetch('/.netlify/functions/selira-characters');
+        if (!response.ok) {
+          console.warn('Failed to load characters:', response.status);
+          return;
+        }
         const data = await response.json();
 
         // Get first 6 companions with avatars
-        const companions = data.characters.slice(0, 6);
+        const companions = (data.characters || []).slice(0, 6);
         const container = document.getElementById('exampleAvatars');
 
         companions.forEach(companion => {
@@ -463,8 +467,9 @@
           fps
         });
 
-        updateProgress('Calling video generation API...');
+        updateProgress('Starting video generation...');
 
+        // Step 1: Start the prediction
         const response = await fetch('/.netlify/functions/selira-generate-video', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -477,13 +482,52 @@
 
         const data = await response.json();
 
-        if (!response.ok) {
+        if (!response.ok && response.status !== 202) {
           throw new Error(data.error || data.details || 'Video generation failed');
         }
 
-        console.log('✅ Video generated:', data);
+        console.log('📊 Prediction started:', data.predictionId);
 
-        generatedVideoUrl = data.videoUrl;
+        // Step 2: Poll for completion
+        updateProgress('Video is being generated (30-45s)...');
+
+        const predictionId = data.predictionId;
+        let attempts = 0;
+        const maxAttempts = 120; // 2 minutes max
+        let videoUrl = null;
+
+        while (attempts < maxAttempts) {
+          await new Promise(resolve => setTimeout(resolve, 2000)); // Check every 2 seconds
+          attempts++;
+
+          updateProgress(`Generating... (${attempts * 2}s elapsed)`);
+
+          const statusResponse = await fetch('/.netlify/functions/selira-check-video-status', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ predictionId })
+          });
+
+          const statusData = await statusResponse.json();
+
+          console.log('📊 Status:', statusData.status);
+
+          if (statusData.status === 'succeeded') {
+            videoUrl = statusData.output;
+            break;
+          } else if (statusData.status === 'failed') {
+            throw new Error(statusData.error || 'Video generation failed');
+          }
+          // Status is still 'starting' or 'processing', continue polling
+        }
+
+        if (!videoUrl) {
+          throw new Error('Video generation timed out after 2 minutes');
+        }
+
+        console.log('✅ Video generated:', videoUrl);
+
+        generatedVideoUrl = videoUrl;
 
         // Show video
         document.getElementById('loading').classList.remove('show');
