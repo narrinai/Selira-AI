@@ -53,25 +53,19 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Create unique order ID
-    const orderId = `selira_${planType}_${userId}_${Date.now()}`;
+    // Create unique order ID with embedded metadata (since 'case' field is not allowed)
+    // Format: selira_{planType}_{credits}_{userId}_{timestamp}
+    const orderId = `selira_${planType}_${plan.credits}_${userId}_${Date.now()}`;
 
     // Create invoice via NOWPayments API
     const invoiceData = {
       price_amount: plan.price,
       price_currency: 'usd',
       order_id: orderId,
-      order_description: `Selira AI ${plan.name} - ${plan.credits} Image Credits`,
+      order_description: `Selira AI ${plan.name} - ${plan.credits} credits for ${userEmail}`,
       ipn_callback_url: `${process.env.URL}/.netlify/functions/nowpayments-webhook`,
       success_url: `${process.env.URL}/profile?payment=success&credits=${plan.credits}`,
-      cancel_url: `${process.env.URL}/pricing?tab=oneoff`,
-      // Store metadata for webhook processing
-      case: JSON.stringify({
-        userId: userId,
-        userEmail: userEmail,
-        planType: planType,
-        credits: plan.credits
-      })
+      cancel_url: `${process.env.URL}/pricing?tab=oneoff`
     };
 
     console.log('📤 Sending invoice request to NOWPayments:', invoiceData);

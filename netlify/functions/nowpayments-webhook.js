@@ -53,25 +53,31 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Parse metadata from 'case' field
-    let metadata;
-    try {
-      metadata = JSON.parse(payload.case || '{}');
-    } catch (e) {
-      console.error('❌ Failed to parse case metadata:', e);
+    // Parse metadata from order_id
+    // Format: selira_{planType}_{credits}_{userId}_{timestamp}
+    const orderIdParts = payload.order_id.split('_');
+
+    if (orderIdParts.length < 5 || orderIdParts[0] !== 'selira') {
+      console.error('❌ Invalid order_id format:', payload.order_id);
       return {
         statusCode: 400,
-        body: JSON.stringify({ error: 'Invalid metadata' })
+        body: JSON.stringify({ error: 'Invalid order_id format' })
       };
     }
 
-    const { userId, userEmail, credits, planType } = metadata;
+    const planType = orderIdParts[1];
+    const credits = parseInt(orderIdParts[2]);
+    const userId = orderIdParts[3];
+    // Extract email from order_description if available
+    const userEmail = payload.order_description ?
+      payload.order_description.match(/for (.+)$/)?.[1] :
+      'unknown';
 
     if (!userId || !credits) {
-      console.error('❌ Missing required metadata:', metadata);
+      console.error('❌ Missing required metadata from order_id:', { userId, credits });
       return {
         statusCode: 400,
-        body: JSON.stringify({ error: 'Missing userId or credits in metadata' })
+        body: JSON.stringify({ error: 'Missing userId or credits in order_id' })
       };
     }
 
