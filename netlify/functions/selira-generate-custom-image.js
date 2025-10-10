@@ -541,7 +541,7 @@ exports.handler = async (event, context) => {
       console.log(`⏭️ [${requestId}] Skipping auto-download as requested`);
     }
 
-    // Increment usage counter ONLY for chat-generated images (not companion creation)
+    // Increment usage counter for chat and image-generator (not companion creation)
     console.log(`🔍 [${requestId}] Checking increment conditions:`, {
       source,
       hasEmail: !!email,
@@ -550,8 +550,8 @@ exports.handler = async (event, context) => {
       limitDataUserId: body.limitData?.userId
     });
 
-    if (source === 'chat' && (email || auth0_id)) {
-      console.log(`📈 [${requestId}] ✅ Incrementing usage counter for chat image generation`);
+    if ((source === 'chat' || source === 'image-generator') && (email || auth0_id)) {
+      console.log(`📈 [${requestId}] ✅ Incrementing usage counter for ${source} image generation`);
       try {
         // Get userId - prefer limitData userId (Airtable record ID) over auth0_id
         const userId = body.limitData?.userId || auth0_id;
@@ -584,10 +584,10 @@ exports.handler = async (event, context) => {
       } catch (incrementError) {
         console.error(`❌ [${requestId}] Error incrementing usage:`, incrementError.message, incrementError.stack);
       }
-    } else if (source !== 'chat') {
-      console.log(`🎨 [${requestId}] Companion creation image - skipping usage tracking (source: ${source || 'not specified'})`);
+    } else if (source && source !== 'chat' && source !== 'image-generator') {
+      console.log(`🎨 [${requestId}] Companion creation image - skipping usage tracking (source: ${source})`);
     } else {
-      console.log(`👤 [${requestId}] Anonymous user - skipping usage increment`);
+      console.log(`👤 [${requestId}] Anonymous user or no source - skipping usage increment`);
     }
 
     // Decrement active requests counter
