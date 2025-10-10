@@ -80,15 +80,15 @@ exports.handler = async (event, context) => {
     const checkoutMode = mode || 'subscription';
     console.log('🔄 Creating checkout session for:', { userEmail, planName, priceId, mode: checkoutMode });
 
-    // Payment methods - card and paypal
-    // Note: apple_pay and google_pay are NOT valid payment_method_types for Checkout Sessions
-    // They appear automatically when user has compatible device/browser
-    // PayPal works for both one-time payments and subscriptions
-    const paymentMethodTypes = ['card', 'paypal'];
-
     // Build session config based on mode
+    // Note: Omitting payment_method_types or using empty array defaults to automatic payment method selection
+    // This will show all payment methods enabled in your Stripe Dashboard
     const sessionConfig = {
-      payment_method_types: paymentMethodTypes,
+      // Omit payment_method_types to use automatic payment method selection
+      // This shows: card, PayPal, Link, Apple Pay, Google Pay, Amazon Pay based on:
+      // - What you've enabled in Stripe Dashboard
+      // - Customer's device/browser capabilities
+      // - Customer's location
       line_items: [
         {
           price: priceId,
