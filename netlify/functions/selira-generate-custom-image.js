@@ -69,33 +69,12 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   // Build appearance description
   const appearance = [genderDesc, ethnicityDesc, hairColorDesc, hairLengthDesc].filter(Boolean).join(', ');
 
-  // Remove clothing keywords AND banned words from custom prompt
-  // Promptchan banned words list (even though it's NSFW, some explicit words are banned)
-  const bannedWords = [
-    'penis', 'cock', 'dick', 'balls', 'testicles', 'shaft', 'erection',
-    'blowjob', 'fellatio', 'oral sex', 'deepthroat', 'cum', 'cumshot', 'ejaculation',
-    'anal', 'butthole', 'asshole', 'anus',
-    'rape', 'molest', 'abuse', 'underage', 'child', 'teen', 'loli', 'shota'
-  ];
-
+  // Remove clothing keywords from custom prompt
   let cleanedPrompt = customPrompt
     .replace(/wearing\s+[^,]+,?/gi, '') // Remove "wearing X" phrases
     .replace(/\b(dress|shirt|top|bra|panties|lingerie|bikini|clothes|clothing|outfit|attire|uniform|robe|towel|underwear|shorts|pants|skirt|jeans|suit|blazer|jacket)\b/gi, '') // Remove clothing words
     .replace(/,\s*,/g, ',') // Clean up double commas
     .replace(/^\s*,\s*|\s*,\s*$/g, '') // Remove leading/trailing commas
-    .trim();
-
-  // Remove banned words
-  bannedWords.forEach(word => {
-    const regex = new RegExp(`\\b${word}\\b`, 'gi');
-    cleanedPrompt = cleanedPrompt.replace(regex, '');
-  });
-
-  // Clean up again after removing banned words
-  cleanedPrompt = cleanedPrompt
-    .replace(/,\s*,/g, ',')
-    .replace(/^\s*,\s*|\s*,\s*$/g, '')
-    .replace(/\s+/g, ' ')
     .trim();
 
   // Add variety keywords for more diverse images
@@ -122,9 +101,8 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   const randomSetting = varietySettings[Math.floor(Math.random() * varietySettings.length)];
 
   // Add NSFW enhancement keywords for EXTREMELY explicit content with variety
-  // Note: Avoid banned words like "penis", "cock", "dick", "balls" - use visual descriptions instead
   const nsfwEnhancement = sex === 'male'
-    ? `completely naked, totally nude, full frontal nudity, ${randomPose}, fully exposed, intimate parts visible, no clothes whatsoever, bare naked body, muscular toned physique, athletic abs, sculpted body, touching himself sensually, self-pleasure, sexual pleasure, pornographic XXX, explicit hardcore, very aroused, intense pleasure face, passionate expression, ${randomSetting}`
+    ? `completely naked, totally nude, full frontal nudity, ${randomPose}, exposed penis, hard erect cock, balls visible, no clothes whatsoever, bare naked body, muscular toned physique, athletic abs, genitals fully exposed, masturbating sensually, stroking hard cock slowly, sexual pleasure, pornographic XXX, explicit hardcore porn, aroused and hard, precum dripping, intense orgasm face, passionate expression, ${randomSetting}`
     : `completely naked, totally nude, full frontal nudity, ${randomPose}, massive huge perfect breasts, giant tits bouncing, huge round boobs, erect pink nipples, slim tiny waist, flat toned stomach, wide curvy hips, huge round bubble butt, thick thighs, perfect hourglass figure, extreme curves, voluptuous body, exposed dripping wet pussy, vagina spread open wide, glistening pink pussy lips, puffy swollen pussy, legs spread very wide, no clothes whatsoever, bare naked body, tits and pussy completely exposed, masturbating sensually, fingering wet pussy deep and slow, rubbing swollen clit, touching huge breasts, sexual pleasure, pornographic XXX, explicit hardcore porn, extremely aroused and wet, pussy dripping and glistening with arousal, intense orgasm face, passionate seductive expression, ${randomSetting}`;
 
   // Enhanced lighting for warmer, more vibrant images
