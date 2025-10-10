@@ -935,8 +935,8 @@
               <!-- Gender Filter -->
               <div style="display: flex; gap: 8px; margin-bottom: 16px;">
                 <button id="filterAll" class="gender-filter-btn active" onclick="filterByGender('all')" style="flex: 1; padding: 8px 16px; background: var(--accent); border: none; border-radius: var(--radius-sm); color: white; font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.2s;">All</button>
-                <button id="filterFemale" class="gender-filter-btn" onclick="filterByGender('Female')" style="flex: 1; padding: 8px 16px; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary); font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.2s;">Female</button>
-                <button id="filterMale" class="gender-filter-btn" onclick="filterByGender('Male')" style="flex: 1; padding: 8px 16px; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary); font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.2s;">Male</button>
+                <button id="filterFemale" class="gender-filter-btn" onclick="filterByGender('female')" style="flex: 1; padding: 8px 16px; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary); font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.2s;">Female</button>
+                <button id="filterMale" class="gender-filter-btn" onclick="filterByGender('male')" style="flex: 1; padding: 8px 16px; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary); font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.2s;">Male</button>
               </div>
 
               <div style="position: relative;">
@@ -1243,7 +1243,7 @@
         btn.style.color = 'var(--text-primary)';
       });
 
-      const activeBtn = gender === 'all' ? 'filterAll' : (gender === 'Female' ? 'filterFemale' : 'filterMale');
+      const activeBtn = gender === 'all' ? 'filterAll' : (gender === 'female' ? 'filterFemale' : 'filterMale');
       const activeBtnEl = document.getElementById(activeBtn);
       if (activeBtnEl) {
         activeBtnEl.style.background = 'var(--accent)';
