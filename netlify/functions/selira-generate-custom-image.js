@@ -154,10 +154,12 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
 
   if (style === 'anime' || style === 'animated') {
     shotDesc = isFullBody ? 'full body anime illustration' : 'anime portrait';
-    enhancedPrompt = `${shotDesc} of ${appearance}, anime style, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}, detailed anime art, high quality anime illustration, vibrant colors`;
+    // Put appearance FIRST and LAST for emphasis
+    enhancedPrompt = `${appearance}, ${shotDesc}, anime style, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}, ${appearance}, detailed anime art, high quality anime illustration, vibrant colors`;
   } else {
     shotDesc = isFullBody ? 'full body photograph' : 'upper body photograph';
-    enhancedPrompt = `${shotDesc} of ${appearance}, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}, photorealistic, ultra realistic, professional photography, detailed, high quality`;
+    // Put appearance FIRST and LAST for emphasis
+    enhancedPrompt = `${appearance}, ${shotDesc}, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}, ${appearance}, photorealistic, ultra realistic, professional photography, detailed, high quality`;
   }
 
   console.log(`📸 [${requestId}] Shot type: ${shotDesc} (isFullBody: ${isFullBody})`);
