@@ -11,10 +11,11 @@ let activeReplicateRequests = 0; // Track concurrent Replicate API calls
 
 // PROMPTCHAN IMAGE GENERATION FUNCTION
 async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0_id) {
-  const { customPrompt, characterName, sex, ethnicity, hairLength, hairColor, style, source } = body;
+  const { customPrompt, characterName, sex, ethnicity, hairLength, hairColor, style, shotType, source } = body;
 
   console.log(`🎨 [${requestId}] Generating with Promptchan API`);
   console.log(`🎨 [${requestId}] Style parameter received:`, style);
+  console.log(`🎨 [${requestId}] Shot type parameter received:`, shotType);
 
   const PROMPTCHAN_API_KEY = process.env.PROMPTCHAN_API_KEY_SELIRA;
 
@@ -72,10 +73,15 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
 
   // Use same prompt processing as censored/Replicate version
   const sanitizedPrompt = customPrompt.trim();
+  const promptLower = customPrompt.toLowerCase();
+
+  // Determine shot type (same as censored version)
+  const isFullBody = shotType === 'fullbody' || promptLower.includes('full body') ||
+                     promptLower.includes('fullbody') || promptLower.includes('standing') ||
+                     promptLower.includes('beach') || promptLower.includes('pose');
 
   // Smart context enhancement - only add backgrounds if prompt is very minimal
   let contextualEnhancement = '';
-  const promptLower = customPrompt.toLowerCase();
 
   // Check if prompt already has detailed instructions (poses, positions, etc.)
   const hasDetailedInstructions = promptLower.includes('position') ||
@@ -132,8 +138,18 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     ? ', completely naked, fully nude, no clothes, exposed penis, hard erect cock, bare naked body, muscular physique, genitals fully exposed, explicit nudity, pornographic, XXX rated, adult content, full frontal nudity, sensual, intimate, aroused'
     : ', completely naked, fully nude, no clothes, exposed breasts, exposed pussy, bare naked body, beautiful curves, breasts visible, nipples visible, pussy visible, genitals fully exposed, explicit nudity, pornographic, XXX rated, adult content, full frontal nudity, sensual, intimate, aroused, legs spread';
 
-  // Combine: appearance + sanitized prompt + context + NSFW
-  const enhancedPrompt = `${appearance}, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}, photorealistic, ultra realistic, professional photography, detailed, high quality`;
+  // Build prompt with shot description (same structure as censored version)
+  let shotDesc, enhancedPrompt;
+
+  if (style === 'anime' || style === 'animated') {
+    shotDesc = isFullBody ? 'full body anime illustration' : 'anime portrait';
+    enhancedPrompt = `${shotDesc} of ${appearance}, anime style, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}, detailed anime art, high quality anime illustration, vibrant colors`;
+  } else {
+    shotDesc = isFullBody ? 'full body photograph' : 'upper body photograph';
+    enhancedPrompt = `${shotDesc} of ${appearance}, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}, photorealistic, ultra realistic, professional photography, detailed, high quality`;
+  }
+
+  console.log(`📸 [${requestId}] Shot type: ${shotDesc} (isFullBody: ${isFullBody})`);
 
   console.log(`✨ [${requestId}] Promptchan enhanced prompt:`, enhancedPrompt);
 
