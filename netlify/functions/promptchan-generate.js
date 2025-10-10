@@ -14,7 +14,7 @@ exports.handler = async (event, context) => {
     const requestData = JSON.parse(event.body);
 
     // Get API key from environment variables
-    const apiKey = process.env.PROMPTCHAN_API_KEY;
+    const apiKey = process.env.PROMPTCHAN_API_KEY_SELIRA;
 
     if (!apiKey) {
       console.error('❌ Promptchan API key not configured');
