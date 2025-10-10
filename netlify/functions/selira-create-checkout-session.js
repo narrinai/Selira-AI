@@ -80,10 +80,11 @@ exports.handler = async (event, context) => {
     const checkoutMode = mode || 'subscription';
     console.log('🔄 Creating checkout session for:', { userEmail, planName, priceId, mode: checkoutMode });
 
-    // Payment methods - card only, Apple Pay and Google Pay appear automatically
+    // Payment methods - card and paypal
     // Note: apple_pay and google_pay are NOT valid payment_method_types for Checkout Sessions
     // They appear automatically when user has compatible device/browser
-    const paymentMethodTypes = ['card'];
+    // PayPal works for both one-time payments and subscriptions
+    const paymentMethodTypes = ['card', 'paypal'];
 
     // Build session config based on mode
     const sessionConfig = {
