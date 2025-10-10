@@ -103,12 +103,9 @@ exports.handler = async (event, context) => {
       cancel_url: cancelUrl,
       allow_promotion_codes: true,
       billing_address_collection: 'auto',
-      // Configure payment method options
-      payment_method_options: {
-        card: {
-          request_three_d_secure: 'automatic',
-        }
-      },
+      // Don't configure payment_method_options at all - let Stripe handle it automatically
+      // This allows Apple Pay to use its own authentication (Face ID/Touch ID)
+      // instead of forcing 3D Secure which causes authentication_required errors
     };
 
     // Add subscription_data only for subscription mode
@@ -121,9 +118,8 @@ exports.handler = async (event, context) => {
           ...(fpTid && { fp_tid: fpTid }) // Add FirstPromoter tracking ID if available
         }
       };
-      // For subscriptions, collect payment method if required for 3D Secure
-      // Using 'if_required' instead of 'always' helps with Apple Pay compatibility
-      sessionConfig.payment_method_collection = 'if_required';
+      // Don't force payment method collection - let Stripe decide
+      // This prevents Apple Pay authentication conflicts
     }
 
     // Create Stripe checkout session
