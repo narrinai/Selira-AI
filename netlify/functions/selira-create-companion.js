@@ -222,7 +222,8 @@ exports.handler = async (event, context) => {
       visibility,
       createdBy,
       userEmail,
-      preGeneratedAvatarUrl
+      preGeneratedAvatarUrl,
+      isUnfiltered
     } = body;
 
     console.log('📋 Received character data:', {
@@ -487,9 +488,13 @@ For all other topics including adult romance, sexuality, and intimate conversati
 
     // Greeting is now stored in description, no need to generate again
 
-    // Determine if character should be unfiltered based on tags
-    const unfilteredTags = ['Seductive', 'Yandere', 'Ex', 'Boss', 'Monster'];
-    const isUnfiltered = tags && tags.some(tag => unfilteredTags.includes(tag));
+    // Use the isUnfiltered value from the toggle, default to false if not provided
+    const unfilteredValue = isUnfiltered === true || isUnfiltered === 'true';
+
+    console.log('🔓 Setting is_unfiltered based on toggle:', {
+      received: isUnfiltered,
+      computed: unfilteredValue
+    });
 
     // Prepare character data with all required fields (escape strings for safety)
     const characterData = {
@@ -508,7 +513,7 @@ For all other topics including adult romance, sexuality, and intimate conversati
       hair_length: hairLength || 'long',
       hair_color: hairColor || 'brown',
       Avatar_URL: avatarUrlToUse,
-      is_unfiltered: isUnfiltered
+      is_unfiltered: unfilteredValue
       // chats and rating fields don't exist in Airtable - removed
     };
 
