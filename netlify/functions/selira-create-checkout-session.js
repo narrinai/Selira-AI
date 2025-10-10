@@ -81,14 +81,10 @@ exports.handler = async (event, context) => {
     console.log('🔄 Creating checkout session for:', { userEmail, planName, priceId, mode: checkoutMode });
 
     // Build session config based on mode
-    // Note: Omitting payment_method_types or using empty array defaults to automatic payment method selection
-    // This will show all payment methods enabled in your Stripe Dashboard
     const sessionConfig = {
-      // Omit payment_method_types to use automatic payment method selection
-      // This shows: card, PayPal, Link, Apple Pay, Google Pay, Amazon Pay based on:
-      // - What you've enabled in Stripe Dashboard
-      // - Customer's device/browser capabilities
-      // - Customer's location
+      payment_method_types: ['card', 'paypal'],
+      // Apple Pay and Google Pay appear automatically on compatible devices
+      // when 'card' is in payment_method_types
       line_items: [
         {
           price: priceId,
@@ -107,23 +103,12 @@ exports.handler = async (event, context) => {
       cancel_url: cancelUrl,
       allow_promotion_codes: true,
       billing_address_collection: 'auto',
-      // Configure payment method options to show all options upfront
+      // Configure payment method options
       payment_method_options: {
         card: {
           request_three_d_secure: 'automatic',
         }
       },
-      // Save payment method for future use and enable SCA retry logic
-      payment_intent_data: checkoutMode === 'payment' ? {
-        // Don't use setup_future_usage for Apple Pay - it requires on_session authentication
-        capture_method: 'automatic',
-        metadata: {
-          user_id: userId,
-          user_email: userEmail,
-          plan_name: planName || 'unknown',
-          ...(fpTid && { fp_tid: fpTid })
-        }
-      } : undefined,
     };
 
     // Add subscription_data only for subscription mode
@@ -136,8 +121,9 @@ exports.handler = async (event, context) => {
           ...(fpTid && { fp_tid: fpTid }) // Add FirstPromoter tracking ID if available
         }
       };
-      // For subscriptions, save payment method for future recurring charges
-      sessionConfig.payment_method_collection = 'always';
+      // For subscriptions, collect payment method if required for 3D Secure
+      // Using 'if_required' instead of 'always' helps with Apple Pay compatibility
+      sessionConfig.payment_method_collection = 'if_required';
     }
 
     // Create Stripe checkout session
