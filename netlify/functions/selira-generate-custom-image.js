@@ -69,26 +69,34 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   // Build appearance description
   const appearance = [genderDesc, ethnicityDesc, hairColorDesc, hairLengthDesc].filter(Boolean).join(', ');
 
-  // Combine with user prompt
-  const enhancedPrompt = `${appearance}, ${customPrompt}`;
+  // Add NSFW enhancement keywords for more explicit content
+  const nsfwEnhancement = sex === 'male'
+    ? 'naked, nude body, exposed genitals, erect penis, sexual, pornographic, explicit, hardcore, aroused, sensual lighting, warm golden lighting, soft warm glow, intimate atmosphere, seductive pose, erotic photography'
+    : 'naked, nude body, exposed breasts, exposed pussy, vagina visible, tits out, nipples visible, legs spread, sexual, pornographic, explicit, hardcore, aroused, wet pussy, sensual lighting, warm golden lighting, soft warm glow, intimate atmosphere, seductive pose, erotic photography';
+
+  // Combine with user prompt and NSFW enhancement
+  const enhancedPrompt = `${appearance}, ${customPrompt}, ${nsfwEnhancement}, professional studio lighting, warm color temperature, golden hour lighting, soft warm shadows, vibrant colors, high contrast, well-lit scene, bright illumination, perfect lighting`;
 
   console.log(`✨ [${requestId}] Promptchan enhanced prompt:`, enhancedPrompt);
 
   // Determine Promptchan style based on our style parameter
   let promptchanStyle = 'Photo XL+'; // Default realistic
+  let promptchanFilter = 'Professional'; // Better lighting filter
+
   if (style === 'anime' || style === 'animated') {
     promptchanStyle = 'Anime XL+';
+    promptchanFilter = 'Anime Studio'; // Better for anime
   }
 
   // Build Promptchan API request
   const promptchanRequest = {
     prompt: enhancedPrompt,
     style: promptchanStyle,
-    quality: 'Ultra', // Standard quality (1 Gem)
+    quality: 'Extreme', // Better quality (+1 Gem but worth it for better results)
     image_size: '768x512', // Landscape format
-    creativity: 50,
+    creativity: 70, // Higher creativity for more variety
     seed: -1, // Random
-    filter: 'Default',
+    filter: promptchanFilter, // Professional/Anime Studio for better lighting
     emotion: 'Default'
   };
 
