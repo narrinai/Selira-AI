@@ -138,22 +138,51 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   // Add negative prompt to reduce unwanted elements
   const negativePrompt = 'clothes, clothing, dressed, covered, censored, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white';
 
-  // Build Promptchan API request with ALL available parameters for best results
+  // Randomize body type for variety (all still sexy and NSFW, just different body types)
+  const bodyTypes = [
+    { name: 'extreme_curvy', weight: -0.4, breast: 1, ass: 1 },      // Huge tits, huge ass, slim waist
+    { name: 'very_curvy', weight: -0.2, breast: 0.8, ass: 0.9 },     // Big tits, big ass, slim
+    { name: 'curvy_athletic', weight: -0.3, breast: 0.6, ass: 0.7 }, // Athletic with curves
+    { name: 'slim_busty', weight: -0.5, breast: 0.9, ass: 0.5 },     // Very slim with big tits
+    { name: 'thicc', weight: 0.1, breast: 0.7, ass: 0.9 },           // Thicc/voluptuous
+    { name: 'balanced_sexy', weight: -0.1, breast: 0.7, ass: 0.8 }   // Balanced sexy proportions
+  ];
+  const randomBodyType = bodyTypes[Math.floor(Math.random() * bodyTypes.length)];
+
+  // Randomize emotion for variety (all still sexual/sensual)
+  const sexualEmotions = ['Orgasm Face', 'Default', 'Smiling', 'Winking'];
+  const randomEmotion = sexualEmotions[Math.floor(Math.random() * sexualEmotions.length)];
+
+  // Randomize age for variety (all 18+ and attractive)
+  const attractiveAges = [20, 22, 24, 26, 28, 30];
+  const randomAge = attractiveAges[Math.floor(Math.random() * attractiveAges.length)];
+
+  // Randomize detail level for variety
+  const detailLevels = [1.2, 1.5, 1.8, 2.0];
+  const randomDetail = detailLevels[Math.floor(Math.random() * detailLevels.length)];
+
+  // Randomize creativity for variety
+  const creativityLevels = [70, 80, 85, 90];
+  const randomCreativity = creativityLevels[Math.floor(Math.random() * creativityLevels.length)];
+
+  console.log(`🎲 [${requestId}] Random body type: ${randomBodyType.name}, emotion: ${randomEmotion}, age: ${randomAge}, detail: ${randomDetail}, creativity: ${randomCreativity}`);
+
+  // Build Promptchan API request with randomized parameters for variety
   const promptchanRequest = {
     prompt: enhancedPrompt,
     negative_prompt: negativePrompt, // What to avoid
     style: promptchanStyle,
-    quality: 'Extreme', // Good quality balance (+1 Gem, Max was too slow and cold)
+    quality: 'Extreme', // Good quality balance (+1 Gem)
     image_size: '768x512', // Landscape format
-    creativity: 90, // Maximum creativity for most variety (30-100)
+    creativity: randomCreativity, // Random creativity for variety (70-90)
     seed: -1, // Random seed for variety
     filter: promptchanFilter, // Random filter for variety
-    emotion: 'Orgasm Face', // Most sexual emotion
-    detail: 1.8, // High detail for sexy results (-2 to 2)
-    age_slider: 24, // Young attractive appearance (18-80)
-    weight_slider: -0.4, // Slim/thin body for hourglass figure (-1 to 1)
-    breast_slider: sex === 'male' ? 0 : 1, // MAXIMUM breasts for female (huge tits) (-1 to 1)
-    ass_slider: sex === 'male' ? 0.3 : 1, // MAXIMUM ass for extreme curves (-1 to 1)
+    emotion: randomEmotion, // Random sexual emotion
+    detail: randomDetail, // Random detail level (1.2-2.0)
+    age_slider: randomAge, // Random attractive age (20-30)
+    weight_slider: randomBodyType.weight, // Random body weight (-0.5 to 0.1)
+    breast_slider: sex === 'male' ? 0 : randomBodyType.breast, // Random breast size (0.6-1.0 for female)
+    ass_slider: sex === 'male' ? 0.3 : randomBodyType.ass, // Random ass size (0.5-1.0)
     restore_faces: false // Don't use face restoration - we want natural sensual expressions
   };
 
