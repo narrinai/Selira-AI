@@ -660,7 +660,23 @@ function attachMobileNavEvents() {
       }
     }
   });
-  
+
+  // Close menu when login/signup links are clicked
+  const loginLink = document.querySelector('.mobile-menu-nav .login-link');
+  const signupLink = document.querySelector('.mobile-menu-nav .signup-link');
+
+  if (loginLink) {
+    loginLink.addEventListener('click', function() {
+      closeMobileMenu();
+    });
+  }
+
+  if (signupLink) {
+    signupLink.addEventListener('click', function() {
+      closeMobileMenu();
+    });
+  }
+
   // Close menus on escape key
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
