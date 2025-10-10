@@ -69,35 +69,47 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   // Build appearance description
   const appearance = [genderDesc, ethnicityDesc, hairColorDesc, hairLengthDesc].filter(Boolean).join(', ');
 
-  // Add NSFW enhancement keywords for more explicit content
-  const nsfwEnhancement = sex === 'male'
-    ? 'naked, nude body, exposed genitals, erect penis, sexual, pornographic, explicit, hardcore, aroused, sensual lighting, warm golden lighting, soft warm glow, intimate atmosphere, seductive pose, erotic photography'
-    : 'naked, nude body, exposed breasts, exposed pussy, vagina visible, tits out, nipples visible, legs spread, sexual, pornographic, explicit, hardcore, aroused, wet pussy, sensual lighting, warm golden lighting, soft warm glow, intimate atmosphere, seductive pose, erotic photography';
+  // Remove clothing keywords from custom prompt
+  let cleanedPrompt = customPrompt
+    .replace(/wearing\s+[^,]+,?/gi, '') // Remove "wearing X" phrases
+    .replace(/\b(dress|shirt|top|bra|panties|lingerie|bikini|clothes|clothing|outfit|attire|uniform|robe|towel|underwear|shorts|pants|skirt|jeans|suit|blazer|jacket)\b/gi, '') // Remove clothing words
+    .replace(/,\s*,/g, ',') // Clean up double commas
+    .replace(/^\s*,\s*|\s*,\s*$/g, '') // Remove leading/trailing commas
+    .trim();
 
-  // Combine with user prompt and NSFW enhancement
-  const enhancedPrompt = `${appearance}, ${customPrompt}, ${nsfwEnhancement}, professional studio lighting, warm color temperature, golden hour lighting, soft warm shadows, vibrant colors, high contrast, well-lit scene, bright illumination, perfect lighting`;
+  // Add NSFW enhancement keywords for EXTREMELY explicit content
+  const nsfwEnhancement = sex === 'male'
+    ? 'completely naked, totally nude, full frontal nudity, exposed penis, hard dick, erect cock visible, balls visible, no clothes, bare naked body, genitals exposed, masturbating, stroking cock, sexual, pornographic XXX, explicit hardcore porn, aroused and hard, cum, orgasm, bedroom setting, luxury bed, intimate bedroom, bedroom background'
+    : 'completely naked, totally nude, full frontal nudity, exposed tits, bare breasts, nipples showing, exposed pussy, vagina visible, pussy lips visible, legs spread wide, no clothes, bare naked body, breasts and pussy exposed, masturbating, fingering pussy, touching herself, sexual, pornographic XXX, explicit hardcore porn, aroused and wet, dripping wet pussy, orgasm face, bedroom setting, luxury bed, intimate bedroom, on bed, bedroom background';
+
+  // Add lighting and atmosphere
+  const lightingEnhancement = 'warm golden lighting, soft warm glow, sensual studio lighting, professional bedroom lighting, golden hour glow, warm color temperature, soft warm shadows, vibrant warm colors, high contrast, well-lit intimate scene, bright warm illumination, perfect erotic lighting';
+
+  // Combine: appearance + cleaned prompt + NSFW + lighting
+  const enhancedPrompt = `${appearance}, ${cleanedPrompt}, ${nsfwEnhancement}, ${lightingEnhancement}`;
 
   console.log(`✨ [${requestId}] Promptchan enhanced prompt:`, enhancedPrompt);
 
   // Determine Promptchan style based on our style parameter
-  let promptchanStyle = 'Photo XL+'; // Default realistic
-  let promptchanFilter = 'Professional'; // Better lighting filter
+  let promptchanStyle = 'Hyperreal XL+ v2'; // Most realistic and detailed
+  let promptchanFilter = 'Studio'; // Best lighting for NSFW
 
   if (style === 'anime' || style === 'animated') {
-    promptchanStyle = 'Anime XL+';
+    promptchanStyle = 'Hardcore XL'; // Most explicit anime style
     promptchanFilter = 'Anime Studio'; // Better for anime
   }
 
-  // Build Promptchan API request
+  // Build Promptchan API request with most explicit settings
   const promptchanRequest = {
     prompt: enhancedPrompt,
     style: promptchanStyle,
-    quality: 'Extreme', // Better quality (+1 Gem but worth it for better results)
+    quality: 'Max', // Maximum quality (+2 Gems for best results)
     image_size: '768x512', // Landscape format
     creativity: 70, // Higher creativity for more variety
     seed: -1, // Random
-    filter: promptchanFilter, // Professional/Anime Studio for better lighting
-    emotion: 'Default'
+    filter: promptchanFilter, // Studio/Anime Studio for perfect lighting
+    emotion: 'Orgasm Face', // Most sexual emotion
+    detail: 2 // Maximum detail level
   };
 
   console.log(`📤 [${requestId}] Promptchan request:`, promptchanRequest);
