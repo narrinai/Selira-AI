@@ -45,12 +45,27 @@ exports.handler = async (event, context) => {
     const merchantId = process.env.CRYPTOMUS_MERCHANT_ID_SELIRA;
     const apiKey = process.env.CRYPTOMUS_PAYMENT_API_KEY_SELIRA;
 
+    console.log('🔑 Checking credentials:', {
+      hasMerchantId: !!merchantId,
+      merchantIdLength: merchantId?.length,
+      hasApiKey: !!apiKey,
+      apiKeyLength: apiKey?.length,
+      merchantIdPreview: merchantId ? merchantId.substring(0, 8) + '...' : 'MISSING',
+      apiKeyPreview: apiKey ? apiKey.substring(0, 8) + '...' : 'MISSING'
+    });
+
     if (!merchantId || !apiKey) {
       console.error('❌ Missing Cryptomus configuration');
       return {
         statusCode: 500,
         headers,
-        body: JSON.stringify({ error: 'Cryptomus configuration missing' })
+        body: JSON.stringify({
+          error: 'Cryptomus configuration missing',
+          details: {
+            hasMerchantId: !!merchantId,
+            hasApiKey: !!apiKey
+          }
+        })
       };
     }
 
@@ -78,6 +93,13 @@ exports.handler = async (event, context) => {
 
     // Create signature for API request
     const sign = createSignature(invoiceData, apiKey);
+
+    console.log('🔐 Request details:', {
+      url: 'https://api.cryptomus.com/v1/payment',
+      merchantId: merchantId.substring(0, 8) + '...',
+      signatureLength: sign.length,
+      signature: sign.substring(0, 16) + '...'
+    });
 
     // Make request to Cryptomus API
     const response = await fetch('https://api.cryptomus.com/v1/payment', {
@@ -150,25 +172,27 @@ exports.handler = async (event, context) => {
 
 /**
  * Create signature for Cryptomus API request
+ * Cryptomus signature: MD5(base64(JSON) + API_KEY)
  * @param {Object} data - Request data
  * @param {string} apiKey - API key
  * @returns {string} - MD5 hash signature
  */
 function createSignature(data, apiKey) {
-  // Sort object keys and create base64 encoded JSON
-  const sortedData = {};
-  Object.keys(data).sort().forEach(key => {
-    sortedData[key] = data[key];
-  });
+  // Convert data to JSON string (NO sorting - use original order)
+  const jsonString = JSON.stringify(data);
 
-  const jsonString = JSON.stringify(sortedData);
+  // Encode JSON to base64
   const base64Data = Buffer.from(jsonString).toString('base64');
 
-  // Create MD5 hash of base64 + apiKey
+  // Create MD5 hash of: base64(JSON) + API_KEY
   const signString = base64Data + apiKey;
   const hash = crypto.createHash('md5').update(signString).digest('hex');
 
-  console.log('🔐 Signature created for data keys:', Object.keys(sortedData));
+  console.log('🔐 Signature created:', {
+    jsonLength: jsonString.length,
+    base64Length: base64Data.length,
+    hashLength: hash.length
+  });
 
   return hash;
 }

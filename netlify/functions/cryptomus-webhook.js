@@ -145,6 +145,7 @@ exports.handler = async (event, context) => {
 
 /**
  * Verify webhook signature from Cryptomus
+ * Cryptomus signature: MD5(base64(JSON) + API_KEY)
  */
 function verifySignature(data, receivedSign, apiKey) {
   if (!receivedSign) {
@@ -152,14 +153,13 @@ function verifySignature(data, receivedSign, apiKey) {
     return false;
   }
 
-  // Create signature same way as in create-payment
-  const sortedData = {};
-  Object.keys(data).sort().forEach(key => {
-    sortedData[key] = data[key];
-  });
+  // Convert data to JSON string (NO sorting - use original order)
+  const jsonString = JSON.stringify(data);
 
-  const jsonString = JSON.stringify(sortedData);
+  // Encode JSON to base64
   const base64Data = Buffer.from(jsonString).toString('base64');
+
+  // Create MD5 hash of: base64(JSON) + API_KEY
   const signString = base64Data + apiKey;
   const calculatedSign = crypto.createHash('md5').update(signString).digest('hex');
 

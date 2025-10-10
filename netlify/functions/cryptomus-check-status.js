@@ -137,15 +137,16 @@ exports.handler = async (event, context) => {
 
 /**
  * Create signature for Cryptomus API request
+ * Cryptomus signature: MD5(base64(JSON) + API_KEY)
  */
 function createSignature(data, apiKey) {
-  const sortedData = {};
-  Object.keys(data).sort().forEach(key => {
-    sortedData[key] = data[key];
-  });
+  // Convert data to JSON string (NO sorting - use original order)
+  const jsonString = JSON.stringify(data);
 
-  const jsonString = JSON.stringify(sortedData);
+  // Encode JSON to base64
   const base64Data = Buffer.from(jsonString).toString('base64');
+
+  // Create MD5 hash of: base64(JSON) + API_KEY
   const signString = base64Data + apiKey;
   const hash = crypto.createHash('md5').update(signString).digest('hex');
 
