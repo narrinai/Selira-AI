@@ -364,14 +364,25 @@ exports.handler = async (event, context) => {
     const hairPart = isBald ? hairLengthDesc : `${hairColorDesc}, ${hairLengthDesc}`;
     const characterAppearance = `${hairPart}, ${genderDescription}, ${ethnicityDesc}`;
 
+    // Add NSFW enhancement keywords if prompt suggests intimate/adult content
+    let nsfwEnhancement = '';
+    const nsfwKeywords = ['naked', 'nude', 'topless', 'lingerie', 'underwear', 'bikini', 'revealing',
+                          'intimate', 'sensual', 'sexy', 'bedroom', 'undressed', 'bare', 'exposed'];
+    const hasNsfwIntent = nsfwKeywords.some(keyword => promptLower.includes(keyword));
+
+    if (hasNsfwIntent) {
+      nsfwEnhancement = ', nsfw, explicit content, adult content, uncensored, detailed anatomy, bare skin, exposed body, intimate pose, sensual atmosphere, natural nudity, unclothed, revealing outfit, provocative pose, seductive expression, intimate setting, erotic art, adult photography, explicit pose, full nudity allowed, completely exposed, intimate details visible';
+      console.log(`🔞 [${requestId}] NSFW content detected - adding explicit enhancement`);
+    }
+
     // Build full prompt with character appearance and context
     let fullPrompt;
     if (isAnimeStyle) {
       const shotDesc = isFullBody ? 'full body anime illustration' : 'anime portrait';
-      fullPrompt = `${shotDesc} of ${genderDescription}, ${ethnicityDesc}, ${hairPart}, anime style, ${sanitizedPrompt}${contextualEnhancement}, detailed anime art, high quality anime illustration, vibrant colors, cel shading, clean background, single anime character, perfect anime anatomy, anime eyes`;
+      fullPrompt = `${shotDesc} of ${genderDescription}, ${ethnicityDesc}, ${hairPart}, anime style, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}, detailed anime art, high quality anime illustration, vibrant colors, cel shading, clean background, single anime character, perfect anime anatomy, anime eyes`;
     } else {
       const shotDesc = isFullBody ? 'full body photograph' : 'portrait photograph';
-      fullPrompt = `REALISTIC PHOTOGRAPHY, ${shotDesc} of ${genderDescription}, ${ethnicityDesc}, ${hairPart}, ${sanitizedPrompt}${contextualEnhancement}, ultra realistic, photorealistic, real human photo, actual photograph, professional photography, realistic skin texture, realistic facial features, realistic proportions, high quality photo, professional studio lighting, clean background, single real person, perfect human anatomy, NO anime, NO cartoon, NO illustration, NO drawing, NO manga, NO cel shading, NO stylized art, real photograph only`;
+      fullPrompt = `REALISTIC PHOTOGRAPHY, ${shotDesc} of ${genderDescription}, ${ethnicityDesc}, ${hairPart}, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}, ultra realistic, photorealistic, real human photo, actual photograph, professional photography, realistic skin texture, realistic facial features, realistic proportions, high quality photo, professional studio lighting, clean background, single real person, perfect human anatomy, NO anime, NO cartoon, NO illustration, NO drawing, NO manga, NO cel shading, NO stylized art, real photograph only`;
     }
     
     console.log(`🎨 [${requestId}] Full prompt:`, fullPrompt);
