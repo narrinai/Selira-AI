@@ -2653,10 +2653,13 @@
 
         // Content filter (is_unfiltered field from Airtable)
         if (currentFilters.content) {
-          if (currentFilters.content === 'censored' && character.is_unfiltered === true) {
+          // Airtable checkbox can return true, 1, "1", or other truthy values
+          const isUnfiltered = !!(character.is_unfiltered);
+
+          if (currentFilters.content === 'censored' && isUnfiltered) {
             return false; // Hide uncensored companions when censored is selected
           }
-          if (currentFilters.content === 'uncensored' && character.is_unfiltered !== true) {
+          if (currentFilters.content === 'uncensored' && !isUnfiltered) {
             return false; // Hide censored companions when uncensored is selected
           }
         }
