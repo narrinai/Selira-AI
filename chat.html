@@ -1609,6 +1609,9 @@
               <div class="action-menu-item" onclick="toggleCharacterInfo(); closeActionMenu();">
                 <span>Companion Information</span>
               </div>
+              <div class="action-menu-item" onclick="openSupportWidget(); closeActionMenu();">
+                <span>Support</span>
+              </div>
             </div>
           </div>
           <button class="action-btn" onclick="clearChat()" title="Clear Chat">
@@ -4860,6 +4863,14 @@
     function closeActionMenu() {
       const menu = document.getElementById('actionMenu');
       menu.style.display = 'none';
+    }
+
+    // Open support widget
+    function openSupportWidget() {
+      const supportBtn = document.getElementById('supportWidgetBtn');
+      if (supportBtn) {
+        supportBtn.click();
+      }
     }
 
     // Close action menu when clicking outside
