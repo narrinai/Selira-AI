@@ -204,13 +204,16 @@
       </div>
 
       <div class="form-group">
-        <label for="userEmail">User Email</label>
+        <label for="userEmail">User Email (gebruik je eigen email of test@selira.ai)</label>
         <input type="email" id="userEmail" value="test@selira.ai" placeholder="test@selira.ai">
       </div>
 
       <div class="form-group">
-        <label for="userId">User ID</label>
-        <input type="text" id="userId" value="test_user_123" placeholder="test_user_123">
+        <label for="userId">User ID (voor testen: laat default staan)</label>
+        <input type="text" id="userId" value="test_user_123" placeholder="Alleen voor testen - kan fake zijn">
+        <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">
+          💡 Voor productie wordt dit automatisch ingevuld vanuit localStorage (user_uid)
+        </div>
       </div>
 
       <button onclick="createPayment()" id="createBtn">Create Payment</button>
@@ -243,8 +246,8 @@
         </li>
         <li style="margin-bottom: 8px;">Push deze code naar je Git repository</li>
         <li style="margin-bottom: 8px;">Wacht tot Netlify de functions heeft gedeployed</li>
-        <li style="margin-bottom: 8px;">Stel in Cryptomus je webhook URL in:
-          <br><code>https://selira.ai/.netlify/functions/cryptomus-webhook</code>
+        <li style="margin-bottom: 8px;"><s>Stel in Cryptomus je webhook URL in</s> ✅ NIET NODIG!
+          <br>De webhook URL wordt automatisch meegegeven per payment
         </li>
         <li style="margin-bottom: 8px;">Open deze pagina via: <code>https://selira.ai/test-cryptomus.html</code></li>
         <li style="margin-bottom: 8px;">Test de payment flow</li>
