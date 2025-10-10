@@ -38,6 +38,7 @@
             rows="3"
             required
             maxlength="2000"
+            style="font-size: 16px;"
           ></textarea>
           <div class="support-widget-footer">
             <div class="support-char-count" id="supportCharCount">0 / 2000</div>
@@ -160,7 +161,7 @@
         background: #2a2a2a;
         border: 1px solid #333333;
         border-radius: 8px;
-        font-size: 13px;
+        font-size: 16px;
         font-family: 'Inter', sans-serif;
         color: #ffffff;
         transition: border-color 0.2s ease;
@@ -214,7 +215,7 @@
       }
 
       .support-success-message {
-        background: #10b981;
+        background: linear-gradient(135deg, #ce93d8 0%, #ba68c8 100%);
         color: white;
         padding: 10px 12px;
         border-radius: 6px;
@@ -222,7 +223,7 @@
         font-size: 13px;
         font-family: 'Inter', sans-serif;
         animation: fadeIn 0.3s ease;
-        border: 1px solid #059669;
+        border: 1px solid #ba68c8;
         margin-bottom: 10px;
       }
 
