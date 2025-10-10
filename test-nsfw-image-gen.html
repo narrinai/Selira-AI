@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Test NSFW Image Generation</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #1a1a1a;
+      color: #fff;
+    }
+    h1 {
+      color: #ce93d8;
+    }
+    .test-section {
+      margin: 30px 0;
+      padding: 20px;
+      background: #2a2a2a;
+      border-radius: 12px;
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      background: #1a1a1a;
+      border: 1px solid #444;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 14px;
+    }
+    button {
+      padding: 12px 24px;
+      background: #ce93d8;
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 16px;
+      margin-right: 10px;
+    }
+    button:hover {
+      background: #ba68c8;
+    }
+    button:disabled {
+      background: #666;
+      cursor: not-allowed;
+    }
+    #result {
+      margin-top: 20px;
+    }
+    #generatedImage {
+      max-width: 100%;
+      border-radius: 12px;
+      margin-top: 15px;
+    }
+    .loading {
+      color: #ce93d8;
+      font-style: italic;
+    }
+    .error {
+      color: #ef4444;
+    }
+    .success {
+      color: #10b981;
+    }
+    .prompt-display {
+      background: #0a0a0a;
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-size: 12px;
+      color: #888;
+      word-wrap: break-word;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔞 Test NSFW Image Generation</h1>
+  <p>Test de nieuwe NSFW image generation functie. Deze versie detecteert automatisch NSFW keywords en voegt explicitere prompts toe.</p>
+
+  <div class="test-section">
+    <h2>Test Parameters</h2>
+
+    <label>Function Version:</label>
+    <select id="functionVersion">
+      <option value="selira-generate-custom-image">Production (current)</option>
+      <option value="selira-generate-custom-image-nsfw-test" selected>NSFW Test Version</option>
+    </select>
+
+    <label>Custom Prompt:</label>
+    <textarea id="customPrompt" rows="3" placeholder="Bijvoorbeeld: topless in bedroom, wearing red lingerie, nude at the beach">wearing red lingerie in bedroom</textarea>
+
+    <label>Character Name:</label>
+    <input type="text" id="characterName" value="Selira" placeholder="Character name">
+
+    <label>Style:</label>
+    <select id="style">
+      <option value="realistic" selected>Realistic</option>
+      <option value="anime">Anime</option>
+    </select>
+
+    <label>Shot Type:</label>
+    <select id="shotType">
+      <option value="portrait">Portrait</option>
+      <option value="fullbody" selected>Full Body</option>
+    </select>
+
+    <label>Gender:</label>
+    <select id="sex">
+      <option value="female" selected>Female</option>
+      <option value="male">Male</option>
+    </select>
+
+    <label>Ethnicity:</label>
+    <select id="ethnicity">
+      <option value="white" selected>White/Caucasian</option>
+      <option value="black">Black/African</option>
+      <option value="hispanic">Hispanic/Latino</option>
+      <option value="korean">Korean</option>
+      <option value="japanese">Japanese</option>
+      <option value="chinese">Chinese</option>
+    </select>
+
+    <label>Hair Length:</label>
+    <select id="hairLength">
+      <option value="short">Short</option>
+      <option value="medium">Medium</option>
+      <option value="long" selected>Long</option>
+    </select>
+
+    <label>Hair Color:</label>
+    <select id="hairColor">
+      <option value="black">Black</option>
+      <option value="brown">Brown</option>
+      <option value="blonde" selected>Blonde</option>
+      <option value="red">Red</option>
+      <option value="auburn">Auburn</option>
+    </select>
+
+    <button id="generateBtn" onclick="generateImage()">Generate Image</button>
+    <button onclick="testMultiple()">Test Multiple Keywords</button>
+
+    <div id="result"></div>
+  </div>
+
+  <div class="test-section">
+    <h2>📋 NSFW Keywords Detection</h2>
+    <p>Keywords die NSFW enhancement activeren: <code>naked, nude, topless, lingerie, underwear, bikini, revealing, intimate, sensual, sexy, bedroom, undressed, bare, exposed</code></p>
+  </div>
+
+  <script>
+    async function generateImage() {
+      const resultDiv = document.getElementById('result');
+      const generateBtn = document.getElementById('generateBtn');
+
+      generateBtn.disabled = true;
+      resultDiv.innerHTML = '<div class="loading">⏳ Generating image... This may take 30-60 seconds</div>';
+
+      const functionVersion = document.getElementById('functionVersion').value;
+      const requestData = {
+        customPrompt: document.getElementById('customPrompt').value,
+        characterName: document.getElementById('characterName').value,
+        style: document.getElementById('style').value,
+        shotType: document.getElementById('shotType').value,
+        sex: document.getElementById('sex').value,
+        ethnicity: document.getElementById('ethnicity').value,
+        hairLength: document.getElementById('hairLength').value,
+        hairColor: document.getElementById('hairColor').value,
+        source: 'chat',
+        skipAutoDownload: true // Don't trigger auto-download during testing
+      };
+
+      console.log('🎨 Request data:', requestData);
+
+      try {
+        const response = await fetch(`/.netlify/functions/${functionVersion}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestData)
+        });
+
+        const result = await response.json();
+        console.log('📊 Response:', result);
+
+        if (result.success) {
+          resultDiv.innerHTML = `
+            <div class="success">✅ Image generated successfully!</div>
+            <img id="generatedImage" src="${result.imageUrl}" alt="Generated image">
+            <div class="prompt-display">
+              <strong>Full Prompt Used:</strong><br>
+              ${result.fullPrompt}
+            </div>
+            <div style="margin-top: 10px;">
+              <strong>Custom Prompt:</strong> ${result.customPrompt}<br>
+              <strong>Style:</strong> ${result.isAnimeStyle ? 'Anime' : 'Realistic'}<br>
+              <strong>Image URL:</strong> <a href="${result.imageUrl}" target="_blank" style="color: #ce93d8;">${result.imageUrl}</a>
+            </div>
+          `;
+        } else {
+          resultDiv.innerHTML = `<div class="error">❌ Error: ${result.error || 'Unknown error'}</div>`;
+        }
+      } catch (error) {
+        console.error('❌ Error:', error);
+        resultDiv.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+      } finally {
+        generateBtn.disabled = false;
+      }
+    }
+
+    async function testMultiple() {
+      const testPrompts = [
+        'topless in bedroom',
+        'wearing red lingerie',
+        'nude at the beach',
+        'revealing dress at party',
+        'normal casual outfit in park'
+      ];
+
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = '<div class="loading">⏳ Running multiple tests...</div>';
+
+      for (const prompt of testPrompts) {
+        document.getElementById('customPrompt').value = prompt;
+        await generateImage();
+        await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2s between tests
+      }
+    }
+
+    // Allow Enter key in textarea to submit
+    document.getElementById('customPrompt').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        generateImage();
+      }
+    });
+  </script>
+</body>
+</html>
