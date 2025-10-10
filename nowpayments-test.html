@@ -179,13 +179,12 @@
 
     <!-- Instructions -->
     <div class="test-section">
-      <h2>📋 Setup Instructies</h2>
-      <p>Om deze test werkend te krijgen heb je nodig:</p>
-      <ol style="color: var(--text-secondary); font-size: 14px; margin-left: 20px;">
-        <li style="margin-bottom: 8px;">Je <code>API Key</code> van NOWPayments dashboard</li>
-        <li style="margin-bottom: 8px;">Je <code>IPN Secret</code> voor webhooks (optioneel voor testing)</li>
-        <li style="margin-bottom: 8px;">Product IDs aanmaken in NOWPayments dashboard voor elk plan</li>
-      </ol>
+      <h2>✅ Klaar om te testen!</h2>
+      <p style="color: var(--accent); font-weight: 600;">Alle payment links zijn geconfigureerd - klik op een button om te testen!</p>
+      <p>De buttons openen direct de NOWPayments checkout pagina waar je kunt betalen met verschillende cryptocurrencies.</p>
+      <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 8px; padding: 12px; margin-top: 12px;">
+        <p style="margin: 0; font-size: 13px;"><strong>💡 Tip:</strong> Voor een testbetaling kun je een kleine cryptocurrency betaling doen om de flow te testen.</p>
+      </div>
     </div>
 
     <!-- Payment Options -->
@@ -245,15 +244,15 @@
 
     <!-- Info Box -->
     <div class="info-box">
-      <h4>ℹ️ Volgende Stappen</h4>
-      <p><strong>1. NOWPayments API Key invullen:</strong> Scroll naar beneden in de console (F12) en vul je API key in bij <code>NOWPAYMENTS_API_KEY</code></p>
-      <p><strong>2. Payment Link testen:</strong> Momenteel gebruikt dit een demo payment link. Je moet in je NOWPayments dashboard:</p>
-      <ul style="margin-left: 20px; margin-top: 8px;">
-        <li>Een payment link maken voor elk plan (Light $5.99, Basic $9.99, Premium $19.99)</li>
-        <li>De URLs vervangen in de JavaScript hieronder</li>
-        <li>Of de NOWPayments API gebruiken om dynamisch payments aan te maken</li>
+      <h4>📋 Volgende Stappen voor Productie</h4>
+      <p><strong>1. Integratie in pricing.html:</strong> Voeg crypto payment buttons toe onder de bestaande Stripe buttons</p>
+      <p style="margin-top: 8px;"><strong>2. Webhook Setup:</strong> Maak een Netlify Function die NOWPayments IPN (Instant Payment Notifications) ontvangt om:</p>
+      <ul style="margin-left: 20px; margin-top: 8px; font-size: 12px;">
+        <li>Payment status te verifiëren (paid/confirmed)</li>
+        <li>Image credits toe te voegen aan de gebruiker in Airtable</li>
+        <li>Gebruiker een bevestigingsmail te sturen</li>
       </ul>
-      <p style="margin-top: 12px;"><strong>3. Webhook Setup:</strong> Voor productie moet je een webhook endpoint maken die NOWPayments notificaties ontvangt om subscriptions te activeren</p>
+      <p style="margin-top: 12px;"><strong>3. IPN Secret:</strong> Sla je NOWPayments IPN Secret op in Netlify environment variables voor webhook verificatie</p>
     </div>
   </div>
 
