@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Generation Test - Selira AI</title>
+  <style>
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #1a1a1a;
+      --bg-tertiary: #2a2a2a;
+      --text-primary: #ffffff;
+      --text-secondary: #b3b3b3;
+      --text-muted: #888888;
+      --accent: #ce93d8;
+      --accent-hover: #ba68c8;
+      --border: #333333;
+      --success: #10b981;
+      --error: #ef4444;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      padding: 40px 20px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 32px;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      margin-bottom: 40px;
+      font-size: 14px;
+    }
+
+    .card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    input[type="text"],
+    input[type="url"],
+    input[type="range"] {
+      width: 100%;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      color: var(--text-primary);
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    input[type="text"]:focus,
+    input[type="url"]:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .slider-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .slider-value {
+      min-width: 50px;
+      text-align: center;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    input[type="range"] {
+      padding: 0;
+      height: 8px;
+      background: var(--bg-tertiary);
+      border-radius: 4px;
+      outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      background: var(--accent);
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      background: var(--accent);
+      border-radius: 50%;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 14px 28px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      transition: opacity 0.2s ease;
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .preview-area {
+      background: var(--bg-tertiary);
+      border-radius: 12px;
+      padding: 20px;
+      min-height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .placeholder {
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .loading {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .loading.show {
+      display: flex;
+    }
+
+    .spinner {
+      width: 60px;
+      height: 60px;
+      border: 4px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      color: var(--text-secondary);
+      text-align: center;
+    }
+
+    .video-container {
+      display: none;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .video-container.show {
+      display: block;
+    }
+
+    video {
+      width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    .video-actions {
+      margin-top: 16px;
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-secondary {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      flex: 1;
+    }
+
+    .alert {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+
+    .alert-error {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid var(--error);
+      color: var(--error);
+    }
+
+    .alert-success {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid var(--success);
+      color: var(--success);
+    }
+
+    .info-box {
+      background: rgba(206, 147, 216, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 20px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .info-box strong {
+      color: var(--accent);
+    }
+
+    .example-avatars {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .example-avatar {
+      cursor: pointer;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 2px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .example-avatar:hover {
+      border-color: var(--accent);
+      transform: scale(1.05);
+    }
+
+    .example-avatar img {
+      width: 100%;
+      height: 100px;
+      object-fit: cover;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎬 Video Generation Test</h1>
+    <p class="subtitle">Test Stable Video Diffusion with companion avatars</p>
+
+    <div id="alertContainer"></div>
+
+    <div class="info-box">
+      <strong>How it works:</strong> This converts a static image into a 4-5 second animated video using Stable Video Diffusion.
+      Generation takes ~30-45 seconds. Uses image-to-video, so character consistency is maintained.
+    </div>
+
+    <div class="card">
+      <h2 style="margin-bottom: 20px; font-size: 18px;">Input Settings</h2>
+
+      <div class="form-group">
+        <label for="avatarUrl">Avatar URL</label>
+        <input
+          type="url"
+          id="avatarUrl"
+          placeholder="https://selira.ai/avatars/companion-avatar.webp"
+          value=""
+        >
+      </div>
+
+      <div class="form-group">
+        <label>Example Avatars (click to use)</label>
+        <div class="example-avatars" id="exampleAvatars">
+          <!-- Will be populated with example avatars -->
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="motionBucket">Motion Intensity: <span class="slider-value" id="motionValue">127</span></label>
+        <div class="slider-container">
+          <input
+            type="range"
+            id="motionBucket"
+            min="1"
+            max="255"
+            value="127"
+          >
+        </div>
+        <small style="color: var(--text-muted); font-size: 12px;">
+          Lower = subtle movement, Higher = more dramatic movement
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label for="fps">Frames Per Second: <span class="slider-value" id="fpsValue">6</span></label>
+        <div class="slider-container">
+          <input
+            type="range"
+            id="fps"
+            min="5"
+            max="30"
+            value="6"
+          >
+        </div>
+        <small style="color: var(--text-muted); font-size: 12px;">
+          6 FPS = smooth, cinematic | 24+ FPS = realistic, fast
+        </small>
+      </div>
+
+      <button class="btn" id="generateBtn" onclick="generateVideo()">
+        🎬 Generate Video
+      </button>
+    </div>
+
+    <div class="card">
+      <h2 style="margin-bottom: 20px; font-size: 18px;">Preview</h2>
+
+      <div class="preview-area" id="previewArea">
+        <div id="placeholder" class="placeholder">
+          <p>Your generated video will appear here</p>
+          <p style="font-size: 12px; margin-top: 8px;">~30-45 seconds generation time</p>
+        </div>
+
+        <div id="loading" class="loading">
+          <div class="spinner"></div>
+          <div class="loading-text">
+            <strong>Generating your video...</strong>
+            <p style="font-size: 13px; margin-top: 8px;">This may take 30-45 seconds</p>
+            <p style="font-size: 12px; margin-top: 4px; color: var(--text-muted);" id="progressText">Starting...</p>
+          </div>
+        </div>
+
+        <div id="videoContainer" class="video-container">
+          <video id="generatedVideo" controls autoplay loop muted>
+            <source src="" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+          <div class="video-actions">
+            <button class="btn btn-secondary" onclick="downloadVideo()">
+              ⬇️ Download
+            </button>
+            <button class="btn btn-secondary" onclick="resetTest()">
+              🔄 Generate Another
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let generatedVideoUrl = null;
+
+    // Update slider values
+    document.getElementById('motionBucket').addEventListener('input', (e) => {
+      document.getElementById('motionValue').textContent = e.target.value;
+    });
+
+    document.getElementById('fps').addEventListener('input', (e) => {
+      document.getElementById('fpsValue').textContent = e.target.value;
+    });
+
+    // Load example avatars from Airtable
+    async function loadExampleAvatars() {
+      try {
+        const response = await fetch('/.netlify/functions/characters');
+        const data = await response.json();
+
+        // Get first 6 companions with avatars
+        const companions = data.characters.slice(0, 6);
+        const container = document.getElementById('exampleAvatars');
+
+        companions.forEach(companion => {
+          if (companion.avatar) {
+            const div = document.createElement('div');
+            div.className = 'example-avatar';
+            div.onclick = () => {
+              document.getElementById('avatarUrl').value = companion.avatar;
+              showAlert('Avatar loaded: ' + companion.name, 'success');
+            };
+
+            const img = document.createElement('img');
+            img.src = companion.avatar;
+            img.alt = companion.name;
+            img.title = 'Click to use ' + companion.name;
+
+            div.appendChild(img);
+            container.appendChild(div);
+          }
+        });
+      } catch (error) {
+        console.error('Failed to load example avatars:', error);
+      }
+    }
+
+    async function generateVideo() {
+      const avatarUrl = document.getElementById('avatarUrl').value.trim();
+      const motionBucket = parseInt(document.getElementById('motionBucket').value);
+      const fps = parseInt(document.getElementById('fps').value);
+
+      if (!avatarUrl) {
+        showAlert('Please enter an avatar URL', 'error');
+        return;
+      }
+
+      // Hide placeholder, show loading
+      document.getElementById('placeholder').style.display = 'none';
+      document.getElementById('videoContainer').classList.remove('show');
+      document.getElementById('loading').classList.add('show');
+      document.getElementById('generateBtn').disabled = true;
+
+      try {
+        console.log('🎬 Starting video generation with:', {
+          avatarUrl,
+          motionBucket,
+          fps
+        });
+
+        updateProgress('Calling video generation API...');
+
+        const response = await fetch('/.netlify/functions/selira-generate-video', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            input_image: avatarUrl,
+            motion_bucket_id: motionBucket,
+            frames_per_second: fps
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || data.details || 'Video generation failed');
+        }
+
+        console.log('✅ Video generated:', data);
+
+        generatedVideoUrl = data.videoUrl;
+
+        // Show video
+        document.getElementById('loading').classList.remove('show');
+        document.getElementById('generatedVideo').src = generatedVideoUrl;
+        document.getElementById('videoContainer').classList.add('show');
+
+        showAlert('Video generated successfully! 🎉', 'success');
+
+      } catch (error) {
+        console.error('❌ Generation error:', error);
+        document.getElementById('loading').classList.remove('show');
+        document.getElementById('placeholder').style.display = 'block';
+        showAlert(error.message || 'Failed to generate video. Please try again.', 'error');
+      } finally {
+        document.getElementById('generateBtn').disabled = false;
+      }
+    }
+
+    function updateProgress(text) {
+      document.getElementById('progressText').textContent = text;
+    }
+
+    function downloadVideo() {
+      if (!generatedVideoUrl) return;
+
+      const a = document.createElement('a');
+      a.href = generatedVideoUrl;
+      a.download = `selira-video-${Date.now()}.mp4`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    function resetTest() {
+      document.getElementById('videoContainer').classList.remove('show');
+      document.getElementById('placeholder').style.display = 'block';
+      generatedVideoUrl = null;
+    }
+
+    function showAlert(message, type) {
+      const container = document.getElementById('alertContainer');
+      const alert = document.createElement('div');
+      alert.className = `alert alert-${type}`;
+      alert.textContent = message;
+      container.appendChild(alert);
+
+      setTimeout(() => {
+        alert.remove();
+      }, 5000);
+    }
+
+    // Initialize
+    loadExampleAvatars();
+  </script>
+</body>
+</html>
