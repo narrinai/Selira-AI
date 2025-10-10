@@ -69,8 +69,11 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   // Build appearance description
   const appearance = [genderDesc, ethnicityDesc, hairColorDesc, hairLengthDesc].filter(Boolean).join(', ');
 
-  // Remove clothing keywords from custom prompt
+  // Remove clothing keywords and Promptchan banned words from custom prompt
+  // Promptchan bans: "fellatio", "POV" (in sexual context), possibly others
   let cleanedPrompt = customPrompt
+    .replace(/\bfellatio\b/gi, 'oral') // Replace fellatio
+    .replace(/\bPOV\b/gi, 'perspective') // Replace POV
     .replace(/wearing\s+[^,]+,?/gi, '') // Remove "wearing X" phrases
     .replace(/\b(dress|shirt|top|bra|panties|lingerie|bikini|clothes|clothing|outfit|attire|uniform|robe|towel|underwear|shorts|pants|skirt|jeans|suit|blazer|jacket)\b/gi, '') // Remove clothing words
     .replace(/,\s*,/g, ',') // Clean up double commas
@@ -173,7 +176,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     prompt: enhancedPrompt,
     negative_prompt: negativePrompt, // What to avoid
     style: promptchanStyle,
-    quality: 'Max', // Max quality - faster than Extreme (15-20 sec instead of 30-60 sec)
+    quality: 'Extreme', // Highest quality (works reliably)
     image_size: '768x512', // Landscape format
     creativity: randomCreativity, // Random creativity for variety (70-90)
     seed: -1, // Random seed for variety
