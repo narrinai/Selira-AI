@@ -1374,7 +1374,8 @@
             hairColor: selectedCompanion.hairColor || 'brown',
             email: userData.email,
             auth0_id: userData.sub,
-            source: 'image-generator'
+            source: 'image-generator',
+            uncensored: true // Always use Promptchan for image generator page
           })
         });
 
