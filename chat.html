@@ -1654,9 +1654,9 @@
           <button class="request-image-btn" onclick="requestImage()" title="Get Image Suggestions">
             + Image Gen
           </button>
-          <div class="unfiltered-toggle active" id="unfilteredToggle" onclick="toggleUnfilteredMode()" title="Toggle Censorship Mode">
+          <div class="unfiltered-toggle active" id="unfilteredToggle" onclick="toggleUnfilteredMode()" title="Toggle Censorship Mode for Chat and Images">
             <div class="toggle-switch"></div>
-            <span class="toggle-label" id="toggleText">Uncensored</span>
+            <span class="toggle-label" id="toggleText">Uncensored Chat/Images</span>
           </div>
           <div class="image-credits-display" id="imageCreditsDisplay" style="display: none;">
             <span class="credits-icon">💳</span>
@@ -1858,32 +1858,32 @@
       // Update UI
       if (newState) {
         toggle.classList.add('active');
-        text.textContent = 'Uncensored';
-        console.log('🔓 Unfiltered mode ENABLED - using uncensored model');
+        text.textContent = 'Uncensored Chat/Images';
+        console.log('🔓 Unfiltered mode ENABLED - using uncensored models for chat and images');
       } else {
         toggle.classList.remove('active');
-        text.textContent = 'Censored';
-        console.log('🔒 Unfiltered mode DISABLED - using standard model');
+        text.textContent = 'Censored Chat/Images';
+        console.log('🔒 Unfiltered mode DISABLED - using censored models for chat and images');
       }
     }
 
     function loadUnfilteredToggleState() {
-      // Migration: Reset to censored default if user hasn't explicitly set it since 2025-10-08
+      // Migration: Set to uncensored default if user hasn't explicitly set it since 2025-10-10
       const settingsVersion = localStorage.getItem('unfilteredMode_version');
-      if (!settingsVersion || settingsVersion !== '2025-10-08') {
-        // Reset to new default (censored)
-        localStorage.setItem('unfilteredMode', 'false');
-        localStorage.setItem('unfilteredMode_version', '2025-10-08');
-        console.log('🔄 Migrated unfiltered mode setting to new default (censored)');
+      if (!settingsVersion || settingsVersion !== '2025-10-10') {
+        // Set new default (uncensored)
+        localStorage.setItem('unfilteredMode', 'true');
+        localStorage.setItem('unfilteredMode_version', '2025-10-10');
+        console.log('🔄 Migrated unfiltered mode setting to new default (uncensored)');
       }
 
-      // Default to censored if not set
+      // Default to uncensored if not set
       const storedValue = localStorage.getItem('unfilteredMode');
-      const isUnfiltered = storedValue === null ? false : storedValue === 'true';
+      const isUnfiltered = storedValue === null ? true : storedValue === 'true';
 
       // Set default value if not exists
       if (storedValue === null) {
-        localStorage.setItem('unfilteredMode', 'false');
+        localStorage.setItem('unfilteredMode', 'true');
       }
 
       const toggle = document.getElementById('unfilteredToggle');
@@ -1891,11 +1891,11 @@
 
       if (isUnfiltered) {
         toggle.classList.add('active');
-        text.textContent = 'Uncensored';
+        text.textContent = 'Uncensored Chat/Images';
         console.log('🔓 Unfiltered mode loaded as ENABLED');
       } else {
         toggle.classList.remove('active');
-        text.textContent = 'Censored';
+        text.textContent = 'Censored Chat/Images';
         console.log('🔒 Unfiltered mode loaded as DISABLED (censored)');
       }
     }
@@ -1952,10 +1952,45 @@
       const artStyle = character.companion_type || character.Companion_Type || 'realistic';
       const isMale = (character.sex || character.Sex || character.Gender || '').toLowerCase() === 'male';
 
+      // Check if uncensored mode is enabled
+      const isUncensored = localStorage.getItem('unfilteredMode') === 'true';
+
+      console.log(`🎨 Generating image suggestions - Uncensored mode: ${isUncensored ? 'ON 🔓' : 'OFF 🔒'}`);
+
       // Note: Traits are NOT added to user-visible prompts
       // They will be added internally when sending to the backend
 
-      // Seductive and suggestive scenario prompts (without trait string)
+      // UNCENSORED NSFW scenario prompts
+      const uncensoredScenarios = isMale ? [
+        `Send me a picture of yourself completely naked, full frontal nudity, showing your erect cock`,
+        `Send me a picture of yourself masturbating, stroking your hard dick with an intense look`,
+        `Send me a picture of yourself nude lying on a bed with your dick visible, ready for sex`,
+        `Send me a picture of yourself naked from behind showing your ass, looking back seductively`,
+        `Send me a picture of yourself fully nude in the shower, dick hard and visible`,
+        `Send me a picture of yourself naked and aroused, touching your body with both hands`,
+        `Send me a picture of yourself completely undressed with legs spread, cock fully visible`,
+        `Send me a picture of yourself nude kneeling with your erection showing`,
+        `Send me a picture of yourself naked lying down, dick hard and ready`,
+        `Send me a picture of yourself fully naked standing, showing your full body and erect cock`
+      ] : [
+        `Send me a picture of yourself completely naked, full frontal nudity, showing your pussy and breasts`,
+        `Send me a picture of yourself masturbating, fingering your pussy with an orgasm face`,
+        `Send me a picture of yourself nude lying on a bed with legs spread, pussy visible and wet`,
+        `Send me a picture of yourself naked from behind showing your ass and pussy, looking back seductively`,
+        `Send me a picture of yourself fully nude in the shower, touching your breasts and pussy`,
+        `Send me a picture of yourself completely naked spreading your pussy lips with both hands`,
+        `Send me a picture of yourself topless with your tits out, playing with your nipples`,
+        `Send me a picture of yourself fully nude on your knees, tits and pussy visible`,
+        `Send me a picture of yourself naked lying down with legs open, showing your wet pussy`,
+        `Send me a picture of yourself completely undressed, showing everything - tits, pussy, ass`,
+        `Send me a picture of yourself nude doggy style position, pussy and ass exposed`,
+        `Send me a picture of yourself naked sitting and spreading your legs wide, pussy dripping`,
+        `Send me a picture of yourself fully nude squatting with pussy lips spread open`,
+        `Send me a picture of yourself topless squeezing your tits together with a slutty expression`,
+        `Send me a picture of yourself naked touching your clit, face showing pleasure`
+      ];
+
+      // Seductive and suggestive scenario prompts (CENSORED version - current content)
       const baseScenarios = isMale ? [
         `Send me a picture of yourself shirtless, showing off your muscular physique with a confident look`,
         `Send me a picture of yourself in fitted underwear, posing seductively with an intense gaze`,
@@ -2131,15 +2166,17 @@
         'realistic': ''
       };
 
-      // Build suggestions array
-      let suggestions = [...baseScenarios];
+      // Build suggestions array - use uncensored scenarios if mode is enabled
+      let suggestions = isUncensored ? [...uncensoredScenarios] : [...baseScenarios];
 
-      // Add tag-specific suggestions
-      tags.forEach(tag => {
-        if (tagScenarios[tag]) {
-          suggestions.push(...tagScenarios[tag]);
-        }
-      });
+      // Add tag-specific suggestions (only for censored mode, uncensored uses base only)
+      if (!isUncensored) {
+        tags.forEach(tag => {
+          if (tagScenarios[tag]) {
+            suggestions.push(...tagScenarios[tag]);
+          }
+        });
+      }
 
       // Define open-ended prompt BEFORE adding style modifiers
       const openEndedPromptBase = 'Send me a picture of';
@@ -4555,6 +4592,9 @@
         const userEmail = user?.email;
         const userAuth0Id = user?.id || user?.sub || user?.auth0_id; // Supabase uses .id, Auth0 uses .sub
 
+        // Get uncensored mode state
+        const unfilteredMode = localStorage.getItem('unfilteredMode') === 'true';
+
         const response = await fetch('/.netlify/functions/selira-generate-custom-image', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -4570,7 +4610,8 @@
             hairColor: characterHairColor,
             email: userEmail,
             auth0_id: userAuth0Id,
-            source: 'chat' // Mark as chat-generated image for usage tracking
+            source: 'chat', // Mark as chat-generated image for usage tracking
+            uncensored: unfilteredMode // Use Promptchan if true, Replicate if false
           })
         });
         

@@ -1,11 +1,161 @@
 // Custom image generation for chat - accepts user prompts
-// Based on Flux Schnell for fast generation
+// Routes between Replicate (censored) and Promptchan (uncensored) based on user preference
+
+const fetch = require('node-fetch');
 
 // Track recent requests to prevent rapid-fire calls
 const recentRequests = new Map();
 const REQUEST_COOLDOWN_MS = 1000; // 1 second cooldown between requests
 let globalRequestCount = 0; // Track total requests in this instance
 let activeReplicateRequests = 0; // Track concurrent Replicate API calls
+
+// PROMPTCHAN IMAGE GENERATION FUNCTION
+async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0_id) {
+  const { customPrompt, characterName, sex, ethnicity, hairLength, hairColor, style, source } = body;
+
+  console.log(`🎨 [${requestId}] Generating with Promptchan API`);
+
+  const PROMPTCHAN_API_KEY = process.env.PROMPTCHAN_API_KEY_SELIRA;
+
+  if (!PROMPTCHAN_API_KEY) {
+    console.error(`❌ [${requestId}] Promptchan API key not configured`);
+    return {
+      statusCode: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ error: 'Promptchan API not configured' })
+    };
+  }
+
+  // Build enhanced NSFW prompt based on character traits
+  const genderDesc = sex === 'male' ? 'handsome man' : 'beautiful woman';
+
+  const ethnicityMap = {
+    'white': 'Caucasian',
+    'black': 'African American',
+    'indian': 'South Asian',
+    'middle-east': 'Middle Eastern',
+    'hispanic': 'Hispanic',
+    'korean': 'Korean',
+    'chinese': 'Chinese',
+    'japanese': 'Japanese',
+    'vietnamese': 'Vietnamese'
+  };
+
+  const hairLengthMap = {
+    'bald': 'bald',
+    'short': 'short hair',
+    'medium': 'medium length hair',
+    'long': 'long hair'
+  };
+
+  const hairColorMap = {
+    'brown': 'brown hair',
+    'black': 'black hair',
+    'blonde': 'blonde hair',
+    'red': 'red hair',
+    'auburn': 'auburn hair',
+    'gray': 'gray hair',
+    'white': 'white hair',
+    'purple': 'purple hair',
+    'pink': 'pink hair',
+    'blue': 'blue hair',
+    'green': 'green hair'
+  };
+
+  const ethnicityDesc = ethnicityMap[ethnicity] || '';
+  const hairLengthDesc = hairLength === 'bald' ? 'bald' : hairLengthMap[hairLength] || 'styled hair';
+  const hairColorDesc = hairLength === 'bald' ? '' : (hairColorMap[hairColor] || 'brown hair');
+
+  // Build appearance description
+  const appearance = [genderDesc, ethnicityDesc, hairColorDesc, hairLengthDesc].filter(Boolean).join(', ');
+
+  // Combine with user prompt
+  const enhancedPrompt = `${appearance}, ${customPrompt}`;
+
+  console.log(`✨ [${requestId}] Promptchan enhanced prompt:`, enhancedPrompt);
+
+  // Determine Promptchan style based on our style parameter
+  let promptchanStyle = 'Photo XL+'; // Default realistic
+  if (style === 'anime' || style === 'animated') {
+    promptchanStyle = 'Anime XL+';
+  }
+
+  // Build Promptchan API request
+  const promptchanRequest = {
+    prompt: enhancedPrompt,
+    style: promptchanStyle,
+    quality: 'Ultra', // Standard quality (1 Gem)
+    image_size: '768x512', // Landscape format
+    creativity: 50,
+    seed: -1, // Random
+    filter: 'Default',
+    emotion: 'Default'
+  };
+
+  console.log(`📤 [${requestId}] Promptchan request:`, promptchanRequest);
+
+  try {
+    const response = await fetch('https://prod.aicloudnetservices.com/api/external/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': PROMPTCHAN_API_KEY
+      },
+      body: JSON.stringify(promptchanRequest)
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`❌ [${requestId}] Promptchan API error:`, errorText);
+      throw new Error(`Promptchan API error: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log(`✅ [${requestId}] Promptchan image generated, gems used:`, result.gems);
+
+    // Increment usage counter for chat and image-generator
+    if ((source === 'chat' || source === 'image-generator') && (email || auth0_id)) {
+      console.log(`📈 [${requestId}] Incrementing usage counter for ${source} (Promptchan)`);
+      try {
+        const incrementResponse = await fetch(`${process.env.NETLIFY_FUNCTIONS_URL || 'https://selira.ai/.netlify/functions'}/selira-increment-image-usage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: auth0_id })
+        });
+
+        if (incrementResponse.ok) {
+          console.log(`✅ [${requestId}] Usage incremented successfully (Promptchan)`);
+        }
+      } catch (err) {
+        console.error(`❌ [${requestId}] Error incrementing usage:`, err.message);
+      }
+    }
+
+    return {
+      statusCode: 200,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        success: true,
+        imageUrl: result.image,
+        fullPrompt: enhancedPrompt,
+        customPrompt: customPrompt,
+        isAnimeStyle: style === 'anime' || style === 'animated',
+        provider: 'promptchan'
+      })
+    };
+
+  } catch (error) {
+    console.error(`❌ [${requestId}] Promptchan generation error:`, error);
+    return {
+      statusCode: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        error: 'Promptchan image generation failed',
+        details: error.message
+      })
+    };
+  }
+}
 
 exports.handler = async (event, context) => {
   const requestId = Math.random().toString(36).substring(7);
@@ -125,8 +275,8 @@ exports.handler = async (event, context) => {
       };
     }
 
-    const { customPrompt, characterName, category, style, shotType, sex, ethnicity, hairLength, hairColor, email, auth0_id, source, skipAutoDownload } = body;
-    
+    const { customPrompt, characterName, category, style, shotType, sex, ethnicity, hairLength, hairColor, email, auth0_id, source, skipAutoDownload, uncensored } = body;
+
     console.log(`📋 [${requestId}] Received:`, {
       customPrompt,
       characterName,
@@ -138,9 +288,19 @@ exports.handler = async (event, context) => {
       hairLength,
       hairColor,
       source,
+      uncensored,
       email,
       auth0_id: auth0_id ? auth0_id.substring(0, 15) + '...' : 'none'
     });
+
+    // ROUTE TO PROMPTCHAN FOR UNCENSORED IMAGES
+    if (uncensored === true) {
+      console.log(`🔓 [${requestId}] Uncensored mode - routing to Promptchan API`);
+      return await generateWithPromptchan(body, requestId, corsHeaders, email, auth0_id);
+    }
+
+    // Otherwise continue with Replicate (censored)
+    console.log(`🔒 [${requestId}] Censored mode - using Replicate API`);
     
     if (!customPrompt) {
       return {
