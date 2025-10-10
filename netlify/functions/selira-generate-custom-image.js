@@ -14,6 +14,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   const { customPrompt, characterName, sex, ethnicity, hairLength, hairColor, style, source } = body;
 
   console.log(`🎨 [${requestId}] Generating with Promptchan API`);
+  console.log(`🎨 [${requestId}] Style parameter received:`, style);
 
   const PROMPTCHAN_API_KEY = process.env.PROMPTCHAN_API_KEY_SELIRA;
 
@@ -125,6 +126,9 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   if (style === 'anime' || style === 'animated') {
     promptchanStyle = 'Anime XL+';
     promptchanFilter = 'Anime Studio';
+    console.log(`🎌 [${requestId}] Using ANIME style for Promptchan`);
+  } else {
+    console.log(`📸 [${requestId}] Using REALISTIC style for Promptchan`);
   }
 
   // Add negative prompt to reduce unwanted elements
