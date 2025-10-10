@@ -779,6 +779,18 @@
         display: none;
       }
     }
+
+    /* Gender filter button hover states */
+    .gender-filter-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .gender-filter-btn.active {
+      background: var(--accent) !important;
+      border: none !important;
+      color: white !important;
+    }
   </style>
 
   <!-- Meta Pixel Code -->
@@ -919,6 +931,14 @@
           <div style="max-width: 600px; width: 100%; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 30px;">
             <div style="margin-bottom: 28px;">
               <label style="display: block; font-weight: 600; margin-bottom: 10px; font-size: 15px;">Select Companion</label>
+
+              <!-- Gender Filter -->
+              <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+                <button id="filterAll" class="gender-filter-btn active" onclick="filterByGender('all')" style="flex: 1; padding: 8px 16px; background: var(--accent); border: none; border-radius: var(--radius-sm); color: white; font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.2s;">All</button>
+                <button id="filterFemale" class="gender-filter-btn" onclick="filterByGender('Female')" style="flex: 1; padding: 8px 16px; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary); font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.2s;">Female</button>
+                <button id="filterMale" class="gender-filter-btn" onclick="filterByGender('Male')" style="flex: 1; padding: 8px 16px; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary); font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.2s;">Male</button>
+              </div>
+
               <div style="position: relative;">
                 <button id="companionPrev" style="position: absolute; left: -16px; top: 50%; transform: translateY(-50%); background: var(--accent); border: none; border-radius: var(--radius-sm); width: 40px; height: 40px; cursor: pointer; z-index: 2; color: white; font-size: 20px; font-weight: 700; display: none; box-shadow: 0 4px 12px rgba(206, 147, 216, 0.3); transition: all 0.2s;">‹</button>
                 <div id="companionCarousel" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; overflow: hidden;"></div>
@@ -1014,6 +1034,7 @@
     let userData = null;
     let selectedCompanion = null;
     let companions = [];
+    let allCompanions = []; // Store all companions before filtering
     let selectedPose = null;
     let selectedOutfit = null;
     let generatedImageUrl = null;
@@ -1021,6 +1042,7 @@
     // Companion carousel state
     let currentCarouselPage = 0;
     const companionsPerPage = 3;
+    let currentGenderFilter = 'all'; // Track current gender filter
 
     // Pose options
     const poses = [
@@ -1123,7 +1145,7 @@
         }
         const data = await response.json();
         // Map to consistent format (API uses capital Name, Slug)
-        companions = (data.characters || [])
+        allCompanions = (data.characters || [])
           .filter(c => c.Slug && c.Name)
           .map(c => ({
             slug: c.Slug,
@@ -1135,9 +1157,11 @@
             hairLength: c.hair_length,
             hairColor: c.hair_color
           }));
-        console.log(`✅ Loaded ${companions.length} companions`);
-        // Shuffle companions array on initial load
-        companions = companions.sort(() => Math.random() - 0.5);
+        console.log(`✅ Loaded ${allCompanions.length} companions`);
+        // Shuffle all companions array on initial load
+        allCompanions = allCompanions.sort(() => Math.random() - 0.5);
+        // Set companions to all companions initially
+        companions = [...allCompanions];
         renderCarousel();
         updateCarouselNav();
       } catch (error) {
@@ -1200,6 +1224,44 @@
     function selectCompanion(companion) {
       selectedCompanion = companion;
       renderCarousel();
+    }
+
+    // Filter companions by gender
+    function filterByGender(gender) {
+      currentGenderFilter = gender;
+      currentCarouselPage = 0; // Reset to first page
+
+      // Update button styles
+      document.querySelectorAll('.gender-filter-btn').forEach(btn => {
+        btn.style.background = 'var(--bg-tertiary)';
+        btn.style.border = '1px solid var(--border)';
+        btn.style.color = 'var(--text-primary)';
+      });
+
+      const activeBtn = gender === 'all' ? 'filterAll' : (gender === 'Female' ? 'filterFemale' : 'filterMale');
+      const activeBtnEl = document.getElementById(activeBtn);
+      if (activeBtnEl) {
+        activeBtnEl.style.background = 'var(--accent)';
+        activeBtnEl.style.border = 'none';
+        activeBtnEl.style.color = 'white';
+      }
+
+      // Filter companions
+      if (gender === 'all') {
+        companions = [...allCompanions];
+      } else {
+        companions = allCompanions.filter(c => c.sex === gender);
+      }
+
+      console.log(`🔍 Filtered to ${companions.length} ${gender === 'all' ? '' : gender} companions`);
+
+      // Clear selected companion if it's not in the filtered list
+      if (selectedCompanion && !companions.find(c => c.slug === selectedCompanion.slug)) {
+        selectedCompanion = null;
+      }
+
+      renderCarousel();
+      updateCarouselNav();
     }
 
     function renderPoseOptions() {
