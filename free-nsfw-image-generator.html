@@ -1158,6 +1158,11 @@
             hairColor: c.hair_color
           }));
         console.log(`✅ Loaded ${allCompanions.length} companions`);
+
+        // Debug: Log unique sex values to see what we have
+        const uniqueSexValues = [...new Set(allCompanions.map(c => c.sex))];
+        console.log('🔍 Unique sex values in companions:', uniqueSexValues);
+
         // Shuffle all companions array on initial load
         allCompanions = allCompanions.sort(() => Math.random() - 0.5);
         // Set companions to all companions initially
@@ -1246,14 +1251,18 @@
         activeBtnEl.style.color = 'white';
       }
 
-      // Filter companions
+      // Filter companions (case-insensitive)
       if (gender === 'all') {
         companions = [...allCompanions];
       } else {
-        companions = allCompanions.filter(c => c.sex === gender);
+        companions = allCompanions.filter(c => {
+          const companionSex = (c.sex || '').toLowerCase();
+          const filterGender = gender.toLowerCase();
+          return companionSex === filterGender;
+        });
       }
 
-      console.log(`🔍 Filtered to ${companions.length} ${gender === 'all' ? '' : gender} companions`);
+      console.log(`🔍 Filtered to ${companions.length} ${gender === 'all' ? '' : gender} companions (from ${allCompanions.length} total)`);
 
       // Clear selected companion if it's not in the filtered list
       if (selectedCompanion && !companions.find(c => c.slug === selectedCompanion.slug)) {
