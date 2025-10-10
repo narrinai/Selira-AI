@@ -66,139 +66,90 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   const hairLengthDesc = hairLength === 'bald' ? 'bald' : hairLengthMap[hairLength] || 'styled hair';
   const hairColorDesc = hairLength === 'bald' ? '' : (hairColorMap[hairColor] || 'brown hair');
 
-  // Build appearance description
+  // Build appearance description similar to Replicate censored version
   const appearance = [genderDesc, ethnicityDesc, hairColorDesc, hairLengthDesc].filter(Boolean).join(', ');
 
-  // Remove clothing keywords and Promptchan banned words from custom prompt
-  // Promptchan bans: "fellatio", "POV" (in sexual context), possibly others
-  let cleanedPrompt = customPrompt
-    .replace(/\bfellatio\b/gi, 'oral') // Replace fellatio
-    .replace(/\bPOV\b/gi, 'perspective') // Replace POV
-    .replace(/wearing\s+[^,]+,?/gi, '') // Remove "wearing X" phrases
-    .replace(/\b(dress|shirt|top|bra|panties|lingerie|bikini|clothes|clothing|outfit|attire|uniform|robe|towel|underwear|shorts|pants|skirt|jeans|suit|blazer|jacket)\b/gi, '') // Remove clothing words
-    .replace(/,\s*,/g, ',') // Clean up double commas
-    .replace(/^\s*,\s*|\s*,\s*$/g, '') // Remove leading/trailing commas
-    .trim();
+  // Use same prompt processing as censored/Replicate version
+  const sanitizedPrompt = customPrompt.trim();
 
-  // Add variety keywords for more diverse images
-  const varietyPoses = [
-    'lying on bed with legs spread',
-    'on hands and knees looking back',
-    'sitting with legs open',
-    'standing spreading pussy',
-    'squatting showing everything',
-    'bent over exposing ass and pussy',
-    'lying back touching herself',
-    'on side with leg raised',
-    'kneeling with chest pushed forward'
-  ];
-  const randomPose = varietyPoses[Math.floor(Math.random() * varietyPoses.length)];
+  // Smart context enhancement with random diverse backgrounds (same as censored)
+  let contextualEnhancement = '';
+  const promptLower = customPrompt.toLowerCase();
 
-  const varietySettings = [
-    'luxury bedroom with silk sheets',
-    'modern bedroom with warm lighting',
-    'hotel suite with city view',
-    'cozy bedroom with soft pillows',
-    'elegant bedroom with mirrors'
-  ];
-  const randomSetting = varietySettings[Math.floor(Math.random() * varietySettings.length)];
+  // Location contexts - check if keywords exist in prompt
+  if (promptLower.includes('beach')) {
+    contextualEnhancement += ', sunny day, ocean background, vacation vibes, tropical setting';
+  } else if (promptLower.includes('bedroom') || promptLower.includes('bed')) {
+    contextualEnhancement += ', cozy interior, soft lighting, intimate setting';
+  } else if (promptLower.includes('office') || promptLower.includes('work')) {
+    contextualEnhancement += ', professional environment, modern office setting';
+  } else if (promptLower.includes('park') || promptLower.includes('outdoor')) {
+    contextualEnhancement += ', natural outdoor setting, pleasant lighting';
+  } else {
+    // If no specific background mentioned, add random diverse background
+    const randomBackgrounds = [
+      ', luxury penthouse interior, city skyline view, elegant modern setting, warm ambient lighting',
+      ', tropical beach at sunset, golden hour, ocean waves, romantic atmosphere, vacation vibes',
+      ', cozy coffee shop, warm lighting, artistic atmosphere, urban setting',
+      ', rooftop terrace at dusk, city lights in background, romantic evening atmosphere',
+      ', art gallery interior, sophisticated setting, modern architecture, soft gallery lighting',
+      ', private library with bookshelves, intellectual atmosphere, warm reading lights',
+      ', infinity pool edge, resort setting, tropical paradise, crystal clear water',
+      ', garden terrace with flowers, natural outdoor setting, soft sunlight, botanical vibes',
+      ', modern loft apartment, industrial chic, large windows, natural daylight',
+      ', spa retreat setting, tranquil atmosphere, zen garden view, peaceful ambiance',
+      ', luxury yacht deck, ocean view, sunny day, nautical elegance',
+      ', scenic mountain lodge, fireplace, cozy rustic charm, warm interior',
+      ', urban rooftop bar, nightlife atmosphere, city panorama, stylish setting',
+      ', botanical conservatory, lush greenery, natural light, exotic plants',
+      ', private beach cabana, tropical paradise, ocean breeze, intimate setting'
+    ];
+    const randomBg = randomBackgrounds[Math.floor(Math.random() * randomBackgrounds.length)];
+    contextualEnhancement += randomBg;
+  }
 
-  // Add NSFW enhancement keywords for EXTREMELY explicit content with variety
+  // Add NSFW enhancement keywords for explicit content (extra NSFW on top of base prompt)
   const nsfwEnhancement = sex === 'male'
-    ? `completely naked, totally nude, full frontal nudity, ${randomPose}, exposed penis, hard erect cock, balls visible, no clothes whatsoever, bare naked body, muscular toned physique, athletic abs, genitals fully exposed, masturbating sensually, stroking hard cock slowly, sexual pleasure, pornographic XXX, explicit hardcore porn, aroused and hard, precum dripping, intense orgasm face, passionate expression, ${randomSetting}`
-    : `completely naked, totally nude, full frontal nudity, ${randomPose}, massive huge perfect breasts, giant tits bouncing, huge round boobs, erect pink nipples, slim tiny waist, flat toned stomach, wide curvy hips, huge round bubble butt, thick thighs, perfect hourglass figure, extreme curves, voluptuous body, exposed dripping wet pussy, vagina spread open wide, glistening pink pussy lips, puffy swollen pussy, legs spread very wide, no clothes whatsoever, bare naked body, tits and pussy completely exposed, masturbating sensually, fingering wet pussy deep and slow, rubbing swollen clit, touching huge breasts, sexual pleasure, pornographic XXX, explicit hardcore porn, extremely aroused and wet, pussy dripping and glistening with arousal, intense orgasm face, passionate seductive expression, ${randomSetting}`;
+    ? ', completely naked, fully nude, no clothes, exposed penis, hard erect cock, bare naked body, muscular physique, genitals fully exposed, explicit nudity, pornographic, XXX rated, adult content, full frontal nudity, sensual, intimate, aroused'
+    : ', completely naked, fully nude, no clothes, exposed breasts, exposed pussy, bare naked body, beautiful curves, breasts visible, nipples visible, pussy visible, genitals fully exposed, explicit nudity, pornographic, XXX rated, adult content, full frontal nudity, sensual, intimate, aroused, legs spread';
 
-  // Enhanced lighting for warmer, more vibrant images
-  const lightingEnhancement = 'golden hour sunlight streaming through windows, warm orange and pink tones, soft diffused lighting, professional glamour lighting, vibrant saturated colors, rich warm color palette, high contrast shadows, cinematic color grading, warm skin tones, glowing highlights, romantic ambiance lighting, luxury photography lighting';
-
-  // Combine: appearance + cleaned prompt + NSFW + lighting
-  const enhancedPrompt = `${appearance}, ${cleanedPrompt}, ${nsfwEnhancement}, ${lightingEnhancement}, photorealistic skin texture, detailed anatomy, 8k ultra detailed, sharp focus, masterpiece quality`;
+  // Combine: appearance + sanitized prompt + context + NSFW
+  const enhancedPrompt = `${appearance}, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}, photorealistic, ultra realistic, professional photography, detailed, high quality`;
 
   console.log(`✨ [${requestId}] Promptchan enhanced prompt:`, enhancedPrompt);
 
-  // Determine Promptchan style based on our style parameter with variety
-  let promptchanStyle = 'Photo XL+ v2'; // Warmer, more vibrant than Hyperreal
-  let promptchanFilter = 'Analog'; // Warmer tones than Studio
+  // Determine Promptchan style based on our style parameter
+  let promptchanStyle = 'Photo XL+ v2';
+  let promptchanFilter = 'Professional';
 
   if (style === 'anime' || style === 'animated') {
-    // Randomly choose between anime styles for variety
-    const animeStyles = ['Anime XL+', 'Hardcore XL', 'Anime XL'];
-    promptchanStyle = animeStyles[Math.floor(Math.random() * animeStyles.length)];
-
-    // Randomly choose anime filter for variety
-    const animeFilters = ['Anime Studio', 'Manga'];
-    promptchanFilter = animeFilters[Math.floor(Math.random() * animeFilters.length)];
-  } else {
-    // Randomly choose between realistic styles for variety
-    const realisticStyles = ['Photo XL+ v2', 'Hyperreal XL+ v2', 'Photo XL+', 'Cinematic XL'];
-    promptchanStyle = realisticStyles[Math.floor(Math.random() * realisticStyles.length)];
-
-    // Randomly choose realistic filter for variety
-    const realisticFilters = ['Analog', 'Professional', 'Flash', 'Studio'];
-    promptchanFilter = realisticFilters[Math.floor(Math.random() * realisticFilters.length)];
+    promptchanStyle = 'Anime XL+';
+    promptchanFilter = 'Anime Studio';
   }
 
   // Add negative prompt to reduce unwanted elements
   const negativePrompt = 'clothes, clothing, dressed, covered, censored, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white';
 
-  // Randomize body type for variety (all still sexy and NSFW, just different body types)
-  // Note: Sliders must be integers, not floats
-  const bodyTypes = [
-    { name: 'extreme_curvy', weight: 0, breast: 1, ass: 1 },      // Slim waist, huge tits/ass
-    { name: 'very_curvy', weight: 0, breast: 1, ass: 1 },         // Big tits, big ass
-    { name: 'curvy_athletic', weight: 0, breast: 1, ass: 1 },     // Athletic with curves
-    { name: 'slim_busty', weight: -1, breast: 1, ass: 0 },        // Very slim with big tits
-    { name: 'thicc', weight: 0, breast: 1, ass: 1 },              // Thicc/voluptuous
-    { name: 'balanced_sexy', weight: 0, breast: 1, ass: 1 }       // Balanced sexy proportions
-  ];
-  const randomBodyType = bodyTypes[Math.floor(Math.random() * bodyTypes.length)];
-
-  // Randomize emotion for variety (all still sexual/sensual)
-  const sexualEmotions = ['Orgasm Face', 'Default', 'Smiling', 'Winking'];
-  const randomEmotion = sexualEmotions[Math.floor(Math.random() * sexualEmotions.length)];
-
-  // Randomize age for variety (all 18+ and attractive)
-  const attractiveAges = [20, 22, 24, 26, 28, 30];
-  const randomAge = attractiveAges[Math.floor(Math.random() * attractiveAges.length)];
-
-  // Randomize detail level for variety (must be integer)
-  const detailLevels = [1, 2];
-  const randomDetail = detailLevels[Math.floor(Math.random() * detailLevels.length)];
-
-  // Randomize creativity for variety
-  const creativityLevels = [70, 80, 85, 90];
-  const randomCreativity = creativityLevels[Math.floor(Math.random() * creativityLevels.length)];
-
-  console.log(`🎲 [${requestId}] Random body type: ${randomBodyType.name}, emotion: ${randomEmotion}, age: ${randomAge}, detail: ${randomDetail}, creativity: ${randomCreativity}`);
-
-  // Build Promptchan API request with randomized parameters for variety
+  // Build Promptchan API request - simplified parameters for Ultra quality
   const promptchanRequest = {
     prompt: enhancedPrompt,
-    negative_prompt: negativePrompt, // What to avoid
+    negative_prompt: negativePrompt,
     style: promptchanStyle,
-    quality: 'Extreme', // Highest quality (works reliably)
+    quality: 'Ultra', // Fastest quality - 1 Gem
     image_size: '768x512', // Landscape format
-    creativity: randomCreativity, // Random creativity for variety (70-90)
-    seed: -1, // Random seed for variety
-    filter: promptchanFilter, // Random filter for variety
-    emotion: randomEmotion, // Random sexual emotion
-    detail: randomDetail, // Random detail level (1.2-2.0)
-    age_slider: randomAge, // Random attractive age (20-30)
-    weight_slider: randomBodyType.weight, // Random body weight (must be integer)
-    breast_slider: sex === 'male' ? 0 : randomBodyType.breast, // Random breast size (must be integer)
-    ass_slider: sex === 'male' ? 0 : randomBodyType.ass, // Random ass size (must be integer)
-    restore_faces: false // Don't use face restoration - we want natural sensual expressions
+    creativity: 80, // Standard creativity
+    seed: -1, // Random seed
+    filter: promptchanFilter,
+    emotion: 'Default',
+    detail: 0, // Standard detail
+    age_slider: 24, // Attractive age
+    weight_slider: 0, // Balanced weight
+    breast_slider: sex === 'male' ? 0 : 0, // Natural breast size
+    ass_slider: sex === 'male' ? 0 : 0, // Natural ass size
+    restore_faces: false
   };
 
-  console.log(`📤 [${requestId}] Promptchan request:`, promptchanRequest);
-  console.log(`🔍 [${requestId}] Type checking:`, {
-    creativity_type: typeof promptchanRequest.creativity,
-    detail_type: typeof promptchanRequest.detail,
-    age_type: typeof promptchanRequest.age_slider,
-    weight_type: typeof promptchanRequest.weight_slider,
-    breast_type: typeof promptchanRequest.breast_slider,
-    ass_type: typeof promptchanRequest.ass_slider
-  });
+  console.log(`📤 [${requestId}] Promptchan request (Ultra quality):`, promptchanRequest);
 
   try {
     const response = await fetch('https://prod.aicloudnetservices.com/api/external/create', {
