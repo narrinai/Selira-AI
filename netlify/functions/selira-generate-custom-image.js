@@ -395,11 +395,11 @@ exports.handler = async (event, context) => {
     console.log(`🎨 [${requestId}] Full prompt:`, fullPrompt);
     console.log(`🎌 [${requestId}] Anime style:`, isAnimeStyle);
 
-    // Use FLUX Pro for better NSFW handling (has disable_safety_checker parameter)
-    // FLUX Pro by Black Forest Labs - better quality, explicit NSFW support
-    const modelVersion = "black-forest-labs/flux-pro";
+    // Use FLUX Dev for both anime and realistic
+    // FLUX Dev by Black Forest Labs - no NSFW filter, works for both styles
+    const modelVersion = "black-forest-labs/flux-dev";
 
-    console.log(`🎨 [${requestId}] Using model: FLUX Pro (${isAnimeStyle ? 'anime' : 'realistic'})`);
+    console.log(`🎨 [${requestId}] Using model: FLUX Dev (${isAnimeStyle ? 'anime' : 'realistic'})`);
 
     // Add progressive delay to prevent rate limiting
     // More requests = longer delay
