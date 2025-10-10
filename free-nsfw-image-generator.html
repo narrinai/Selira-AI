@@ -1096,7 +1096,7 @@
         }
 
         let creditsDisplay = data.plan === 'Free'
-          ? (data.creditsRemaining > 0 ? `${data.creditsRemaining} Credits` : `${Math.max(0, 1 - (data.imagesGenerated || 0))} Free`)
+          ? (data.creditsRemaining > 0 ? `${data.creditsRemaining} ${data.creditsRemaining === 1 ? 'Credit' : 'Credits'}` : `${Math.max(0, 1 - (data.imagesGenerated || 0))} Free`)
           : 'Unlimited';
         document.getElementById('creditsAmount').textContent = creditsDisplay;
         document.getElementById('planName').textContent = data.plan;
