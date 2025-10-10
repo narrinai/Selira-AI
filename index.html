@@ -1933,7 +1933,7 @@
           <div class="mobile-dropdown-menu" id="mobileContentMenu">
             <div class="mobile-dropdown-item" onclick="selectMobileContent('all')">All</div>
             <div class="mobile-dropdown-item" onclick="selectMobileContent('censored')">Censored</div>
-            <div class="mobile-dropdown-item" onclick="selectMobileContent('unfiltered')">Unfiltered</div>
+            <div class="mobile-dropdown-item" onclick="selectMobileContent('uncensored')">Uncensored</div>
           </div>
         </div>
         <div class="mobile-filter-dropdown">
@@ -2013,7 +2013,7 @@
             </button>
             <div class="dropdown-menu" id="contentDropdown">
               <a href="#" onclick="setContentFilter('censored'); return false;">Censored</a>
-              <a href="#" onclick="setContentFilter('unfiltered'); return false;">Unfiltered</a>
+              <a href="#" onclick="setContentFilter('uncensored'); return false;">Uncensored</a>
               <a href="#" onclick="setContentFilter('all'); return false;">All</a>
             </div>
           </div>
@@ -2654,10 +2654,10 @@
         // Content filter (is_unfiltered field from Airtable)
         if (currentFilters.content) {
           if (currentFilters.content === 'censored' && character.is_unfiltered === true) {
-            return false; // Hide unfiltered companions when censored is selected
+            return false; // Hide uncensored companions when censored is selected
           }
-          if (currentFilters.content === 'unfiltered' && character.is_unfiltered !== true) {
-            return false; // Hide censored companions when unfiltered is selected
+          if (currentFilters.content === 'uncensored' && character.is_unfiltered !== true) {
+            return false; // Hide censored companions when uncensored is selected
           }
         }
 
@@ -2700,6 +2700,13 @@
 
       renderCharacters();
       console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Filtered characters:', filteredCharacters.length, '/', allCharacters.length, 'with filters:', currentFilters);
+
+      // Debug: Count companions with is_unfiltered
+      if (currentFilters.content === 'uncensored') {
+        const unfilteredCount = allCharacters.filter(c => c.is_unfiltered === true).length;
+        console.log('🔍 Total companions with is_unfiltered=true:', unfilteredCount);
+        console.log('🔍 Sample is_unfiltered values:', allCharacters.slice(0, 5).map(c => ({ name: c.name, is_unfiltered: c.is_unfiltered })));
+      }
     }
 
     // ===== UI INTERACTIONS =====
@@ -2730,7 +2737,7 @@
         const contentLabels = {
           'all': 'All',
           'censored': 'Censored',
-          'unfiltered': 'Unfiltered'
+          'uncensored': 'Uncensored'
         };
         dropdownBtn.querySelector('span:first-child').textContent = contentLabels[content] || 'Censored';
       }
