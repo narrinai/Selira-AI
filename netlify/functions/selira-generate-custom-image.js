@@ -181,13 +181,21 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     emotion: randomEmotion, // Random sexual emotion
     detail: randomDetail, // Random detail level (1.2-2.0)
     age_slider: randomAge, // Random attractive age (20-30)
-    weight_slider: randomBodyType.weight, // Random body weight (-0.5 to 0.1)
-    breast_slider: sex === 'male' ? 0 : randomBodyType.breast, // Random breast size (0.6-1.0 for female)
-    ass_slider: sex === 'male' ? 0.3 : randomBodyType.ass, // Random ass size (0.5-1.0)
+    weight_slider: randomBodyType.weight, // Random body weight (must be integer)
+    breast_slider: sex === 'male' ? 0 : randomBodyType.breast, // Random breast size (must be integer)
+    ass_slider: sex === 'male' ? 0 : randomBodyType.ass, // Random ass size (must be integer)
     restore_faces: false // Don't use face restoration - we want natural sensual expressions
   };
 
   console.log(`📤 [${requestId}] Promptchan request:`, promptchanRequest);
+  console.log(`🔍 [${requestId}] Type checking:`, {
+    creativity_type: typeof promptchanRequest.creativity,
+    detail_type: typeof promptchanRequest.detail,
+    age_type: typeof promptchanRequest.age_slider,
+    weight_type: typeof promptchanRequest.weight_slider,
+    breast_type: typeof promptchanRequest.breast_slider,
+    ass_type: typeof promptchanRequest.ass_slider
+  });
 
   try {
     const response = await fetch('https://prod.aicloudnetservices.com/api/external/create', {
