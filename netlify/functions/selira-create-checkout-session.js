@@ -82,8 +82,8 @@ exports.handler = async (event, context) => {
 
     // Payment methods based on mode - one-time payments support more methods
     const paymentMethodTypes = checkoutMode === 'payment'
-      ? ['card'] // One-time payments: keep it simple to avoid errors
-      : ['card']; // Subscriptions: card only (PayPal/Klarna don't support recurring)
+      ? ['card', 'apple_pay', 'google_pay'] // One-time payments: support digital wallets
+      : ['card', 'apple_pay', 'google_pay']; // Subscriptions: support digital wallets for recurring
 
     // Build session config based on mode
     const sessionConfig = {
@@ -114,7 +114,8 @@ exports.handler = async (event, context) => {
       },
       // Save payment method for future use and enable SCA retry logic
       payment_intent_data: checkoutMode === 'payment' ? {
-        setup_future_usage: 'off_session',
+        // Don't use setup_future_usage for Apple Pay - it requires on_session authentication
+        capture_method: 'automatic',
         metadata: {
           user_id: userId,
           user_email: userEmail,
