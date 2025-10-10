@@ -1012,6 +1012,20 @@
           <!-- Step 2: Art Style Selection -->
           <div class="creation-step" id="step2">
             <h3 style="color: var(--text-primary); margin-bottom: 30px; font-size: 28px; font-weight: 700; text-align: center;">Choose Art Style</h3>
+
+            <!-- Censorship Toggle for Avatar Generation -->
+            <div style="margin-bottom: 30px; padding: 20px; background: var(--bg-secondary); border-radius: var(--radius-md); border: 1px solid var(--border);">
+              <div style="display: flex; align-items: center; justify-content: center; gap: 16px;">
+                <span style="color: var(--text-secondary); font-size: 14px; font-weight: 500;">Avatar Image Generation:</span>
+                <div class="unfiltered-toggle active" id="createFlowUncensoredToggle" onclick="toggleCreateFlowCensorship()" title="Toggle censorship for avatar generation" style="cursor: pointer; user-select: none; display: flex; align-items: center; gap: 8px;">
+                  <div class="toggle-switch" style="position: relative; width: 44px; height: 24px; background: linear-gradient(135deg, #ce93d8 0%, #ec4899 100%); border-radius: 12px; transition: background 0.3s ease; border: 1px solid rgba(206, 147, 216, 0.3);">
+                    <div style="position: absolute; top: 2px; left: calc(100% - 22px); width: 20px; height: 20px; background: white; border-radius: 50%; transition: left 0.3s ease; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);"></div>
+                  </div>
+                  <span class="toggle-label" id="createFlowToggleText" style="font-size: 14px; color: var(--accent); font-weight: 600;">Uncensored</span>
+                </div>
+              </div>
+            </div>
+
             <div class="style-grid">
               <div class="style-option" data-style="realistic" onclick="selectStyleStep('realistic')">
                 <div class="image-container" style="height: 320px;">
@@ -1037,19 +1051,6 @@
                 <div style="padding: 12px; text-align: center;">
                   <h4 style="color: var(--text-primary); font-size: 18px; font-weight: 700; margin-bottom: 8px;">Anime</h4>
                   <p style="color: var(--text-secondary); font-size: 14px;">Anime-style illustrations</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Censorship Toggle for Avatar Generation -->
-            <div style="margin-top: 40px; padding: 20px; background: var(--bg-secondary); border-radius: var(--radius-md); border: 1px solid var(--border);">
-              <div style="display: flex; align-items: center; justify-content: center; gap: 16px;">
-                <span style="color: var(--text-secondary); font-size: 14px; font-weight: 500;">Avatar Image Generation:</span>
-                <div class="unfiltered-toggle active" id="createFlowUncensoredToggle" onclick="toggleCreateFlowCensorship()" title="Toggle censorship for avatar generation" style="cursor: pointer; user-select: none; display: flex; align-items: center; gap: 8px;">
-                  <div class="toggle-switch" style="position: relative; width: 44px; height: 24px; background: linear-gradient(135deg, #ce93d8 0%, #ec4899 100%); border-radius: 12px; transition: background 0.3s ease; border: 1px solid rgba(206, 147, 216, 0.3);">
-                    <div style="position: absolute; top: 2px; left: calc(100% - 22px); width: 20px; height: 20px; background: white; border-radius: 50%; transition: left 0.3s ease; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);"></div>
-                  </div>
-                  <span class="toggle-label" id="createFlowToggleText" style="font-size: 14px; color: var(--accent); font-weight: 600;">Uncensored</span>
                 </div>
               </div>
             </div>
