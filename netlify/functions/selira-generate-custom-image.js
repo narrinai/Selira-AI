@@ -367,12 +367,15 @@ exports.handler = async (event, context) => {
     // Add NSFW enhancement keywords if prompt suggests intimate/adult content
     let nsfwEnhancement = '';
     const nsfwKeywords = ['naked', 'nude', 'topless', 'lingerie', 'underwear', 'bikini', 'revealing',
-                          'intimate', 'sensual', 'sexy', 'bedroom', 'undressed', 'bare', 'exposed'];
+                          'intimate', 'sensual', 'sexy', 'bedroom', 'undressed', 'bare', 'exposed',
+                          'masturbating', 'fingering', 'pussy', 'breasts', 'nipples', 'blowjob',
+                          'doggy', 'cowgirl', 'missionary', 'penetration', 'oral'];
     const hasNsfwIntent = nsfwKeywords.some(keyword => promptLower.includes(keyword));
 
     if (hasNsfwIntent) {
-      nsfwEnhancement = ', nsfw, explicit content, adult content, uncensored, detailed anatomy, bare skin, exposed body, intimate pose, sensual atmosphere, natural nudity, unclothed, revealing outfit, provocative pose, seductive expression, intimate setting, erotic art, adult photography, explicit pose, full nudity allowed, completely exposed, intimate details visible';
-      console.log(`🔞 [${requestId}] NSFW content detected - adding explicit enhancement`);
+      // MUCH stronger NSFW enhancement - repeat keywords for AI weight
+      nsfwEnhancement = ', NSFW NSFW NSFW, completely naked, fully nude, no clothes at all, zero clothing, bare naked body, exposed genitals, explicit nudity, uncensored explicit content, pornographic image, XXX rated, adult porn content, full frontal nudity, genitals visible, breasts exposed, nipples visible, pussy visible, naked naked naked, unclothed unclothed, totally nude, 100% naked, no bra no panties, completely unclothed, bare skin everywhere, intimate parts visible, explicit adult photography, hardcore NSFW, pornographic photo, erotic nude art, sexually explicit';
+      console.log(`🔞 [${requestId}] NSFW content detected - adding EXTREME explicit enhancement`);
     }
 
     // Build full prompt with character appearance and context
@@ -382,17 +385,21 @@ exports.handler = async (event, context) => {
       fullPrompt = `${shotDesc} of ${genderDescription}, ${ethnicityDesc}, ${hairPart}, anime style, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}, detailed anime art, high quality anime illustration, vibrant colors, cel shading, clean background, single anime character, perfect anime anatomy, anime eyes`;
     } else {
       const shotDesc = isFullBody ? 'full body photograph' : 'portrait photograph';
-      fullPrompt = `REALISTIC PHOTOGRAPHY, ${shotDesc} of ${genderDescription}, ${ethnicityDesc}, ${hairPart}, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}, ultra realistic, photorealistic, real human photo, actual photograph, professional photography, realistic skin texture, realistic facial features, realistic proportions, high quality photo, professional studio lighting, clean background, single real person, perfect human anatomy, NO anime, NO cartoon, NO illustration, NO drawing, NO manga, NO cel shading, NO stylized art, real photograph only`;
+
+      // Add anti-clothing keywords if NSFW
+      const antiClothing = hasNsfwIntent ? ', NO clothes, NO clothing, NO fabric, NO dress, NO shirt, NO bra, NO panties, NO underwear, NO covered body, NO censorship' : '';
+
+      fullPrompt = `REALISTIC PHOTOGRAPHY, ${shotDesc} of ${genderDescription}, ${ethnicityDesc}, ${hairPart}, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}${antiClothing}, ultra realistic, photorealistic, real human photo, actual photograph, professional photography, realistic skin texture, realistic facial features, realistic proportions, high quality photo, professional studio lighting, clean background, single real person, perfect human anatomy, NO anime, NO cartoon, NO illustration, NO drawing, NO manga, NO cel shading, NO stylized art, real photograph only`;
     }
     
     console.log(`🎨 [${requestId}] Full prompt:`, fullPrompt);
     console.log(`🎌 [${requestId}] Anime style:`, isAnimeStyle);
 
-    // Use FLUX Dev for both anime and realistic
-    // FLUX Dev by Black Forest Labs - no NSFW filter, works for both styles
-    const modelVersion = "black-forest-labs/flux-dev";
+    // Use FLUX Pro for better NSFW handling (has disable_safety_checker parameter)
+    // FLUX Pro by Black Forest Labs - better quality, explicit NSFW support
+    const modelVersion = "black-forest-labs/flux-pro";
 
-    console.log(`🎨 [${requestId}] Using model: FLUX Dev (${isAnimeStyle ? 'anime' : 'realistic'})`);
+    console.log(`🎨 [${requestId}] Using model: FLUX Pro (${isAnimeStyle ? 'anime' : 'realistic'})`);
 
     // Add progressive delay to prevent rate limiting
     // More requests = longer delay
