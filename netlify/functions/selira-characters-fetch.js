@@ -231,6 +231,8 @@ exports.handler = async (event, context) => {
         ethnicity: fields.ethnicity,
         hair_length: fields.hair_length,
         hair_color: fields.hair_color,
+        // Content filter - default to "Censored" for safety
+        content_filter: fields.content_filter || 'Censored',
         _Created_by_record_id: (Array.isArray(fields.Created_By) && fields.Created_By.length > 0) ? fields.Created_By[0] : null
       };
     });
