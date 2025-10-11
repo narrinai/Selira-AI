@@ -4670,8 +4670,16 @@
       if (promptPart && promptPart.length > 0) {
         // User provided specific prompt - use it as-is for UI
         simplePrompt = promptPart;
-        // Create enhanced longer version for backend with more details
-        enhancedPrompt = enhancePromptWithDetails(promptPart, characterSex, unfilteredMode);
+
+        // IMPORTANT: For uncensored mode, send SHORT prompts to backend (like companion generation)
+        // The backend will handle all enhancements. Long prompts confuse Promptchan.
+        if (unfilteredMode) {
+          console.log('🔓 Uncensored mode: sending SHORT prompt to backend for better Promptchan results');
+          enhancedPrompt = promptPart; // Send short prompt, let backend enhance
+        } else {
+          // For censored, use frontend enhancement as before
+          enhancedPrompt = enhancePromptWithDetails(promptPart, characterSex, unfilteredMode);
+        }
       } else {
         // No specific prompt - use random sexy clothing
         simplePrompt = getStylishClothing(characterStyle);

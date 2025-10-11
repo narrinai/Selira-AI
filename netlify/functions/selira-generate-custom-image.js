@@ -348,10 +348,11 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
       ? ', naked, nude, bare chest showing, muscular body, confident pose, seductive expression, sensual, intimate, artistic nude photography, tasteful nudity, elegant masculine beauty'
       : ', naked, nude, bare breasts showing, beautiful curves, elegant pose, seductive gaze, alluring expression, sensual, intimate, artistic nude photography, soft lighting, tasteful nudity, natural beauty, elegant feminine beauty';
   } else {
-    // Explicit for chat/image generator - hardcore NSFW
+    // Explicit for chat/image generator - MAXIMUM hardcore NSFW like companion generation
+    // Use VERY explicit visible genital descriptions that Promptchan cannot ignore
     nsfwEnhancement = sex === 'male'
-      ? ', completely naked, fully nude, no clothes, exposed penis, hard erect cock, bare naked body, muscular physique, genitals fully exposed, explicit nudity, pornographic, XXX rated, adult content, full frontal nudity, sensual, intimate, aroused'
-      : ', completely naked, fully nude, no clothes, exposed breasts, exposed pussy, bare naked body, beautiful curves, breasts visible, nipples visible, pussy visible, genitals fully exposed, explicit nudity, pornographic, XXX rated, adult content, full frontal nudity, sensual, intimate, aroused, legs spread';
+      ? ', naked man, big hard erect penis visible and prominent in frame, cock standing up, balls hanging visible, shaft and head clearly shown, genitals fully exposed and in focus, muscular body, explicit male nudity, pornographic XXX adult content, full frontal nudity showing everything, aroused hard cock, intimate POV angle'
+      : ', naked woman, huge natural breasts exposed with erect nipples visible, wet glistening pussy clearly visible with labia spread open, pussy lips prominent in frame, genitals fully exposed and in focus, legs spread wide showing everything, beautiful curves, explicit female nudity, pornographic XXX adult content, full frontal nudity, aroused wet pussy, intimate POV angle showing genitals';
   }
 
   // Build prompt with shot description matching Replicate format
