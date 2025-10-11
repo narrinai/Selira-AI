@@ -55,7 +55,14 @@ class SupabaseAuthModal {
         this.user = session.user;
         console.log('✅ User authenticated:', this.user.email);
 
-        // Sync user to Airtable
+        // Try to restore Airtable record ID from localStorage first
+        const cachedAirtableId = localStorage.getItem('airtable_record_id');
+        if (cachedAirtableId) {
+          this.user.airtable_record_id = cachedAirtableId;
+          console.log('🔄 Restored Airtable record ID from cache:', cachedAirtableId);
+        }
+
+        // Sync user to Airtable (will update the cached ID if needed)
         await this.syncUserToAirtable(this.user);
 
         this.updateAuthState(true);
@@ -76,6 +83,12 @@ class SupabaseAuthModal {
         } else if (session) {
           // For other events with session (INITIAL_SESSION, TOKEN_REFRESHED), just update state
           this.user = session.user;
+          // Restore Airtable record ID from localStorage if available
+          const airtableRecordId = localStorage.getItem('airtable_record_id');
+          if (airtableRecordId) {
+            this.user.airtable_record_id = airtableRecordId;
+            console.log('🔄 Restored Airtable record ID from localStorage:', airtableRecordId);
+          }
           this.updateAuthState(true);
         } else {
           this.user = null;
@@ -119,7 +132,9 @@ class SupabaseAuthModal {
       // Store Airtable record ID in user object for image usage tracking
       if (result.user_id) {
         this.user.airtable_record_id = result.user_id;
-        console.log('💾 Stored Airtable record ID in user object:', result.user_id);
+        // Also store in localStorage for persistence
+        localStorage.setItem('airtable_record_id', result.user_id);
+        console.log('💾 Stored Airtable record ID in user object and localStorage:', result.user_id);
       }
 
     } catch (error) {
@@ -552,6 +567,7 @@ class SupabaseAuthModal {
       localStorage.removeItem('user_uid');
       localStorage.removeItem('user_name');
       localStorage.removeItem('user');
+      localStorage.removeItem('airtable_record_id');
     }
 
     window.dispatchEvent(new CustomEvent('auth-state-changed', {
