@@ -207,6 +207,19 @@ exports.handler = async (event, context) => {
       console.log(`📊 Client-side filter result: ${existingRecord ? 'Found match!' : 'No match found'}`);
     }
 
+    // Check if user is hitting their hourly limit
+    const hourlyLimits = {
+      'Light': 5,
+      'Basic': 10,
+      'Premium': 20,
+      'Pro': 20
+    };
+    const hourlyLimit = hourlyLimits[userPlan] || 0; // Free plan has no hourly limit, only lifetime limit
+    const currentHourlyUsage = existingRecord ? (existingRecord.fields.Count || 0) : 0;
+    const willHitHourlyLimit = (hourlyLimit > 0) && (currentHourlyUsage >= hourlyLimit);
+
+    console.log(`📊 Hourly limit check: ${currentHourlyUsage}/${hourlyLimit} for ${userPlan} plan, willHitLimit: ${willHitHourlyLimit}`);
+
     let imageUsageUpdateResult;
 
     if (existingRecord) {
@@ -315,17 +328,26 @@ exports.handler = async (event, context) => {
     }
 
     // Update the Users table with the new lifetime total
-    // If user has credits, decrement them. Otherwise just increment images_generated
+    // Only deduct credits if user is hitting their hourly limit (Light/Basic/Premium)
     const updateUserRecord = () => {
       return new Promise((resolve, reject) => {
         const updateFields = {
           images_generated: newImagesGenerated
         };
 
-        // Decrement credits if user has them (regardless of plan)
-        if (currentCreditsRemaining > 0) {
+        // Only deduct credits if:
+        // 1. User has credits available, AND
+        // 2. User is on a plan with hourly limits (Light/Basic/Premium), AND
+        // 3. User has hit their hourly limit
+        if (currentCreditsRemaining > 0 && willHitHourlyLimit) {
           updateFields.image_credits_remaining = currentCreditsRemaining - 1;
-          console.log(`💳 Decrementing credits: ${currentCreditsRemaining} → ${currentCreditsRemaining - 1}`);
+          console.log(`💳 User hit hourly limit - decrementing credits: ${currentCreditsRemaining} → ${currentCreditsRemaining - 1}`);
+        } else if (currentCreditsRemaining > 0 && userPlan === 'Free') {
+          // Free users always use credits if they have them
+          updateFields.image_credits_remaining = currentCreditsRemaining - 1;
+          console.log(`💳 Free user with credits - decrementing: ${currentCreditsRemaining} → ${currentCreditsRemaining - 1}`);
+        } else {
+          console.log(`ℹ️ Not deducting credits (willHitHourlyLimit: ${willHitHourlyLimit}, currentCredits: ${currentCreditsRemaining}, plan: ${userPlan})`);
         }
 
         const data = JSON.stringify({ fields: updateFields });

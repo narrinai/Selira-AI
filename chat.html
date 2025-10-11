@@ -4615,6 +4615,16 @@
         return;
       }
 
+      // Check if user is using credits because they hit hourly limit
+      if (permissions.usingCredits && permissions.hourlyLimitReached) {
+        console.log('💳 User is using image credits after hitting hourly limit');
+
+        // Show notification that they're using credits
+        setTimeout(() => {
+          addMessage(`💳 You've reached your hourly image limit. Using one of your ${permissions.imageCreditsRemaining} image credits to continue.`, 'ai');
+        }, 300);
+      }
+
       // Extract the prompt part after "send me a picture"
       const promptPart = message.substring('send me a picture'.length).trim();
 
@@ -5256,12 +5266,31 @@
       // For logged-in users with insufficient plan, show upgrade modal
       const modal = document.getElementById('imageUpgradeModal');
       const title = document.getElementById('upgradeModalTitle');
+      const subtitle = modal.querySelector('.image-upgrade-header p');
+      const featureText = modal.querySelector('.image-upgrade-feature strong');
       const upgradeButton = document.getElementById('upgradeButton');
 
-      // Customize modal content - prioritize unlimited plans
-      title.textContent = 'Unlock Image Generation';
-      upgradeButton.textContent = 'View Plans';
-      upgradeButton.href = '/pricing';
+      // Detect if user is on Light/Basic plan (hourly limit) vs Free plan (lifetime limit)
+      const userPlan = permissions?.plan || 'Free';
+      const isExistingSubscriber = ['Light', 'Basic'].includes(userPlan);
+
+      if (isExistingSubscriber) {
+        // For Light/Basic users hitting hourly limits
+        title.textContent = 'Upgrade for More Images';
+        subtitle.textContent = 'Get more images per hour with Premium';
+        featureText.innerHTML = '<strong>20 images per hour</strong> with Premium';
+        upgradeButton.textContent = 'View Premium Plan';
+        upgradeButton.href = '/pricing#premium';
+        console.log('💎 Showing hourly limit upgrade modal for', userPlan, 'plan user');
+      } else {
+        // For Free users hitting lifetime limit
+        title.textContent = 'Unlock Image Generation';
+        subtitle.textContent = 'Get unlimited AI images with a subscription';
+        featureText.innerHTML = '<strong>Unlimited image generation</strong> - No limits';
+        upgradeButton.textContent = 'View Plans';
+        upgradeButton.href = '/pricing';
+        console.log('🆓 Showing lifetime limit upgrade modal for', userPlan, 'plan user');
+      }
 
       modal.classList.add('show');
 

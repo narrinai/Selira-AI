@@ -213,6 +213,29 @@ exports.handler = async (event, context) => {
 
     // Check if user has exceeded their limit
     if (currentUsage >= hourlyLimit) {
+      // Check if they have purchased credits to continue
+      if (imageCreditsRemaining > 0) {
+        console.log(`💳 ${userPlan} user hit hourly limit but has ${imageCreditsRemaining} purchased credits available`);
+        return {
+          statusCode: 200,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+          },
+          body: JSON.stringify({
+            canGenerate: true,
+            plan: userPlan,
+            userId: userId,
+            imageCreditsRemaining: imageCreditsRemaining,
+            remaining: imageCreditsRemaining,
+            limit: hourlyLimit,
+            hourlyLimitReached: true,
+            usingCredits: true
+          })
+        };
+      }
+
+      // No credits available - return hourly limit error
       return {
         statusCode: 429,
         headers: {
@@ -224,7 +247,8 @@ exports.handler = async (event, context) => {
           limit: hourlyLimit,
           usage: currentUsage,
           plan: userPlan,
-          canGenerate: false
+          canGenerate: false,
+          imageCreditsRemaining: imageCreditsRemaining
         })
       };
     }
