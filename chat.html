@@ -1261,9 +1261,24 @@
       padding: 32px;
       max-width: 480px;
       width: 90vw;
+      max-height: 80vh;
+      overflow-y: auto;
       box-shadow: 0 16px 64px rgba(0, 0, 0, 0.4);
       animation: zoomIn 0.3s ease;
       border: 1px solid var(--border);
+    }
+
+    @media (max-width: 768px) {
+      .image-upgrade-content {
+        max-height: 65vh;
+        padding: 24px;
+      }
+
+      .image-upgrade-header img {
+        max-width: 200px !important;
+        max-height: 120px;
+        object-fit: cover;
+      }
     }
 
     .image-upgrade-header {
@@ -1508,7 +1523,7 @@
       <button class="image-upgrade-close" onclick="closeImageUpgradeModal()">&times;</button>
 
       <div class="image-upgrade-header">
-        <img src="/avatars/abigail-moore-avatar-1759240661860.webp" alt="AI Generated Image Example" style="width: 100%; max-width: 300px; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
+        <img src="https://selira.ai/avatars/rosalie-di-matteo-1759673517718-1759737924071.webp" alt="AI Generated Image Example" style="width: 100%; max-width: 300px; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
         <div class="image-upgrade-title" id="upgradeModalTitle">Get Image Credits</div>
         <p style="color: var(--text-secondary); font-size: 13px; margin-top: 8px;">Buy credits for AI images - never expire!</p>
       </div>
