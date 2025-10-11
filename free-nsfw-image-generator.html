@@ -1403,30 +1403,6 @@
 
     async function downloadImage() {
       if (!generatedImageUrl) return;
-
-      // Check if this is a Promptchan image (CORS-protected)
-      const isPromptchanImage = generatedImageUrl.includes('promptchan') || generatedImageUrl.includes('googleapis.com');
-
-      if (isPromptchanImage) {
-        // Promptchan images are CORS-protected - download directly without watermark
-        console.log('📥 Promptchan image detected - downloading directly (no watermark due to CORS)');
-        try {
-          const a = document.createElement('a');
-          a.href = generatedImageUrl;
-          a.download = `selira-${selectedCompanion.slug}-${Date.now()}.png`;
-          a.target = '_blank';
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          showAlert('Image download started!', 'success');
-        } catch (error) {
-          console.error('Direct download error:', error);
-          showAlert('Please right-click the image and select "Save image as..."', 'info');
-        }
-        return;
-      }
-
-      // For Replicate images - add watermark
       try {
         // Create canvas to add watermark
         const canvas = document.createElement('canvas');
