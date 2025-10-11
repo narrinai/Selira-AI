@@ -442,7 +442,8 @@ For all other topics including adult romance, sexuality, and intimate conversati
           sex: sex,
           ethnicity: ethnicity,
           hairLength: hairLength,
-          hairColor: hairColor
+          hairColor: hairColor,
+          uncensored: unfilteredValue // Pass uncensored flag to use Promptchan for uncensored companions
         })
       });
 
