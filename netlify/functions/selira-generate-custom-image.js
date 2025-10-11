@@ -567,7 +567,7 @@ exports.handler = async (event, context) => {
       console.log(`🔍 [${requestId}] Checking hourly limits for user:`, { email, auth0_id });
 
       try {
-        const limitResponse = await fetch(`${process.env.NETLIFY_FUNCTIONS_URL || 'https://selira.ai/.netlify/functions'}/check-image-limit`, {
+        const limitResponse = await fetch(`${process.env.NETLIFY_FUNCTIONS_URL || 'https://selira.ai/.netlify/functions'}/selira-check-image-limit`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, auth0_id })
