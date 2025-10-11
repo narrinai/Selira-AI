@@ -4705,6 +4705,12 @@
         const userEmail = user?.email;
         const userAuth0Id = user?.id || user?.sub || user?.auth0_id; // Supabase uses .id, Auth0 uses .sub
 
+        console.log('📧 Image generation user info:', {
+          userEmail,
+          userAuth0Id,
+          userIdType: userAuth0Id?.startsWith('rec') ? 'Airtable' : (userAuth0Id?.startsWith('auth0|') ? 'Auth0' : 'Supabase UUID')
+        });
+
         const response = await fetch('/.netlify/functions/selira-generate-custom-image', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -4740,10 +4746,19 @@
           console.log('🔄 Refreshing image counter after successful generation');
 
           // Add delay to ensure backend increment completes first
-          setTimeout(() => {
+          setTimeout(async () => {
             console.log('⏱️ Delayed counter refresh to ensure backend increment completed');
-            updateImageSuggestionsPlan();
-            loadImageCredits(); // Refresh credits display
+
+            // Log current permissions before refresh
+            const permissionsBefore = await checkUserImagePermissions(false);
+            console.log('📊 Permissions BEFORE refresh:', permissionsBefore);
+
+            await updateImageSuggestionsPlan();
+            await loadImageCredits(); // Refresh credits display
+
+            // Log current permissions after refresh
+            const permissionsAfter = await checkUserImagePermissions(false);
+            console.log('📊 Permissions AFTER refresh:', permissionsAfter);
           }, 2000); // 2 second delay to let backend complete
 
         } else if (response.status === 429) {
