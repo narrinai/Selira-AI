@@ -122,9 +122,9 @@ exports.handler = async (event, context) => {
       ethnicity: record.fields.ethnicity || 'white',
       hair_length: record.fields.hair_length || 'long',
       hair_color: record.fields.hair_color || 'brown',
-      // Content filter - inverted logic: all companions are unfiltered by default
-      // Only censored if explicitly marked with is_censored checkbox
-      is_unfiltered: !record.fields.is_censored
+      // Content filter - use content_filter single select field
+      // Values: "Uncensored" or "Censored" (default to "Uncensored" if not set)
+      is_unfiltered: (record.fields.content_filter || 'Uncensored').toLowerCase() === 'uncensored'
     }));
 
     return {
