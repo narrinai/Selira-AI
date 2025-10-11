@@ -9,6 +9,10 @@ SECRETS_SCAN_ENABLED = "false"
 directory = "netlify/functions"
 node_bundler = "esbuild"
 
+# Increase timeout for image generation (Promptchan can take 15-20 seconds)
+[functions."selira-generate-custom-image"]
+timeout = 30
+
 # Scheduled function to download Replicate URLs every 8 hours
 [functions."download-replicate-avatars-scheduled"]
 schedule = "0 */8 * * *"
