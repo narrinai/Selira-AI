@@ -151,7 +151,8 @@ exports.handler = async (event, context) => {
     const findImageUsage = () => {
       return new Promise((resolve, reject) => {
         // Search for User link and Hour match
-        const filterFormula = `AND(SEARCH("${userRecordId}", ARRAYJOIN(User)), {Hour}="${currentHour}")`;
+        // For linked records, use RECORD_ID() or direct array syntax
+        const filterFormula = `AND(FIND("${userRecordId}", ARRAYJOIN({User})), {Hour}="${currentHour}")`;
         const path = `/v0/${AIRTABLE_BASE_ID}/ImageUsage?filterByFormula=${encodeURIComponent(filterFormula)}`;
 
         const options = {
