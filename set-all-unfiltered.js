@@ -5,8 +5,9 @@ require('dotenv').config();
 async function setAllUnfiltered() {
   console.log('🔓 Setting all companions to is_unfiltered = true...\n');
 
-  const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA || process.env.AIRTABLE_BASE_ID || process.env.AIRTABLE_BASE;
-  const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA || process.env.AIRTABLE_TOKEN;
+  // Use Selira database explicitly
+  const AIRTABLE_BASE_ID = 'app5Xqa4KmvZ8wvaV'; // Selira AI Database
+  const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN;
 
   if (!AIRTABLE_BASE_ID || !AIRTABLE_TOKEN) {
     throw new Error('Missing Airtable credentials');
@@ -64,12 +65,11 @@ async function setAllUnfiltered() {
   let successCount = 0;
   let failCount = 0;
 
-  // Update in batches of 10 (Airtable API limit)
-  const batchSize = 10;
-  for (let i = 0; i < companionsToUpdate.length; i += batchSize) {
-    const batch = companionsToUpdate.slice(i, i + batchSize);
+  // Update one by one to see exactly which field name works
+  for (let i = 0; i < Math.min(companionsToUpdate.length, 3); i++) {
+    const companion = companionsToUpdate[i];
 
-    console.log(`\n📝 Updating batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(companionsToUpdate.length / batchSize)} (${batch.length} companions)...`);
+    console.log(`\n📝 Testing update ${i + 1}/3: ${companion.fields.Name}...`);
 
     try {
       const updateResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters`, {
@@ -79,12 +79,12 @@ async function setAllUnfiltered() {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          records: batch.map(companion => ({
+          records: [{
             id: companion.id,
             fields: {
               is_unfiltered: true
             }
-          }))
+          }]
         })
       });
 
@@ -96,19 +96,19 @@ async function setAllUnfiltered() {
       const result = await updateResponse.json();
       successCount += result.records.length;
 
-      console.log(`✅ Updated ${result.records.length} companions`);
-      result.records.forEach(r => {
-        console.log(`   - ${r.fields.Name}`);
-      });
+      console.log(`✅ Updated: ${result.records[0].fields.Name}`);
+      console.log(`   Field value:`, result.records[0].fields.is_unfiltered);
 
       // Rate limiting delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 500));
 
     } catch (error) {
-      console.error(`❌ Batch failed:`, error.message);
-      failCount += batch.length;
+      console.error(`❌ Update failed:`, error.message);
+      failCount++;
     }
   }
+
+  console.log('\n⚠️ Only tested 3 companions. Run full update if successful.');
 
   console.log(`\n📊 Complete!`);
   console.log(`✅ Successfully updated: ${successCount} companions`);
