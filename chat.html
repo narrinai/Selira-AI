@@ -1543,19 +1543,18 @@
 
       <div class="image-upgrade-header">
         <img src="https://selira.ai/avatars/rosalie-di-matteo-1759673517718-1759737924071.webp" alt="AI Generated Image Example" style="width: 100%; border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
-        <div class="image-upgrade-title" id="upgradeModalTitle">Get Image Credits</div>
-        <p style="color: var(--text-secondary); font-size: 13px; margin-top: 8px;">Buy credits for AI images - never expire!</p>
+        <div class="image-upgrade-title" id="upgradeModalTitle">Unlock Image Generation</div>
+        <p style="color: var(--text-secondary); font-size: 13px; margin-top: 8px;">Get unlimited AI images with a subscription</p>
       </div>
 
       <div class="image-upgrade-features">
         <div class="image-upgrade-feature">
           <div class="image-upgrade-feature-icon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
-              <line x1="1" y1="10" x2="23" y2="10"></line>
+              <path d="M12 2v20M2 12h20"></path>
             </svg>
           </div>
-          <div><strong>One-time purchase</strong> - Pay once, use forever</div>
+          <div><strong>Unlimited image generation</strong> - No limits</div>
         </div>
         <div class="image-upgrade-feature">
           <div class="image-upgrade-feature-icon">
@@ -1571,12 +1570,12 @@
 
       <div class="image-upgrade-buttons">
         <button class="image-upgrade-btn secondary" onclick="closeImageUpgradeModal()">Maybe Later</button>
-        <a href="/pricing?tab=credits" class="image-upgrade-btn primary" id="upgradeButton">Buy Credits</a>
+        <a href="/pricing" class="image-upgrade-btn primary" id="upgradeButton">View Plans</a>
       </div>
 
-      <div style="text-align: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);">
-        <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 8px;">Or get unlimited images with a subscription</p>
-        <a href="/pricing?tab=subscriptions" style="color: var(--accent); font-size: 13px; text-decoration: none;">View Monthly Plans →</a>
+      <div style="text-align: center; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);">
+        <p style="color: var(--text-muted); font-size: 11px; margin-bottom: 6px;">Or buy one-time credits instead</p>
+        <a href="/pricing?tab=credits" style="color: var(--text-secondary); font-size: 12px; text-decoration: none;">View Credits →</a>
       </div>
     </div>
   </div>
@@ -5242,10 +5241,10 @@
       const title = document.getElementById('upgradeModalTitle');
       const upgradeButton = document.getElementById('upgradeButton');
 
-      // Customize modal content - prioritize one-time credits
-      title.textContent = 'Get Image Credits';
-      upgradeButton.textContent = 'Buy Credits';
-      upgradeButton.href = '/pricing?tab=credits';
+      // Customize modal content - prioritize unlimited plans
+      title.textContent = 'Unlock Image Generation';
+      upgradeButton.textContent = 'View Plans';
+      upgradeButton.href = '/pricing';
 
       modal.classList.add('show');
 
