@@ -370,7 +370,9 @@ class SupabaseAuthModal {
 
       // Show user-friendly error
       const errorMsg = error.message.toLowerCase();
-      if (errorMsg.includes('invalid') || errorMsg.includes('incorrect')) {
+      if (errorMsg.includes('rate limit') || errorMsg.includes('too many')) {
+        this.showError('Too many signup attempts. Please try again in a few minutes, or use Google login instead.');
+      } else if (errorMsg.includes('invalid') || errorMsg.includes('incorrect')) {
         this.showError('Invalid email or password. Please try again.');
       } else if (errorMsg.includes('already') || errorMsg.includes('exists')) {
         this.showError('This email is already registered. Try logging in instead.');
