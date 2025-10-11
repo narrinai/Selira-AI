@@ -123,7 +123,7 @@ exports.handler = async (event, context) => {
       hair_length: record.fields.hair_length || 'long',
       hair_color: record.fields.hair_color || 'brown',
       // Content filter
-      is_unfiltered: record.fields.Is_Unfiltered || false
+      is_unfiltered: record.fields.is_unfiltered || false
     }));
 
     return {
