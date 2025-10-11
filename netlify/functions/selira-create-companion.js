@@ -490,10 +490,12 @@ For all other topics including adult romance, sexuality, and intimate conversati
 
     // Use the isUnfiltered value from the toggle, default to false if not provided
     const unfilteredValue = isUnfiltered === true || isUnfiltered === 'true';
+    const contentFilterValue = unfilteredValue ? 'Uncensored' : 'Censored';
 
-    console.log('🔓 Setting is_unfiltered based on toggle:', {
+    console.log('🔓 Setting content_filter based on toggle:', {
       received: isUnfiltered,
-      computed: unfilteredValue
+      computed: unfilteredValue,
+      contentFilter: contentFilterValue
     });
 
     // Prepare character data with all required fields (escape strings for safety)
@@ -513,7 +515,7 @@ For all other topics including adult romance, sexuality, and intimate conversati
       hair_length: hairLength || 'long',
       hair_color: hairColor || 'brown',
       Avatar_URL: avatarUrlToUse,
-      is_unfiltered: unfilteredValue
+      content_filter: contentFilterValue
       // chats and rating fields don't exist in Airtable - removed
     };
 
@@ -687,7 +689,7 @@ For all other topics including adult romance, sexuality, and intimate conversati
           hairColor: result.fields.hair_color,
           tags: result.fields.Tags,
           avatarUrl: result.fields.Avatar_URL,
-          isUnfiltered: result.fields.is_unfiltered,
+          contentFilter: result.fields.content_filter,
           visibility: result.fields.Visibility,
           chats: '0', // Default for new characters
           rating: '5.0' // Default for new characters
