@@ -108,23 +108,26 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     } else if (promptLower.includes('park') || promptLower.includes('outdoor')) {
       contextualEnhancement += ', natural outdoor setting, pleasant lighting';
     } else {
-      // If no specific background mentioned, add random diverse background
+      // If no specific background mentioned, add random SEXY diverse backgrounds
       const randomBackgrounds = [
-        ', luxury penthouse interior, city skyline view, elegant modern setting, warm ambient lighting',
-        ', tropical beach at sunset, golden hour, ocean waves, romantic atmosphere, vacation vibes',
-        ', cozy coffee shop, warm lighting, artistic atmosphere, urban setting',
-        ', rooftop terrace at dusk, city lights in background, romantic evening atmosphere',
-        ', art gallery interior, sophisticated setting, modern architecture, soft gallery lighting',
-        ', private library with bookshelves, intellectual atmosphere, warm reading lights',
-        ', infinity pool edge, resort setting, tropical paradise, crystal clear water',
-        ', garden terrace with flowers, natural outdoor setting, soft sunlight, botanical vibes',
-        ', modern loft apartment, industrial chic, large windows, natural daylight',
-        ', spa retreat setting, tranquil atmosphere, zen garden view, peaceful ambiance',
-        ', luxury yacht deck, ocean view, sunny day, nautical elegance',
-        ', scenic mountain lodge, fireplace, cozy rustic charm, warm interior',
-        ', urban rooftop bar, nightlife atmosphere, city panorama, stylish setting',
-        ', botanical conservatory, lush greenery, natural light, exotic plants',
-        ', private beach cabana, tropical paradise, ocean breeze, intimate setting'
+        ', luxury bedroom with silk sheets, warm golden lighting, candles, rose petals, romantic intimate atmosphere',
+        ', five-star hotel suite bedroom, floor-to-ceiling windows, city lights, king size bed, luxury decor',
+        ', private jacuzzi suite, steam rising, warm water, candles, mood lighting, intimate spa atmosphere',
+        ', tropical beach villa bedroom, ocean view, sunset lighting, open curtains, vacation paradise vibes',
+        ', modern penthouse bedroom, exposed brick, designer furniture, warm ambient lighting, urban luxury',
+        ', romantic cabin bedroom, fireplace crackling, cozy bed, warm glow, intimate mountain retreat',
+        ', luxury yacht master bedroom, panoramic ocean views, white linens, nautical elegance, private luxury',
+        ', boutique hotel suite, four-poster bed, silk curtains, chandelier, warm romantic lighting, opulent',
+        ', desert resort bedroom, moroccan decor, colorful pillows, lantern lighting, exotic romantic atmosphere',
+        ', beachfront bungalow bedroom, tropical breeze, gauze curtains, sunset glow, paradise island vibes',
+        ', upscale loft bedroom, modern art, designer bed, floor lamps, industrial chic luxury',
+        ', villa infinity pool bedroom, waterfront view, tropical paradise, warm lighting, luxury resort',
+        ', countryside estate bedroom, vintage elegance, canopy bed, warm firelight, classic romance',
+        ', rooftop suite bedroom, city skyline, neon lights reflecting, modern luxury, urban night vibes',
+        ', private spa bedroom, massage table, essential oils, candles, zen atmosphere, sensual wellness',
+        ', contemporary bedroom, minimalist luxury, designer furniture, natural light, sophisticated intimate space',
+        ', tropical rainforest suite, jungle view, natural sounds, earthy tones, exotic paradise bedroom',
+        ', parisian apartment bedroom, classic elegance, ornate details, warm lighting, romantic french vibes'
       ];
       const randomBg = randomBackgrounds[Math.floor(Math.random() * randomBackgrounds.length)];
       contextualEnhancement += randomBg;
@@ -586,23 +589,26 @@ exports.handler = async (event, context) => {
     } else if (promptLower.includes('park') || promptLower.includes('outdoor')) {
       contextualEnhancement += ', natural outdoor setting, pleasant lighting';
     } else {
-      // If no specific background mentioned, add random diverse background
+      // If no specific background mentioned, add random SEXY diverse backgrounds
       const randomBackgrounds = [
-        ', luxury penthouse interior, city skyline view, elegant modern setting, warm ambient lighting',
-        ', tropical beach at sunset, golden hour, ocean waves, romantic atmosphere, vacation vibes',
-        ', cozy coffee shop, warm lighting, artistic atmosphere, urban setting',
-        ', rooftop terrace at dusk, city lights in background, romantic evening atmosphere',
-        ', art gallery interior, sophisticated setting, modern architecture, soft gallery lighting',
-        ', private library with bookshelves, intellectual atmosphere, warm reading lights',
-        ', infinity pool edge, resort setting, tropical paradise, crystal clear water',
-        ', garden terrace with flowers, natural outdoor setting, soft sunlight, botanical vibes',
-        ', modern loft apartment, industrial chic, large windows, natural daylight',
-        ', spa retreat setting, tranquil atmosphere, zen garden view, peaceful ambiance',
-        ', luxury yacht deck, ocean view, sunny day, nautical elegance',
-        ', scenic mountain lodge, fireplace, cozy rustic charm, warm interior',
-        ', urban rooftop bar, nightlife atmosphere, city panorama, stylish setting',
-        ', botanical conservatory, lush greenery, natural light, exotic plants',
-        ', private beach cabana, tropical paradise, ocean breeze, intimate setting'
+        ', luxury bedroom with silk sheets, warm golden lighting, candles, rose petals, romantic intimate atmosphere',
+        ', five-star hotel suite bedroom, floor-to-ceiling windows, city lights, king size bed, luxury decor',
+        ', private jacuzzi suite, steam rising, warm water, candles, mood lighting, intimate spa atmosphere',
+        ', tropical beach villa bedroom, ocean view, sunset lighting, open curtains, vacation paradise vibes',
+        ', modern penthouse bedroom, exposed brick, designer furniture, warm ambient lighting, urban luxury',
+        ', romantic cabin bedroom, fireplace crackling, cozy bed, warm glow, intimate mountain retreat',
+        ', luxury yacht master bedroom, panoramic ocean views, white linens, nautical elegance, private luxury',
+        ', boutique hotel suite, four-poster bed, silk curtains, chandelier, warm romantic lighting, opulent',
+        ', desert resort bedroom, moroccan decor, colorful pillows, lantern lighting, exotic romantic atmosphere',
+        ', beachfront bungalow bedroom, tropical breeze, gauze curtains, sunset glow, paradise island vibes',
+        ', upscale loft bedroom, modern art, designer bed, floor lamps, industrial chic luxury',
+        ', villa infinity pool bedroom, waterfront view, tropical paradise, warm lighting, luxury resort',
+        ', countryside estate bedroom, vintage elegance, canopy bed, warm firelight, classic romance',
+        ', rooftop suite bedroom, city skyline, neon lights reflecting, modern luxury, urban night vibes',
+        ', private spa bedroom, massage table, essential oils, candles, zen atmosphere, sensual wellness',
+        ', contemporary bedroom, minimalist luxury, designer furniture, natural light, sophisticated intimate space',
+        ', tropical rainforest suite, jungle view, natural sounds, earthy tones, exotic paradise bedroom',
+        ', parisian apartment bedroom, classic elegance, ornate details, warm lighting, romantic french vibes'
       ];
       const randomBg = randomBackgrounds[Math.floor(Math.random() * randomBackgrounds.length)];
       contextualEnhancement += randomBg;
