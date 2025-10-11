@@ -91,10 +91,19 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     // Use the enhanced prompt directly without any modifications
     const negativePrompt = 'clothes, clothing, dressed, covered, censored, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white';
 
+    // Determine Promptchan model style based on companion type
+    let promptchanModelStyle = 'Hyperreal XL+';  // Default realistic
+    if (style === 'anime' || style === 'animated') {
+      promptchanModelStyle = 'Anime XL+';
+      console.log(`🎌 [${requestId}] Using Anime XL+ model for anime companion`);
+    } else {
+      console.log(`📸 [${requestId}] Using Hyperreal XL+ model for realistic companion`);
+    }
+
     const promptchanRequest = {
       prompt: sanitizedPrompt, // Use as-is
       negative_prompt: negativePrompt,
-      style: 'Hyperreal XL+',
+      style: promptchanModelStyle,  // Use correct model based on companion style
       quality: 'Ultra',
       image_size: '768x512',
       creativity: 50, // Lower creativity for better prompt adherence
