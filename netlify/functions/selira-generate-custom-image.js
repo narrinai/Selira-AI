@@ -75,6 +75,101 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   const sanitizedPrompt = customPrompt.trim();
   const promptLower = customPrompt.toLowerCase();
 
+  // Check if this is already an enhanced prompt from chat.html (starts with "High quality")
+  const isAlreadyEnhanced = promptLower.startsWith('high quality') && customPrompt.length > 200;
+
+  if (isAlreadyEnhanced) {
+    console.log(`✅ [${requestId}] Detected pre-enhanced prompt from frontend, using directly without modification`);
+
+    // Use the enhanced prompt directly without any modifications
+    const negativePrompt = 'clothes, clothing, dressed, covered, censored, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white';
+
+    const promptchanRequest = {
+      prompt: sanitizedPrompt, // Use as-is
+      negative_prompt: negativePrompt,
+      style: 'Hyperreal XL+',
+      quality: 'Ultra',
+      image_size: '768x512',
+      creativity: 50, // Lower creativity for better prompt adherence
+      seed: -1,
+      filter: 'Default',
+      emotion: 'Default',
+      detail: 0,
+      age_slider: 25,
+      weight_slider: 0,
+      breast_slider: 0,
+      ass_slider: 0,
+      restore_faces: false
+    };
+
+    console.log(`📤 [${requestId}] Using pre-enhanced prompt directly:`, promptchanRequest);
+
+    try {
+      const response = await fetch('https://prod.aicloudnetservices.com/api/external/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': PROMPTCHAN_API_KEY
+        },
+        body: JSON.stringify(promptchanRequest)
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`❌ [${requestId}] Promptchan API error:`, errorText);
+        throw new Error(`Promptchan API error: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log(`✅ [${requestId}] Promptchan image generated with pre-enhanced prompt, gems used:`, result.gems);
+
+      // Increment usage counter
+      if ((source === 'chat' || source === 'image-generator') && (email || auth0_id)) {
+        console.log(`📈 [${requestId}] Incrementing usage counter for ${source} (Promptchan)`);
+        try {
+          const incrementResponse = await fetch(`${process.env.NETLIFY_FUNCTIONS_URL || 'https://selira.ai/.netlify/functions'}/selira-increment-image-usage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: auth0_id })
+          });
+
+          if (incrementResponse.ok) {
+            console.log(`✅ [${requestId}] Usage incremented successfully (Promptchan)`);
+          }
+        } catch (err) {
+          console.error(`❌ [${requestId}] Error incrementing usage:`, err.message);
+        }
+      }
+
+      return {
+        statusCode: 200,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          success: true,
+          imageUrl: result.image,
+          fullPrompt: sanitizedPrompt,
+          customPrompt: customPrompt,
+          isAnimeStyle: false,
+          provider: 'promptchan'
+        })
+      };
+
+    } catch (error) {
+      console.error(`❌ [${requestId}] Promptchan generation error:`, error);
+      return {
+        statusCode: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          error: 'Promptchan image generation failed',
+          details: error.message
+        })
+      };
+    }
+  }
+
+  // If not pre-enhanced, continue with regular enhancement logic
+  console.log(`📝 [${requestId}] Prompt not pre-enhanced, applying backend enhancement`);
+
   // Determine shot type (same as censored version)
   const isFullBody = shotType === 'fullbody' || promptLower.includes('full body') ||
                      promptLower.includes('fullbody') || promptLower.includes('standing') ||
