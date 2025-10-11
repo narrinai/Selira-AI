@@ -110,7 +110,9 @@ exports.handler = async (event, context) => {
       sex: record.fields.sex || 'female',
       ethnicity: record.fields.ethnicity || 'white',
       hair_length: record.fields.hair_length || 'long',
-      hair_color: record.fields.hair_color || 'brown'
+      hair_color: record.fields.hair_color || 'brown',
+      // Content filter
+      is_unfiltered: record.fields.Is_Unfiltered || false
     }));
 
     return {
