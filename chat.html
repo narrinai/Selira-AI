@@ -4461,6 +4461,85 @@
       return femaleClothing[Math.floor(Math.random() * femaleClothing.length)];
     }
 
+    // Function to enhance short prompts with detailed instructions for better image quality
+    function enhancePromptWithDetails(shortPrompt, sex, isUncensored) {
+      // If not uncensored, return as-is
+      if (!isUncensored) {
+        return shortPrompt;
+      }
+
+      // Enhancement mappings for uncensored prompts
+      const enhancementMap = {
+        // Female enhancements
+        'doggystyle': 'High quality photorealistic image. Woman in explicit doggystyle position on all fours on a bed, man behind her thrusting his penis deep inside her pussy. Her beautiful face looks directly at the camera with intense pleasure, mouth open, eyes half-closed in ecstasy. Sweat glistening on skin. Visible penetration, her pussy lips stretched around his cock. Intimate close-up angle showing her face and the sexual act. Natural lighting, luxury bedroom setting with silk sheets.',
+
+        'masturbating, fingers': 'High quality photorealistic image. Woman lying naked on bed masturbating intensely, two fingers deep inside her wet glistening pussy, other hand squeezing her breast. Face shows pure pleasure, mouth open moaning, eyes looking at camera with desire. Pussy lips visible, wetness dripping. Legs spread wide. Close-up intimate angle. Soft warm lighting in luxury bedroom.',
+
+        'naked legs spread': 'High quality photorealistic image. Beautiful naked woman lying on bed with legs spread very wide, displaying her wet glistening pussy in full view. Pussy lips clearly visible and slightly open. One hand touching breast, other hand near pussy. Seductive expression looking at camera with bedroom eyes. Full frontal intimate view. Luxury bedroom with soft romantic lighting.',
+
+        'riding cock': 'High quality photorealistic image. Woman straddling man riding his cock, penis fully inserted in her pussy, bouncing up and down. Her large breasts bounce with each movement. Intense pleasure expression, head tilted back, mouth open. Visible penetration from side angle showing cock going in and out. Sweat on bodies. Luxury bedroom, warm lighting.',
+
+        'blowjob': 'High quality photorealistic image. Woman on knees giving oral sex, lips wrapped around erect penis, mouth full of cock. Eyes looking up at camera submissively. One hand gripping shaft, other on his thigh. Saliva glistening. Close-up intimate angle focused on face and oral act. Bedroom setting, soft lighting.',
+
+        'bent over naked': 'High quality photorealistic image. Woman bent over edge of bed completely naked, presenting her pussy and ass from behind. Pussy lips visible and glistening, asshole exposed. Looking back over shoulder at camera with seductive expression. Legs slightly spread, full rear view. Hands spreading ass cheeks apart. Luxury bedroom, warm intimate lighting.',
+
+        'missionary, cock in': 'High quality photorealistic image. Couple in missionary position, woman lying on back with legs spread wide, man on top with penis penetrating her pussy. Visible penetration, his cock sliding in and out of her wet pussy. Both faces showing intense pleasure. Her breasts pressed against his chest. Close intimate angle. Luxury bedroom with silk sheets.',
+
+        'toy, dildo': 'High quality photorealistic image. Woman lying naked on bed using large dildo, toy inserted deep in her pussy, pumping it in and out. Face shows intense pleasure approaching orgasm, mouth open moaning. Free hand squeezing breast. Legs spread wide. Dildo and pussy clearly visible, wetness dripping. Close-up intimate angle. Bedroom with soft lighting.',
+
+        'spreading pussy lips': 'High quality photorealistic image. Extreme close-up of woman lying back naked, using both hands to spread her pussy lips wide open, revealing pink interior completely. Everything visible - clit, vaginal opening dripping wet. Face in frame showing lustful aroused expression, eyes locked on camera. Legs spread very wide. Intimate POV angle. Soft warm lighting.',
+
+        'fucked hard, penis deep': 'High quality photorealistic image. Woman being fucked hard and fast, penis pounding deep in her pussy, powerful thrusts. Her large breasts bouncing violently with each thrust. Face shows overwhelming pleasure, eyes rolling back, mouth wide open screaming in ecstasy. Visible penetration angle showing cock ramming in and out. Sweat covering bodies. Intense passionate sex. Luxury bedroom.',
+
+        'naked on knees, tits': 'High quality photorealistic image. Woman kneeling naked on bed, large breasts and pussy on full display. Submissive posture, looking up at camera with obedient expression. Hands behind back pushing chest forward. Nipples erect. Pussy visible between thighs. Full frontal intimate view. Luxury bedroom, soft romantic lighting.',
+
+        'squirting, fingers rub': 'High quality photorealistic image. Woman lying back masturbating intensely, fingers rapidly rubbing clit, pussy squirting fluid. Face shows intense orgasm, mouth open screaming. Legs spread very wide, pussy gushing. Wetness spraying, sheets soaked. Extreme close-up of pussy squirting. Intimate angle. Bedroom lighting.',
+
+        'on his face, pussy': 'High quality photorealistic image. Woman sitting on man\'s face, her pussy pressed against his mouth, him eating her out. She grinds her pussy on his face, hands squeezing her own breasts. Face shows intense pleasure, mouth open moaning. View from side showing her body and his face buried in her pussy. Luxury bedroom.',
+
+        'penetrated anally': 'High quality photorealistic image. Woman in anal sex position, penis penetrating her asshole. Face shows mixture of pleasure and intensity, mouth open. Visible anal penetration from angle showing cock entering ass. Her hand reaching back spreading ass cheeks. Close-up intimate angle. Luxury bedroom with warm lighting.',
+
+        'nude aroused, pussy wet, huge tits': 'High quality photorealistic image. Woman lying seductively on bed completely naked and visibly aroused. Enormous breasts with erect nipples, wet glistening pussy with engorged lips, legs spread invitingly. Sultry expression with bedroom eyes locked on camera, biting lip. One hand touching breast, other near pussy. Full body view. Luxury bedroom, soft romantic lighting.',
+
+        // Male enhancements
+        'having sex, cock thrusts': 'High quality photorealistic image. Man having intense sex, his erect cock thrusting deep into woman. His muscular body visible, face showing pleasure, eyes looking at camera. Visible penetration angle showing his penis sliding in and out. Sweat glistening on his body. Strong dominant position. Luxury bedroom with warm lighting.',
+
+        'masturbating in bed, hand strokes': 'High quality photorealistic image. Man lying on bed masturbating, hand stroking his large erect penis up and down. Face shows pleasure, mouth slightly open. Other hand behind head. Cock clearly visible being pumped. Close-up showing his face and his hand on his cock. Luxury bedroom, soft lighting.',
+
+        'naked and aroused, hard penis': 'High quality photorealistic image. Man standing or lying completely naked and aroused, large hard erect penis fully visible pointing upward. Muscular body on display. Confident expression looking at camera. One hand near or touching his cock. Balls visible. Full frontal view. Luxury bedroom setting with warm lighting.',
+
+        'penetrating from behind': 'High quality photorealistic image. Man standing behind woman penetrating her from behind, his cock deep inside her pussy. Dominant position, hands gripping her hips. Face shows intense pleasure approaching orgasm. Visible penetration showing his cock entering her. Muscular body. Luxury bedroom, intimate angle.',
+
+        'receiving oral, mouth on cock': 'High quality photorealistic image. Man standing or sitting while receiving oral sex, woman\'s mouth on his erect penis. His hand on her head, face shows ecstasy. Visible oral act from angle showing cock in her mouth. Muscular torso visible. Close-up intimate angle. Bedroom setting with soft lighting.',
+
+        'naked and hard, erect penis displayed': 'High quality photorealistic image. Man posing naked showing off his large erect penis prominently. Cock standing hard and fully erect, balls visible. Muscular physique, confident lustful expression looking at camera. Hand near cock or stroking it. Full frontal intimate view. Luxury bedroom with warm romantic lighting.',
+
+        'in missionary, cock inside': 'High quality photorealistic image. Man in missionary position on top, his penis penetrating woman below. Visible penetration showing cock sliding in and out of pussy. Muscular back and ass visible, thrusting motion. Face turned to camera showing pleasure. Close intimate angle. Luxury bedroom with silk sheets.',
+
+        'masturbating intensely, pumping': 'High quality photorealistic image. Man masturbating very intensely, hand rapidly pumping large erect cock. Face shows he\'s close to orgasm, mouth open. Other hand gripping sheets. Cock and hand clearly visible in stroking motion. Pre-cum leaking. Close-up angle on face and cock. Bedroom with soft lighting.',
+
+        'naked legs spread, penis and balls': 'High quality photorealistic image. Man lying back naked with legs spread, fully erect penis and balls on full display. Cock standing straight up, balls hanging. Lustful aroused expression looking at camera. Hand touching chest or near cock. Full frontal intimate view. Luxury bedroom with soft warm lighting.',
+
+        'fucking hard, penis thrusts': 'High quality photorealistic image. Man fucking woman hard and fast, powerful thrusts, penis pounding deep inside pussy. Muscular body, dominant position, intense expression. Visible penetration showing cock ramming in and out. Sweat on body. Hands gripping her tightly. Passionate intense sex. Luxury bedroom setting.'
+      };
+
+      // Find matching enhancement
+      const lowercasePrompt = shortPrompt.toLowerCase();
+
+      for (const [keyword, enhancement] of Object.entries(enhancementMap)) {
+        if (lowercasePrompt.includes(keyword)) {
+          return enhancement;
+        }
+      }
+
+      // If no specific match found, add general enhancements based on sex
+      if (sex === 'male') {
+        return `High quality photorealistic image. ${shortPrompt}. Muscular body, erect penis visible, confident expression. Close-up intimate angle. Luxury bedroom with warm lighting.`;
+      } else {
+        return `High quality photorealistic image. ${shortPrompt}. Beautiful face, explicit nudity, aroused expression. Close-up intimate angle. Luxury bedroom with silk sheets and romantic lighting.`;
+      }
+    }
+
     async function handleImageRequest(message) {
       // Check if we're already generating an image
       if (isGeneratingImage) {
@@ -4546,14 +4625,21 @@
       const characterHairLength = currentCharacter.hair_length || 'medium';
       const characterHairColor = currentCharacter.hair_color || 'brown';
 
+      // Get uncensored mode state
+      const unfilteredMode = localStorage.getItem('unfilteredMode') === 'true';
+
       // Use the full user prompt if provided, otherwise get random sexy clothing
-      let simplePrompt;
+      let simplePrompt; // Short version for UI
+      let enhancedPrompt; // Longer version for backend
       if (promptPart && promptPart.length > 0) {
-        // User provided specific prompt - use it fully without filtering
+        // User provided specific prompt - use it as-is for UI
         simplePrompt = promptPart;
+        // Create enhanced longer version for backend with more details
+        enhancedPrompt = enhancePromptWithDetails(promptPart, characterSex, unfilteredMode);
       } else {
         // No specific prompt - use random sexy clothing
         simplePrompt = getStylishClothing(characterStyle);
+        enhancedPrompt = simplePrompt; // No enhancement needed for clothing prompts
       }
       
       // Add user message
@@ -4572,7 +4658,8 @@
       
       try {
         console.log('🎨 Generating image:', {
-          prompt: simplePrompt,
+          shortPrompt: simplePrompt, // What user sees
+          enhancedPrompt: enhancedPrompt, // What backend receives
           characterStyle: characterStyle,
           character: currentCharacter.name
         });
@@ -4592,14 +4679,11 @@
         const userEmail = user?.email;
         const userAuth0Id = user?.id || user?.sub || user?.auth0_id; // Supabase uses .id, Auth0 uses .sub
 
-        // Get uncensored mode state
-        const unfilteredMode = localStorage.getItem('unfilteredMode') === 'true';
-
         const response = await fetch('/.netlify/functions/selira-generate-custom-image', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            customPrompt: simplePrompt,
+            customPrompt: enhancedPrompt, // Send enhanced long prompt to backend
             characterName: currentCharacter.name,
             category: currentCharacter.category,
             style: characterStyle,
