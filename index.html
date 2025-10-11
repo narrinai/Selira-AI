@@ -2073,7 +2073,7 @@
       search: '',
       category: 'all',
       tags: [],
-      content: undefined, // undefined = show all, 'censored' = only censored, 'uncensored' = only uncensored
+      content: 'censored', // Default to censored (safe content)
       sex: 'female', // Default to female
       style: 'realistic', // Default to realistic
       animated: undefined, // undefined = show all, true = only animated, false = only realistic
@@ -2653,7 +2653,7 @@
 
         // Content filter (content_filter field from Airtable: "Uncensored" or "Censored")
         if (currentFilters.content) {
-          const contentFilter = (character.content_filter || 'Uncensored').toLowerCase();
+          const contentFilter = (character.content_filter || 'Censored').toLowerCase();
 
           if (currentFilters.content === 'censored' && contentFilter === 'uncensored') {
             return false; // Hide uncensored companions when censored is selected
@@ -2705,9 +2705,9 @@
 
       // Debug: Count companions with content_filter
       if (currentFilters.content === 'uncensored') {
-        const uncensoredCount = allCharacters.filter(c => (c.content_filter || 'Uncensored').toLowerCase() === 'uncensored').length;
+        const uncensoredCount = allCharacters.filter(c => (c.content_filter || 'Censored').toLowerCase() === 'uncensored').length;
         console.log('🔍 Total companions with content_filter=Uncensored:', uncensoredCount);
-        console.log('🔍 Sample content_filter values:', allCharacters.slice(0, 10).map(c => ({ name: c.name, content_filter: c.content_filter || 'default:Uncensored' })));
+        console.log('🔍 Sample content_filter values:', allCharacters.slice(0, 10).map(c => ({ name: c.name, content_filter: c.content_filter || 'default:Censored' })));
         console.log('🔍 Filtered result:', filteredCharacters.length, 'companions shown');
       }
     }

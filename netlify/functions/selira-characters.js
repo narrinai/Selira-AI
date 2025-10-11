@@ -122,8 +122,8 @@ exports.handler = async (event, context) => {
       ethnicity: record.fields.ethnicity || 'white',
       hair_length: record.fields.hair_length || 'long',
       hair_color: record.fields.hair_color || 'brown',
-      // Content filter - return raw value from Airtable (default to "Uncensored")
-      content_filter: record.fields.content_filter || 'Uncensored'
+      // Content filter - return raw value from Airtable (default to "Censored" for safety)
+      content_filter: record.fields.content_filter || 'Censored'
     }));
 
     return {
