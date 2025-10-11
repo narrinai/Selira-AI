@@ -4703,11 +4703,13 @@
         // Get user info for rate limiting
         const user = window.getCurrentUser ? window.getCurrentUser() : null;
         const userEmail = user?.email;
-        const userAuth0Id = user?.id || user?.sub || user?.auth0_id; // Supabase uses .id, Auth0 uses .sub
+        // Prefer Airtable record ID for usage tracking, fallback to Supabase/Auth0 ID
+        const userAuth0Id = user?.airtable_record_id || user?.id || user?.sub || user?.auth0_id;
 
         console.log('📧 Image generation user info:', {
           userEmail,
           userAuth0Id,
+          hasAirtableId: !!user?.airtable_record_id,
           userIdType: userAuth0Id?.startsWith('rec') ? 'Airtable' : (userAuth0Id?.startsWith('auth0|') ? 'Auth0' : 'Supabase UUID')
         });
 

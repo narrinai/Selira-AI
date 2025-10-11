@@ -116,6 +116,12 @@ class SupabaseAuthModal {
 
       console.log('✅ User synced to Airtable:', result);
 
+      // Store Airtable record ID in user object for image usage tracking
+      if (result.user_id) {
+        this.user.airtable_record_id = result.user_id;
+        console.log('💾 Stored Airtable record ID in user object:', result.user_id);
+      }
+
     } catch (error) {
       console.error('❌ User sync to Airtable failed:', error);
       // Don't block login flow even if sync fails
@@ -538,6 +544,7 @@ class SupabaseAuthModal {
         email: this.user.email,
         sub: this.user.id,
         supabase_id: this.user.id,
+        airtable_record_id: this.user.airtable_record_id,
         name: this.user.user_metadata?.name || this.user.email.split('@')[0]
       }));
     } else {
