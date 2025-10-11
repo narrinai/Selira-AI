@@ -986,14 +986,16 @@ exports.handler = async (event, context) => {
     if ((source === 'chat' || source === 'image-generator') && (email || auth0_id)) {
       console.log(`📈 [${requestId}] ✅ Incrementing usage counter for ${source} image generation`);
       try {
-        // Get userId - prefer limitData userId (Airtable record ID) over auth0_id
-        const userId = body.limitData?.userId || auth0_id;
+        // Use auth0_id directly (should be Airtable record ID from frontend)
+        const userId = auth0_id;
 
         console.log(`📈 [${requestId}] Full increment details:`, {
           userId: userId,
           userIdLength: userId?.length,
           isAirtableId: userId?.startsWith('rec'),
           isAuth0Id: userId?.startsWith('auth0|'),
+          isSupabaseId: userId?.length === 36 && userId?.includes('-'),
+          auth0_id_param: auth0_id,
           limitData: body.limitData
         });
 
