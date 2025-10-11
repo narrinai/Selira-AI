@@ -95,13 +95,13 @@ exports.handler = async (event, context) => {
 
     // Debug: log first record's fields to see available field names
     if (data.records.length > 0) {
-      console.log('🔍 First record fields:', Object.keys(data.records[0].fields));
-      console.log('🔍 is_unfiltered variants:', {
-        'is_unfiltered': data.records[0].fields.is_unfiltered,
-        'Is_Unfiltered': data.records[0].fields.Is_Unfiltered,
-        'IsUnfiltered': data.records[0].fields.IsUnfiltered,
-        'is unfiltered': data.records[0].fields['is unfiltered']
-      });
+      console.log('🔍 First record name:', data.records[0].fields.Name);
+      console.log('🔍 content_filter value:', data.records[0].fields.content_filter);
+      console.log('🔍 content_filter type:', typeof data.records[0].fields.content_filter);
+
+      // Test the conversion logic
+      const testValue = (data.records[0].fields.content_filter || 'Uncensored').toLowerCase() === 'uncensored';
+      console.log('🔍 Converted is_unfiltered:', testValue);
     }
 
     // Format characters for frontend
