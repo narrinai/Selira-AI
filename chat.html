@@ -4703,14 +4703,13 @@
         // Get user info for rate limiting
         const user = window.getCurrentUser ? window.getCurrentUser() : null;
         const userEmail = user?.email;
-        // Prefer Airtable record ID for usage tracking, fallback to Supabase/Auth0 ID
-        const userAuth0Id = user?.airtable_record_id || user?.id || user?.sub || user?.auth0_id;
+        // Use SupabaseID (stable UUID) for usage tracking
+        const userSupabaseId = user?.id || user?.supabase_id || user?.sub;
 
         console.log('📧 Image generation user info:', {
           userEmail,
-          userAuth0Id,
-          hasAirtableId: !!user?.airtable_record_id,
-          userIdType: userAuth0Id?.startsWith('rec') ? 'Airtable' : (userAuth0Id?.startsWith('auth0|') ? 'Auth0' : 'Supabase UUID')
+          userSupabaseId,
+          userIdType: userSupabaseId?.startsWith('rec') ? 'Airtable' : (userSupabaseId?.startsWith('auth0|') ? 'Auth0' : 'Supabase UUID')
         });
 
         const response = await fetch('/.netlify/functions/selira-generate-custom-image', {
@@ -4727,7 +4726,7 @@
             hairLength: characterHairLength,
             hairColor: characterHairColor,
             email: userEmail,
-            auth0_id: userAuth0Id,
+            auth0_id: userSupabaseId,
             source: 'chat', // Mark as chat-generated image for usage tracking
             uncensored: unfilteredMode // Use Promptchan if true, Replicate if false
           })
