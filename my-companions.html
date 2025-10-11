@@ -892,24 +892,40 @@
         </div>
       `;
       try {
-        // Wait for Supabase auth to be ready - give it time to load
+        // Wait for Supabase to load
         await new Promise(resolve => setTimeout(resolve, 500));
 
-        // Try multiple times to get user data (for slow mobile connections)
-        let user = null;
+        // Get user email directly from Supabase session (more reliable than localStorage)
         let userEmail = null;
-        for (let i = 0; i < 5; i++) {
-          user = JSON.parse(localStorage.getItem('user') || '{}');
-          userEmail = user.email;
-          if (userEmail) {
-            console.log(`✅ Found user email on attempt ${i + 1}: ${userEmail}`);
-            break;
+
+        // Try to get email from Supabase first
+        if (window.seliraAuth?.supabase) {
+          try {
+            const { data: { session } } = await window.seliraAuth.supabase.auth.getSession();
+            if (session?.user?.email) {
+              userEmail = session.user.email;
+              console.log('✅ Got email from Supabase session:', userEmail);
+            }
+          } catch (err) {
+            console.log('⚠️ Could not get Supabase session:', err);
           }
-          console.log(`⏳ Waiting for auth... attempt ${i + 1}/5`);
-          await new Promise(resolve => setTimeout(resolve, 300));
         }
 
-        console.log('🔍 Final auth state:', { userEmail, hasUser: !!user });
+        // Fallback to localStorage if Supabase didn't work
+        if (!userEmail) {
+          for (let i = 0; i < 5; i++) {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            userEmail = user.email;
+            if (userEmail) {
+              console.log(`✅ Found user email in localStorage on attempt ${i + 1}: ${userEmail}`);
+              break;
+            }
+            console.log(`⏳ Waiting for auth... attempt ${i + 1}/5`);
+            await new Promise(resolve => setTimeout(resolve, 300));
+          }
+        }
+
+        console.log('🔍 Final auth state:', { userEmail });
 
         if (!userEmail) {
           grid.innerHTML = `
