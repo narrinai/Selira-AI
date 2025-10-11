@@ -901,10 +901,15 @@
         for (let i = 0; i < 5; i++) {
           user = JSON.parse(localStorage.getItem('user') || '{}');
           userEmail = user.email;
-          if (userEmail) break;
+          if (userEmail) {
+            console.log(`✅ Found user email on attempt ${i + 1}: ${userEmail}`);
+            break;
+          }
           console.log(`⏳ Waiting for auth... attempt ${i + 1}/5`);
           await new Promise(resolve => setTimeout(resolve, 300));
         }
+
+        console.log('🔍 Final auth state:', { userEmail, hasUser: !!user });
 
         if (!userEmail) {
           grid.innerHTML = `
@@ -938,11 +943,16 @@
           throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
         const data = await response.json();
+        console.log('📦 API Response:', data);
         if (!data.success) {
+          console.error('❌ API returned error:', data.error);
           throw new Error(data.error || 'Failed to load companions');
         }
         const userCompanions = data.companions || [];
         console.log('✅ Loaded companions:', userCompanions.length);
+        if (userCompanions.length > 0) {
+          console.log('🎭 First companion:', userCompanions[0]);
+        }
         if (userCompanions.length === 0) {
           grid.innerHTML = `
             <div class="loading-grid">
