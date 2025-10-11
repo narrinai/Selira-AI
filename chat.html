@@ -4679,7 +4679,8 @@
       
       // Add loading message
       const loadingId = 'loading-' + Date.now();
-      addMessage('Generating your image... (takes about 7-8 seconds)', 'ai', loadingId);
+      const estimatedTime = unfilteredMode ? '10-15 seconds' : '7-8 seconds';
+      addMessage(`Generating your image... (takes about ${estimatedTime})`, 'ai', loadingId);
       
       try {
         console.log('🎨 Generating image:', {
