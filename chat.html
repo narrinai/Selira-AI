@@ -1960,38 +1960,34 @@
       // Note: Traits are NOT added to user-visible prompts
       // They will be added internally when sending to the backend
 
-      // Get companion traits for personalized prompts
-      const hairColor = (character.hair_color || character.Hair_Color || 'brown').toLowerCase();
-      const ethnicity = (character.ethnicity || character.Ethnicity || 'caucasian').toLowerCase();
-
-      // UNCENSORED NSFW scenario prompts - EXPLICIT with companion traits
+      // UNCENSORED NSFW scenario prompts - EXPLICIT and SHORT for UI
       const uncensoredScenarios = isMale ? [
-        `A ${ethnicity} man with ${hairColor} hair has passionate sex with a woman. His hard cock thrusts deep. His eyes look into the camera with intense pleasure. View from the side.`,
-        `A ${ethnicity} man with ${hairColor} hair masturbates while lying on a bed. His hand strokes his erect cock. His mouth is open with pleasure. Close-up view.`,
-        `A ${ethnicity} man with ${hairColor} hair is naked and aroused. His hard penis is fully visible. He touches himself sensually. Bedroom setting.`,
-        `A ${ethnicity} man with ${hairColor} hair penetrates a woman from behind. His cock goes in and out. Intense orgasm face. View from behind.`,
-        `A ${ethnicity} man with ${hairColor} hair receives oral sex. A woman's mouth on his erect cock. His face shows ecstasy. Close-up of face and action.`,
-        `A ${ethnicity} man with ${hairColor} hair is completely naked and hard. His erect penis prominently displayed. Seductive bedroom eyes. Full body view.`,
-        `A ${ethnicity} man with ${hairColor} hair has sex in missionary position. His cock inside her pussy. Both faces visible with pleasure. Intimate view.`,
-        `A ${ethnicity} man with ${hairColor} hair masturbates intensely. His hand pumping his hard cock. Close to orgasm expression. Side angle view.`,
-        `A ${ethnicity} man with ${hairColor} hair is naked with legs spread. His erect penis and balls visible. Lustful expression. Front view.`,
-        `A ${ethnicity} man with ${hairColor} hair fucks hard and deep. Penis thrusting into pussy. Passionate intense face. Action shot.`
+        `Send me a picture of yourself having sex, cock thrusts deep, eyes at camera`,
+        `Send me a picture of yourself masturbating in bed, hand strokes cock, mouth open`,
+        `Send me a picture of yourself naked and aroused, hard penis visible, touching yourself`,
+        `Send me a picture of yourself penetrating from behind, cock in and out, orgasm face`,
+        `Send me a picture of yourself receiving oral, mouth on cock, face shows ecstasy`,
+        `Send me a picture of yourself naked and hard, erect penis displayed, bedroom eyes`,
+        `Send me a picture of yourself in missionary, cock inside pussy, faces with pleasure`,
+        `Send me a picture of yourself masturbating intensely, pumping hard cock, close to orgasm`,
+        `Send me a picture of yourself naked legs spread, penis and balls visible, lustful`,
+        `Send me a picture of yourself fucking hard, penis thrusts into pussy, intense face`
       ] : [
-        `A ${ethnicity} woman with ${hairColor} hair has doggystyle sex with a man. She is on all fours as he thrusts into her. Her beautiful eyes look into the camera. Her mouth is open with pleasure. View from the side.`,
-        `A ${ethnicity} woman with ${hairColor} hair masturbates on a bed. Her fingers go deep inside her wet pussy. Her face shows intense pleasure. Close-up view.`,
-        `A ${ethnicity} woman with ${hairColor} hair is completely naked with legs spread wide. Her pussy is visible and glistening. She touches her breasts. Bedroom setting.`,
-        `A ${ethnicity} woman with ${hairColor} hair rides a man's cock. She bounces up and down with his penis inside her. Her tits bounce. Orgasm face. Front view.`,
-        `A ${ethnicity} woman with ${hairColor} hair gives a blowjob. Her mouth wrapped around his hard cock. Eyes looking up seductively. Close-up of face and action.`,
-        `A ${ethnicity} woman with ${hairColor} hair is bent over naked. Her pussy and ass are exposed. She looks back with desire. Rear view.`,
-        `A ${ethnicity} woman with ${hairColor} hair has sex in missionary. A cock penetrates her wet pussy. Her legs are spread. Pleasure on her face. Intimate view.`,
-        `A ${ethnicity} woman with ${hairColor} hair masturbates with a toy. The dildo goes in and out of her pussy. Orgasm expression. Side angle view.`,
-        `A ${ethnicity} woman with ${hairColor} hair is naked and spreads her pussy lips. Everything is visible and wet. Lustful eyes. Close-up genital view.`,
-        `A ${ethnicity} woman with ${hairColor} hair gets fucked hard. Penis thrusts deep into her pussy. Tits bouncing. Intense orgasm face. Action shot.`,
-        `A ${ethnicity} woman with ${hairColor} hair is naked on her knees. Her tits and pussy visible. Submissive seductive look. Front view.`,
-        `A ${ethnicity} woman with ${hairColor} hair squirts while masturbating. Her fingers rub her clit fast. Pussy dripping wet. Extreme pleasure face.`,
-        `A ${ethnicity} woman with ${hairColor} hair sits on a man's face. Her pussy on his mouth. She touches her breasts. Pleasure expression. Top view.`,
-        `A ${ethnicity} woman with ${hairColor} hair is penetrated anally. Cock in her ass. She moans with pleasure. Her face shows ecstasy. Side view.`,
-        `A ${ethnicity} woman with ${hairColor} hair is completely nude and aroused. Pussy wet and exposed. Huge tits visible. Bedroom eyes. Full body shot.`
+        `Send me a picture of yourself in doggystyle, on all fours as he thrusts, eyes at camera`,
+        `Send me a picture of yourself masturbating, fingers deep in pussy, face shows pleasure`,
+        `Send me a picture of yourself naked legs spread, pussy visible glistening, touching breasts`,
+        `Send me a picture of yourself riding cock, bouncing with penis inside, tits bounce`,
+        `Send me a picture of yourself giving blowjob, mouth on cock, eyes looking up`,
+        `Send me a picture of yourself bent over naked, pussy and ass exposed, looking back`,
+        `Send me a picture of yourself in missionary, cock in wet pussy, legs spread, pleasure`,
+        `Send me a picture of yourself with toy, dildo in and out of pussy, orgasm expression`,
+        `Send me a picture of yourself spreading pussy lips, everything visible wet, lustful eyes`,
+        `Send me a picture of yourself fucked hard, penis deep in pussy, tits bouncing, orgasm`,
+        `Send me a picture of yourself naked on knees, tits and pussy visible, submissive look`,
+        `Send me a picture of yourself squirting, fingers rub clit fast, pussy dripping wet`,
+        `Send me a picture of yourself on his face, pussy on mouth, touching breasts`,
+        `Send me a picture of yourself penetrated anally, cock in ass, moaning, ecstasy face`,
+        `Send me a picture of yourself nude aroused, pussy wet exposed, huge tits, bedroom eyes`
       ];
 
       // Seductive and suggestive scenario prompts (CENSORED version - current content)
