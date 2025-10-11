@@ -509,7 +509,6 @@
       max-width: none;
       padding: 0 80px;
       flex: 1;
-      overflow-y: auto;
     }
     
     .creation-step {
@@ -1389,6 +1388,9 @@
           </div>
 
           <!-- Navigation -->
+          <div id="creationTimeMessage" style="display: none; text-align: center; color: var(--text-muted); font-size: 13px; margin-bottom: 12px;">
+            This may take 7-8 seconds
+          </div>
           <div class="step-navigation">
             <button id="backBtn" onclick="previousStep()" class="btn btn-secondary" style="display: none;">
               ← Back
@@ -1399,9 +1401,6 @@
             <button id="createFinalBtn" onclick="createCharacter()" class="btn btn-success" style="display: none;">
               Create Companion
             </button>
-          </div>
-          <div id="creationTimeMessage" style="display: none; text-align: center; color: var(--text-muted); font-size: 13px; margin-top: 12px;">
-            This may take 7-8 seconds
           </div>
         </div>
       </div>
@@ -1484,15 +1483,21 @@
           updateAvailableTags();
         }
 
-        // Immediately scroll to top (instant, no smooth behavior)
+        // Scroll to top of the step
         // Use setTimeout to ensure DOM is updated first
         setTimeout(() => {
-          window.scrollTo(0, 0);
-          document.documentElement.scrollTop = 0;
-          document.body.scrollTop = 0;
-          // For mobile Safari
-          if (window.pageYOffset > 0) {
-            window.scrollTo({ top: 0, behavior: 'instant' });
+          // On mobile, scroll to the top of the page content (after header)
+          if (window.innerWidth <= 768) {
+            // Find the create-character-section element
+            const createSection = document.querySelector('.create-character-section');
+            if (createSection) {
+              createSection.scrollIntoView({ behavior: 'instant', block: 'start' });
+            }
+          } else {
+            // On desktop, scroll to absolute top
+            window.scrollTo(0, 0);
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
           }
         }, 0);
       }
