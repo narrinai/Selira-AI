@@ -75,8 +75,15 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   const sanitizedPrompt = customPrompt.trim();
   const promptLower = customPrompt.toLowerCase();
 
-  // Check if this is already an enhanced prompt from chat.html (starts with "High quality")
-  const isAlreadyEnhanced = promptLower.startsWith('high quality') && customPrompt.length > 200;
+  // Check if this is already an enhanced prompt from chat.html (very long and detailed)
+  // Enhanced prompts are typically 200+ chars and contain detailed sexual descriptions
+  const isAlreadyEnhanced = customPrompt.length > 200 && (
+    promptLower.includes('pussy lips') ||
+    promptLower.includes('visible penetration') ||
+    promptLower.includes('intimate angle') ||
+    promptLower.includes('silk sheets') ||
+    promptLower.includes('fingers deep inside')
+  );
 
   if (isAlreadyEnhanced) {
     console.log(`✅ [${requestId}] Detected pre-enhanced prompt from frontend, using directly without modification`);
