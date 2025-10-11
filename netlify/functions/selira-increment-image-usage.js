@@ -150,9 +150,9 @@ exports.handler = async (event, context) => {
     // Check if ImageUsage record exists for this user + hour
     const findImageUsage = () => {
       return new Promise((resolve, reject) => {
-        // Search for User link and Hour match
-        // For linked records, use RECORD_ID() or direct array syntax
-        const filterFormula = `AND(FIND("${userRecordId}", ARRAYJOIN({User})), {Hour}="${currentHour}")`;
+        // Get all records for this hour, then filter client-side for the user
+        // This is more reliable than complex formulas with linked records
+        const filterFormula = `{Hour}="${currentHour}"`;
         const path = `/v0/${AIRTABLE_BASE_ID}/ImageUsage?filterByFormula=${encodeURIComponent(filterFormula)}`;
 
         const options = {
@@ -195,11 +195,22 @@ exports.handler = async (event, context) => {
       records: imageUsageLookup.data.records
     });
 
+    // Filter client-side for matching user record
+    let existingRecord = null;
+    if (imageUsageLookup.data.records && imageUsageLookup.data.records.length > 0) {
+      existingRecord = imageUsageLookup.data.records.find(record => {
+        const userLinks = record.fields.User || [];
+        const hasMatch = userLinks.includes(userRecordId);
+        console.log(`🔍 Checking record ${record.id}: User links=${JSON.stringify(userLinks)}, Looking for=${userRecordId}, Match=${hasMatch}`);
+        return hasMatch;
+      });
+      console.log(`📊 Client-side filter result: ${existingRecord ? 'Found match!' : 'No match found'}`);
+    }
+
     let imageUsageUpdateResult;
 
-    if (imageUsageLookup.data.records && imageUsageLookup.data.records.length > 0) {
+    if (existingRecord) {
       // Record exists - increment Count
-      const existingRecord = imageUsageLookup.data.records[0];
       const currentCount = existingRecord.fields.Count || 0;
       const newCount = currentCount + 1;
 
