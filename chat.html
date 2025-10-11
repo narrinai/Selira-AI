@@ -1266,6 +1266,7 @@
       box-shadow: 0 16px 64px rgba(0, 0, 0, 0.4);
       animation: zoomIn 0.3s ease;
       border: 1px solid var(--border);
+      position: relative;
     }
 
     .image-upgrade-header {
@@ -1384,25 +1385,32 @@
 
     .image-upgrade-close {
       position: absolute;
-      top: 16px;
-      right: 16px;
-      background: none;
+      top: 12px;
+      right: 12px;
+      background: rgba(0, 0, 0, 0.5);
       border: none;
-      color: var(--text-secondary);
-      font-size: 24px;
+      color: #ffffff;
+      font-size: 28px;
       cursor: pointer;
-      width: 32px;
-      height: 32px;
+      width: 36px;
+      height: 36px;
       display: flex;
       align-items: center;
       justify-content: center;
       border-radius: 50%;
       transition: all 0.2s ease;
+      z-index: 10;
+      font-weight: 300;
+      line-height: 1;
     }
 
     .image-upgrade-close:hover {
-      background: var(--bg-secondary);
-      color: var(--text-primary);
+      background: rgba(0, 0, 0, 0.7);
+      transform: scale(1.1);
+    }
+
+    .image-upgrade-close:active {
+      transform: scale(0.95);
     }
 
     /* Image Suggestions Enhancement Styles */
