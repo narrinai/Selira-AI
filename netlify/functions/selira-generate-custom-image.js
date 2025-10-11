@@ -86,7 +86,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   );
 
   if (isAlreadyEnhanced) {
-    console.log(`✅ [${requestId}] Detected pre-enhanced prompt from frontend, using directly without modification`);
+    console.log(`✅ [${requestId}] Detected pre-enhanced prompt from frontend (chat image gen), using directly without modification`);
 
     // Use the enhanced prompt directly without any modifications
     const negativePrompt = 'clothes, clothing, dressed, covered, censored, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white';
@@ -238,33 +238,44 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     console.log(`📝 [${requestId}] User provided detailed instructions - skipping auto background`);
   }
 
-  // Add NSFW enhancement keywords - sensual for companion creation, explicit for image generator
+  // Check if this is companion creation - different enhancement approach
   const isCompanionCreation = source === 'companion-creation';
 
   let nsfwEnhancement;
   if (isCompanionCreation) {
-    // Sensual and alluring for companion avatars, not explicit porn
+    // Sensual and alluring for companion avatars - tasteful nude portrait, NOT explicit porn
+    // Focus on beauty, elegance, and allure rather than explicit sexual content
     nsfwEnhancement = sex === 'male'
-      ? ', naked, nude, bare chest, muscular body, confident pose, seductive expression, sensual, intimate, artistic nude photography, tasteful nudity'
-      : ', naked, nude, bare breasts, beautiful curves, elegant pose, seductive gaze, alluring expression, sensual, intimate, artistic nude photography, soft lighting, tasteful nudity, natural beauty';
+      ? ', naked, nude, bare chest showing, muscular body, confident pose, seductive expression, sensual, intimate, artistic nude photography, tasteful nudity, elegant masculine beauty'
+      : ', naked, nude, bare breasts showing, beautiful curves, elegant pose, seductive gaze, alluring expression, sensual, intimate, artistic nude photography, soft lighting, tasteful nudity, natural beauty, elegant feminine beauty';
   } else {
-    // More explicit for image generator
+    // Explicit for chat/image generator - hardcore NSFW
     nsfwEnhancement = sex === 'male'
       ? ', completely naked, fully nude, no clothes, exposed penis, hard erect cock, bare naked body, muscular physique, genitals fully exposed, explicit nudity, pornographic, XXX rated, adult content, full frontal nudity, sensual, intimate, aroused'
       : ', completely naked, fully nude, no clothes, exposed breasts, exposed pussy, bare naked body, beautiful curves, breasts visible, nipples visible, pussy visible, genitals fully exposed, explicit nudity, pornographic, XXX rated, adult content, full frontal nudity, sensual, intimate, aroused, legs spread';
   }
 
-  // Build prompt with shot description (same structure as censored version)
+  // Build prompt with shot description matching Replicate format
   let shotDesc, enhancedPrompt;
 
   if (style === 'anime' || style === 'animated') {
     shotDesc = isFullBody ? 'full body anime illustration' : 'anime portrait';
-    // Put appearance FIRST and LAST for emphasis
-    enhancedPrompt = `${appearance}, ${shotDesc}, anime style, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}, ${appearance}, detailed anime art, high quality anime illustration, vibrant colors`;
+    // For companion creation: focus on portrait/full body beauty shot
+    if (isCompanionCreation) {
+      enhancedPrompt = `${shotDesc} of ${appearance}, anime style, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}, detailed anime art, vibrant colors, clean background, single character`;
+    } else {
+      // For image generator: keep appearance emphasis
+      enhancedPrompt = `${appearance}, ${shotDesc}, anime style, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}, ${appearance}, detailed anime art, vibrant colors`;
+    }
   } else {
-    shotDesc = isFullBody ? 'full body photograph' : 'upper body photograph';
-    // Put appearance FIRST and LAST for emphasis
-    enhancedPrompt = `${appearance}, ${shotDesc}, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}, ${appearance}, photorealistic, ultra realistic, professional photography, detailed, high quality`;
+    shotDesc = isFullBody ? 'full body photograph' : 'portrait photograph';
+    // For companion creation: match Replicate's format for consistency
+    if (isCompanionCreation) {
+      enhancedPrompt = `${shotDesc} of ${appearance}, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}, realistic skin texture, realistic facial features, realistic proportions, professional photography, clean background, single person`;
+    } else {
+      // For image generator: keep appearance emphasis
+      enhancedPrompt = `${appearance}, ${shotDesc}, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}, ${appearance}, photorealistic, ultra realistic, professional photography, detailed`;
+    }
   }
 
   console.log(`📸 [${requestId}] Shot type: ${shotDesc} (isFullBody: ${isFullBody})`);
@@ -286,20 +297,20 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   // Add negative prompt to reduce unwanted elements
   const negativePrompt = 'clothes, clothing, dressed, covered, censored, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white';
 
-  // Build Promptchan API request with fixed parameters as requested
+  // Build Promptchan API request
   const promptchanRequest = {
     prompt: enhancedPrompt,
     negative_prompt: negativePrompt,
     style: promptchanStyle,
     quality: 'Ultra', // Fastest quality - 1 Gem
     image_size: '768x512', // Landscape format
-    creativity: 70, // Fixed at 70 as requested
-    seed: -1, // Fixed at -1 (random) as requested
-    filter: promptchanFilter, // Fixed at Default as requested
-    emotion: 'Default', // Fixed at Default as requested
-    detail: 0, // Fixed at 0 as requested
-    age_slider: 25, // Fixed at 25 as requested
-    weight_slider: 0, // Fixed at 0 as requested
+    creativity: 50, // Lower creativity for better prompt adherence
+    seed: -1, // Random seed
+    filter: promptchanFilter, // Default filter
+    emotion: 'Default',
+    detail: 0,
+    age_slider: 25,
+    weight_slider: 0,
     breast_slider: sex === 'male' ? 0 : 0, // Natural breast size
     ass_slider: sex === 'male' ? 0 : 0, // Natural ass size
     restore_faces: false
