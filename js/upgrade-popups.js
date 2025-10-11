@@ -173,12 +173,12 @@ function addUpgradePopupCSS() {
         margin: 1rem;
         padding: 1.25rem;
         max-width: none;
-        max-height: 75vh;
+        max-height: 60vh;
       }
 
       .upgrade-header-image {
-        height: 140px;
-        margin: -1.25rem -1.25rem 1rem -1.25rem;
+        height: 100px;
+        margin: -1.25rem -1.25rem 0.75rem -1.25rem;
       }
 
       .upgrade-title {
@@ -316,7 +316,7 @@ function getUpgradeContent(usage, quota, type) {
   
   return `
     <div class="upgrade-modal">
-      <img src="/avatars/rosalie-di-matteo-1759673517718-1759737913017.webp" alt="Upgrade" class="upgrade-header-image" />
+      <img src="https://selira.ai/avatars/rosalie-di-matteo-1759673517718-1759737924071.webp" alt="Upgrade" class="upgrade-header-image" />
       <div class="upgrade-header">
         <h3 class="upgrade-title">${titles[type] || titles.messages}</h3>
         <p class="upgrade-subtitle">${subtitles[type] || subtitles.messages}</p>
