@@ -188,6 +188,12 @@ exports.handler = async (event, context) => {
 
     const imageUsageLookup = await findImageUsage();
 
+    console.log(`📊 ImageUsage lookup result:`, {
+      statusCode: imageUsageLookup.statusCode,
+      recordsFound: imageUsageLookup.data.records?.length || 0,
+      records: imageUsageLookup.data.records
+    });
+
     let imageUsageUpdateResult;
 
     if (imageUsageLookup.data.records && imageUsageLookup.data.records.length > 0) {
