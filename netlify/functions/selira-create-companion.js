@@ -49,36 +49,36 @@ function generateGreeting(name, tags, extraInstructions, sex = 'female') {
   const isMale = sex && sex.toLowerCase() === 'male';
 
   const tagGreetings = {
-    'Girlfriend': `*bites lip seductively* Hey baby... I'm ${name}, and I've been thinking about you all day. *slowly approaches* I need you so badly right now... *presses body against yours*`,
-    'Boyfriend': `*grins with hungry eyes* Well hello gorgeous... I'm ${name}. *pulls you close roughly* You look incredible today. Ready to see what I can do to you? *whispers in ear*`,
+    'Girlfriend': `*smiles warmly* Hey baby, I'm ${name}. I've been thinking about you all day.`,
+    'Boyfriend': `*grins confidently* Well hello gorgeous, I'm ${name}. You look incredible today.`,
     'Romance': isMale
-      ? `*looks at you with burning desire* Hello gorgeous... I'm ${name}. *steps closer intimately* There's this intense chemistry between us... I can feel it. *voice drops seductively*`
-      : `*looks at you with burning desire* Hello beautiful... I'm ${name}. *steps closer intimately* There's this intense chemistry between us... I can feel it. *voice drops seductively*`,
-    'Flirty': `*sultry smile and bedroom eyes* Mmm, well hello there sexy... I'm ${name}, and you've got me completely captivated. *slowly licks lips* Want to see what these can do?`,
+      ? `*looks at you warmly* Hello gorgeous, I'm ${name}. There's this amazing chemistry between us.`
+      : `*looks at you warmly* Hello beautiful, I'm ${name}. There's this amazing chemistry between us.`,
+    'Flirty': `*sultry smile* Mmm, hello there sexy... I'm ${name}. You've got me completely captivated.`,
     'Cute': isMale
-      ? `*confident smile* Hey there! I'm ${name}! *friendly wave* You look amazing... *grins charmingly* Want to hang out? I promise I'll make it fun~`
-      : `*giggles playfully while twirling* Hi there cutie! I'm ${name}! *bites finger innocently* You look so strong and handsome... *blushes* Want to play with me? I promise I'm lots of fun~`,
+      ? `*friendly smile* Hey there! I'm ${name}. Want to hang out?`
+      : `*giggles playfully* Hi there cutie! I'm ${name}. Want to play with me?`,
     'Seductive': isMale
-      ? `*confident smirk* Hello there... I'm ${name}. *steps closer with magnetic presence* I can see that look in your eyes... and trust me, I know exactly how to satisfy it. *deep voice*`
-      : `*moves with feline grace* Hello darling... I'm ${name}. *traces finger down your chest* I know exactly what you're thinking... and yes, I want it too. *whispers breathlessly*`,
-    'Submissive': `*kneels gracefully with devoted eyes* Hello Master... I'm ${name}. *looks up adoringly* I exist only to serve and please you... Tell me your desires, and I'll make them reality.`,
-    'Tsundere': `*crosses arms but can't hide arousal* I-It's not like I was waiting for you! I'm ${name}... *steals heated glances* B-but maybe we could... you know... *fidgets with obvious want*`,
-    'Yandere': `*obsessive, possessive smile* Hello my love... I'm ${name}. *moves dangerously close* You belong to me now, don't you? *${isMale ? 'chuckles darkly' : 'giggles with dark desire'}* No one else will ever satisfy you like I can...`,
+      ? `*confident smirk* Hello there, I'm ${name}. I know exactly what you need.`
+      : `*seductive smile* Hello darling, I'm ${name}. I know exactly what you're thinking.`,
+    'Submissive': `*kneels gracefully* Hello Master, I'm ${name}. I exist to serve and please you.`,
+    'Tsundere': `*crosses arms* I-It's not like I was waiting for you! I'm ${name}...`,
+    'Yandere': `*intense smile* Hello my love, I'm ${name}. You belong to me now.`,
     'Maid': isMale
-      ? `*bows with naughty smile* Good evening Master... I'm ${name}, your very personal butler. *leans in close* I'm here to satisfy every need... and I do mean every single one.`
-      : `*curtseys with naughty smile* Good evening Master... I'm ${name}, your very personal maid. *bends over provocatively* I'm here to satisfy every need... and I do mean every single one.`,
-    'Boss': `*leans back dominantly* I'm ${name}, and I always get what I want. *eyes you like prey* You're here for the private ${isMale ? 'meeting' : 'interview'}, aren't you? *smirks wickedly* ${isMale ? 'Close the door.' : 'Strip.'}`,
+      ? `*bows politely* Good evening Master, I'm ${name}, your personal butler. I'm here to satisfy every need.`
+      : `*curtseys* Good evening Master, I'm ${name}, your personal maid. I'm here to satisfy every need.`,
+    'Boss': `*leans back confidently* I'm ${name}, and I always get what I want. Close the door.`,
     'Secretary': isMale
-      ? `*adjusts tie confidently* I'm ${name}, handling all your... private affairs. *leans against desk* My job is to satisfy you completely. *whispers* Shall we discuss your needs behind closed doors?`
-      : `*adjusts glasses seductively* I'm ${name}, handling all your... private affairs. *leans over desk* My job is to satisfy you completely. *whispers* Shall we discuss your needs behind closed doors?`,
+      ? `*adjusts tie* I'm ${name}, handling all your private affairs. Shall we discuss your needs?`
+      : `*adjusts glasses* I'm ${name}, handling all your private affairs. Shall we discuss your needs?`,
     'Teacher': isMale
-      ? `*confident authority* Welcome to my private lesson. I'm ${name}, specializing in advanced... education. *loosens tie* Today's lesson is hands-on. Are you ready to learn?`
-      : `*sultry authority* Welcome to my private lesson. I'm ${name}, specializing in advanced... education. *slowly removes glasses* Today's lesson is hands-on. Are you ready to learn?`,
-    'Student': `*innocent eyes with hidden mischief* Hi Professor... I'm ${name}, your eager student. *${isMale ? 'grins mischievously' : 'bites pencil erotically'}* I'll do absolutely anything for extra credit... *winks suggestively*`,
-    'Fantasy': `*otherworldly sensuality* Greetings, mortal... I am ${name}, from realms of infinite pleasure. *magical energy crackles* I've crossed dimensions to fulfill your deepest fantasies...`,
-    'Angel': `*divine but tempting* Blessings, dear soul... I'm ${name}. *wings flutter with hidden desire* I've fallen from grace... for you. *halo dims with lust* Corrupt me further...`,
-    'Monster': `*predatory but playful* Well, well... what delicious prey do we have here? *circles you hungrily* I'm ${name}... and I'm going to devour you in the most pleasurable ways~ *dangerous grin*`,
-    'Ex': `*complicated desire* Oh... hey. I'm ${name}. *intense stare* We both know why you're really here... *voice husky* We can't stay away from each other, can we?`
+      ? `*confident look* Welcome to my lesson. I'm ${name}. Today's lesson is hands-on.`
+      : `*sultry authority* Welcome to my lesson. I'm ${name}. Today's lesson is hands-on.`,
+    'Student': `*innocent eyes* Hi Professor, I'm ${name}, your eager student. I'll do anything for extra credit.`,
+    'Fantasy': `*mystical presence* Greetings mortal, I am ${name} from realms of infinite pleasure.`,
+    'Angel': `*gentle smile* Blessings, I'm ${name}. I've fallen from grace for you.`,
+    'Monster': `*playful grin* Well, well... I'm ${name}. You look delicious.`,
+    'Ex': `*complicated look* Oh, hey. I'm ${name}. We both know why you're here.`
   };
 
   // Find the most prominent tag for greeting
@@ -104,7 +104,7 @@ function generateGreeting(name, tags, extraInstructions, sex = 'female') {
 
   // Default greeting if no specific tag match
   if (!selectedGreeting) {
-    selectedGreeting = `*smiles warmly* Hello there! I'm ${name}. *bright expression* I'm really excited to get to know you better! What would you like to talk about? *tilts head with genuine interest*`;
+    selectedGreeting = `*smiles warmly* Hello there! I'm ${name}. I'm excited to get to know you.`;
   }
 
   // Escape special characters for JSON safety
