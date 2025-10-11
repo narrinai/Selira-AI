@@ -56,6 +56,10 @@ exports.handler = async (event, context) => {
     }
 
     console.log('📊 Updating images_generated in Users table for userId:', userId);
+    console.log('📊 userId type:', typeof userId);
+    console.log('📊 userId length:', userId?.length);
+    console.log('📊 userId starts with rec:', userId?.startsWith('rec'));
+    console.log('📊 userId starts with auth0:', userId?.startsWith('auth0'));
 
     // Find the user by Auth0ID to get their Airtable record ID
     const getUserRecord = () => {
@@ -193,6 +197,9 @@ exports.handler = async (event, context) => {
       const newCount = currentCount + 1;
 
       console.log(`📊 ImageUsage record exists, incrementing: ${currentCount} → ${newCount}`);
+      console.log(`📊 Existing ImageUsage record ID: ${existingRecord.id}`);
+      console.log(`📊 Existing ImageUsage Hour: ${existingRecord.fields.Hour}`);
+      console.log(`📊 Current Hour we're checking: ${currentHour}`);
 
       const updateImageUsage = () => {
         return new Promise((resolve, reject) => {
