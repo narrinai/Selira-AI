@@ -100,18 +100,76 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
       console.log(`📸 [${requestId}] Using Hyperreal XL+ model for realistic companion`);
     }
 
-    // Enhance prompt with explicit detail keywords if needed
+    // Enhance prompt with explicit detail keywords for maximum visibility
     let enhancedPrompt = sanitizedPrompt;
 
-    // Add explicit detail emphasis for better generation
-    if (!enhancedPrompt.includes('huge') && !enhancedPrompt.includes('big')) {
-      // Add size emphasis for breasts/ass/cock if not already there
-      if (sex === 'female' && (enhancedPrompt.includes('breast') || enhancedPrompt.includes('tit') || enhancedPrompt.includes('ass'))) {
-        enhancedPrompt = enhancedPrompt.replace(/breasts?/gi, 'huge natural breasts').replace(/tits?/gi, 'huge tits').replace(/\bass\b/gi, 'big round ass');
-      } else if (sex === 'male' && (enhancedPrompt.includes('cock') || enhancedPrompt.includes('penis') || enhancedPrompt.includes('dick'))) {
-        enhancedPrompt = enhancedPrompt.replace(/cock/gi, 'big cock').replace(/penis/gi, 'big penis').replace(/dick/gi, 'big dick');
+    console.log(`🔍 [${requestId}] Original enhanced prompt:`, enhancedPrompt);
+
+    // IMPORTANT: Make genitals and explicit acts MORE visible by emphasizing keywords
+    // This ensures Promptchan generates actually explicit content
+
+    // Replace generic terms with more explicit, detailed versions
+    // Female explicit enhancements
+    if (sex === 'female') {
+      // Make breast/tit references bigger and more explicit
+      if (!enhancedPrompt.includes('huge') && !enhancedPrompt.includes('large breasts')) {
+        enhancedPrompt = enhancedPrompt.replace(/\bbreasts?\b/gi, 'huge natural breasts');
+        enhancedPrompt = enhancedPrompt.replace(/\btits?\b/gi, 'huge tits');
+      }
+
+      // Make ass references bigger and more explicit
+      if (!enhancedPrompt.includes('big ass') && !enhancedPrompt.includes('big round ass')) {
+        enhancedPrompt = enhancedPrompt.replace(/\bass\b/gi, 'big round ass');
+        enhancedPrompt = enhancedPrompt.replace(/\basshole\b/gi, 'tight asshole');
+      }
+
+      // Make pussy references MORE explicit and visible
+      enhancedPrompt = enhancedPrompt.replace(/\bpussy\b/gi, 'wet glistening pussy, labia visible');
+      enhancedPrompt = enhancedPrompt.replace(/\bvagina\b/gi, 'wet vagina, lips spread');
+
+      // Emphasize pussy lips/labia visibility
+      if (enhancedPrompt.includes('pussy lips') && !enhancedPrompt.includes('visible')) {
+        enhancedPrompt = enhancedPrompt.replace(/pussy lips/gi, 'pussy lips clearly visible, labia spread');
+      }
+
+      // Make oral sex more explicit
+      if (enhancedPrompt.toLowerCase().includes('blowjob') || enhancedPrompt.toLowerCase().includes('oral sex')) {
+        if (!enhancedPrompt.includes('cock in mouth') && !enhancedPrompt.includes('penis in mouth')) {
+          enhancedPrompt = enhancedPrompt.replace(/\bblowjob\b/gi, 'blowjob, big cock deep in mouth');
+          enhancedPrompt = enhancedPrompt.replace(/\boral sex\b/gi, 'oral sex, erect penis filling mouth');
+        }
       }
     }
+
+    // Male explicit enhancements
+    if (sex === 'male') {
+      // Make cock/penis references bigger and more explicit
+      if (!enhancedPrompt.includes('big cock') && !enhancedPrompt.includes('large penis')) {
+        enhancedPrompt = enhancedPrompt.replace(/\bcock\b/gi, 'big hard cock');
+        enhancedPrompt = enhancedPrompt.replace(/\bpenis\b/gi, 'big erect penis');
+        enhancedPrompt = enhancedPrompt.replace(/\bdick\b/gi, 'big hard dick');
+      }
+
+      // Make balls more explicit
+      enhancedPrompt = enhancedPrompt.replace(/\bballs\b/gi, 'balls hanging, testicles visible');
+    }
+
+    // Penetration emphasis (both sexes)
+    if (enhancedPrompt.toLowerCase().includes('penetration') || enhancedPrompt.toLowerCase().includes('penetrating')) {
+      if (!enhancedPrompt.includes('visible penetration')) {
+        enhancedPrompt = enhancedPrompt.replace(/\bpenetration\b/gi, 'visible penetration, cock sliding deep inside');
+        enhancedPrompt = enhancedPrompt.replace(/\bpenetrating\b/gi, 'penetrating deep, cock clearly visible entering');
+      }
+    }
+
+    // Sex act emphasis - make it MORE explicit
+    if (enhancedPrompt.toLowerCase().includes('having sex') || enhancedPrompt.toLowerCase().includes('fucking')) {
+      if (!enhancedPrompt.includes('genitals visible')) {
+        enhancedPrompt += ', genitals clearly visible, explicit sexual contact';
+      }
+    }
+
+    console.log(`✨ [${requestId}] ENHANCED explicit prompt:`, enhancedPrompt);
 
     const promptchanRequest = {
       prompt: enhancedPrompt,
