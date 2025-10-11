@@ -93,6 +93,17 @@ exports.handler = async (event, context) => {
     const data = await response.json();
     console.log(`📊 Retrieved ${data.records.length} characters`);
 
+    // Debug: log first record's fields to see available field names
+    if (data.records.length > 0) {
+      console.log('🔍 First record fields:', Object.keys(data.records[0].fields));
+      console.log('🔍 is_unfiltered variants:', {
+        'is_unfiltered': data.records[0].fields.is_unfiltered,
+        'Is_Unfiltered': data.records[0].fields.Is_Unfiltered,
+        'IsUnfiltered': data.records[0].fields.IsUnfiltered,
+        'is unfiltered': data.records[0].fields['is unfiltered']
+      });
+    }
+
     // Format characters for frontend
     const characters = data.records.map(record => ({
       id: record.id,
