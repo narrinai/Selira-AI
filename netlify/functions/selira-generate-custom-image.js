@@ -100,8 +100,21 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
       console.log(`📸 [${requestId}] Using Hyperreal XL+ model for realistic companion`);
     }
 
+    // Enhance prompt with explicit detail keywords if needed
+    let enhancedPrompt = sanitizedPrompt;
+
+    // Add explicit detail emphasis for better generation
+    if (!enhancedPrompt.includes('huge') && !enhancedPrompt.includes('big')) {
+      // Add size emphasis for breasts/ass/cock if not already there
+      if (sex === 'female' && (enhancedPrompt.includes('breast') || enhancedPrompt.includes('tit') || enhancedPrompt.includes('ass'))) {
+        enhancedPrompt = enhancedPrompt.replace(/breasts?/gi, 'huge natural breasts').replace(/tits?/gi, 'huge tits').replace(/\bass\b/gi, 'big round ass');
+      } else if (sex === 'male' && (enhancedPrompt.includes('cock') || enhancedPrompt.includes('penis') || enhancedPrompt.includes('dick'))) {
+        enhancedPrompt = enhancedPrompt.replace(/cock/gi, 'big cock').replace(/penis/gi, 'big penis').replace(/dick/gi, 'big dick');
+      }
+    }
+
     const promptchanRequest = {
-      prompt: sanitizedPrompt, // Use as-is
+      prompt: enhancedPrompt,
       negative_prompt: negativePrompt,
       style: promptchanModelStyle,  // Use correct model based on companion style
       quality: 'Ultra',
@@ -113,8 +126,8 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
       detail: 0,
       age_slider: 25,
       weight_slider: 0,
-      breast_slider: 0,
-      ass_slider: 0,
+      breast_slider: 50,  // Increase breast size slider for females
+      ass_slider: 50,  // Increase ass size slider
       restore_faces: false
     };
 
