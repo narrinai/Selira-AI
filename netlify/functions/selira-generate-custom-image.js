@@ -167,34 +167,34 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   console.log(`✨ [${requestId}] Promptchan enhanced prompt:`, enhancedPrompt);
 
   // Determine Promptchan style based on our style parameter
-  let promptchanStyle = 'Photo XL+ v2';
-  let promptchanFilter = 'Professional';
+  let promptchanStyle = 'Hyperreal XL+';  // Use Hyperreal XL+ for realistic
+  let promptchanFilter = 'Default';       // Use Default filter
 
   if (style === 'anime' || style === 'animated') {
     promptchanStyle = 'Anime XL+';
-    promptchanFilter = 'Anime Studio';
+    promptchanFilter = 'Default';  // Use Default filter for anime too
     console.log(`🎌 [${requestId}] Using ANIME style for Promptchan`);
   } else {
-    console.log(`📸 [${requestId}] Using REALISTIC style for Promptchan`);
+    console.log(`📸 [${requestId}] Using Hyperreal XL+ for Promptchan`);
   }
 
   // Add negative prompt to reduce unwanted elements
   const negativePrompt = 'clothes, clothing, dressed, covered, censored, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white';
 
-  // Build Promptchan API request - simplified parameters for Ultra quality
+  // Build Promptchan API request with fixed parameters as requested
   const promptchanRequest = {
     prompt: enhancedPrompt,
     negative_prompt: negativePrompt,
     style: promptchanStyle,
     quality: 'Ultra', // Fastest quality - 1 Gem
     image_size: '768x512', // Landscape format
-    creativity: 80, // Standard creativity
-    seed: -1, // Random seed
-    filter: promptchanFilter,
-    emotion: 'Default',
-    detail: 0, // Standard detail
-    age_slider: 24, // Attractive age
-    weight_slider: 0, // Balanced weight
+    creativity: 70, // Fixed at 70 as requested
+    seed: -1, // Fixed at -1 (random) as requested
+    filter: promptchanFilter, // Fixed at Default as requested
+    emotion: 'Default', // Fixed at Default as requested
+    detail: 0, // Fixed at 0 as requested
+    age_slider: 25, // Fixed at 25 as requested
+    weight_slider: 0, // Fixed at 0 as requested
     breast_slider: sex === 'male' ? 0 : 0, // Natural breast size
     ass_slider: sex === 'male' ? 0 : 0, // Natural ass size
     restore_faces: false
