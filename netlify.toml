@@ -13,6 +13,10 @@ node_bundler = "esbuild"
 [functions."selira-generate-custom-image"]
 timeout = 30
 
+# Increase timeout for companion creation (includes avatar generation)
+[functions."selira-create-companion"]
+timeout = 60
+
 # Scheduled function to download Replicate URLs every 8 hours
 [functions."download-replicate-avatars-scheduled"]
 schedule = "0 */8 * * *"
