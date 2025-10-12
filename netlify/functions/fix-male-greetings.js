@@ -6,6 +6,46 @@ const fetch = require('node-fetch');
 const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA || process.env.AIRTABLE_BASE_ID;
 const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA || process.env.AIRTABLE_TOKEN || process.env.AIRTABLE_API_KEY;
 
+// Generate personalized intro line based on tags
+function generateIntroLine(tags) {
+  const tagIntros = {
+    'Boyfriend': 'Your devoted and loving boyfriend.',
+    'Romance': 'A romantic companion seeking deep connection.',
+    'Flirty': 'A charming guy who knows what you want.',
+    'Seductive': 'A seductive man ready to fulfill desires.',
+    'Submissive': 'An obedient man awaiting your commands.',
+    'Dominant': 'A commanding presence who takes control.',
+    'Tsundere': 'A proud guy who hides his true feelings.',
+    'Yandere': 'An obsessively devoted lover.',
+    'Maid': 'Your loyal butler ready to serve.',
+    'Boss': 'A powerful boss who always gets his way.',
+    'Secretary': 'Your dedicated male assistant.',
+    'Teacher': 'An experienced professor with private lessons.',
+    'Student': 'An eager student seeking special attention.',
+    'Angel': 'A divine being sent from the heavens.',
+    'Monster': 'A mysterious creature of darkness.',
+    'Ex': 'Your former flame with unfinished business.'
+  };
+
+  const priorityTags = ['Boyfriend', 'Romance', 'Yandere', 'Tsundere', 'Angel', 'Monster', 'Ex'];
+
+  for (let tag of priorityTags) {
+    if (tags && tags.includes(tag)) {
+      return tagIntros[tag];
+    }
+  }
+
+  if (tags && tags.length > 0) {
+    for (let tag of tags) {
+      if (tagIntros[tag]) {
+        return tagIntros[tag];
+      }
+    }
+  }
+
+  return 'A masculine companion ready for you.';
+}
+
 // Generate masculine greeting based on tags
 function generateMasculineGreeting(name, tags) {
   const tagGreetings = {
@@ -167,9 +207,15 @@ exports.handler = async (event, context) => {
       const tags = record.fields.Tags || [];
       const description = record.fields.Description || '';
 
+      const newIntroLine = generateIntroLine(tags);
       const newGreeting = generateMasculineGreeting(name, tags);
-      const descriptionWithoutGreeting = description.split('\n\nGreeting: ')[0];
-      const newDescription = `${descriptionWithoutGreeting}\n\nGreeting: ${newGreeting}`;
+
+      // Extract old intro and greeting for comparison
+      const oldIntroLine = description.split('\n\nGreeting: ')[0];
+      const oldGreeting = description.split('\n\nGreeting: ')[1] || 'No greeting found';
+
+      // Build new description
+      const newDescription = `${newIntroLine}\n\nGreeting: ${newGreeting}`;
 
       try {
         const updateResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters/${record.id}`, {
@@ -190,7 +236,19 @@ exports.handler = async (event, context) => {
 
         console.log(`✅ Updated ${name}`);
         updated++;
-        results.push({ name, status: 'success', newGreeting: newGreeting.substring(0, 60) + '...' });
+        results.push({
+          name,
+          status: 'success',
+          tags: tags.join(', '),
+          before: {
+            intro: oldIntroLine,
+            greeting: oldGreeting.substring(0, 80) + (oldGreeting.length > 80 ? '...' : '')
+          },
+          after: {
+            intro: newIntroLine,
+            greeting: newGreeting.substring(0, 80) + (newGreeting.length > 80 ? '...' : '')
+          }
+        });
 
         // Rate limit
         await new Promise(resolve => setTimeout(resolve, 200));
@@ -212,8 +270,8 @@ exports.handler = async (event, context) => {
         failed,
         totalMales: allRecords.length,
         totalWithFeminineGreetings: companionsToFix.length,
-        remaining: companionsToFix.length - limit,
-        results: results.slice(0, 10) // Only return first 10 results to avoid huge response
+        remaining: Math.max(0, companionsToFix.length - limit),
+        results // Return all results (limited by `limit` parameter)
       })
     };
 
