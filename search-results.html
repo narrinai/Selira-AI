@@ -865,6 +865,15 @@
       console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Searching for terms:', searchTerms);
 
       const results = characters.filter(character => {
+        // NSFW search terms that should match unfiltered companions
+        const nsfwTerms = ['uncensored', 'unfiltered', 'nsfw', 'anal', 'blowjob', 'sex', 'nude', 'naked', 'explicit', 'porn', 'xxx'];
+        const hasNsfwTerm = searchTerms.some(term => nsfwTerms.includes(term));
+
+        // Special handling for NSFW searches - match is_unfiltered field
+        if (hasNsfwTerm) {
+          return character.is_unfiltered === true;
+        }
+
         // Build searchable text from all character fields
         const searchableFields = [
           character.name,
@@ -877,6 +886,7 @@
           character.hair_length,
           character.companion_type,
           character.sex,
+          character.is_unfiltered ? 'uncensored nsfw unfiltered explicit nude naked adult xxx porn' : '', // Add NSFW keywords if companion is unfiltered
           ...(character.tags || [])
         ].filter(Boolean); // Remove empty values
 
@@ -886,7 +896,7 @@
         const matches = searchTerms.some(term => searchText.includes(term));
 
         if (matches) {
-          console.log('✅ Match found:', character.name, '- Hair:', character.hair_color, '- Tags:', character.tags);
+          console.log('✅ Match found:', character.name, '- Hair:', character.hair_color, '- Tags:', character.tags, '- Unfiltered:', character.is_unfiltered);
         }
 
         return matches;
