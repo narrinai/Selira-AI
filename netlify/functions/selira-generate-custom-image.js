@@ -724,6 +724,7 @@ exports.handler = async (event, context) => {
   globalRequestCount++;
 
   console.log(`📊 [${requestId}] Request #${globalRequestCount} from ${clientIp}`);
+  console.log(`🚨 [${requestId}] FUNCTION VERSION: v1.2 - WITH UNCENSORED DEBUG LOGS`);
 
   // Clean up old entries to prevent memory leak (keep only last 100 entries)
   if (recentRequests.size > 100) {
