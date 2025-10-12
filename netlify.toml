@@ -15,8 +15,9 @@ node_bundler = "esbuild"
 timeout = 26
 
 # Increase timeout for companion creation (includes avatar generation)
+# Netlify Pro max is 26 seconds
 [functions."selira-create-companion"]
-timeout = 60
+timeout = 26
 
 # Scheduled function to download Replicate URLs every 8 hours
 [functions."download-replicate-avatars-scheduled"]
