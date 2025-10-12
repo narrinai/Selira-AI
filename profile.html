@@ -1921,11 +1921,11 @@
         } else {
           const error = await response.json();
           console.error('❌ Failed to submit deletion request:', error);
-          alert('Failed to submit deletion request. Please contact support.');
+          alert('Failed to submit deletion request. Please email your request to hello@selira.ai');
         }
       } catch (error) {
         console.error('❌ Error submitting deletion request:', error);
-        alert('An error occurred. Please try again or contact support.');
+        alert('An error occurred. Please try again or email hello@selira.ai');
       }
     }
 
