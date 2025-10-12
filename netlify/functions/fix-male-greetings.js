@@ -95,14 +95,14 @@ exports.handler = async (event, context) => {
 
     console.log(`🔧 Starting male greetings fix - Test mode: ${testMode}, Limit: ${limit}`);
 
-    // Fetch all male companions
+    // Fetch all male characters (from Characters table, not Companions)
     let allRecords = [];
     let offset = null;
 
     do {
       const url = offset
-        ? `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Companions?filterByFormula={Sex}='male'&offset=${offset}`
-        : `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Companions?filterByFormula={Sex}='male'`;
+        ? `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters?filterByFormula={Sex}='male'&offset=${offset}`
+        : `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters?filterByFormula={Sex}='male'`;
 
       const response = await fetch(url, {
         headers: {
@@ -112,7 +112,8 @@ exports.handler = async (event, context) => {
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to fetch companions: ${response.status}`);
+        const errorText = await response.text();
+        throw new Error(`Failed to fetch characters: ${response.status} - ${errorText}`);
       }
 
       const data = await response.json();
@@ -120,7 +121,7 @@ exports.handler = async (event, context) => {
       offset = data.offset;
     } while (offset);
 
-    console.log(`✅ Found ${allRecords.length} male companions total`);
+    console.log(`✅ Found ${allRecords.length} male characters total`);
 
     // Filter companions with feminine greetings
     const feminineKeywords = [
@@ -138,7 +139,7 @@ exports.handler = async (event, context) => {
       );
     });
 
-    console.log(`🎯 Found ${companionsToFix.length} male companions with feminine greetings`);
+    console.log(`🎯 Found ${companionsToFix.length} male characters with feminine greetings`);
 
     if (companionsToFix.length === 0) {
       return {
@@ -146,7 +147,7 @@ exports.handler = async (event, context) => {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         body: JSON.stringify({
           success: true,
-          message: 'All male companions already have masculine greetings',
+          message: 'All male characters already have masculine greetings',
           updated: 0,
           total: allRecords.length
         })
@@ -171,7 +172,7 @@ exports.handler = async (event, context) => {
       const newDescription = `${descriptionWithoutGreeting}\n\nGreeting: ${newGreeting}`;
 
       try {
-        const updateResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Companions/${record.id}`, {
+        const updateResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters/${record.id}`, {
           method: 'PATCH',
           headers: {
             'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
@@ -183,7 +184,8 @@ exports.handler = async (event, context) => {
         });
 
         if (!updateResponse.ok) {
-          throw new Error(`Update failed: ${updateResponse.status}`);
+          const errorText = await updateResponse.text();
+          throw new Error(`Update failed: ${updateResponse.status} - ${errorText}`);
         }
 
         console.log(`✅ Updated ${name}`);
