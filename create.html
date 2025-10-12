@@ -1942,6 +1942,15 @@
     async function generateAvatarPreview() {
       console.log('🎨 Starting avatar generation...');
 
+      // SKIP FRONTEND AVATAR GENERATION FOR UNCENSORED COMPANIONS
+      // Let backend handle it (like bulk generation scripts do)
+      if (characterCreationState.uncensored) {
+        console.log('🔓 Uncensored mode - skipping frontend avatar generation, backend will handle it');
+        preGeneratedAvatarUrl = null;
+        avatarGenerationInProgress = false;
+        return Promise.resolve();
+      }
+
       // Set flag that generation is in progress
       avatarGenerationInProgress = true;
 
