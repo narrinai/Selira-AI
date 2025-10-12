@@ -1,5 +1,6 @@
 // Custom image generation for chat - accepts user prompts
 // Routes between Replicate (censored) and Promptchan (uncensored) based on user preference
+// v1.2 - Enhanced uncensored detection
 
 const fetch = require('node-fetch');
 
