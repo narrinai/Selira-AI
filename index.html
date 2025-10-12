@@ -2667,12 +2667,53 @@
 
     function applyFilters() {
       filteredCharacters = allCharacters.filter(character => {
-        // Search filter
-        if (currentFilters.search && 
-            !character.name.toLowerCase().includes(currentFilters.search) &&
-            !character.description.toLowerCase().includes(currentFilters.search) &&
-            !character.tags.some(tag => tag.toLowerCase().includes(currentFilters.search))) {
-          return false;
+        // Enhanced search filter - search across all relevant fields
+        if (currentFilters.search) {
+          const searchTerm = currentFilters.search;
+          const searchableText = [
+            character.name,
+            character.description,
+            character.title,
+            character.category,
+            ...character.tags,
+            // Physical traits
+            character.ethnicity || '',
+            character.hair_length || '',
+            // Style traits
+            character.companion_type || '',
+            character.sex || '',
+            // Content filter
+            character.content_filter || '',
+            // Add common trait names that map to values
+            character.ethnicity === 'white' ? 'caucasian white european' : '',
+            character.ethnicity === 'black' ? 'black african' : '',
+            character.ethnicity === 'hispanic' ? 'hispanic latino latina' : '',
+            character.ethnicity === 'indian' ? 'indian south-asian' : '',
+            character.ethnicity === 'middle-east' ? 'middle-eastern arab' : '',
+            character.ethnicity === 'chinese' ? 'chinese asian' : '',
+            character.ethnicity === 'japanese' ? 'japanese asian' : '',
+            character.ethnicity === 'korean' ? 'korean asian' : '',
+            character.ethnicity === 'vietnamese' ? 'vietnamese asian' : '',
+            // Hair length variations
+            character.hair_length === 'pixie' ? 'pixie short very-short' : '',
+            character.hair_length === 'short' ? 'short bob' : '',
+            character.hair_length === 'medium' ? 'medium shoulder' : '',
+            character.hair_length === 'long' ? 'long waist' : '',
+            character.hair_length === 'very-long' ? 'very-long extra-long floor' : '',
+            // Sex variations
+            character.sex === 'male' ? 'male man guy masculine' : '',
+            character.sex === 'female' ? 'female woman girl feminine' : '',
+            // Style variations
+            character.companion_type === 'realistic' ? 'realistic real photo photorealistic' : '',
+            character.companion_type === 'anime' ? 'anime manga animated cartoon' : '',
+            // Content filter variations
+            character.content_filter === 'Uncensored' ? 'uncensored nsfw adult explicit unfiltered' : '',
+            character.content_filter === 'Censored' ? 'censored safe sfw filtered' : ''
+          ].filter(Boolean).join(' ').toLowerCase();
+
+          if (!searchableText.includes(searchTerm)) {
+            return false;
+          }
         }
 
 
@@ -2913,7 +2954,7 @@
             </div>
             <div class="mobile-search-input-container">
               <div class="mobile-search-input-wrapper">
-                <input type="text" id="mobileSearchInput" placeholder="blonde" autocomplete="off">
+                <input type="text" id="mobileSearchInput" placeholder="blonde, asian, anime, male..." autocomplete="off">
                 <button onclick="hideMobileSearch()" class="mobile-search-close">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="18" y1="6" x2="6" y2="18"></line>
