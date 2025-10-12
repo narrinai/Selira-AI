@@ -5163,7 +5163,19 @@
           if (loadingMsg) {
             const messageText = loadingMsg.querySelector('.message-text');
             if (messageText) {
-              messageText.textContent = `⏱️ Image generation is taking longer than usual. Please try again in a moment.`;
+              messageText.innerHTML = `
+                <div style="color: #ff9800; font-weight: 500;">
+                  ⏱️ Generation Timeout
+                </div>
+                <div style="margin-top: 8px; color: #666; font-size: 14px;">
+                  The image took too long to generate. This sometimes happens during peak usage.
+                </div>
+                <div style="margin-top: 12px;">
+                  <button onclick="document.getElementById('${loadingId}').remove(); document.getElementById('generateImageBtn').click();" style="background: var(--accent); color: white; padding: 8px 16px; border-radius: 20px; border: none; font-size: 14px; font-weight: 600; cursor: pointer;">
+                    Try Again
+                  </button>
+                </div>
+              `;
             }
           }
         } else {
