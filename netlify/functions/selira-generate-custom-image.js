@@ -298,9 +298,9 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   // If not pre-enhanced, continue with regular enhancement logic
   console.log(`📝 [${requestId}] Prompt not pre-enhanced, applying backend enhancement`);
 
-  // SPECIAL CASE: For uncensored chat with explicit sex prompts, use EXACT companion generation format
-  // These prompts already have explicit details (blowjob, fucking, etc.) - don't add prefix/suffix
-  const isUncensoredChat = source === 'chat' && (
+  // SPECIAL CASE: For uncensored chat/image-generator with explicit sex prompts, use companion generation format
+  // These prompts already have explicit details (blowjob, fucking, etc.) - treat same as image-generator
+  const isUncensoredExplicit = (source === 'chat' || source === 'image-generator') && (
     promptLower.includes('blowjob') ||
     promptLower.includes('fucking') ||
     promptLower.includes('penetrat') ||
@@ -340,8 +340,8 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     promptLower.includes('creampie')
   );
 
-  if (isUncensoredChat) {
-    console.log(`🔥 [${requestId}] Detected EXPLICIT sex chat prompt - using companion generation format`);
+  if (isUncensoredExplicit) {
+    console.log(`🔥 [${requestId}] Detected EXPLICIT sex prompt (${source}) - using companion generation format`);
 
     // Use EXACT same format as companion generation that WORKS
     const genderDesc = sex === 'male' ? 'handsome muscular man' : 'beautiful woman';
