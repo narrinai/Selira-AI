@@ -1893,8 +1893,8 @@
   </div>
 
   <script>
-    // NSFW Pose & Outfit options for uncensored image generation
-    const NSFW_POSES = [
+    // NSFW Pose & Outfit options for uncensored image generation - FEMALE
+    const NSFW_POSES_FEMALE = [
       { id: 'pov-oral', label: 'POV Blowjob', prompt: 'POV blowjob angle, kneeling, large penis in mouth visible, dick clearly shown, oral sex close-up, fellatio, cock sucking, male POV perspective, penis shaft visible in frame, explicit oral, NSFW' },
       { id: 'doggy', label: 'Doggy Style', prompt: 'doggy style position, ass up face down, from behind, rear view, legs spread, explicit penetration, pussy visible, sexual position, NSFW' },
       { id: 'cowgirl', label: 'Cowgirl', prompt: 'cowgirl position, riding, straddling, on top, explicit sex position, breasts visible, intimate angle, NSFW' },
@@ -1909,7 +1909,7 @@
       { id: '69', label: '69 Position', prompt: '69 position, mutual oral sex, eating out while being sucked, tongue on pussy and cock in mouth, both pleasuring each other, NSFW' }
     ];
 
-    const NSFW_OUTFITS = [
+    const NSFW_OUTFITS_FEMALE = [
       { id: 'nude', label: 'Fully Nude', prompt: 'completely naked, fully nude, no clothes, bare skin, nude body, naked breasts, exposed pussy, totally naked, unclothed, full nudity, NSFW' },
       { id: 'topless', label: 'Topless', prompt: 'topless, bare breasts, no bra, breasts exposed, nipples visible, naked from waist up, NSFW' },
       { id: 'stockings', label: 'Stockings Only', prompt: 'wearing only stockings, thigh-high stockings, naked with stockings, stockings and nothing else, nude with stockings, NSFW' },
@@ -1923,6 +1923,41 @@
       { id: 'bodystocking', label: 'Bodystocking', prompt: 'sheer bodystocking, see-through body suit, mesh bodysuit, transparent full body stocking, revealing bodystocking, NSFW' },
       { id: 'lingerie', label: 'Sexy Lingerie', prompt: 'sexy lingerie, lace bra and panties, see-through lingerie, revealing intimate wear, skimpy underwear, NSFW' }
     ];
+
+    // NSFW Pose & Outfit options for uncensored image generation - MALE
+    const NSFW_POSES_MALE = [
+      { id: 'getting-oral', label: 'Getting BJ', prompt: 'receiving blowjob, big erect cock in mouth, getting oral sex, woman sucking dick, fellatio on big penis, explicit oral, NSFW' },
+      { id: 'doggy', label: 'Doggy Style', prompt: 'fucking doggy style from behind, big dick penetrating pussy, thrusting from rear, muscular body, explicit penetration visible, NSFW' },
+      { id: 'being-ridden', label: 'Being Ridden', prompt: 'being ridden cowgirl, woman on top bouncing on big cock, muscular torso, hands on her hips, explicit sex, NSFW' },
+      { id: 'missionary', label: 'Missionary', prompt: 'missionary position thrusting, big penis penetrating, muscular body on top, intimate angle, explicit penetration, NSFW' },
+      { id: 'masturbating', label: 'Masturbating', prompt: 'masturbating with hand stroking, big erect cock in hand, muscular abs visible, stroking big dick, explicit masturbation, self-pleasure, NSFW' },
+      { id: 'reverse-cowgirl', label: 'Reverse Cowgirl', prompt: 'being ridden reverse cowgirl, woman riding facing away, big cock inside, muscular thighs, rear view, explicit penetration, NSFW' },
+      { id: 'standing', label: 'Standing Fuck', prompt: 'fucking standing up, big dick thrusting, muscular body, holding her up, standing sex position, explicit, NSFW' },
+      { id: 'from-behind', label: 'From Behind', prompt: 'penetrating from behind, big cock in pussy, muscular body, gripping her hips, explicit rear penetration, NSFW' },
+      { id: 'receiving-oral', label: 'Receiving Oral', prompt: 'receiving oral sex, big erect penis being sucked, muscular body, hands in her hair, getting blowjob, NSFW' },
+      { id: 'titfuck', label: 'Titty Fuck', prompt: 'fucking her tits, big cock between breasts, muscular abs, dick sliding between tits, explicit titfuck, NSFW' },
+      { id: 'anal', label: 'Anal', prompt: 'anal sex from behind, big dick penetrating ass, muscular body, spreading ass cheeks, explicit anal penetration, NSFW' },
+      { id: '69', label: '69 Position', prompt: '69 position mutual oral, big cock being sucked while eating pussy, muscular body, both pleasuring each other, NSFW' }
+    ];
+
+    const NSFW_OUTFITS_MALE = [
+      { id: 'nude', label: 'Fully Nude', prompt: 'completely naked, fully nude, no clothes, muscular bare body, big erect cock visible, exposed penis, totally naked, full nudity, NSFW' },
+      { id: 'shirtless', label: 'Shirtless', prompt: 'shirtless showing muscular torso, defined abs and chest, bare upper body, muscular physique, topless, NSFW' },
+      { id: 'underwear', label: 'Underwear Only', prompt: 'wearing only fitted underwear, bulge visible, muscular body in briefs, boxer briefs showing physique, minimal clothing, NSFW' },
+      { id: 'towel', label: 'Towel Only', prompt: 'wearing only a towel, low-hanging towel, muscular body, towel barely covering, revealing towel, NSFW' },
+      { id: 'leather', label: 'Leather Gear', prompt: 'leather harness, kinky leather outfit, masculine fetish wear, leather straps on muscular body, BDSM gear, NSFW' },
+      { id: 'athletic', label: 'Athletic Wear', prompt: 'tight athletic shorts, gym wear showing bulge, muscular body in sportswear, fitted workout clothes, revealing athletic gear, NSFW' },
+      { id: 'suit-open', label: 'Open Suit', prompt: 'suit unbuttoned showing muscular chest, open blazer revealing torso, professional attire partially undressed, dress pants and open shirt, NSFW' },
+      { id: 'robe', label: 'Open Robe', prompt: 'silk robe hanging open, revealing muscular body, robe showing chest and abs, loose robe exposing physique, NSFW' },
+      { id: 'jeans', label: 'Jeans Only', prompt: 'wearing only jeans, shirtless with jeans, muscular upper body bare, low-riding jeans, topless in pants, NSFW' },
+      { id: 'briefs', label: 'Tight Briefs', prompt: 'tight designer briefs, fitted underwear showing bulge, muscular body in minimal underwear, revealing briefs, NSFW' },
+      { id: 'swim', label: 'Swim Trunks', prompt: 'swim trunks or speedo, muscular body in swimwear, wet trunks clinging, revealing swim shorts, beach/pool attire, NSFW' },
+      { id: 'partially-dressed', label: 'Partially Dressed', prompt: 'pants unbuttoned and unzipped, muscular body partially undressed, clothes halfway off, in the process of undressing, NSFW' }
+    ];
+
+    // Dynamic selection based on character gender
+    let NSFW_POSES = NSFW_POSES_FEMALE;
+    let NSFW_OUTFITS = NSFW_OUTFITS_FEMALE;
 
     // Selected pose and outfit for image generation
     let selectedPose = null;
@@ -2483,6 +2518,11 @@
 
         // UNCENSORED MODE: Show pose & outfit selectors
         if (isUncensored) {
+          // Set gender-specific pose/outfit arrays
+          const isMale = (currentCharacter.sex || currentCharacter.Sex || currentCharacter.Gender || '').toLowerCase() === 'male';
+          NSFW_POSES = isMale ? NSFW_POSES_MALE : NSFW_POSES_FEMALE;
+          NSFW_OUTFITS = isMale ? NSFW_OUTFITS_MALE : NSFW_OUTFITS_FEMALE;
+
           const selectorContainer = document.createElement('div');
           selectorContainer.className = 'pose-outfit-selector';
 
