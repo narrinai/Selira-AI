@@ -647,7 +647,7 @@
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s ease;
-      margin-top: 8px;
+      margin-bottom: 12px;
     }
 
     .generate-image-btn:hover {
@@ -2475,6 +2475,14 @@
           const selectorContainer = document.createElement('div');
           selectorContainer.className = 'pose-outfit-selector';
 
+          // Generate button (TOP for mobile visibility)
+          const generateBtn = document.createElement('button');
+          generateBtn.className = 'generate-image-btn';
+          generateBtn.textContent = 'Generate Image';
+          generateBtn.disabled = true;
+          generateBtn.onclick = () => generateImageFromSelectors();
+          selectorContainer.appendChild(generateBtn);
+
           // Pose selector
           const poseSection = document.createElement('div');
           poseSection.className = 'selector-section';
@@ -2492,14 +2500,6 @@
             <div class="selector-buttons" id="outfitButtons"></div>
           `;
           selectorContainer.appendChild(outfitSection);
-
-          // Generate button
-          const generateBtn = document.createElement('button');
-          generateBtn.className = 'generate-image-btn';
-          generateBtn.textContent = 'Generate Image';
-          generateBtn.disabled = true;
-          generateBtn.onclick = () => generateImageFromSelectors();
-          selectorContainer.appendChild(generateBtn);
 
           suggestionContainer.appendChild(selectorContainer);
 
