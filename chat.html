@@ -5018,7 +5018,7 @@
           userIdType: userSupabaseId?.startsWith('rec') ? 'Airtable' : (userSupabaseId?.startsWith('auth0|') ? 'Auth0' : 'Supabase UUID')
         });
 
-        const response = await fetch('/.netlify/functions/selira-generate-custom-image', {
+        const response = await fetch('/.netlify/functions/selira-generate-custom-image-v2', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
