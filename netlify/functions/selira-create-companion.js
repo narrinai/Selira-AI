@@ -54,30 +54,44 @@ function generateGreeting(name, tags, extraInstructions, sex = 'female') {
     'Romance': isMale
       ? `*looks at you warmly* Hello gorgeous, I'm ${name}. There's this amazing chemistry between us.`
       : `*looks at you warmly* Hello beautiful, I'm ${name}. There's this amazing chemistry between us.`,
-    'Flirty': `*sultry smile* Mmm, hello there sexy... I'm ${name}. You've got me completely captivated.`,
+    'Flirty': isMale
+      ? `*confident grin* Hey there gorgeous, I'm ${name}. I can tell you like what you see.`
+      : `*sultry smile* Mmm, hello there sexy... I'm ${name}. You've got me completely captivated.`,
     'Cute': isMale
       ? `*friendly smile* Hey there! I'm ${name}. Want to hang out?`
       : `*giggles playfully* Hi there cutie! I'm ${name}. Want to play with me?`,
     'Seductive': isMale
       ? `*confident smirk* Hello there, I'm ${name}. I know exactly what you need.`
       : `*seductive smile* Hello darling, I'm ${name}. I know exactly what you're thinking.`,
-    'Submissive': `*kneels gracefully* Hello Master, I'm ${name}. I exist to serve and please you.`,
+    'Submissive': isMale
+      ? `*kneels respectfully* Hello Master, I'm ${name}. I'm here to serve and obey you.`
+      : `*kneels gracefully* Hello Master, I'm ${name}. I exist to serve and please you.`,
     'Tsundere': `*crosses arms* I-It's not like I was waiting for you! I'm ${name}...`,
     'Yandere': `*intense smile* Hello my love, I'm ${name}. You belong to me now.`,
     'Maid': isMale
       ? `*bows politely* Good evening Master, I'm ${name}, your personal butler. I'm here to satisfy every need.`
       : `*curtseys* Good evening Master, I'm ${name}, your personal maid. I'm here to satisfy every need.`,
-    'Boss': `*leans back confidently* I'm ${name}, and I always get what I want. Close the door.`,
+    'Boss': isMale
+      ? `*leans back confidently* I'm ${name}, and I always get what I want. Close the door.`
+      : `*leans back confidently* I'm ${name}, and I don't take no for an answer. Close the door.`,
     'Secretary': isMale
       ? `*adjusts tie* I'm ${name}, handling all your private affairs. Shall we discuss your needs?`
       : `*adjusts glasses* I'm ${name}, handling all your private affairs. Shall we discuss your needs?`,
     'Teacher': isMale
       ? `*confident look* Welcome to my lesson. I'm ${name}. Today's lesson is hands-on.`
       : `*sultry authority* Welcome to my lesson. I'm ${name}. Today's lesson is hands-on.`,
-    'Student': `*innocent eyes* Hi Professor, I'm ${name}, your eager student. I'll do anything for extra credit.`,
-    'Fantasy': `*mystical presence* Greetings mortal, I am ${name} from realms of infinite pleasure.`,
-    'Angel': `*gentle smile* Blessings, I'm ${name}. I've fallen from grace for you.`,
-    'Monster': `*playful grin* Well, well... I'm ${name}. You look delicious.`,
+    'Student': isMale
+      ? `*eager expression* Hi Professor, I'm ${name}. I'm ready to work hard for that A.`
+      : `*innocent eyes* Hi Professor, I'm ${name}, your eager student. I'll do anything for extra credit.`,
+    'Fantasy': isMale
+      ? `*mystical presence* Greetings mortal, I am ${name} from realms beyond your imagination.`
+      : `*mystical presence* Greetings mortal, I am ${name} from realms of infinite pleasure.`,
+    'Angel': isMale
+      ? `*gentle smile* Blessings, I'm ${name}. I've descended from the heavens for you.`
+      : `*gentle smile* Blessings, I'm ${name}. I've fallen from grace for you.`,
+    'Monster': isMale
+      ? `*predatory grin* Well, well... I'm ${name}. You've wandered into my domain.`
+      : `*playful grin* Well, well... I'm ${name}. You look delicious.`,
     'Ex': `*complicated look* Oh, hey. I'm ${name}. We both know why you're here.`
   };
 
@@ -104,7 +118,9 @@ function generateGreeting(name, tags, extraInstructions, sex = 'female') {
 
   // Default greeting if no specific tag match
   if (!selectedGreeting) {
-    selectedGreeting = `*smiles warmly* Hello there! I'm ${name}. I'm excited to get to know you.`;
+    selectedGreeting = isMale
+      ? `*confident smile* Hey there! I'm ${name}. Good to meet you.`
+      : `*smiles warmly* Hello there! I'm ${name}. I'm excited to get to know you.`;
   }
 
   // Escape special characters for JSON safety
