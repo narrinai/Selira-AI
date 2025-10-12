@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 /**
- * Generate 100 Uncensored Companions with Varied Avatars
+ * Generate 300 Uncensored Companions with Varied Avatars
  *
- * Creates 100 new uncensored companions with:
+ * Creates 300 new uncensored companions with:
  * - Varied explicit poses (close-ups, body shots, explicit angles)
  * - Indoor luxury backgrounds (bedrooms, hotels, suites)
  * - Explicit nude style (like chat image gen ideas)
@@ -14,7 +14,7 @@ const fetch = require('node-fetch');
 
 const CREATE_COMPANION_URL = 'https://selira.ai/.netlify/functions/selira-create-companion';
 
-const COMPANIONS_TO_CREATE = 100; // Fixed at 100 companions
+const COMPANIONS_TO_CREATE = 300; // Generate 300 companions
 
 // Indoor luxury backgrounds only (no beaches/outdoor)
 const INDOOR_BACKGROUNDS = [
