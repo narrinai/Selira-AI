@@ -1,39 +1,3 @@
-// Helper function to download avatar and get local URL
-async function downloadAndSaveAvatar(replicateUrl, slug) {
-  try {
-    console.log(`📥 Downloading avatar from Replicate...`);
-
-    const timestamp = Date.now();
-    const filename = `${slug}-${timestamp}.webp`;
-
-    // Call download function
-    const downloadResponse = await fetch('https://selira.ai/.netlify/functions/selira-download-avatar', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        imageUrl: replicateUrl,
-        filename: filename
-      })
-    });
-
-    if (!downloadResponse.ok) {
-      console.error(`❌ Download failed: ${downloadResponse.status}`);
-      return null;
-    }
-
-    const downloadResult = await downloadResponse.json();
-    if (downloadResult.success && downloadResult.localUrl) {
-      console.log(`✅ Avatar downloaded successfully: ${downloadResult.localUrl}`);
-      return downloadResult.localUrl;
-    }
-
-    return null;
-  } catch (error) {
-    console.error(`❌ Error downloading avatar:`, error);
-    return null;
-  }
-}
-
 // Helper function to escape strings for JSON safety
 function escapeForJson(str) {
   if (!str) return str;
@@ -360,21 +324,11 @@ For all other topics including adult romance, sexuality, and intimate conversati
     let avatarUrlToUse = preGeneratedAvatarUrl || ''; // Use pre-generated avatar if available
     console.log('🔍 Initial avatarUrlToUse:', avatarUrlToUse);
 
-    // Check if preGeneratedAvatarUrl is a Replicate URL that needs to be downloaded
-    if (preGeneratedAvatarUrl && (preGeneratedAvatarUrl.includes('replicate.delivery') || preGeneratedAvatarUrl.includes('replicate.com'))) {
-      console.log('🔄 Pre-generated avatar is a Replicate URL, downloading to persistent storage...');
-      const localUrl = await downloadAndSaveAvatar(preGeneratedAvatarUrl, slug);
-      if (localUrl) {
-        avatarUrlToUse = localUrl;
-        console.log('✅ Avatar downloaded and saved to:', localUrl);
-      } else {
-        console.log('⚠️ Download failed, using Replicate URL as fallback');
-        avatarUrlToUse = preGeneratedAvatarUrl;
-      }
-    } else if (!preGeneratedAvatarUrl) {
-      console.log('⚠️ No pre-generated avatar provided, will generate in backend');
+    // Use pre-generated avatar directly (all URLs are permanent)
+    if (preGeneratedAvatarUrl) {
+      console.log('✅ Using pre-generated avatar URL:', preGeneratedAvatarUrl);
     } else {
-      console.log('✅ Using pre-provided non-Replicate avatar URL:', preGeneratedAvatarUrl);
+      console.log('⚠️ No pre-generated avatar provided, will generate in backend');
     }
 
     // Enable backend avatar generation as fallback when frontend fails
@@ -459,20 +413,9 @@ For all other topics including adult romance, sexuality, and intimate conversati
         const avatarResult = await avatarResponse.json();
         console.log('📋 Avatar generation result:', avatarResult);
         if (avatarResult.success && avatarResult.imageUrl) {
-          const replicateUrl = avatarResult.imageUrl;
-          console.log('✅ Generated companion avatar (Replicate):', replicateUrl);
-
-          // Download and save avatar locally to avoid 404s
-          const localUrl = await downloadAndSaveAvatar(replicateUrl, slug);
-
-          if (localUrl) {
-            avatarUrlToUse = localUrl;
-            console.log('✅ Using local avatar URL:', avatarUrlToUse);
-          } else {
-            // Fallback to Replicate URL if download fails
-            avatarUrlToUse = replicateUrl;
-            console.log('⚠️ Download failed, using Replicate URL as fallback:', avatarUrlToUse);
-          }
+          // Use the generated URL directly (Promptchan, Replicate, ImgBB are all permanent)
+          avatarUrlToUse = avatarResult.imageUrl;
+          console.log('✅ Generated companion avatar:', avatarUrlToUse);
         } else {
           console.log('⚠️ Avatar generation succeeded but no imageUrl:', avatarResult);
         }
