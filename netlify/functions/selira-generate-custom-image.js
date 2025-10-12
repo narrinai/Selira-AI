@@ -376,11 +376,13 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     let promptchanResult = null;
 
     try {
-      console.log(`🎲 [${requestId}] Calling Promptchan for explicit sex (25s timeout)...`);
+      // Male explicit prompts take longer on Promptchan - give them more time
+      const timeoutMs = sex === 'male' ? 24000 : 20000;  // 24s for males, 20s for females
+      console.log(`🎲 [${requestId}] Calling Promptchan for explicit sex (${timeoutMs/1000}s timeout for ${sex})...`);
 
-      // Add 20 second timeout (Netlify Pro allows 26s max, leave buffer for fallback)
+      // Add timeout (Netlify Pro allows 26s max, leave small buffer for processing)
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 20000);
+      const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
       const response = await fetch('https://prod.aicloudnetservices.com/api/external/create', {
         method: 'POST',
