@@ -430,8 +430,8 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
       };
     }
 
-    // If we get here, all Promptchan retries failed - fall through to Replicate below
-    console.log(`⚠️ [${requestId}] Promptchan failed after ${MAX_RETRIES + 1} attempts, falling back to Replicate`);
+    // If we get here, Promptchan failed - fall through to Replicate below
+    console.log(`⚠️ [${requestId}] Promptchan failed, falling back to Replicate`);
   }
 
   // Determine shot type (same as censored version)
