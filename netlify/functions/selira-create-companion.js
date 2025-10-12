@@ -430,7 +430,7 @@ For all other topics including adult romance, sexuality, and intimate conversati
       }
 
       // Call the avatar generation function with enhanced attractive traits
-      const avatarResponse = await fetch('https://selira.ai/.netlify/functions/selira-generate-custom-image-v2', {
+      const avatarResponse = await fetch('https://selira.ai/.netlify/functions/selira-generate-custom-image', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

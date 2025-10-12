@@ -1377,7 +1377,7 @@
         const customPrompt = document.getElementById('customPrompt').value.trim();
         const fullPrompt = [selectedPose.prompt, selectedOutfit.prompt, customPrompt].filter(Boolean).join(', ');
 
-        const response = await fetch('/.netlify/functions/selira-generate-custom-image-v2', {
+        const response = await fetch('/.netlify/functions/selira-generate-custom-image', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
