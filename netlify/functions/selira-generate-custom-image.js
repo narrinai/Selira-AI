@@ -422,14 +422,31 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     } else if (promptLower.includes('park') || promptLower.includes('outdoor')) {
       contextualEnhancement += ', natural outdoor setting, pleasant lighting';
     } else {
-      // For companion creation: use clean background (no random bedroom/beach/luxury)
+      // For companion creation: use clean background for censored, luxury for uncensored
       // For chat/image gen: use random sexy backgrounds
       const isCompanionCreation = source === 'companion-creation';
 
-      if (isCompanionCreation) {
-        // Clean, simple background for companion avatar portraits
+      if (isCompanionCreation && !uncensored) {
+        // Clean, simple background for CENSORED companion avatar portraits
         contextualEnhancement += ', clean background, studio lighting, professional portrait';
-        console.log(`🎨 [${requestId}] Companion creation - using clean background`);
+        console.log(`🎨 [${requestId}] Censored companion creation - using clean background`);
+      } else if (isCompanionCreation && uncensored) {
+        // Random luxury backgrounds for UNCENSORED companion creation (same as chat/image gen)
+        const randomBackgrounds = [
+          ', luxury bedroom with silk sheets, warm golden lighting, candles, rose petals, romantic intimate atmosphere',
+          ', five-star hotel suite bedroom, floor-to-ceiling windows, city lights, king size bed, luxury decor',
+          ', private jacuzzi suite, steam rising, warm water, candles, mood lighting, intimate spa atmosphere',
+          ', modern penthouse bedroom, exposed brick, designer furniture, warm ambient lighting, urban luxury',
+          ', romantic cabin bedroom, fireplace crackling, cozy bed, warm glow, intimate mountain retreat',
+          ', luxury yacht master bedroom, panoramic ocean views, white linens, nautical elegance, private luxury',
+          ', boutique hotel suite, four-poster bed, silk curtains, chandelier, warm romantic lighting, opulent',
+          ', upscale loft bedroom, modern art, designer bed, floor lamps, industrial chic luxury',
+          ', villa infinity pool bedroom, waterfront view, tropical paradise, warm lighting, luxury resort',
+          ', contemporary bedroom, minimalist luxury, designer furniture, natural light, sophisticated intimate space'
+        ];
+        const randomBg = randomBackgrounds[Math.floor(Math.random() * randomBackgrounds.length)];
+        contextualEnhancement += randomBg;
+        console.log(`🔥 [${requestId}] Uncensored companion creation - using luxury background`);
       } else {
         // Random sexy diverse backgrounds for chat/image generator
         const randomBackgrounds = [
