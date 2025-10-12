@@ -12,7 +12,7 @@ let activeReplicateRequests = 0; // Track concurrent Replicate API calls
 
 // PROMPTCHAN IMAGE GENERATION FUNCTION
 async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0_id) {
-  const { customPrompt, characterName, sex, ethnicity, hairLength, hairColor, style, shotType, source } = body;
+  const { customPrompt, characterName, sex, ethnicity, hairLength, hairColor, style, shotType, source, uncensored } = body;
 
   console.log(`🎨 [${requestId}] Generating with Promptchan API`);
   console.log(`🎨 [${requestId}] Style parameter received:`, style);
