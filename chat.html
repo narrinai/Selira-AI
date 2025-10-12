@@ -5117,6 +5117,15 @@
               `;
             }
           }
+        } else if (response.status === 504) {
+          // Gateway timeout - server took too long
+          const loadingMsg = document.getElementById(loadingId);
+          if (loadingMsg) {
+            const messageText = loadingMsg.querySelector('.message-text');
+            if (messageText) {
+              messageText.textContent = `⏱️ Image generation is taking longer than usual. Please try again in a moment.`;
+            }
+          }
         } else {
           const error = await response.json();
           // Replace loading with error
