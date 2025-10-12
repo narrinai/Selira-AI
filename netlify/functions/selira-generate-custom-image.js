@@ -268,6 +268,14 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
         })
       };
     }
+
+    // Promptchan failed for pre-enhanced prompt - return 500 to trigger Replicate fallback
+    console.log(`⚠️ [${requestId}] Pre-enhanced Promptchan failed, returning 500 for Replicate fallback`);
+    return {
+      statusCode: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ error: 'Promptchan failed' })
+    };
   }
 
   // If not pre-enhanced, continue with regular enhancement logic
