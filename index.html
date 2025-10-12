@@ -2708,7 +2708,16 @@
             character.companion_type === 'anime' ? 'anime manga animated cartoon' : '',
             // Content filter variations
             character.content_filter === 'Uncensored' ? 'uncensored nsfw adult explicit unfiltered' : '',
-            character.content_filter === 'Censored' ? 'censored safe sfw filtered' : ''
+            character.content_filter === 'Censored' ? 'censored safe sfw filtered' : '',
+            // Body descriptors for uncensored companions
+            character.content_filter === 'Uncensored' && character.sex === 'female' ? 'big huge tits boobs breasts pussy ass busty curvy thicc thick sexy hot naked nude' : '',
+            character.content_filter === 'Uncensored' && character.sex === 'male' ? 'big huge cock dick penis balls muscular ripped abs naked nude' : '',
+            // General attractiveness descriptors
+            'hot sexy attractive beautiful gorgeous handsome pretty stunning',
+            // Body type descriptors
+            'slim thin curvy thick thicc busty petite tall short fit athletic muscular toned',
+            // Common search terms
+            'dom submissive dominant sub switch kinky wild naughty innocent shy confident flirty romantic'
           ].filter(Boolean).join(' ').toLowerCase();
 
           if (!searchableText.includes(searchTerm)) {
@@ -2954,7 +2963,7 @@
             </div>
             <div class="mobile-search-input-container">
               <div class="mobile-search-input-wrapper">
-                <input type="text" id="mobileSearchInput" placeholder="blonde, asian, anime, male..." autocomplete="off">
+                <input type="text" id="mobileSearchInput" placeholder="blonde, asian, busty, muscular..." autocomplete="off">
                 <button onclick="hideMobileSearch()" class="mobile-search-close">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="18" y1="6" x2="6" y2="18"></line>
