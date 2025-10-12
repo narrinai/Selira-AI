@@ -1348,6 +1348,12 @@
     }
 
     async function generateImage() {
+      console.log('🎨 Generate Image clicked!');
+      console.log('User data:', userData);
+      console.log('Selected companion:', selectedCompanion);
+      console.log('Selected pose:', selectedPose);
+      console.log('Selected outfit:', selectedOutfit);
+
       if (!userData) {
         showAlert('Please log in to generate images', 'error');
         if (typeof openLoginModal === 'function') {
@@ -1545,7 +1551,15 @@
           updateCarouselNav();
         }
       });
-      document.getElementById('generateBtn').addEventListener('click', generateImage);
+      const generateBtn = document.getElementById('generateBtn');
+      console.log('🔧 Setting up Generate button:', generateBtn);
+      if (generateBtn) {
+        generateBtn.addEventListener('click', generateImage);
+        console.log('✅ Generate button listener added');
+      } else {
+        console.error('❌ Generate button not found!');
+      }
+
       document.getElementById('downloadBtn').addEventListener('click', downloadImage);
 
       // Make generated image clickable to open in new tab
