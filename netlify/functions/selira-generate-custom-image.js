@@ -426,10 +426,27 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
       // For chat/image gen: use random sexy backgrounds
       const isCompanionCreation = source === 'companion-creation';
 
-      if (isCompanionCreation) {
-        // Clean, simple background for companion avatar portraits
+      if (isCompanionCreation && !uncensored) {
+        // Clean, simple background for CENSORED companion avatar portraits only
         contextualEnhancement += ', clean background, studio lighting, professional portrait';
-        console.log(`🎨 [${requestId}] Companion creation - using clean background`);
+        console.log(`🎨 [${requestId}] Censored companion creation - using clean background`);
+      } else if (isCompanionCreation && uncensored) {
+        // Random luxury backgrounds for UNCENSORED companion creation
+        const randomBackgrounds = [
+          ', luxury bedroom with silk sheets, warm golden lighting, candles, rose petals, romantic intimate atmosphere',
+          ', five-star hotel suite bedroom, floor-to-ceiling windows, city lights, king size bed, luxury decor',
+          ', private jacuzzi suite, steam rising, warm water, candles, mood lighting, intimate spa atmosphere',
+          ', modern penthouse bedroom, exposed brick, designer furniture, warm ambient lighting, urban luxury',
+          ', romantic cabin bedroom, fireplace crackling, cozy bed, warm glow, intimate mountain retreat',
+          ', luxury yacht master bedroom, panoramic ocean views, white linens, nautical elegance, private luxury',
+          ', boutique hotel suite, four-poster bed, silk curtains, chandelier, warm romantic lighting, opulent',
+          ', upscale loft bedroom, modern art, designer bed, floor lamps, industrial chic luxury',
+          ', villa infinity pool bedroom, waterfront view, tropical paradise, warm lighting, luxury resort',
+          ', contemporary bedroom, minimalist luxury, designer furniture, natural light, sophisticated intimate space'
+        ];
+        const randomBg = randomBackgrounds[Math.floor(Math.random() * randomBackgrounds.length)];
+        contextualEnhancement += randomBg;
+        console.log(`🔥 [${requestId}] Uncensored companion creation - using luxury background`);
       } else {
         // Random sexy diverse backgrounds for chat/image generator
         const randomBackgrounds = [
@@ -464,14 +481,13 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   const isCompanionCreation = source === 'companion-creation';
 
   let nsfwEnhancement;
-  if (isCompanionCreation) {
-    // Sensual and alluring for companion avatars - tasteful nude portrait, NOT explicit porn
-    // Focus on beauty, elegance, and allure rather than explicit sexual content
+  if (isCompanionCreation && !uncensored) {
+    // Tasteful for CENSORED companion avatars only
     nsfwEnhancement = sex === 'male'
       ? ', naked, nude, bare chest showing, muscular body, confident pose, seductive expression, sensual, intimate, artistic nude photography, tasteful nudity, elegant masculine beauty'
       : ', naked, nude, bare breasts showing, beautiful curves, elegant pose, seductive gaze, alluring expression, sensual, intimate, artistic nude photography, soft lighting, tasteful nudity, natural beauty, elegant feminine beauty';
   } else {
-    // Explicit for chat/image generator - MAXIMUM hardcore NSFW like companion generation
+    // Explicit for UNCENSORED companion creation, chat, and image generator
     // Use VERY explicit visible genital descriptions that Promptchan cannot ignore
     nsfwEnhancement = sex === 'male'
       ? ', naked man, big hard erect penis visible and prominent in frame, cock standing up, balls hanging visible, shaft and head clearly shown, genitals fully exposed and in focus, muscular body, explicit male nudity, pornographic XXX adult content, full frontal nudity showing everything, aroused hard cock, intimate POV angle'

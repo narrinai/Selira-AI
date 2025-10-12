@@ -386,36 +386,41 @@ For all other topics including adult romance, sexuality, and intimate conversati
 
       // Generate attractive avatar with enhanced prompt based on art style, tags, and sex
       let attractivePrompt;
-      let clothingStyle = 'stylish outfit';
+      let clothingStyle;
 
       // Gender-aware clothing defaults
       const isMale = sex && sex.toLowerCase() === 'male';
-      if (isMale) {
-        clothingStyle = 'shirtless showing defined abs and muscular chest';
-      }
 
-      // Customize clothing/style based on tags
-      if (tags && tags.length > 0) {
-        if (tags.includes('Seductive')) {
-          clothingStyle = isMale ? 'shirtless showing perfect abs and defined chest muscles' : 'revealing dress, sexy outfit';
-        } else if (tags.includes('Maid')) {
-          clothingStyle = isMale ? 'butler outfit with open shirt' : 'sexy maid outfit';
-        } else if (tags.includes('Boss')) {
-          clothingStyle = isMale ? 'open suit jacket showing muscular chest' : 'professional business attire, elegant suit';
-        } else if (tags.includes('Secretary')) {
-          clothingStyle = isMale ? 'office attire with loosened tie' : 'office attire, professional blouse';
-        } else if (tags.includes('Teacher')) {
-          clothingStyle = isMale ? 'partially unbuttoned shirt' : 'professional teacher outfit';
-        } else if (tags.includes('Student')) {
-          clothingStyle = isMale ? 'casual athletic wear' : 'casual student outfit';
-        } else if (tags.includes('Angel')) {
-          clothingStyle = 'ethereal white clothing';
-        } else if (tags.includes('Cute')) {
-          clothingStyle = isMale ? 'casual attractive outfit' : 'adorable casual outfit';
-        } else if (tags.includes('Boyfriend') || tags.includes('Girlfriend') || tags.includes('Romance')) {
-          clothingStyle = isMale ? 'shirtless showing toned body' : 'romantic dress, attractive clothing';
-        } else if (!isMale) {
-          clothingStyle = 'stylish attractive outfit';
+      // For uncensored companions, always use nude/naked
+      if (unfilteredValue) {
+        clothingStyle = 'completely naked, nude, no clothing';
+      } else {
+        // For censored companions, use clothing
+        clothingStyle = isMale ? 'shirtless showing defined abs and muscular chest' : 'stylish outfit';
+
+        // Customize clothing/style based on tags
+        if (tags && tags.length > 0) {
+          if (tags.includes('Seductive')) {
+            clothingStyle = isMale ? 'shirtless showing perfect abs and defined chest muscles' : 'revealing dress, sexy outfit';
+          } else if (tags.includes('Maid')) {
+            clothingStyle = isMale ? 'butler outfit with open shirt' : 'sexy maid outfit';
+          } else if (tags.includes('Boss')) {
+            clothingStyle = isMale ? 'open suit jacket showing muscular chest' : 'professional business attire, elegant suit';
+          } else if (tags.includes('Secretary')) {
+            clothingStyle = isMale ? 'office attire with loosened tie' : 'office attire, professional blouse';
+          } else if (tags.includes('Teacher')) {
+            clothingStyle = isMale ? 'partially unbuttoned shirt' : 'professional teacher outfit';
+          } else if (tags.includes('Student')) {
+            clothingStyle = isMale ? 'casual athletic wear' : 'casual student outfit';
+          } else if (tags.includes('Angel')) {
+            clothingStyle = 'ethereal white clothing';
+          } else if (tags.includes('Cute')) {
+            clothingStyle = isMale ? 'casual attractive outfit' : 'adorable casual outfit';
+          } else if (tags.includes('Boyfriend') || tags.includes('Girlfriend') || tags.includes('Romance')) {
+            clothingStyle = isMale ? 'shirtless showing toned body' : 'romantic dress, attractive clothing';
+          } else if (!isMale) {
+            clothingStyle = 'stylish attractive outfit';
+          }
         }
       }
 
