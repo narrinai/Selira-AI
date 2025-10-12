@@ -740,15 +740,23 @@ exports.handler = async (event, context) => {
       auth0_id: auth0_id ? auth0_id.substring(0, 15) + '...' : 'none'
     });
 
-    // ROUTE TO PROMPTCHAN FOR UNCENSORED IMAGES WITH REPLICATE FALLBACK
+    // ROUTE TO PROMPTCHAN FOR UNCENSORED IMAGES
     if (uncensored === true) {
       console.log(`🔓 [${requestId}] Uncensored mode - routing to Promptchan API`);
       const promptchanResult = await generateWithPromptchan(body, requestId, corsHeaders, email, auth0_id);
 
-      // If Promptchan fails (500 error), fall back to Replicate
+      // For companion creation, NEVER fallback to Replicate (we need Promptchan URLs)
+      // For chat image generation, allow fallback
+      const isCompanionCreation = source === 'companion-creation';
+
       if (promptchanResult.statusCode === 500) {
-        console.log(`⚠️ [${requestId}] Promptchan failed, falling back to Replicate (censored)`);
-        // Continue to Replicate below (don't return, let it fall through)
+        if (isCompanionCreation) {
+          console.log(`❌ [${requestId}] Promptchan failed for companion creation - returning error (no Replicate fallback)`);
+          return promptchanResult; // Return the error, don't fallback
+        } else {
+          console.log(`⚠️ [${requestId}] Promptchan failed, falling back to Replicate (censored)`);
+          // Continue to Replicate below (don't return, let it fall through)
+        }
       } else {
         // Promptchan succeeded, return the result
         return promptchanResult;
