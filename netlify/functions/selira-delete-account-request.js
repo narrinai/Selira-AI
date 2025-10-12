@@ -94,12 +94,9 @@ exports.handler = async (event, context) => {
     await base('Support_Messages').create([
       {
         fields: {
-          User: [userId],
           Subject: 'Account Deletion Request',
-          Message: `User ${email} has requested account deletion.\n\nUser Details:\n- Name: ${userName}\n- Email: ${email}\n- Plan: ${userPlan}\n- Request Date: ${new Date().toISOString()}\n\nPlease process this request within 48 hours.`,
-          Status: 'Open',
-          Priority: 'High',
-          Category: 'Account Management'
+          Message: `User ${email} has requested account deletion.\n\nUser Details:\n- Name: ${userName}\n- Email: ${email}\n- Plan: ${userPlan}\n- Airtable Record ID: ${userId}\n- Auth0 ID: ${auth0_id || 'N/A'}\n- Request Date: ${new Date().toISOString()}\n\nPlease process this request within 48 hours.`,
+          Status: 'Open'
         }
       }
     ]);

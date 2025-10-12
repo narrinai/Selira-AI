@@ -798,6 +798,25 @@
         display: none;
       }
     }
+
+    /* Delete Account Sections - Show/Hide based on screen size */
+    .delete-account-desktop {
+      display: block;
+    }
+
+    .delete-account-mobile {
+      display: none !important;
+    }
+
+    @media (max-width: 768px) {
+      .delete-account-desktop {
+        display: none !important;
+      }
+
+      .delete-account-mobile {
+        display: block !important;
+      }
+    }
   </style>
 
   <!-- Meta Pixel Code -->
@@ -998,17 +1017,11 @@
               <div class="toggle-switch" id="marketingToggle" onclick="toggleEmailSetting('marketing', this)"></div>
             </div>
 
-            <!-- Delete Account Section -->
-            <div style="margin-top: 40px; padding-top: 40px; border-top: 1px solid var(--border-color);">
-              <h3 style="color: var(--text-secondary); margin-bottom: 12px;">
-                <span class="card-icon">⚠️</span> Danger Zone
-              </h3>
-              <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 16px;">
-                Once you delete your account, there is no going back. Please be certain.
+            <!-- Delete Account Section - Desktop -->
+            <div class="delete-account-desktop" style="margin-top: 40px; padding-top: 40px; border-top: 1px solid var(--border-color);">
+              <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 8px;">
+                Need to close your account? <a href="#" onclick="showDeleteAccountModal(); return false;" style="color: #dc3545; text-decoration: underline;">Delete my account</a>
               </p>
-              <button class="btn" onclick="showDeleteAccountModal()" style="background: #dc3545; border-color: #dc3545;">
-                Delete My Account
-              </button>
             </div>
 
           </div>
@@ -1051,6 +1064,14 @@
         </div>
 
       </section>
+
+      <!-- Delete Account Link - Mobile Only (at bottom) -->
+      <div class="delete-account-mobile" style="display: none; text-align: center; padding: 20px; margin-top: 20px; border-top: 1px solid var(--border-color);">
+        <p style="color: var(--text-secondary); font-size: 12px;">
+          <a href="#" onclick="showDeleteAccountModal(); return false;" style="color: var(--text-secondary); text-decoration: underline;">Delete my account</a>
+        </p>
+      </div>
+
     </main>
   </div>
 
