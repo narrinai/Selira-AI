@@ -266,6 +266,129 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   // If not pre-enhanced, continue with regular enhancement logic
   console.log(`📝 [${requestId}] Prompt not pre-enhanced, applying backend enhancement`);
 
+  // SPECIAL CASE: For uncensored chat with explicit sex prompts, use EXACT companion generation format
+  // These prompts already have explicit details (blowjob, fucking, etc.) - don't add prefix/suffix
+  const isUncensoredChat = source === 'chat' && (
+    promptLower.includes('blowjob') ||
+    promptLower.includes('fucking') ||
+    promptLower.includes('penetrat') ||
+    promptLower.includes('sucking cock') ||
+    promptLower.includes('cock in mouth') ||
+    promptLower.includes('dick in pussy') ||
+    promptLower.includes('threesome') ||
+    promptLower.includes('anal sex') ||
+    promptLower.includes('double penetration')
+  );
+
+  if (isUncensoredChat) {
+    console.log(`🔥 [${requestId}] Detected EXPLICIT sex chat prompt - using companion generation format`);
+
+    // Use EXACT same format as companion generation that WORKS
+    const genderDesc = sex === 'male' ? 'handsome muscular man' : 'beautiful woman';
+    const randomBackgrounds = [
+      'luxury bedroom with silk sheets, warm golden lighting',
+      'five-star hotel suite bedroom, city lights',
+      'modern penthouse bedroom, exposed brick',
+      'romantic cabin bedroom, fireplace crackling'
+    ];
+    const randomBg = randomBackgrounds[Math.floor(Math.random() * randomBackgrounds.length)];
+
+    let directPrompt;
+    if (style === 'anime' || style === 'animated') {
+      directPrompt = `${genderDesc}, ${sanitizedPrompt}, anime style, detailed anime art, high quality artwork, vibrant colors, explicit hardcore sex, ${randomBg}`;
+    } else {
+      directPrompt = `${genderDesc}, ${sanitizedPrompt}, photorealistic, professional photography, explicit hardcore sex, porn scene, ${randomBg}`;
+    }
+
+    console.log(`✅ [${requestId}] Direct sex prompt:`, directPrompt);
+
+    const negativePrompt = 'clothes, clothing, dressed, covered, censored, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white';
+
+    const promptchanStyle = (style === 'anime' || style === 'animated') ? 'Anime XL+' : 'Hyperreal XL+';
+
+    const promptchanRequest = {
+      prompt: directPrompt,
+      negative_prompt: negativePrompt,
+      style: promptchanStyle,
+      quality: 'Ultra',
+      image_size: '768x512',
+      creativity: 50,
+      seed: -1,
+      filter: 'Default',
+      emotion: 'Default',
+      detail: 0,
+      age_slider: 25,
+      weight_slider: 0,
+      breast_slider: 50,
+      ass_slider: 50,
+      restore_faces: false
+    };
+
+    console.log(`📤 [${requestId}] Promptchan request with DIRECT sex prompt:`, promptchanRequest);
+
+    try {
+      const response = await fetch('https://prod.aicloudnetservices.com/api/external/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': PROMPTCHAN_API_KEY
+        },
+        body: JSON.stringify(promptchanRequest)
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`❌ [${requestId}] Promptchan API error:`, errorText);
+        throw new Error(`Promptchan API error: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log(`✅ [${requestId}] Promptchan explicit sex image generated, gems used:`, result.gems);
+
+      // Increment usage counter
+      if ((source === 'chat' || source === 'image-generator') && (email || auth0_id)) {
+        console.log(`📈 [${requestId}] Incrementing usage counter for ${source} (Promptchan explicit)`);
+        try {
+          const incrementResponse = await fetch(`${process.env.NETLIFY_FUNCTIONS_URL || 'https://selira.ai/.netlify/functions'}/selira-increment-image-usage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: auth0_id })
+          });
+
+          if (incrementResponse.ok) {
+            console.log(`✅ [${requestId}] Usage incremented successfully (Promptchan explicit)`);
+          }
+        } catch (err) {
+          console.error(`❌ [${requestId}] Error incrementing usage:`, err.message);
+        }
+      }
+
+      return {
+        statusCode: 200,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          success: true,
+          imageUrl: result.image,
+          fullPrompt: directPrompt,
+          customPrompt: customPrompt,
+          isAnimeStyle: false,
+          provider: 'promptchan'
+        })
+      };
+
+    } catch (error) {
+      console.error(`❌ [${requestId}] Promptchan explicit sex generation error:`, error);
+      return {
+        statusCode: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          error: 'Promptchan explicit sex image generation failed',
+          details: error.message
+        })
+      };
+    }
+  }
+
   // Determine shot type (same as censored version)
   const isFullBody = shotType === 'fullbody' || promptLower.includes('full body') ||
                      promptLower.includes('fullbody') || promptLower.includes('standing') ||
