@@ -1972,7 +1972,7 @@
         <div class="mobile-filter-bar">
         <div class="mobile-filter-dropdown">
           <button class="mobile-dropdown-btn" id="mobileContentFilter" onclick="toggleMobileContentDropdown()">
-            <span id="mobileContentText">Censored</span>
+            <span id="mobileContentText">Uncensored</span>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" style="margin-left: 6px;">
               <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
             </svg>
@@ -1980,7 +1980,7 @@
           <div class="mobile-dropdown-menu" id="mobileContentMenu">
             <div class="mobile-dropdown-item" onclick="selectMobileContent('all')">All</div>
             <div class="mobile-dropdown-item" onclick="selectMobileContent('censored')">Censored</div>
-            <div class="mobile-dropdown-item" onclick="selectMobileContent('uncensored')">Uncensored</div>
+            <div class="mobile-dropdown-item selected" onclick="selectMobileContent('uncensored')">Uncensored</div>
           </div>
         </div>
         <div class="mobile-filter-dropdown">
@@ -2055,7 +2055,7 @@
           <!-- Content Filter FIRST -->
           <div class="filter-dropdown">
             <button class="dropdown-btn content-filter-btn active" id="contentDropdownBtn" onclick="toggleDropdown('content')">
-              <span>Censored</span>
+              <span>Uncensored</span>
               <span class="dropdown-arrow">▼</span>
             </button>
             <div class="dropdown-menu" id="contentDropdown">
