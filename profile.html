@@ -1824,50 +1824,23 @@
 
   </script>
 
-  <!-- Delete Account Modal -->
+  <!-- Delete Account Info Modal -->
   <div id="deleteAccountModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
-    <div style="background: var(--background-secondary); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 40px; max-width: 480px; width: 90%; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);">
-      <div style="text-align: center; margin-bottom: 24px;">
-        <div style="display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background: rgba(220, 53, 69, 0.15); border-radius: 50%; margin-bottom: 20px;">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#dc3545" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="8" x2="12" y2="12"></line>
-            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-          </svg>
-        </div>
-        <h2 style="color: var(--text-primary); margin: 0 0 12px 0; font-size: 26px; font-weight: 600;">Delete Account?</h2>
-        <p style="color: var(--text-secondary); margin: 0; line-height: 1.6; font-size: 15px;">
-          Are you sure you want to delete your account? This action cannot be undone.
-          <br><br>
-          We will process your deletion request within <strong style="color: var(--text-primary);">48 hours</strong>.
-        </p>
-      </div>
-      <div style="display: flex; gap: 12px;">
-        <button onclick="closeDeleteAccountModal()" class="btn" style="flex: 1; background: var(--background-tertiary); border: 1px solid var(--border-color); color: var(--text-primary);">
-          Cancel
-        </button>
-        <button onclick="confirmDeleteAccount()" class="btn" style="flex: 1; background: #dc3545; border: 1px solid #dc3545; color: white;">
-          Delete My Account
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Delete Account Confirmation Modal -->
-  <div id="deleteAccountConfirmedModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
     <div style="background: var(--background-secondary); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 40px; max-width: 480px; width: 90%; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5); text-align: center;">
-      <div style="display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background: rgba(40, 167, 69, 0.15); border-radius: 50%; margin-bottom: 20px;">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#28a745" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="20 6 9 17 4 12"></polyline>
+      <div style="display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background: rgba(59, 130, 246, 0.15); border-radius: 50%; margin-bottom: 20px;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
         </svg>
       </div>
-      <h2 style="color: var(--text-primary); margin: 0 0 12px 0; font-size: 26px; font-weight: 600;">Request Submitted</h2>
+      <h2 style="color: var(--text-primary); margin: 0 0 12px 0; font-size: 26px; font-weight: 600;">Delete Your Account</h2>
       <p style="color: var(--text-secondary); margin: 0 0 32px 0; line-height: 1.6; font-size: 15px;">
-        Your account deletion request has been received. We will process this within <strong style="color: var(--text-primary);">48 hours</strong>.
+        Send an email to <strong style="color: var(--text-primary);">hello@selira.ai</strong> and we will delete your account within <strong style="color: var(--text-primary);">48h</strong>.
         <br><br>
-        You will receive a confirmation email once completed.
+        We will confirm this by email to you.
       </p>
-      <button onclick="closeDeleteAccountConfirmedModal()" class="btn" style="width: 100%; background: var(--primary-color); border: 1px solid var(--primary-color); color: white;">
+      <button onclick="closeDeleteAccountModal()" class="btn" style="width: 100%; background: var(--primary-color); border: 1px solid var(--primary-color); color: white;">
         Close
       </button>
     </div>
@@ -1884,57 +1857,9 @@
       modal.style.display = 'none';
     }
 
-    function closeDeleteAccountConfirmedModal() {
-      const modal = document.getElementById('deleteAccountConfirmedModal');
-      modal.style.display = 'none';
-    }
-
-    async function confirmDeleteAccount() {
-      try {
-        // Close first modal
-        closeDeleteAccountModal();
-
-        // Get user info
-        const user = window.getCurrentUser ? window.getCurrentUser() : null;
-        if (!user?.email) {
-          alert('Please log in to delete your account');
-          return;
-        }
-
-        console.log('🗑️ Submitting account deletion request for:', user.email);
-
-        // Send deletion request to Netlify function
-        const response = await fetch('/.netlify/functions/selira-delete-account-request', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email: user.email,
-            auth0_id: user.sub || user.id || user.auth0_id
-          })
-        });
-
-        if (response.ok) {
-          console.log('✅ Account deletion request submitted successfully');
-          // Show confirmation modal
-          const confirmedModal = document.getElementById('deleteAccountConfirmedModal');
-          confirmedModal.style.display = 'flex';
-        } else {
-          const error = await response.json();
-          console.error('❌ Failed to submit deletion request:', error);
-          alert('Failed to submit deletion request. Please email your request to hello@selira.ai');
-        }
-      } catch (error) {
-        console.error('❌ Error submitting deletion request:', error);
-        alert('An error occurred. Please try again or email hello@selira.ai');
-      }
-    }
-
     // Close modal when clicking outside
     document.getElementById('deleteAccountModal')?.addEventListener('click', function(e) {
       if (e.target === this) closeDeleteAccountModal();
-    });
-    document.getElementById('deleteAccountConfirmedModal')?.addEventListener('click', function(e) {
-      if (e.target === this) closeDeleteAccountConfirmedModal();
     });
   </script>
 
