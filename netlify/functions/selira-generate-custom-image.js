@@ -485,16 +485,17 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     } else if (promptLower.includes('park') || promptLower.includes('outdoor')) {
       contextualEnhancement += ', natural outdoor setting, pleasant lighting';
     } else {
-      // For companion creation: use clean background (no random bedroom/beach/luxury)
-      // For chat/image gen: use random sexy backgrounds
+      // For companion creation: use clean background ONLY if censored
+      // For uncensored or chat/image gen: use random sexy backgrounds
       const isCompanionCreation = source === 'companion-creation';
+      const isCensoredCompanion = isCompanionCreation && uncensored !== true;
 
-      if (isCompanionCreation) {
-        // Clean, simple background for companion avatar portraits
+      if (isCensoredCompanion) {
+        // Clean, simple background for CENSORED companion avatar portraits only
         contextualEnhancement += ', clean background, studio lighting, professional portrait';
-        console.log(`🎨 [${requestId}] Companion creation - using clean background`);
+        console.log(`🎨 [${requestId}] Censored companion creation - using clean background`);
       } else {
-        // Random sexy diverse backgrounds for chat/image generator
+        // Random sexy diverse backgrounds for uncensored companions, chat, and image generator
         const randomBackgrounds = [
           ', luxury bedroom with silk sheets, warm golden lighting, candles, rose petals, romantic intimate atmosphere',
           ', five-star hotel suite bedroom, floor-to-ceiling windows, city lights, king size bed, luxury decor',
@@ -525,16 +526,17 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
 
   // Check if this is companion creation - different enhancement approach
   const isCompanionCreation = source === 'companion-creation';
+  const isCensoredCompanion = isCompanionCreation && uncensored !== true;
 
   let nsfwEnhancement;
-  if (isCompanionCreation) {
-    // Sensual and alluring for companion avatars - tasteful nude portrait, NOT explicit porn
+  if (isCensoredCompanion) {
+    // Sensual and alluring for CENSORED companion avatars - tasteful nude portrait, NOT explicit porn
     // Focus on beauty, elegance, and allure rather than explicit sexual content
     nsfwEnhancement = sex === 'male'
       ? ', naked, nude, bare chest showing, muscular body, confident pose, seductive expression, sensual, intimate, artistic nude photography, tasteful nudity, elegant masculine beauty'
       : ', naked, nude, bare breasts showing, beautiful curves, elegant pose, seductive gaze, alluring expression, sensual, intimate, artistic nude photography, soft lighting, tasteful nudity, natural beauty, elegant feminine beauty';
   } else {
-    // Explicit for chat/image generator - MAXIMUM hardcore NSFW like companion generation
+    // Explicit for UNCENSORED companions, chat, and image generator - MAXIMUM hardcore NSFW
     // Use VERY explicit visible genital descriptions that Promptchan cannot ignore
     nsfwEnhancement = sex === 'male'
       ? ', naked man, big hard erect penis visible and prominent in frame, cock standing up, balls hanging visible, shaft and head clearly shown, genitals fully exposed and in focus, muscular body, explicit male nudity, pornographic XXX adult content, full frontal nudity showing everything, aroused hard cock, intimate POV angle'
