@@ -199,7 +199,11 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     let promptchanResult = null;
 
     try {
-      console.log(`🎲 [${requestId}] Trying Promptchan (no retries - will fallback to Replicate if fails)...`);
+      console.log(`🎲 [${requestId}] Trying Promptchan (25s timeout - will fallback to Replicate if fails)...`);
+
+      // Add 25 second timeout to prevent Netlify 504 Gateway Timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 25000);
 
       const response = await fetch('https://prod.aicloudnetservices.com/api/external/create', {
         method: 'POST',
@@ -207,8 +211,9 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
           'Content-Type': 'application/json',
           'x-api-key': PROMPTCHAN_API_KEY
         },
-        body: JSON.stringify(promptchanRequest)
-      });
+        body: JSON.stringify(promptchanRequest),
+        signal: controller.signal
+      }).finally(() => clearTimeout(timeoutId));
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -223,7 +228,11 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
       }
 
     } catch (error) {
-      console.error(`❌ [${requestId}] Promptchan error:`, error.message);
+      if (error.name === 'AbortError') {
+        console.error(`⏱️ [${requestId}] Promptchan timeout after 25s:`, error.message);
+      } else {
+        console.error(`❌ [${requestId}] Promptchan error:`, error.message);
+      }
       console.log(`⚠️ [${requestId}] Promptchan failed, will fallback to Replicate below`);
       // Don't throw - just continue to Replicate fallback
     }
@@ -367,7 +376,11 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     let promptchanResult = null;
 
     try {
-      console.log(`🎲 [${requestId}] Calling Promptchan for explicit sex (no timeout)...`);
+      console.log(`🎲 [${requestId}] Calling Promptchan for explicit sex (25s timeout)...`);
+
+      // Add 25 second timeout to prevent Netlify 504 Gateway Timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 25000);
 
       const response = await fetch('https://prod.aicloudnetservices.com/api/external/create', {
         method: 'POST',
@@ -375,8 +388,9 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
           'Content-Type': 'application/json',
           'x-api-key': PROMPTCHAN_API_KEY
         },
-        body: JSON.stringify(promptchanRequest)
-      });
+        body: JSON.stringify(promptchanRequest),
+        signal: controller.signal
+      }).finally(() => clearTimeout(timeoutId));
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -391,7 +405,11 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
       }
 
     } catch (error) {
-      console.error(`❌ [${requestId}] Promptchan error:`, error.message);
+      if (error.name === 'AbortError') {
+        console.error(`⏱️ [${requestId}] Promptchan timeout after 25s:`, error.message);
+      } else {
+        console.error(`❌ [${requestId}] Promptchan error:`, error.message);
+      }
       console.log(`⚠️ [${requestId}] Promptchan failed, will fallback to Replicate below`);
       // Don't throw - just continue to Replicate fallback
     }
@@ -587,14 +605,19 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   console.log(`📤 [${requestId}] Promptchan request (Ultra quality):`, promptchanRequest);
 
   try {
+    // Add 25 second timeout to prevent Netlify 504 Gateway Timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 25000);
+
     const response = await fetch('https://prod.aicloudnetservices.com/api/external/create', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'x-api-key': PROMPTCHAN_API_KEY
       },
-      body: JSON.stringify(promptchanRequest)
-    });
+      body: JSON.stringify(promptchanRequest),
+      signal: controller.signal
+    }).finally(() => clearTimeout(timeoutId));
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -637,7 +660,11 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     };
 
   } catch (error) {
-    console.error(`❌ [${requestId}] Promptchan generation error:`, error);
+    if (error.name === 'AbortError') {
+      console.error(`⏱️ [${requestId}] Promptchan timeout after 25s - will fallback to Replicate`);
+    } else {
+      console.error(`❌ [${requestId}] Promptchan generation error:`, error);
+    }
     return {
       statusCode: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
