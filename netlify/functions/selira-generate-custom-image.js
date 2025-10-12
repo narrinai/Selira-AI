@@ -506,10 +506,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     shotDesc = isFullBody ? 'full body anime illustration' : 'anime portrait';
     // For companion creation: focus on portrait/full body beauty shot
     if (isCompanionCreation) {
-      // Uncensored companions: background already in contextualEnhancement (luxury bedroom)
-      // Censored companions: add clean background here
-      const backgroundSuffix = uncensored ? '' : ', clean background';
-      enhancedPrompt = `${shotDesc} of ${appearance}, anime style, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}, detailed anime art, vibrant colors${backgroundSuffix}, single character`;
+      enhancedPrompt = `${shotDesc} of ${appearance}, anime style, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}, detailed anime art, vibrant colors, clean background, single character`;
     } else {
       // For image generator: keep appearance emphasis
       enhancedPrompt = `${appearance}, ${shotDesc}, anime style, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}, ${appearance}, detailed anime art, vibrant colors`;
@@ -518,10 +515,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     shotDesc = isFullBody ? 'full body photograph' : 'portrait photograph';
     // For companion creation: match Replicate's format for consistency
     if (isCompanionCreation) {
-      // Uncensored companions: background already in contextualEnhancement (luxury bedroom)
-      // Censored companions: add clean background here
-      const backgroundSuffix = uncensored ? '' : ', clean background';
-      enhancedPrompt = `${shotDesc} of ${appearance}, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}, realistic skin texture, realistic facial features, realistic proportions, professional photography${backgroundSuffix}, single person`;
+      enhancedPrompt = `${shotDesc} of ${appearance}, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}, realistic skin texture, realistic facial features, realistic proportions, professional photography, clean background, single person`;
     } else {
       // For image generator: keep appearance emphasis
       enhancedPrompt = `${appearance}, ${shotDesc}, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}, ${appearance}, photorealistic, ultra realistic, professional photography, detailed`;
