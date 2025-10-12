@@ -163,20 +163,30 @@ exports.handler = async (event, context) => {
 
     console.log(`✅ Found ${allRecords.length} male characters total`);
 
-    // Filter companions with feminine greetings
-    const feminineKeywords = [
-      'I\'m excited to get to know you',
-      'smiles warmly',
-      'my shirt', 'my dress', 'lingerie', 'panties',
-      'I exist to serve and please you'
-    ];
-
+    // Filter characters that need updates - check both greeting and intro line
     const companionsToFix = allRecords.filter(record => {
       const description = record.fields.Description || '';
+      const introLine = description.split('\n\nGreeting: ')[0] || '';
       const greeting = description.split('Greeting: ')[1] || '';
-      return feminineKeywords.some(keyword =>
+
+      // Check for generic "A companion ready to chat" intro
+      const hasGenericIntro = introLine.includes('A companion ready to chat');
+
+      // Check for feminine greetings
+      const feminineKeywords = [
+        'I\'m excited to get to know you',
+        'smiles warmly', 'giggles', 'blushes',
+        'my shirt', 'my dress', 'lingerie', 'panties',
+        'I exist to serve and please you',
+        'kneels gracefully', 'curtseys',
+        'playfully', 'cutie'
+      ];
+
+      const hasFeminineGreeting = feminineKeywords.some(keyword =>
         greeting.toLowerCase().includes(keyword.toLowerCase())
       );
+
+      return hasGenericIntro || hasFeminineGreeting;
     });
 
     console.log(`🎯 Found ${companionsToFix.length} male characters with feminine greetings`);
