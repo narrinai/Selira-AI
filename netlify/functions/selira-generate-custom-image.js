@@ -201,63 +201,38 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
 
     console.log(`📤 [${requestId}] Using pre-enhanced prompt directly:`, promptchanRequest);
 
-    // Retry logic for Promptchan GPU failures
+    // NO RETRIES - try Promptchan once, if fails go straight to Replicate to avoid 10s timeout
     let promptchanSuccess = false;
     let promptchanResult = null;
-    const MAX_RETRIES = 1; // Try up to 2 times total (1 initial + 1 retry) to stay under 10s Netlify timeout
 
-    for (let attempt = 0; attempt <= MAX_RETRIES && !promptchanSuccess; attempt++) {
-      try {
-        if (attempt > 0) {
-          console.log(`🔄 [${requestId}] Retry attempt ${attempt}/${MAX_RETRIES} for Promptchan...`);
-          // Wait 1 second before retry (reduced from 2s to fit in 10s Netlify timeout)
-          await new Promise(resolve => setTimeout(resolve, 1000));
-        }
+    try {
+      console.log(`🎲 [${requestId}] Trying Promptchan (no retries - will fallback to Replicate if fails)...`);
 
-        const response = await fetch('https://prod.aicloudnetservices.com/api/external/create', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': PROMPTCHAN_API_KEY
-          },
-          body: JSON.stringify(promptchanRequest)
-        });
+      const response = await fetch('https://prod.aicloudnetservices.com/api/external/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': PROMPTCHAN_API_KEY
+        },
+        body: JSON.stringify(promptchanRequest)
+      });
 
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.error(`❌ [${requestId}] Promptchan API error (attempt ${attempt + 1}):`, errorText);
-
-          // Check if it's a GPU failure (can retry) or other error (don't retry)
-          const isGpuError = errorText.includes('Failed to get a successful GPU call') ||
-                            errorText.includes('internal server error');
-
-          if (!isGpuError || attempt === MAX_RETRIES) {
-            throw new Error(`Promptchan API error: ${response.status}`);
-          }
-          // Otherwise continue to next retry attempt
-          continue;
-        }
-
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`❌ [${requestId}] Promptchan API error:`, errorText);
+        console.log(`⚠️ [${requestId}] Promptchan failed, will fallback to Replicate below`);
+        // Don't throw - just continue to Replicate fallback
+      } else {
         const result = await response.json();
-        console.log(`✅ [${requestId}] Promptchan image generated with pre-enhanced prompt on attempt ${attempt + 1}, gems used:`, result.gems);
+        console.log(`✅ [${requestId}] Promptchan image generated with pre-enhanced prompt, gems used:`, result.gems);
         promptchanSuccess = true;
         promptchanResult = result;
-
-      } catch (error) {
-        console.error(`❌ [${requestId}] Promptchan error on attempt ${attempt + 1}:`, error.message);
-        if (attempt === MAX_RETRIES) {
-          // All retries exhausted
-          console.log(`⚠️ [${requestId}] All ${MAX_RETRIES + 1} Promptchan attempts failed`);
-          return {
-            statusCode: 500,
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              error: 'Promptchan image generation failed',
-              details: error.message
-            })
-          };
-        }
       }
+
+    } catch (error) {
+      console.error(`❌ [${requestId}] Promptchan error:`, error.message);
+      console.log(`⚠️ [${requestId}] Promptchan failed, will fallback to Replicate below`);
+      // Don't throw - just continue to Replicate fallback
     }
 
     // If Promptchan succeeded, return the result
@@ -386,55 +361,38 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
 
     console.log(`📤 [${requestId}] Promptchan request with DIRECT sex prompt:`, promptchanRequest);
 
-    // Retry logic for Promptchan GPU failures
+    // NO RETRIES - try Promptchan once, if fails go straight to Replicate to avoid 10s timeout
     let promptchanSuccess = false;
     let promptchanResult = null;
-    const MAX_RETRIES = 1; // Try up to 2 times total (1 initial + 1 retry) to stay under 10s Netlify timeout
 
-    for (let attempt = 0; attempt <= MAX_RETRIES && !promptchanSuccess; attempt++) {
-      try {
-        if (attempt > 0) {
-          console.log(`🔄 [${requestId}] Retry attempt ${attempt}/${MAX_RETRIES} for Promptchan...`);
-          // Wait 1 second before retry (reduced from 2s to fit in 10s Netlify timeout)
-          await new Promise(resolve => setTimeout(resolve, 1000));
-        }
+    try {
+      console.log(`🎲 [${requestId}] Trying Promptchan for explicit sex (no retries - will fallback to Replicate if fails)...`);
 
-        const response = await fetch('https://prod.aicloudnetservices.com/api/external/create', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': PROMPTCHAN_API_KEY
-          },
-          body: JSON.stringify(promptchanRequest)
-        });
+      const response = await fetch('https://prod.aicloudnetservices.com/api/external/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': PROMPTCHAN_API_KEY
+        },
+        body: JSON.stringify(promptchanRequest)
+      });
 
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.error(`❌ [${requestId}] Promptchan API error (attempt ${attempt + 1}):`, errorText);
-
-          // Check if it's a GPU failure (can retry) or other error (don't retry)
-          const isGpuError = errorText.includes('Failed to get a successful GPU call') ||
-                            errorText.includes('internal server error');
-
-          if (!isGpuError || attempt === MAX_RETRIES) {
-            throw new Error(`Promptchan API error: ${response.status}`);
-          }
-          // Otherwise continue to next retry attempt
-          continue;
-        }
-
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`❌ [${requestId}] Promptchan API error:`, errorText);
+        console.log(`⚠️ [${requestId}] Promptchan failed, will fallback to Replicate below`);
+        // Don't throw - just continue to Replicate fallback
+      } else {
         const result = await response.json();
-        console.log(`✅ [${requestId}] Promptchan explicit sex image generated on attempt ${attempt + 1}, gems used:`, result.gems);
+        console.log(`✅ [${requestId}] Promptchan explicit sex image generated, gems used:`, result.gems);
         promptchanSuccess = true;
         promptchanResult = result;
-
-      } catch (error) {
-        console.error(`❌ [${requestId}] Promptchan error on attempt ${attempt + 1}:`, error.message);
-        if (attempt === MAX_RETRIES) {
-          // All retries exhausted, will fall through to Replicate fallback below
-          console.log(`⚠️ [${requestId}] All ${MAX_RETRIES + 1} Promptchan attempts failed`);
-        }
       }
+
+    } catch (error) {
+      console.error(`❌ [${requestId}] Promptchan error:`, error.message);
+      console.log(`⚠️ [${requestId}] Promptchan failed, will fallback to Replicate below`);
+      // Don't throw - just continue to Replicate fallback
     }
 
     // If Promptchan succeeded, return the result
