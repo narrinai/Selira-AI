@@ -584,6 +584,92 @@
       border-color: var(--accent);
     }
 
+    /* Pose & Outfit Selector Styles for Uncensored Mode */
+    .pose-outfit-selector {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .selector-section {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .selector-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .selector-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .selector-btn {
+      background: var(--bg-tertiary);
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 12px;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      font-weight: 500;
+    }
+
+    .selector-btn:hover {
+      background: var(--bg-secondary);
+      border-color: var(--accent);
+    }
+
+    .selector-btn.selected {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+
+    .selector-btn.nsfw {
+      border-color: #ff4444;
+    }
+
+    .selector-btn.nsfw.selected {
+      background: #ff4444;
+      border-color: #ff4444;
+    }
+
+    .generate-image-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-top: 8px;
+    }
+
+    .generate-image-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .generate-image-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
     .chat-input-wrapper {
       display: flex;
       gap: 12px;
@@ -1805,6 +1891,41 @@
   </div>
 
   <script>
+    // NSFW Pose & Outfit options for uncensored image generation
+    const NSFW_POSES = [
+      { id: 'pov-oral', label: '🔥 POV Blowjob', prompt: 'POV blowjob angle, kneeling, large penis in mouth visible, dick clearly shown, oral sex close-up, fellatio, cock sucking, male POV perspective, penis shaft visible in frame, explicit oral, NSFW' },
+      { id: 'doggy', label: '🔥 Doggy Style', prompt: 'doggy style position, ass up face down, from behind, rear view, legs spread, explicit penetration, pussy visible, sexual position, NSFW' },
+      { id: 'cowgirl', label: '🔥 Cowgirl', prompt: 'cowgirl position, riding, straddling, on top, explicit sex position, breasts visible, intimate angle, NSFW' },
+      { id: 'missionary', label: '🔥 Missionary', prompt: 'missionary position, legs spread, laying on back, intimate angle, explicit sex position, pussy visible, NSFW' },
+      { id: 'fingering', label: '🔥 Masturbating', prompt: 'masturbating explicitly, hand between legs, fingers penetrating pussy, fingering herself, self-pleasure, legs spread wide open, touching genitals, rubbing clit, explicit masturbation, pleasuring herself, finger in vagina, NSFW porn' },
+      { id: 'reverse-cowgirl', label: '🔥 Reverse Cowgirl', prompt: 'reverse cowgirl position, riding facing away, ass view, straddling backwards, explicit sex position, penetration visible, rear angle, NSFW' },
+      { id: 'spread-legs', label: '🔥 Legs Spread', prompt: 'legs spread wide open, sitting or lying, pussy exposed, vulva visible, spread eagle position, legs apart showing genitals, explicit spread, NSFW' },
+      { id: 'bent-over', label: '🔥 Bent Over', prompt: 'bent over pose, ass up, leaning forward over furniture, rear view, bent at waist, showing ass and pussy, explicit bent over position, NSFW' },
+      { id: 'on-knees', label: '🔥 On Knees POV', prompt: 'on knees submissive position, looking up at camera, POV angle from above, mouth open, tongue out, ready pose, kneeling down, NSFW' },
+      { id: 'titfuck', label: '🔥 Titty Fuck', prompt: 'penis between breasts, titty fuck position, boob job, cock between tits, breasts squeezed around dick, explicit titfuck, paizuri, NSFW' },
+      { id: 'anal', label: '🔥 Anal', prompt: 'anal sex position, penetration from behind, ass penetration, anal intercourse, explicit anal, spreading ass cheeks, asshole visible, NSFW' },
+      { id: '69', label: '🔥 69 Position', prompt: '69 position, mutual oral sex, eating out while being sucked, tongue on pussy and cock in mouth, both pleasuring each other, NSFW' }
+    ];
+
+    const NSFW_OUTFITS = [
+      { id: 'nude', label: '🔥 Fully Nude', prompt: 'completely naked, fully nude, no clothes, bare skin, nude body, naked breasts, exposed pussy, totally naked, unclothed, full nudity, NSFW' },
+      { id: 'topless', label: '🔥 Topless', prompt: 'topless, bare breasts, no bra, breasts exposed, nipples visible, naked from waist up, NSFW' },
+      { id: 'stockings', label: '🔥 Stockings Only', prompt: 'wearing only stockings, thigh-high stockings, naked with stockings, stockings and nothing else, nude with stockings, NSFW' },
+      { id: 'fishnet', label: '🔥 Fishnet', prompt: 'fishnet bodysuit, fishnet lingerie, see-through fishnet outfit, fishnet stockings and top, mesh clothing, sexy fishnet, NSFW' },
+      { id: 'latex', label: '🔥 Latex/Leather', prompt: 'tight latex outfit, shiny leather clothing, latex bodysuit, leather lingerie, kinky outfit, fetish wear, NSFW' },
+      { id: 'schoolgirl', label: '🔥 Schoolgirl', prompt: 'sexy schoolgirl outfit, short skirt, unbuttoned shirt, revealing school uniform, naughty student look, anime schoolgirl, NSFW' },
+      { id: 'maid', label: '🔥 Maid Outfit', prompt: 'sexy maid costume, french maid outfit, short skirt maid uniform, revealing maid dress, frilly maid outfit, NSFW' },
+      { id: 'nurse', label: '🔥 Nurse', prompt: 'sexy nurse costume, revealing nurse outfit, short nurse dress, naughty nurse uniform, medical fetish outfit, NSFW' },
+      { id: 'garter', label: '🔥 Garter Belt', prompt: 'garter belt and stockings, suspenders, garter straps, lingerie with garters, sexy garter set, thigh-high stockings with garters, NSFW' },
+      { id: 'panties-only', label: '🔥 Panties Only', prompt: 'wearing only panties, topless with panties, bare breasts with underwear, panties and nothing else, half naked, NSFW' },
+      { id: 'bodystocking', label: '🔥 Bodystocking', prompt: 'sheer bodystocking, see-through body suit, mesh bodysuit, transparent full body stocking, revealing bodystocking, NSFW' },
+      { id: 'lingerie', label: '🔥 Sexy Lingerie', prompt: 'sexy lingerie, lace bra and panties, see-through lingerie, revealing intimate wear, skimpy underwear, NSFW' }
+    ];
+
+    // Selected pose and outfit for image generation
+    let selectedPose = null;
+    let selectedOutfit = null;
+
     // Global variables - current character will be loaded from URL
     let currentCharacter = {
       name: 'Loading...',
@@ -2310,7 +2431,7 @@
     async function showImagePromptSuggestions() {
       if (!currentCharacter || !currentCharacter.name) return;
 
-      const suggestions = generateImagePromptSuggestions(currentCharacter);
+      const isUncensored = localStorage.getItem('unfilteredMode') === 'true';
       const suggestionContainer = document.getElementById('suggestionButtons');
       const suggestionsDiv = document.getElementById('imagePromptSuggestions');
 
@@ -2345,7 +2466,7 @@
         `;
         suggestionContainer.appendChild(upgradeNotice);
       } else {
-        // Show suggestions with plan info
+        // Show plan info
         const planInfo = document.createElement('div');
         planInfo.className = 'image-plan-info';
         const usingCredits = permissions.usingCredits || permissions.imageCreditsRemaining > 0;
@@ -2358,18 +2479,151 @@
         `;
         suggestionContainer.appendChild(planInfo);
 
-        // Add suggestion buttons
-        suggestions.forEach(suggestion => {
-          const button = document.createElement('button');
-          button.className = 'suggestion-button';
-          button.textContent = suggestion;
-          button.onclick = () => useSuggestion(suggestion);
-          suggestionContainer.appendChild(button);
-        });
+        // UNCENSORED MODE: Show pose & outfit selectors
+        if (isUncensored) {
+          const selectorContainer = document.createElement('div');
+          selectorContainer.className = 'pose-outfit-selector';
+
+          // Pose selector
+          const poseSection = document.createElement('div');
+          poseSection.className = 'selector-section';
+          poseSection.innerHTML = `
+            <div class="selector-label">🔥 Select Pose:</div>
+            <div class="selector-buttons" id="poseButtons"></div>
+          `;
+          selectorContainer.appendChild(poseSection);
+
+          // Outfit selector
+          const outfitSection = document.createElement('div');
+          outfitSection.className = 'selector-section';
+          outfitSection.innerHTML = `
+            <div class="selector-label">🔥 Select Outfit:</div>
+            <div class="selector-buttons" id="outfitButtons"></div>
+          `;
+          selectorContainer.appendChild(outfitSection);
+
+          // Generate button
+          const generateBtn = document.createElement('button');
+          generateBtn.className = 'generate-image-btn';
+          generateBtn.textContent = 'Generate Image';
+          generateBtn.disabled = true;
+          generateBtn.onclick = () => generateImageFromSelectors();
+          selectorContainer.appendChild(generateBtn);
+
+          suggestionContainer.appendChild(selectorContainer);
+
+          // Populate pose buttons
+          const poseButtonsContainer = document.getElementById('poseButtons');
+          NSFW_POSES.forEach(pose => {
+            const btn = document.createElement('button');
+            btn.className = 'selector-btn nsfw';
+            btn.textContent = pose.label;
+            btn.onclick = () => selectPose(pose.id);
+            poseButtonsContainer.appendChild(btn);
+          });
+
+          // Populate outfit buttons
+          const outfitButtonsContainer = document.getElementById('outfitButtons');
+          NSFW_OUTFITS.forEach(outfit => {
+            const btn = document.createElement('button');
+            btn.className = 'selector-btn nsfw';
+            btn.textContent = outfit.label;
+            btn.onclick = () => selectOutfit(outfit.id);
+            outfitButtonsContainer.appendChild(btn);
+          });
+
+        } else {
+          // CENSORED MODE: Show original suggestion buttons
+          const suggestions = generateImagePromptSuggestions(currentCharacter);
+          suggestions.forEach(suggestion => {
+            const button = document.createElement('button');
+            button.className = 'suggestion-button';
+            button.textContent = suggestion;
+            button.onclick = () => useSuggestion(suggestion);
+            suggestionContainer.appendChild(button);
+          });
+        }
       }
 
       // Show suggestions
       suggestionsDiv.classList.add('visible');
+    }
+
+    // Select pose for NSFW image generation
+    function selectPose(poseId) {
+      selectedPose = poseId;
+
+      // Update button styles
+      document.querySelectorAll('#poseButtons .selector-btn').forEach(btn => {
+        btn.classList.remove('selected');
+      });
+      event.target.classList.add('selected');
+
+      // Enable generate button if both selected
+      updateGenerateButton();
+    }
+
+    // Select outfit for NSFW image generation
+    function selectOutfit(outfitId) {
+      selectedOutfit = outfitId;
+
+      // Update button styles
+      document.querySelectorAll('#outfitButtons .selector-btn').forEach(btn => {
+        btn.classList.remove('selected');
+      });
+      event.target.classList.add('selected');
+
+      // Enable generate button if both selected
+      updateGenerateButton();
+    }
+
+    // Update generate button state
+    function updateGenerateButton() {
+      const generateBtn = document.querySelector('.generate-image-btn');
+      if (generateBtn) {
+        generateBtn.disabled = !(selectedPose && selectedOutfit);
+      }
+    }
+
+    // Generate image from selected pose & outfit
+    async function generateImageFromSelectors() {
+      if (!selectedPose || !selectedOutfit) {
+        alert('Please select both a pose and outfit');
+        return;
+      }
+
+      // Find selected pose and outfit
+      const pose = NSFW_POSES.find(p => p.id === selectedPose);
+      const outfit = NSFW_OUTFITS.find(o => o.id === selectedOutfit);
+
+      if (!pose || !outfit) {
+        console.error('❌ Invalid pose or outfit selection');
+        return;
+      }
+
+      // Build prompt from pose + outfit (match the "Send me a picture" format)
+      const combinedPrompt = `Send me a picture ${pose.prompt}, ${outfit.prompt}`;
+      console.log('🎨 Generated prompt from selectors:', combinedPrompt);
+
+      // Put prompt in message input and trigger send
+      const messageInput = document.getElementById('messageInput');
+      if (messageInput) {
+        messageInput.value = combinedPrompt;
+        autoResizeTextarea();
+
+        // Hide suggestions
+        hideImagePromptSuggestions();
+
+        // Trigger send button click to generate image
+        const sendButton = document.getElementById('sendButton') || document.querySelector('[onclick*="sendMessage"]');
+        if (sendButton) {
+          sendButton.click();
+        }
+      }
+
+      // Reset selections
+      selectedPose = null;
+      selectedOutfit = null;
     }
 
     // Hide image prompt suggestions
