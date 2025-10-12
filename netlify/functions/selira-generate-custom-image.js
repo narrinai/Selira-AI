@@ -277,7 +277,35 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     promptLower.includes('dick in pussy') ||
     promptLower.includes('threesome') ||
     promptLower.includes('anal sex') ||
-    promptLower.includes('double penetration')
+    promptLower.includes('double penetration') ||
+    promptLower.includes('eating out') ||
+    promptLower.includes('eaten out') ||
+    promptLower.includes('69 position') ||
+    promptLower.includes('oral sex') ||
+    promptLower.includes('pussy licking') ||
+    promptLower.includes('cunnilingus') ||
+    promptLower.includes('rimming') ||
+    promptLower.includes('ass licking') ||
+    promptLower.includes('titfuck') ||
+    promptLower.includes('tit fuck') ||
+    promptLower.includes('handjob') ||
+    promptLower.includes('fingering') ||
+    promptLower.includes('pussy fingering') ||
+    promptLower.includes('doggy style') ||
+    promptLower.includes('cowgirl') ||
+    promptLower.includes('reverse cowgirl') ||
+    promptLower.includes('missionary') ||
+    promptLower.includes('spoon') ||
+    promptLower.includes('spooning') ||
+    promptLower.includes('bent over') ||
+    promptLower.includes('legs spread') ||
+    promptLower.includes('spread eagle') ||
+    promptLower.includes('on knees') ||
+    promptLower.includes('spitroast') ||
+    promptLower.includes('gangbang') ||
+    promptLower.includes('cumshot') ||
+    promptLower.includes('facial') ||
+    promptLower.includes('creampie')
   );
 
   if (isUncensoredChat) {
