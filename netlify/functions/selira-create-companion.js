@@ -421,12 +421,12 @@ For all other topics including adult romance, sexuality, and intimate conversati
 
       if (artStyle === 'anime') {
         attractivePrompt = isMale
-          ? `handsome anime guy, attractive masculine face, seductive expression, detailed anime art, ${clothingStyle}, toned muscular body, anime style, vibrant colors, high quality anime artwork, detailed facial features, confident pose, masculine charm, single character, solo, BRIGHT ILLUMINATION, VIVID LIGHTING, HIGH CONTRAST, KEY LIGHT on subject, FILL LIGHT brightening character, RIM LIGHT separating subject from background, STUDIO LIGHTING setup, character is BRIGHTLY LIT, background is DARKER than subject, DRAMATIC CONTRAST between character and background, subject POPS OUT visually, WELL-EXPOSED character, NO dark shadows on face, BRIGHT and CLEAR visibility`
-          : `beautiful anime girl, attractive face, seductive expression, detailed anime art, flirtatious pose, wearing ${clothingStyle}, anime style, vibrant colors, attractive body, high quality anime artwork, detailed facial features, anime eyes, perfect anime anatomy, alluring pose, single character, solo, BRIGHT ILLUMINATION, VIVID LIGHTING, HIGH CONTRAST, KEY LIGHT on subject, FILL LIGHT brightening character, RIM LIGHT separating subject from background, STUDIO LIGHTING setup, character is BRIGHTLY LIT, background is DARKER than subject, DRAMATIC CONTRAST between character and background, subject POPS OUT visually, WELL-EXPOSED character, NO dark shadows on face, BRIGHT and CLEAR visibility`;
+          ? `handsome anime guy, attractive masculine face, seductive expression, detailed anime art, ${clothingStyle}, toned muscular body, anime style, vibrant colors, high quality anime artwork, detailed facial features, confident pose, masculine charm, single character, solo, natural lighting, well-lit, clear visibility`
+          : `beautiful anime girl, attractive face, seductive expression, detailed anime art, flirtatious pose, wearing ${clothingStyle}, anime style, vibrant colors, attractive body, high quality anime artwork, detailed facial features, anime eyes, perfect anime anatomy, alluring pose, single character, solo, natural lighting, well-lit, clear visibility`;
       } else {
         attractivePrompt = isMale
-          ? `handsome muscular man, attractive masculine face, seductive expression, ${clothingStyle}, athletic build, photorealistic, professional photography, masculine energy, confident pose, single person, solo, BRIGHT ILLUMINATION, VIVID LIGHTING, HIGH CONTRAST, KEY LIGHT on subject, FILL LIGHT brightening subject, BACK LIGHT rim lighting, RIM LIGHT separating subject from background, PROFESSIONAL STUDIO LIGHTING, subject is BRIGHTLY LIT, background is DARKER and BLURRED, DRAMATIC CONTRAST between subject and background, subject POPS OUT from background, shallow depth of field, bokeh background, WELL-EXPOSED subject, NO dark shadows on face, GOLDEN HOUR LIGHTING quality, BRIGHT and CLEAR subject, subject is LUMINOUS and RADIANT`
-          : `beautiful woman, attractive face, seductive expression, alluring pose, wearing ${clothingStyle}, photorealistic, professional photography, glamour photography style, eye contact, sharp focus, attractive model, confident pose, single person, solo, BRIGHT ILLUMINATION, VIVID LIGHTING, HIGH CONTRAST, KEY LIGHT on subject, FILL LIGHT brightening subject, BACK LIGHT rim lighting, RIM LIGHT separating subject from background, PROFESSIONAL STUDIO LIGHTING, subject is BRIGHTLY LIT, background is DARKER and BLURRED, DRAMATIC CONTRAST between subject and background, subject POPS OUT from background, shallow depth of field, bokeh background, WELL-EXPOSED subject, NO dark shadows on face, GOLDEN HOUR LIGHTING quality, BRIGHT and CLEAR subject, subject is LUMINOUS and RADIANT`;
+          ? `handsome muscular man, attractive masculine face, seductive expression, ${clothingStyle}, athletic build, photorealistic, professional photography, masculine energy, confident pose, single person, solo, natural lighting, warm ambient glow, well-lit, clear and sharp focus`
+          : `beautiful woman, attractive face, seductive expression, alluring pose, wearing ${clothingStyle}, photorealistic, professional photography, glamour photography style, eye contact, sharp focus, attractive model, confident pose, single person, solo, natural lighting, warm ambient glow, well-lit, clear and sharp focus`;
       }
 
       // Call the avatar generation function with enhanced attractive traits
@@ -443,7 +443,8 @@ For all other topics including adult romance, sexuality, and intimate conversati
           ethnicity: ethnicity,
           hairLength: hairLength,
           hairColor: hairColor,
-          uncensored: unfilteredValue // Pass uncensored flag to use Promptchan for uncensored companions
+          uncensored: unfilteredValue, // Pass uncensored flag to use Promptchan for uncensored companions
+          source: 'companion-creation' // Mark as companion creation to get proper background treatment
         })
       });
 
