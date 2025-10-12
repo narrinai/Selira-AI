@@ -204,14 +204,14 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     // Retry logic for Promptchan GPU failures
     let promptchanSuccess = false;
     let promptchanResult = null;
-    const MAX_RETRIES = 2; // Try up to 3 times total (1 initial + 2 retries)
+    const MAX_RETRIES = 1; // Try up to 2 times total (1 initial + 1 retry) to stay under 10s Netlify timeout
 
     for (let attempt = 0; attempt <= MAX_RETRIES && !promptchanSuccess; attempt++) {
       try {
         if (attempt > 0) {
           console.log(`🔄 [${requestId}] Retry attempt ${attempt}/${MAX_RETRIES} for Promptchan...`);
-          // Wait 2 seconds before retry
-          await new Promise(resolve => setTimeout(resolve, 2000));
+          // Wait 1 second before retry (reduced from 2s to fit in 10s Netlify timeout)
+          await new Promise(resolve => setTimeout(resolve, 1000));
         }
 
         const response = await fetch('https://prod.aicloudnetservices.com/api/external/create', {
@@ -389,14 +389,14 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     // Retry logic for Promptchan GPU failures
     let promptchanSuccess = false;
     let promptchanResult = null;
-    const MAX_RETRIES = 2; // Try up to 3 times total (1 initial + 2 retries)
+    const MAX_RETRIES = 1; // Try up to 2 times total (1 initial + 1 retry) to stay under 10s Netlify timeout
 
     for (let attempt = 0; attempt <= MAX_RETRIES && !promptchanSuccess; attempt++) {
       try {
         if (attempt > 0) {
           console.log(`🔄 [${requestId}] Retry attempt ${attempt}/${MAX_RETRIES} for Promptchan...`);
-          // Wait 2 seconds before retry
-          await new Promise(resolve => setTimeout(resolve, 2000));
+          // Wait 1 second before retry (reduced from 2s to fit in 10s Netlify timeout)
+          await new Promise(resolve => setTimeout(resolve, 1000));
         }
 
         const response = await fetch('https://prod.aicloudnetservices.com/api/external/create', {
