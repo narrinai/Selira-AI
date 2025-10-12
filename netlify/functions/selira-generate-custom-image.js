@@ -764,11 +764,13 @@ exports.handler = async (event, context) => {
       hairColor,
       source,
       uncensored,
+      uncensoredType: typeof uncensored,
       email,
       auth0_id: auth0_id ? auth0_id.substring(0, 15) + '...' : 'none'
     });
 
     // ROUTE TO PROMPTCHAN FOR UNCENSORED IMAGES WITH REPLICATE FALLBACK
+    console.log(`🔍 [${requestId}] Uncensored check: uncensored=${uncensored}, type=${typeof uncensored}, === true: ${uncensored === true}, == true: ${uncensored == true}`);
     if (uncensored === true) {
       console.log(`🔓 [${requestId}] Uncensored mode - routing to Promptchan API`);
       const promptchanResult = await generateWithPromptchan(body, requestId, corsHeaders, email, auth0_id);
