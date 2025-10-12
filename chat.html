@@ -5018,7 +5018,14 @@
       
       // Add loading message
       const loadingId = 'loading-' + Date.now();
-      const estimatedTime = unfilteredMode ? '10-15 seconds' : '7-8 seconds';
+      // Male uncensored takes longer (15-20s), female uncensored is faster (10-15s), censored is quick (7-8s)
+      const isMaleCompanion = characterSex === 'male';
+      let estimatedTime;
+      if (unfilteredMode) {
+        estimatedTime = isMaleCompanion ? '15-20 seconds' : '10-15 seconds';
+      } else {
+        estimatedTime = '7-8 seconds';
+      }
       addMessage(`Generating your image... (takes about ${estimatedTime})`, 'ai', loadingId);
       
       try {
