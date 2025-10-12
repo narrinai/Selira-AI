@@ -547,13 +547,14 @@
       overflow: hidden;
       transition: max-height 0.3s ease-in-out;
       order: -1; /* Ensure it appears before the input wrapper */
-      margin-bottom: 12px;
+      margin-bottom: 0;
     }
 
     .image-prompt-suggestions.visible {
-      max-height: 50vh;
+      max-height: 60vh;
       overflow-y: auto;
-      margin-bottom: 12px;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
     }
 
     .suggestions-header {
@@ -654,8 +655,7 @@
       cursor: pointer;
       transition: all 0.2s ease;
       margin-top: 12px;
-      position: sticky;
-      bottom: 0;
+      margin-bottom: 12px;
       width: 100%;
     }
 
