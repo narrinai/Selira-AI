@@ -1917,26 +1917,24 @@
     let avatarGenerationPromise = null;
 
     // Stylish clothing options for companion avatars - extremely explicit
-    function getStylishClothing(style, category = 'default') {
+    function getStylishClothing(style, sex = 'female') {
       const categoryClothing = {
         anime: {
-          female: ['extremely revealing school uniform', 'micro bikini', 'ultra-short kimono', 'barely-there top', 'almost naked maid outfit', 'tiny lingerie set', 'string bikini', 'see-through outfit', 'exposed breasts lingerie', 'topless with mini skirt', 'transparent clothing', 'nipple-revealing top']
+          female: ['extremely revealing school uniform', 'micro bikini', 'ultra-short kimono', 'barely-there top', 'almost naked maid outfit', 'tiny lingerie set', 'string bikini', 'see-through outfit', 'exposed breasts lingerie', 'topless with mini skirt', 'transparent clothing', 'nipple-revealing top'],
+          male: ['open shirt showing abs', 'shirtless', 'low-hanging jeans', 'tight underwear', 'unbuttoned shirt', 'fitted tank top', 'open robe', 'athletic shorts', 'revealing gym wear', 'minimal clothing', 'barely covered', 'exposed chest']
         },
         default: {
-          female: ['ultra-revealing lingerie', 'micro string bikini', 'see-through dress', 'topless with tiny shorts', 'exposed breasts outfit', 'barely covered privates', 'transparent lingerie', 'nipple-revealing top', 'almost completely naked', 'tiny thong bikini', 'exposed cleavage outfit']
+          female: ['ultra-revealing lingerie', 'micro string bikini', 'see-through dress', 'topless with tiny shorts', 'exposed breasts outfit', 'barely covered privates', 'transparent lingerie', 'nipple-revealing top', 'almost completely naked', 'tiny thong bikini', 'exposed cleavage outfit'],
+          male: ['shirtless showing muscles', 'open suit jacket', 'tight briefs', 'low towel', 'unbuttoned shirt revealing chest', 'fitted underwear', 'open robe exposing torso', 'tight jeans shirtless', 'revealing athletic wear', 'minimal coverage', 'exposed muscular body', 'barely dressed']
         }
       };
 
       // Find matching category or use default
-      let clothingOptions = categoryClothing.default;
+      let clothingOptions = categoryClothing[style] || categoryClothing.default;
 
-      if (categoryClothing[style]) {
-        clothingOptions = categoryClothing[style];
-      }
-
-      // Select female clothing (since all companions are female)
-      const femaleClothing = clothingOptions.female || categoryClothing.default.female;
-      return femaleClothing[Math.floor(Math.random() * femaleClothing.length)];
+      // Select gender-appropriate clothing
+      const genderClothing = clothingOptions[sex] || clothingOptions.female;
+      return genderClothing[Math.floor(Math.random() * genderClothing.length)];
     }
 
     async function generateAvatarPreview() {
@@ -1948,10 +1946,10 @@
       // Create promise for tracking
       avatarGenerationPromise = (async () => {
       try {
-        const { style, ethnicity, hairLength, hairColor } = characterCreationState;
+        const { style, sex, ethnicity, hairLength, hairColor } = characterCreationState;
 
         // Get random sexy clothing
-        const stylishClothing = getStylishClothing(style);
+        const stylishClothing = getStylishClothing(style, sex);
 
         // Appearance descriptions (same as complete-avatar-solution-v3.js)
         const ethnicityMap = {
@@ -1989,9 +1987,20 @@
 
         // Build simple prompt for companion avatar - clean portrait/full body shot
         // NO backgrounds (bedroom/beach/luxury) - backend will add clean background for companion-creation
-        let attractivePrompt = style === 'anime'
-          ? `very attractive face, extremely seductive expression, detailed anime art, very erotic pose, wearing ${stylishClothing}, vibrant colors, high quality anime artwork, detailed facial features, anime eyes, perfect anatomy, correct human anatomy, two arms, two hands, very sensual pose, large breasts, curvy figure, big butt, voluptuous body, exposed skin, revealing clothing, single character, solo, no extra limbs, proper proportions`
-          : `attractive face, seductive expression, alluring pose, wearing ${stylishClothing}, photorealistic, professional photography, soft romantic lighting, glamour photography style, eye contact, sharp focus, attractive model, confident pose, single person, solo, perfect human anatomy, two arms, two hands, correct proportions, no extra limbs`;
+        const isMale = characterCreationState.sex === 'male';
+        let attractivePrompt;
+
+        if (isMale) {
+          // Male prompts
+          attractivePrompt = style === 'anime'
+            ? `handsome anime man, very attractive masculine face, confident expression, detailed anime art, muscular pose, wearing ${stylishClothing}, anime style, vibrant colors, high quality anime artwork, detailed facial features, anime eyes, perfect anatomy, correct human anatomy, two arms, two hands, defined abs, muscular chest, athletic body, masculine physique, single character, solo, no extra limbs, proper proportions`
+            : `handsome man, attractive masculine face, confident expression, strong pose, wearing ${stylishClothing}, photorealistic, professional photography, dramatic lighting, male model photography style, eye contact, sharp focus, athletic model, confident masculine pose, single person, solo, perfect human anatomy, two arms, two hands, correct proportions, no extra limbs`;
+        } else {
+          // Female prompts
+          attractivePrompt = style === 'anime'
+            ? `very attractive face, extremely seductive expression, detailed anime art, very erotic pose, wearing ${stylishClothing}, vibrant colors, high quality anime artwork, detailed facial features, anime eyes, perfect anatomy, correct human anatomy, two arms, two hands, very sensual pose, large breasts, curvy figure, big butt, voluptuous body, exposed skin, revealing clothing, single character, solo, no extra limbs, proper proportions`
+            : `attractive face, seductive expression, alluring pose, wearing ${stylishClothing}, photorealistic, professional photography, soft romantic lighting, glamour photography style, eye contact, sharp focus, attractive model, confident pose, single person, solo, perfect human anatomy, two arms, two hands, correct proportions, no extra limbs`;
+        }
 
         console.log('🖼️ Testing avatar generation (traits via params):', attractivePrompt.substring(0, 80) + '...');
         console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Traits:', style, 'female', ethnicity, hairLength, hairColor);
@@ -2420,12 +2429,23 @@
     async function generateCompanionAvatar(companion) {
       try {
         // Get random sexy clothing
-        const stylishClothing = getStylishClothing(companion.style);
+        const stylishClothing = getStylishClothing(companion.style, companion.sex);
 
         // Clean prompt for companion avatar - NO backgrounds (backend will add clean background)
-        const customPrompt = companion.style === 'anime'
-          ? `beautiful anime girl, very attractive face, extremely seductive expression, detailed anime art, very erotic pose, wearing ${stylishClothing}, anime style, vibrant colors, high quality anime artwork, detailed facial features, anime eyes, perfect anatomy, correct human anatomy, two arms, two hands, very sensual pose, large breasts, curvy figure, big butt, voluptuous body, exposed skin, revealing clothing, single character, solo, no extra limbs, proper proportions`
-          : `beautiful woman, attractive face, seductive expression, alluring pose, wearing ${stylishClothing}, photorealistic, professional photography, soft romantic lighting, glamour photography style, eye contact, sharp focus, attractive model, confident pose, single person, solo, perfect human anatomy, two arms, two hands, correct proportions, no extra limbs`;
+        const isMale = companion.sex === 'male';
+        let customPrompt;
+
+        if (isMale) {
+          // Male prompts
+          customPrompt = companion.style === 'anime'
+            ? `handsome anime man, very attractive masculine face, confident expression, detailed anime art, muscular pose, wearing ${stylishClothing}, anime style, vibrant colors, high quality anime artwork, detailed facial features, anime eyes, perfect anatomy, correct human anatomy, two arms, two hands, defined abs, muscular chest, athletic body, masculine physique, single character, solo, no extra limbs, proper proportions`
+            : `handsome man, attractive masculine face, confident expression, strong pose, wearing ${stylishClothing}, photorealistic, professional photography, dramatic lighting, male model photography style, eye contact, sharp focus, athletic model, confident masculine pose, single person, solo, perfect human anatomy, two arms, two hands, correct proportions, no extra limbs`;
+        } else {
+          // Female prompts
+          customPrompt = companion.style === 'anime'
+            ? `beautiful anime girl, very attractive face, extremely seductive expression, detailed anime art, very erotic pose, wearing ${stylishClothing}, anime style, vibrant colors, high quality anime artwork, detailed facial features, anime eyes, perfect anatomy, correct human anatomy, two arms, two hands, very sensual pose, large breasts, curvy figure, big butt, voluptuous body, exposed skin, revealing clothing, single character, solo, no extra limbs, proper proportions`
+            : `beautiful woman, attractive face, seductive expression, alluring pose, wearing ${stylishClothing}, photorealistic, professional photography, soft romantic lighting, glamour photography style, eye contact, sharp focus, attractive model, confident pose, single person, solo, perfect human anatomy, two arms, two hands, correct proportions, no extra limbs`;
+        }
 
         const response = await fetch('/.netlify/functions/selira-generate-custom-image', {
           method: 'POST',
@@ -2440,7 +2460,8 @@
             ethnicity: companion.ethnicity,
             hairLength: companion.hairLength,
             hairColor: companion.hairColor,
-            source: 'companion-creation' // Mark as companion creation for clean backgrounds
+            source: 'companion-creation', // Mark as companion creation for clean backgrounds
+            uncensored: companion.uncensored // Pass uncensored flag to backend
           })
         });
         
