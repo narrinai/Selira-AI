@@ -199,11 +199,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     let promptchanResult = null;
 
     try {
-      console.log(`🎲 [${requestId}] Trying Promptchan (25s timeout - will fallback to Replicate if fails)...`);
-
-      // Add 20 second timeout (Netlify Pro allows 26s max, leave buffer for fallback)
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 20000);
+      console.log(`🎲 [${requestId}] Trying Promptchan (no timeout - let it complete naturally)...`);
 
       const response = await fetch('https://prod.aicloudnetservices.com/api/external/create', {
         method: 'POST',
@@ -211,9 +207,8 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
           'Content-Type': 'application/json',
           'x-api-key': PROMPTCHAN_API_KEY
         },
-        body: JSON.stringify(promptchanRequest),
-        signal: controller.signal
-      }).finally(() => clearTimeout(timeoutId));
+        body: JSON.stringify(promptchanRequest)
+      });
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -228,11 +223,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
       }
 
     } catch (error) {
-      if (error.name === 'AbortError') {
-        console.error(`⏱️ [${requestId}] Promptchan timeout after 20s:`, error.message);
-      } else {
-        console.error(`❌ [${requestId}] Promptchan error:`, error.message);
-      }
+      console.error(`❌ [${requestId}] Promptchan error:`, error.message);
       console.log(`⚠️ [${requestId}] Promptchan failed, will fallback to Replicate below`);
       // Don't throw - just continue to Replicate fallback
     }
@@ -376,13 +367,8 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     let promptchanResult = null;
 
     try {
-      // Male explicit prompts take longer on Promptchan - give them more time
-      const timeoutMs = sex === 'male' ? 24000 : 20000;  // 24s for males, 20s for females
-      console.log(`🎲 [${requestId}] Calling Promptchan for explicit sex (${timeoutMs/1000}s timeout for ${sex})...`);
-
-      // Add timeout (Netlify Pro allows 26s max, leave small buffer for processing)
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+      // No timeout for explicit sex prompts - let Promptchan complete naturally
+      console.log(`🎲 [${requestId}] Calling Promptchan for explicit sex (no timeout - let it complete naturally)...`);
 
       const response = await fetch('https://prod.aicloudnetservices.com/api/external/create', {
         method: 'POST',
@@ -390,9 +376,8 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
           'Content-Type': 'application/json',
           'x-api-key': PROMPTCHAN_API_KEY
         },
-        body: JSON.stringify(promptchanRequest),
-        signal: controller.signal
-      }).finally(() => clearTimeout(timeoutId));
+        body: JSON.stringify(promptchanRequest)
+      });
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -407,11 +392,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
       }
 
     } catch (error) {
-      if (error.name === 'AbortError') {
-        console.error(`⏱️ [${requestId}] Promptchan timeout after 20s:`, error.message);
-      } else {
-        console.error(`❌ [${requestId}] Promptchan error:`, error.message);
-      }
+      console.error(`❌ [${requestId}] Promptchan error:`, error.message);
       console.log(`⚠️ [${requestId}] Promptchan failed, will fallback to Replicate below`);
       // Don't throw - just continue to Replicate fallback
     }
