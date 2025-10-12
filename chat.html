@@ -637,15 +637,6 @@
       font-weight: 600;
     }
 
-    .selector-btn.nsfw {
-      border-color: #ff4444;
-    }
-
-    .selector-btn.nsfw.selected {
-      background: #ff4444;
-      border-color: #ff4444;
-    }
-
     .generate-image-btn {
       background: var(--accent);
       color: white;
@@ -1893,33 +1884,33 @@
   <script>
     // NSFW Pose & Outfit options for uncensored image generation
     const NSFW_POSES = [
-      { id: 'pov-oral', label: '🔥 POV Blowjob', prompt: 'POV blowjob angle, kneeling, large penis in mouth visible, dick clearly shown, oral sex close-up, fellatio, cock sucking, male POV perspective, penis shaft visible in frame, explicit oral, NSFW' },
-      { id: 'doggy', label: '🔥 Doggy Style', prompt: 'doggy style position, ass up face down, from behind, rear view, legs spread, explicit penetration, pussy visible, sexual position, NSFW' },
-      { id: 'cowgirl', label: '🔥 Cowgirl', prompt: 'cowgirl position, riding, straddling, on top, explicit sex position, breasts visible, intimate angle, NSFW' },
-      { id: 'missionary', label: '🔥 Missionary', prompt: 'missionary position, legs spread, laying on back, intimate angle, explicit sex position, pussy visible, NSFW' },
-      { id: 'fingering', label: '🔥 Masturbating', prompt: 'masturbating explicitly, hand between legs, fingers penetrating pussy, fingering herself, self-pleasure, legs spread wide open, touching genitals, rubbing clit, explicit masturbation, pleasuring herself, finger in vagina, NSFW porn' },
-      { id: 'reverse-cowgirl', label: '🔥 Reverse Cowgirl', prompt: 'reverse cowgirl position, riding facing away, ass view, straddling backwards, explicit sex position, penetration visible, rear angle, NSFW' },
-      { id: 'spread-legs', label: '🔥 Legs Spread', prompt: 'legs spread wide open, sitting or lying, pussy exposed, vulva visible, spread eagle position, legs apart showing genitals, explicit spread, NSFW' },
-      { id: 'bent-over', label: '🔥 Bent Over', prompt: 'bent over pose, ass up, leaning forward over furniture, rear view, bent at waist, showing ass and pussy, explicit bent over position, NSFW' },
-      { id: 'on-knees', label: '🔥 On Knees POV', prompt: 'on knees submissive position, looking up at camera, POV angle from above, mouth open, tongue out, ready pose, kneeling down, NSFW' },
-      { id: 'titfuck', label: '🔥 Titty Fuck', prompt: 'penis between breasts, titty fuck position, boob job, cock between tits, breasts squeezed around dick, explicit titfuck, paizuri, NSFW' },
-      { id: 'anal', label: '🔥 Anal', prompt: 'anal sex position, penetration from behind, ass penetration, anal intercourse, explicit anal, spreading ass cheeks, asshole visible, NSFW' },
-      { id: '69', label: '🔥 69 Position', prompt: '69 position, mutual oral sex, eating out while being sucked, tongue on pussy and cock in mouth, both pleasuring each other, NSFW' }
+      { id: 'pov-oral', label: 'POV Blowjob', prompt: 'POV blowjob angle, kneeling, large penis in mouth visible, dick clearly shown, oral sex close-up, fellatio, cock sucking, male POV perspective, penis shaft visible in frame, explicit oral, NSFW' },
+      { id: 'doggy', label: 'Doggy Style', prompt: 'doggy style position, ass up face down, from behind, rear view, legs spread, explicit penetration, pussy visible, sexual position, NSFW' },
+      { id: 'cowgirl', label: 'Cowgirl', prompt: 'cowgirl position, riding, straddling, on top, explicit sex position, breasts visible, intimate angle, NSFW' },
+      { id: 'missionary', label: 'Missionary', prompt: 'missionary position, legs spread, laying on back, intimate angle, explicit sex position, pussy visible, NSFW' },
+      { id: 'fingering', label: 'Masturbating', prompt: 'masturbating explicitly, hand between legs, fingers penetrating pussy, fingering herself, self-pleasure, legs spread wide open, touching genitals, rubbing clit, explicit masturbation, pleasuring herself, finger in vagina, NSFW porn' },
+      { id: 'reverse-cowgirl', label: 'Reverse Cowgirl', prompt: 'reverse cowgirl position, riding facing away, ass view, straddling backwards, explicit sex position, penetration visible, rear angle, NSFW' },
+      { id: 'spread-legs', label: 'Legs Spread', prompt: 'legs spread wide open, sitting or lying, pussy exposed, vulva visible, spread eagle position, legs apart showing genitals, explicit spread, NSFW' },
+      { id: 'bent-over', label: 'Bent Over', prompt: 'bent over pose, ass up, leaning forward over furniture, rear view, bent at waist, showing ass and pussy, explicit bent over position, NSFW' },
+      { id: 'on-knees', label: 'On Knees POV', prompt: 'on knees submissive position, looking up at camera, POV angle from above, mouth open, tongue out, ready pose, kneeling down, NSFW' },
+      { id: 'titfuck', label: 'Titty Fuck', prompt: 'penis between breasts, titty fuck position, boob job, cock between tits, breasts squeezed around dick, explicit titfuck, paizuri, NSFW' },
+      { id: 'anal', label: 'Anal', prompt: 'anal sex position, penetration from behind, ass penetration, anal intercourse, explicit anal, spreading ass cheeks, asshole visible, NSFW' },
+      { id: '69', label: '69 Position', prompt: '69 position, mutual oral sex, eating out while being sucked, tongue on pussy and cock in mouth, both pleasuring each other, NSFW' }
     ];
 
     const NSFW_OUTFITS = [
-      { id: 'nude', label: '🔥 Fully Nude', prompt: 'completely naked, fully nude, no clothes, bare skin, nude body, naked breasts, exposed pussy, totally naked, unclothed, full nudity, NSFW' },
-      { id: 'topless', label: '🔥 Topless', prompt: 'topless, bare breasts, no bra, breasts exposed, nipples visible, naked from waist up, NSFW' },
-      { id: 'stockings', label: '🔥 Stockings Only', prompt: 'wearing only stockings, thigh-high stockings, naked with stockings, stockings and nothing else, nude with stockings, NSFW' },
-      { id: 'fishnet', label: '🔥 Fishnet', prompt: 'fishnet bodysuit, fishnet lingerie, see-through fishnet outfit, fishnet stockings and top, mesh clothing, sexy fishnet, NSFW' },
-      { id: 'latex', label: '🔥 Latex/Leather', prompt: 'tight latex outfit, shiny leather clothing, latex bodysuit, leather lingerie, kinky outfit, fetish wear, NSFW' },
-      { id: 'schoolgirl', label: '🔥 Schoolgirl', prompt: 'sexy schoolgirl outfit, short skirt, unbuttoned shirt, revealing school uniform, naughty student look, anime schoolgirl, NSFW' },
-      { id: 'maid', label: '🔥 Maid Outfit', prompt: 'sexy maid costume, french maid outfit, short skirt maid uniform, revealing maid dress, frilly maid outfit, NSFW' },
-      { id: 'nurse', label: '🔥 Nurse', prompt: 'sexy nurse costume, revealing nurse outfit, short nurse dress, naughty nurse uniform, medical fetish outfit, NSFW' },
-      { id: 'garter', label: '🔥 Garter Belt', prompt: 'garter belt and stockings, suspenders, garter straps, lingerie with garters, sexy garter set, thigh-high stockings with garters, NSFW' },
-      { id: 'panties-only', label: '🔥 Panties Only', prompt: 'wearing only panties, topless with panties, bare breasts with underwear, panties and nothing else, half naked, NSFW' },
-      { id: 'bodystocking', label: '🔥 Bodystocking', prompt: 'sheer bodystocking, see-through body suit, mesh bodysuit, transparent full body stocking, revealing bodystocking, NSFW' },
-      { id: 'lingerie', label: '🔥 Sexy Lingerie', prompt: 'sexy lingerie, lace bra and panties, see-through lingerie, revealing intimate wear, skimpy underwear, NSFW' }
+      { id: 'nude', label: 'Fully Nude', prompt: 'completely naked, fully nude, no clothes, bare skin, nude body, naked breasts, exposed pussy, totally naked, unclothed, full nudity, NSFW' },
+      { id: 'topless', label: 'Topless', prompt: 'topless, bare breasts, no bra, breasts exposed, nipples visible, naked from waist up, NSFW' },
+      { id: 'stockings', label: 'Stockings Only', prompt: 'wearing only stockings, thigh-high stockings, naked with stockings, stockings and nothing else, nude with stockings, NSFW' },
+      { id: 'fishnet', label: 'Fishnet', prompt: 'fishnet bodysuit, fishnet lingerie, see-through fishnet outfit, fishnet stockings and top, mesh clothing, sexy fishnet, NSFW' },
+      { id: 'latex', label: 'Latex/Leather', prompt: 'tight latex outfit, shiny leather clothing, latex bodysuit, leather lingerie, kinky outfit, fetish wear, NSFW' },
+      { id: 'schoolgirl', label: 'Schoolgirl', prompt: 'sexy schoolgirl outfit, short skirt, unbuttoned shirt, revealing school uniform, naughty student look, anime schoolgirl, NSFW' },
+      { id: 'maid', label: 'Maid Outfit', prompt: 'sexy maid costume, french maid outfit, short skirt maid uniform, revealing maid dress, frilly maid outfit, NSFW' },
+      { id: 'nurse', label: 'Nurse', prompt: 'sexy nurse costume, revealing nurse outfit, short nurse dress, naughty nurse uniform, medical fetish outfit, NSFW' },
+      { id: 'garter', label: 'Garter Belt', prompt: 'garter belt and stockings, suspenders, garter straps, lingerie with garters, sexy garter set, thigh-high stockings with garters, NSFW' },
+      { id: 'panties-only', label: 'Panties Only', prompt: 'wearing only panties, topless with panties, bare breasts with underwear, panties and nothing else, half naked, NSFW' },
+      { id: 'bodystocking', label: 'Bodystocking', prompt: 'sheer bodystocking, see-through body suit, mesh bodysuit, transparent full body stocking, revealing bodystocking, NSFW' },
+      { id: 'lingerie', label: 'Sexy Lingerie', prompt: 'sexy lingerie, lace bra and panties, see-through lingerie, revealing intimate wear, skimpy underwear, NSFW' }
     ];
 
     // Selected pose and outfit for image generation
@@ -2488,7 +2479,7 @@
           const poseSection = document.createElement('div');
           poseSection.className = 'selector-section';
           poseSection.innerHTML = `
-            <div class="selector-label">🔥 Select Pose:</div>
+            <div class="selector-label">Select Pose:</div>
             <div class="selector-buttons" id="poseButtons"></div>
           `;
           selectorContainer.appendChild(poseSection);
@@ -2497,7 +2488,7 @@
           const outfitSection = document.createElement('div');
           outfitSection.className = 'selector-section';
           outfitSection.innerHTML = `
-            <div class="selector-label">🔥 Select Outfit:</div>
+            <div class="selector-label">Select Outfit:</div>
             <div class="selector-buttons" id="outfitButtons"></div>
           `;
           selectorContainer.appendChild(outfitSection);
@@ -2516,7 +2507,7 @@
           const poseButtonsContainer = document.getElementById('poseButtons');
           NSFW_POSES.forEach(pose => {
             const btn = document.createElement('button');
-            btn.className = 'selector-btn nsfw';
+            btn.className = 'selector-btn';
             btn.textContent = pose.label;
             btn.onclick = () => selectPose(pose.id);
             poseButtonsContainer.appendChild(btn);
@@ -2526,7 +2517,7 @@
           const outfitButtonsContainer = document.getElementById('outfitButtons');
           NSFW_OUTFITS.forEach(outfit => {
             const btn = document.createElement('button');
-            btn.className = 'selector-btn nsfw';
+            btn.className = 'selector-btn';
             btn.textContent = outfit.label;
             btn.onclick = () => selectOutfit(outfit.id);
             outfitButtonsContainer.appendChild(btn);
@@ -4969,18 +4960,9 @@
       let simplePrompt; // Short version for UI
       let enhancedPrompt; // Longer version for backend
       if (promptPart && promptPart.length > 0) {
-        // User provided specific prompt - use it as-is for UI
+        // User provided specific prompt - use it as-is
         simplePrompt = promptPart;
-
-        // IMPORTANT: For uncensored mode, send SHORT prompts to backend (like companion generation)
-        // The backend will handle all enhancements. Long prompts confuse Promptchan.
-        if (unfilteredMode) {
-          console.log('🔓 Uncensored mode: sending SHORT prompt to backend for better Promptchan results');
-          enhancedPrompt = promptPart; // Send short prompt, let backend enhance
-        } else {
-          // For censored, use frontend enhancement as before
-          enhancedPrompt = enhancePromptWithDetails(promptPart, characterSex, unfilteredMode);
-        }
+        enhancedPrompt = promptPart; // Send full prompt to backend (like NSFW image gen page)
       } else {
         // No specific prompt - use random sexy clothing
         simplePrompt = getStylishClothing(characterStyle);
