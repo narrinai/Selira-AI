@@ -1254,16 +1254,19 @@
       currentGenderFilter = gender;
       currentCarouselPage = 0; // Reset to first page
 
-      // Update button styles
+      // Update button styles - remove active class from all buttons first
       document.querySelectorAll('.gender-filter-btn').forEach(btn => {
+        btn.classList.remove('active');
         btn.style.background = 'var(--bg-tertiary)';
         btn.style.border = '1px solid var(--border)';
         btn.style.color = 'var(--text-primary)';
       });
 
+      // Add active class and styles to selected button
       const activeBtn = gender === 'female' ? 'filterFemale' : 'filterMale';
       const activeBtnEl = document.getElementById(activeBtn);
       if (activeBtnEl) {
+        activeBtnEl.classList.add('active');
         activeBtnEl.style.background = 'var(--accent)';
         activeBtnEl.style.border = 'none';
         activeBtnEl.style.color = 'white';
