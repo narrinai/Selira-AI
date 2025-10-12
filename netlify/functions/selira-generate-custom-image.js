@@ -364,8 +364,8 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
       detail: 0,
       age_slider: 25,
       weight_slider: 0,
-      breast_slider: 50,
-      ass_slider: 50,
+      breast_slider: sex === 'male' ? 0 : 50,  // 0 for males, 50 for females
+      ass_slider: sex === 'male' ? 0 : 50,     // 0 for males, 50 for females
       restore_faces: false
     };
 
