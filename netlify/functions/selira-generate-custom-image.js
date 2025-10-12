@@ -367,7 +367,14 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     let promptchanResult = null;
 
     try {
-      console.log(`🎲 [${requestId}] Trying Promptchan for explicit sex (no retries - will fallback to Replicate if fails)...`);
+      console.log(`🎲 [${requestId}] Trying Promptchan for explicit sex (8s timeout to fit in 10s gateway limit)...`);
+
+      // Create abort controller with 8 second timeout
+      const controller = new AbortController();
+      const timeout = setTimeout(() => {
+        controller.abort();
+        console.log(`⏱️ [${requestId}] Promptchan timed out after 8s, will use Replicate fallback`);
+      }, 8000);
 
       const response = await fetch('https://prod.aicloudnetservices.com/api/external/create', {
         method: 'POST',
@@ -375,8 +382,11 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
           'Content-Type': 'application/json',
           'x-api-key': PROMPTCHAN_API_KEY
         },
-        body: JSON.stringify(promptchanRequest)
+        body: JSON.stringify(promptchanRequest),
+        signal: controller.signal
       });
+
+      clearTimeout(timeout);
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -391,7 +401,11 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
       }
 
     } catch (error) {
-      console.error(`❌ [${requestId}] Promptchan error:`, error.message);
+      if (error.name === 'AbortError') {
+        console.log(`⏱️ [${requestId}] Promptchan aborted due to timeout, will use Replicate fallback`);
+      } else {
+        console.error(`❌ [${requestId}] Promptchan error:`, error.message);
+      }
       console.log(`⚠️ [${requestId}] Promptchan failed, will fallback to Replicate below`);
       // Don't throw - just continue to Replicate fallback
     }
