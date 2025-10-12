@@ -607,9 +607,8 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   console.log(`📤 [${requestId}] Promptchan request (Ultra quality):`, promptchanRequest);
 
   try {
-    // Add 25 second timeout to prevent Netlify 504 Gateway Timeout
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 25000);
+    // No timeout for image-generator page - let Promptchan complete naturally
+    console.log(`🎲 [${requestId}] Calling Promptchan (no timeout - let it complete naturally)...`);
 
     const response = await fetch('https://prod.aicloudnetservices.com/api/external/create', {
       method: 'POST',
@@ -617,9 +616,8 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
         'Content-Type': 'application/json',
         'x-api-key': PROMPTCHAN_API_KEY
       },
-      body: JSON.stringify(promptchanRequest),
-      signal: controller.signal
-    }).finally(() => clearTimeout(timeoutId));
+      body: JSON.stringify(promptchanRequest)
+    });
 
     if (!response.ok) {
       const errorText = await response.text();

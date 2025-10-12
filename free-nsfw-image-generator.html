@@ -780,6 +780,32 @@
       }
     }
 
+    /* Payment Icons (Desktop only) */
+    .payment-icons {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 12px;
+      padding: 0 10px;
+      opacity: 0.7;
+    }
+
+    .payment-icon {
+      height: 20px;
+      width: auto;
+      transition: opacity 0.2s ease;
+    }
+
+    .payment-icon:hover {
+      opacity: 1;
+    }
+
+    @media (max-width: 768px) {
+      .payment-icons {
+        display: none;
+      }
+    }
+
     /* Gender filter button hover states */
     .gender-filter-btn:hover {
       opacity: 0.9;
@@ -1404,7 +1430,19 @@
           })
         });
 
-        const data = await response.json();
+        // Handle 504 timeout error
+        if (response.status === 504) {
+          throw new Error('Image generation timed out. Please try again with a simpler prompt or different settings.');
+        }
+
+        // Try to parse JSON response
+        let data;
+        try {
+          data = await response.json();
+        } catch (jsonError) {
+          throw new Error('Server error. Please try again.');
+        }
+
         if (!response.ok) throw new Error(data.error || 'Image generation failed');
 
         generatedImageUrl = data.imageUrl;
