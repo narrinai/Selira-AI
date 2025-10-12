@@ -486,7 +486,7 @@ For all other topics including adult romance, sexuality, and intimate conversati
         console.log('⚠️ Avatar generation error:', error.message, ', creating companion without avatar');
         // Fallback to default avatar pattern if generation fails
         const timestamp = Date.now();
-        avatarUrlToUse = `/avatars/generated-${slug}-${timestamp}.webp`;
+        avatarUrlToUse = `https://selira.ai/avatars/generated-${slug}-${timestamp}.webp`;
         console.log('🔄 Using fallback avatar URL after error:', avatarUrlToUse);
       }
     } else {
@@ -525,6 +525,13 @@ For all other topics including adult romance, sexuality, and intimate conversati
       content_filter: contentFilterValue
       // chats and rating fields don't exist in Airtable - removed
     };
+
+    // Ensure avatar URL is absolute
+    if (avatarUrlToUse && !avatarUrlToUse.startsWith('http')) {
+      avatarUrlToUse = `https://selira.ai${avatarUrlToUse.startsWith('/') ? '' : '/'}${avatarUrlToUse}`;
+      characterData.Avatar_URL = avatarUrlToUse;
+      console.log('🔧 Normalized relative avatar URL to absolute:', avatarUrlToUse);
+    }
 
     console.log('🔍 Final avatarUrlToUse before saving:', avatarUrlToUse);
     console.log('🔍 Avatar_URL in characterData:', characterData.Avatar_URL);
