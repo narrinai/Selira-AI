@@ -1,3 +1,39 @@
+// Helper function to download avatar and get local URL
+async function downloadAndSaveAvatar(replicateUrl, slug) {
+  try {
+    console.log(`📥 Downloading avatar from Replicate...`);
+
+    const timestamp = Date.now();
+    const filename = `${slug}-${timestamp}.webp`;
+
+    // Call download function
+    const downloadResponse = await fetch('https://selira.ai/.netlify/functions/selira-download-avatar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        imageUrl: replicateUrl,
+        filename: filename
+      })
+    });
+
+    if (!downloadResponse.ok) {
+      console.error(`❌ Download failed: ${downloadResponse.status}`);
+      return null;
+    }
+
+    const downloadResult = await downloadResponse.json();
+    if (downloadResult.success && downloadResult.localUrl) {
+      console.log(`✅ Avatar downloaded successfully: ${downloadResult.localUrl}`);
+      return downloadResult.localUrl;
+    }
+
+    return null;
+  } catch (error) {
+    console.error(`❌ Error downloading avatar:`, error);
+    return null;
+  }
+}
+
 // Helper function to escape strings for JSON safety
 function escapeForJson(str) {
   if (!str) return str;
@@ -324,11 +360,21 @@ For all other topics including adult romance, sexuality, and intimate conversati
     let avatarUrlToUse = preGeneratedAvatarUrl || ''; // Use pre-generated avatar if available
     console.log('🔍 Initial avatarUrlToUse:', avatarUrlToUse);
 
-    // Use pre-generated avatar directly (all URLs are permanent)
-    if (preGeneratedAvatarUrl) {
-      console.log('✅ Using pre-generated avatar URL:', preGeneratedAvatarUrl);
-    } else {
+    // Check if preGeneratedAvatarUrl is a Replicate URL that needs to be downloaded
+    if (preGeneratedAvatarUrl && (preGeneratedAvatarUrl.includes('replicate.delivery') || preGeneratedAvatarUrl.includes('replicate.com'))) {
+      console.log('🔄 Pre-generated avatar is a Replicate URL, downloading to persistent storage...');
+      const localUrl = await downloadAndSaveAvatar(preGeneratedAvatarUrl, slug);
+      if (localUrl) {
+        avatarUrlToUse = localUrl;
+        console.log('✅ Avatar downloaded and saved to:', localUrl);
+      } else {
+        console.log('⚠️ Download failed, using Replicate URL as fallback');
+        avatarUrlToUse = preGeneratedAvatarUrl;
+      }
+    } else if (!preGeneratedAvatarUrl) {
       console.log('⚠️ No pre-generated avatar provided, will generate in backend');
+    } else {
+      console.log('✅ Using pre-provided non-Replicate avatar URL:', preGeneratedAvatarUrl);
     }
 
     // Enable backend avatar generation as fallback when frontend fails
@@ -340,52 +386,47 @@ For all other topics including adult romance, sexuality, and intimate conversati
 
       // Generate attractive avatar with enhanced prompt based on art style, tags, and sex
       let attractivePrompt;
-      let clothingStyle;
+      let clothingStyle = 'stylish outfit';
 
       // Gender-aware clothing defaults
       const isMale = sex && sex.toLowerCase() === 'male';
+      if (isMale) {
+        clothingStyle = 'shirtless showing defined abs and muscular chest';
+      }
 
-      // For uncensored companions, always use nude/naked
-      if (unfilteredValue) {
-        clothingStyle = 'completely naked, nude, no clothing';
-      } else {
-        // For censored companions, use clothing
-        clothingStyle = isMale ? 'shirtless showing defined abs and muscular chest' : 'stylish outfit';
-
-        // Customize clothing/style based on tags
-        if (tags && tags.length > 0) {
-          if (tags.includes('Seductive')) {
-            clothingStyle = isMale ? 'shirtless showing perfect abs and defined chest muscles' : 'revealing dress, sexy outfit';
-          } else if (tags.includes('Maid')) {
-            clothingStyle = isMale ? 'butler outfit with open shirt' : 'sexy maid outfit';
-          } else if (tags.includes('Boss')) {
-            clothingStyle = isMale ? 'open suit jacket showing muscular chest' : 'professional business attire, elegant suit';
-          } else if (tags.includes('Secretary')) {
-            clothingStyle = isMale ? 'office attire with loosened tie' : 'office attire, professional blouse';
-          } else if (tags.includes('Teacher')) {
-            clothingStyle = isMale ? 'partially unbuttoned shirt' : 'professional teacher outfit';
-          } else if (tags.includes('Student')) {
-            clothingStyle = isMale ? 'casual athletic wear' : 'casual student outfit';
-          } else if (tags.includes('Angel')) {
-            clothingStyle = 'ethereal white clothing';
-          } else if (tags.includes('Cute')) {
-            clothingStyle = isMale ? 'casual attractive outfit' : 'adorable casual outfit';
-          } else if (tags.includes('Boyfriend') || tags.includes('Girlfriend') || tags.includes('Romance')) {
-            clothingStyle = isMale ? 'shirtless showing toned body' : 'romantic dress, attractive clothing';
-          } else if (!isMale) {
-            clothingStyle = 'stylish attractive outfit';
-          }
+      // Customize clothing/style based on tags
+      if (tags && tags.length > 0) {
+        if (tags.includes('Seductive')) {
+          clothingStyle = isMale ? 'shirtless showing perfect abs and defined chest muscles' : 'revealing dress, sexy outfit';
+        } else if (tags.includes('Maid')) {
+          clothingStyle = isMale ? 'butler outfit with open shirt' : 'sexy maid outfit';
+        } else if (tags.includes('Boss')) {
+          clothingStyle = isMale ? 'open suit jacket showing muscular chest' : 'professional business attire, elegant suit';
+        } else if (tags.includes('Secretary')) {
+          clothingStyle = isMale ? 'office attire with loosened tie' : 'office attire, professional blouse';
+        } else if (tags.includes('Teacher')) {
+          clothingStyle = isMale ? 'partially unbuttoned shirt' : 'professional teacher outfit';
+        } else if (tags.includes('Student')) {
+          clothingStyle = isMale ? 'casual athletic wear' : 'casual student outfit';
+        } else if (tags.includes('Angel')) {
+          clothingStyle = 'ethereal white clothing';
+        } else if (tags.includes('Cute')) {
+          clothingStyle = isMale ? 'casual attractive outfit' : 'adorable casual outfit';
+        } else if (tags.includes('Boyfriend') || tags.includes('Girlfriend') || tags.includes('Romance')) {
+          clothingStyle = isMale ? 'shirtless showing toned body' : 'romantic dress, attractive clothing';
+        } else if (!isMale) {
+          clothingStyle = 'stylish attractive outfit';
         }
       }
 
       if (artStyle === 'anime') {
         attractivePrompt = isMale
           ? `handsome anime guy, attractive masculine face, seductive expression, detailed anime art, ${clothingStyle}, toned muscular body, anime style, vibrant colors, high quality anime artwork, detailed facial features, confident pose, masculine charm, single character, solo, natural lighting, well-lit, clear visibility`
-          : `beautiful anime girl, attractive face, seductive expression, detailed anime art, flirtatious pose, ${clothingStyle}, anime style, vibrant colors, attractive body, high quality anime artwork, detailed facial features, anime eyes, perfect anime anatomy, alluring pose, single character, solo, natural lighting, well-lit, clear visibility`;
+          : `beautiful anime girl, attractive face, seductive expression, detailed anime art, flirtatious pose, wearing ${clothingStyle}, anime style, vibrant colors, attractive body, high quality anime artwork, detailed facial features, anime eyes, perfect anime anatomy, alluring pose, single character, solo, natural lighting, well-lit, clear visibility`;
       } else {
         attractivePrompt = isMale
           ? `handsome muscular man, attractive masculine face, seductive expression, ${clothingStyle}, athletic build, photorealistic, professional photography, masculine energy, confident pose, single person, solo, natural lighting, warm ambient glow, well-lit, clear and sharp focus`
-          : `beautiful woman, attractive face, seductive expression, alluring pose, ${clothingStyle}, photorealistic, professional photography, glamour photography style, eye contact, sharp focus, attractive model, confident pose, single person, solo, natural lighting, warm ambient glow, well-lit, clear and sharp focus`;
+          : `beautiful woman, attractive face, seductive expression, alluring pose, wearing ${clothingStyle}, photorealistic, professional photography, glamour photography style, eye contact, sharp focus, attractive model, confident pose, single person, solo, natural lighting, warm ambient glow, well-lit, clear and sharp focus`;
       }
 
       // Call the avatar generation function with enhanced attractive traits
@@ -413,9 +454,20 @@ For all other topics including adult romance, sexuality, and intimate conversati
         const avatarResult = await avatarResponse.json();
         console.log('📋 Avatar generation result:', avatarResult);
         if (avatarResult.success && avatarResult.imageUrl) {
-          // Use the generated URL directly (Promptchan, Replicate, ImgBB are all permanent)
-          avatarUrlToUse = avatarResult.imageUrl;
-          console.log('✅ Generated companion avatar:', avatarUrlToUse);
+          const replicateUrl = avatarResult.imageUrl;
+          console.log('✅ Generated companion avatar (Replicate):', replicateUrl);
+
+          // Download and save avatar locally to avoid 404s
+          const localUrl = await downloadAndSaveAvatar(replicateUrl, slug);
+
+          if (localUrl) {
+            avatarUrlToUse = localUrl;
+            console.log('✅ Using local avatar URL:', avatarUrlToUse);
+          } else {
+            // Fallback to Replicate URL if download fails
+            avatarUrlToUse = replicateUrl;
+            console.log('⚠️ Download failed, using Replicate URL as fallback:', avatarUrlToUse);
+          }
         } else {
           console.log('⚠️ Avatar generation succeeded but no imageUrl:', avatarResult);
         }
@@ -429,7 +481,7 @@ For all other topics including adult romance, sexuality, and intimate conversati
         console.log('⚠️ Avatar generation error:', error.message, ', creating companion without avatar');
         // Fallback to default avatar pattern if generation fails
         const timestamp = Date.now();
-        avatarUrlToUse = `https://selira.ai/avatars/generated-${slug}-${timestamp}.webp`;
+        avatarUrlToUse = `/avatars/generated-${slug}-${timestamp}.webp`;
         console.log('🔄 Using fallback avatar URL after error:', avatarUrlToUse);
       }
     } else {
@@ -468,13 +520,6 @@ For all other topics including adult romance, sexuality, and intimate conversati
       content_filter: contentFilterValue
       // chats and rating fields don't exist in Airtable - removed
     };
-
-    // Ensure avatar URL is absolute
-    if (avatarUrlToUse && !avatarUrlToUse.startsWith('http')) {
-      avatarUrlToUse = `https://selira.ai${avatarUrlToUse.startsWith('/') ? '' : '/'}${avatarUrlToUse}`;
-      characterData.Avatar_URL = avatarUrlToUse;
-      console.log('🔧 Normalized relative avatar URL to absolute:', avatarUrlToUse);
-    }
 
     console.log('🔍 Final avatarUrlToUse before saving:', avatarUrlToUse);
     console.log('🔍 Avatar_URL in characterData:', characterData.Avatar_URL);
