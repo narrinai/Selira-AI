@@ -1086,8 +1086,15 @@
       .input-footer {
         margin-top: 6px;
         font-size: 11px;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
         gap: 8px;
+        justify-content: space-between;
+      }
+
+      .input-hint {
+        white-space: nowrap;
+        font-size: 10px;
+        margin-left: auto;
       }
 
       .request-image-btn {
@@ -1794,7 +1801,7 @@
             <span class="credits-icon">💳</span>
             <span id="imageCreditsText">Loading...</span>
           </div>
-          <span class="input-hint">AI is fictional. <a href="/terms.html" style="color: inherit; text-decoration: underline;">Read our terms</a>.</span>
+          <span class="input-hint">AI is fictional. Read <a href="/terms.html" style="color: inherit; text-decoration: underline;">terms</a>.</span>
         </div>
       </div>
     </main>
