@@ -66,11 +66,25 @@ exports.handler = async (event, context) => {
     };
   }
 
+  console.log('🔑 Environment check:', {
+    hasBaseId: !!AIRTABLE_BASE_ID,
+    hasToken: !!AIRTABLE_TOKEN,
+    baseId: AIRTABLE_BASE_ID ? AIRTABLE_BASE_ID.substring(0, 8) + '...' : 'none',
+    tokenPrefix: AIRTABLE_TOKEN ? AIRTABLE_TOKEN.substring(0, 8) + '...' : 'none'
+  });
+
   if (!AIRTABLE_BASE_ID || !AIRTABLE_TOKEN) {
+    console.error('❌ Airtable credentials not found');
     return {
       statusCode: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ error: 'Airtable credentials not configured' })
+      body: JSON.stringify({
+        error: 'Airtable credentials not configured',
+        debug: {
+          hasBaseId: !!AIRTABLE_BASE_ID,
+          hasToken: !!AIRTABLE_TOKEN
+        }
+      })
     };
   }
 
