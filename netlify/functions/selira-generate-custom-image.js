@@ -201,9 +201,9 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     try {
       console.log(`🎲 [${requestId}] Trying Promptchan (25s timeout - will fallback to Replicate if fails)...`);
 
-      // Add 8 second timeout to prevent Netlify 504 Gateway Timeout (10s function limit on free/pro)
+      // Add 20 second timeout (Netlify Pro allows 26s max, leave buffer for fallback)
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 8000);
+      const timeoutId = setTimeout(() => controller.abort(), 20000);
 
       const response = await fetch('https://prod.aicloudnetservices.com/api/external/create', {
         method: 'POST',
@@ -229,7 +229,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
 
     } catch (error) {
       if (error.name === 'AbortError') {
-        console.error(`⏱️ [${requestId}] Promptchan timeout after 8s:`, error.message);
+        console.error(`⏱️ [${requestId}] Promptchan timeout after 20s:`, error.message);
       } else {
         console.error(`❌ [${requestId}] Promptchan error:`, error.message);
       }
@@ -378,9 +378,9 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     try {
       console.log(`🎲 [${requestId}] Calling Promptchan for explicit sex (25s timeout)...`);
 
-      // Add 8 second timeout to prevent Netlify 504 Gateway Timeout (10s function limit on free/pro)
+      // Add 20 second timeout (Netlify Pro allows 26s max, leave buffer for fallback)
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 8000);
+      const timeoutId = setTimeout(() => controller.abort(), 20000);
 
       const response = await fetch('https://prod.aicloudnetservices.com/api/external/create', {
         method: 'POST',
@@ -406,7 +406,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
 
     } catch (error) {
       if (error.name === 'AbortError') {
-        console.error(`⏱️ [${requestId}] Promptchan timeout after 8s:`, error.message);
+        console.error(`⏱️ [${requestId}] Promptchan timeout after 20s:`, error.message);
       } else {
         console.error(`❌ [${requestId}] Promptchan error:`, error.message);
       }
@@ -661,7 +661,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
 
   } catch (error) {
     if (error.name === 'AbortError') {
-      console.error(`⏱️ [${requestId}] Promptchan timeout after 8s - will fallback to Replicate`);
+      console.error(`⏱️ [${requestId}] Promptchan timeout after 20s - will fallback to Replicate`);
     } else {
       console.error(`❌ [${requestId}] Promptchan generation error:`, error);
     }

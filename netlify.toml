@@ -10,8 +10,9 @@ directory = "netlify/functions"
 node_bundler = "esbuild"
 
 # Increase timeout for image generation (Promptchan can take 15-20 seconds)
+# Netlify Pro max is 26 seconds
 [functions."selira-generate-custom-image"]
-timeout = 30
+timeout = 26
 
 # Increase timeout for companion creation (includes avatar generation)
 [functions."selira-create-companion"]
