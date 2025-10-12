@@ -2495,12 +2495,11 @@
         const planInfo = document.createElement('div');
         planInfo.className = 'image-plan-info';
         const usingCredits = permissions.usingCredits || permissions.imageCreditsRemaining > 0;
-        const timeText = (permissions.plan === 'Free' && !usingCredits) ? '' : (usingCredits ? '' : ' this hour');
         const creditsText = usingCredits ? ' credits' : '';
         const imageText = (permissions.remaining === 1 && !usingCredits) ? 'image' : 'images';
         planInfo.innerHTML = `
           <span class="plan-badge">${permissions.plan} Plan</span>
-          <span class="plan-remaining">${permissions.remaining || 0}${creditsText} ${imageText} left${timeText}</span>
+          <span class="plan-remaining">${permissions.remaining || 0}${creditsText} ${imageText} left</span>
         `;
         suggestionContainer.appendChild(planInfo);
 
@@ -2680,10 +2679,9 @@
         console.log('♻️ Cache invalidated for fresh counter update');
         const permissions = await checkUserImagePermissions(false);
         const usingCredits = permissions.usingCredits || permissions.imageCreditsRemaining > 0;
-        const timeText = (permissions.plan === 'Free' && !usingCredits) ? '' : (usingCredits ? '' : ' this hour');
         const creditsText = usingCredits ? ' credits' : '';
         const imageText = (permissions.remaining === 1 && !usingCredits) ? 'image' : 'images';
-        planRemainingElement.textContent = `${permissions.remaining || 0}${creditsText} ${imageText} left${timeText}`;
+        planRemainingElement.textContent = `${permissions.remaining || 0}${creditsText} ${imageText} left`;
         console.log('✅ Updated image counter:', permissions.remaining, creditsText);
       } catch (error) {
         console.warn('⚠️ Failed to update image plan counter:', error);
