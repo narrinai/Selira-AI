@@ -1825,36 +1825,49 @@
   </script>
 
   <!-- Delete Account Modal -->
-  <div id="deleteAccountModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 10000; align-items: center; justify-content: center;">
-    <div style="background: var(--background-secondary); border-radius: 16px; padding: 32px; max-width: 500px; width: 90%; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);">
-      <h2 style="color: var(--text-primary); margin: 0 0 16px 0; font-size: 24px;">Delete Account?</h2>
-      <p style="color: var(--text-secondary); margin: 0 0 24px 0; line-height: 1.6;">
-        Are you sure you want to delete your account? This action cannot be undone.
-        <br><br>
-        We will process your deletion request within <strong style="color: var(--text-primary);">48 hours</strong>.
-      </p>
-      <div style="display: flex; gap: 12px; justify-content: flex-end;">
-        <button onclick="closeDeleteAccountModal()" class="btn" style="background: var(--background-tertiary); border-color: var(--border-color); color: var(--text-primary);">
+  <div id="deleteAccountModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+    <div style="background: var(--background-secondary); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 40px; max-width: 480px; width: 90%; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);">
+      <div style="text-align: center; margin-bottom: 24px;">
+        <div style="display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background: rgba(220, 53, 69, 0.15); border-radius: 50%; margin-bottom: 20px;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#dc3545" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+        </div>
+        <h2 style="color: var(--text-primary); margin: 0 0 12px 0; font-size: 26px; font-weight: 600;">Delete Account?</h2>
+        <p style="color: var(--text-secondary); margin: 0; line-height: 1.6; font-size: 15px;">
+          Are you sure you want to delete your account? This action cannot be undone.
+          <br><br>
+          We will process your deletion request within <strong style="color: var(--text-primary);">48 hours</strong>.
+        </p>
+      </div>
+      <div style="display: flex; gap: 12px;">
+        <button onclick="closeDeleteAccountModal()" class="btn" style="flex: 1; background: var(--background-tertiary); border: 1px solid var(--border-color); color: var(--text-primary);">
           Cancel
         </button>
-        <button onclick="confirmDeleteAccount()" class="btn" style="background: #dc3545; border-color: #dc3545;">
-          Yes, Delete My Account
+        <button onclick="confirmDeleteAccount()" class="btn" style="flex: 1; background: #dc3545; border: 1px solid #dc3545; color: white;">
+          Delete My Account
         </button>
       </div>
     </div>
   </div>
 
   <!-- Delete Account Confirmation Modal -->
-  <div id="deleteAccountConfirmedModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 10000; align-items: center; justify-content: center;">
-    <div style="background: var(--background-secondary); border-radius: 16px; padding: 32px; max-width: 500px; width: 90%; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); text-align: center;">
-      <div style="font-size: 48px; margin-bottom: 16px;">✓</div>
-      <h2 style="color: var(--text-primary); margin: 0 0 16px 0; font-size: 24px;">Request Submitted</h2>
-      <p style="color: var(--text-secondary); margin: 0 0 24px 0; line-height: 1.6;">
-        Your account deletion request has been received. We will process this within 48 hours.
+  <div id="deleteAccountConfirmedModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+    <div style="background: var(--background-secondary); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 40px; max-width: 480px; width: 90%; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5); text-align: center;">
+      <div style="display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background: rgba(40, 167, 69, 0.15); border-radius: 50%; margin-bottom: 20px;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#28a745" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+      <h2 style="color: var(--text-primary); margin: 0 0 12px 0; font-size: 26px; font-weight: 600;">Request Submitted</h2>
+      <p style="color: var(--text-secondary); margin: 0 0 32px 0; line-height: 1.6; font-size: 15px;">
+        Your account deletion request has been received. We will process this within <strong style="color: var(--text-primary);">48 hours</strong>.
         <br><br>
         You will receive a confirmation email once completed.
       </p>
-      <button onclick="closeDeleteAccountConfirmedModal()" class="btn" style="background: var(--primary-color); border-color: var(--primary-color);">
+      <button onclick="closeDeleteAccountConfirmedModal()" class="btn" style="width: 100%; background: var(--primary-color); border: 1px solid var(--primary-color); color: white;">
         Close
       </button>
     </div>

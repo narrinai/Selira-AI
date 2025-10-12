@@ -90,13 +90,23 @@ exports.handler = async (event, context) => {
 
     console.log('📝 Creating deletion request in Support_Messages table');
 
-    // Create support message for deletion request
+    // Create support message for deletion request - using minimal fields
+    const deletionMessage = `ACCOUNT DELETION REQUEST
+
+User: ${email}
+Name: ${userName}
+Plan: ${userPlan}
+Airtable Record ID: ${userId}
+Auth0 ID: ${auth0_id || 'N/A'}
+Request Date: ${new Date().toISOString()}
+
+Please process this request within 48 hours.`;
+
     await base('Support_Messages').create([
       {
         fields: {
-          Subject: 'Account Deletion Request',
-          Message: `User ${email} has requested account deletion.\n\nUser Details:\n- Name: ${userName}\n- Email: ${email}\n- Plan: ${userPlan}\n- Airtable Record ID: ${userId}\n- Auth0 ID: ${auth0_id || 'N/A'}\n- Request Date: ${new Date().toISOString()}\n\nPlease process this request within 48 hours.`,
-          Status: 'Open'
+          Message: deletionMessage,
+          Email: email
         }
       }
     ]);

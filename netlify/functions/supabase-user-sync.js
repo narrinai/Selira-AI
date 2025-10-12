@@ -72,25 +72,30 @@ exports.handler = async (event) => {
         const existingUser = checkData.records[0];
         console.log('✅ User exists, updating SupabaseID...');
 
-        // Create display name if not exists
+        // Create display name if not exists OR if it looks like an email prefix
         let userDisplayName = existingUser.fields.display_name;
-        if (!userDisplayName) {
+        const needsNewDisplayName = !userDisplayName ||
+                                     userDisplayName.includes('@') ||
+                                     userDisplayName.includes('+') ||
+                                     userDisplayName === email.split('@')[0];
+
+        if (needsNewDisplayName) {
           if (display_name) {
             userDisplayName = display_name;
           } else {
             // Generate random username like "QuietPanda2259"
             userDisplayName = generateUsername();
           }
-          console.log('📝 Setting missing display name for existing user:', userDisplayName);
+          console.log('📝 Generating new display name for existing user:', userDisplayName);
         }
 
-        // Update existing user with SupabaseID and display name if missing
+        // Update existing user with SupabaseID and display name if needed
         const updateFields = {
           SupabaseID: supabase_id
         };
 
-        // Only update display_name if it's empty
-        if (!existingUser.fields.display_name && userDisplayName) {
+        // Update display_name if it needs replacement
+        if (needsNewDisplayName && userDisplayName) {
           updateFields.display_name = userDisplayName;
         }
 
