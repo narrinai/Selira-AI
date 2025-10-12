@@ -179,8 +179,8 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
       negative_prompt: negativePrompt,
       style: promptchanModelStyle,  // Use correct model based on companion style
       quality: 'Ultra',
-      image_size: '768x512',
-      creativity: 50, // Lower creativity for better prompt adherence
+      image_size: '512x512', // Square format - FASTEST generation
+      creativity: 30, // Lower creativity for faster generation
       seed: -1,
       filter: 'Default',
       emotion: 'Default',
@@ -347,8 +347,8 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
       negative_prompt: negativePrompt,
       style: promptchanStyle,
       quality: 'Ultra',
-      image_size: '768x512',
-      creativity: 50,
+      image_size: '512x512', // Square format - FASTEST generation
+      creativity: 30, // Lower creativity for faster generation
       seed: -1,
       filter: 'Default',
       emotion: 'Default',
@@ -572,8 +572,8 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     negative_prompt: negativePrompt,
     style: promptchanStyle,
     quality: 'Ultra', // Fastest quality - 1 Gem
-    image_size: '768x512', // Landscape format
-    creativity: 50, // Lower creativity for better prompt adherence
+    image_size: '512x512', // Square format - FASTEST generation (changed from 768x512)
+    creativity: 30, // Lower creativity for faster generation (changed from 50)
     seed: -1, // Random seed
     filter: promptchanFilter, // Default filter
     emotion: 'Default',
