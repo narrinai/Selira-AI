@@ -422,35 +422,14 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     } else if (promptLower.includes('park') || promptLower.includes('outdoor')) {
       contextualEnhancement += ', natural outdoor setting, pleasant lighting';
     } else {
-      // For companion creation: censored = clean background, uncensored = luxury bedroom
+      // For companion creation: use clean background (no random bedroom/beach/luxury)
       // For chat/image gen: use random sexy backgrounds
       const isCompanionCreation = source === 'companion-creation';
 
       if (isCompanionCreation) {
-        // Censored companions: clean professional background
-        // Uncensored companions: luxury bedroom background
-        if (uncensored) {
-          // Random luxury bedroom backgrounds for uncensored companions
-          const luxuryBackgrounds = [
-            ', luxury bedroom with silk sheets, warm golden lighting, candles, rose petals, romantic intimate atmosphere',
-            ', five-star hotel suite bedroom, floor-to-ceiling windows, city lights, king size bed, luxury decor',
-            ', private jacuzzi suite, steam rising, warm water, candles, mood lighting, intimate spa atmosphere',
-            ', modern penthouse bedroom, exposed brick, designer furniture, warm ambient lighting, urban luxury',
-            ', romantic cabin bedroom, fireplace crackling, cozy bed, warm glow, intimate mountain retreat',
-            ', luxury yacht master bedroom, panoramic ocean views, white linens, nautical elegance, private luxury',
-            ', boutique hotel suite, four-poster bed, silk curtains, chandelier, warm romantic lighting, opulent',
-            ', desert resort bedroom, moroccan decor, colorful pillows, lantern lighting, exotic romantic atmosphere',
-            ', upscale loft bedroom, modern art, designer bed, floor lamps, industrial chic luxury',
-            ', countryside estate bedroom, vintage elegance, canopy bed, warm firelight, classic romance'
-          ];
-          const randomBg = luxuryBackgrounds[Math.floor(Math.random() * luxuryBackgrounds.length)];
-          contextualEnhancement += randomBg;
-          console.log(`🔓 [${requestId}] Uncensored companion - using luxury bedroom background`);
-        } else {
-          // Clean, simple background for censored companion avatar portraits
-          contextualEnhancement += ', clean background, studio lighting, professional portrait';
-          console.log(`🎨 [${requestId}] Censored companion - using clean background`);
-        }
+        // Clean, simple background for companion avatar portraits
+        contextualEnhancement += ', clean background, studio lighting, professional portrait';
+        console.log(`🎨 [${requestId}] Companion creation - using clean background`);
       } else {
         // Random sexy diverse backgrounds for chat/image generator
         const randomBackgrounds = [
