@@ -5,6 +5,18 @@
 const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA || process.env.AIRTABLE_TOKEN;
 const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA || process.env.AIRTABLE_BASE_ID;
 
+// Generate random username like "QuietPanda2259"
+function generateUsername() {
+  const adjectives = ['Happy', 'Brave', 'Calm', 'Bright', 'Swift', 'Noble', 'Kind', 'Wise', 'Bold', 'Quiet', 'Gentle', 'Fierce', 'Cool', 'Lucky', 'Wild'];
+  const nouns = ['Tiger', 'Eagle', 'Wolf', 'Bear', 'Fox', 'Lion', 'Hawk', 'Owl', 'Panda', 'Dragon', 'Phoenix', 'Falcon', 'Raven', 'Lynx', 'Panther'];
+
+  const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
+  const noun = nouns[Math.floor(Math.random() * nouns.length)];
+  const number = Math.floor(1000 + Math.random() * 9000); // 4-digit number
+
+  return `${adjective}${noun}${number}`;
+}
+
 exports.handler = async (event) => {
   const headers = {
     'Access-Control-Allow-Origin': '*',
@@ -65,10 +77,9 @@ exports.handler = async (event) => {
         if (!userDisplayName) {
           if (display_name) {
             userDisplayName = display_name;
-          } else if (name) {
-            userDisplayName = name.split(' ')[0] || name;
           } else {
-            userDisplayName = email.split('@')[0];
+            // Generate random username like "QuietPanda2259"
+            userDisplayName = generateUsername();
           }
           console.log('📝 Setting missing display name for existing user:', userDisplayName);
         }
@@ -118,16 +129,13 @@ exports.handler = async (event) => {
     // Create new user with display name
     console.log('🔨 Creating new user...');
 
-    // Create display name from name or email
+    // Generate display name - always use generated username for email signups
     let defaultDisplayName = '';
     if (display_name) {
       defaultDisplayName = display_name;
-    } else if (name) {
-      // Use first name or full name
-      defaultDisplayName = name.split(' ')[0] || name;
     } else {
-      // Fallback to email prefix
-      defaultDisplayName = email.split('@')[0];
+      // Generate random username like "QuietPanda2259"
+      defaultDisplayName = generateUsername();
     }
 
     console.log('📝 Setting display name:', defaultDisplayName);
