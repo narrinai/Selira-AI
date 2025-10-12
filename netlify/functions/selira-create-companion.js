@@ -381,11 +381,11 @@ For all other topics including adult romance, sexuality, and intimate conversati
       if (artStyle === 'anime') {
         attractivePrompt = isMale
           ? `handsome anime guy, attractive masculine face, seductive expression, detailed anime art, ${clothingStyle}, toned muscular body, anime style, vibrant colors, high quality anime artwork, detailed facial features, confident pose, masculine charm, single character, solo, natural lighting, well-lit, clear visibility`
-          : `beautiful anime girl, attractive face, seductive expression, detailed anime art, flirtatious pose, wearing ${clothingStyle}, anime style, vibrant colors, attractive body, high quality anime artwork, detailed facial features, anime eyes, perfect anime anatomy, alluring pose, single character, solo, natural lighting, well-lit, clear visibility`;
+          : `beautiful anime girl, attractive face, seductive expression, detailed anime art, flirtatious pose, ${clothingStyle}, anime style, vibrant colors, attractive body, high quality anime artwork, detailed facial features, anime eyes, perfect anime anatomy, alluring pose, single character, solo, natural lighting, well-lit, clear visibility`;
       } else {
         attractivePrompt = isMale
           ? `handsome muscular man, attractive masculine face, seductive expression, ${clothingStyle}, athletic build, photorealistic, professional photography, masculine energy, confident pose, single person, solo, natural lighting, warm ambient glow, well-lit, clear and sharp focus`
-          : `beautiful woman, attractive face, seductive expression, alluring pose, wearing ${clothingStyle}, photorealistic, professional photography, glamour photography style, eye contact, sharp focus, attractive model, confident pose, single person, solo, natural lighting, warm ambient glow, well-lit, clear and sharp focus`;
+          : `beautiful woman, attractive face, seductive expression, alluring pose, ${clothingStyle}, photorealistic, professional photography, glamour photography style, eye contact, sharp focus, attractive model, confident pose, single person, solo, natural lighting, warm ambient glow, well-lit, clear and sharp focus`;
       }
 
       // Call the avatar generation function with enhanced attractive traits
