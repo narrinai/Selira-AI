@@ -538,18 +538,22 @@
       padding: 20px;
       border-top: 1px solid var(--border);
       background: var(--bg-secondary);
+      display: flex;
+      flex-direction: column;
     }
 
     .image-prompt-suggestions {
-      margin-bottom: 16px;
       max-height: 0;
       overflow: hidden;
       transition: max-height 0.3s ease-in-out;
+      order: -1; /* Ensure it appears before the input wrapper */
+      margin-bottom: 12px;
     }
 
     .image-prompt-suggestions.visible {
       max-height: 50vh;
       overflow-y: auto;
+      margin-bottom: 12px;
     }
 
     .suggestions-header {
@@ -1771,7 +1775,7 @@
 
       <!-- Chat Input -->
       <div class="chat-input-container" id="chatInputContainer">
-        <!-- Image Prompt Suggestions -->
+        <!-- Image Prompt Suggestions (appears above input) -->
         <div class="image-prompt-suggestions" id="imagePromptSuggestions">
           <div class="suggestion-buttons" id="suggestionButtons">
             <!-- Suggestions will be populated by JavaScript -->
@@ -1779,9 +1783,9 @@
         </div>
 
         <div class="chat-input-wrapper">
-          <textarea 
-            id="messageInput" 
-            placeholder="Enter a message. Ex) Hello?" 
+          <textarea
+            id="messageInput"
+            placeholder="Enter a message. Ex) Hello?"
             rows="1"
             maxlength="2000"
           ></textarea>
@@ -1801,7 +1805,7 @@
             <span class="credits-icon">💳</span>
             <span id="imageCreditsText">Loading...</span>
           </div>
-          <span class="input-hint">AI is fictional. Read <a href="/terms.html" style="color: inherit; text-decoration: underline;">terms</a>.</span>
+          <span class="input-hint">AI is <a href="/terms.html" style="color: inherit; text-decoration: underline;">fictional</a>.</span>
         </div>
       </div>
     </main>
