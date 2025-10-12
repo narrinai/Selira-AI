@@ -76,17 +76,10 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   const sanitizedPrompt = customPrompt.trim();
   const promptLower = customPrompt.toLowerCase();
 
-  // Check if this is already an enhanced prompt from chat.html (very long and detailed)
-  // Enhanced prompts are typically 200+ chars and contain detailed sexual descriptions
-  const isAlreadyEnhanced = customPrompt.length > 200 && (
-    promptLower.includes('pussy lips') ||
-    promptLower.includes('visible penetration') ||
-    promptLower.includes('intimate angle') ||
-    promptLower.includes('silk sheets') ||
-    promptLower.includes('fingers deep inside')
-  );
+  // REMOVED: Pre-enhanced check was dead code - chat buttons never matched those keywords
+  // All chat/NSFW page requests now go through the explicit sex prompt path below
 
-  if (isAlreadyEnhanced) {
+  if (false) { // DEAD CODE - keeping for reference but never executes
     console.log(`✅ [${requestId}] Detected pre-enhanced prompt from frontend (chat image gen), using directly without modification`);
 
     // Use the enhanced prompt directly without any modifications
