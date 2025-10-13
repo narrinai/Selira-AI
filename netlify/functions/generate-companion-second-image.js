@@ -1,8 +1,38 @@
 // Generate second image for companion with different pose
-// Uses Replicate for censored companions, Promptchan for uncensored
+// Uses selira-generate-custom-image function (same as fix-replicate-urls.js)
 // Saves to avatar_url_2 field in Airtable
 
 const fetch = require('node-fetch');
+
+// Build custom prompt for second image (same style as fix-replicate-urls.js)
+function buildSecondImagePrompt({ sex, companionType }) {
+  const isAnimeStyle = companionType === 'anime';
+
+  // Seductive clothing options for second pose
+  const revealingClothing = sex === 'male'
+    ? ['shirtless showing abs', 'tight underwear', 'revealing swim trunks', 'open shirt muscular chest', 'barely covered lower body', 'athletic shorts shirtless']
+    : ['ultra-revealing lingerie', 'micro string bikini', 'see-through dress', 'topless with tiny shorts', 'barely covered outfit', 'transparent lingerie', 'tiny thong bikini'];
+
+  const randomClothing = revealingClothing[Math.floor(Math.random() * revealingClothing.length)];
+
+  // Build prompt based on style (anime vs realistic)
+  let prompt;
+  if (isAnimeStyle) {
+    if (sex === 'male') {
+      prompt = `very attractive face, extremely seductive expression, detailed anime art, very erotic pose, wearing ${randomClothing}, vibrant colors, high quality anime artwork, detailed facial features, anime eyes, perfect anatomy, correct human anatomy, two arms, two hands, very sensual pose, muscular chest, abs visible, athletic build, masculine physique, exposed skin, revealing clothing, single character, solo, no extra limbs, proper proportions, bedroom background, intimate setting, seductive atmosphere`;
+    } else {
+      prompt = `very attractive face, extremely seductive expression, detailed anime art, very erotic pose, wearing ${randomClothing}, vibrant colors, high quality anime artwork, detailed facial features, anime eyes, perfect anatomy, correct human anatomy, two arms, two hands, very sensual pose, large breasts, curvy figure, big butt, voluptuous body, exposed skin, revealing clothing, single character, solo, no extra limbs, proper proportions, bedroom background, intimate setting, seductive atmosphere`;
+    }
+  } else {
+    if (sex === 'male') {
+      prompt = `attractive face, seductive expression, alluring pose, wearing ${randomClothing}, photorealistic, professional photography, soft romantic lighting, glamour photography style, eye contact, sharp focus, attractive model, confident pose, single person, solo, perfect human anatomy, two arms, two hands, correct proportions, no extra limbs, muscular chest, abs visible, athletic masculine body, bedroom background, beach setting, luxury suite, intimate atmosphere`;
+    } else {
+      prompt = `attractive face, seductive expression, alluring pose, wearing ${randomClothing}, photorealistic, professional photography, soft romantic lighting, glamour photography style, eye contact, sharp focus, attractive model, confident pose, single person, solo, perfect human anatomy, two arms, two hands, correct proportions, no extra limbs, bedroom background, beach setting, luxury suite, intimate atmosphere`;
+    }
+  }
+
+  return prompt;
+}
 
 exports.handler = async function(event, context) {
   // CORS headers
@@ -96,29 +126,48 @@ exports.handler = async function(event, context) {
       censored: isCensored
     });
 
-    // 3. Generate image with different pose
-    let imageUrl;
+    // 3. Generate image using existing custom image generation function (same as fix-replicate-urls.js)
+    const customPrompt = buildSecondImagePrompt({
+      sex,
+      companionType
+    });
 
-    if (isCensored) {
-      // Use Replicate for censored companions
-      imageUrl = await generateWithReplicate({
-        sex,
-        ethnicity,
-        hairLength,
-        hairColor,
-        companionType
-      });
-    } else {
-      // Use Promptchan for uncensored companions
-      imageUrl = await generateWithPromptchan({
-        sex,
-        ethnicity,
-        hairLength,
-        hairColor,
-        companionType
-      });
+    console.log('📝 Custom prompt:', customPrompt.substring(0, 100) + '...');
+
+    // Call the existing selira-generate-custom-image function
+    const imageGenUrl = `${process.env.URL || 'https://selira.ai'}/.netlify/functions/selira-generate-custom-image`;
+
+    const imageGenResponse = await fetch(imageGenUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        customPrompt: customPrompt,
+        characterName: fields.Name,
+        category: companionType === 'anime' ? 'anime-manga' : 'default',
+        style: companionType,
+        shotType: 'portrait',
+        sex: sex,
+        ethnicity: ethnicity,
+        hairLength: hairLength,
+        hairColor: hairColor,
+        uncensored: !isCensored
+      })
+    });
+
+    if (!imageGenResponse.ok) {
+      const errorText = await imageGenResponse.text();
+      throw new Error(`Image generation failed: ${errorText}`);
     }
 
+    const imageResult = await imageGenResponse.json();
+
+    if (!imageResult.success || !imageResult.imageUrl) {
+      throw new Error('No image URL returned from generation');
+    }
+
+    const imageUrl = imageResult.imageUrl;
     console.log(`✅ Generated image URL: ${imageUrl}`);
 
     // 4. Save to Airtable avatar_url_2 field
@@ -165,289 +214,3 @@ exports.handler = async function(event, context) {
   }
 };
 
-// Generate with Replicate (censored)
-async function generateWithReplicate({ sex, ethnicity, hairLength, hairColor, companionType }) {
-  console.log('🎨 Generating with Replicate (censored)...');
-
-  const REPLICATE_API_TOKEN = process.env.REPLICATE_API_TOKEN_SELIRA || process.env.REPLICATE_API_TOKEN;
-
-  if (!REPLICATE_API_TOKEN) {
-    throw new Error('Replicate API token not configured');
-  }
-
-  console.log('✅ Using Replicate API token');
-
-  // Build appearance description
-  const genderDesc = sex === 'male' ? 'handsome man' : 'beautiful woman';
-
-  const ethnicityMap = {
-    'white': 'Caucasian',
-    'black': 'African American',
-    'indian': 'South Asian',
-    'middle-east': 'Middle Eastern',
-    'hispanic': 'Hispanic',
-    'korean': 'Korean',
-    'chinese': 'Chinese',
-    'japanese': 'Japanese',
-    'vietnamese': 'Vietnamese'
-  };
-
-  const hairLengthMap = {
-    'bald': 'bald',
-    'short': 'short hair',
-    'medium': 'medium length hair',
-    'long': 'long flowing hair'
-  };
-
-  const hairColorMap = {
-    'brown': 'brown hair',
-    'black': 'black hair',
-    'blonde': 'blonde hair',
-    'red': 'red hair',
-    'auburn': 'auburn hair',
-    'gray': 'gray hair',
-    'white': 'white hair'
-  };
-
-  const ethnicityDesc = ethnicityMap[ethnicity] || '';
-  const hairLengthDesc = hairLength === 'bald' ? 'bald' : hairLengthMap[hairLength] || 'styled hair';
-  const hairColorDesc = hairLength === 'bald' ? '' : (hairColorMap[hairColor] || 'brown hair');
-
-  // Build more detailed appearance description for consistency with first image
-  const detailedAppearance = [];
-
-  // Start with gender and ethnicity
-  detailedAppearance.push(genderDesc);
-  if (ethnicityDesc) {
-    detailedAppearance.push(ethnicityDesc);
-  }
-
-  // Add age descriptor
-  detailedAppearance.push('young adult');
-
-  // Add hair details (CRITICAL for consistency!)
-  if (hairColorDesc) {
-    detailedAppearance.push(hairColorDesc);
-  }
-  if (hairLengthDesc && hairLength !== 'bald') {
-    detailedAppearance.push(hairLengthDesc);
-  }
-
-  // Add attractiveness descriptor
-  detailedAppearance.push('attractive features');
-
-  const fullAppearance = detailedAppearance.join(', ');
-
-  // Erotic, sensual backgrounds (bedroom/intimate settings)
-  const backgrounds = [
-    'luxurious bedroom, silk sheets, dim romantic lighting, sensual atmosphere',
-    'modern bedroom, soft bed, warm glow, intimate setting',
-    'hotel suite, elegant decor, mood lighting, seductive ambiance',
-    'bedroom with fairy lights, cozy bed, warm intimate lighting',
-    'stylish bedroom, plush pillows, soft romantic lighting',
-    'contemporary bedroom, satin sheets, candlelight atmosphere',
-    'upscale bedroom, expensive decor, dramatic lighting, sultry mood',
-    'intimate bedroom setting, soft textures, warm sensual lighting'
-  ];
-
-  const randomBackground = backgrounds[Math.floor(Math.random() * backgrounds.length)];
-
-  // Seductive, revealing poses (suggestive but avoid explicit descriptions)
-  const poses = [
-    'sitting on bed, leaning back confidently, sultry gaze',
-    'kneeling on bed, arching back gracefully, looking over shoulder',
-    'lying on bed, propped up on elbows, inviting expression',
-    'sitting on edge of bed, legs crossed elegantly, leaning forward',
-    'reclining on bed, one hand through hair, sensual pose',
-    'sitting on knees, looking back at camera, flirty smile',
-    'sitting with knees up, arms around legs, playful expression',
-    'lying sideways on bed, head propped on hand, seductive look'
-  ];
-
-  const randomPose = poses[Math.floor(Math.random() * poses.length)];
-
-  // Revealing clothing options (push boundaries)
-  const revealingClothing = [
-    'wearing tight crop top showing midriff and short shorts',
-    'wearing revealing lingerie, lace bra and panties barely covering',
-    'wearing tiny bikini, barely covering body',
-    'wearing see-through shirt with bra visible underneath',
-    'wearing low-cut dress showing deep cleavage',
-    'wearing sports bra and tight yoga pants',
-    'wearing silk robe partially open revealing lingerie',
-    'wearing tank top without bra, short skirt'
-  ];
-
-  const randomClothing = revealingClothing[Math.floor(Math.random() * revealingClothing.length)];
-
-  // Build FLUX-style erotic prompt
-  const hairPart = hairLength === 'bald' ? hairLengthDesc : `${hairColorDesc}, ${hairLengthDesc}`;
-  const characterAppearance = `${hairPart}, ${genderDesc}, ${ethnicityDesc}`;
-
-  // Build prompt - suggestive but avoid trigger words like "erotic", "nude" etc
-  const prompt = `REALISTIC PHOTOGRAPHY, sensual portrait photograph of ${characterAppearance}, ${randomPose}, ${randomClothing}, ${randomBackground}, seductive expression, flirty gaze, confident, attractive, beautiful body, elegant curves, ultra realistic, photorealistic, real human photo, professional photography, realistic skin texture, realistic features, high quality photo, vibrant colors, intimate mood lighting, single person, perfect anatomy, NO anime, NO cartoon, NO illustration, real photograph only`;
-
-  // Remove excessive negative keywords that block revealing content
-  // Keep safety but allow more erotic elements
-
-  console.log('📝 Prompt:', prompt);
-
-  // Use FLUX Dev model (same as custom image generation)
-  const modelVersion = "black-forest-labs/flux-dev";
-
-  const replicateResponse = await fetch('https://api.replicate.com/v1/predictions', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Token ${REPLICATE_API_TOKEN}`,
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    },
-    body: JSON.stringify({
-      version: modelVersion,
-      input: {
-        prompt: prompt,
-        width: 1024,
-        height: 1024,
-        num_inference_steps: 35,
-        guidance_scale: 7.5,
-        num_outputs: 1,
-        output_format: "webp",
-        output_quality: 95,
-        disable_safety_checker: false // Keep safety checker for censored companions
-      }
-    })
-  });
-
-  if (!replicateResponse.ok) {
-    const errorText = await replicateResponse.text();
-    throw new Error(`Replicate API error: ${errorText}`);
-  }
-
-  const prediction = await replicateResponse.json();
-  console.log('⏳ Prediction started:', prediction.id);
-
-  // Poll for completion
-  let result = prediction;
-  let attempts = 0;
-  const maxAttempts = 60; // 60 seconds max
-
-  while (result.status !== 'succeeded' && result.status !== 'failed' && attempts < maxAttempts) {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    const pollResponse = await fetch(`https://api.replicate.com/v1/predictions/${prediction.id}`, {
-      headers: {
-        'Authorization': `Token ${REPLICATE_API_TOKEN}`
-      }
-    });
-
-    result = await pollResponse.json();
-    attempts++;
-  }
-
-  if (result.status === 'failed') {
-    throw new Error('Replicate generation failed');
-  }
-
-  if (!result.output || result.output.length === 0) {
-    throw new Error('No output from Replicate');
-  }
-
-  return result.output[0];
-}
-
-// Generate with Promptchan (uncensored)
-async function generateWithPromptchan({ sex, ethnicity, hairLength, hairColor, companionType }) {
-  console.log('🎨 Generating with Promptchan (uncensored)...');
-
-  const PROMPTCHAN_API_KEY = process.env.PROMPTCHAN_API_KEY_SELIRA;
-
-  if (!PROMPTCHAN_API_KEY) {
-    throw new Error('Promptchan API key not configured');
-  }
-
-  // Build appearance description
-  const genderDesc = sex === 'male' ? 'handsome man' : 'beautiful woman';
-
-  const ethnicityMap = {
-    'white': 'Caucasian',
-    'black': 'African American',
-    'indian': 'South Asian',
-    'middle-east': 'Middle Eastern',
-    'hispanic': 'Hispanic',
-    'korean': 'Korean',
-    'chinese': 'Chinese',
-    'japanese': 'Japanese',
-    'vietnamese': 'Vietnamese'
-  };
-
-  const hairLengthMap = {
-    'bald': 'bald',
-    'short': 'short hair',
-    'medium': 'medium length hair',
-    'long': 'long hair'
-  };
-
-  const hairColorMap = {
-    'brown': 'brown hair',
-    'black': 'black hair',
-    'blonde': 'blonde hair',
-    'red': 'red hair',
-    'auburn': 'auburn hair'
-  };
-
-  const ethnicityDesc = ethnicityMap[ethnicity] || '';
-  const hairLengthDesc = hairLength === 'bald' ? 'bald' : hairLengthMap[hairLength] || 'styled hair';
-  const hairColorDesc = hairLength === 'bald' ? '' : (hairColorMap[hairColor] || 'brown hair');
-
-  const appearance = [genderDesc, ethnicityDesc, hairColorDesc, hairLengthDesc].filter(Boolean).join(', ');
-
-  // Different explicit pose for second image
-  const poses = [
-    'sitting on bed nude, legs spread, looking at camera seductively',
-    'lying on back nude, legs up, inviting pose',
-    'on all fours nude, looking back at camera',
-    'standing nude, touching breasts, sexy expression',
-    'kneeling nude, hands between legs, lustful gaze'
-  ];
-
-  const randomPose = poses[Math.floor(Math.random() * poses.length)];
-
-  const prompt = `${appearance}, ${randomPose}, nude, naked, full body, high quality, photorealistic, detailed, 8k`;
-
-  const negativePrompt = 'clothes, clothing, dressed, covered, censored, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo';
-
-  console.log('📝 Prompt:', prompt);
-
-  // Determine model based on companion type
-  const modelStyle = companionType === 'anime' || companionType === 'animated' ? 'Anime XL+' : 'Hyperreal XL+';
-
-  const promptchanResponse = await fetch('https://api.promptchan.ai/v2/image/generate', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${PROMPTCHAN_API_KEY}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      prompt: prompt,
-      negative_prompt: negativePrompt,
-      model_style: modelStyle,
-      width: 512,
-      height: 768,
-      creativity: 30,
-      num_images: 1
-    })
-  });
-
-  if (!promptchanResponse.ok) {
-    const errorText = await promptchanResponse.text();
-    throw new Error(`Promptchan API error: ${errorText}`);
-  }
-
-  const result = await promptchanResponse.json();
-
-  if (!result.images || result.images.length === 0) {
-    throw new Error('No images returned from Promptchan');
-  }
-
-  return result.images[0].url;
-}
