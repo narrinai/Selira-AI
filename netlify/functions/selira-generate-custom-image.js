@@ -177,7 +177,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
       style: promptchanModelStyle,  // Use correct model based on companion style
       quality: 'Ultra', // Only valid option
       image_size: '256x256', // Smallest = FASTEST generation (was 512x512)
-      creativity: 20, // Lower = faster (was 30)
+      creativity: 10, // Lowest = fastest generation (was 30)
       seed: -1,
       filter: 'Default',
       emotion: 'Default',
