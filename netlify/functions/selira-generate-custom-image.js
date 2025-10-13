@@ -199,25 +199,26 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     let promptchanResult = null;
 
     try {
-      console.log(`🎲 [${requestId}] Calling Promptchan with 20s timeout...`);
+      console.log(`🎲 [${requestId}] Calling Promptchan with 20s timeout using Promise.race...`);
 
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => {
-        console.log(`⏱️ [${requestId}] Promptchan timeout after 20s - will fallback to Replicate`);
-        controller.abort();
-      }, 20000); // 20 second timeout
-
-      const response = await fetch('https://prod.aicloudnetservices.com/api/external/create', {
+      // Use Promise.race to implement timeout instead of AbortController (node-fetch v2 compatibility)
+      const fetchPromise = fetch('https://prod.aicloudnetservices.com/api/external/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'x-api-key': PROMPTCHAN_API_KEY
         },
-        body: JSON.stringify(promptchanRequest),
-        signal: controller.signal
+        body: JSON.stringify(promptchanRequest)
       });
 
-      clearTimeout(timeoutId);
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => {
+          console.log(`⏱️ [${requestId}] Promptchan timeout after 20s - will fallback to Replicate`);
+          reject(new Error('Promptchan timeout after 20 seconds'));
+        }, 20000);
+      });
+
+      const response = await Promise.race([fetchPromise, timeoutPromise]);
 
       if (!response.ok) {
         const errorText = await response.text();
