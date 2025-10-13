@@ -102,10 +102,10 @@ exports.handler = async (event, context) => {
     const data = JSON.parse(responseText);
     console.log('API Response:', JSON.stringify(data, null, 2));
 
-    // Check if prediction is complete
+    // Check if prediction is complete immediately
     if (data.status === 'succeeded' && data.output) {
       const outputUrl = Array.isArray(data.output) ? data.output[0] : data.output;
-      console.log('✅ Image generated successfully:', outputUrl);
+      console.log('✅ Image generated immediately:', outputUrl);
 
       return {
         statusCode: 200,
@@ -118,31 +118,31 @@ exports.handler = async (event, context) => {
           status: data.status
         })
       };
-    } else if (data.status === 'starting' || data.status === 'processing') {
-      // If not complete, poll for result
-      const predictionId = data.id;
-      let prediction = data;
-      let attempts = 0;
-      const maxAttempts = 60; // 60 seconds max wait
+    }
 
-      while (prediction.status !== 'succeeded' && prediction.status !== 'failed' && attempts < maxAttempts) {
-        await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second
-        attempts++;
+    // Poll for completion (max 20 seconds for Netlify Pro 26s timeout with 6s buffer)
+    const predictionId = data.id;
+    let prediction = data;
+    let attempts = 0;
+    const maxAttempts = 20; // 20 seconds max
 
-        const pollResponse = await fetch(`https://api.replicate.com/v1/predictions/${predictionId}`, {
-          headers: {
-            'Authorization': `Token ${apiKey}`,
-            'Content-Type': 'application/json'
-          }
-        });
+    while (prediction.status !== 'succeeded' && prediction.status !== 'failed' && attempts < maxAttempts) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      attempts++;
 
-        prediction = await pollResponse.json();
-        console.log(`Polling attempt ${attempts}: status = ${prediction.status}`);
-      }
+      const pollResponse = await fetch(`https://api.replicate.com/v1/predictions/${predictionId}`, {
+        headers: {
+          'Authorization': `Token ${apiKey}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      prediction = await pollResponse.json();
+      console.log(`Polling attempt ${attempts}: status = ${prediction.status}`);
 
       if (prediction.status === 'succeeded' && prediction.output) {
         const outputUrl = Array.isArray(prediction.output) ? prediction.output[0] : prediction.output;
-        console.log('✅ Image generated successfully after polling:', outputUrl);
+        console.log('✅ Image generated after polling:', outputUrl);
 
         return {
           statusCode: 200,
@@ -155,27 +155,22 @@ exports.handler = async (event, context) => {
             status: prediction.status
           })
         };
-      } else {
-        console.error('❌ Prediction failed or timed out:', prediction.status);
-        return {
-          statusCode: 500,
-          body: JSON.stringify({
-            error: 'Prediction failed or timed out',
-            status: prediction.status,
-            error_details: prediction.error
-          })
-        };
       }
-    } else {
-      console.error('❌ Unexpected response:', data);
-      return {
-        statusCode: 500,
-        body: JSON.stringify({
-          error: 'Unexpected API response',
-          status: data.status
-        })
-      };
     }
+
+    // If we get here, it timed out or failed
+    console.error('❌ Prediction failed or timed out:', prediction.status);
+    return {
+      statusCode: 500,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        error: 'Prediction timed out or failed',
+        status: prediction.status,
+        error_details: prediction.error || 'Generation took too long'
+      })
+    };
 
   } catch (error) {
     console.error('❌ Replicate function error:', error);
