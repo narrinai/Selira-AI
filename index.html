@@ -5560,7 +5560,7 @@ Please be thorough and include important details from our conversations.`;
     }
 
     // ===== MOBILE FILTER DROPDOWNS =====
-    function toggleMobileContentDropdown() {
+    window.toggleMobileContentDropdown = function() {
       console.log('🔄 Toggle Content Dropdown');
       const menu = document.getElementById('mobileContentMenu');
       const sexMenu = document.getElementById('mobileSexMenu');
@@ -5572,7 +5572,7 @@ Please be thorough and include important details from our conversations.`;
       if (menu) menu.classList.toggle('show');
     }
 
-    function toggleMobileStyleDropdown() {
+    window.toggleMobileStyleDropdown = function() {
       console.log('🔄 Toggle Style Dropdown');
       const menu = document.getElementById('mobileStyleMenu');
       const contentMenu = document.getElementById('mobileContentMenu');
@@ -5584,7 +5584,7 @@ Please be thorough and include important details from our conversations.`;
       if (menu) menu.classList.toggle('show');
     }
 
-    function toggleMobileSexDropdown() {
+    window.toggleMobileSexDropdown = function() {
       console.log('🔄 Toggle Sex Dropdown');
       const menu = document.getElementById('mobileSexMenu');
       const contentMenu = document.getElementById('mobileContentMenu');
@@ -5596,7 +5596,7 @@ Please be thorough and include important details from our conversations.`;
       if (menu) menu.classList.toggle('show');
     }
 
-    function toggleMobileTagDropdown() {
+    window.toggleMobileTagDropdown = function() {
       console.log('🔄 Toggle Tag Dropdown');
       const menu = document.getElementById('mobileTagMenu');
       const contentMenu = document.getElementById('mobileContentMenu');
@@ -5608,7 +5608,7 @@ Please be thorough and include important details from our conversations.`;
       if (menu) menu.classList.toggle('show');
     }
 
-    function selectMobileContent(content) {
+    window.selectMobileContent = function(content) {
       const contentText = document.getElementById('mobileContentText');
       const menu = document.getElementById('mobileContentMenu');
 
@@ -5631,7 +5631,7 @@ Please be thorough and include important details from our conversations.`;
       console.log('🔒 Mobile content filter:', content);
     }
 
-    function selectMobileStyle(style) {
+    window.selectMobileStyle = function(style) {
       const styleText = document.getElementById('mobileStyleText');
       const menu = document.getElementById('mobileStyleMenu');
 
@@ -5654,7 +5654,7 @@ Please be thorough and include important details from our conversations.`;
       console.log('🎨 Mobile style filter:', style);
     }
 
-    function selectMobileSex(sex) {
+    window.selectMobileSex = function(sex) {
       const sexText = document.getElementById('mobileSexText');
       const menu = document.getElementById('mobileSexMenu');
 
@@ -5683,7 +5683,7 @@ Please be thorough and include important details from our conversations.`;
       console.log('⚧️ Mobile sex filter:', sex);
     }
 
-    function selectMobileTag(tag) {
+    window.selectMobileTag = function(tag) {
       const tagText = document.getElementById('mobileTagText');
       const menu = document.getElementById('mobileTagMenu');
 
