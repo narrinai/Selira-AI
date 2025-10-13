@@ -599,7 +599,7 @@ class SupabaseAuthModal {
     if (isAuthenticated) {
       if (loginBtn) {
         loginBtn.href = '/pricing';
-        loginBtn.textContent = 'Upgrade';
+        loginBtn.textContent = 'Upgrade -40% off';
         loginBtn.className = 'user-btn signup-btn';
         loginBtn.onclick = null;
         loginBtn.style.background = 'var(--accent, #ce93d8)';
@@ -646,7 +646,7 @@ class SupabaseAuthModal {
 
     if (loginBtn) {
       if (isAuthenticated) {
-        loginBtn.textContent = 'Upgrade';
+        loginBtn.textContent = 'Upgrade -40% off';
         loginBtn.onclick = (e) => {
           e.preventDefault();
           window.location.href = '/pricing';
