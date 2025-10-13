@@ -209,6 +209,16 @@ exports.handler = async (event, context) => {
         createdBy = fields.Created_by_name || fields.Creator_name || fields.Creator_nickname || createdBy;
       }
       
+      // Extract avatar_url_2 if available
+      let avatarUrl2 = '';
+      if (fields.avatar_url_2 && typeof fields.avatar_url_2 === 'string') {
+        avatarUrl2 = fields.avatar_url_2;
+      } else if (fields.Avatar_URL_2 && typeof fields.Avatar_URL_2 === 'string') {
+        avatarUrl2 = fields.Avatar_URL_2;
+      } else if (fields.Avatar_URL_2 && Array.isArray(fields.Avatar_URL_2) && fields.Avatar_URL_2.length > 0) {
+        avatarUrl2 = fields.Avatar_URL_2[0].url || '';
+      }
+
       return {
         id: record.id,
         Name: fields.Name || '',
@@ -218,6 +228,7 @@ exports.handler = async (event, context) => {
         Tags: fields.Tags || [],
         Slug: fields.Slug || '',
         Avatar_URL: avatarUrl,
+        avatar_url_2: avatarUrl2,
         Character_URL: fields.Character_URL ? fields.Character_URL.replace('narrin.ai', 'selira.ai') : `https://selira.ai/chat.html?char=${fields.Slug || (fields.Name ? fields.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'unknown')}`,
         Character_ID: fields.Character_ID || record.id,
         voice_id: fields.voice_id || null,
