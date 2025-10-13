@@ -176,8 +176,8 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
       negative_prompt: negativePrompt,
       style: promptchanModelStyle,  // Use correct model based on companion style
       quality: 'Ultra',
-      image_size: '512x512', // Square format - FASTEST generation
-      creativity: 30, // Lower creativity for faster generation
+      image_size: '384x384', // Smaller = MUCH faster generation (was 512x512)
+      creativity: 20, // Lower = faster (was 30)
       seed: -1,
       filter: 'Default',
       emotion: 'Default',
