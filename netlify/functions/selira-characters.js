@@ -114,6 +114,7 @@ exports.handler = async (event, context) => {
       category: record.fields.Category,
       tags: record.fields.Tags || [],
       avatar_url: record.fields.Avatar_URL || null, // Explicitly set null if empty
+      avatar_url_2: record.fields.avatar_url_2 || null, // Second image for carousel
       avatar_file: record.fields.Avatar_File?.[0]?.url || null,
       prompt: record.fields.Prompt,
       // Appearance traits for image generation
