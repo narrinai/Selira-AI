@@ -86,12 +86,12 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     const negativePrompt = 'clothes, clothing, dressed, covered, censored, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white';
 
     // Determine Promptchan model style based on companion type
-    let promptchanModelStyle = 'Hyperreal XL+';  // Default realistic
+    let promptchanModelStyle = 'Realistic Vision';  // Default realistic
     if (style === 'anime' || style === 'animated') {
       promptchanModelStyle = 'Anime XL+';
       console.log(`🎌 [${requestId}] Using Anime XL+ model for anime companion`);
     } else {
-      console.log(`📸 [${requestId}] Using Hyperreal XL+ model for realistic companion`);
+      console.log(`📸 [${requestId}] Using Realistic Vision model for realistic companion`);
     }
 
     // Enhance prompt with explicit detail keywords for maximum visibility
@@ -175,8 +175,8 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
       prompt: enhancedPrompt,
       negative_prompt: negativePrompt,
       style: promptchanModelStyle,  // Use correct model based on companion style
-      quality: 'Standard', // Faster than Ultra (was Ultra)
-      image_size: '384x384', // Smaller = MUCH faster generation (was 512x512)
+      quality: 'Ultra', // Only valid option
+      image_size: '256x256', // Smallest = FASTEST generation (was 512x512)
       creativity: 20, // Lower = faster (was 30)
       seed: -1,
       filter: 'Default',
@@ -337,15 +337,15 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
 
     const negativePrompt = 'clothes, clothing, dressed, covered, censored, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white';
 
-    const promptchanStyle = (style === 'anime' || style === 'animated') ? 'Anime XL+' : 'Hyperreal XL+';
+    const promptchanStyle = (style === 'anime' || style === 'animated') ? 'Anime XL+' : 'Realistic Vision';
 
     const promptchanRequest = {
       prompt: directPrompt,
       negative_prompt: negativePrompt,
       style: promptchanStyle,
-      quality: 'Standard', // Faster than Ultra (was Ultra)
-      image_size: '384x384', // Smaller = MUCH faster generation
-      creativity: 20, // Lower = faster generation
+      quality: 'Ultra', // Only valid option
+      image_size: '256x256', // Smallest = FASTEST generation
+      creativity: 10, // Lowest = fastest generation
       seed: -1,
       filter: 'Default',
       emotion: 'Default',
@@ -549,7 +549,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   console.log(`✨ [${requestId}] Promptchan enhanced prompt:`, enhancedPrompt);
 
   // Determine Promptchan style based on our style parameter
-  let promptchanStyle = 'Hyperreal XL+';  // Use Hyperreal XL+ for realistic
+  let promptchanStyle = 'Realistic Vision';  // Use Realistic Vision for realistic
   let promptchanFilter = 'Default';       // Use Default filter
 
   if (style === 'anime' || style === 'animated') {
@@ -557,7 +557,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     promptchanFilter = 'Default';  // Use Default filter for anime too
     console.log(`🎌 [${requestId}] Using ANIME style for Promptchan`);
   } else {
-    console.log(`📸 [${requestId}] Using Hyperreal XL+ for Promptchan`);
+    console.log(`📸 [${requestId}] Using Realistic Vision for Promptchan`);
   }
 
   // Add negative prompt to reduce unwanted elements
@@ -568,9 +568,9 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     prompt: enhancedPrompt,
     negative_prompt: negativePrompt,
     style: promptchanStyle,
-    quality: 'Standard', // Faster than Ultra - 1 Gem
-    image_size: '384x384', // Smaller = MUCH faster generation (changed from 768x512)
-    creativity: 20, // Lower = faster generation (changed from 50)
+    quality: 'Ultra', // Only valid option - 1 Gem
+    image_size: '256x256', // Smallest = FASTEST generation (changed from 768x512)
+    creativity: 10, // Lowest = fastest generation (changed from 50)
     seed: -1, // Random seed
     filter: promptchanFilter, // Default filter
     emotion: 'Default',
