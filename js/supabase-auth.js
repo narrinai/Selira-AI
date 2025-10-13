@@ -646,7 +646,7 @@ class SupabaseAuthModal {
 
     if (loginBtn) {
       if (isAuthenticated) {
-        loginBtn.textContent = 'Upgrade -40% off';
+        loginBtn.textContent = 'Upgrade';
         loginBtn.onclick = (e) => {
           e.preventDefault();
           window.location.href = '/pricing';
