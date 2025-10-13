@@ -4,7 +4,7 @@
 
 const fetch = require('node-fetch');
 
-// Build custom prompt for second image (same style as fix-replicate-urls.js)
+// Build custom prompt for second image (same style as fix-replicate-urls.js + different poses)
 function buildSecondImagePrompt({ sex, companionType }) {
   const isAnimeStyle = companionType === 'anime';
 
@@ -15,19 +15,43 @@ function buildSecondImagePrompt({ sex, companionType }) {
 
   const randomClothing = revealingClothing[Math.floor(Math.random() * revealingClothing.length)];
 
-  // Build prompt based on style (anime vs realistic)
+  // Different poses for variety (not front-facing like first image)
+  const poses = sex === 'male'
+    ? [
+        'lying on bed looking at camera',
+        'sitting on edge of bed leaning back',
+        'kneeling on bed looking over shoulder',
+        'standing with side profile showing body',
+        'reclining on couch with confident expression',
+        'sitting with legs spread showing confidence',
+        'lying sideways propped up on elbow'
+      ]
+    : [
+        'lying on bed looking at camera seductively',
+        'sitting on edge of bed legs crossed showing curves',
+        'kneeling on bed arching back showing body',
+        'standing with side profile highlighting curves',
+        'reclining on bed with inviting pose',
+        'sitting with legs to side showing feminine pose',
+        'lying sideways showing curves and body shape',
+        'on all fours looking back at camera playfully'
+      ];
+
+  const randomPose = poses[Math.floor(Math.random() * poses.length)];
+
+  // Build prompt based on style (anime vs realistic) with specific pose
   let prompt;
   if (isAnimeStyle) {
     if (sex === 'male') {
-      prompt = `very attractive face, extremely seductive expression, detailed anime art, very erotic pose, wearing ${randomClothing}, vibrant colors, high quality anime artwork, detailed facial features, anime eyes, perfect anatomy, correct human anatomy, two arms, two hands, very sensual pose, muscular chest, abs visible, athletic build, masculine physique, exposed skin, revealing clothing, single character, solo, no extra limbs, proper proportions, bedroom background, intimate setting, seductive atmosphere`;
+      prompt = `very attractive face, extremely seductive expression, detailed anime art, ${randomPose}, very erotic pose, wearing ${randomClothing}, vibrant colors, high quality anime artwork, detailed facial features, anime eyes, perfect anatomy, correct human anatomy, two arms, two hands, very sensual pose, muscular chest, abs visible, athletic build, masculine physique, exposed skin, revealing clothing, single character, solo, no extra limbs, proper proportions, bedroom background, intimate setting, seductive atmosphere`;
     } else {
-      prompt = `very attractive face, extremely seductive expression, detailed anime art, very erotic pose, wearing ${randomClothing}, vibrant colors, high quality anime artwork, detailed facial features, anime eyes, perfect anatomy, correct human anatomy, two arms, two hands, very sensual pose, large breasts, curvy figure, big butt, voluptuous body, exposed skin, revealing clothing, single character, solo, no extra limbs, proper proportions, bedroom background, intimate setting, seductive atmosphere`;
+      prompt = `very attractive face, extremely seductive expression, detailed anime art, ${randomPose}, very erotic pose, wearing ${randomClothing}, vibrant colors, high quality anime artwork, detailed facial features, anime eyes, perfect anatomy, correct human anatomy, two arms, two hands, very sensual pose, large breasts, curvy figure, big butt, voluptuous body, exposed skin, revealing clothing, single character, solo, no extra limbs, proper proportions, bedroom background, intimate setting, seductive atmosphere`;
     }
   } else {
     if (sex === 'male') {
-      prompt = `attractive face, seductive expression, alluring pose, wearing ${randomClothing}, photorealistic, professional photography, soft romantic lighting, glamour photography style, eye contact, sharp focus, attractive model, confident pose, single person, solo, perfect human anatomy, two arms, two hands, correct proportions, no extra limbs, muscular chest, abs visible, athletic masculine body, bedroom background, beach setting, luxury suite, intimate atmosphere`;
+      prompt = `attractive face, seductive expression, ${randomPose}, alluring pose, wearing ${randomClothing}, photorealistic, professional photography, soft romantic lighting, glamour photography style, eye contact, sharp focus, attractive model, confident pose, single person, solo, perfect human anatomy, two arms, two hands, correct proportions, no extra limbs, muscular chest, abs visible, athletic masculine body, bedroom background, beach setting, luxury suite, intimate atmosphere`;
     } else {
-      prompt = `attractive face, seductive expression, alluring pose, wearing ${randomClothing}, photorealistic, professional photography, soft romantic lighting, glamour photography style, eye contact, sharp focus, attractive model, confident pose, single person, solo, perfect human anatomy, two arms, two hands, correct proportions, no extra limbs, bedroom background, beach setting, luxury suite, intimate atmosphere`;
+      prompt = `attractive face, seductive expression, ${randomPose}, alluring pose, wearing ${randomClothing}, photorealistic, professional photography, soft romantic lighting, glamour photography style, eye contact, sharp focus, attractive model, confident pose, single person, solo, perfect human anatomy, two arms, two hands, correct proportions, no extra limbs, bedroom background, beach setting, luxury suite, intimate atmosphere`;
     }
   }
 
