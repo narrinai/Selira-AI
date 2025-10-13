@@ -63,7 +63,7 @@ exports.handler = async (event, context) => {
         'Prefer': 'wait'
       },
       body: JSON.stringify({
-        model: model,
+        version: model,
         input: input
       })
     });
