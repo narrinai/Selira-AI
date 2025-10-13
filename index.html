@@ -3385,7 +3385,7 @@
 
       if (tags.length > 0) {
         const tagButtons = tags.map(tag => {
-          return `<button class="mobile-tag-btn" onclick="filterByTag('${tag}')">${tag}</button>`;
+          return `<button class="mobile-tag-btn" onclick="filterByTag('${tag}')" style="background: #ce93d8; border: 1px solid #ce93d8; color: white;">${tag}</button>`;
         }).join('');
         container.innerHTML = tagButtons;
       } else {
