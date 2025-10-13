@@ -922,47 +922,95 @@
 
     // Synonym mapping for intelligent search matching
     const searchSynonyms = {
-      // Ethnicity synonyms
-      'asian': ['asian', 'chinese', 'japanese', 'korean', 'thai', 'vietnamese', 'filipino', 'indonesian', 'taiwanese', 'singaporean'],
-      'latina': ['latina', 'latin', 'hispanic', 'mexican', 'brazilian', 'colombian', 'argentinian', 'venezuelan', 'peruvian'],
-      'caucasian': ['caucasian', 'white', 'european', 'british', 'american', 'canadian', 'australian'],
-      'african': ['african', 'black', 'ebony', 'nigerian', 'kenyan', 'ethiopian'],
-      'middle eastern': ['middle eastern', 'arab', 'persian', 'turkish', 'iranian', 'lebanese', 'egyptian'],
-      'indian': ['indian', 'south asian', 'pakistani', 'bangladeshi', 'sri lankan'],
+      // Ethnicity synonyms (expanded)
+      'asian': ['asian', 'chinese', 'japanese', 'korean', 'thai', 'vietnamese', 'filipino', 'indonesian', 'taiwanese', 'singaporean', 'malaysian', 'cambodian', 'laotian', 'burmese'],
+      'latina': ['latina', 'latin', 'hispanic', 'mexican', 'brazilian', 'colombian', 'argentinian', 'venezuelan', 'peruvian', 'chilean', 'puerto rican', 'dominican', 'cuban', 'spanish'],
+      'caucasian': ['caucasian', 'white', 'european', 'british', 'american', 'canadian', 'australian', 'german', 'french', 'italian', 'russian', 'polish', 'dutch', 'scandinavian', 'nordic', 'swedish', 'norwegian', 'danish'],
+      'african': ['african', 'black', 'ebony', 'nigerian', 'kenyan', 'ethiopian', 'south african', 'ghanaian', 'ugandan'],
+      'middle eastern': ['middle eastern', 'arab', 'persian', 'turkish', 'iranian', 'lebanese', 'egyptian', 'saudi', 'israeli', 'moroccan'],
+      'indian': ['indian', 'south asian', 'pakistani', 'bangladeshi', 'sri lankan', 'desi'],
 
-      // Size/build synonyms
-      'petite': ['petite', 'petit', 'small', 'tiny', 'slim', 'slender', 'short'],
-      'curvy': ['curvy', 'thicc', 'thick', 'voluptuous', 'busty', 'chubby', 'plus size', 'bbw'],
-      'athletic': ['athletic', 'fit', 'toned', 'muscular', 'sporty'],
-      'tall': ['tall', 'long legs', 'statuesque'],
+      // Size/build synonyms (expanded)
+      'petite': ['petite', 'petit', 'small', 'tiny', 'slim', 'slender', 'short', 'skinny', 'thin', 'delicate', 'compact'],
+      'curvy': ['curvy', 'thicc', 'thick', 'voluptuous', 'busty', 'chubby', 'plus size', 'bbw', 'big boobs', 'big tits', 'huge tits', 'big ass', 'big butt', 'pawg', 'juicy', 'stacked'],
+      'athletic': ['athletic', 'fit', 'toned', 'muscular', 'sporty', 'strong', 'gym', 'fitness', 'abs', 'ripped'],
+      'tall': ['tall', 'long legs', 'statuesque', 'leggy', 'amazon'],
+      'skinny': ['skinny', 'thin', 'slim', 'slender', 'petite', 'small'],
+      'chubby': ['chubby', 'thick', 'curvy', 'bbw', 'plus size', 'voluptuous'],
 
-      // Hair color synonyms
-      'blonde': ['blonde', 'blond', 'golden', 'platinum', 'yellow hair', 'light hair'],
-      'brunette': ['brunette', 'brown hair', 'brown', 'dark brown'],
-      'redhead': ['redhead', 'red hair', 'ginger', 'auburn', 'red'],
-      'black hair': ['black hair', 'dark hair', 'raven'],
+      // Hair color synonyms (expanded)
+      'blonde': ['blonde', 'blond', 'golden', 'platinum', 'yellow hair', 'light hair', 'bleached', 'fair'],
+      'brunette': ['brunette', 'brown hair', 'brown', 'dark brown', 'chocolate'],
+      'redhead': ['redhead', 'red hair', 'ginger', 'auburn', 'red', 'carrot'],
+      'black hair': ['black hair', 'dark hair', 'raven', 'ebony hair', 'jet black'],
 
-      // Personality synonyms
-      'shy': ['shy', 'timid', 'introverted', 'reserved', 'quiet', 'bashful'],
-      'dominant': ['dominant', 'domme', 'dominatrix', 'bossy', 'controlling'],
-      'submissive': ['submissive', 'sub', 'obedient', 'docile'],
-      'flirty': ['flirty', 'flirtatious', 'seductive', 'teasing', 'playful'],
+      // Hair length/style
+      'long hair': ['long hair', 'flowing hair', 'hair down'],
+      'short hair': ['short hair', 'pixie cut', 'bob', 'cropped'],
+      'pigtails': ['pigtails', 'braids', 'ponytail', 'twin tails'],
 
-      // Age-related synonyms
-      'young': ['young', 'teen', 'teenage', 'youthful', 'college', 'student'],
-      'mature': ['mature', 'milf', 'mom', 'older', 'experienced'],
+      // Personality synonyms (expanded)
+      'shy': ['shy', 'timid', 'introverted', 'reserved', 'quiet', 'bashful', 'innocent', 'pure', 'sweet', 'cute'],
+      'dominant': ['dominant', 'domme', 'dominatrix', 'bossy', 'controlling', 'femdom', 'aggressive', 'strict', 'demanding'],
+      'submissive': ['submissive', 'sub', 'obedient', 'docile', 'slave', 'compliant', 'servant'],
+      'flirty': ['flirty', 'flirtatious', 'seductive', 'teasing', 'playful', 'naughty', 'horny', 'slutty', 'kinky'],
+      'romantic': ['romantic', 'loving', 'affectionate', 'caring', 'sweet', 'gentle', 'tender'],
+      'naughty': ['naughty', 'kinky', 'dirty', 'slutty', 'wild', 'freaky', 'nasty', 'horny', 'needy'],
 
-      // Role synonyms
-      'girlfriend': ['girlfriend', 'gf', 'romantic', 'dating'],
-      'wife': ['wife', 'married', 'spouse'],
-      'mistress': ['mistress', 'affair', 'lover'],
-      'teacher': ['teacher', 'professor', 'instructor', 'tutor'],
-      'doctor': ['doctor', 'nurse', 'medical', 'physician'],
-      'secretary': ['secretary', 'assistant', 'office'],
+      // Age-related synonyms (expanded)
+      'young': ['young', 'teen', 'teenage', 'youthful', 'college', 'student', '18+', 'schoolgirl', 'fresh', 'barely legal'],
+      'mature': ['mature', 'milf', 'mom', 'older', 'experienced', 'cougar', 'mommy', 'mother', 'step mom', 'stepmom'],
 
-      // Specific combinations
+      // Role/occupation synonyms (expanded)
+      'girlfriend': ['girlfriend', 'gf', 'romantic', 'dating', 'lover', 'partner'],
+      'wife': ['wife', 'married', 'spouse', 'wifey', 'housewife'],
+      'mistress': ['mistress', 'affair', 'lover', 'side chick', 'other woman'],
+      'teacher': ['teacher', 'professor', 'instructor', 'tutor', 'sensei', 'educator'],
+      'doctor': ['doctor', 'nurse', 'medical', 'physician', 'surgeon', 'therapist'],
+      'secretary': ['secretary', 'assistant', 'office', 'receptionist', 'clerk'],
+      'maid': ['maid', 'cleaner', 'housekeeper', 'servant', 'domestic'],
+      'schoolgirl': ['schoolgirl', 'student', 'teen', 'college girl', 'high school'],
+      'cheerleader': ['cheerleader', 'pom pom', 'sports', 'squad'],
+      'model': ['model', 'supermodel', 'fashion', 'runway', 'photoshoot'],
+      'celebrity': ['celebrity', 'famous', 'star', 'actress', 'singer'],
+      'neighbor': ['neighbor', 'girl next door', 'nextdoor', 'neighbour'],
+
+      // Relationship/scenario synonyms
+      'stepsister': ['stepsister', 'step sister', 'stepsis', 'sis'],
+      'stepmom': ['stepmom', 'step mom', 'stepmother', 'milf'],
+      'babysitter': ['babysitter', 'nanny', 'sitter', 'caregiver'],
+      'roommate': ['roommate', 'flatmate', 'housemate', 'room mate'],
+
+      // Physical attributes (expanded)
+      'busty': ['busty', 'big boobs', 'big tits', 'huge tits', 'massive tits', 'large breasts', 'big breasts', 'huge breasts', 'stacked', 'voluptuous'],
+      'small tits': ['small tits', 'small boobs', 'tiny tits', 'petite boobs', 'flat chest', 'small breasts'],
+      'big ass': ['big ass', 'big butt', 'huge ass', 'thick ass', 'fat ass', 'bubble butt', 'booty', 'pawg'],
+      'tattoo': ['tattoo', 'tattooed', 'ink', 'inked', 'body art'],
+      'piercing': ['piercing', 'pierced', 'nipple piercing', 'belly button'],
+      'glasses': ['glasses', 'nerd', 'geek', 'spectacles', 'nerdy'],
+
+      // Clothing/appearance
+      'lingerie': ['lingerie', 'underwear', 'bra', 'panties', 'lace', 'silk'],
+      'bikini': ['bikini', 'swimsuit', 'beach', 'pool', 'bathing suit'],
+      'yoga pants': ['yoga pants', 'leggings', 'tight pants', 'workout clothes'],
+      'dress': ['dress', 'gown', 'skirt', 'sundress'],
+
+      // Sexual preferences/activities
+      'anal': ['anal', 'ass fuck', 'butt', 'backdoor', 'booty'],
+      'oral': ['oral', 'blowjob', 'bj', 'sucking', 'deepthroat', 'fellatio', 'cunnilingus', 'eating out'],
+      'threesome': ['threesome', '3some', 'group', 'ffm', 'mmf', 'trio'],
+      'lesbian': ['lesbian', 'girl on girl', 'wlw', 'sapphic', 'gay'],
+      'bdsm': ['bdsm', 'bondage', 'kinky', 'rough', 'spanking', 'whipping', 'tied up'],
+
+      // Specific combinations (expanded)
       'asian petite': ['vietnamese', 'thai', 'filipino', 'japanese', 'chinese', 'korean', 'asian'],
-      'latina curvy': ['mexican', 'brazilian', 'colombian', 'latina', 'hispanic']
+      'latina curvy': ['mexican', 'brazilian', 'colombian', 'latina', 'hispanic'],
+      'blonde busty': ['blonde', 'big tits', 'big boobs', 'voluptuous'],
+      'ebony thick': ['black', 'african', 'ebony', 'thick', 'curvy'],
+      'redhead milf': ['redhead', 'ginger', 'mature', 'milf', 'mom'],
+      'asian schoolgirl': ['asian', 'japanese', 'korean', 'schoolgirl', 'student', 'teen'],
+      'latina maid': ['latina', 'mexican', 'maid', 'cleaner', 'housekeeper'],
+      'blonde cheerleader': ['blonde', 'cheerleader', 'teen', 'young', 'college']
     };
 
     // Expand search terms with synonyms
