@@ -175,7 +175,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
       prompt: enhancedPrompt,
       negative_prompt: negativePrompt,
       style: promptchanModelStyle,  // Use correct model based on companion style
-      quality: 'Ultra',
+      quality: 'Standard', // Faster than Ultra (was Ultra)
       image_size: '384x384', // Smaller = MUCH faster generation (was 512x512)
       creativity: 20, // Lower = faster (was 30)
       seed: -1,
@@ -343,7 +343,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
       prompt: directPrompt,
       negative_prompt: negativePrompt,
       style: promptchanStyle,
-      quality: 'Ultra',
+      quality: 'Standard', // Faster than Ultra (was Ultra)
       image_size: '384x384', // Smaller = MUCH faster generation
       creativity: 20, // Lower = faster generation
       seed: -1,
@@ -568,7 +568,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     prompt: enhancedPrompt,
     negative_prompt: negativePrompt,
     style: promptchanStyle,
-    quality: 'Ultra', // Fastest quality - 1 Gem
+    quality: 'Standard', // Faster than Ultra - 1 Gem
     image_size: '384x384', // Smaller = MUCH faster generation (changed from 768x512)
     creativity: 20, // Lower = faster generation (changed from 50)
     seed: -1, // Random seed
