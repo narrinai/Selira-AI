@@ -129,7 +129,7 @@ exports.handler = async function(event, context) {
       },
       body: JSON.stringify({
         fields: {
-          'Avatar URL 2': imageUrl
+          'avatar_url_2': imageUrl
         }
       })
     });

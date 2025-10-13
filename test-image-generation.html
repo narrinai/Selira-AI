@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Second Image Generation</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #0a0a0a;
+      color: #fff;
+    }
+
+    h1 {
+      color: #ce93d8;
+    }
+
+    .test-section {
+      background: #1a1a1a;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      border: 1px solid #333;
+    }
+
+    button {
+      background: #ce93d8;
+      color: #000;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: #ba68c8;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .status {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 6px;
+      background: #2a2a2a;
+    }
+
+    .error {
+      color: #ef4444;
+    }
+
+    .success {
+      color: #10b981;
+    }
+
+    .image-result {
+      margin-top: 20px;
+    }
+
+    .image-result img {
+      max-width: 100%;
+      border-radius: 12px;
+      border: 2px solid #ce93d8;
+    }
+
+    code {
+      background: #2a2a2a;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎨 Test Second Image Generation</h1>
+
+  <div class="test-section">
+    <h2>Generate Second Image for Laura</h2>
+    <p>This will generate a second image for Laura with a different pose and save it to <code>avatar_url_2</code> in Airtable.</p>
+
+    <button id="generateBtn" onclick="generateSecondImage()">
+      Generate Second Image for Laura
+    </button>
+
+    <div id="status" class="status" style="display: none;"></div>
+
+    <div id="imageResult" class="image-result" style="display: none;">
+      <h3>Generated Image:</h3>
+      <img id="generatedImage" src="" alt="Generated">
+    </div>
+  </div>
+
+  <script>
+    async function generateSecondImage() {
+      const btn = document.getElementById('generateBtn');
+      const status = document.getElementById('status');
+      const imageResult = document.getElementById('imageResult');
+      const generatedImage = document.getElementById('generatedImage');
+
+      // Disable button
+      btn.disabled = true;
+      btn.textContent = 'Generating...';
+
+      // Show status
+      status.style.display = 'block';
+      status.className = 'status';
+      status.textContent = '⏳ Generating second image for Laura...';
+
+      try {
+        const response = await fetch('/.netlify/functions/generate-companion-second-image', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            companionSlug: 'laura-1759918822012'
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to generate image');
+        }
+
+        console.log('✅ Success:', data);
+
+        // Show success
+        status.className = 'status success';
+        status.innerHTML = `
+          ✅ Success!<br>
+          Companion: ${data.companionName}<br>
+          Censored: ${data.censored}<br>
+          Image URL: <code>${data.imageUrl}</code>
+        `;
+
+        // Show image
+        imageResult.style.display = 'block';
+        generatedImage.src = data.imageUrl;
+
+      } catch (error) {
+        console.error('❌ Error:', error);
+        status.className = 'status error';
+        status.textContent = `❌ Error: ${error.message}`;
+        imageResult.style.display = 'none';
+      } finally {
+        // Re-enable button
+        btn.disabled = false;
+        btn.textContent = 'Generate Second Image for Laura';
+      }
+    }
+  </script>
+</body>
+</html>
