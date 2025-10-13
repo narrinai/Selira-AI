@@ -796,6 +796,55 @@
       filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
     }
 
+    /* Mobile optimizations for deal card */
+    @media (max-width: 768px) {
+      .deal-card-content {
+        padding: 24px 16px;
+      }
+
+      .deal-badge {
+        font-size: 10px;
+        padding: 5px 12px;
+        margin-bottom: 12px;
+      }
+
+      .deal-percentage {
+        font-size: 36px;
+        margin-bottom: 6px;
+      }
+
+      .deal-title {
+        font-size: 20px;
+        margin-bottom: 10px;
+      }
+
+      .deal-description {
+        font-size: 13px;
+        margin-bottom: 16px;
+        padding: 0 10px;
+      }
+
+      .deal-cta {
+        padding: 10px 20px;
+        font-size: 13px;
+      }
+
+      .deal-payment-icons {
+        gap: 10px;
+        margin-top: 14px;
+        flex-wrap: wrap;
+      }
+
+      .payment-method {
+        font-size: 11px;
+        padding: 5px 12px;
+      }
+
+      .payment-icon-img {
+        height: 16px;
+      }
+    }
+
     /* Hide mobile header on desktop by default */
     .mobile-header-container {
       display: none;
