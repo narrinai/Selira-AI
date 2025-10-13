@@ -165,14 +165,11 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
 
     console.log(`✨ [${requestId}] ENHANCED explicit prompt:`, enhancedPrompt);
 
-    // CRITICAL: Add NSFW enhancement to pre-enhanced prompts to ensure genitals are visible
-    // The chat.html enhanced prompts are detailed but need explicit NSFW keywords for Promptchan
-    const nsfwBoost = sex === 'male'
-      ? ', pornographic, XXX adult content, explicit nudity, genitals fully exposed and visible, hard erect penis visible, naked male body, full frontal nudity, aroused, intimate'
-      : ', pornographic, XXX adult content, explicit nudity, genitals fully exposed and visible, pussy clearly visible, breasts exposed, nipples visible, naked female body, full frontal nudity, aroused, intimate, legs spread';
+    // Simplified NSFW boost - shorter to prevent Promptchan timeout
+    const nsfwBoost = ', pornographic, explicit nudity, NSFW';
 
     enhancedPrompt += nsfwBoost;
-    console.log(`🔥 [${requestId}] Added NSFW boost for maximum explicitness:`, nsfwBoost);
+    console.log(`🔥 [${requestId}] Added minimal NSFW boost:`, nsfwBoost);
 
     const promptchanRequest = {
       prompt: enhancedPrompt,
