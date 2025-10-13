@@ -5562,47 +5562,51 @@ Please be thorough and include important details from our conversations.`;
 
     // ===== MOBILE FILTER DROPDOWNS =====
     function toggleMobileContentDropdown() {
+      console.log('🔄 Toggle Content Dropdown');
       const menu = document.getElementById('mobileContentMenu');
       const sexMenu = document.getElementById('mobileSexMenu');
       const styleMenu = document.getElementById('mobileStyleMenu');
       const tagMenu = document.getElementById('mobileTagMenu');
-      sexMenu.classList.remove('show');
-      styleMenu.classList.remove('show');
-      tagMenu.classList.remove('show');
-      menu.classList.toggle('show');
+      if (sexMenu) sexMenu.classList.remove('show');
+      if (styleMenu) styleMenu.classList.remove('show');
+      if (tagMenu) tagMenu.classList.remove('show');
+      if (menu) menu.classList.toggle('show');
     }
 
     function toggleMobileStyleDropdown() {
+      console.log('🔄 Toggle Style Dropdown');
       const menu = document.getElementById('mobileStyleMenu');
       const contentMenu = document.getElementById('mobileContentMenu');
       const sexMenu = document.getElementById('mobileSexMenu');
       const tagMenu = document.getElementById('mobileTagMenu');
-      contentMenu.classList.remove('show');
-      sexMenu.classList.remove('show');
-      tagMenu.classList.remove('show');
-      menu.classList.toggle('show');
+      if (contentMenu) contentMenu.classList.remove('show');
+      if (sexMenu) sexMenu.classList.remove('show');
+      if (tagMenu) tagMenu.classList.remove('show');
+      if (menu) menu.classList.toggle('show');
     }
 
     function toggleMobileSexDropdown() {
+      console.log('🔄 Toggle Sex Dropdown');
       const menu = document.getElementById('mobileSexMenu');
       const contentMenu = document.getElementById('mobileContentMenu');
       const styleMenu = document.getElementById('mobileStyleMenu');
       const tagMenu = document.getElementById('mobileTagMenu');
-      contentMenu.classList.remove('show');
-      styleMenu.classList.remove('show');
-      tagMenu.classList.remove('show');
-      menu.classList.toggle('show');
+      if (contentMenu) contentMenu.classList.remove('show');
+      if (styleMenu) styleMenu.classList.remove('show');
+      if (tagMenu) tagMenu.classList.remove('show');
+      if (menu) menu.classList.toggle('show');
     }
 
     function toggleMobileTagDropdown() {
+      console.log('🔄 Toggle Tag Dropdown');
       const menu = document.getElementById('mobileTagMenu');
       const contentMenu = document.getElementById('mobileContentMenu');
       const styleMenu = document.getElementById('mobileStyleMenu');
       const sexMenu = document.getElementById('mobileSexMenu');
-      contentMenu.classList.remove('show');
-      styleMenu.classList.remove('show');
-      sexMenu.classList.remove('show');
-      menu.classList.toggle('show');
+      if (contentMenu) contentMenu.classList.remove('show');
+      if (styleMenu) styleMenu.classList.remove('show');
+      if (sexMenu) sexMenu.classList.remove('show');
+      if (menu) menu.classList.toggle('show');
     }
 
     function selectMobileContent(content) {
