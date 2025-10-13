@@ -796,11 +796,10 @@ async function generateWithReliberate(body, requestId, corsHeaders, email, auth0
     // Reliberate needs clear subject focus: man AND woman together, not just body parts
     let cleanedPrompt = sanitizedPrompt;
 
-    // DON'T replace the prompt - use it as-is like the test page does!
-    // Just add appearance traits at the beginning
-    // Skip randomBg for sex scenes - let the model decide the background naturally
-    fullPrompt = `${appearance}, ${sanitizedPrompt}, photorealistic, warm lighting, high quality`;
-    console.log(`✅ [${requestId}] Direct sex prompt (using original):`, fullPrompt);
+    // DON'T replace the prompt - but ADD "man and woman" to prevent futanari
+    // Reliberate needs explicit "man and woman together" or it creates woman with penis
+    fullPrompt = `man and woman together, ${appearance}, ${sanitizedPrompt}, two people, couple having sex, photorealistic, warm lighting, high quality`;
+    console.log(`✅ [${requestId}] Direct sex prompt (with man+woman):`, fullPrompt);
   } else {
     // Regular NSFW prompt
     console.log(`📝 [${requestId}] Regular NSFW prompt`);
