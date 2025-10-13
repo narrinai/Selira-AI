@@ -798,6 +798,10 @@
 
     /* Mobile optimizations for deal card - much more compact */
     @media (max-width: 768px) {
+      .deal-card {
+        background: linear-gradient(135deg, #ce93d8 0%, #ba68c8 100%) !important;
+      }
+
       .deal-card-content {
         padding: 20px 12px;
       }
@@ -813,11 +817,14 @@
 
       .deal-title {
         font-size: 18px;
-        margin-bottom: 0;
+        margin-bottom: 4px;
       }
 
       .deal-description {
-        display: none; /* Hide description on mobile */
+        display: block !important; /* Show on mobile */
+        font-size: 13px;
+        opacity: 0.95;
+        margin-bottom: 0;
       }
 
       .deal-cta {
@@ -2815,7 +2822,7 @@
                 <div class="deal-badge">LIMITED TIME</div>
                 <div class="deal-percentage">40% OFF</div>
                 <div class="deal-title">Winter Deal</div>
-                <div class="deal-description">Unlock unlimited AI image generation</div>
+                <div class="deal-description">Unlimited Image Gen</div>
                 <div class="deal-cta">
                   <span>View Plans</span>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
