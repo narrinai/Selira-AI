@@ -15,7 +15,7 @@ exports.handler = async (event, context) => {
     const { model, prompt, width, height, num_inference_steps, guidance_scale, seed, output_format } = requestData;
 
     // Get API key from environment variables
-    const apiKey = process.env.REPLICATE_API_TOKEN;
+    const apiKey = process.env.REPLICATE_API_TOKEN_SELIRA;
 
     if (!apiKey) {
       console.error('❌ Replicate API key not configured');
