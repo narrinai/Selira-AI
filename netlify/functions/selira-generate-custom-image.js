@@ -1,6 +1,6 @@
 // Custom image generation for chat - accepts user prompts
-// Routes between Replicate (censored) and Promptchan (uncensored) based on user preference
-// v1.2 - Enhanced uncensored detection
+// Routes between Replicate Flux Dev (censored) and Replicate Reliberate v3 (uncensored)
+// v2.0 - Switched from Promptchan to Reliberate v3 for uncensored (faster, better explicit content)
 
 const fetch = require('node-fetch');
 
@@ -657,6 +657,299 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   }
 }
 
+// RELIBERATE V3 UNCENSORED IMAGE GENERATION FUNCTION (Replicate)
+async function generateWithReliberate(body, requestId, corsHeaders, email, auth0_id) {
+  const { customPrompt, characterName, sex, ethnicity, hairLength, hairColor, style, shotType, source, uncensored, bodyType, breastSize, age } = body;
+
+  console.log(`🎨 [${requestId}] Generating with Reliberate v3 (uncensored Replicate model)`);
+  console.log(`🎨 [${requestId}] Style parameter received:`, style);
+  console.log(`🎨 [${requestId}] Shot type parameter received:`, shotType);
+
+  const REPLICATE_API_TOKEN = process.env.REPLICATE_API_TOKEN_SELIRA || process.env.REPLICATE_API_TOKEN;
+
+  if (!REPLICATE_API_TOKEN) {
+    console.error(`❌ [${requestId}] Replicate API key not configured`);
+    return {
+      statusCode: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ error: 'Replicate API not configured' })
+    };
+  }
+
+  // Build enhanced NSFW prompt based on character traits (same as Promptchan)
+  const genderDesc = sex === 'male' ? 'handsome man' : 'beautiful woman';
+
+  const ethnicityMap = {
+    'white': 'Caucasian',
+    'black': 'African American',
+    'indian': 'South Asian',
+    'middle-east': 'Middle Eastern',
+    'hispanic': 'Hispanic',
+    'korean': 'Korean',
+    'chinese': 'Chinese',
+    'japanese': 'Japanese',
+    'vietnamese': 'Vietnamese'
+  };
+
+  const hairLengthMap = {
+    'bald': 'bald',
+    'short': 'short hair',
+    'medium': 'medium length hair',
+    'long': 'long hair'
+  };
+
+  const hairColorMap = {
+    'brown': 'brown hair',
+    'black': 'black hair',
+    'blonde': 'blonde hair',
+    'red': 'red hair',
+    'auburn': 'auburn hair',
+    'gray': 'gray hair',
+    'white': 'white hair',
+    'purple': 'purple hair',
+    'pink': 'pink hair',
+    'blue': 'blue hair',
+    'green': 'green hair'
+  };
+
+  const ethnicityDesc = ethnicityMap[ethnicity] || '';
+  const hairLengthDesc = hairLength === 'bald' ? 'bald' : hairLengthMap[hairLength] || 'styled hair';
+  const hairColorDesc = hairLength === 'bald' ? '' : (hairColorMap[hairColor] || 'brown hair');
+
+  // Build appearance description
+  const appearance = [genderDesc, ethnicityDesc, hairColorDesc, hairLengthDesc].filter(Boolean).join(', ');
+
+  // Use same prompt processing as Promptchan
+  const sanitizedPrompt = customPrompt.trim();
+  const promptLower = customPrompt.toLowerCase();
+
+  // Check for explicit sex keywords
+  const isUncensoredExplicit = (source === 'chat' || source === 'image-generator') && (
+    promptLower.includes('blowjob') ||
+    promptLower.includes('fucking') ||
+    promptLower.includes('penetrat') ||
+    promptLower.includes('sucking cock') ||
+    promptLower.includes('cock in mouth') ||
+    promptLower.includes('dick in pussy') ||
+    promptLower.includes('threesome') ||
+    promptLower.includes('anal sex') ||
+    promptLower.includes('double penetration') ||
+    promptLower.includes('eating out') ||
+    promptLower.includes('eaten out') ||
+    promptLower.includes('69 position') ||
+    promptLower.includes('oral sex') ||
+    promptLower.includes('pussy licking') ||
+    promptLower.includes('cunnilingus') ||
+    promptLower.includes('rimming') ||
+    promptLower.includes('ass licking') ||
+    promptLower.includes('titfuck') ||
+    promptLower.includes('tit fuck') ||
+    promptLower.includes('handjob') ||
+    promptLower.includes('fingering') ||
+    promptLower.includes('pussy fingering') ||
+    promptLower.includes('doggy style') ||
+    promptLower.includes('cowgirl') ||
+    promptLower.includes('reverse cowgirl') ||
+    promptLower.includes('missionary') ||
+    promptLower.includes('spoon') ||
+    promptLower.includes('spooning') ||
+    promptLower.includes('bent over') ||
+    promptLower.includes('legs spread') ||
+    promptLower.includes('spread eagle') ||
+    promptLower.includes('on knees') ||
+    promptLower.includes('spitroast') ||
+    promptLower.includes('gangbang') ||
+    promptLower.includes('cumshot') ||
+    promptLower.includes('facial') ||
+    promptLower.includes('creampie')
+  );
+
+  let fullPrompt;
+
+  if (isUncensoredExplicit) {
+    console.log(`🔥 [${requestId}] Detected EXPLICIT sex prompt - using direct format`);
+
+    // Random warm backgrounds (same as censored version)
+    const randomBackgrounds = [
+      'luxury bedroom with silk sheets, warm golden lighting, candles, rose petals, romantic intimate atmosphere',
+      'five-star hotel suite bedroom, floor-to-ceiling windows, city lights, king size bed, luxury decor',
+      'private jacuzzi suite, steam rising, warm water, candles, mood lighting, intimate spa atmosphere',
+      'tropical beach villa bedroom, ocean view, sunset lighting, open curtains, vacation paradise vibes',
+      'modern penthouse bedroom, exposed brick, designer furniture, warm ambient lighting, urban luxury',
+      'romantic cabin bedroom, fireplace crackling, cozy bed, warm glow, intimate mountain retreat',
+      'luxury yacht master bedroom, panoramic ocean views, white linens, nautical elegance, private luxury',
+      'boutique hotel suite, four-poster bed, silk curtains, chandelier, warm romantic lighting, opulent',
+      'desert resort bedroom, moroccan decor, colorful pillows, lantern lighting, exotic romantic atmosphere',
+      'beachfront bungalow bedroom, tropical breeze, gauze curtains, sunset glow, paradise island vibes',
+      'upscale loft bedroom, modern art, designer bed, floor lamps, industrial chic luxury',
+      'villa infinity pool bedroom, waterfront view, tropical paradise, warm lighting, luxury resort',
+      'countryside estate bedroom, vintage elegance, canopy bed, warm firelight, classic romance',
+      'rooftop suite bedroom, city skyline, neon lights reflecting, modern luxury, urban night vibes',
+      'private spa bedroom, massage table, essential oils, candles, zen atmosphere, sensual wellness',
+      'contemporary bedroom, minimalist luxury, designer furniture, natural light, sophisticated intimate space',
+      'tropical rainforest suite, jungle view, natural sounds, earthy tones, exotic paradise bedroom',
+      'parisian apartment bedroom, classic elegance, ornate details, warm lighting, romantic french vibes'
+    ];
+    const randomBg = randomBackgrounds[Math.floor(Math.random() * randomBackgrounds.length)];
+
+    fullPrompt = `${appearance}, ${sanitizedPrompt}, photorealistic, professional photography, explicit hardcore sex, porn scene, ${randomBg}`;
+    console.log(`✅ [${requestId}] Direct sex prompt:`, fullPrompt);
+  } else {
+    // Regular NSFW prompt
+    console.log(`📝 [${requestId}] Regular NSFW prompt`);
+
+    // Check if prompt already has background
+    const hasBackground = promptLower.includes('bedroom') ||
+                         promptLower.includes('hotel') ||
+                         promptLower.includes('beach') ||
+                         promptLower.includes('background') ||
+                         promptLower.includes('room') ||
+                         promptLower.includes('setting');
+
+    let contextualEnhancement = '';
+    if (!hasBackground) {
+      const randomBackgrounds = [
+        ', luxury bedroom with silk sheets, warm golden lighting, candles, rose petals, romantic intimate atmosphere',
+        ', five-star hotel suite bedroom, floor-to-ceiling windows, city lights, king size bed, luxury decor',
+        ', private jacuzzi suite, steam rising, warm water, candles, mood lighting, intimate spa atmosphere',
+        ', tropical beach villa bedroom, ocean view, sunset lighting, open curtains, vacation paradise vibes',
+        ', modern penthouse bedroom, exposed brick, designer furniture, warm ambient lighting, urban luxury',
+        ', romantic cabin bedroom, fireplace crackling, cozy bed, warm glow, intimate mountain retreat',
+        ', luxury yacht master bedroom, panoramic ocean views, white linens, nautical elegance, private luxury',
+        ', boutique hotel suite, four-poster bed, silk curtains, chandelier, warm romantic lighting, opulent',
+        ', desert resort bedroom, moroccan decor, colorful pillows, lantern lighting, exotic romantic atmosphere',
+        ', beachfront bungalow bedroom, tropical breeze, gauze curtains, sunset glow, paradise island vibes'
+      ];
+      const randomBg = randomBackgrounds[Math.floor(Math.random() * randomBackgrounds.length)];
+      contextualEnhancement = randomBg;
+    }
+
+    // NSFW enhancement
+    let nsfwEnhancement = sex === 'male'
+      ? ', naked man, big hard erect penis visible, genitals exposed, muscular body, explicit male nudity, pornographic, full frontal nudity, aroused, intimate'
+      : ', naked woman, huge natural breasts exposed, wet glistening pussy visible, pussy lips prominent, genitals exposed, legs spread, explicit female nudity, pornographic, full frontal nudity, aroused, intimate';
+
+    // Shot type
+    const isFullBody = shotType === 'fullbody' || promptLower.includes('full body');
+    const shotDesc = isFullBody ? 'full body photograph' : 'portrait photograph';
+
+    fullPrompt = `${appearance}, ${shotDesc}, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}, photorealistic, ultra realistic, professional photography, detailed`;
+  }
+
+  console.log(`✨ [${requestId}] Reliberate v3 prompt:`, fullPrompt);
+
+  // Reliberate v3 model version hash
+  const RELIBERATE_V3_MODEL = 'd70438fcb9bb7adb8d6e59cf236f754be0b77625e984b8595d1af02cdf034b29';
+
+  try {
+    console.log(`🎲 [${requestId}] Calling Replicate API with Reliberate v3...`);
+
+    // Create prediction
+    const response = await fetch('https://api.replicate.com/v1/predictions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Token ${REPLICATE_API_TOKEN}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'wait'
+      },
+      body: JSON.stringify({
+        version: RELIBERATE_V3_MODEL,
+        input: {
+          prompt: fullPrompt,
+          negative_prompt: 'clothes, clothing, dressed, covered, censored, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white',
+          width: 512,
+          height: 728,  // Reliberate v3 default
+          num_inference_steps: 20,
+          guidance_scale: 7.5,
+          scheduler: 'Euler',
+          seed: -1
+        }
+      })
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`❌ [${requestId}] Replicate API error:`, errorText);
+      throw new Error(`Replicate API error: ${response.status}`);
+    }
+
+    let prediction = await response.json();
+    console.log(`📊 [${requestId}] Prediction created:`, prediction.id);
+
+    // Poll for completion (max 60 seconds)
+    let attempts = 0;
+    const maxAttempts = 60;
+
+    while (prediction.status !== 'succeeded' && prediction.status !== 'failed' && attempts < maxAttempts) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      attempts++;
+
+      const pollResponse = await fetch(`https://api.replicate.com/v1/predictions/${prediction.id}`, {
+        headers: {
+          'Authorization': `Token ${REPLICATE_API_TOKEN}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      prediction = await pollResponse.json();
+      console.log(`⏳ [${requestId}] Status [${attempts}/${maxAttempts}]:`, prediction.status);
+
+      if (prediction.status === 'succeeded') {
+        break;
+      }
+    }
+
+    if (prediction.status !== 'succeeded') {
+      throw new Error(`Generation failed or timed out: ${prediction.status}`);
+    }
+
+    const imageUrl = Array.isArray(prediction.output) ? prediction.output[0] : prediction.output;
+    console.log(`✅ [${requestId}] Reliberate v3 image generated:`, imageUrl);
+
+    // Increment usage counter
+    if ((source === 'chat' || source === 'image-generator') && (email || auth0_id)) {
+      console.log(`📈 [${requestId}] Incrementing usage counter for ${source} (Reliberate)`);
+      try {
+        const incrementResponse = await fetch(`${process.env.NETLIFY_FUNCTIONS_URL || 'https://selira.ai/.netlify/functions'}/selira-increment-image-usage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: auth0_id })
+        });
+
+        if (incrementResponse.ok) {
+          console.log(`✅ [${requestId}] Usage incremented successfully (Reliberate)`);
+        }
+      } catch (err) {
+        console.error(`❌ [${requestId}] Error incrementing usage:`, err.message);
+      }
+    }
+
+    return {
+      statusCode: 200,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        success: true,
+        imageUrl: imageUrl,
+        fullPrompt: fullPrompt,
+        customPrompt: customPrompt,
+        isAnimeStyle: false,
+        provider: 'reliberate-v3'
+      })
+    };
+
+  } catch (error) {
+    console.error(`❌ [${requestId}] Reliberate v3 generation error:`, error);
+    return {
+      statusCode: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        error: 'Reliberate v3 image generation failed',
+        details: error.message
+      })
+    };
+  }
+}
+
 exports.handler = async (event, context) => {
   const requestId = Math.random().toString(36).substring(7);
   console.log(`🎨 [${requestId}] generate-custom-image function called`);
@@ -795,25 +1088,25 @@ exports.handler = async (event, context) => {
       auth0_id: auth0_id ? auth0_id.substring(0, 15) + '...' : 'none'
     });
 
-    // ROUTE TO PROMPTCHAN FOR UNCENSORED IMAGES WITH REPLICATE FALLBACK
+    // ROUTE TO RELIBERATE V3 FOR UNCENSORED IMAGES WITH REPLICATE FLUX DEV FALLBACK
     console.log(`🔍 [${requestId}] Uncensored check: uncensored=${uncensored}, type=${typeof uncensored}, === true: ${uncensored === true}, == true: ${uncensored == true}`);
     if (uncensored === true) {
-      console.log(`🔓 [${requestId}] Uncensored mode - routing to Promptchan API`);
-      const promptchanResult = await generateWithPromptchan(body, requestId, corsHeaders, email, auth0_id);
+      console.log(`🔓 [${requestId}] Uncensored mode - routing to Reliberate v3 (Replicate)`);
+      const reliberateResult = await generateWithReliberate(body, requestId, corsHeaders, email, auth0_id);
 
-      // If Promptchan fails (500 error), fall back to Replicate
-      if (promptchanResult.statusCode === 500) {
-        console.log(`⚠️ [${requestId}] Promptchan failed, falling back to Replicate (censored)`);
+      // If Reliberate fails (500 error), fall back to Replicate Flux Dev (censored)
+      if (reliberateResult.statusCode === 500) {
+        console.log(`⚠️ [${requestId}] Reliberate v3 failed, falling back to Replicate Flux Dev (censored)`);
         // Continue to Replicate below (don't return, let it fall through)
       } else {
-        // Promptchan succeeded, return the result
-        return promptchanResult;
+        // Reliberate succeeded, return the result
+        return reliberateResult;
       }
     }
 
-    // Replicate (censored) - either explicitly requested or fallback from Promptchan failure
-    console.log(`🔒 [${requestId}] Using Replicate API ${uncensored ? '(fallback from Promptchan)' : '(censored mode)'}`);
-    
+    // Replicate Flux Dev (censored) - either explicitly requested or fallback from Reliberate failure
+    console.log(`🔒 [${requestId}] Using Replicate Flux Dev ${uncensored ? '(fallback from Reliberate v3)' : '(censored mode)'}`);
+
     if (!customPrompt) {
       return {
         statusCode: 400,
