@@ -238,22 +238,36 @@ async function generateWithReplicate({ sex, ethnicity, hairLength, hairColor, co
 
   const fullAppearance = detailedAppearance.join(', ');
 
-  // Different pose for second image - variety but professional
+  // Colorful, atmospheric backgrounds (match create flow style)
+  const backgrounds = [
+    'colorful bokeh background, soft ambient lighting, warm colors',
+    'natural outdoor setting, soft focus background, golden hour lighting',
+    'modern interior with colorful decor, soft lighting, vibrant atmosphere',
+    'cozy bedroom setting, fairy lights, warm ambient glow',
+    'stylish living room, soft pastel colors, natural window light',
+    'trendy cafe background, blurred colorful surroundings, natural lighting',
+    'garden setting, flowers in background, soft natural light',
+    'urban rooftop, city lights bokeh, sunset colors'
+  ];
+
+  const randomBackground = backgrounds[Math.floor(Math.random() * backgrounds.length)];
+
+  // Different poses for variety
   const poses = [
-    'sitting on modern chair, legs crossed elegantly, warm smile toward camera',
-    'leaning casually against studio wall, hand through hair, friendly expression',
-    'standing confidently, hands clasped in front, professional pose',
-    'sitting on edge of bed, hands on knees, engaging gaze',
-    'relaxed pose on white couch, leaning on armrest, natural smile'
+    'sitting casually, looking at camera with warm smile',
+    'leaning against wall, relaxed pose, friendly expression',
+    'standing naturally, hand in hair, confident look',
+    'sitting on edge of furniture, leaning forward slightly',
+    'relaxed pose, natural position, engaging smile'
   ];
 
   const randomPose = poses[Math.floor(Math.random() * poses.length)];
 
-  // Build FLUX-style prompt (same format as custom image generation)
+  // Build FLUX-style prompt with colorful background
   const hairPart = hairLength === 'bald' ? hairLengthDesc : `${hairColorDesc}, ${hairLengthDesc}`;
   const characterAppearance = `${hairPart}, ${genderDesc}, ${ethnicityDesc}`;
 
-  const prompt = `REALISTIC PHOTOGRAPHY, portrait photograph of ${characterAppearance}, ${randomPose}, elegant clothing, ultra realistic, photorealistic, real human photo, actual photograph, professional photography, realistic skin texture, realistic facial features, realistic proportions, high quality photo, professional studio lighting, clean background, single real person, perfect human anatomy, NO anime, NO cartoon, NO illustration, NO drawing, NO manga, NO cel shading, NO stylized art, real photograph only`;
+  const prompt = `REALISTIC PHOTOGRAPHY, portrait photograph of ${characterAppearance}, ${randomPose}, casual elegant clothing, ${randomBackground}, ultra realistic, photorealistic, real human photo, actual photograph, professional photography, realistic skin texture, realistic facial features, realistic proportions, high quality photo, vibrant colors, atmospheric lighting, single real person, perfect human anatomy, NO anime, NO cartoon, NO illustration, NO drawing, NO manga, NO cel shading, NO stylized art, real photograph only`;
 
   console.log('📝 Prompt:', prompt);
 
