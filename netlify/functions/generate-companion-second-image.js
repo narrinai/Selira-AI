@@ -38,13 +38,15 @@ exports.handler = async function(event, context) {
 
     console.log(`🎨 Generating second image for companion: ${companionSlug}`);
 
-    // 1. Fetch companion data from Airtable
-    const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN || process.env.AIRTABLE_API_KEY;
-    const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
+    // 1. Fetch companion data from Airtable - use Selira-specific variables
+    const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA;
+    const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA;
 
     if (!AIRTABLE_TOKEN || !AIRTABLE_BASE_ID) {
       throw new Error('Airtable credentials not configured');
     }
+
+    console.log('✅ Using Selira Airtable credentials');
 
     // Search for companion by slug
     const searchUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters?filterByFormula={Slug}='${companionSlug}'`;
