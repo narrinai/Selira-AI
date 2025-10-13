@@ -792,7 +792,20 @@ async function generateWithReliberate(body, requestId, corsHeaders, email, auth0
     ];
     const randomBg = randomBackgrounds[Math.floor(Math.random() * randomBackgrounds.length)];
 
-    fullPrompt = `${appearance}, ${sanitizedPrompt}, photorealistic, professional photography, explicit hardcore sex, porn scene, ${randomBg}`;
+    // Clean and simplify the prompt to avoid "floating penis" issues
+    // Reliberate needs clear subject focus: man AND woman together, not just body parts
+    let cleanedPrompt = sanitizedPrompt;
+
+    // For blowjob/oral scenes: emphasize TWO people interacting, not just isolated genitals
+    if (promptLower.includes('blowjob') || promptLower.includes('oral sex') || promptLower.includes('sucking')) {
+      cleanedPrompt = `man and woman together, intimate couple, ${sanitizedPrompt}, man's body visible, woman performing oral sex on man, two people in frame, couple having sex`;
+    }
+    // For penetration scenes: emphasize the couple, both bodies
+    else if (promptLower.includes('fucking') || promptLower.includes('penetrat') || promptLower.includes('doggy') || promptLower.includes('cowgirl') || promptLower.includes('missionary')) {
+      cleanedPrompt = `man and woman having sex, intimate couple, ${sanitizedPrompt}, both bodies visible, man penetrating woman, two people in frame, couple making love`;
+    }
+
+    fullPrompt = `${appearance}, ${cleanedPrompt}, photorealistic, professional photography, explicit sex scene, two people, couple, porn photography, ${randomBg}`;
     console.log(`✅ [${requestId}] Direct sex prompt:`, fullPrompt);
   } else {
     // Regular NSFW prompt
