@@ -169,11 +169,13 @@ exports.handler = async function(event, context) {
 async function generateWithReplicate({ sex, ethnicity, hairLength, hairColor, companionType }) {
   console.log('🎨 Generating with Replicate (censored)...');
 
-  const REPLICATE_API_TOKEN = process.env.REPLICATE_API_TOKEN;
+  const REPLICATE_API_TOKEN = process.env.REPLICATE_API_TOKEN_SELIRA || process.env.REPLICATE_API_TOKEN;
 
   if (!REPLICATE_API_TOKEN) {
     throw new Error('Replicate API token not configured');
   }
+
+  console.log('✅ Using Replicate API token');
 
   // Build appearance description
   const genderDesc = sex === 'male' ? 'handsome man' : 'beautiful woman';
