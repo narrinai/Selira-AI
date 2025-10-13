@@ -412,8 +412,14 @@
             const promptField = document.getElementById('prompt');
             let promptParts = [];
 
+            // Always add base description for woman
+            promptParts.push('beautiful woman, female, solo');
+
             if (selectedPose) promptParts.push(selectedPose);
             if (selectedOutfit) promptParts.push(selectedOutfit);
+
+            // Add quality tags
+            promptParts.push('high quality, detailed, 4k');
 
             if (promptParts.length > 0) {
                 promptField.value = promptParts.join(', ');
