@@ -39,8 +39,8 @@ exports.handler = async (event, context) => {
     // Build input object - using Flux model parameter names
     const input = {
       prompt: prompt,
-      width: width || 1024,
-      height: height || 1024,
+      width: width || 512,
+      height: height || 512,
       steps: num_inference_steps || 20,
       cfg_scale: guidance_scale || 5,
       scheduler: 'default',
