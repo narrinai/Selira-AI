@@ -344,8 +344,8 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
       negative_prompt: negativePrompt,
       style: promptchanStyle,
       quality: 'Ultra',
-      image_size: '512x512', // Square format - FASTEST generation
-      creativity: 30, // Lower creativity for faster generation
+      image_size: '384x384', // Smaller = MUCH faster generation
+      creativity: 20, // Lower = faster generation
       seed: -1,
       filter: 'Default',
       emotion: 'Default',
@@ -569,8 +569,8 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     negative_prompt: negativePrompt,
     style: promptchanStyle,
     quality: 'Ultra', // Fastest quality - 1 Gem
-    image_size: '512x512', // Square format - FASTEST generation (changed from 768x512)
-    creativity: 30, // Lower creativity for faster generation (changed from 50)
+    image_size: '384x384', // Smaller = MUCH faster generation (changed from 768x512)
+    creativity: 20, // Lower = faster generation (changed from 50)
     seed: -1, // Random seed
     filter: promptchanFilter, // Default filter
     emotion: 'Default',
