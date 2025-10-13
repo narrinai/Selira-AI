@@ -36,22 +36,25 @@ exports.handler = async (event, context) => {
     console.log('Model:', model);
     console.log('Prompt:', prompt);
 
-    // Build input object
+    // Build input object - using Flux model parameter names
     const input = {
       prompt: prompt,
       width: width || 1024,
       height: height || 1024,
-      num_inference_steps: num_inference_steps || 28,
-      guidance_scale: guidance_scale || 3.5,
-      output_format: output_format || 'webp'
+      steps: num_inference_steps || 20,
+      cfg_scale: guidance_scale || 3.5,
+      output_format: output_format || 'webp',
+      scheduler: 'default'
     };
 
     // Add seed if provided
     if (seed !== undefined && seed !== null && seed !== '') {
       input.seed = parseInt(seed);
+    } else {
+      input.seed = -1; // Random seed
     }
 
-    // Create prediction
+    // Create prediction using model name in owner/name format
     const response = await fetch('https://api.replicate.com/v1/predictions', {
       method: 'POST',
       headers: {
@@ -60,7 +63,7 @@ exports.handler = async (event, context) => {
         'Prefer': 'wait'
       },
       body: JSON.stringify({
-        version: model,
+        model: model,
         input: input
       })
     });
