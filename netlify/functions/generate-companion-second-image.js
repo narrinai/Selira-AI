@@ -76,15 +76,16 @@ exports.handler = async function(event, context) {
     const fields = companion.fields;
 
     console.log(`✅ Found companion: ${fields.Name}`);
-    console.log(`📋 Content filter: ${fields['Content Filter']}`);
+    console.log(`📋 Content filter:`, fields.content_filter);
 
-    // 2. Determine if censored or uncensored
-    const isCensored = fields['Content Filter'] === 'Censored';
-    const companionType = fields['Companion Type'] || 'realistic';
-    const sex = fields.Sex || 'female';
-    const ethnicity = fields.Ethnicity || 'white';
-    const hairLength = fields['Hair Length'] || 'long';
-    const hairColor = fields['Hair Color'] || 'brown';
+    // 2. Determine if censored or uncensored - check both field name variations
+    const contentFilter = fields.content_filter || fields['Content Filter'] || 'Censored';
+    const isCensored = contentFilter === 'Censored';
+    const companionType = fields.companion_type || fields['Companion Type'] || 'realistic';
+    const sex = fields.sex || fields.Sex || 'female';
+    const ethnicity = fields.ethnicity || fields.Ethnicity || 'white';
+    const hairLength = fields.hair_length || fields['Hair Length'] || 'long';
+    const hairColor = fields.hair_color || fields['Hair Color'] || 'brown';
 
     console.log(`🎨 Companion details:`, {
       type: companionType,
