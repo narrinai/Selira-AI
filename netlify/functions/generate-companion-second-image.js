@@ -213,22 +213,45 @@ async function generateWithReplicate({ sex, ethnicity, hairLength, hairColor, co
   const hairLengthDesc = hairLength === 'bald' ? 'bald' : hairLengthMap[hairLength] || 'styled hair';
   const hairColorDesc = hairLength === 'bald' ? '' : (hairColorMap[hairColor] || 'brown hair');
 
-  const appearance = [genderDesc, ethnicityDesc, hairColorDesc, hairLengthDesc].filter(Boolean).join(', ');
+  // Build more detailed appearance description for consistency with first image
+  const detailedAppearance = [];
 
-  // Different pose for second image - more dynamic/seductive
+  // Start with gender and ethnicity
+  detailedAppearance.push(genderDesc);
+  if (ethnicityDesc) {
+    detailedAppearance.push(ethnicityDesc);
+  }
+
+  // Add age descriptor
+  detailedAppearance.push('young adult');
+
+  // Add hair details (CRITICAL for consistency!)
+  if (hairColorDesc) {
+    detailedAppearance.push(hairColorDesc);
+  }
+  if (hairLengthDesc && hairLength !== 'bald') {
+    detailedAppearance.push(hairLengthDesc);
+  }
+
+  // Add attractiveness descriptor
+  detailedAppearance.push('attractive features');
+
+  const fullAppearance = detailedAppearance.join(', ');
+
+  // Different pose for second image - variety but professional
   const poses = [
-    'sitting on bed, looking at camera with sultry expression',
-    'leaning against wall, playful smile',
-    'lying on stomach, propped up on elbows, flirty gaze',
-    'standing with hand on hip, confident pose',
-    'kneeling on bed, looking over shoulder'
+    'sitting on modern chair, legs crossed elegantly, warm smile toward camera',
+    'leaning casually against studio wall, hand through hair, friendly expression',
+    'standing confidently, hands clasped in front, professional pose',
+    'sitting on edge of bed, hands on knees, engaging gaze',
+    'relaxed pose on white couch, leaning on armrest, natural smile'
   ];
 
   const randomPose = poses[Math.floor(Math.random() * poses.length)];
 
-  const prompt = `Professional photograph of ${appearance}, ${randomPose}, soft lighting, photorealistic, high quality, 8k, detailed`;
+  const prompt = `Professional studio portrait photograph of ${fullAppearance}, ${randomPose}, wearing elegant casual clothing, soft professional lighting, clean white background, photorealistic, detailed facial features, natural skin, high quality photography, 8k, sharp focus, professional headshot`;
 
-  const negativePrompt = 'ugly, deformed, noisy, blurry, distorted, out of focus, bad anatomy, extra limbs, poorly drawn face, poorly drawn hands, missing fingers, nudity, nude, low quality, watermark, text, signature';
+  const negativePrompt = 'ugly, deformed, noisy, blurry, distorted, out of focus, bad anatomy, extra limbs, poorly drawn face, poorly drawn hands, missing fingers, duplicate, disfigured, cartoon, anime, illustration, painting, drawing, nudity, nude, naked, explicit, nsfw, underwear, lingerie, low quality, watermark, text, signature, logo, username';
 
   console.log('📝 Prompt:', prompt);
 
