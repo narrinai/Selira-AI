@@ -199,13 +199,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     let promptchanResult = null;
 
     try {
-      console.log(`🎲 [${requestId}] Calling Promptchan with 20s timeout...`);
-
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => {
-        console.log(`⏱️ [${requestId}] Promptchan timeout after 20s - will fallback to Replicate`);
-        controller.abort();
-      }, 20000); // 20 second timeout
+      console.log(`🎲 [${requestId}] Trying Promptchan (no timeout - let it complete naturally)...`);
 
       const response = await fetch('https://prod.aicloudnetservices.com/api/external/create', {
         method: 'POST',
@@ -213,11 +207,8 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
           'Content-Type': 'application/json',
           'x-api-key': PROMPTCHAN_API_KEY
         },
-        body: JSON.stringify(promptchanRequest),
-        signal: controller.signal
+        body: JSON.stringify(promptchanRequest)
       });
-
-      clearTimeout(timeoutId);
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -597,14 +588,8 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   console.log(`📤 [${requestId}] Promptchan request (Ultra quality):`, promptchanRequest);
 
   try {
-    // Add 20 second timeout for chat to prevent Netlify 504
-    console.log(`🎲 [${requestId}] Calling Promptchan with 20s timeout...`);
-
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => {
-      console.log(`⏱️ [${requestId}] Promptchan timeout after 20s - will fallback to Replicate`);
-      controller.abort();
-    }, 20000); // 20 second timeout
+    // No timeout for image-generator page - let Promptchan complete naturally
+    console.log(`🎲 [${requestId}] Calling Promptchan (no timeout - let it complete naturally)...`);
 
     const response = await fetch('https://prod.aicloudnetservices.com/api/external/create', {
       method: 'POST',
@@ -612,11 +597,8 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
         'Content-Type': 'application/json',
         'x-api-key': PROMPTCHAN_API_KEY
       },
-      body: JSON.stringify(promptchanRequest),
-      signal: controller.signal
+      body: JSON.stringify(promptchanRequest)
     });
-
-    clearTimeout(timeoutId);
 
     if (!response.ok) {
       const errorText = await response.text();
