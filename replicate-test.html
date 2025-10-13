@@ -308,6 +308,93 @@
             <button class="model-btn outfit-btn" data-outfit="sheer bodystocking, see-through body suit, mesh bodysuit, transparent full body stocking, revealing bodystocking, NSFW">🔥 Bodystocking</button>
         </div>
 
+        <h3 style="margin: 30px 0 15px; color: #333;">Companion Traits:</h3>
+        <div class="form-section" style="margin-bottom: 20px;">
+            <div class="form-group">
+                <label for="ethnicity">Ethnicity</label>
+                <select id="ethnicity">
+                    <option value="">None</option>
+                    <option value="white">White/Caucasian</option>
+                    <option value="asian">Asian</option>
+                    <option value="korean">Korean</option>
+                    <option value="japanese">Japanese</option>
+                    <option value="chinese">Chinese</option>
+                    <option value="latina">Latina</option>
+                    <option value="black">Black/African</option>
+                    <option value="indian">Indian</option>
+                    <option value="middle eastern">Middle Eastern</option>
+                    <option value="mixed">Mixed Race</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="hairLength">Hair Length</label>
+                <select id="hairLength">
+                    <option value="">None</option>
+                    <option value="short">Short</option>
+                    <option value="medium">Medium</option>
+                    <option value="long">Long</option>
+                    <option value="very long">Very Long</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="hairColor">Hair Color</label>
+                <select id="hairColor">
+                    <option value="">None</option>
+                    <option value="black">Black</option>
+                    <option value="brown">Brown</option>
+                    <option value="blonde">Blonde</option>
+                    <option value="red">Red</option>
+                    <option value="auburn">Auburn</option>
+                    <option value="platinum blonde">Platinum Blonde</option>
+                    <option value="pink">Pink</option>
+                    <option value="blue">Blue</option>
+                    <option value="purple">Purple</option>
+                    <option value="green">Green</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="bodyType">Body Type</label>
+                <select id="bodyType">
+                    <option value="">None</option>
+                    <option value="slim">Slim</option>
+                    <option value="athletic">Athletic</option>
+                    <option value="curvy">Curvy</option>
+                    <option value="petite">Petite</option>
+                    <option value="voluptuous">Voluptuous</option>
+                    <option value="muscular">Muscular</option>
+                    <option value="thick">Thick</option>
+                    <option value="bbw">BBW</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="breastSize">Breast Size</label>
+                <select id="breastSize">
+                    <option value="">None</option>
+                    <option value="small breasts">Small</option>
+                    <option value="medium breasts">Medium</option>
+                    <option value="large breasts">Large</option>
+                    <option value="huge breasts">Huge</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="age">Age</label>
+                <select id="age">
+                    <option value="">None</option>
+                    <option value="18 years old">18</option>
+                    <option value="20 years old">20</option>
+                    <option value="25 years old">25</option>
+                    <option value="30 years old">30</option>
+                    <option value="35 years old">35</option>
+                    <option value="40 years old">40</option>
+                </select>
+            </div>
+        </div>
+
         <form id="generateForm">
             <div class="form-section">
                 <div class="form-group full-width">
@@ -415,6 +502,26 @@
             // Always add base description for woman
             promptParts.push('beautiful woman, female, solo');
 
+            // Add companion traits
+            const ethnicity = document.getElementById('ethnicity').value;
+            const hairLength = document.getElementById('hairLength').value;
+            const hairColor = document.getElementById('hairColor').value;
+            const bodyType = document.getElementById('bodyType').value;
+            const breastSize = document.getElementById('breastSize').value;
+            const age = document.getElementById('age').value;
+
+            if (ethnicity) promptParts.push(ethnicity + ' woman');
+            if (age) promptParts.push(age);
+            if (bodyType) promptParts.push(bodyType + ' body');
+            if (breastSize) promptParts.push(breastSize);
+            if (hairLength && hairColor) {
+                promptParts.push(hairLength + ' ' + hairColor + ' hair');
+            } else if (hairLength) {
+                promptParts.push(hairLength + ' hair');
+            } else if (hairColor) {
+                promptParts.push(hairColor + ' hair');
+            }
+
             if (selectedPose) promptParts.push(selectedPose);
             if (selectedOutfit) promptParts.push(selectedOutfit);
 
@@ -425,6 +532,14 @@
                 promptField.value = promptParts.join(', ');
             }
         }
+
+        // Update prompt when traits change
+        document.getElementById('ethnicity').addEventListener('change', updatePrompt);
+        document.getElementById('hairLength').addEventListener('change', updatePrompt);
+        document.getElementById('hairColor').addEventListener('change', updatePrompt);
+        document.getElementById('bodyType').addEventListener('change', updatePrompt);
+        document.getElementById('breastSize').addEventListener('change', updatePrompt);
+        document.getElementById('age').addEventListener('change', updatePrompt);
 
         // Update slider values
         document.getElementById('num_inference_steps').addEventListener('input', (e) => {
