@@ -249,28 +249,36 @@ async function generateWithReplicate({ sex, ethnicity, hairLength, hairColor, co
 
   const randomPose = poses[Math.floor(Math.random() * poses.length)];
 
-  const prompt = `Professional studio portrait photograph of ${fullAppearance}, ${randomPose}, wearing elegant casual clothing, soft professional lighting, clean white background, photorealistic, detailed facial features, natural skin, high quality photography, 8k, sharp focus, professional headshot`;
+  // Build FLUX-style prompt (same format as custom image generation)
+  const hairPart = hairLength === 'bald' ? hairLengthDesc : `${hairColorDesc}, ${hairLengthDesc}`;
+  const characterAppearance = `${hairPart}, ${genderDesc}, ${ethnicityDesc}`;
 
-  const negativePrompt = 'ugly, deformed, noisy, blurry, distorted, out of focus, bad anatomy, extra limbs, poorly drawn face, poorly drawn hands, missing fingers, duplicate, disfigured, cartoon, anime, illustration, painting, drawing, nudity, nude, naked, explicit, nsfw, underwear, lingerie, low quality, watermark, text, signature, logo, username';
+  const prompt = `REALISTIC PHOTOGRAPHY, portrait photograph of ${characterAppearance}, ${randomPose}, elegant clothing, ultra realistic, photorealistic, real human photo, actual photograph, professional photography, realistic skin texture, realistic facial features, realistic proportions, high quality photo, professional studio lighting, clean background, single real person, perfect human anatomy, NO anime, NO cartoon, NO illustration, NO drawing, NO manga, NO cel shading, NO stylized art, real photograph only`;
 
   console.log('📝 Prompt:', prompt);
+
+  // Use FLUX Dev model (same as custom image generation)
+  const modelVersion = "black-forest-labs/flux-dev";
 
   const replicateResponse = await fetch('https://api.replicate.com/v1/predictions', {
     method: 'POST',
     headers: {
       'Authorization': `Token ${REPLICATE_API_TOKEN}`,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
     },
     body: JSON.stringify({
-      version: 'ac732df83cea7fff18b8472768c88ad041fa750ff7682a21affe81863cbe77e4',
+      version: modelVersion,
       input: {
         prompt: prompt,
-        negative_prompt: negativePrompt,
-        width: 512,
-        height: 768,
-        num_outputs: 1,
+        width: 1024,
+        height: 1024,
+        num_inference_steps: 35,
         guidance_scale: 7.5,
-        num_inference_steps: 50
+        num_outputs: 1,
+        output_format: "webp",
+        output_quality: 95,
+        disable_safety_checker: false // Keep safety checker for censored companions
       }
     })
   });
