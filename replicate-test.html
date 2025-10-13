@@ -470,7 +470,9 @@
                 const data = await response.json();
 
                 if (!response.ok) {
-                    throw new Error(data.error || 'Failed to generate image');
+                    console.error('API Error Response:', data);
+                    const errorMsg = data.details ? `${data.error}: ${data.details}` : (data.error || 'Failed to generate image');
+                    throw new Error(errorMsg);
                 }
 
                 console.log('Response:', data);

@@ -53,6 +53,13 @@ exports.handler = async (event, context) => {
     }
 
     // Create prediction using model name in owner/name format
+    const requestBody = {
+      version: model,
+      input: input
+    };
+
+    console.log('🔍 Request body:', JSON.stringify(requestBody, null, 2));
+
     const response = await fetch('https://api.replicate.com/v1/predictions', {
       method: 'POST',
       headers: {
@@ -60,22 +67,34 @@ exports.handler = async (event, context) => {
         'Content-Type': 'application/json',
         'Prefer': 'wait'
       },
-      body: JSON.stringify({
-        version: model,
-        input: input
-      })
+      body: JSON.stringify(requestBody)
     });
 
     const responseText = await response.text();
     console.log('API Response status:', response.status);
+    console.log('API Response body:', responseText);
 
     if (!response.ok) {
       console.error('❌ Replicate API error:', response.status, responseText);
+
+      // Try to parse error details
+      let errorDetails = responseText;
+      try {
+        const errorJson = JSON.parse(responseText);
+        errorDetails = errorJson.detail || errorJson.error || responseText;
+      } catch (e) {
+        // Keep as is
+      }
+
       return {
         statusCode: response.status,
+        headers: {
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({
           error: 'Failed to generate image',
-          details: responseText
+          details: errorDetails,
+          status: response.status
         })
       };
     }
