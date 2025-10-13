@@ -804,14 +804,14 @@ async function generateWithReliberate(body, requestId, corsHeaders, email, auth0
         .replace(/POV/gi, '')
         .replace(/point of view/gi, '')
         .replace(/from above/gi, '');
-      cleanedPrompt = `man and woman together intimate couple, ${simplifiedPrompt}, man standing or sitting with visible torso and legs, woman kneeling performing oral sex on man, both people fully visible in frame, man's full body shown, couple having sex, side angle view`;
+      cleanedPrompt = `intimate close-up shot, man and woman together passionate couple, ${simplifiedPrompt}, man standing or sitting with muscular torso visible, woman kneeling sensually performing oral sex, romantic intimate moment, both people in frame, erotic atmosphere, side angle intimate view, warm golden lighting, soft shadows, romantic mood, passionate expression, eye contact`;
     }
-    // For penetration scenes: emphasize the couple, both bodies
+    // For penetration scenes: emphasize the couple, both bodies, add warmth
     else if (promptLower.includes('fucking') || promptLower.includes('penetrat') || promptLower.includes('doggy') || promptLower.includes('cowgirl') || promptLower.includes('missionary')) {
-      cleanedPrompt = `man and woman having sex, intimate couple, ${sanitizedPrompt}, both bodies visible, man penetrating woman, two people in frame, couple making love`;
+      cleanedPrompt = `intimate close-up shot, man and woman passionate sex, intimate loving couple, ${sanitizedPrompt}, both bodies entwined, man penetrating woman deeply, sensual embrace, two people making passionate love, romantic intimate moment, warm golden lighting, soft shadows, erotic atmosphere`;
     }
 
-    fullPrompt = `${appearance}, ${cleanedPrompt}, photorealistic, professional photography, explicit sex scene, two people, couple, porn photography, ${randomBg}`;
+    fullPrompt = `${appearance}, ${cleanedPrompt}, photorealistic professional erotic photography, cinematic lighting, warm color grading, intimate close-up composition, romantic atmosphere, sensual mood, passionate intimate scene, high quality porn photography, explicit but artistic, ${randomBg}`;
     console.log(`✅ [${requestId}] Direct sex prompt:`, fullPrompt);
   } else {
     // Regular NSFW prompt
@@ -843,16 +843,16 @@ async function generateWithReliberate(body, requestId, corsHeaders, email, auth0
       contextualEnhancement = randomBg;
     }
 
-    // NSFW enhancement
+    // NSFW enhancement with warmth and romance
     let nsfwEnhancement = sex === 'male'
-      ? ', naked man, big hard erect penis visible, genitals exposed, muscular body, explicit male nudity, pornographic, full frontal nudity, aroused, intimate'
-      : ', naked woman, huge natural breasts exposed, wet glistening pussy visible, pussy lips prominent, genitals exposed, legs spread, explicit female nudity, pornographic, full frontal nudity, aroused, intimate';
+      ? ', naked man, big hard erect penis visible, genitals exposed, muscular toned body, explicit male nudity, pornographic, full frontal nudity, aroused, intimate sensual pose, warm golden lighting, soft shadows, romantic atmosphere'
+      : ', naked woman, natural breasts exposed with erect nipples, wet glistening pussy visible, pussy lips prominent, genitals exposed, legs spread seductively, explicit female nudity, pornographic, full frontal nudity, aroused, intimate sensual pose, warm golden lighting, soft shadows, romantic atmosphere';
 
-    // Shot type
+    // Shot type - add close-up emphasis
     const isFullBody = shotType === 'fullbody' || promptLower.includes('full body');
-    const shotDesc = isFullBody ? 'full body photograph' : 'portrait photograph';
+    const shotDesc = isFullBody ? 'full body photograph, intimate composition' : 'intimate close-up portrait, soft focus background';
 
-    fullPrompt = `${appearance}, ${shotDesc}, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}, photorealistic, ultra realistic, professional photography, detailed`;
+    fullPrompt = `${appearance}, ${shotDesc}, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}, photorealistic professional erotic photography, cinematic lighting, warm color grading, soft romantic atmosphere, sensual mood, passionate intimate scene, high quality porn photography, explicit but artistic`;
   }
 
   console.log(`✨ [${requestId}] Reliberate v3 prompt:`, fullPrompt);
