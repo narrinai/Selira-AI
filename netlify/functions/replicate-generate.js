@@ -54,9 +54,10 @@ exports.handler = async (event, context) => {
       input.seed = -1;
     }
 
-    // Some models use 'scheduler' parameter, add if not explicitly disabled
-    // Colossus v5 uses "Euler flux beta" as default
-    input.scheduler = 'Euler flux beta';
+    // Some models support scheduler parameter
+    // Reliberate v3 uses standard schedulers like "Euler", "Euler A", "DPM++ 2M Karras"
+    // For better compatibility, use "Euler" as default (works on most models)
+    input.scheduler = 'Euler';
 
     // Create prediction using model name in owner/name format
     const requestBody = {
