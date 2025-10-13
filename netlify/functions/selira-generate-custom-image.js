@@ -878,8 +878,8 @@ async function generateWithReliberate(body, requestId, corsHeaders, email, auth0
           negative_prompt: 'clothes, clothing, dressed, covered, censored, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white',
           width: 512,
           height: 728,  // Reliberate v3 default
-          num_inference_steps: 20,
-          guidance_scale: 7.5,
+          num_inference_steps: 15,  // Reduced from 20 for faster generation
+          guidance_scale: 7,  // Reduced slightly for speed
           scheduler: 'Euler',
           seed: -1
         }
@@ -895,9 +895,9 @@ async function generateWithReliberate(body, requestId, corsHeaders, email, auth0
     let prediction = await response.json();
     console.log(`📊 [${requestId}] Prediction created:`, prediction.id);
 
-    // Poll for completion (max 60 seconds)
+    // Poll for completion (max 20 seconds for Netlify Pro 26s timeout with 6s buffer)
     let attempts = 0;
-    const maxAttempts = 60;
+    const maxAttempts = 20;
 
     while (prediction.status !== 'succeeded' && prediction.status !== 'failed' && attempts < maxAttempts) {
       await new Promise(resolve => setTimeout(resolve, 1000));
