@@ -356,6 +356,7 @@
       border-radius: 16px;
       overflow: hidden;
       background: var(--bg-tertiary);
+      cursor: pointer;
     }
 
     .carousel-images {
@@ -374,8 +375,8 @@
       object-fit: cover;
       opacity: 0;
       transition: opacity 0.5s ease, filter 0.3s ease;
-      cursor: pointer;
       filter: blur(20px);
+      pointer-events: none;
     }
 
     .carousel-image.active {
@@ -5738,16 +5739,13 @@
           setTimeout(() => img1.classList.add('loaded'), 100);
         };
 
-        // Always show and setup navigation first
+        // Setup navigation
         const prevBtn = document.getElementById('carouselPrev');
         const nextBtn = document.getElementById('carouselNext');
         const indicators = document.getElementById('carouselIndicators');
 
-        prevBtn.style.opacity = '1';
-        prevBtn.style.pointerEvents = 'auto';
-        nextBtn.style.opacity = '1';
-        nextBtn.style.pointerEvents = 'auto';
-        indicators.style.opacity = '1';
+        // Always setup click handlers
+        setupCarouselNavigation();
 
         if (carouselImages.length > 1) {
           img2.src = carouselImages[1];
@@ -5757,22 +5755,20 @@
             setTimeout(() => img2.classList.add('loaded'), 100);
           };
 
-          // Setup navigation
-          setupCarouselNavigation();
+          // Show navigation for multiple images
+          prevBtn.style.display = 'flex';
+          nextBtn.style.display = 'flex';
+          indicators.style.display = 'flex';
         } else {
-          // If only 1 image, still show controls but disable them
-          prevBtn.style.opacity = '0.3';
-          prevBtn.style.pointerEvents = 'none';
-          nextBtn.style.opacity = '0.3';
-          nextBtn.style.pointerEvents = 'none';
-          indicators.style.opacity = '0.3';
+          // Hide navigation if only one image
+          prevBtn.style.display = 'none';
+          nextBtn.style.display = 'none';
+          indicators.style.display = 'none';
         }
 
-        // Make carousel images clickable
-        img1.onclick = () => openAvatarModal(carouselImages[currentCarouselIndex], currentCharacter.name);
-        if (img2) {
-          img2.onclick = () => openAvatarModal(carouselImages[currentCarouselIndex], currentCharacter.name);
-        }
+        // Set first image as active
+        img1.classList.add('active');
+        updateCarouselDisplay();
       }
     }
 
@@ -5780,13 +5776,29 @@
       const prevBtn = document.getElementById('carouselPrev');
       const nextBtn = document.getElementById('carouselNext');
       const indicators = document.querySelectorAll('.carousel-indicator');
+      const carouselContainer = document.getElementById('imageCarousel');
 
-      prevBtn.onclick = () => changeCarouselImage(-1);
-      nextBtn.onclick = () => changeCarouselImage(1);
+      prevBtn.onclick = (e) => {
+        e.stopPropagation();
+        changeCarouselImage(-1);
+      };
+
+      nextBtn.onclick = (e) => {
+        e.stopPropagation();
+        changeCarouselImage(1);
+      };
 
       indicators.forEach((indicator, index) => {
-        indicator.onclick = () => setCarouselImage(index);
+        indicator.onclick = (e) => {
+          e.stopPropagation();
+          setCarouselImage(index);
+        };
       });
+
+      // Make carousel images clickable to open fullscreen
+      carouselContainer.onclick = () => {
+        openAvatarModal(carouselImages[currentCarouselIndex], currentCharacter.name);
+      };
     }
 
     function changeCarouselImage(direction) {
