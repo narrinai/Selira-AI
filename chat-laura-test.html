@@ -398,7 +398,7 @@
       height: 40px;
       border-radius: 50%;
       cursor: pointer;
-      display: flex;
+      display: none; /* Hidden by default, shown via JS when multiple images */
       align-items: center;
       justify-content: center;
       z-index: 20;
@@ -423,7 +423,7 @@
       bottom: 10px;
       left: 50%;
       transform: translateX(-50%);
-      display: flex;
+      display: none; /* Hidden by default, shown via JS when multiple images */
       gap: 8px;
       z-index: 20;
     }
@@ -3986,6 +3986,7 @@
         name: name,
         slug: slug,
         avatar: fixAvatarUrl(avatar),
+        avatar_url_2: character.avatar_url_2 || null, // Second image for carousel
         creator: '@' + (character.creator || 'Selira'),
         description: character.description || 'Start a conversation with ' + name,
         chats: Math.floor(Math.random() * 100) + 'K',
@@ -4035,6 +4036,7 @@
         name: name,
         slug: slug,
         avatar: fixAvatarUrl(avatar),
+        avatar_url_2: fullCharacterData.avatar_url_2 || null, // Second image for carousel
         title: title || fullCharacterData.title || '',
         description: fullCharacterData.description || 'Start a conversation with ' + name,
         category: fullCharacterData.category || fullCharacterData.Category || 'Other',
@@ -4262,6 +4264,7 @@
         name: name,
         slug: slug,
         avatar: fixAvatarUrl(avatar),
+        avatar_url_2: character.avatar_url_2 || null, // Second image for carousel
         creator: '@' + (character.creator || character.createdBy || 'Selira'),
         description: character.description || 'Start a conversation with ' + name,
         greeting: extractGreetingFromDescription(character.description) || generateGreetingForNewCharacter(character),
@@ -4698,6 +4701,7 @@
           name: character.name,
           slug: character.slug,
           avatar: fixAvatarUrl(character.avatar),
+          avatar_url_2: character.avatar_url_2 || null, // Second image for carousel
           creator: '@' + (character.creator || 'Selira'),
           description: character.description || 'An amazing character ready for conversation.',
           chats: character.chats || Math.floor(Math.random() * 100) + 'K',
