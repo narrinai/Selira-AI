@@ -199,7 +199,13 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     let promptchanResult = null;
 
     try {
-      console.log(`🎲 [${requestId}] Trying Promptchan (no timeout - let it complete naturally)...`);
+      console.log(`🎲 [${requestId}] Calling Promptchan with 20s timeout...`);
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => {
+        console.log(`⏱️ [${requestId}] Promptchan timeout after 20s - will fallback to Replicate`);
+        controller.abort();
+      }, 20000); // 20 second timeout
 
       const response = await fetch('https://prod.aicloudnetservices.com/api/external/create', {
         method: 'POST',
@@ -207,8 +213,11 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
           'Content-Type': 'application/json',
           'x-api-key': PROMPTCHAN_API_KEY
         },
-        body: JSON.stringify(promptchanRequest)
+        body: JSON.stringify(promptchanRequest),
+        signal: controller.signal
       });
+
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
         const errorText = await response.text();
