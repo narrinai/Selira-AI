@@ -796,22 +796,21 @@ async function generateWithReliberate(body, requestId, corsHeaders, email, auth0
     // Reliberate needs clear subject focus: man AND woman together, not just body parts
     let cleanedPrompt = sanitizedPrompt;
 
-    // For blowjob/oral scenes: Remove POV for better composition, show both people
-    // POV shots are difficult for AI - they create disembodied genitals
+    // For blowjob/oral scenes: Keep it simple for better anatomy
     if (promptLower.includes('blowjob') || promptLower.includes('oral sex') || promptLower.includes('sucking')) {
       // Remove POV keywords - they cause floating penis issues
       let simplifiedPrompt = sanitizedPrompt
         .replace(/POV/gi, '')
         .replace(/point of view/gi, '')
         .replace(/from above/gi, '');
-      cleanedPrompt = `intimate close-up shot, man and woman together passionate couple, ${simplifiedPrompt}, man standing or sitting with muscular torso visible, woman kneeling sensually performing oral sex, romantic intimate moment, both people in frame, erotic atmosphere, side angle intimate view, warm golden lighting, soft shadows, romantic mood, passionate expression, eye contact`;
+      cleanedPrompt = `${simplifiedPrompt}, man and woman together, woman kneeling performing oral sex on man, both people visible, realistic anatomy, professional photography`;
     }
-    // For penetration scenes: emphasize the couple, both bodies, add warmth
+    // For penetration scenes: simple and clear
     else if (promptLower.includes('fucking') || promptLower.includes('penetrat') || promptLower.includes('doggy') || promptLower.includes('cowgirl') || promptLower.includes('missionary')) {
-      cleanedPrompt = `intimate close-up shot, man and woman passionate sex, intimate loving couple, ${sanitizedPrompt}, both bodies entwined, man penetrating woman deeply, sensual embrace, two people making passionate love, romantic intimate moment, warm golden lighting, soft shadows, erotic atmosphere`;
+      cleanedPrompt = `${sanitizedPrompt}, man and woman having sex, both bodies visible, realistic proportions, professional photography`;
     }
 
-    fullPrompt = `${appearance}, ${cleanedPrompt}, photorealistic professional erotic photography, cinematic lighting, warm color grading, intimate close-up composition, romantic atmosphere, sensual mood, passionate intimate scene, high quality porn photography, explicit but artistic, ${randomBg}`;
+    fullPrompt = `${appearance}, ${cleanedPrompt}, photorealistic, warm lighting, ${randomBg}, high quality, detailed, perfect anatomy, realistic proportions`;
     console.log(`✅ [${requestId}] Direct sex prompt:`, fullPrompt);
   } else {
     // Regular NSFW prompt
@@ -843,16 +842,17 @@ async function generateWithReliberate(body, requestId, corsHeaders, email, auth0
       contextualEnhancement = randomBg;
     }
 
-    // NSFW enhancement with warmth and romance
+    // NSFW enhancement - keep simple for better anatomy
+    // IMPORTANT: Solo shots - emphasize SINGLE person, not couples
     let nsfwEnhancement = sex === 'male'
-      ? ', naked man, big hard erect penis visible, genitals exposed, muscular toned body, explicit male nudity, pornographic, full frontal nudity, aroused, intimate sensual pose, warm golden lighting, soft shadows, romantic atmosphere'
-      : ', naked woman, natural breasts exposed with erect nipples, wet glistening pussy visible, pussy lips prominent, genitals exposed, legs spread seductively, explicit female nudity, pornographic, full frontal nudity, aroused, intimate sensual pose, warm golden lighting, soft shadows, romantic atmosphere';
+      ? ', solo naked man alone, single person, erect penis visible, genitals exposed, muscular body, explicit nudity, one person only'
+      : ', solo naked woman alone, single person, breasts exposed, pussy visible, genitals exposed, explicit nudity, one person only';
 
-    // Shot type - add close-up emphasis
+    // Shot type
     const isFullBody = shotType === 'fullbody' || promptLower.includes('full body');
-    const shotDesc = isFullBody ? 'full body photograph, intimate composition' : 'intimate close-up portrait, soft focus background';
+    const shotDesc = isFullBody ? 'full body photograph' : 'portrait photograph';
 
-    fullPrompt = `${appearance}, ${shotDesc}, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}, photorealistic professional erotic photography, cinematic lighting, warm color grading, soft romantic atmosphere, sensual mood, passionate intimate scene, high quality porn photography, explicit but artistic`;
+    fullPrompt = `${appearance}, ${shotDesc}, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}, photorealistic, warm lighting, high quality, detailed, perfect anatomy, realistic proportions, solo subject`;
   }
 
   console.log(`✨ [${requestId}] Reliberate v3 prompt:`, fullPrompt);
