@@ -1,6 +1,6 @@
 // Custom image generation for chat - accepts user prompts
-// Routes between Replicate Flux Dev (censored) and Replicate Reliberate v3 (uncensored)
-// v2.0 - Switched from Promptchan to Reliberate v3 for uncensored (faster, better explicit content)
+// Routes between Replicate (censored) and Promptchan (uncensored) based on user preference
+// v1.2 - Enhanced uncensored detection
 
 const fetch = require('node-fetch');
 
@@ -1095,24 +1095,24 @@ exports.handler = async (event, context) => {
       auth0_id: auth0_id ? auth0_id.substring(0, 15) + '...' : 'none'
     });
 
-    // ROUTE TO RELIBERATE V3 FOR UNCENSORED IMAGES WITH REPLICATE FLUX DEV FALLBACK
+    // ROUTE TO PROMPTCHAN FOR UNCENSORED IMAGES WITH REPLICATE FALLBACK
     console.log(`🔍 [${requestId}] Uncensored check: uncensored=${uncensored}, type=${typeof uncensored}, === true: ${uncensored === true}, == true: ${uncensored == true}`);
     if (uncensored === true) {
-      console.log(`🔓 [${requestId}] Uncensored mode - routing to Reliberate v3 (Replicate)`);
-      const reliberateResult = await generateWithReliberate(body, requestId, corsHeaders, email, auth0_id);
+      console.log(`🔓 [${requestId}] Uncensored mode - routing to Promptchan API`);
+      const promptchanResult = await generateWithPromptchan(body, requestId, corsHeaders, email, auth0_id);
 
-      // If Reliberate fails (500 error), fall back to Replicate Flux Dev (censored)
-      if (reliberateResult.statusCode === 500) {
-        console.log(`⚠️ [${requestId}] Reliberate v3 failed, falling back to Replicate Flux Dev (censored)`);
+      // If Promptchan fails (500 error), fall back to Replicate (censored)
+      if (promptchanResult.statusCode === 500) {
+        console.log(`⚠️ [${requestId}] Promptchan failed, falling back to Replicate (censored)`);
         // Continue to Replicate below (don't return, let it fall through)
       } else {
-        // Reliberate succeeded, return the result
-        return reliberateResult;
+        // Promptchan succeeded, return the result
+        return promptchanResult;
       }
     }
 
-    // Replicate Flux Dev (censored) - either explicitly requested or fallback from Reliberate failure
-    console.log(`🔒 [${requestId}] Using Replicate Flux Dev ${uncensored ? '(fallback from Reliberate v3)' : '(censored mode)'}`);
+    // Replicate (censored) - either explicitly requested or fallback from Promptchan failure
+    console.log(`🔒 [${requestId}] Using Replicate API ${uncensored ? '(fallback from Promptchan)' : '(censored mode)'}`);
 
     if (!customPrompt) {
       return {
