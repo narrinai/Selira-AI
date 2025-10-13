@@ -803,26 +803,28 @@ async function generateWithReliberate(body, requestId, corsHeaders, email, auth0
     else if (promptLower.includes('lingerie')) outfitKeywords = 'wearing lingerie';
     else if (promptLower.includes('naked') || promptLower.includes('nude')) outfitKeywords = 'completely naked';
 
-    // For blowjob/oral scenes
+    // For blowjob/oral scenes - KEEP penis keywords for visibility
     if (promptLower.includes('blowjob') || promptLower.includes('oral sex') || promptLower.includes('sucking')) {
-      cleanedPrompt = `woman kneeling giving blowjob to man, penis in mouth`;
+      cleanedPrompt = `woman kneeling giving blowjob, large erect penis in mouth, dick visible, cock clearly shown, penis shaft in frame, oral sex`;
     }
-    // Doggy style
+    // Doggy style - KEEP penetration keywords
     else if (promptLower.includes('doggy')) {
-      cleanedPrompt = `doggy style sex, woman on all fours, man behind her`;
+      cleanedPrompt = `doggy style sex, woman on all fours, man behind her, penis penetrating pussy, dick inside, penetration visible`;
     }
-    // Cowgirl
+    // Cowgirl - KEEP penetration keywords
     else if (promptLower.includes('cowgirl')) {
       const isReverse = promptLower.includes('reverse');
-      cleanedPrompt = isReverse ? `reverse cowgirl, woman on top facing away` : `cowgirl position, woman on top`;
+      cleanedPrompt = isReverse
+        ? `reverse cowgirl, woman on top facing away, penis inside pussy, penetration visible`
+        : `cowgirl position, woman on top, penis inside pussy, penetration visible`;
     }
-    // Missionary
+    // Missionary - KEEP penetration keywords
     else if (promptLower.includes('missionary')) {
-      cleanedPrompt = `missionary position, man on top`;
+      cleanedPrompt = `missionary position, man on top, penis penetrating pussy, dick inside, penetration visible`;
     }
     // Other penetration
     else if (promptLower.includes('fucking') || promptLower.includes('penetrat')) {
-      cleanedPrompt = `man and woman having sex`;
+      cleanedPrompt = `man and woman having sex, penis penetrating pussy, penetration visible`;
     }
 
     fullPrompt = `${appearance}, ${cleanedPrompt}, ${outfitKeywords}, photorealistic, warm lighting, ${randomBg}, high quality`;
