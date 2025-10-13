@@ -79,8 +79,11 @@ exports.handler = async (event, context) => {
       prompt: enhancedPrompt,
       width: width || 512,
       height: height || 512,
+      image_width: width || 512,   // Kaneko Gen uses image_width
+      image_height: height || 512,  // Kaneko Gen uses image_height
       steps: num_inference_steps || 28,
-      guidance: guidance_scale || 7
+      guidance: guidance_scale || 7,
+      guidance_scale: guidance_scale || 7  // Some models use guidance_scale instead of guidance
     };
 
     // Override seed if provided, otherwise use -1 for random
@@ -94,6 +97,9 @@ exports.handler = async (event, context) => {
     // Reliberate v3 uses standard schedulers like "Euler", "Euler A", "DPM++ 2M Karras"
     // For better compatibility, use "Euler" as default (works on most models)
     input.scheduler = 'Euler';
+
+    // Add negative_prompt for better quality (Kaneko Gen and others support this)
+    input.negative_prompt = 'low quality, blurry, distorted, deformed, ugly, bad anatomy, text, watermark';
 
     // Create prediction using model name in owner/name format
     const requestBody = {
