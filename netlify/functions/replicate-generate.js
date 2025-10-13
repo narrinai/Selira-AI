@@ -36,11 +36,47 @@ exports.handler = async (event, context) => {
     console.log('Model:', model);
     console.log('Prompt:', prompt);
 
+    // Add warm, sexy background if not already in prompt
+    const promptLower = prompt.toLowerCase();
+    const hasBackground = promptLower.includes('bedroom') ||
+                         promptLower.includes('hotel') ||
+                         promptLower.includes('beach') ||
+                         promptLower.includes('background') ||
+                         promptLower.includes('room') ||
+                         promptLower.includes('setting');
+
+    let enhancedPrompt = prompt;
+    if (!hasBackground) {
+      const randomBackgrounds = [
+        ', luxury bedroom with silk sheets, warm golden lighting, candles, rose petals, romantic intimate atmosphere',
+        ', five-star hotel suite bedroom, floor-to-ceiling windows, city lights, king size bed, luxury decor',
+        ', private jacuzzi suite, steam rising, warm water, candles, mood lighting, intimate spa atmosphere',
+        ', tropical beach villa bedroom, ocean view, sunset lighting, open curtains, vacation paradise vibes',
+        ', modern penthouse bedroom, exposed brick, designer furniture, warm ambient lighting, urban luxury',
+        ', romantic cabin bedroom, fireplace crackling, cozy bed, warm glow, intimate mountain retreat',
+        ', luxury yacht master bedroom, panoramic ocean views, white linens, nautical elegance, private luxury',
+        ', boutique hotel suite, four-poster bed, silk curtains, chandelier, warm romantic lighting, opulent',
+        ', desert resort bedroom, moroccan decor, colorful pillows, lantern lighting, exotic romantic atmosphere',
+        ', beachfront bungalow bedroom, tropical breeze, gauze curtains, sunset glow, paradise island vibes',
+        ', upscale loft bedroom, modern art, designer bed, floor lamps, industrial chic luxury',
+        ', villa infinity pool bedroom, waterfront view, tropical paradise, warm lighting, luxury resort',
+        ', countryside estate bedroom, vintage elegance, canopy bed, warm firelight, classic romance',
+        ', rooftop suite bedroom, city skyline, neon lights reflecting, modern luxury, urban night vibes',
+        ', private spa bedroom, massage table, essential oils, candles, zen atmosphere, sensual wellness',
+        ', contemporary bedroom, minimalist luxury, designer furniture, natural light, sophisticated intimate space',
+        ', tropical rainforest suite, jungle view, natural sounds, earthy tones, exotic paradise bedroom',
+        ', parisian apartment bedroom, classic elegance, ornate details, warm lighting, romantic french vibes'
+      ];
+      const randomBg = randomBackgrounds[Math.floor(Math.random() * randomBackgrounds.length)];
+      enhancedPrompt += randomBg;
+      console.log('🎲 Added random warm background:', randomBg);
+    }
+
     // Build input object - try to be compatible with different models
     // Most models use 'steps', some use 'num_inference_steps'
     // Most models use 'guidance' or 'guidance_scale', some don't have it
     const input = {
-      prompt: prompt,
+      prompt: enhancedPrompt,
       width: width || 512,
       height: height || 512,
       steps: num_inference_steps || 28,
