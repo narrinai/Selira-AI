@@ -372,12 +372,17 @@
       height: 100%;
       object-fit: cover;
       opacity: 0;
-      transition: opacity 0.5s ease;
+      transition: opacity 0.5s ease, filter 0.3s ease;
       cursor: pointer;
+      filter: blur(20px);
     }
 
     .carousel-image.active {
       opacity: 1;
+    }
+
+    .carousel-image.loaded {
+      filter: blur(0);
     }
 
     .carousel-nav {
@@ -5727,10 +5732,18 @@
 
         img1.src = carouselImages[0];
         img1.style.display = 'block';
+        // Remove blur when image loads
+        img1.onload = () => {
+          setTimeout(() => img1.classList.add('loaded'), 100);
+        };
 
         if (carouselImages.length > 1) {
           img2.src = carouselImages[1];
           img2.style.display = 'block';
+          // Remove blur when image loads
+          img2.onload = () => {
+            setTimeout(() => img2.classList.add('loaded'), 100);
+          };
 
           // Setup navigation
           setupCarouselNavigation();
