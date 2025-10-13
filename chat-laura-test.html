@@ -1910,17 +1910,17 @@
             <img src="/avatars/placeholder.webp" alt="Character" class="carousel-image active" id="carouselImage1">
             <img src="/avatars/placeholder.webp" alt="Character" class="carousel-image" id="carouselImage2" style="display: none;">
           </div>
-          <button class="carousel-nav carousel-nav-prev" id="carouselPrev" style="display: none;">
+          <button class="carousel-nav carousel-nav-prev" id="carouselPrev">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="15 18 9 12 15 6"></polyline>
             </svg>
           </button>
-          <button class="carousel-nav carousel-nav-next" id="carouselNext" style="display: none;">
+          <button class="carousel-nav carousel-nav-next" id="carouselNext">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
           </button>
-          <div class="carousel-indicators" id="carouselIndicators" style="display: none;">
+          <div class="carousel-indicators" id="carouselIndicators">
             <button class="carousel-indicator active" data-index="0"></button>
             <button class="carousel-indicator" data-index="1"></button>
           </div>
@@ -3910,6 +3910,7 @@
           name: character.name || character.Name,
           slug: character.slug || character.Slug,
           avatar: character.avatar || character.Avatar_URL,
+          avatar_url_2: character.avatar_url_2 || null, // Second image for carousel
           title: character.title || character.Character_Title || character.description,
           description: character.description || character.Character_Description,
           greeting: extractGreetingFromDescription(character.description || character.Character_Description) || generateGreetingForNewCharacter(character),
@@ -5731,13 +5732,15 @@
           img2.src = carouselImages[1];
           img2.style.display = 'block';
 
-          // Show navigation controls
-          document.getElementById('carouselPrev').style.display = 'flex';
-          document.getElementById('carouselNext').style.display = 'flex';
-          document.getElementById('carouselIndicators').style.display = 'flex';
-
           // Setup navigation
           setupCarouselNavigation();
+        } else {
+          // Hide navigation if only 1 image
+          document.getElementById('carouselPrev').style.opacity = '0';
+          document.getElementById('carouselPrev').style.pointerEvents = 'none';
+          document.getElementById('carouselNext').style.opacity = '0';
+          document.getElementById('carouselNext').style.pointerEvents = 'none';
+          document.getElementById('carouselIndicators').style.opacity = '0';
         }
 
         // Make carousel images clickable
