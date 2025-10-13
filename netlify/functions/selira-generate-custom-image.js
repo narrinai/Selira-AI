@@ -796,39 +796,11 @@ async function generateWithReliberate(body, requestId, corsHeaders, email, auth0
     // Reliberate needs clear subject focus: man AND woman together, not just body parts
     let cleanedPrompt = sanitizedPrompt;
 
-    // ULTRA SIMPLE prompts to avoid anatomy issues
-    // Extract outfit/clothing keywords separately
-    let outfitKeywords = '';
-    if (promptLower.includes('stocking')) outfitKeywords = 'wearing stockings';
-    else if (promptLower.includes('lingerie')) outfitKeywords = 'wearing lingerie';
-    else if (promptLower.includes('naked') || promptLower.includes('nude')) outfitKeywords = 'completely naked';
-
-    // For blowjob/oral scenes - KEEP penis keywords for visibility
-    if (promptLower.includes('blowjob') || promptLower.includes('oral sex') || promptLower.includes('sucking')) {
-      cleanedPrompt = `woman kneeling giving blowjob, large erect penis in mouth, dick visible, cock clearly shown, penis shaft in frame, oral sex`;
-    }
-    // Doggy style - KEEP penetration keywords
-    else if (promptLower.includes('doggy')) {
-      cleanedPrompt = `doggy style sex, woman on all fours, man behind her, penis penetrating pussy, dick inside, penetration visible`;
-    }
-    // Cowgirl - KEEP penetration keywords
-    else if (promptLower.includes('cowgirl')) {
-      const isReverse = promptLower.includes('reverse');
-      cleanedPrompt = isReverse
-        ? `reverse cowgirl, woman on top facing away, penis inside pussy, penetration visible`
-        : `cowgirl position, woman on top, penis inside pussy, penetration visible`;
-    }
-    // Missionary - KEEP penetration keywords
-    else if (promptLower.includes('missionary')) {
-      cleanedPrompt = `missionary position, man on top, penis penetrating pussy, dick inside, penetration visible`;
-    }
-    // Other penetration
-    else if (promptLower.includes('fucking') || promptLower.includes('penetrat')) {
-      cleanedPrompt = `man and woman having sex, penis penetrating pussy, penetration visible`;
-    }
-
-    fullPrompt = `${appearance}, ${cleanedPrompt}, ${outfitKeywords}, photorealistic, warm lighting, ${randomBg}, high quality`;
-    console.log(`✅ [${requestId}] Direct sex prompt:`, fullPrompt);
+    // DON'T replace the prompt - use it as-is like the test page does!
+    // Just add appearance traits at the beginning
+    // Skip randomBg for sex scenes - let the model decide the background naturally
+    fullPrompt = `${appearance}, ${sanitizedPrompt}, photorealistic, warm lighting, high quality`;
+    console.log(`✅ [${requestId}] Direct sex prompt (using original):`, fullPrompt);
   } else {
     // Regular NSFW prompt
     console.log(`📝 [${requestId}] Regular NSFW prompt`);
