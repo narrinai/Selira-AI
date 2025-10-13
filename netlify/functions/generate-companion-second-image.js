@@ -252,16 +252,16 @@ async function generateWithReplicate({ sex, ethnicity, hairLength, hairColor, co
 
   const randomBackground = backgrounds[Math.floor(Math.random() * backgrounds.length)];
 
-  // Seductive, revealing poses (pushing NSFW boundaries but still "censored")
+  // Seductive, revealing poses (suggestive but avoid explicit descriptions)
   const poses = [
-    'sitting on bed with legs apart, leaning back seductively, sultry gaze',
-    'kneeling on bed, arching back, looking over shoulder with desire',
-    'lying on bed, propped up on elbows, inviting expression, cleavage visible',
-    'sitting on edge of bed, legs crossed, leaning forward showing cleavage',
-    'reclining on bed, one hand through hair, sensual pose, exposed skin',
-    'on all fours on bed, looking back at camera, flirty seductive smile',
-    'sitting with knees up, arms around legs, teasing expression',
-    'lying sideways on bed, head propped on hand, seductive gaze'
+    'sitting on bed, leaning back confidently, sultry gaze',
+    'kneeling on bed, arching back gracefully, looking over shoulder',
+    'lying on bed, propped up on elbows, inviting expression',
+    'sitting on edge of bed, legs crossed elegantly, leaning forward',
+    'reclining on bed, one hand through hair, sensual pose',
+    'sitting on knees, looking back at camera, flirty smile',
+    'sitting with knees up, arms around legs, playful expression',
+    'lying sideways on bed, head propped on hand, seductive look'
   ];
 
   const randomPose = poses[Math.floor(Math.random() * poses.length)];
@@ -284,7 +284,8 @@ async function generateWithReplicate({ sex, ethnicity, hairLength, hairColor, co
   const hairPart = hairLength === 'bald' ? hairLengthDesc : `${hairColorDesc}, ${hairLengthDesc}`;
   const characterAppearance = `${hairPart}, ${genderDesc}, ${ethnicityDesc}`;
 
-  const prompt = `REALISTIC PHOTOGRAPHY, sensual erotic portrait of ${characterAppearance}, ${randomPose}, ${randomClothing}, ${randomBackground}, seductive expression, flirty look, sexy, attractive, beautiful body, curves, cleavage visible, skin exposed, revealing outfit, sultry, alluring, tempting, ultra realistic, photorealistic, real human photo, professional photography, realistic skin texture, detailed body, high quality photo, vibrant colors, intimate lighting, single person, perfect anatomy, NO anime, NO cartoon, NO illustration, real photograph only`;
+  // Build prompt - suggestive but avoid trigger words like "erotic", "nude" etc
+  const prompt = `REALISTIC PHOTOGRAPHY, sensual portrait photograph of ${characterAppearance}, ${randomPose}, ${randomClothing}, ${randomBackground}, seductive expression, flirty gaze, confident, attractive, beautiful body, elegant curves, ultra realistic, photorealistic, real human photo, professional photography, realistic skin texture, realistic features, high quality photo, vibrant colors, intimate mood lighting, single person, perfect anatomy, NO anime, NO cartoon, NO illustration, real photograph only`;
 
   // Remove excessive negative keywords that block revealing content
   // Keep safety but allow more erotic elements
