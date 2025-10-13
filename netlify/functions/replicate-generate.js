@@ -36,21 +36,27 @@ exports.handler = async (event, context) => {
     console.log('Model:', model);
     console.log('Prompt:', prompt);
 
-    // Build input object - using Flux model parameter names
+    // Build input object - try to be compatible with different models
+    // Most models use 'steps', some use 'num_inference_steps'
+    // Most models use 'guidance' or 'guidance_scale', some don't have it
     const input = {
       prompt: prompt,
       width: width || 512,
       height: height || 512,
-      steps: num_inference_steps || 20,
-      cfg_scale: guidance_scale || 5,
-      scheduler: 'default',
-      seed: -1 // Default to random
+      steps: num_inference_steps || 28,
+      guidance: guidance_scale || 7
     };
 
-    // Override seed if provided
+    // Override seed if provided, otherwise use -1 for random
     if (seed !== undefined && seed !== null && seed !== '') {
       input.seed = parseInt(seed);
+    } else {
+      input.seed = -1;
     }
+
+    // Some models use 'scheduler' parameter, add if not explicitly disabled
+    // Colossus v5 uses "Euler flux beta" as default
+    input.scheduler = 'Euler flux beta';
 
     // Create prediction using model name in owner/name format
     const requestBody = {
