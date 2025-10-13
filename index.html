@@ -688,6 +688,85 @@
       100% { transform: rotate(360deg); }
     }
 
+    /* Deal Card Styling */
+    .deal-card {
+      background: linear-gradient(135deg, #ce93d8 0%, #ba68c8 100%);
+      border: 2px solid var(--accent-hover);
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .deal-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(206, 147, 216, 0.4);
+      border-color: var(--accent);
+    }
+
+    .deal-card-content {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 20px;
+      text-align: center;
+      color: white;
+    }
+
+    .deal-badge {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+    }
+
+    .deal-percentage {
+      font-size: 48px;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 8px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .deal-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .deal-description {
+      font-size: 14px;
+      opacity: 0.95;
+      margin-bottom: 20px;
+      line-height: 1.4;
+    }
+
+    .deal-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: white;
+      color: var(--accent);
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+    .deal-card:hover .deal-cta {
+      transform: translateX(4px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
     /* Hide mobile header on desktop by default */
     .mobile-header-container {
       display: none;
@@ -2654,8 +2733,42 @@
       
       // Show first batch of characters
       const initialCharacters = filteredCharacters.slice(0, charactersPerPage);
-      
-      grid.innerHTML = initialCharacters.map(character => `
+
+      // Create array with deal card inserted at position 4 (5th card, index 4)
+      const charactersWithDeal = [];
+      initialCharacters.forEach((character, index) => {
+        if (index === 4) {
+          // Insert deal card before 5th character
+          charactersWithDeal.push('DEAL_CARD');
+        }
+        charactersWithDeal.push(character);
+      });
+
+      grid.innerHTML = charactersWithDeal.map(item => {
+        // Render deal card
+        if (item === 'DEAL_CARD') {
+          return `
+            <a href="/pricing" class="character-card deal-card" style="text-decoration: none;">
+              <div class="deal-card-content">
+                <div class="deal-badge">LIMITED TIME</div>
+                <div class="deal-percentage">40% OFF</div>
+                <div class="deal-title">Winter Deal</div>
+                <div class="deal-description">Unlock unlimited AI companions & image generation</div>
+                <div class="deal-cta">
+                  <span>View Plans</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
+                </div>
+              </div>
+            </a>
+          `;
+        }
+
+        // Render regular character card
+        const character = item;
+        return `
         <div class="character-card" onclick="openCharacter('${character.slug}')">
           ${character.avatar ?
             `<img src="${character.avatar}" alt="${character.name}" class="character-image" loading="lazy" onerror="this.onerror=null; this.src='https://selira.ai/avatars/${getWorkingAvatar(character.name, character.sex)}'; console.log('🔧 Fixed broken avatar for ${character.name}');">` :
@@ -2691,7 +2804,8 @@
             </div>
           </div>
         </div>
-      `).join('');
+        `;
+      }).join('');
       
       // Add loading indicator if more characters available
       if (filteredCharacters.length > charactersPerPage) {
