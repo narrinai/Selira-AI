@@ -540,20 +540,29 @@
       align-items: baseline;
       gap: 4px;
       margin-bottom: 8px;
+      flex-wrap: wrap;
     }
-    
+
+    .price-original {
+      text-decoration: line-through;
+      color: var(--text-muted);
+      font-size: 16px;
+      font-weight: 500;
+      margin-right: 8px;
+    }
+
     .price-currency {
       font-size: 18px;
       font-weight: 600;
       color: var(--accent);
     }
-    
+
     .price-amount {
       font-size: 32px;
       font-weight: 700;
       color: var(--accent);
     }
-    
+
     .price-period {
       font-size: 16px;
       color: var(--text-secondary);
@@ -1092,6 +1101,7 @@
           <div class="pricing-card">
             <div class="plan-name">Light</div>
             <div class="plan-price">
+              <span class="price-original">$8.99</span>
               <span class="price-currency">$</span>
               <span class="price-amount">5.99</span>
               <span class="price-period">/month</span>
@@ -1128,6 +1138,7 @@
           <div class="pricing-card">
             <div class="plan-name">Basic</div>
             <div class="plan-price">
+              <span class="price-original">$14.99</span>
               <span class="price-currency">$</span>
               <span class="price-amount">9.99</span>
               <span class="price-period">/month</span>
@@ -1165,6 +1176,7 @@
             <div class="card-badge">Most Popular</div>
             <div class="plan-name">Premium</div>
             <div class="plan-price">
+              <span class="price-original">$29.99</span>
               <span class="price-currency">$</span>
               <span class="price-amount">19.99</span>
               <span class="price-period">/month</span>
@@ -1210,6 +1222,7 @@
             <div class="pricing-card">
               <div class="plan-name">Light Pack</div>
               <div class="plan-price">
+                <span class="price-original">$8.99</span>
                 <span class="price-currency">$</span>
                 <span class="price-amount">5.99</span>
               </div>
@@ -1245,6 +1258,7 @@
             <div class="pricing-card">
               <div class="plan-name">Basic Pack</div>
               <div class="plan-price">
+                <span class="price-original">$14.99</span>
                 <span class="price-currency">$</span>
                 <span class="price-amount">9.99</span>
               </div>
@@ -1281,6 +1295,7 @@
               <div class="card-badge">Best Value</div>
               <div class="plan-name">Premium Pack</div>
               <div class="plan-price">
+                <span class="price-original">$29.99</span>
                 <span class="price-currency">$</span>
                 <span class="price-amount">19.99</span>
               </div>
