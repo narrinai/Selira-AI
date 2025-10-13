@@ -5737,6 +5737,17 @@
           setTimeout(() => img1.classList.add('loaded'), 100);
         };
 
+        // Always show and setup navigation first
+        const prevBtn = document.getElementById('carouselPrev');
+        const nextBtn = document.getElementById('carouselNext');
+        const indicators = document.getElementById('carouselIndicators');
+
+        prevBtn.style.opacity = '1';
+        prevBtn.style.pointerEvents = 'auto';
+        nextBtn.style.opacity = '1';
+        nextBtn.style.pointerEvents = 'auto';
+        indicators.style.opacity = '1';
+
         if (carouselImages.length > 1) {
           img2.src = carouselImages[1];
           img2.style.display = 'block';
@@ -5748,12 +5759,12 @@
           // Setup navigation
           setupCarouselNavigation();
         } else {
-          // Hide navigation if only 1 image
-          document.getElementById('carouselPrev').style.opacity = '0';
-          document.getElementById('carouselPrev').style.pointerEvents = 'none';
-          document.getElementById('carouselNext').style.opacity = '0';
-          document.getElementById('carouselNext').style.pointerEvents = 'none';
-          document.getElementById('carouselIndicators').style.opacity = '0';
+          // If only 1 image, still show controls but disable them
+          prevBtn.style.opacity = '0.3';
+          prevBtn.style.pointerEvents = 'none';
+          nextBtn.style.opacity = '0.3';
+          nextBtn.style.pointerEvents = 'none';
+          indicators.style.opacity = '0.3';
         }
 
         // Make carousel images clickable
