@@ -238,36 +238,56 @@ async function generateWithReplicate({ sex, ethnicity, hairLength, hairColor, co
 
   const fullAppearance = detailedAppearance.join(', ');
 
-  // Colorful, atmospheric backgrounds (match create flow style)
+  // Erotic, sensual backgrounds (bedroom/intimate settings)
   const backgrounds = [
-    'colorful bokeh background, soft ambient lighting, warm colors',
-    'natural outdoor setting, soft focus background, golden hour lighting',
-    'modern interior with colorful decor, soft lighting, vibrant atmosphere',
-    'cozy bedroom setting, fairy lights, warm ambient glow',
-    'stylish living room, soft pastel colors, natural window light',
-    'trendy cafe background, blurred colorful surroundings, natural lighting',
-    'garden setting, flowers in background, soft natural light',
-    'urban rooftop, city lights bokeh, sunset colors'
+    'luxurious bedroom, silk sheets, dim romantic lighting, sensual atmosphere',
+    'modern bedroom, soft bed, warm glow, intimate setting',
+    'hotel suite, elegant decor, mood lighting, seductive ambiance',
+    'bedroom with fairy lights, cozy bed, warm intimate lighting',
+    'stylish bedroom, plush pillows, soft romantic lighting',
+    'contemporary bedroom, satin sheets, candlelight atmosphere',
+    'upscale bedroom, expensive decor, dramatic lighting, sultry mood',
+    'intimate bedroom setting, soft textures, warm sensual lighting'
   ];
 
   const randomBackground = backgrounds[Math.floor(Math.random() * backgrounds.length)];
 
-  // Different poses for variety
+  // Seductive, revealing poses (pushing NSFW boundaries but still "censored")
   const poses = [
-    'sitting casually, looking at camera with warm smile',
-    'leaning against wall, relaxed pose, friendly expression',
-    'standing naturally, hand in hair, confident look',
-    'sitting on edge of furniture, leaning forward slightly',
-    'relaxed pose, natural position, engaging smile'
+    'sitting on bed with legs apart, leaning back seductively, sultry gaze',
+    'kneeling on bed, arching back, looking over shoulder with desire',
+    'lying on bed, propped up on elbows, inviting expression, cleavage visible',
+    'sitting on edge of bed, legs crossed, leaning forward showing cleavage',
+    'reclining on bed, one hand through hair, sensual pose, exposed skin',
+    'on all fours on bed, looking back at camera, flirty seductive smile',
+    'sitting with knees up, arms around legs, teasing expression',
+    'lying sideways on bed, head propped on hand, seductive gaze'
   ];
 
   const randomPose = poses[Math.floor(Math.random() * poses.length)];
 
-  // Build FLUX-style prompt with colorful background
+  // Revealing clothing options (push boundaries)
+  const revealingClothing = [
+    'wearing tight crop top showing midriff and short shorts',
+    'wearing revealing lingerie, lace bra and panties barely covering',
+    'wearing tiny bikini, barely covering body',
+    'wearing see-through shirt with bra visible underneath',
+    'wearing low-cut dress showing deep cleavage',
+    'wearing sports bra and tight yoga pants',
+    'wearing silk robe partially open revealing lingerie',
+    'wearing tank top without bra, short skirt'
+  ];
+
+  const randomClothing = revealingClothing[Math.floor(Math.random() * revealingClothing.length)];
+
+  // Build FLUX-style erotic prompt
   const hairPart = hairLength === 'bald' ? hairLengthDesc : `${hairColorDesc}, ${hairLengthDesc}`;
   const characterAppearance = `${hairPart}, ${genderDesc}, ${ethnicityDesc}`;
 
-  const prompt = `REALISTIC PHOTOGRAPHY, portrait photograph of ${characterAppearance}, ${randomPose}, casual elegant clothing, ${randomBackground}, ultra realistic, photorealistic, real human photo, actual photograph, professional photography, realistic skin texture, realistic facial features, realistic proportions, high quality photo, vibrant colors, atmospheric lighting, single real person, perfect human anatomy, NO anime, NO cartoon, NO illustration, NO drawing, NO manga, NO cel shading, NO stylized art, real photograph only`;
+  const prompt = `REALISTIC PHOTOGRAPHY, sensual erotic portrait of ${characterAppearance}, ${randomPose}, ${randomClothing}, ${randomBackground}, seductive expression, flirty look, sexy, attractive, beautiful body, curves, cleavage visible, skin exposed, revealing outfit, sultry, alluring, tempting, ultra realistic, photorealistic, real human photo, professional photography, realistic skin texture, detailed body, high quality photo, vibrant colors, intimate lighting, single person, perfect anatomy, NO anime, NO cartoon, NO illustration, real photograph only`;
+
+  // Remove excessive negative keywords that block revealing content
+  // Keep safety but allow more erotic elements
 
   console.log('📝 Prompt:', prompt);
 
