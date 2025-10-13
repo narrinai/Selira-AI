@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Replicate API Test - Selira AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .form-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #555;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select,
+        textarea {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .slider-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        .slider-value {
+            text-align: center;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .model-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .model-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-align: center;
+        }
+
+        .model-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .model-btn:active {
+            transform: translateY(0);
+        }
+
+        .model-btn.active {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        .result-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #667eea;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .result-image {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .error {
+            background: #fee;
+            color: #c00;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .success {
+            background: #efe;
+            color: #060;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .info {
+            background: #e3f2fd;
+            color: #1565c0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .model-info {
+            background: #f5f5f5;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .model-info strong {
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Replicate API Test</h1>
+
+        <div class="info">
+            <strong>Note:</strong> This is a test page for Replicate API integration. Make sure you have your API key configured in Netlify environment variables.
+        </div>
+
+        <div class="model-info">
+            <strong>Selected Model:</strong> <span id="selectedModelName">None</span><br>
+            <strong>Model ID:</strong> <span id="selectedModelId">Click a model button below</span>
+        </div>
+
+        <h3 style="margin-bottom: 15px; color: #333;">Select a Model:</h3>
+        <div class="model-buttons">
+            <button class="model-btn" data-model="aisha-ai-official/flux.1schnell-uncensored-rasch3">
+                Flux Schnell Uncensored<br><small>Rasch3 (Fast)</small>
+            </button>
+            <button class="model-btn" data-model="aisha-ai-official/flux.1dev-uncensored-msfluxnsfw-v3">
+                Flux Dev Uncensored<br><small>MS NSFW v3</small>
+            </button>
+            <button class="model-btn" data-model="aisha-ai-official/flux.1dev-uncensored-colossus-v5">
+                Flux Dev Uncensored<br><small>Colossus v5</small>
+            </button>
+            <button class="model-btn" data-model="aisha-ai-official/flux.1dev-uncensored-jibmix">
+                Flux Dev Uncensored<br><small>Jibmix</small>
+            </button>
+            <button class="model-btn" data-model="aisha-ai-official/flux.1dev-uncensored-realreveal5">
+                Flux Dev Uncensored<br><small>Real Reveal 5</small>
+            </button>
+            <button class="model-btn" data-model="aisha-ai-official/flux.1dev-uncensored-newreality-a2">
+                Flux Dev Uncensored<br><small>New Reality A2</small>
+            </button>
+        </div>
+
+        <h3 style="margin: 30px 0 15px; color: #333;">NSFW Poses:</h3>
+        <div class="model-buttons" id="poseButtons">
+            <button class="model-btn pose-btn" data-pose="POV blowjob angle, kneeling, large penis in mouth visible, dick clearly shown, oral sex close-up, fellatio, cock sucking, male POV perspective, penis shaft visible in frame, explicit oral, NSFW">🔥 POV Blowjob</button>
+            <button class="model-btn pose-btn" data-pose="doggy style position, ass up face down, from behind, rear view, legs spread, explicit penetration, pussy visible, sexual position, NSFW">🔥 Doggy Style</button>
+            <button class="model-btn pose-btn" data-pose="cowgirl position, riding, straddling, on top, explicit sex position, breasts visible, intimate angle, NSFW">🔥 Cowgirl</button>
+            <button class="model-btn pose-btn" data-pose="missionary position, legs spread, laying on back, intimate angle, explicit sex position, pussy visible, NSFW">🔥 Missionary</button>
+            <button class="model-btn pose-btn" data-pose="masturbating explicitly, hand between legs, fingers penetrating pussy, fingering herself, self-pleasure, legs spread wide open, touching genitals, rubbing clit, explicit masturbation, pleasuring herself, finger in vagina, NSFW porn">🔥 Masturbating</button>
+            <button class="model-btn pose-btn" data-pose="reverse cowgirl position, riding facing away, ass view, straddling backwards, explicit sex position, penetration visible, rear angle, NSFW">🔥 Reverse Cowgirl</button>
+            <button class="model-btn pose-btn" data-pose="legs spread wide open, sitting or lying, pussy exposed, vulva visible, spread eagle position, legs apart showing genitals, explicit spread, NSFW">🔥 Legs Spread</button>
+            <button class="model-btn pose-btn" data-pose="bent over pose, ass up, leaning forward over furniture, rear view, bent at waist, showing ass and pussy, explicit bent over position, NSFW">🔥 Bent Over</button>
+            <button class="model-btn pose-btn" data-pose="on knees submissive position, looking up at camera, POV angle from above, mouth open, tongue out, ready pose, kneeling down, NSFW">🔥 On Knees POV</button>
+            <button class="model-btn pose-btn" data-pose="penis between breasts, titty fuck position, boob job, cock between tits, breasts squeezed around dick, explicit titfuck, paizuri, NSFW">🔥 Titty Fuck</button>
+            <button class="model-btn pose-btn" data-pose="anal sex position, penetration from behind, ass penetration, anal intercourse, explicit anal, spreading ass cheeks, asshole visible, NSFW">🔥 Anal</button>
+        </div>
+
+        <h3 style="margin: 30px 0 15px; color: #333;">NSFW Outfits:</h3>
+        <div class="model-buttons" id="outfitButtons">
+            <button class="model-btn outfit-btn" data-outfit="completely naked, fully nude, no clothes, bare skin, nude body, naked breasts, exposed pussy, totally naked, unclothed, full nudity, NSFW">🔥 Fully Nude</button>
+            <button class="model-btn outfit-btn" data-outfit="topless, bare breasts, no bra, breasts exposed, nipples visible, naked from waist up, NSFW">🔥 Topless</button>
+            <button class="model-btn outfit-btn" data-outfit="wearing only stockings, thigh-high stockings, naked with stockings, stockings and nothing else, nude with stockings, NSFW">🔥 Stockings Only</button>
+            <button class="model-btn outfit-btn" data-outfit="fishnet bodysuit, fishnet lingerie, see-through fishnet outfit, fishnet stockings and top, mesh clothing, sexy fishnet, NSFW">🔥 Fishnet</button>
+            <button class="model-btn outfit-btn" data-outfit="tight latex outfit, shiny leather clothing, latex bodysuit, leather lingerie, kinky outfit, fetish wear, NSFW">🔥 Latex/Leather</button>
+            <button class="model-btn outfit-btn" data-outfit="sexy schoolgirl outfit, short skirt, unbuttoned shirt, revealing school uniform, naughty student look, anime schoolgirl, NSFW">🔥 Schoolgirl</button>
+            <button class="model-btn outfit-btn" data-outfit="sexy maid costume, french maid outfit, short skirt maid uniform, revealing maid dress, frilly maid outfit, NSFW">🔥 Maid Outfit</button>
+            <button class="model-btn outfit-btn" data-outfit="sexy nurse costume, revealing nurse outfit, short nurse dress, naughty nurse uniform, medical fetish outfit, NSFW">🔥 Nurse</button>
+            <button class="model-btn outfit-btn" data-outfit="wearing only panties, topless with panties, bare breasts with underwear, panties and nothing else, half naked, NSFW">🔥 Panties Only</button>
+            <button class="model-btn outfit-btn" data-outfit="sexy lingerie, lace bra and panties, see-through lingerie, revealing intimate wear, skimpy underwear">Sexy Lingerie</button>
+        </div>
+
+        <form id="generateForm">
+            <div class="form-section">
+                <div class="form-group full-width">
+                    <label for="prompt">Prompt *</label>
+                    <textarea id="prompt" name="prompt" required placeholder="Describe the image you want to generate..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="width">Width</label>
+                    <select id="width" name="width">
+                        <option value="512">512</option>
+                        <option value="768">768</option>
+                        <option value="1024" selected>1024</option>
+                        <option value="1280">1280</option>
+                        <option value="1536">1536</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="height">Height</label>
+                    <select id="height" name="height">
+                        <option value="512">512</option>
+                        <option value="768">768</option>
+                        <option value="1024" selected>1024</option>
+                        <option value="1280">1280</option>
+                        <option value="1536">1536</option>
+                    </select>
+                </div>
+
+                <div class="form-group slider-group">
+                    <label for="num_inference_steps">Inference Steps: <span class="slider-value" id="stepsValue">28</span></label>
+                    <input type="range" id="num_inference_steps" name="num_inference_steps" min="1" max="50" value="28">
+                </div>
+
+                <div class="form-group slider-group">
+                    <label for="guidance_scale">Guidance Scale: <span class="slider-value" id="guidanceValue">3.5</span></label>
+                    <input type="range" id="guidance_scale" name="guidance_scale" min="1" max="20" step="0.5" value="3.5">
+                </div>
+
+                <div class="form-group">
+                    <label for="seed">Seed (optional, leave empty for random)</label>
+                    <input type="number" id="seed" name="seed" placeholder="Random">
+                </div>
+
+                <div class="form-group">
+                    <label for="output_format">Output Format</label>
+                    <select id="output_format" name="output_format">
+                        <option value="webp">WebP</option>
+                        <option value="png">PNG</option>
+                        <option value="jpg">JPG</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" id="generateBtn">Generate Image</button>
+        </form>
+
+        <div class="result-section" id="resultSection" style="display: none;">
+            <h2>Result</h2>
+            <div id="resultContent"></div>
+        </div>
+    </div>
+
+    <script>
+        let selectedModel = null;
+        let selectedPose = null;
+        let selectedOutfit = null;
+
+        // Model selection
+        document.querySelectorAll('.model-btn:not(.pose-btn):not(.outfit-btn)').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.model-btn:not(.pose-btn):not(.outfit-btn)').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                selectedModel = this.getAttribute('data-model');
+                document.getElementById('selectedModelName').textContent = this.textContent.trim();
+                document.getElementById('selectedModelId').textContent = selectedModel;
+            });
+        });
+
+        // Pose selection
+        document.querySelectorAll('.pose-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.pose-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                selectedPose = this.getAttribute('data-pose');
+                updatePrompt();
+            });
+        });
+
+        // Outfit selection
+        document.querySelectorAll('.outfit-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.outfit-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                selectedOutfit = this.getAttribute('data-outfit');
+                updatePrompt();
+            });
+        });
+
+        // Update prompt with selected pose and outfit
+        function updatePrompt() {
+            const promptField = document.getElementById('prompt');
+            let promptParts = [];
+
+            if (selectedPose) promptParts.push(selectedPose);
+            if (selectedOutfit) promptParts.push(selectedOutfit);
+
+            if (promptParts.length > 0) {
+                promptField.value = promptParts.join(', ');
+            }
+        }
+
+        // Update slider values
+        document.getElementById('num_inference_steps').addEventListener('input', (e) => {
+            document.getElementById('stepsValue').textContent = e.target.value;
+        });
+
+        document.getElementById('guidance_scale').addEventListener('input', (e) => {
+            document.getElementById('guidanceValue').textContent = e.target.value;
+        });
+
+        // Handle form submission
+        document.getElementById('generateForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (!selectedModel) {
+                alert('Please select a model first!');
+                return;
+            }
+
+            const generateBtn = document.getElementById('generateBtn');
+            const resultSection = document.getElementById('resultSection');
+            const resultContent = document.getElementById('resultContent');
+
+            // Disable button and show loading
+            generateBtn.disabled = true;
+            generateBtn.textContent = 'Generating...';
+            resultSection.style.display = 'block';
+            resultContent.innerHTML = '<div class="loading"><div class="spinner"></div>Generating your image...</div>';
+
+            // Collect form data
+            const formData = {
+                model: selectedModel,
+                prompt: document.getElementById('prompt').value,
+                width: parseInt(document.getElementById('width').value),
+                height: parseInt(document.getElementById('height').value),
+                num_inference_steps: parseInt(document.getElementById('num_inference_steps').value),
+                guidance_scale: parseFloat(document.getElementById('guidance_scale').value),
+                output_format: document.getElementById('output_format').value
+            };
+
+            // Add seed if provided
+            const seedInput = document.getElementById('seed').value;
+            if (seedInput) {
+                formData.seed = parseInt(seedInput);
+            }
+
+            try {
+                console.log('Sending request with data:', formData);
+
+                const response = await fetch('/.netlify/functions/replicate-generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to generate image');
+                }
+
+                console.log('Response:', data);
+
+                // Display success
+                resultContent.innerHTML = `
+                    <div class="success">
+                        <strong>Success!</strong> Image generated successfully.
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <img src="${data.output}" alt="Generated image" class="result-image">
+                    </div>
+                `;
+
+            } catch (error) {
+                console.error('Error:', error);
+                resultContent.innerHTML = `
+                    <div class="error">
+                        <strong>Error:</strong> ${error.message}
+                    </div>
+                `;
+            } finally {
+                // Re-enable button
+                generateBtn.disabled = false;
+                generateBtn.textContent = 'Generate Image';
+            }
+        });
+    </script>
+</body>
+</html>
