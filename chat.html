@@ -347,6 +347,103 @@
       margin-bottom: 30px;
     }
 
+    /* Image Carousel Styles */
+    .character-image-carousel {
+      position: relative;
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto 20px;
+      border-radius: 16px;
+      overflow: hidden;
+      background: var(--bg-tertiary);
+      cursor: pointer;
+    }
+
+    .carousel-images {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 3/4;
+      z-index: 1;
+    }
+
+    .carousel-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 0.5s ease, filter 0.3s ease;
+      filter: blur(20px);
+      pointer-events: none;
+    }
+
+    .carousel-image.active {
+      opacity: 1;
+    }
+
+    .carousel-image.loaded {
+      filter: blur(0);
+    }
+
+    .carousel-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0, 0, 0, 0.5);
+      border: none;
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none; /* Hidden by default, shown via JS when multiple images */
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+      transition: all 0.2s ease;
+    }
+
+    .carousel-nav:hover {
+      background: rgba(0, 0, 0, 0.8);
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    .carousel-nav-prev {
+      left: 10px;
+    }
+
+    .carousel-nav-next {
+      right: 10px;
+    }
+
+    .carousel-indicators {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: none; /* Hidden by default, shown via JS when multiple images */
+      gap: 8px;
+      z-index: 20;
+    }
+
+    .carousel-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.5);
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .carousel-indicator.active {
+      background: var(--accent);
+      width: 24px;
+      border-radius: 4px;
+    }
+
     .character-avatar-large {
       width: 120px;
       height: 120px;
@@ -354,6 +451,7 @@
       overflow: hidden;
       margin: 0 auto 16px;
       border: 3px solid var(--accent);
+      display: none; /* Hide old avatar, use carousel instead */
     }
 
     .character-avatar-large img {
@@ -1813,6 +1911,29 @@
     <!-- Right Sidebar Character Details -->
     <aside class="character-sidebar" id="characterSidebar">
       <div class="character-profile">
+        <!-- Image Carousel -->
+        <div class="character-image-carousel" id="imageCarousel">
+          <div class="carousel-images">
+            <img src="/avatars/placeholder.webp" alt="Character" class="carousel-image active" id="carouselImage1">
+            <img src="/avatars/placeholder.webp" alt="Character" class="carousel-image" id="carouselImage2" style="display: none;">
+          </div>
+          <button class="carousel-nav carousel-nav-prev" id="carouselPrev">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+          <button class="carousel-nav carousel-nav-next" id="carouselNext">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+          <div class="carousel-indicators" id="carouselIndicators">
+            <button class="carousel-indicator active" data-index="0"></button>
+            <button class="carousel-indicator" data-index="1"></button>
+          </div>
+        </div>
+
+        <!-- Old avatar (hidden, kept for fallback) -->
         <div class="character-avatar-large">
           <img src="/avatars/placeholder.webp" alt="Character" id="sidebarCharacterImage" onerror="this.style.display='none';">
         </div>
@@ -2774,6 +2895,9 @@
 
       // Hide any existing suggestions when character changes
       hideImagePromptSuggestions();
+
+      // Initialize carousel with character avatar
+      initializeCarousel();
 
       // Make avatars clickable
       makeAvatarsClickable();
@@ -5579,6 +5703,113 @@
     function closeAvatarModal() {
       const modal = document.getElementById('avatarModal');
       modal.classList.remove('show');
+    }
+
+    // Image Carousel Functions
+    let currentCarouselIndex = 0;
+    let carouselImages = [];
+
+    function initializeCarousel() {
+      console.log('🎠 Initializing image carousel');
+
+      carouselImages = [];
+
+      // Add first image (avatar_url)
+      if (currentCharacter.avatar && currentCharacter.avatar !== '/avatars/placeholder.webp') {
+        carouselImages.push(fixAvatarUrl(currentCharacter.avatar));
+      }
+
+      console.log('🎠 Carousel images:', carouselImages);
+
+      if (carouselImages.length > 0) {
+        // Set carousel images
+        const img1 = document.getElementById('carouselImage1');
+        const img2 = document.getElementById('carouselImage2');
+
+        img1.src = carouselImages[0];
+        img1.style.display = 'block';
+        // Remove blur when image loads
+        img1.onload = () => {
+          setTimeout(() => img1.classList.add('loaded'), 100);
+        };
+
+        // Setup navigation
+        const prevBtn = document.getElementById('carouselPrev');
+        const nextBtn = document.getElementById('carouselNext');
+        const indicators = document.getElementById('carouselIndicators');
+
+        // Always setup click handlers
+        setupCarouselNavigation();
+
+        // Hide navigation since we only have one image for now
+        prevBtn.style.display = 'none';
+        nextBtn.style.display = 'none';
+        indicators.style.display = 'none';
+
+        // Set first image as active
+        img1.classList.add('active');
+        updateCarouselDisplay();
+      }
+    }
+
+    function setupCarouselNavigation() {
+      const prevBtn = document.getElementById('carouselPrev');
+      const nextBtn = document.getElementById('carouselNext');
+      const indicators = document.querySelectorAll('.carousel-indicator');
+      const carouselContainer = document.getElementById('imageCarousel');
+
+      prevBtn.onclick = (e) => {
+        e.stopPropagation();
+        changeCarouselImage(-1);
+      };
+
+      nextBtn.onclick = (e) => {
+        e.stopPropagation();
+        changeCarouselImage(1);
+      };
+
+      indicators.forEach((indicator, index) => {
+        indicator.onclick = (e) => {
+          e.stopPropagation();
+          setCarouselImage(index);
+        };
+      });
+
+      // Make carousel images clickable to open fullscreen
+      carouselContainer.onclick = () => {
+        openAvatarModal(carouselImages[currentCarouselIndex], currentCharacter.name);
+      };
+    }
+
+    function changeCarouselImage(direction) {
+      currentCarouselIndex = (currentCarouselIndex + direction + carouselImages.length) % carouselImages.length;
+      updateCarouselDisplay();
+    }
+
+    function setCarouselImage(index) {
+      currentCarouselIndex = index;
+      updateCarouselDisplay();
+    }
+
+    function updateCarouselDisplay() {
+      const images = document.querySelectorAll('.carousel-image');
+      const indicators = document.querySelectorAll('.carousel-indicator');
+
+      images.forEach((img, index) => {
+        if (index === currentCarouselIndex) {
+          img.classList.add('active');
+        } else {
+          img.classList.remove('active');
+        }
+      });
+
+      indicators.forEach((indicator, index) => {
+        if (index === currentCarouselIndex) {
+          indicator.classList.add('active');
+        } else {
+          indicator.classList.remove('active');
+        }
+      });
     }
 
     // Make avatars clickable
