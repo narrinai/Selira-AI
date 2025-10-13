@@ -796,21 +796,36 @@ async function generateWithReliberate(body, requestId, corsHeaders, email, auth0
     // Reliberate needs clear subject focus: man AND woman together, not just body parts
     let cleanedPrompt = sanitizedPrompt;
 
-    // For blowjob/oral scenes: Keep it simple for better anatomy
+    // ULTRA SIMPLE prompts to avoid anatomy issues
+    // Extract outfit/clothing keywords separately
+    let outfitKeywords = '';
+    if (promptLower.includes('stocking')) outfitKeywords = 'wearing stockings';
+    else if (promptLower.includes('lingerie')) outfitKeywords = 'wearing lingerie';
+    else if (promptLower.includes('naked') || promptLower.includes('nude')) outfitKeywords = 'completely naked';
+
+    // For blowjob/oral scenes
     if (promptLower.includes('blowjob') || promptLower.includes('oral sex') || promptLower.includes('sucking')) {
-      // Remove POV keywords - they cause floating penis issues
-      let simplifiedPrompt = sanitizedPrompt
-        .replace(/POV/gi, '')
-        .replace(/point of view/gi, '')
-        .replace(/from above/gi, '');
-      cleanedPrompt = `${simplifiedPrompt}, man and woman together, woman kneeling performing oral sex on man, both people visible, realistic anatomy, professional photography`;
+      cleanedPrompt = `woman kneeling giving blowjob to man, penis in mouth`;
     }
-    // For penetration scenes: simple and clear
-    else if (promptLower.includes('fucking') || promptLower.includes('penetrat') || promptLower.includes('doggy') || promptLower.includes('cowgirl') || promptLower.includes('missionary')) {
-      cleanedPrompt = `${sanitizedPrompt}, man and woman having sex, both bodies visible, realistic proportions, professional photography`;
+    // Doggy style
+    else if (promptLower.includes('doggy')) {
+      cleanedPrompt = `doggy style sex, woman on all fours, man behind her`;
+    }
+    // Cowgirl
+    else if (promptLower.includes('cowgirl')) {
+      const isReverse = promptLower.includes('reverse');
+      cleanedPrompt = isReverse ? `reverse cowgirl, woman on top facing away` : `cowgirl position, woman on top`;
+    }
+    // Missionary
+    else if (promptLower.includes('missionary')) {
+      cleanedPrompt = `missionary position, man on top`;
+    }
+    // Other penetration
+    else if (promptLower.includes('fucking') || promptLower.includes('penetrat')) {
+      cleanedPrompt = `man and woman having sex`;
     }
 
-    fullPrompt = `${appearance}, ${cleanedPrompt}, photorealistic, warm lighting, ${randomBg}, high quality, detailed, perfect anatomy, realistic proportions`;
+    fullPrompt = `${appearance}, ${cleanedPrompt}, ${outfitKeywords}, photorealistic, warm lighting, ${randomBg}, high quality`;
     console.log(`✅ [${requestId}] Direct sex prompt:`, fullPrompt);
   } else {
     // Regular NSFW prompt
@@ -842,17 +857,16 @@ async function generateWithReliberate(body, requestId, corsHeaders, email, auth0
       contextualEnhancement = randomBg;
     }
 
-    // NSFW enhancement - keep simple for better anatomy
-    // IMPORTANT: Solo shots - emphasize SINGLE person, not couples
+    // ULTRA SIMPLE solo prompts - avoid anatomy issues
     let nsfwEnhancement = sex === 'male'
-      ? ', solo naked man alone, single person, erect penis visible, genitals exposed, muscular body, explicit nudity, one person only'
-      : ', solo naked woman alone, single person, breasts exposed, pussy visible, genitals exposed, explicit nudity, one person only';
+      ? ', naked man, penis visible, solo'
+      : ', naked woman, breasts and pussy visible, solo';
 
     // Shot type
     const isFullBody = shotType === 'fullbody' || promptLower.includes('full body');
-    const shotDesc = isFullBody ? 'full body photograph' : 'portrait photograph';
+    const shotDesc = isFullBody ? 'full body' : 'portrait';
 
-    fullPrompt = `${appearance}, ${shotDesc}, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}, photorealistic, warm lighting, high quality, detailed, perfect anatomy, realistic proportions, solo subject`;
+    fullPrompt = `${appearance}, ${shotDesc}, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}, photorealistic, warm lighting, high quality`;
   }
 
   console.log(`✨ [${requestId}] Reliberate v3 prompt:`, fullPrompt);
