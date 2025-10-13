@@ -42,16 +42,14 @@ exports.handler = async (event, context) => {
       width: width || 1024,
       height: height || 1024,
       steps: num_inference_steps || 20,
-      cfg_scale: guidance_scale || 3.5,
-      output_format: output_format || 'webp',
-      scheduler: 'default'
+      cfg_scale: guidance_scale || 5,
+      scheduler: 'default',
+      seed: -1 // Default to random
     };
 
-    // Add seed if provided
+    // Override seed if provided
     if (seed !== undefined && seed !== null && seed !== '') {
       input.seed = parseInt(seed);
-    } else {
-      input.seed = -1; // Random seed
     }
 
     // Create prediction using model name in owner/name format
