@@ -86,12 +86,12 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     const negativePrompt = 'clothes, clothing, dressed, covered, censored, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white';
 
     // Determine Promptchan model style based on companion type
-    let promptchanModelStyle = 'Hyperreal';  // Default realistic
+    let promptchanModelStyle = 'Hyperreal XL+ v2';  // Default realistic
     if (style === 'anime' || style === 'animated') {
       promptchanModelStyle = 'Anime XL+';
       console.log(`🎌 [${requestId}] Using Anime XL+ model for anime companion`);
     } else {
-      console.log(`📸 [${requestId}] Using Hyperreal model for realistic companion`);
+      console.log(`📸 [${requestId}] Using Hyperreal XL+ v2 model for realistic companion`);
     }
 
     // Enhance prompt with explicit detail keywords for maximum visibility
@@ -337,7 +337,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
 
     const negativePrompt = 'clothes, clothing, dressed, covered, censored, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white';
 
-    const promptchanStyle = (style === 'anime' || style === 'animated') ? 'Anime XL+' : 'Hyperreal';
+    const promptchanStyle = (style === 'anime' || style === 'animated') ? 'Anime XL+' : 'Hyperreal XL+ v2';
 
     const promptchanRequest = {
       prompt: directPrompt,
@@ -549,7 +549,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   console.log(`✨ [${requestId}] Promptchan enhanced prompt:`, enhancedPrompt);
 
   // Determine Promptchan style based on our style parameter
-  let promptchanStyle = 'Hyperreal';  // Use Hyperreal for realistic
+  let promptchanStyle = 'Hyperreal XL+ v2';  // Use Hyperreal XL+ v2 for realistic
   let promptchanFilter = 'Default';       // Use Default filter
 
   if (style === 'anime' || style === 'animated') {
@@ -557,7 +557,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     promptchanFilter = 'Default';  // Use Default filter for anime too
     console.log(`🎌 [${requestId}] Using ANIME style for Promptchan`);
   } else {
-    console.log(`📸 [${requestId}] Using Hyperreal for Promptchan`);
+    console.log(`📸 [${requestId}] Using Hyperreal XL+ v2 for Promptchan`);
   }
 
   // Add negative prompt to reduce unwanted elements
