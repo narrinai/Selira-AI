@@ -796,9 +796,15 @@ async function generateWithReliberate(body, requestId, corsHeaders, email, auth0
     // Reliberate needs clear subject focus: man AND woman together, not just body parts
     let cleanedPrompt = sanitizedPrompt;
 
-    // For blowjob/oral scenes: emphasize TWO people interacting, not just isolated genitals
+    // For blowjob/oral scenes: Remove POV for better composition, show both people
+    // POV shots are difficult for AI - they create disembodied genitals
     if (promptLower.includes('blowjob') || promptLower.includes('oral sex') || promptLower.includes('sucking')) {
-      cleanedPrompt = `man and woman together, intimate couple, ${sanitizedPrompt}, man's body visible, woman performing oral sex on man, two people in frame, couple having sex`;
+      // Remove POV keywords - they cause floating penis issues
+      let simplifiedPrompt = sanitizedPrompt
+        .replace(/POV/gi, '')
+        .replace(/point of view/gi, '')
+        .replace(/from above/gi, '');
+      cleanedPrompt = `man and woman together intimate couple, ${simplifiedPrompt}, man standing or sitting with visible torso and legs, woman kneeling performing oral sex on man, both people fully visible in frame, man's full body shown, couple having sex, side angle view`;
     }
     // For penetration scenes: emphasize the couple, both bodies
     else if (promptLower.includes('fucking') || promptLower.includes('penetrat') || promptLower.includes('doggy') || promptLower.includes('cowgirl') || promptLower.includes('missionary')) {
