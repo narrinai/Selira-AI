@@ -671,6 +671,69 @@
       }
     }
 
+    /* Mobile Bottom Navigation */
+    .mobile-bottom-nav {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+      z-index: 1000;
+    }
+
+    .mobile-bottom-nav-container {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      max-width: 100%;
+      margin: 0 auto;
+    }
+
+    .mobile-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 8px;
+      transition: all 0.2s ease;
+      min-width: 60px;
+      gap: 4px;
+    }
+
+    .mobile-nav-item svg {
+      width: 22px;
+      height: 22px;
+      stroke-width: 2;
+    }
+
+    .mobile-nav-item:hover,
+    .mobile-nav-item.active {
+      color: var(--accent);
+    }
+
+    @media (max-width: 768px) {
+      .mobile-bottom-nav {
+        display: block;
+      }
+
+      /* Add padding to main content to prevent overlap with bottom nav */
+      .main-content {
+        padding-bottom: 80px;
+      }
+
+      /* Position support widget above mobile bottom nav on mobile */
+      .support-widget-btn {
+        bottom: 80px !important;
+      }
+    }
+
   </style>
 
   <!-- Google Analytics -->
@@ -856,18 +919,91 @@
     });
 
     // ===== SEARCH FUNCTIONALITY =====
+
+    // Synonym mapping for intelligent search matching
+    const searchSynonyms = {
+      // Ethnicity synonyms
+      'asian': ['asian', 'chinese', 'japanese', 'korean', 'thai', 'vietnamese', 'filipino', 'indonesian', 'taiwanese', 'singaporean'],
+      'latina': ['latina', 'latin', 'hispanic', 'mexican', 'brazilian', 'colombian', 'argentinian', 'venezuelan', 'peruvian'],
+      'caucasian': ['caucasian', 'white', 'european', 'british', 'american', 'canadian', 'australian'],
+      'african': ['african', 'black', 'ebony', 'nigerian', 'kenyan', 'ethiopian'],
+      'middle eastern': ['middle eastern', 'arab', 'persian', 'turkish', 'iranian', 'lebanese', 'egyptian'],
+      'indian': ['indian', 'south asian', 'pakistani', 'bangladeshi', 'sri lankan'],
+
+      // Size/build synonyms
+      'petite': ['petite', 'petit', 'small', 'tiny', 'slim', 'slender', 'short'],
+      'curvy': ['curvy', 'thicc', 'thick', 'voluptuous', 'busty', 'chubby', 'plus size', 'bbw'],
+      'athletic': ['athletic', 'fit', 'toned', 'muscular', 'sporty'],
+      'tall': ['tall', 'long legs', 'statuesque'],
+
+      // Hair color synonyms
+      'blonde': ['blonde', 'blond', 'golden', 'platinum', 'yellow hair', 'light hair'],
+      'brunette': ['brunette', 'brown hair', 'brown', 'dark brown'],
+      'redhead': ['redhead', 'red hair', 'ginger', 'auburn', 'red'],
+      'black hair': ['black hair', 'dark hair', 'raven'],
+
+      // Personality synonyms
+      'shy': ['shy', 'timid', 'introverted', 'reserved', 'quiet', 'bashful'],
+      'dominant': ['dominant', 'domme', 'dominatrix', 'bossy', 'controlling'],
+      'submissive': ['submissive', 'sub', 'obedient', 'docile'],
+      'flirty': ['flirty', 'flirtatious', 'seductive', 'teasing', 'playful'],
+
+      // Age-related synonyms
+      'young': ['young', 'teen', 'teenage', 'youthful', 'college', 'student'],
+      'mature': ['mature', 'milf', 'mom', 'older', 'experienced'],
+
+      // Role synonyms
+      'girlfriend': ['girlfriend', 'gf', 'romantic', 'dating'],
+      'wife': ['wife', 'married', 'spouse'],
+      'mistress': ['mistress', 'affair', 'lover'],
+      'teacher': ['teacher', 'professor', 'instructor', 'tutor'],
+      'doctor': ['doctor', 'nurse', 'medical', 'physician'],
+      'secretary': ['secretary', 'assistant', 'office'],
+
+      // Specific combinations
+      'asian petite': ['vietnamese', 'thai', 'filipino', 'japanese', 'chinese', 'korean', 'asian'],
+      'latina curvy': ['mexican', 'brazilian', 'colombian', 'latina', 'hispanic']
+    };
+
+    // Expand search terms with synonyms
+    function expandSearchTerms(searchTerms) {
+      const expanded = new Set([...searchTerms]);
+
+      // Check for multi-word phrases first (e.g., "petit asian")
+      const fullQuery = searchTerms.join(' ');
+      Object.entries(searchSynonyms).forEach(([key, synonyms]) => {
+        if (fullQuery.includes(key)) {
+          synonyms.forEach(syn => expanded.add(syn));
+        }
+      });
+
+      // Then expand individual terms
+      searchTerms.forEach(term => {
+        Object.entries(searchSynonyms).forEach(([key, synonyms]) => {
+          if (key === term || synonyms.includes(term)) {
+            synonyms.forEach(syn => expanded.add(syn));
+          }
+        });
+      });
+
+      return Array.from(expanded);
+    }
+
     function performComprehensiveSearch(characters, query) {
       if (!query || query.trim() === '') {
         return characters;
       }
 
-      const searchTerms = query.toLowerCase().trim().split(' ').filter(term => term.length > 0);
-      console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Searching for terms:', searchTerms);
+      const originalSearchTerms = query.toLowerCase().trim().split(' ').filter(term => term.length > 0);
+      const expandedSearchTerms = expandSearchTerms(originalSearchTerms);
+
+      console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Original search terms:', originalSearchTerms);
+      console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Expanded search terms:', expandedSearchTerms);
 
       const results = characters.filter(character => {
         // NSFW search terms that should match unfiltered companions
         const nsfwTerms = ['uncensored', 'unfiltered', 'nsfw', 'anal', 'blowjob', 'sex', 'nude', 'naked', 'explicit', 'porn', 'xxx'];
-        const hasNsfwTerm = searchTerms.some(term => nsfwTerms.includes(term));
+        const hasNsfwTerm = expandedSearchTerms.some(term => nsfwTerms.includes(term));
 
         // Special handling for NSFW searches - match is_unfiltered field
         if (hasNsfwTerm) {
@@ -892,11 +1028,11 @@
 
         const searchText = searchableFields.join(' ').toLowerCase();
 
-        // Match ANY search term (OR logic) for flexible search
-        const matches = searchTerms.some(term => searchText.includes(term));
+        // Match ANY expanded search term (OR logic) for flexible search
+        const matches = expandedSearchTerms.some(term => searchText.includes(term));
 
         if (matches) {
-          console.log('✅ Match found:', character.name, '- Hair:', character.hair_color, '- Tags:', character.tags, '- Unfiltered:', character.is_unfiltered);
+          console.log('✅ Match found:', character.name, '- Hair:', character.hair_color, '- Ethnicity:', character.ethnicity, '- Tags:', character.tags);
         }
 
         return matches;
@@ -1206,5 +1342,45 @@
   <!-- Email Verification Handler -->
   <script src="js/email-verification-handler.js"></script>
   <script src="js/unverified-email-banner.js"></script>
+
+  <!-- Mobile Bottom Navigation -->
+  <nav class="mobile-bottom-nav">
+    <div class="mobile-bottom-nav-container">
+      <a href="/" class="mobile-nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        <span>Discover</span>
+      </a>
+      <a href="/my-companions" class="mobile-nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <span>Chat</span>
+      </a>
+      <a href="/create" class="mobile-nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        <span>Create</span>
+      </a>
+      <a href="/free-nsfw-image-generator" class="mobile-nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+          <circle cx="8.5" cy="8.5" r="1.5"></circle>
+          <polyline points="21 15 16 10 5 21"></polyline>
+        </svg>
+        <span>Image</span>
+      </a>
+      <a href="/pricing" class="mobile-nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+        </svg>
+        <span>Pricing</span>
+      </a>
+    </div>
+  </nav>
 </body>
 </html>
