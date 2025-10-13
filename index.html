@@ -1384,15 +1384,18 @@
       @media (max-width: 768px) {
         .mobile-filter-bar {
           display: flex;
-          gap: 8px;
+          gap: 6px;
           padding: 12px;
           background: var(--bg-primary);
           border-bottom: 1px solid var(--border);
+          flex-wrap: nowrap;
+          overflow-x: auto;
         }
 
         .mobile-filter-dropdown {
           position: relative;
           flex: 1;
+          min-width: 0;
         }
 
         .mobile-dropdown-btn {
@@ -1400,19 +1403,24 @@
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 10px 10px;
-          background: var(--bg-secondary);
-          border: 1px solid var(--border);
-          border-radius: 8px;
-          color: var(--text-primary);
-          font-size: 13px;
-          font-weight: 500;
+          padding: 8px 10px;
+          background: linear-gradient(135deg, #ce93d8 0%, #ba68c8 100%);
+          border: 1px solid var(--accent);
+          border-radius: 20px;
+          color: white;
+          font-size: 11px;
+          font-weight: 600;
           cursor: pointer;
           transition: all 0.2s ease;
+          white-space: nowrap;
         }
 
         .mobile-dropdown-btn:active {
-          background: var(--bg-tertiary);
+          opacity: 0.9;
+        }
+
+        .mobile-dropdown-btn svg {
+          flex-shrink: 0;
         }
 
         .mobile-dropdown-menu {
