@@ -177,7 +177,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
       style: promptchanModelStyle,  // Use correct model based on companion style
       quality: 'Ultra', // Only valid option
       image_size: '256x256', // Smallest = FASTEST generation (was 512x512)
-      creativity: 10, // Lowest = fastest generation (was 30)
+      creativity: 5, // Ultra low = ultra fast generation (was 30)
       seed: -1,
       filter: 'Default',
       emotion: 'Default',
@@ -345,7 +345,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
       style: promptchanStyle,
       quality: 'Ultra', // Only valid option
       image_size: '256x256', // Smallest = FASTEST generation
-      creativity: 10, // Lowest = fastest generation
+      creativity: 5, // Ultra low = ultra fast generation
       seed: -1,
       filter: 'Default',
       emotion: 'Default',
