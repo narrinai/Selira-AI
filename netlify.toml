@@ -21,14 +21,16 @@ timeout = 26
 
 # Scheduled function to download external URLs (Replicate/ImgBB/googleapis) to local storage
 # Runs once per day at 3:00 AM UTC to save credits
-[functions."download-replicate-avatars-scheduled"]
-schedule = "0 3 * * *"
+# DISABLED - use manual triggers instead
+# [functions."download-replicate-avatars-scheduled"]
+# schedule = "0 3 * * *"
 
 # Scheduled function to generate avatar_url_2 for companions missing second avatar
 # Runs once per day at 4:00 AM UTC, processes 20 companions per run
-[functions."generate-avatar-2-bulk"]
-schedule = "0 4 * * *"
-timeout = 26
+# DISABLED - use manual triggers instead
+# [functions."generate-avatar-2-bulk"]
+# schedule = "0 4 * * *"
+# timeout = 26
 
 # Cache static assets to reduce bandwidth and web requests
 [[headers]]
