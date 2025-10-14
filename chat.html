@@ -2903,6 +2903,51 @@
       document.getElementById('searchModal').classList.remove('open');
     }
 
+    // ===== DYNAMIC SEO UPDATES =====
+    function updateCharacterSEO(characterName) {
+      // Fixed SEO template (optimized for 60 char title, 155 char description)
+      const FIXED_SUFFIX = ' | Free AI NSFW Chat & Image Gen | Selira';
+
+      // Generate title with just character name
+      const newTitle = `${characterName} AI Chat${FIXED_SUFFIX}`;
+      const newDescription = `Chat with ${characterName} AI companion. Free unlimited NSFW chat & image generation. Create intimate conversations & custom images. Start chatting now!`;
+
+      // Update document title (max 60 chars for Google)
+      document.title = newTitle.length > 60 ? `${characterName}${FIXED_SUFFIX}` : newTitle;
+
+      // Update meta description (150-155 chars optimal)
+      let metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc) {
+        metaDesc.setAttribute('content', newDescription);
+      }
+
+      // Update Open Graph title
+      let ogTitle = document.querySelector('meta[property="og:title"]');
+      if (ogTitle) {
+        ogTitle.setAttribute('content', document.title);
+      }
+
+      // Update Open Graph description
+      let ogDesc = document.querySelector('meta[property="og:description"]');
+      if (ogDesc) {
+        ogDesc.setAttribute('content', newDescription);
+      }
+
+      // Update Twitter title
+      let twitterTitle = document.querySelector('meta[property="twitter:title"]');
+      if (twitterTitle) {
+        twitterTitle.setAttribute('content', document.title);
+      }
+
+      // Update Twitter description
+      let twitterDesc = document.querySelector('meta[property="twitter:description"]');
+      if (twitterDesc) {
+        twitterDesc.setAttribute('content', newDescription);
+      }
+
+      console.log('✅ SEO updated for character:', characterName);
+    }
+
     function selectCharacter(slug) {
       // Update character based on selection
       // This would normally fetch from API
@@ -3992,16 +4037,19 @@
       };
       
       updateCharacterDisplay();
-      
+
+      // Update SEO meta tags dynamically
+      updateCharacterSEO(name);
+
       // Update active chat item
       document.querySelectorAll('.chat-item').forEach(item => {
         item.classList.remove('active');
       });
       event.currentTarget.classList.add('active');
-      
+
       // Update URL to reflect new character
       updateUrlForCharacter(slug);
-      
+
       // Load chat history for this character
       loadChatHistoryFromStorage(slug);
       
@@ -4049,6 +4097,9 @@
       });
 
       updateCharacterDisplay();
+
+      // Update SEO meta tags dynamically
+      updateCharacterSEO(name);
 
       // Update URL to reflect new character
       updateUrlForCharacter(slug);
@@ -4338,6 +4389,9 @@
       }
 
       updateCharacterDisplay();
+
+      // Update SEO meta tags dynamically
+      updateCharacterSEO(name);
 
       // Update active chat item
       document.querySelectorAll('.chat-item').forEach(item => {

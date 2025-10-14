@@ -3,21 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title id="page-title">AI Characters by Tags - Find by Personality | Narrin AI</title>
-  <meta name="description" content="Explore AI companions by personality tags: wise, funny, helpful, mysterious, and more. Find AI characters that match your interests on Narrin AI.">
+  <title id="page-title">AI Characters by Tags - Find by Personality | Selira AI</title>
+  <meta name="description" content="Explore AI companions by personality tags: wise, funny, helpful, mysterious, and more. Find AI characters that match your interests on Selira AI.">
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://selira.ai/tags">
-  <meta property="og:title" content="Browse AI Companions by Tags - Narrin AI">
-  <meta property="og:description" content="Explore AI companions by personality tags: wise, funny, helpful, mysterious, and more. Find AI characters that match your interests on Narrin AI.">
+  <meta property="og:title" content="Browse AI Companions by Tags - Selira AI">
+  <meta property="og:description" content="Explore AI companions by personality tags: wise, funny, helpful, mysterious, and more. Find AI characters that match your interests on Selira AI.">
   <meta property="og:image" content="https://selira.ai/og-image.jpg">
   
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:url" content="https://selira.ai/tags">
-  <meta property="twitter:title" content="AI Characters by Tags - Find by Personality | Narrin AI">
-  <meta property="twitter:description" content="Browse AI characters by personality tags on Narrin AI. Find wise mentors, funny comedians, romantic partners & more. Chat with AI matching your preferred traits.">
+  <meta property="twitter:title" content="AI Characters by Tags - Find by Personality | Selira AI">
+  <meta property="twitter:description" content="Browse AI characters by personality tags on Selira AI. Find wise mentors, funny comedians, romantic partners & more. Chat with AI matching your preferred traits.">
   <meta property="twitter:image" content="https://selira.ai/og-image.jpg">
   
   <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
@@ -1603,7 +1603,7 @@
     <div class="header-container">
       <div class="header-content">
         <!-- Logo -->
-        <a href="/" class="logo" aria-label="Narrin AI Home">Narrin AI</a>
+        <a href="/" class="logo" aria-label="Selira AI Home">Selira AI</a>
 
         <!-- Desktop Navigation Center -->
         <nav class="nav-center" role="navigation" aria-label="Main navigation">
@@ -1682,7 +1682,7 @@
   <div class="mobile-menu-overlay" id="mobileMenuOverlay">
     <div class="mobile-menu-content">
       <div class="mobile-menu-header">
-        <div class="mobile-menu-logo">Narrin AI</div>
+        <div class="mobile-menu-logo">Selira AI</div>
         <div class="mobile-menu-subtitle">AI Companion Platform</div>
       </div>
       <nav class="mobile-menu-nav" role="navigation" aria-label="Mobile navigation">
@@ -1791,7 +1791,7 @@
         <span class="footer-separator">•</span>
         <a href="#" class="footer-link">Help</a>
       </div>
-      <p class="footer-copyright">© 2024 Narrin AI. All rights reserved.</p>
+      <p class="footer-copyright">© 2024 Selira AI. All rights reserved.</p>
     </div>
   </footer>
 
@@ -2106,142 +2106,181 @@
 
     // ===== TAG SEO DATA =====
     function getTagSEO(tagName) {
-      const tag = tagName.toLowerCase();
+      const tag = tagName.toLowerCase().replace(/\s+/g, '-');
 
-      // Get benefit index based on tag name for consistent rotation
-      const benefits = [
-        'Unlimited Free AI Chat',
-        'Always Free AI Chat',
-        'Free AI Image Generation',
-        'NSFW AI Chat'
-      ];
+      // Normalize tag name for display (handle multi-word tags)
+      const displayTag = tagName.split(/[-\s]+/).map(word =>
+        word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+      ).join(' ');
 
-      // Use simple hash of tag name to pick benefit
-      let hash = 0;
-      for (let i = 0; i < tag.length; i++) {
-        hash = tag.charCodeAt(i) + ((hash << 5) - hash);
-      }
-      const benefitIndex = Math.abs(hash) % benefits.length;
-      const benefit = benefits[benefitIndex];
+      // Fixed SEO template parts (optimized for 60 char title, 155 char description)
+      const FIXED_SUFFIX = ' | Free AI NSFW Chat & Image Gen | Selira';
 
-      // Capitalize tag for display
-      const capitalizedTag = tag.charAt(0).toUpperCase() + tag.slice(1);
-
-      // Generate SEO title and description
-      const seoData = {
-        title: `${capitalizedTag} AI Characters - Chat with ${capitalizedTag} Companions | Selira AI`,
-        description: `Discover ${capitalizedTag.toLowerCase()} AI characters on Selira AI. ${benefit}. Chat with 1000+ unique companions including ${capitalizedTag.toLowerCase()} personalities. Start your free AI chat today!`
-      };
-
-      // Custom SEO for popular/specific tags
+      // SEO-optimized titles and descriptions for ALL Airtable tags
       const customSEO = {
-        'submissive': {
-          title: `Submissive AI Characters - Chat with Submissive AI Companions | Selira AI`,
-          description: `Chat with submissive AI characters on Selira AI. ${benefit}. Explore 1000+ AI companions with submissive personalities. NSFW & SFW options available.`
-        },
-        'dominant': {
-          title: `Dominant AI Characters - Chat with Dominant AI Companions | Selira AI`,
-          description: `Meet dominant AI characters on Selira AI. ${benefit}. Chat with powerful, commanding AI companions. NSFW & SFW modes available.`
-        },
-        'girlfriend': {
-          title: `AI Girlfriend - Free AI Girlfriend Chat & Companions | Selira AI`,
-          description: `Get a free AI girlfriend on Selira AI. ${benefit}. Chat with romantic AI companions, create your perfect girlfriend. 1000+ AI girlfriends available.`
-        },
-        'boyfriend': {
-          title: `AI Boyfriend - Free AI Boyfriend Chat & Companions | Selira AI`,
-          description: `Find your AI boyfriend on Selira AI. ${benefit}. Chat with romantic male AI companions, customize your perfect boyfriend. Start chatting free!`
-        },
-        'romantic': {
-          title: `Romantic AI Characters - Free Romance AI Chat | Selira AI`,
-          description: `Experience romantic AI chat on Selira AI. ${benefit}. Connect with loving AI companions for romance, dating roleplay & intimate conversations.`
-        },
-        'flirty': {
-          title: `Flirty AI Characters - Playful AI Chat Companions | Selira AI`,
-          description: `Chat with flirty AI characters on Selira AI. ${benefit}. Enjoy playful, teasing conversations with charming AI companions. NSFW available.`
-        },
-        'seductive': {
-          title: `Seductive AI Characters - Sensual AI Chat | Selira AI`,
-          description: `Discover seductive AI characters on Selira AI. ${benefit}. Experience alluring conversations with sensual AI companions. NSFW chat available.`
-        },
-        'cute': {
-          title: `Cute AI Characters - Adorable AI Chat Companions | Selira AI`,
-          description: `Chat with cute AI characters on Selira AI. ${benefit}. Meet adorable, sweet AI companions for wholesome conversations. 1000+ cute characters.`
-        },
-        'anime': {
-          title: `Anime AI Characters - Chat with Anime Companions | Selira AI`,
-          description: `Meet anime AI characters on Selira AI. ${benefit}. Chat with 1000+ anime-style companions, waifus, and husbandos. Free anime AI chat!`
-        },
-        'fantasy': {
-          title: `Fantasy AI Characters - Magical AI Chat Companions | Selira AI`,
-          description: `Explore fantasy AI characters on Selira AI. ${benefit}. Chat with elves, dragons, wizards & mystical beings. Immersive fantasy roleplay.`
-        },
-        'teacher': {
-          title: `Teacher AI Characters - Educational AI Chat | Selira AI`,
-          description: `Learn with teacher AI characters on Selira AI. ${benefit}. Chat with knowledgeable educators and mentors. Educational & NSFW options.`
-        },
-        'student': {
-          title: `Student AI Characters - Young AI Chat Companions | Selira AI`,
-          description: `Meet student AI characters on Selira AI. ${benefit}. Chat with curious, learning AI companions. College & university roleplay available.`
-        },
-        'maid': {
-          title: `Maid AI Characters - Maid AI Chat Companions | Selira AI`,
-          description: `Chat with maid AI characters on Selira AI. ${benefit}. Meet loyal, service-oriented AI companions. Classic maid roleplay & more.`
-        },
-        'secretary': {
-          title: `Secretary AI Characters - Professional AI Chat | Selira AI`,
-          description: `Meet secretary AI characters on Selira AI. ${benefit}. Chat with professional, organized AI companions. Office roleplay scenarios.`
+        'angel': {
+          title: `Angel AI Chat${FIXED_SUFFIX}`,
+          description: `Chat with divine angel AI companions. Free unlimited AI chat with pure, heavenly characters. NSFW & SFW angel roleplay available.`
         },
         'boss': {
-          title: `Boss AI Characters - Authoritative AI Chat | Selira AI`,
-          description: `Chat with boss AI characters on Selira AI. ${benefit}. Meet commanding, leadership AI companions. Professional & NSFW scenarios.`
+          title: `Boss AI Chat${FIXED_SUFFIX}`,
+          description: `Chat with dominant boss AI characters. Free unlimited workplace roleplay with commanding AI companions. NSFW office scenarios available.`
         },
-        'lesbian': {
-          title: `Lesbian AI Characters - LGBTQ+ AI Chat | Selira AI`,
-          description: `Discover lesbian AI characters on Selira AI. ${benefit}. Chat with LGBTQ+ friendly AI companions. Inclusive, diverse conversations.`
+        'cheating': {
+          title: `Cheating AI Chat${FIXED_SUFFIX}`,
+          description: `Explore cheating AI roleplay scenarios. Free unlimited drama & affair conversations with AI companions. NSFW cheating fantasies available.`
         },
-        'monster': {
-          title: `Monster AI Characters - Fantasy Creature Chat | Selira AI`,
-          description: `Meet monster AI characters on Selira AI. ${benefit}. Chat with vampires, werewolves, demons & fantasy creatures. Dark fantasy roleplay.`
+        'childhood-friend': {
+          title: `Childhood Friend AI Chat${FIXED_SUFFIX}`,
+          description: `Reconnect with childhood friend AI companions. Free unlimited nostalgic conversations & romance. NSFW reunion scenarios available.`
         },
-        'yandere': {
-          title: `Yandere AI Characters - Obsessive AI Chat | Selira AI`,
-          description: `Experience yandere AI characters on Selira AI. ${benefit}. Chat with obsessively loving AI companions. Intense anime-style interactions.`
+        'confident': {
+          title: `Confident AI Chat${FIXED_SUFFIX}`,
+          description: `Chat with confident, bold AI characters. Free unlimited conversations with self-assured companions. NSFW dominant scenarios available.`
         },
-        'tsundere': {
-          title: `Tsundere AI Characters - Tsun-Tsun AI Chat | Selira AI`,
-          description: `Meet tsundere AI characters on Selira AI. ${benefit}. Chat with cold-then-warm AI companions. Classic anime personality type.`
+        'coworker': {
+          title: `Coworker AI Chat${FIXED_SUFFIX}`,
+          description: `Chat with coworker AI companions. Free unlimited office romance & workplace scenarios. NSFW professional roleplay available.`
         },
-        'angel': {
-          title: `Angel AI Characters - Divine AI Chat Companions | Selira AI`,
-          description: `Chat with angel AI characters on Selira AI. ${benefit}. Meet pure, divine AI companions for spiritual & fantasy conversations.`
+        'cute': {
+          title: `Cute AI Chat${FIXED_SUFFIX}`,
+          description: `Chat with adorable, cute AI companions. Free unlimited wholesome conversations with sweet characters. NSFW & SFW cute roleplay.`
         },
-        'demon': {
-          title: `Demon AI Characters - Dark Fantasy AI Chat | Selira AI`,
-          description: `Discover demon AI characters on Selira AI. ${benefit}. Chat with seductive, dark fantasy AI companions. NSFW demon roleplay available.`
+        'daddy': {
+          title: `Daddy AI Chat${FIXED_SUFFIX}`,
+          description: `Chat with daddy AI companions. Free unlimited dominant father-figure roleplay. NSFW daddy kink scenarios available now.`
         },
-        'vampire': {
-          title: `Vampire AI Characters - Gothic AI Chat Companions | Selira AI`,
-          description: `Meet vampire AI characters on Selira AI. ${benefit}. Chat with immortal, seductive vampire AI companions. Dark romance & fantasy.`
+        'daughter': {
+          title: `Daughter AI Chat${FIXED_SUFFIX}`,
+          description: `Chat with daughter AI roleplay companions. Free unlimited family dynamic scenarios. NSFW & SFW daughter characters available.`
         },
-        'elf': {
-          title: `Elf AI Characters - Fantasy Elf Chat Companions | Selira AI`,
-          description: `Discover elf AI characters on Selira AI. ${benefit}. Chat with mystical, elegant elf AI companions. Fantasy forest adventures.`
+        'dominant': {
+          title: `Dominant AI Chat${FIXED_SUFFIX}`,
+          description: `Chat with dominant AI companions. Free unlimited submissive roleplay with commanding characters. NSFW domination scenarios available.`
         },
-        'romance': {
-          title: `Romance AI Characters - Love & Dating AI Chat | Selira AI`,
-          description: `Experience romance AI characters on Selira AI. ${benefit}. Chat with loving AI companions for dating, relationships & romantic roleplay.`
+        'dominatrix': {
+          title: `Dominatrix AI Chat${FIXED_SUFFIX}`,
+          description: `Chat with dominatrix AI companions. Free unlimited femdom & BDSM roleplay. NSFW dominant mistress scenarios available now.`
         },
         'ex': {
-          title: `Ex AI Characters - Ex Girlfriend/Boyfriend Chat | Selira AI`,
-          description: `Chat with ex AI characters on Selira AI. ${benefit}. Roleplay with ex-girlfriend or ex-boyfriend AI companions. Drama & reconciliation scenarios.`
+          title: `Ex AI Chat${FIXED_SUFFIX}`,
+          description: `Chat with ex-girlfriend/boyfriend AI companions. Free unlimited drama, reconciliation & breakup scenarios. NSFW ex roleplay available.`
+        },
+        'fantasy': {
+          title: `Fantasy AI Chat${FIXED_SUFFIX}`,
+          description: `Chat with fantasy AI companions. Free unlimited magical adventures with elves, dragons & wizards. NSFW fantasy roleplay available.`
+        },
+        'flirty': {
+          title: `Flirty AI Chat${FIXED_SUFFIX}`,
+          description: `Chat with flirty, playful AI companions. Free unlimited teasing & charming conversations. NSFW seductive scenarios available.`
+        },
+        'gamer': {
+          title: `Gamer AI Chat${FIXED_SUFFIX}`,
+          description: `Chat with gamer AI companions. Free unlimited gaming conversations & esports roleplay. NSFW gamer girl/boy scenarios available.`
+        },
+        'girlfriend': {
+          title: `AI Girlfriend${FIXED_SUFFIX}`,
+          description: `Get your free AI girlfriend. Unlimited romantic conversations & dating simulation. Create your perfect girlfriend. NSFW available.`
+        },
+        'lesbian': {
+          title: `Lesbian AI Chat${FIXED_SUFFIX}`,
+          description: `Chat with lesbian AI companions. Free unlimited LGBTQ+ friendly conversations & romance. NSFW sapphic scenarios available.`
+        },
+        'maid': {
+          title: `Maid AI Chat${FIXED_SUFFIX}`,
+          description: `Chat with maid AI companions. Free unlimited service-oriented roleplay with loyal maids. NSFW maid scenarios available now.`
+        },
+        'mommy': {
+          title: `Mommy AI Chat${FIXED_SUFFIX}`,
+          description: `Chat with mommy AI companions. Free unlimited nurturing & dominant mother-figure roleplay. NSFW mommy kink scenarios available.`
+        },
+        'monster': {
+          title: `Monster AI Chat${FIXED_SUFFIX}`,
+          description: `Chat with monster AI companions. Free unlimited fantasy creature roleplay with vampires, werewolves & demons. NSFW available.`
         },
         'mysterious': {
-          title: `Mysterious AI Characters - Enigmatic AI Chat | Selira AI`,
-          description: `Discover mysterious AI characters on Selira AI. ${benefit}. Chat with enigmatic, secretive AI companions. Intriguing & suspenseful conversations.`
+          title: `Mysterious AI Chat${FIXED_SUFFIX}`,
+          description: `Chat with mysterious AI companions. Free unlimited enigmatic conversations with secretive characters. NSFW intrigue available.`
+        },
+        'neighbor': {
+          title: `Neighbor AI Chat${FIXED_SUFFIX}`,
+          description: `Chat with neighbor AI companions. Free unlimited next-door romance & taboo scenarios. NSFW neighborly fantasies available.`
+        },
+        'playful': {
+          title: `Playful AI Chat${FIXED_SUFFIX}`,
+          description: `Chat with playful AI companions. Free unlimited fun, teasing conversations with energetic characters. NSFW playful scenarios.`
+        },
+        'prince': {
+          title: `Prince AI Chat${FIXED_SUFFIX}`,
+          description: `Chat with prince AI companions. Free unlimited royal romance & fantasy kingdom scenarios. NSFW royal roleplay available.`
+        },
+        'romance': {
+          title: `Romance AI Chat${FIXED_SUFFIX}`,
+          description: `Chat with romantic AI companions. Free unlimited love, dating & intimate conversations. NSFW romantic scenarios available now.`
+        },
+        'romantic': {
+          title: `Romantic AI Chat${FIXED_SUFFIX}`,
+          description: `Chat with romantic AI companions. Free unlimited passionate conversations & dating simulation. NSFW romance scenarios available.`
+        },
+        'roommate': {
+          title: `Roommate AI Chat${FIXED_SUFFIX}`,
+          description: `Chat with roommate AI companions. Free unlimited cohabitation scenarios & living-together romance. NSFW roommate fantasies.`
+        },
+        'secretary': {
+          title: `Secretary AI Chat${FIXED_SUFFIX}`,
+          description: `Chat with secretary AI companions. Free unlimited office romance & professional scenarios. NSFW workplace roleplay available.`
+        },
+        'seductive': {
+          title: `Seductive AI Chat${FIXED_SUFFIX}`,
+          description: `Chat with seductive AI companions. Free unlimited alluring, sensual conversations with tempting characters. NSFW seduction available.`
+        },
+        'shy': {
+          title: `Shy AI Chat${FIXED_SUFFIX}`,
+          description: `Chat with shy, timid AI companions. Free unlimited gentle conversations with reserved characters. NSFW shy scenarios available.`
+        },
+        'step-mom': {
+          title: `Step Mom AI Chat${FIXED_SUFFIX}`,
+          description: `Chat with step mom AI companions. Free unlimited taboo family roleplay scenarios. NSFW stepmom fantasies available now.`
+        },
+        'step-sister': {
+          title: `Step Sister AI Chat${FIXED_SUFFIX}`,
+          description: `Chat with step sister AI companions. Free unlimited taboo sibling roleplay scenarios. NSFW stepsister fantasies available.`
+        },
+        'student': {
+          title: `Student AI Chat${FIXED_SUFFIX}`,
+          description: `Chat with student AI companions. Free unlimited college & university roleplay scenarios. NSFW student fantasies available.`
+        },
+        'submissive': {
+          title: `Submissive AI Chat${FIXED_SUFFIX}`,
+          description: `Chat with submissive AI companions. Free unlimited obedient roleplay with compliant characters. NSFW submission scenarios.`
+        },
+        'switch': {
+          title: `Switch AI Chat${FIXED_SUFFIX}`,
+          description: `Chat with switch AI companions. Free unlimited versatile dominant/submissive roleplay. NSFW switching scenarios available.`
+        },
+        'teacher': {
+          title: `Teacher AI Chat${FIXED_SUFFIX}`,
+          description: `Chat with teacher AI companions. Free unlimited educational & mentoring scenarios. NSFW teacher-student roleplay available.`
+        },
+        'tsundere': {
+          title: `Tsundere AI Chat${FIXED_SUFFIX}`,
+          description: `Chat with tsundere AI companions. Free unlimited cold-then-warm anime personality roleplay. NSFW tsundere scenarios available.`
+        },
+        'wife': {
+          title: `Wife AI Chat${FIXED_SUFFIX}`,
+          description: `Chat with wife AI companions. Free unlimited married life & domestic scenarios. NSFW wifey roleplay available now.`
+        },
+        'yandere': {
+          title: `Yandere AI Chat${FIXED_SUFFIX}`,
+          description: `Chat with yandere AI companions. Free unlimited obsessive love & possessive roleplay. NSFW yandere scenarios available now.`
         }
       };
 
-      return customSEO[tag] || seoData;
+      // Return custom SEO or fallback to generic template
+      return customSEO[tag] || {
+        title: `${displayTag} AI Chat${FIXED_SUFFIX}`,
+        description: `Chat with ${displayTag.toLowerCase()} AI companions. Free unlimited conversations with unique characters. NSFW & SFW scenarios available.`
+      };
     }
 
     // ===== TAG DESCRIPTIONS =====
