@@ -329,9 +329,9 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
 
     let directPrompt;
     if (style === 'anime' || style === 'animated') {
-      directPrompt = `${appearance}, ${sanitizedPrompt}, anime style, detailed anime art, high quality artwork, vibrant colors, explicit hardcore sex, ${randomBg}`;
+      directPrompt = `${appearance}, ${sanitizedPrompt}, completely naked, fully nude, no clothes at all, bare naked body, anime style, detailed anime art, high quality artwork, vibrant colors, explicit hardcore sex, ${randomBg}`;
     } else {
-      directPrompt = `${appearance}, ${sanitizedPrompt}, photorealistic, professional photography, explicit hardcore sex, porn scene, ${randomBg}`;
+      directPrompt = `${appearance}, ${sanitizedPrompt}, completely naked, fully nude, no clothes at all, zero clothing, bare naked body, exposed genitals, photorealistic, professional photography, explicit hardcore sex, porn scene, ${randomBg}`;
     }
 
     console.log(`✅ [${requestId}] Direct sex prompt:`, directPrompt);
