@@ -3534,9 +3534,10 @@
             title: char.Character_Title || '',
             description: char.Character_Description || '',
             avatar: char.Avatar_URL ? char.Avatar_URL.replace('narrin.ai', 'selira.ai') : null,
+            avatar_url_2: char.Avatar_URL_2 ? char.Avatar_URL_2.replace('narrin.ai', 'selira.ai') : null,
             category: char.Category || 'Other',
             slug: char.Slug || (char.Name ? char.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'unknown'),
-            creator: char.Nickname || 'Selira',
+            creator: char.Created_by || char.Nickname || 'Selira',
             tags: Array.isArray(char.Tags) ? char.Tags.slice(0, 11) : (char.Tags || '').toString().split(',').filter(Boolean).slice(0, 11), // Get real tags
             character_url: char.Character_URL ? char.Character_URL.replace('narrin.ai', 'selira.ai') : null,
             // Add appearance data - support both lowercase and capitalized field names
@@ -3854,9 +3855,10 @@
                 title: airtableChar.Character_Title || '',
                 description: airtableChar.Character_Description || '',
                 avatar: airtableChar.Avatar_URL ? airtableChar.Avatar_URL.replace('narrin.ai', 'selira.ai') : null,
+                avatar_url_2: airtableChar.Avatar_URL_2 ? airtableChar.Avatar_URL_2.replace('narrin.ai', 'selira.ai') : null,
                 category: airtableChar.Category || 'Other',
                 slug: airtableChar.Slug || slug,
-                creator: airtableChar.Nickname || airtableChar.Created_by || 'Selira',
+                creator: airtableChar.Created_by || airtableChar.Nickname || 'Selira',
                 tags: Array.isArray(airtableChar.Tags) ? airtableChar.Tags.slice(0, 11) : (airtableChar.Tags || '').toString().split(',').filter(Boolean).slice(0, 11),
                 // Appearance data (only fields that exist in Airtable)
                 companion_type: airtableChar.companion_type,
@@ -5701,6 +5703,12 @@
         carouselImages.push(fixAvatarUrl(currentCharacter.avatar));
       }
 
+      // Add second image (avatar_url_2) - ONLY for Selira companions
+      if (currentCharacter.creator === 'Selira' && currentCharacter.avatar_url_2) {
+        carouselImages.push(fixAvatarUrl(currentCharacter.avatar_url_2));
+        console.log('🎠 Added Avatar_URL_2 for Selira companion');
+      }
+
       console.log('🎠 Carousel images:', carouselImages);
 
       if (carouselImages.length > 0) {
@@ -5723,10 +5731,24 @@
         // Always setup click handlers
         setupCarouselNavigation();
 
-        // Hide navigation since we only have one image for now
-        prevBtn.style.display = 'none';
-        nextBtn.style.display = 'none';
-        indicators.style.display = 'none';
+        if (carouselImages.length > 1) {
+          img2.src = carouselImages[1];
+          img2.style.display = 'block';
+          // Remove blur when image loads
+          img2.onload = () => {
+            setTimeout(() => img2.classList.add('loaded'), 100);
+          };
+
+          // Show navigation for multiple images
+          prevBtn.style.display = 'flex';
+          nextBtn.style.display = 'flex';
+          indicators.style.display = 'flex';
+        } else {
+          // Hide navigation if only one image
+          prevBtn.style.display = 'none';
+          nextBtn.style.display = 'none';
+          indicators.style.display = 'none';
+        }
 
         // Set first image as active
         img1.classList.add('active');
