@@ -1,12 +1,12 @@
 // netlify/functions/download-replicate-avatars-scheduled.js
-// Scheduled function to download Replicate URLs and convert to local storage
-// Runs at 19:00 CEST (17:00 UTC), then every 8 hours
+// Scheduled function to download external URLs (Replicate/ImgBB/googleapis) and convert to local storage
+// Runs once per day at 3:00 AM UTC to reduce credit usage
 
 const fetch = require('node-fetch');
-const schedule = "0 17,1,9 * * *"; // Run at 17:00, 01:00, 09:00 UTC = 19:00, 03:00, 11:00 CEST
+const schedule = "0 3 * * *"; // Run at 03:00 UTC daily (05:00 CEST)
 
 const handler = async (event, context) => {
-  console.log('📥 Starting scheduled Replicate URL download (no regeneration)...');
+  console.log('📥 Starting scheduled external URL download (Replicate/ImgBB/googleapis)...');
 
   const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
   const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN || process.env.AIRTABLE_API_KEY;
@@ -28,11 +28,11 @@ const handler = async (event, context) => {
     let allRecords = [];
     let offset = null;
 
-    console.log('🔍 Fetching companions with Replicate or ImgBB URLs...');
+    console.log('🔍 Fetching companions with external URLs (Replicate/ImgBB/googleapis)...');
 
     do {
-      // Find both Replicate AND ImgBB URLs to convert to local storage
-      const filterFormula = encodeURIComponent("OR(FIND('replicate.delivery', {Avatar_URL}), FIND('i.ibb.co', {Avatar_URL}), FIND('imgbb.com', {Avatar_URL}))");
+      // Find Replicate, ImgBB, AND googleapis URLs to convert to local storage
+      const filterFormula = encodeURIComponent("OR(FIND('replicate.delivery', {Avatar_URL}), FIND('i.ibb.co', {Avatar_URL}), FIND('imgbb.com', {Avatar_URL}), FIND('googleapis.com', {Avatar_URL}), FIND('storage.googleapis.com', {Avatar_URL}))");
       const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_ID}?filterByFormula=${filterFormula}${offset ? `&offset=${offset}` : ''}`;
 
       const response = await fetch(url, {
@@ -51,7 +51,7 @@ const handler = async (event, context) => {
       offset = data.offset;
     } while (offset);
 
-    console.log(`📊 Found ${allRecords.length} companions with external URLs (Replicate/ImgBB)`);
+    console.log(`📊 Found ${allRecords.length} companions with external URLs (Replicate/ImgBB/googleapis)`);
 
     if (allRecords.length === 0) {
       console.log('✨ No external URLs to convert!');
@@ -81,8 +81,14 @@ const handler = async (event, context) => {
       console.log(`[${i+1}/${maxToProcess}] ${name} (${slug})`);
 
       try {
-        // Download image from external URL (Replicate or ImgBB)
-        console.log(`   📥 Downloading from external source...`);
+        // Determine source type
+        let sourceType = 'unknown';
+        if (externalUrl.includes('replicate.delivery')) sourceType = 'Replicate';
+        else if (externalUrl.includes('ibb.co') || externalUrl.includes('imgbb.com')) sourceType = 'ImgBB';
+        else if (externalUrl.includes('googleapis.com')) sourceType = 'googleapis';
+
+        // Download image from external URL
+        console.log(`   📥 Downloading from ${sourceType}...`);
         const imageResponse = await fetch(externalUrl);
 
         if (!imageResponse.ok) {
@@ -94,7 +100,20 @@ const handler = async (event, context) => {
         // Get image data
         const imageBuffer = await imageResponse.arrayBuffer();
         const timestamp = Date.now();
-        const extension = externalUrl.includes('.webp') ? 'webp' : 'png';
+
+        // Determine file extension from URL or content-type
+        let extension = 'webp';
+        if (externalUrl.includes('.webp')) extension = 'webp';
+        else if (externalUrl.includes('.png')) extension = 'png';
+        else if (externalUrl.includes('.jpg') || externalUrl.includes('.jpeg')) extension = 'jpg';
+        else {
+          // Fallback to content-type header
+          const contentType = imageResponse.headers.get('content-type');
+          if (contentType?.includes('webp')) extension = 'webp';
+          else if (contentType?.includes('png')) extension = 'png';
+          else if (contentType?.includes('jpeg') || contentType?.includes('jpg')) extension = 'jpg';
+        }
+
         const filename = `${slug}-avatar-${timestamp}.${extension}`;
 
         if (GITHUB_TOKEN) {
