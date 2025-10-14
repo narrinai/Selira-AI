@@ -89,12 +89,12 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     const negativePrompt = 'clothes, clothing, dressed, covered, censored, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white, giant breasts, huge ass, unrealistic proportions, exaggerated features, cartoonish body, distorted anatomy';
 
     // Determine Promptchan model style based on companion type
-    let promptchanModelStyle = 'Hyperreal';  // Use Hyperreal (faster)
+    let promptchanModelStyle = 'Photo XL+';  // Use Photo XL+ for best quality
     if (style === 'anime' || style === 'animated') {
       promptchanModelStyle = 'Anime XL+';
       console.log(`🎌 [${requestId}] Using Anime XL+ model for anime companion`);
     } else {
-      console.log(`📸 [${requestId}] Using Hyperreal model for realistic companion (fast)`);
+      console.log(`📸 [${requestId}] Using Photo XL+ model for realistic companion`);
     }
 
     // Enhance prompt with explicit detail keywords for maximum visibility
@@ -180,7 +180,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
       style: promptchanModelStyle,  // Use correct model based on companion style
       quality: 'Ultra', // Only valid option
       image_size: '256x256', // Smallest = FASTEST generation (was 512x512)
-      creativity: 15, // Lower = STRICT prompt following
+      creativity: 50, // High creativity for Photo XL+
       seed: -1,
       filter: 'Default',
       emotion: 'Default',
@@ -338,9 +338,9 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
 
     const negativePrompt = 'clothes, clothing, dressed, covered, censored, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white, giant breasts, huge ass, unrealistic proportions, exaggerated features, cartoonish body, distorted anatomy';
 
-    const promptchanStyle = (style === 'anime' || style === 'animated') ? 'Anime XL+' : 'Hyperreal';
+    const promptchanStyle = (style === 'anime' || style === 'animated') ? 'Anime XL+' : 'Photo XL+';
 
-    // For explicit sex acts, use HIGH creativity (40) for better pose interpretation
+    // For explicit sex acts, use HIGH creativity (50) for better pose interpretation
     // Complex poses like blowjob, doggy, cowgirl need more creative freedom
     const promptchanRequest = {
       prompt: directPrompt,
@@ -348,7 +348,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
       style: promptchanStyle,
       quality: 'Ultra', // Only valid option
       image_size: '256x256', // Smallest = FASTEST generation
-      creativity: 40, // HIGH creativity for complex sex poses (was 15, too strict)
+      creativity: 50, // HIGH creativity for complex sex poses with Photo XL+
       seed: -1,
       filter: 'Default',
       emotion: 'Default',
@@ -553,7 +553,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   console.log(`✨ [${requestId}] Promptchan enhanced prompt:`, enhancedPrompt);
 
   // Determine Promptchan style based on our style parameter
-  let promptchanStyle = 'Hyperreal';  // Use Hyperreal (faster than XL+ v2)
+  let promptchanStyle = 'Photo XL+';  // Use Photo XL+ for best photorealistic quality
   let promptchanFilter = 'Default';       // Use Default filter
 
   if (style === 'anime' || style === 'animated') {
@@ -561,21 +561,21 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     promptchanFilter = 'Default';  // Use Default filter for anime too
     console.log(`🎌 [${requestId}] Using ANIME style for Promptchan`);
   } else {
-    console.log(`📸 [${requestId}] Using Hyperreal for Promptchan (fast)`);
+    console.log(`📸 [${requestId}] Using Photo XL+ for Promptchan`);
   }
 
   // Add negative prompt to reduce unwanted elements and extreme proportions
   const negativePrompt = 'clothes, clothing, dressed, covered, censored, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white, giant breasts, huge ass, unrealistic proportions, exaggerated features, cartoonish body, distorted anatomy';
 
   // Build Promptchan API request
-  // For solo/simple poses, use LOWER creativity (20) for better prompt adherence
+  // For solo/simple poses, use HIGH creativity (50) for better pose variety
   const promptchanRequest = {
     prompt: enhancedPrompt,
     negative_prompt: negativePrompt,
     style: promptchanStyle,
     quality: 'Ultra', // Only valid option - 1 Gem
     image_size: '256x256', // Smallest = FASTEST generation (changed from 768x512)
-    creativity: 20, // Medium creativity for solo poses (was 15, slightly higher for variety)
+    creativity: 50, // High creativity for Photo XL+ (was 20, increased to 50)
     seed: -1, // Random seed
     filter: promptchanFilter, // Default filter
     emotion: 'Default',
