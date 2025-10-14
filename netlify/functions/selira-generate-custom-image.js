@@ -89,12 +89,12 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     const negativePrompt = 'clothes, clothing, dressed, covered, censored, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white, giant breasts, huge ass, unrealistic proportions, exaggerated features, cartoonish body, distorted anatomy';
 
     // Determine Promptchan model style based on companion type
-    let promptchanModelStyle = 'Photo XL+';  // Use Photo XL+ for best quality
+    let promptchanModelStyle = 'Hyperreal';  // Use Hyperreal (valid model)
     if (style === 'anime' || style === 'animated') {
       promptchanModelStyle = 'Anime XL+';
       console.log(`🎌 [${requestId}] Using Anime XL+ model for anime companion`);
     } else {
-      console.log(`📸 [${requestId}] Using Photo XL+ model for realistic companion`);
+      console.log(`📸 [${requestId}] Using Hyperreal model for realistic companion with HIGH creativity`);
     }
 
     // Enhance prompt with explicit detail keywords for maximum visibility
@@ -338,7 +338,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
 
     const negativePrompt = 'clothes, clothing, dressed, covered, censored, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white, giant breasts, huge ass, unrealistic proportions, exaggerated features, cartoonish body, distorted anatomy';
 
-    const promptchanStyle = (style === 'anime' || style === 'animated') ? 'Anime XL+' : 'Photo XL+';
+    const promptchanStyle = (style === 'anime' || style === 'animated') ? 'Anime XL+' : 'Hyperreal';
 
     // For explicit sex acts, use HIGH creativity (50) for better pose interpretation
     // Complex poses like blowjob, doggy, cowgirl need more creative freedom
@@ -553,7 +553,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   console.log(`✨ [${requestId}] Promptchan enhanced prompt:`, enhancedPrompt);
 
   // Determine Promptchan style based on our style parameter
-  let promptchanStyle = 'Photo XL+';  // Use Photo XL+ for best photorealistic quality
+  let promptchanStyle = 'Hyperreal';  // Use Hyperreal (works, fast)
   let promptchanFilter = 'Default';       // Use Default filter
 
   if (style === 'anime' || style === 'animated') {
@@ -561,7 +561,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     promptchanFilter = 'Default';  // Use Default filter for anime too
     console.log(`🎌 [${requestId}] Using ANIME style for Promptchan`);
   } else {
-    console.log(`📸 [${requestId}] Using Photo XL+ for Promptchan`);
+    console.log(`📸 [${requestId}] Using Hyperreal for Promptchan with HIGH creativity`);
   }
 
   // Add negative prompt to reduce unwanted elements and extreme proportions
