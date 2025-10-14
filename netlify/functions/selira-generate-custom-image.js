@@ -86,10 +86,10 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     console.log(`✅ [${requestId}] Detected pre-enhanced prompt from frontend (chat image gen), using directly without modification`);
 
     // Use the enhanced prompt directly without any modifications
-    const negativePrompt = 'clothes, clothing, dressed, covered, censored, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white';
+    const negativePrompt = 'clothes, clothing, dressed, covered, censored, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white, giant breasts, huge ass, unrealistic proportions, exaggerated features, cartoonish body, distorted anatomy';
 
     // Determine Promptchan model style based on companion type
-    let promptchanModelStyle = 'Hyperreal XL+ v2';  // Default realistic (better prompt following)
+    let promptchanModelStyle = 'Hyperreal XL+ v2';  // Use latest Hyperreal model
     if (style === 'anime' || style === 'animated') {
       promptchanModelStyle = 'Anime XL+';
       console.log(`🎌 [${requestId}] Using Anime XL+ model for anime companion`);
@@ -180,16 +180,16 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
       style: promptchanModelStyle,  // Use correct model based on companion style
       quality: 'Ultra', // Only valid option
       image_size: '256x256', // Smallest = FASTEST generation (was 512x512)
-      creativity: 30, // Higher = better prompt following
+      creativity: 15, // Lower = STRICT prompt following
       seed: -1,
       filter: 'Default',
       emotion: 'Default',
-      detail: 0,
-      age_slider: 25,
-      weight_slider: 0,
-      breast_slider: 50,  // Increase breast size slider for females
-      ass_slider: 50,  // Increase ass size slider
-      restore_faces: false
+      detail: 2, // Add detail level for better quality
+      age_slider: 23, // Slightly younger for more attractive faces
+      weight_slider: -10, // Slimmer body
+      breast_slider: 30,  // Moderate breast size (was 50)
+      ass_slider: 30,  // Moderate ass size (was 50)
+      restore_faces: true // Enable face restoration
     };
 
     console.log(`📤 [${requestId}] Using pre-enhanced prompt directly:`, promptchanRequest);
@@ -337,9 +337,9 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
 
     console.log(`✅ [${requestId}] Direct sex prompt:`, directPrompt);
 
-    const negativePrompt = 'clothes, clothing, dressed, covered, censored, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white';
+    const negativePrompt = 'clothes, clothing, dressed, covered, censored, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white, giant breasts, huge ass, unrealistic proportions, exaggerated features, cartoonish body, distorted anatomy';
 
-    const promptchanStyle = (style === 'anime' || style === 'animated') ? 'Anime XL+' : 'Hyperreal';
+    const promptchanStyle = (style === 'anime' || style === 'animated') ? 'Anime XL+' : 'Hyperreal XL+ v2';
 
     const promptchanRequest = {
       prompt: directPrompt,
@@ -347,16 +347,16 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
       style: promptchanStyle,
       quality: 'Ultra', // Only valid option
       image_size: '256x256', // Smallest = FASTEST generation
-      creativity: 30, // Higher = better prompt following
+      creativity: 15, // Lower = STRICT prompt following
       seed: -1,
       filter: 'Default',
       emotion: 'Default',
-      detail: 0,
-      age_slider: 25,
-      weight_slider: 0,
-      breast_slider: sex === 'male' ? 0 : 50,  // 0 for males, 50 for females
-      ass_slider: sex === 'male' ? 0 : 50,     // 0 for males, 50 for females
-      restore_faces: false
+      detail: 2, // Add detail level for better quality
+      age_slider: 23, // Slightly younger for more attractive faces
+      weight_slider: -10, // Slimmer body
+      breast_slider: sex === 'male' ? 0 : 30,  // Moderate breast size
+      ass_slider: sex === 'male' ? 0 : 30,     // Moderate ass size
+      restore_faces: true // Enable face restoration
     };
 
     console.log(`📤 [${requestId}] Promptchan request with DIRECT sex prompt:`, promptchanRequest);
@@ -553,7 +553,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   console.log(`✨ [${requestId}] Promptchan enhanced prompt:`, enhancedPrompt);
 
   // Determine Promptchan style based on our style parameter
-  let promptchanStyle = 'Hyperreal';  // Use Hyperreal for realistic (faster)
+  let promptchanStyle = 'Hyperreal XL+ v2';  // Use latest Hyperreal model for better quality
   let promptchanFilter = 'Default';       // Use Default filter
 
   if (style === 'anime' || style === 'animated') {
@@ -561,11 +561,11 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     promptchanFilter = 'Default';  // Use Default filter for anime too
     console.log(`🎌 [${requestId}] Using ANIME style for Promptchan`);
   } else {
-    console.log(`📸 [${requestId}] Using Hyperreal for Promptchan`);
+    console.log(`📸 [${requestId}] Using Hyperreal XL+ v2 for Promptchan`);
   }
 
-  // Add negative prompt to reduce unwanted elements
-  const negativePrompt = 'clothes, clothing, dressed, covered, censored, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white';
+  // Add negative prompt to reduce unwanted elements and extreme proportions
+  const negativePrompt = 'clothes, clothing, dressed, covered, censored, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white, giant breasts, huge ass, unrealistic proportions, exaggerated features, cartoonish body, distorted anatomy';
 
   // Build Promptchan API request
   const promptchanRequest = {
@@ -574,16 +574,16 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     style: promptchanStyle,
     quality: 'Ultra', // Only valid option - 1 Gem
     image_size: '256x256', // Smallest = FASTEST generation (changed from 768x512)
-    creativity: 30, // Higher = better prompt following
+    creativity: 15, // Lower = STRICT prompt following (was 30, reduced for better pose accuracy)
     seed: -1, // Random seed
     filter: promptchanFilter, // Default filter
     emotion: 'Default',
-    detail: 0,
-    age_slider: 25,
-    weight_slider: 0,
-    breast_slider: sex === 'male' ? 0 : 0, // Natural breast size
-    ass_slider: sex === 'male' ? 0 : 0, // Natural ass size
-    restore_faces: false
+    detail: 2, // Add detail level for better quality (0-3 scale)
+    age_slider: 23, // Slightly younger for more attractive faces
+    weight_slider: -10, // Slimmer body (-20 to +20 scale)
+    breast_slider: sex === 'male' ? 0 : 30, // Moderate breast size (was 0, now 30 for natural attractive proportions)
+    ass_slider: sex === 'male' ? 0 : 30, // Moderate ass size (was 0, now 30 for natural attractive proportions)
+    restore_faces: true // Enable face restoration for prettier faces
   };
 
   console.log(`📤 [${requestId}] Promptchan request (Ultra quality):`, promptchanRequest);
