@@ -76,6 +76,9 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   const sanitizedPrompt = customPrompt.trim();
   const promptLower = customPrompt.toLowerCase();
 
+  // Flag to track if first Promptchan attempt failed (to skip second attempt)
+  let skipSecondPromptchan = false;
+
   // REMOVED: Pre-enhanced check was dead code - chat buttons never matched those keywords
   // All chat/NSFW page requests now go through the explicit sex prompt path below
 
@@ -379,7 +382,8 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
       if (!response.ok) {
         const errorText = await response.text();
         console.error(`❌ [${requestId}] Promptchan API error:`, errorText);
-        console.log(`⚠️ [${requestId}] Promptchan failed, will fallback to Replicate below`);
+        console.log(`⚠️ [${requestId}] Promptchan failed, will skip second attempt and go to Replicate`);
+        skipSecondPromptchan = true; // Skip second Promptchan attempt
         // Don't throw - just continue to Replicate fallback
       } else {
         const result = await response.json();
@@ -390,7 +394,8 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
 
     } catch (error) {
       console.error(`❌ [${requestId}] Promptchan error:`, error.message);
-      console.log(`⚠️ [${requestId}] Promptchan failed, will fallback to Replicate below`);
+      console.log(`⚠️ [${requestId}] Promptchan failed, will skip second attempt and go to Replicate`);
+      skipSecondPromptchan = true; // Skip second Promptchan attempt
       // Don't throw - just continue to Replicate fallback
     }
 
@@ -583,6 +588,12 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   };
 
   console.log(`📤 [${requestId}] Promptchan request (Ultra quality):`, promptchanRequest);
+
+  // Skip second Promptchan attempt if first attempt failed (GPU error)
+  if (skipSecondPromptchan) {
+    console.log(`⏭️ [${requestId}] Skipping second Promptchan attempt (first failed) - going straight to Replicate`);
+    throw new Error('Skipping Promptchan - first attempt failed');
+  }
 
   try {
     // No timeout for image-generator page - let Promptchan complete naturally
