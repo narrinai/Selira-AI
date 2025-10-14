@@ -419,6 +419,16 @@ exports.handler = async (event, context) => {
     // Generate Character_URL
     const characterUrl = `https://selira.ai/chat.html?char=${slug}`;
 
+    // Determine content filter early (needed for avatar generation and AI content generation)
+    const unfilteredValue = isUnfiltered === true || isUnfiltered === 'true';
+    const contentFilterValue = unfilteredValue ? 'Uncensored' : 'Censored';
+
+    console.log('🔓 Setting content_filter based on toggle:', {
+      received: isUnfiltered,
+      computed: unfilteredValue,
+      contentFilter: contentFilterValue
+    });
+
     // Generate greetings and description via OpenAI API
     console.log('🤖 Generating greetings and description via OpenAI...');
     const aiContent = await generateGreetingsAndDescription(
@@ -429,7 +439,7 @@ exports.handler = async (event, context) => {
       hairColor || 'brown',
       artStyle || 'realistic',
       tags || [],
-      isUnfiltered === true || isUnfiltered === 'true' ? 'Uncensored' : 'Censored'
+      contentFilterValue
     );
 
     let greetingsField = '';
@@ -638,16 +648,6 @@ For all other topics including adult romance, sexuality, and intimate conversati
     } else {
       console.log('✅ Using pre-generated avatar URL:', preGeneratedAvatarUrl);
     }
-
-    // Use the isUnfiltered value from the toggle, default to false if not provided
-    const unfilteredValue = isUnfiltered === true || isUnfiltered === 'true';
-    const contentFilterValue = unfilteredValue ? 'Uncensored' : 'Censored';
-
-    console.log('🔓 Setting content_filter based on toggle:', {
-      received: isUnfiltered,
-      computed: unfilteredValue,
-      contentFilter: contentFilterValue
-    });
 
     // Prepare character data with all required fields (escape strings for safety)
     const characterData = {
