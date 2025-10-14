@@ -180,7 +180,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
       style: promptchanModelStyle,  // Use correct model based on companion style
       quality: 'Ultra', // Only valid option
       image_size: '256x256', // Smallest = FASTEST generation (was 512x512)
-      creativity: 10, // Low = faster generation (was 30, then 5)
+      creativity: 30, // Higher = better prompt following
       seed: -1,
       filter: 'Default',
       emotion: 'Default',
@@ -339,7 +339,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
 
     const negativePrompt = 'clothes, clothing, dressed, covered, censored, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white';
 
-    const promptchanStyle = (style === 'anime' || style === 'animated') ? 'Anime XL+' : 'Hyperreal XL+ v2';
+    const promptchanStyle = (style === 'anime' || style === 'animated') ? 'Anime XL+' : 'Hyperreal';
 
     const promptchanRequest = {
       prompt: directPrompt,
@@ -347,7 +347,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
       style: promptchanStyle,
       quality: 'Ultra', // Only valid option
       image_size: '256x256', // Smallest = FASTEST generation
-      creativity: 10, // Low = faster generation
+      creativity: 30, // Higher = better prompt following
       seed: -1,
       filter: 'Default',
       emotion: 'Default',
@@ -553,7 +553,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   console.log(`✨ [${requestId}] Promptchan enhanced prompt:`, enhancedPrompt);
 
   // Determine Promptchan style based on our style parameter
-  let promptchanStyle = 'Hyperreal XL+ v2';  // Use Hyperreal XL+ v2 for realistic (better prompt following)
+  let promptchanStyle = 'Hyperreal';  // Use Hyperreal for realistic (faster)
   let promptchanFilter = 'Default';       // Use Default filter
 
   if (style === 'anime' || style === 'animated') {
@@ -561,7 +561,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     promptchanFilter = 'Default';  // Use Default filter for anime too
     console.log(`🎌 [${requestId}] Using ANIME style for Promptchan`);
   } else {
-    console.log(`📸 [${requestId}] Using Hyperreal XL+ v2 for Promptchan`);
+    console.log(`📸 [${requestId}] Using Hyperreal for Promptchan`);
   }
 
   // Add negative prompt to reduce unwanted elements
@@ -574,7 +574,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     style: promptchanStyle,
     quality: 'Ultra', // Only valid option - 1 Gem
     image_size: '256x256', // Smallest = FASTEST generation (changed from 768x512)
-    creativity: 10, // Lowest = fastest generation (changed from 50)
+    creativity: 30, // Higher = better prompt following
     seed: -1, // Random seed
     filter: promptchanFilter, // Default filter
     emotion: 'Default',
