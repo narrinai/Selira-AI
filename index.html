@@ -2612,16 +2612,67 @@
     // ===== CHARACTER LOADING =====
     async function loadCharacters() {
       try {
+        // Check cache first (1 hour cache)
+        const CACHE_KEY = 'selira_characters_cache';
+        const CACHE_DURATION = 60 * 60 * 1000; // 1 hour in milliseconds
+
+        const cachedData = localStorage.getItem(CACHE_KEY);
+        const cacheTimestamp = localStorage.getItem(CACHE_KEY + '_timestamp');
+
+        if (cachedData && cacheTimestamp) {
+          const age = Date.now() - parseInt(cacheTimestamp);
+          if (age < CACHE_DURATION) {
+            console.log('✅ Loading characters from cache (age: ' + Math.floor(age/1000/60) + ' minutes)');
+            const data = JSON.parse(cachedData);
+
+            if (data.success && data.characters) {
+              allCharacters = data.characters.map(char => ({
+                id: char.Character_ID || char.Name,
+                name: char.Name || 'Unknown',
+                title: char.Character_Title || '',
+                description: cleanDescription(char.Character_Description || ''),
+                avatar: char.Avatar_URL ? char.Avatar_URL.replace('narrin.ai', 'selira.ai') : null,
+                category: char.Category || 'Other',
+                slug: char.Slug || (char.Name ? char.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'unknown'),
+                creator: char.Created_by || 'Selira',
+                tags: Array.isArray(char.Tags) ? char.Tags : (char.Tags || '').toString().split(',').filter(Boolean),
+                chats: (Math.floor(Math.random() * 14) + 1) + '.' + Math.floor(Math.random() * 10) + 'k',
+                character_url: char.Character_URL ? char.Character_URL.replace('narrin.ai', 'selira.ai') : `https://selira.ai/chat.html?char=${char.Slug || (char.Name ? char.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'unknown')}`,
+                companion_type: char.companion_type || 'realistic',
+                sex: char.sex || 'female',
+                ethnicity: char.ethnicity || 'white',
+                hair_length: char.hair_length || 'medium',
+                content_filter: char.content_filter || 'Censored',
+                created: char.Created || new Date().toISOString()
+              }));
+
+              applyFilters();
+              renderCharacters();
+
+              if (createAvailableTags && createAvailableTags.length > 0) {
+                populateTagFilters(createAvailableTags);
+              }
+              return; // Use cache, skip API call
+            }
+          } else {
+            console.log('⏱️ Cache expired, fetching fresh data...');
+          }
+        }
+
         console.log('📡 Loading characters from API...');
         const response = await fetch('/.netlify/functions/selira-characters-fetch');
-        
+
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
+
         const data = await response.json();
-        
+
         if (data.success && data.characters) {
+          // Save to cache
+          localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+          localStorage.setItem(CACHE_KEY + '_timestamp', Date.now().toString());
+          console.log('💾 Saved characters to cache');
           console.log('📡 Raw API response:', data.characters.length, 'characters');
           console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Sample raw characters:', data.characters.slice(-3).map(c => ({name: c.Name, category: c.Category, visibility: c.Visibility})));
 
