@@ -224,6 +224,7 @@ exports.handler = async (event, context) => {
         Name: fields.Name || '',
         Character_Title: fields.Character_Title || '',
         Character_Description: fields.Character_Description || '',
+        Greetings: fields.Greetings || '',
         Category: fields.Category || 'historical',
         Tags: fields.Tags || [],
         Slug: fields.Slug || '',

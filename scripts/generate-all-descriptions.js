@@ -6,9 +6,9 @@
 const fetch = require('node-fetch');
 require('dotenv').config();
 
-const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN;
-const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA || process.env.AIRTABLE_TOKEN;
+const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA;
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY_SELIRA || process.env.OPENAI_API_KEY;
 
 // Parse command line args
 const args = process.argv.slice(2);

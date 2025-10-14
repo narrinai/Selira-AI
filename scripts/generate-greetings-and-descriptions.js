@@ -6,9 +6,9 @@
 const fetch = require('node-fetch');
 require('dotenv').config();
 
-const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN;
+const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA || process.env.AIRTABLE_TOKEN;
 const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA;
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY_SELIRA || process.env.OPENAI_API_KEY;
 
 // Parse command line args
 const args = process.argv.slice(2);
@@ -100,18 +100,21 @@ Output format - return ONLY valid JSON with no markdown formatting:
 
 Guidelines for GREETINGS:
 - Create 4 different greetings that the character would say when meeting someone
-- Use actions in asterisks: *giggles*, *waves*, *smiles mischievously*
+- IMPORTANT: Put actions in asterisks AFTER the dialogue, not before
+- Format: "Dialogue text here *action here*" NOT "*action here* Dialogue text"
+- Example: "Hey there, I'm ${name} *smiles playfully*" ✓
+- Example: "*smiles playfully* Hey there, I'm ${name}" ✗
 - Make each greeting unique and showing different moods/approaches
 - Keep greetings 1-2 sentences, conversational and in character
 - Vary between playful, mysterious, confident, shy, seductive (based on character)
 - Use first person ("I'm ${name}")
 
 Guidelines for DESCRIPTION:
-- Write 3-5 sentences (100-150 words max)
-- Focus on WHO they are, personality, background, what makes them unique
-- Include subtle hints about desires, fears, or secrets
+- Write 25-50 words max (2-3 sentences)
+- Focus on WHO they are, personality, and what makes them unique
+- Include one subtle hint about desires, fears, or secrets
 - Make it engaging and mysterious - leave room for discovery
-- Use vivid, sensory language
+- Use vivid, concise language
 - Match tone: ${tone}
 - Third person narrative style
 - NO greetings, instructions, or meta information`;
