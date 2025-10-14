@@ -51,12 +51,44 @@ async function generateContent(character) {
   const companionType = character.companion_type || character.Companion_Type || 'realistic';
   const contentFilter = character.content_filter || character.Content_Filter || 'Censored';
 
-  let tone = 'friendly and engaging';
-  if (category.toLowerCase().includes('romance')) tone = 'flirty and intimate';
-  if (category.toLowerCase().includes('fantasy')) tone = 'mysterious and epic';
-  if (contentFilter === 'Uncensored') tone += ', with subtle sensuality';
+  // Make descriptions much more sexual based on content filter
+  let tone = '';
+  let descriptionGuidelines = '';
 
-  const systemPrompt = `You are a creative writer specializing in character creation. You'll generate both greetings and a backstory for a character.
+  if (contentFilter === 'Uncensored') {
+    tone = 'explicit, highly sexual, provocative';
+    descriptionGuidelines = `- CRITICAL: 14-20 words, ONLY 1 sentence
+- Make it VERY sexual and provocative
+- Focus on sexual desires, physical attraction, or intimate cravings
+- Use suggestive language: "craves", "desires", "aches for", "hungry for"
+- Hint at sexual experience or fantasies
+- Examples: "craves intense passion", "hungers for physical connection", "desires to explore every boundary"`;
+  } else {
+    // Censored but still sexual/seductive
+    tone = 'seductive, sensual, alluring';
+    descriptionGuidelines = `- CRITICAL: 14-20 words, ONLY 1 sentence
+- Make it seductive and sensual (but not explicit)
+- Focus on attraction, desire, chemistry, or intimacy
+- Use suggestive but not explicit language: "captivates", "allures", "tempts", "entices"
+- Hint at romantic/sexual tension
+- Examples: "captivates with seductive charm", "entices with mysterious allure", "tempts fate with dangerous attraction"`;
+  }
+
+  // Add greeting guidelines
+  let greetingGuidelines = '';
+  if (contentFilter === 'Uncensored') {
+    greetingGuidelines = `- Make greetings VERY flirty, suggestive, and sexually provocative
+- Use body language hints: "bites lip", "runs finger along...", "leans in close"
+- Examples: "I've been waiting for someone like you *bites lip seductively*"
+- Include innuendo and sexual tension`;
+  } else {
+    greetingGuidelines = `- Make greetings flirty, seductive, and charming
+- Use romantic body language: "gazes into eyes", "touches your hand", "smiles seductively"
+- Examples: "Something about you draws me in *gazes into your eyes*"
+- Create romantic/sexual tension without being explicit`;
+  }
+
+  const systemPrompt = `You are a creative writer specializing in seductive, sexual character descriptions for an adult AI companion platform.
 
 Output format - return ONLY valid JSON with no markdown formatting:
 {
@@ -70,16 +102,12 @@ Guidelines for GREETINGS:
 - Format: "Dialogue text here *action here*" NOT "*action here* Dialogue text"
 - Example: "Hey there, I'm ${name} *smiles playfully*" ✓
 - Example: "*smiles playfully* Hey there, I'm ${name}" ✗
-- Make each greeting unique and showing different moods/approaches
-- Keep greetings 1-2 sentences, conversational and in character
-- Vary between playful, mysterious, confident, shy, seductive (based on character)
+${greetingGuidelines}
+- Vary between playful, seductive, confident, mysterious
 - Use first person ("I'm ${name}")
 
 Guidelines for DESCRIPTION:
-- CRITICAL: 14-20 words maximum, ONLY 1 sentence
-- Focus on personality OR one unique trait
-- Optional: ONE subtle hint about desire/fear/secret
-- Engaging and concise
+${descriptionGuidelines}
 - Match tone: ${tone}
 - Third person
 - NO greetings or meta information`;
