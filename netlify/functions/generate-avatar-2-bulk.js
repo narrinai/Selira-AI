@@ -5,9 +5,9 @@
 const fetch = require('node-fetch');
 
 // Airtable configuration
-const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN || process.env.AIRTABLE_API_KEY;
-const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
-const AIRTABLE_TABLE_ID = 'Companions';
+const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA || process.env.AIRTABLE_TOKEN || process.env.AIRTABLE_API_KEY;
+const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA || process.env.AIRTABLE_BASE_ID;
+const AIRTABLE_TABLE_ID = 'Characters';
 
 // Configuration
 const BATCH_SIZE = 20; // Process 20 companions per run
@@ -168,14 +168,14 @@ exports.handler = async (event, context) => {
 
   try {
     // 1. Fetch companions without avatar_url_2
-    console.log('📊 Fetching Selira companions without Avatar_URL_2...');
+    console.log('📊 Fetching censored Selira companions without Avatar_URL_2...');
 
     let allCompanions = [];
     let offset = null;
 
     do {
-      // Filter: No Avatar_URL_2 AND Created_by = 'Selira'
-      const filterFormula = encodeURIComponent("AND(NOT({Avatar_URL_2}), {Created_by} = 'Selira')");
+      // Filter: No Avatar_URL_2 AND Created_by = 'Selira' AND content_filter = 'Censored'
+      const filterFormula = encodeURIComponent("AND(NOT({Avatar_URL_2}), {Created_by} = 'Selira', {content_filter} = 'Censored')");
       const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_ID}?filterByFormula=${filterFormula}&maxRecords=${BATCH_SIZE}${offset ? `&offset=${offset}` : ''}`;
 
       const response = await fetch(url, {
