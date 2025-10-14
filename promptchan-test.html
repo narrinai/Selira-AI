@@ -210,19 +210,6 @@
             <strong>Note:</strong> This is a test page for Promptchan API integration. Make sure you have your API key configured in Netlify environment variables.
         </div>
 
-        <div style="margin-bottom: 30px; padding: 20px; background: #f5f5f5; border-radius: 12px;">
-            <h3 style="margin-bottom: 15px; color: #333;">⚡ Speed Test - NSFW Realistic Styles (256x256, creativity 5)</h3>
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px;">
-                <button type="button" onclick="testStyle('Hyperreal')" style="padding: 12px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Hyperreal</button>
-                <button type="button" onclick="testStyle('Hyperreal XL+')" style="padding: 12px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Hyperreal XL+</button>
-                <button type="button" onclick="testStyle('Hyperreal XL+ v2')" style="padding: 12px; background: #764ba2; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">XL+ v2 (current)</button>
-                <button type="button" onclick="testStyle('Photo XL+')" style="padding: 12px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Photo XL+</button>
-                <button type="button" onclick="testStyle('Photo XL+ v2')" style="padding: 12px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Photo XL+ v2</button>
-                <button type="button" onclick="testStyle('Cinematic')" style="padding: 12px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Cinematic</button>
-            </div>
-            <div id="speedResults" style="font-size: 13px; color: #666;"></div>
-        </div>
-
         <form id="generateForm">
             <div class="form-section">
                 <div class="form-group full-width">
@@ -355,55 +342,6 @@
         document.getElementById('weight_slider').addEventListener('input', (e) => {
             document.getElementById('weightValue').textContent = e.target.value;
         });
-
-        // Speed test function with fixed NSFW prompt
-        async function testStyle(styleName) {
-            const resultsDiv = document.getElementById('speedResults');
-            const testPrompt = 'beautiful woman, kneeling on knees, submissive pose, looking up, POV from above, completely naked, fully nude, no clothes, bare skin, nude body, naked breasts, exposed pussy, totally naked, unclothed, full nudity, NSFW';
-
-            resultsDiv.innerHTML = `<div style="color: #667eea; font-weight: 600;">⏳ Testing ${styleName}... (256x256, creativity 5)</div>`;
-
-            const startTime = Date.now();
-
-            try {
-                const response = await fetch('/.netlify/functions/promptchan-proxy', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        prompt: testPrompt,
-                        negative_prompt: 'clothes, clothing, dressed, covered, censored, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white',
-                        style: styleName,
-                        quality: 'Ultra',
-                        image_size: '256x256',
-                        creativity: 5,
-                        seed: -1,
-                        filter: 'Default',
-                        emotion: 'Default',
-                        detail: 0,
-                        age_slider: 25,
-                        weight_slider: 0,
-                        breast_slider: 50,
-                        ass_slider: 50,
-                        restore_faces: false
-                    })
-                });
-
-                const duration = ((Date.now() - startTime) / 1000).toFixed(1);
-                const data = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(data.error || 'Failed');
-                }
-
-                resultsDiv.innerHTML = `
-                    <div style="color: #28a745; font-weight: 600;">✅ ${styleName}: ${duration}s (${data.gems} gems)</div>
-                    <div style="margin-top: 10px;"><img src="${data.image}" style="max-width: 200px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);"></div>
-                `;
-            } catch (error) {
-                const duration = ((Date.now() - startTime) / 1000).toFixed(1);
-                resultsDiv.innerHTML = `<div style="color: #dc3545; font-weight: 600;">❌ ${styleName}: FAILED after ${duration}s - ${error.message}</div>`;
-            }
-        }
 
         // Handle form submission
         document.getElementById('generateForm').addEventListener('submit', async (e) => {
