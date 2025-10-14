@@ -184,12 +184,11 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
       seed: -1,
       filter: 'Default',
       emotion: 'Default',
-      detail: 2, // Add detail level for better quality
+      detail: 0, // Detail level (0 = default)
       age_slider: 23, // Slightly younger for more attractive faces
       weight_slider: -10, // Slimmer body
       breast_slider: 30,  // Moderate breast size (was 50)
-      ass_slider: 30,  // Moderate ass size (was 50)
-      restore_faces: true // Enable face restoration
+      ass_slider: 30  // Moderate ass size (was 50)
     };
 
     console.log(`📤 [${requestId}] Using pre-enhanced prompt directly:`, promptchanRequest);
@@ -351,12 +350,11 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
       seed: -1,
       filter: 'Default',
       emotion: 'Default',
-      detail: 2, // Add detail level for better quality
+      detail: 0, // Detail level (0 = default)
       age_slider: 23, // Slightly younger for more attractive faces
       weight_slider: -10, // Slimmer body
       breast_slider: sex === 'male' ? 0 : 30,  // Moderate breast size
-      ass_slider: sex === 'male' ? 0 : 30,     // Moderate ass size
-      restore_faces: true // Enable face restoration
+      ass_slider: sex === 'male' ? 0 : 30      // Moderate ass size
     };
 
     console.log(`📤 [${requestId}] Promptchan request with DIRECT sex prompt:`, promptchanRequest);
@@ -578,12 +576,11 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     seed: -1, // Random seed
     filter: promptchanFilter, // Default filter
     emotion: 'Default',
-    detail: 2, // Add detail level for better quality (0-3 scale)
+    detail: 0, // Detail level (0 = default, keeping simple for now)
     age_slider: 23, // Slightly younger for more attractive faces
     weight_slider: -10, // Slimmer body (-20 to +20 scale)
     breast_slider: sex === 'male' ? 0 : 30, // Moderate breast size (was 0, now 30 for natural attractive proportions)
-    ass_slider: sex === 'male' ? 0 : 30, // Moderate ass size (was 0, now 30 for natural attractive proportions)
-    restore_faces: true // Enable face restoration for prettier faces
+    ass_slider: sex === 'male' ? 0 : 30 // Moderate ass size (was 0, now 30 for natural attractive proportions)
   };
 
   console.log(`📤 [${requestId}] Promptchan request (Ultra quality):`, promptchanRequest);
