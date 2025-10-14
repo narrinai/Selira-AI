@@ -1079,10 +1079,7 @@
               <div id="poseOptions" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;"></div>
             </div>
 
-            <div style="margin-bottom: 28px;">
-              <label style="display: block; font-weight: 600; margin-bottom: 10px; font-size: 15px;">Outfit</label>
-              <div id="outfitOptions" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;"></div>
-            </div>
+            <!-- Outfit selector removed - fully nude by default -->
 
             <div>
               <label for="customPrompt" style="display: block; font-weight: 600; margin-bottom: 10px; font-size: 15px;">Custom Prompt (Optional)</label>
@@ -1166,7 +1163,7 @@
     let companions = [];
     let allCompanions = []; // Store all companions before filtering
     let selectedPose = null;
-    let selectedOutfit = null;
+    // selectedOutfit removed - fully nude by default
     let generatedImageUrl = null;
 
     // Companion carousel state
@@ -1195,22 +1192,8 @@
       { id: 'anal', label: '🔥 Anal', prompt: 'anal sex position, penetration from behind, ass penetration, anal intercourse, explicit anal, spreading ass cheeks, asshole visible, NSFW' }
     ];
 
-    // Outfit options - NSFW focused
-    const outfits = [
-      { id: 'nude', label: '🔥 Fully Nude', prompt: 'completely naked, fully nude, no clothes, bare skin, nude body, naked breasts, exposed pussy, totally naked, unclothed, full nudity, NSFW' },
-      { id: 'lingerie', label: 'Sexy Lingerie', prompt: 'sexy lingerie, lace bra and panties, see-through lingerie, revealing intimate wear, skimpy underwear' },
-      { id: 'bikini', label: 'Bikini', prompt: 'tiny bikini, skimpy swimwear, revealing bikini' },
-      { id: 'topless', label: '🔥 Topless', prompt: 'topless, bare breasts, no bra, breasts exposed, nipples visible, naked from waist up, NSFW' },
-      { id: 'stockings', label: '🔥 Stockings Only', prompt: 'wearing only stockings, thigh-high stockings, naked with stockings, stockings and nothing else, nude with stockings, NSFW' },
-      { id: 'fishnet', label: '🔥 Fishnet', prompt: 'fishnet bodysuit, fishnet lingerie, see-through fishnet outfit, fishnet stockings and top, mesh clothing, sexy fishnet, NSFW' },
-      { id: 'latex', label: '🔥 Latex/Leather', prompt: 'tight latex outfit, shiny leather clothing, latex bodysuit, leather lingerie, kinky outfit, fetish wear, NSFW' },
-      { id: 'schoolgirl', label: '🔥 Schoolgirl', prompt: 'sexy schoolgirl outfit, short skirt, unbuttoned shirt, revealing school uniform, naughty student look, anime schoolgirl, NSFW' },
-      { id: 'maid', label: '🔥 Maid Outfit', prompt: 'sexy maid costume, french maid outfit, short skirt maid uniform, revealing maid dress, frilly maid outfit, NSFW' },
-      { id: 'nurse', label: '🔥 Nurse', prompt: 'sexy nurse costume, revealing nurse outfit, short nurse dress, naughty nurse uniform, medical fetish outfit, NSFW' },
-      { id: 'garter', label: '🔥 Garter Belt', prompt: 'garter belt and stockings, suspenders, garter straps, lingerie with garters, sexy garter set, thigh-high stockings with garters, NSFW' },
-      { id: 'panties-only', label: '🔥 Panties Only', prompt: 'wearing only panties, topless with panties, bare breasts with underwear, panties and nothing else, half naked, NSFW' },
-      { id: 'bodystocking', label: '🔥 Bodystocking', prompt: 'sheer bodystocking, see-through body suit, mesh bodysuit, transparent full body stocking, revealing bodystocking, NSFW' }
-    ];
+    // Outfits removed - fully nude by default
+    const fullyNudePrompt = 'completely naked, fully nude, no clothes, bare skin, nude body, naked breasts, exposed pussy, totally naked, unclothed, full nudity, NSFW';
 
     // Check authentication (using global helpers from auth0-login.js)
     async function checkAuthentication() {
@@ -1434,20 +1417,7 @@
       });
     }
 
-    function renderOutfitOptions() {
-      const container = document.getElementById('outfitOptions');
-      container.innerHTML = '';
-      outfits.forEach(outfit => {
-        const card = document.createElement('div');
-        card.style.cssText = 'background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 12px; text-align: center; cursor: pointer; transition: all 0.2s ease; position: relative;';
-        card.dataset.outfitId = outfit.id;
-        card.innerHTML = `<div style="font-size: 13px; font-weight: 500; color: var(--text-primary);">${outfit.label}</div>`;
-        card.addEventListener('click', () => selectOutfit(outfit.id));
-        card.addEventListener('mouseover', () => card.style.borderColor = 'var(--accent)');
-        card.addEventListener('mouseout', () => { if (!card.classList.contains('selected')) card.style.borderColor = 'var(--border)'; });
-        container.appendChild(card);
-      });
-    }
+    // renderOutfitOptions removed - fully nude by default
 
     function selectPose(poseId) {
       document.querySelectorAll('#poseOptions > div').forEach(card => {
@@ -1464,20 +1434,7 @@
       selectedPose = poses.find(p => p.id === poseId);
     }
 
-    function selectOutfit(outfitId) {
-      document.querySelectorAll('#outfitOptions > div').forEach(card => {
-        card.classList.remove('selected');
-        card.style.borderColor = 'var(--border)';
-        card.style.background = 'var(--bg-tertiary)';
-      });
-      const card = document.querySelector(`[data-outfit-id="${outfitId}"]`);
-      if (card) {
-        card.classList.add('selected');
-        card.style.borderColor = 'var(--accent)';
-        card.style.background = 'rgba(206, 147, 216, 0.1)';
-      }
-      selectedOutfit = outfits.find(o => o.id === outfitId);
-    }
+    // selectOutfit removed - fully nude by default
 
     async function generateImage() {
       console.log('🎨 Generate Image clicked!');
@@ -1496,7 +1453,6 @@
 
       if (!selectedCompanion) return showAlert('Please select a companion', 'warning');
       if (!selectedPose) return showAlert('Please select a pose', 'warning');
-      if (!selectedOutfit) return showAlert('Please select an outfit', 'warning');
 
       const creditsCheck = await loadUserCredits();
       const canGenerate = creditsCheck && (creditsCheck.plan !== 'Free' || creditsCheck.creditsRemaining > 0 || (creditsCheck.imagesGenerated || 0) < 1);
@@ -1513,7 +1469,7 @@
 
       try {
         const customPrompt = document.getElementById('customPrompt').value.trim();
-        const fullPrompt = [selectedPose.prompt, selectedOutfit.prompt, customPrompt].filter(Boolean).join(', ');
+        const fullPrompt = [selectedPose.prompt, fullyNudePrompt, customPrompt].filter(Boolean).join(', ');
 
         const response = await fetch('/.netlify/functions/selira-generate-custom-image', {
           method: 'POST',
@@ -1672,7 +1628,7 @@
 
       await loadCompanions();
       renderPoseOptions();
-      renderOutfitOptions();
+      // renderOutfitOptions() removed - fully nude by default
 
       if (userData) {
         // User is logged in - load their credits
