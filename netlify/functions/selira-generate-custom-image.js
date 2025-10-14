@@ -340,13 +340,15 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
 
     const promptchanStyle = (style === 'anime' || style === 'animated') ? 'Anime XL+' : 'Hyperreal';
 
+    // For explicit sex acts, use HIGH creativity (40) for better pose interpretation
+    // Complex poses like blowjob, doggy, cowgirl need more creative freedom
     const promptchanRequest = {
       prompt: directPrompt,
       negative_prompt: negativePrompt,
       style: promptchanStyle,
       quality: 'Ultra', // Only valid option
       image_size: '256x256', // Smallest = FASTEST generation
-      creativity: 15, // Lower = STRICT prompt following
+      creativity: 40, // HIGH creativity for complex sex poses (was 15, too strict)
       seed: -1,
       filter: 'Default',
       emotion: 'Default',
@@ -566,13 +568,14 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   const negativePrompt = 'clothes, clothing, dressed, covered, censored, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white, giant breasts, huge ass, unrealistic proportions, exaggerated features, cartoonish body, distorted anatomy';
 
   // Build Promptchan API request
+  // For solo/simple poses, use LOWER creativity (20) for better prompt adherence
   const promptchanRequest = {
     prompt: enhancedPrompt,
     negative_prompt: negativePrompt,
     style: promptchanStyle,
     quality: 'Ultra', // Only valid option - 1 Gem
     image_size: '256x256', // Smallest = FASTEST generation (changed from 768x512)
-    creativity: 15, // Lower = STRICT prompt following (was 30, reduced for better pose accuracy)
+    creativity: 20, // Medium creativity for solo poses (was 15, slightly higher for variety)
     seed: -1, // Random seed
     filter: promptchanFilter, // Default filter
     emotion: 'Default',
