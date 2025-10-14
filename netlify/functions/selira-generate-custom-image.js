@@ -319,8 +319,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   if (isUncensoredExplicit) {
     console.log(`🔥 [${requestId}] Detected EXPLICIT sex prompt (${source}) - using companion generation format`);
 
-    // Use EXACT same format as companion generation that WORKS
-    const genderDesc = sex === 'male' ? 'handsome muscular man' : 'beautiful woman';
+    // Use companion traits (appearance) instead of generic gender description
     const randomBackgrounds = [
       'luxury bedroom with silk sheets, warm golden lighting',
       'five-star hotel suite bedroom, city lights',
@@ -331,9 +330,9 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
 
     let directPrompt;
     if (style === 'anime' || style === 'animated') {
-      directPrompt = `${genderDesc}, ${sanitizedPrompt}, anime style, detailed anime art, high quality artwork, vibrant colors, explicit hardcore sex, ${randomBg}`;
+      directPrompt = `${appearance}, ${sanitizedPrompt}, anime style, detailed anime art, high quality artwork, vibrant colors, explicit hardcore sex, ${randomBg}`;
     } else {
-      directPrompt = `${genderDesc}, ${sanitizedPrompt}, photorealistic, professional photography, explicit hardcore sex, porn scene, ${randomBg}`;
+      directPrompt = `${appearance}, ${sanitizedPrompt}, photorealistic, professional photography, explicit hardcore sex, porn scene, ${randomBg}`;
     }
 
     console.log(`✅ [${requestId}] Direct sex prompt:`, directPrompt);
