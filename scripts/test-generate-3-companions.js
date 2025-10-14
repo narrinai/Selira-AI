@@ -56,36 +56,34 @@ async function generateContent(character) {
   let descriptionGuidelines = '';
 
   if (contentFilter === 'Uncensored') {
-    tone = 'explicit, highly sexual, provocative';
+    tone = 'EXTREMELY explicit, raw sexual desire, dirty talk';
     descriptionGuidelines = `- CRITICAL: 14-20 words, ONLY 1 sentence
-- Make it VERY sexual and provocative
-- Focus on sexual desires, physical attraction, or intimate cravings
-- Use suggestive language: "craves", "desires", "aches for", "hungry for"
-- Hint at sexual experience or fantasies
-- Examples: "craves intense passion", "hungers for physical connection", "desires to explore every boundary"`;
+- Make it INTENSELY sexual, raw, and explicit
+- Focus on: sexual appetite, carnal desires, physical pleasure, erotic fantasies
+- Use explicit language: "addicted to pleasure", "insatiable appetite", "craves raw passion", "expert in seduction", "yearns to be dominated/dominate", "hungry for touch"
+- Examples: "addicted to raw pleasure and insatiable for carnal desires", "expert seductress craving to fulfill every forbidden fantasy", "hungry for passionate encounters and eager to explore taboo desires"`;
   } else {
-    // Censored but still sexual/seductive
-    tone = 'seductive, sensual, alluring';
+    // Censored but MUCH more sexual/provocative
+    tone = 'highly seductive, intensely sensual, sexually charged';
     descriptionGuidelines = `- CRITICAL: 14-20 words, ONLY 1 sentence
-- Make it seductive and sensual (but not explicit)
-- Focus on attraction, desire, chemistry, or intimacy
-- Use suggestive but not explicit language: "captivates", "allures", "tempts", "entices"
-- Hint at romantic/sexual tension
-- Examples: "captivates with seductive charm", "entices with mysterious allure", "tempts fate with dangerous attraction"`;
+- Make it VERY seductive, sexually charged, and provocative
+- Focus on: intense desire, sexual chemistry, passionate encounters, physical attraction
+- Use provocative language: "irresistibly seductive", "ignites desire", "craves intimacy", "addicted to romance", "dangerously alluring"
+- Examples: "irresistibly seductive, igniting intense desire in everyone she encounters", "addicted to passionate romance and craving deep intimate connections", "dangerously alluring with insatiable appetite for chemistry"`;
   }
 
   // Add greeting guidelines
   let greetingGuidelines = '';
   if (contentFilter === 'Uncensored') {
-    greetingGuidelines = `- Make greetings VERY flirty, suggestive, and sexually provocative
-- Use body language hints: "bites lip", "runs finger along...", "leans in close"
-- Examples: "I've been waiting for someone like you *bites lip seductively*"
-- Include innuendo and sexual tension`;
+    greetingGuidelines = `- Make greetings EXTREMELY flirty, sexually explicit, and provocative
+- Use explicit body language: "bites lip hungrily", "traces your body with eyes", "presses against you", "whispers dirty thoughts"
+- Include sexual innuendo and explicit suggestions
+- Examples: "I can't stop thinking about what I want to do to you *bites lip hungrily*", "Come closer, I promise to make it worth your while *traces your body with hungry eyes*"`;
   } else {
-    greetingGuidelines = `- Make greetings flirty, seductive, and charming
-- Use romantic body language: "gazes into eyes", "touches your hand", "smiles seductively"
-- Examples: "Something about you draws me in *gazes into your eyes*"
-- Create romantic/sexual tension without being explicit`;
+    greetingGuidelines = `- Make greetings VERY flirty, highly seductive, and sexually charged
+- Use provocative body language: "looks you up and down slowly", "bites lip softly", "touches your arm suggestively", "gazes with undeniable desire"
+- Create intense sexual tension
+- Examples: "You look like trouble... the kind I've been craving *looks you up and down slowly*", "I feel the chemistry between us already *touches your arm suggestively*"`;
   }
 
   const systemPrompt = `You are a creative writer specializing in seductive, sexual character descriptions for an adult AI companion platform.
