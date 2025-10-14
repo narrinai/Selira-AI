@@ -5774,6 +5774,12 @@
 
     function initializeCarousel() {
       console.log('🎠 Initializing image carousel');
+      console.log('🎠 Current character:', {
+        name: currentCharacter.name,
+        creator: currentCharacter.creator,
+        avatar: currentCharacter.avatar,
+        avatar_url_2: currentCharacter.avatar_url_2
+      });
 
       carouselImages = [];
 
@@ -5786,6 +5792,11 @@
       if (currentCharacter.creator === 'Selira' && currentCharacter.avatar_url_2) {
         carouselImages.push(fixAvatarUrl(currentCharacter.avatar_url_2));
         console.log('🎠 Added Avatar_URL_2 for Selira companion');
+      } else {
+        console.log('🎠 No second image:', {
+          isSelira: currentCharacter.creator === 'Selira',
+          hasAvatar2: !!currentCharacter.avatar_url_2
+        });
       }
 
       console.log('🎠 Carousel images:', carouselImages);
