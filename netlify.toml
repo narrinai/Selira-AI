@@ -19,9 +19,10 @@ timeout = 26
 [functions."selira-create-companion"]
 timeout = 26
 
-# Scheduled function to download Replicate URLs every 8 hours
-[functions."download-replicate-avatars-scheduled"]
-schedule = "0 */8 * * *"
+# Scheduled function to download Replicate URLs - DISABLED to save credits
+# Re-enable if needed by uncommenting the schedule line below
+# [functions."download-replicate-avatars-scheduled"]
+# schedule = "0 */8 * * *"
 
 # Cache static assets to reduce bandwidth and web requests
 [[headers]]
