@@ -658,7 +658,6 @@ For all other topics including adult romance, sexuality, and intimate conversati
       Character_URL: characterUrl, // URL should be safe
       Prompt: escapeForJson(fullPrompt),
       Greetings: escapeForJson(greetingsField), // 4 greetings separated by |||
-      greeting: escapeForJson(greetingField), // First greeting for backwards compatibility
       Tags: Array.isArray(tags) && tags.length > 0 ? tags : [],
       Visibility: visibility || 'public',
       Category: 'romance', // Set appropriate category for new companions instead of default
@@ -834,7 +833,6 @@ For all other topics including adult romance, sexuality, and intimate conversati
           description: result.fields.Character_Description,
           prompt: result.fields.Prompt,
           greetings: result.fields.Greetings, // 4 greetings separated by |||
-          greeting: result.fields.greeting, // First greeting
           title: result.fields.Character_Title,
           artStyle: result.fields.companion_type,
           sex: result.fields.sex,
