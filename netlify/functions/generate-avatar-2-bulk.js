@@ -149,6 +149,16 @@ async function updateCompanionAvatar2(companionId, imageUrl) {
 exports.handler = async (event, context) => {
   console.log('🚀 Starting bulk avatar_url_2 generation...');
 
+  // Check for manual trigger via query parameter
+  const queryParams = event.queryStringParameters || {};
+  const isManualTrigger = queryParams.trigger === 'manual' || queryParams.run === 'now';
+
+  if (isManualTrigger) {
+    console.log('✨ Manual trigger detected - will process Selira companions only');
+  } else {
+    console.log('⏰ Scheduled trigger (cron job)');
+  }
+
   if (!AIRTABLE_TOKEN || !AIRTABLE_BASE_ID) {
     return {
       statusCode: 500,
@@ -158,13 +168,14 @@ exports.handler = async (event, context) => {
 
   try {
     // 1. Fetch companions without avatar_url_2
-    console.log('📊 Fetching companions without Avatar_URL_2...');
+    console.log('📊 Fetching Selira companions without Avatar_URL_2...');
 
     let allCompanions = [];
     let offset = null;
 
     do {
-      const filterFormula = encodeURIComponent("NOT({Avatar_URL_2})");
+      // Filter: No Avatar_URL_2 AND Created_by = 'Selira'
+      const filterFormula = encodeURIComponent("AND(NOT({Avatar_URL_2}), {Created_by} = 'Selira')");
       const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_ID}?filterByFormula=${filterFormula}&maxRecords=${BATCH_SIZE}${offset ? `&offset=${offset}` : ''}`;
 
       const response = await fetch(url, {

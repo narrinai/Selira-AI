@@ -1863,9 +1863,9 @@
       <!-- Chat Messages Area -->
       <div class="chat-messages" id="chatMessages">
         <div class="welcome-message" style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
-          <div style="font-size: 48px; margin-bottom: 16px;">💭</div>
-          <h3 style="color: var(--text-primary); margin-bottom: 8px;">Chat Cleared</h3>
-          <p>Start a new conversation!</p>
+          <div style="font-size: 48px; margin-bottom: 16px;">😈</div>
+          <h3 style="color: var(--text-primary); margin-bottom: 8px;">Getting Ready...</h3>
+          <p>Your companion is waiting to play</p>
         </div>
       </div>
 
@@ -2806,10 +2806,22 @@
       document.getElementById('currentCharacterStatus').textContent = currentCharacter.creator;
       const headerImage = document.getElementById('characterImage');
       if (headerImage) {
+        // Set blur placeholder immediately while loading
+        headerImage.src = '/avatars/laura-blurred-placeholder.webp';
+        headerImage.style.display = 'block';
+
         if (currentCharacter.avatar && currentCharacter.avatar !== '/avatars/placeholder.webp') {
           console.log('🖼️ Setting header avatar:', currentCharacter.avatar);
-          headerImage.src = fixAvatarUrl(currentCharacter.avatar);
-          headerImage.style.display = 'block';
+          // Load actual avatar (will replace blur placeholder when ready)
+          const actualAvatar = fixAvatarUrl(currentCharacter.avatar);
+          const img = new Image();
+          img.onload = () => {
+            headerImage.src = actualAvatar;
+          };
+          img.onerror = () => {
+            console.warn('Header avatar failed to load, keeping blur placeholder');
+          };
+          img.src = actualAvatar; // Start loading
           headerImage.onerror = function() {
             console.warn('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Header avatar failed to load:', currentCharacter.avatar);
             this.src = '/avatars/default-avatar.webp';
@@ -3378,9 +3390,9 @@
       const messagesContainer = document.getElementById('chatMessages');
       messagesContainer.innerHTML = `
         <div class="welcome-message" style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
-          <div style="font-size: 48px; margin-bottom: 16px;">💭</div>
-          <h3 style="color: var(--text-primary); margin-bottom: 8px;">Chat Cleared</h3>
-          <p>Start a new conversation with ${currentCharacter.name}!</p>
+          <div style="font-size: 48px; margin-bottom: 16px;">😈</div>
+          <h3 style="color: var(--text-primary); margin-bottom: 8px;">Getting Ready for You...</h3>
+          <p>${currentCharacter.name} is waiting to play with you</p>
         </div>
       `;
       
