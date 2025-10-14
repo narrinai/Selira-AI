@@ -121,6 +121,44 @@ async function generateAvatar2(companion) {
   }
 }
 
+// Upload image to imgbb
+async function uploadToImgbb(replicateUrl, companionName) {
+  console.log(`   📦 Uploading to ImgBB...`);
+
+  try {
+    const filename = `${companionName.toLowerCase().replace(/[^a-z0-9]/g, '-')}-avatar-2-${Date.now()}.webp`;
+
+    const response = await fetch('https://selira.ai/.netlify/functions/selira-download-avatar', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        imageUrl: replicateUrl,
+        filename: filename
+      })
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`ImgBB upload failed: ${response.status} - ${errorText}`);
+    }
+
+    const result = await response.json();
+
+    if (!result.success || !result.localUrl) {
+      throw new Error(`ImgBB upload returned no URL: ${JSON.stringify(result)}`);
+    }
+
+    console.log(`   ✅ Uploaded to ImgBB: ${result.localUrl}`);
+    return result.localUrl;
+
+  } catch (error) {
+    console.error(`   ❌ Failed to upload to ImgBB:`, error.message);
+    throw error;
+  }
+}
+
 // Update companion with avatar_url_2
 async function updateCompanionAvatar2(companionId, imageUrl) {
   const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_ID}/${companionId}`;
@@ -230,11 +268,14 @@ exports.handler = async (event, context) => {
       console.log(`\n[${i + 1}/${Math.min(allCompanions.length, BATCH_SIZE)}] Processing: ${companion.name}`);
 
       try {
-        // Generate avatar_url_2
-        const imageUrl = await generateAvatar2(companion);
+        // Generate avatar_url_2 (returns Replicate URL)
+        const replicateUrl = await generateAvatar2(companion);
 
-        // Update Airtable
-        await updateCompanionAvatar2(record.id, imageUrl);
+        // Upload to ImgBB to get permanent ibb.co URL
+        const imgbbUrl = await uploadToImgbb(replicateUrl, companion.name);
+
+        // Update Airtable with imgbb URL
+        await updateCompanionAvatar2(record.id, imgbbUrl);
 
         successCount++;
         console.log(`   🎉 Success for ${companion.name}`);
