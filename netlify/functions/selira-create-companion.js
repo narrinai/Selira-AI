@@ -1,7 +1,20 @@
 // Helper function to download avatar and get local URL
-async function downloadAndSaveAvatar(replicateUrl, slug) {
+async function downloadAndSaveAvatar(imageUrl, slug) {
   try {
-    console.log(`📥 Downloading avatar from Replicate...`);
+    // If it's already a googleapis URL (from Promptchan), use it directly
+    if (imageUrl.includes('googleapis.com') || imageUrl.includes('storage.googleapis.com')) {
+      console.log(`✅ Using googleapis URL directly (Promptchan/uncensored): ${imageUrl}`);
+      return imageUrl;
+    }
+
+    // If it's already an ibb.co URL, use it directly
+    if (imageUrl.includes('ibb.co') || imageUrl.includes('i.ibb.co')) {
+      console.log(`✅ Using ibb.co URL directly: ${imageUrl}`);
+      return imageUrl;
+    }
+
+    // Only download and convert Replicate URLs
+    console.log(`📥 Downloading avatar from Replicate to convert to ibb.co...`);
 
     const timestamp = Date.now();
     const filename = `${slug}-${timestamp}.webp`;
@@ -11,7 +24,7 @@ async function downloadAndSaveAvatar(replicateUrl, slug) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        imageUrl: replicateUrl,
+        imageUrl: imageUrl,
         filename: filename
       })
     });
@@ -23,7 +36,7 @@ async function downloadAndSaveAvatar(replicateUrl, slug) {
 
     const downloadResult = await downloadResponse.json();
     if (downloadResult.success && downloadResult.localUrl) {
-      console.log(`✅ Avatar downloaded successfully: ${downloadResult.localUrl}`);
+      console.log(`✅ Avatar downloaded and uploaded to ibb.co: ${downloadResult.localUrl}`);
       return downloadResult.localUrl;
     }
 
@@ -476,19 +489,20 @@ For all other topics including adult romance, sexuality, and intimate conversati
         const avatarResult = await avatarResponse.json();
         console.log('📋 Avatar generation result:', avatarResult);
         if (avatarResult.success && avatarResult.imageUrl) {
-          const replicateUrl = avatarResult.imageUrl;
-          console.log('✅ Generated companion avatar (Replicate):', replicateUrl);
+          const generatedUrl = avatarResult.imageUrl;
+          const isPromptchan = generatedUrl.includes('googleapis.com');
+          console.log(`✅ Generated companion avatar (${isPromptchan ? 'Promptchan/googleapis' : 'Replicate'}):`, generatedUrl);
 
-          // Download and save avatar locally to avoid 404s
-          const localUrl = await downloadAndSaveAvatar(replicateUrl, slug);
+          // For googleapis URLs (Promptchan), use directly. For Replicate, download to ibb.co
+          const finalUrl = await downloadAndSaveAvatar(generatedUrl, slug);
 
-          if (localUrl) {
-            avatarUrlToUse = localUrl;
-            console.log('✅ Using local avatar URL:', avatarUrlToUse);
+          if (finalUrl) {
+            avatarUrlToUse = finalUrl;
+            console.log('✅ Using avatar URL:', avatarUrlToUse);
           } else {
-            // Fallback to Replicate URL if download fails
-            avatarUrlToUse = replicateUrl;
-            console.log('⚠️ Download failed, using Replicate URL as fallback:', avatarUrlToUse);
+            // Fallback to original URL if download/upload fails
+            avatarUrlToUse = generatedUrl;
+            console.log('⚠️ Download/upload failed, using original URL as fallback:', avatarUrlToUse);
           }
         } else {
           console.log('⚠️ Avatar generation succeeded but no imageUrl:', avatarResult);
@@ -501,10 +515,10 @@ For all other topics including adult romance, sexuality, and intimate conversati
 
       } catch (error) {
         console.log('⚠️ Avatar generation error:', error.message, ', creating companion without avatar');
-        // Fallback to default avatar pattern if generation fails
-        const timestamp = Date.now();
-        avatarUrlToUse = `/avatars/generated-${slug}-${timestamp}.webp`;
-        console.log('🔄 Using fallback avatar URL after error:', avatarUrlToUse);
+        // Leave avatarUrlToUse empty - companion will be created without avatar
+        // Frontend should handle missing avatars with a placeholder
+        avatarUrlToUse = '';
+        console.log('🔄 Creating companion without avatar due to generation error');
       }
     } else {
       console.log('✅ Using pre-generated avatar URL:', preGeneratedAvatarUrl);

@@ -134,10 +134,11 @@ exports.handler = async (event, context) => {
       statusCode: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        success: true,
-        localUrl: finalUrl || `https://selira.ai/avatars/${filename}`,
+        success: !!finalUrl, // Only success if we got an ibb.co URL
+        localUrl: finalUrl, // Only return ibb.co URL, not a fake local URL
         filename: filename,
-        size: imageBuffer.length
+        size: imageBuffer.length,
+        uploaded: !!finalUrl
       })
     };
 
