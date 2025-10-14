@@ -4596,6 +4596,7 @@
               title: character.Character_Title || '',
               description: character.Character_Description || '',
               avatar: character.Avatar_URL ? character.Avatar_URL.replace('narrin.ai', 'selira.ai') : null,
+              avatar_url_2: (character.Avatar_URL_2 || character.avatar_url_2) ? (character.Avatar_URL_2 || character.avatar_url_2).replace('narrin.ai', 'selira.ai') : null,
               category: character.Category || 'Other',
               slug: character.Slug || characterSlug,
               creator: character.Created_by || 'Selira',
