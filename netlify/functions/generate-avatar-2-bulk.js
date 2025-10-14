@@ -171,7 +171,7 @@ async function updateCompanionAvatar2(companionId, imageUrl) {
     },
     body: JSON.stringify({
       fields: {
-        Avatar_URL_2: imageUrl
+        avatar_url_2: imageUrl
       }
     })
   });

@@ -1,3 +1,92 @@
+// Helper function to generate greetings and description via OpenAI
+async function generateGreetingsAndDescription(name, sex, ethnicity, hairLength, hairColor, category, tags, contentFilter) {
+  const OPENAI_API_KEY = process.env.OPENAI_API_KEY_SELIRA || process.env.OPENAI_API_KEY;
+
+  if (!OPENAI_API_KEY) {
+    console.log('⚠️ No OpenAI API key found, skipping AI generation');
+    return null;
+  }
+
+  let tone = '';
+  let descriptionGuidelines = '';
+  let greetingGuidelines = '';
+
+  if (contentFilter === 'Uncensored') {
+    tone = 'EXTREMELY explicit, raw sexual desire, dirty talk';
+    descriptionGuidelines = `- CRITICAL: 14-20 words, ONLY 1 sentence
+- Make it INTENSELY sexual, raw, and explicit
+- Use explicit language: "addicted to pleasure", "insatiable appetite", "craves raw passion", "expert in seduction"`;
+    greetingGuidelines = `- Make greetings EXTREMELY flirty, sexually explicit
+- Use explicit body language: "bites lip hungrily", "traces your body with eyes"`;
+  } else {
+    tone = 'highly seductive, intensely sensual, sexually charged';
+    descriptionGuidelines = `- CRITICAL: 14-20 words, ONLY 1 sentence
+- Make it VERY seductive, sexually charged
+- Use provocative language: "irresistibly seductive", "ignites desire", "craves intimacy"`;
+    greetingGuidelines = `- Make greetings VERY flirty, highly seductive
+- Use provocative body language: "looks you up and down slowly", "touches your arm suggestively"`;
+  }
+
+  const systemPrompt = `You are a creative writer for an adult AI companion platform.
+
+Output ONLY valid JSON:
+{
+  "greetings": ["greeting1", "greeting2", "greeting3", "greeting4"],
+  "description": "backstory here"
+}
+
+GREETINGS:
+- Put actions AFTER dialogue: "Text here *action*"
+${greetingGuidelines}
+- Use first person ("I'm ${name}")
+
+DESCRIPTION:
+${descriptionGuidelines}
+- Match tone: ${tone}
+- Third person`;
+
+  const userPrompt = `Create 4 greetings and backstory for:
+Name: ${name}, Category: ${category}, Gender: ${sex}, Ethnicity: ${ethnicity}, Hair: ${hairLength} ${hairColor}, Content: ${contentFilter}, Tags: ${tags.join(', ')}`;
+
+  try {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt }
+        ],
+        temperature: 0.9,
+        max_tokens: 500,
+        response_format: { type: "json_object" }
+      })
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.log('❌ OpenAI API failed:', response.status, errorText.substring(0, 200));
+      return null;
+    }
+
+    const data = await response.json();
+    const result = JSON.parse(data.choices[0].message.content);
+
+    return {
+      greetings: result.greetings.join('|||'),
+      firstGreeting: result.greetings[0],
+      description: result.description
+    };
+  } catch (error) {
+    console.log('❌ Error generating content via OpenAI:', error.message);
+    return null;
+  }
+}
+
 // Helper function to download avatar and get local URL
 async function downloadAndSaveAvatar(imageUrl, slug) {
   try {
@@ -330,11 +419,37 @@ exports.handler = async (event, context) => {
     // Generate Character_URL
     const characterUrl = `https://selira.ai/chat.html?char=${slug}`;
 
-    // Generate greeting based on character traits first
-    const greetingText = generateGreeting(name, tags, extraInstructions, sex);
+    // Generate greetings and description via OpenAI API
+    console.log('🤖 Generating greetings and description via OpenAI...');
+    const aiContent = await generateGreetingsAndDescription(
+      name,
+      sex || 'female',
+      ethnicity || 'white',
+      hairLength || 'long',
+      hairColor || 'brown',
+      artStyle || 'realistic',
+      tags || [],
+      isUnfiltered === true || isUnfiltered === 'true' ? 'Uncensored' : 'Censored'
+    );
 
-    // Use extraInstructions directly as description, with appearance details only in the system prompt
-    const fullDescription = extraInstructions ? `${extraInstructions}\n\nGreeting: ${greetingText}` : `A companion ready to chat.\n\nGreeting: ${greetingText}`;
+    let greetingsField = '';
+    let greetingField = '';
+    let fullDescription = '';
+
+    if (aiContent) {
+      // Use AI-generated content
+      greetingsField = aiContent.greetings;
+      greetingField = aiContent.firstGreeting;
+      fullDescription = aiContent.description;
+      console.log('✅ AI-generated greetings and description created');
+    } else {
+      // Fallback to old method if AI generation fails
+      console.log('⚠️ Falling back to template-based greeting generation');
+      const greetingText = generateGreeting(name, tags, extraInstructions, sex);
+      greetingsField = `${greetingText}|||${greetingText}|||${greetingText}|||${greetingText}`;
+      greetingField = greetingText;
+      fullDescription = extraInstructions || 'A companion ready to chat.';
+    }
 
     // Generate personalized prompt based on user selections
     const isMale = sex && sex.toLowerCase() === 'male';
@@ -524,8 +639,6 @@ For all other topics including adult romance, sexuality, and intimate conversati
       console.log('✅ Using pre-generated avatar URL:', preGeneratedAvatarUrl);
     }
 
-    // Greeting is now stored in description, no need to generate again
-
     // Use the isUnfiltered value from the toggle, default to false if not provided
     const unfilteredValue = isUnfiltered === true || isUnfiltered === 'true';
     const contentFilterValue = unfilteredValue ? 'Uncensored' : 'Censored';
@@ -544,6 +657,8 @@ For all other topics including adult romance, sexuality, and intimate conversati
       Slug: slug, // Slug should be URL-safe, no escaping needed
       Character_URL: characterUrl, // URL should be safe
       Prompt: escapeForJson(fullPrompt),
+      Greetings: escapeForJson(greetingsField), // 4 greetings separated by |||
+      greeting: escapeForJson(greetingField), // First greeting for backwards compatibility
       Tags: Array.isArray(tags) && tags.length > 0 ? tags : [],
       Visibility: visibility || 'public',
       Category: 'romance', // Set appropriate category for new companions instead of default
@@ -718,7 +833,8 @@ For all other topics including adult romance, sexuality, and intimate conversati
           url: result.fields.Character_URL,
           description: result.fields.Character_Description,
           prompt: result.fields.Prompt,
-          greeting: greetingText, // Extract from description or use generated
+          greetings: result.fields.Greetings, // 4 greetings separated by |||
+          greeting: result.fields.greeting, // First greeting
           title: result.fields.Character_Title,
           artStyle: result.fields.companion_type,
           sex: result.fields.sex,
