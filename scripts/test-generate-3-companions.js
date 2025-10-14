@@ -76,14 +76,13 @@ Guidelines for GREETINGS:
 - Use first person ("I'm ${name}")
 
 Guidelines for DESCRIPTION:
-- CRITICAL: Maximum 40 words, strictly 2 sentences
-- Focus on personality and ONE unique trait
-- Include ONE subtle hint about desire, fear, or secret
-- Make it engaging and mysterious
-- Use vivid, concise language
+- CRITICAL: 14-20 words maximum, ONLY 1 sentence
+- Focus on personality OR one unique trait
+- Optional: ONE subtle hint about desire/fear/secret
+- Engaging and concise
 - Match tone: ${tone}
-- Third person narrative style
-- NO greetings, instructions, or meta information`;
+- Third person
+- NO greetings or meta information`;
 
   const userPrompt = `Create 4 greetings and a compelling backstory for:
 
