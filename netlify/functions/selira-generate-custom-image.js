@@ -174,6 +174,14 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     enhancedPrompt += nsfwBoost;
     console.log(`🔥 [${requestId}] Added minimal NSFW boost:`, nsfwBoost);
 
+    // Add extra nudity emphasis only for blowjob/oral poses (they tend to add clothes)
+    const isBlowjobPosePreEnhanced = promptLower.includes('blowjob') || promptLower.includes('oral sex') ||
+                                      promptLower.includes('fellatio') || promptLower.includes('cock sucking');
+    if (isBlowjobPosePreEnhanced) {
+      enhancedPrompt += ', completely naked, fully nude, no clothes at all, zero clothing, bare naked body, exposed genitals';
+      console.log(`🔥 [${requestId}] Added blowjob nudity boost to pre-enhanced prompt`);
+    }
+
     const promptchanRequest = {
       prompt: enhancedPrompt,
       negative_prompt: negativePrompt,
@@ -556,6 +564,14 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   console.log(`📸 [${requestId}] Shot type: ${shotDesc} (isFullBody: ${isFullBody})`);
 
   console.log(`✨ [${requestId}] Promptchan enhanced prompt:`, enhancedPrompt);
+
+  // Add extra nudity emphasis only for blowjob/oral poses (they tend to add clothes)
+  const isBlowjobPoseRegular = promptLower.includes('blowjob') || promptLower.includes('oral sex') ||
+                                promptLower.includes('fellatio') || promptLower.includes('cock sucking');
+  if (isBlowjobPoseRegular) {
+    enhancedPrompt += ', completely naked, fully nude, no clothes at all, zero clothing, bare naked body, exposed genitals';
+    console.log(`🔥 [${requestId}] Added blowjob nudity boost to regular enhanced prompt`);
+  }
 
   // Determine Promptchan style based on our style parameter
   let promptchanStyle = 'Photo XL+';  // Use Photo XL+ with fixed parameters (512x512, sliders -1 to 1)
