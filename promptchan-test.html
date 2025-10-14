@@ -282,6 +282,7 @@
                 <div class="form-group">
                     <label for="image_size">Image Size</label>
                     <select id="image_size" name="image_size">
+                        <option value="256x256">Tiny (256x256) - FASTEST</option>
                         <option value="512x512">Square (512x512)</option>
                         <option value="512x768">Portrait (512x768)</option>
                         <option value="768x512">Landscape (768x512)</option>
@@ -302,8 +303,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="creativity">Creativity (30, 50, or 70)</label>
-                    <input type="number" id="creativity" name="creativity" value="50" min="30" max="70" step="20">
+                    <label for="creativity">Creativity (5-70)</label>
+                    <input type="number" id="creativity" name="creativity" value="5" min="5" max="70" step="5">
                 </div>
 
                 <div class="form-group slider-group">
