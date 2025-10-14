@@ -133,6 +133,7 @@ async function main() {
 
     // Filter characters that need new descriptions
     const needsUpdate = characters.filter(char => {
+      if (!char || !char.fields) return false;
       const desc = char.fields.Character_Description || '';
       // Update if description is empty or just "A companion ready to chat"
       return !desc || desc.includes('A companion ready to chat') || desc.includes('A realistic companion') || desc.includes('An anime companion');
