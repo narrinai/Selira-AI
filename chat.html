@@ -3268,14 +3268,10 @@
           }
 
           if (character && !greetingAddedFor.has(characterSlug)) {
-            // Try to extract greeting from description first, otherwise generate random greeting
-            let greeting = null;
+            // Get greeting (supports multiple greetings or legacy format)
+            let greeting = getCharacterGreeting(character);
 
-            if (character.description) {
-              greeting = extractGreetingFromDescription(character.description);
-            }
-
-            // If no greeting found in description, generate random greeting
+            // If no greeting found, generate random greeting
             if (!greeting) {
               greeting = generateGreetingForNewCharacter(character);
             }
@@ -3886,7 +3882,7 @@
           avatar: character.avatar || character.Avatar_URL,
           title: character.title || character.Character_Title || character.description,
           description: character.description || character.Character_Description,
-          greeting: extractGreetingFromDescription(character.description || character.Character_Description) || generateGreetingForNewCharacter(character),
+          greeting: getCharacterGreeting(character) || generateGreetingForNewCharacter(character),
           creator: character.creator || character.Nickname || '@Selira',
           chats: getMessageCount(character.slug || character.Slug),
           rating: character.rating || '4.5',
@@ -4082,7 +4078,26 @@
       }
     });
 
-    // Extract greeting from character description
+    // Get greeting from character - supports multiple greetings
+    function getCharacterGreeting(character) {
+      // Priority 1: Check for new Greetings field (multiple greetings separated by |||)
+      if (character.Greetings || character.greetings) {
+        const greetingsText = character.Greetings || character.greetings;
+        const greetingsArray = greetingsText.split('|||').map(g => g.trim()).filter(g => g);
+
+        if (greetingsArray.length > 0) {
+          // Return random greeting from array
+          const randomGreeting = greetingsArray[Math.floor(Math.random() * greetingsArray.length)];
+          console.log(`🎲 Selected random greeting (${greetingsArray.length} options available):`, randomGreeting);
+          return randomGreeting;
+        }
+      }
+
+      // Priority 2: Fallback to old format in description
+      return extractGreetingFromDescription(character.description || character.Character_Description);
+    }
+
+    // Extract greeting from character description (legacy format)
     function extractGreetingFromDescription(description) {
       if (!description) return null;
 
@@ -4230,7 +4245,7 @@
         avatar: fixAvatarUrl(avatar),
         creator: '@' + (character.creator || character.createdBy || 'Selira'),
         description: character.description || 'Start a conversation with ' + name,
-        greeting: extractGreetingFromDescription(character.description) || generateGreetingForNewCharacter(character),
+        greeting: getCharacterGreeting(character) || generateGreetingForNewCharacter(character),
         chats: getMessageCount(slug),
         rating: character.rating || (isNewCharacter ? '5.0' : (Math.random() * 2 + 3).toFixed(1)),
         tags: character.tags || ['Fantasy', 'Adventure', 'Hero'],
