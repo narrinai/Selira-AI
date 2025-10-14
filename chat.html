@@ -2634,23 +2634,14 @@
           const selectorContainer = document.createElement('div');
           selectorContainer.className = 'pose-outfit-selector';
 
-          // Pose selector
+          // Pose selector (fully nude by default)
           const poseSection = document.createElement('div');
           poseSection.className = 'selector-section';
           poseSection.innerHTML = `
-            <div class="selector-label">Select Pose:</div>
+            <div class="selector-label">Select Pose (Fully Nude):</div>
             <div class="selector-buttons" id="poseButtons"></div>
           `;
           selectorContainer.appendChild(poseSection);
-
-          // Outfit selector
-          const outfitSection = document.createElement('div');
-          outfitSection.className = 'selector-section';
-          outfitSection.innerHTML = `
-            <div class="selector-label">Select Outfit:</div>
-            <div class="selector-buttons" id="outfitButtons"></div>
-          `;
-          selectorContainer.appendChild(outfitSection);
 
           // Generate button (BOTTOM, sticky for visibility)
           const generateBtn = document.createElement('button');
@@ -2672,15 +2663,7 @@
             poseButtonsContainer.appendChild(btn);
           });
 
-          // Populate outfit buttons
-          const outfitButtonsContainer = document.getElementById('outfitButtons');
-          NSFW_OUTFITS.forEach(outfit => {
-            const btn = document.createElement('button');
-            btn.className = 'selector-btn';
-            btn.textContent = outfit.label;
-            btn.onclick = () => selectOutfit(outfit.id);
-            outfitButtonsContainer.appendChild(btn);
-          });
+          // Outfits removed - fully nude by default
 
         } else {
           // CENSORED MODE: Show original suggestion buttons
@@ -2699,9 +2682,10 @@
       suggestionsDiv.classList.add('visible');
     }
 
-    // Select pose for NSFW image generation
+    // Select pose for NSFW image generation (fully nude by default)
     function selectPose(poseId) {
       selectedPose = poseId;
+      selectedOutfit = 'fully-nude'; // Always fully nude
 
       // Update button styles
       document.querySelectorAll('#poseButtons .selector-btn').forEach(btn => {
@@ -2709,50 +2693,36 @@
       });
       event.target.classList.add('selected');
 
-      // Enable generate button if both selected
+      // Enable generate button if pose selected
       updateGenerateButton();
     }
 
-    // Select outfit for NSFW image generation
-    function selectOutfit(outfitId) {
-      selectedOutfit = outfitId;
-
-      // Update button styles
-      document.querySelectorAll('#outfitButtons .selector-btn').forEach(btn => {
-        btn.classList.remove('selected');
-      });
-      event.target.classList.add('selected');
-
-      // Enable generate button if both selected
-      updateGenerateButton();
-    }
-
-    // Update generate button state
+    // Update generate button state (only pose needed)
     function updateGenerateButton() {
       const generateBtn = document.querySelector('.generate-image-btn');
       if (generateBtn) {
-        generateBtn.disabled = !(selectedPose && selectedOutfit);
+        generateBtn.disabled = !selectedPose;
       }
     }
 
-    // Generate image from selected pose & outfit
+    // Generate image from selected pose (fully nude by default)
     async function generateImageFromSelectors() {
-      if (!selectedPose || !selectedOutfit) {
-        alert('Please select both a pose and outfit');
+      if (!selectedPose) {
+        alert('Please select a pose');
         return;
       }
 
-      // Find selected pose and outfit
+      // Find selected pose
       const pose = NSFW_POSES.find(p => p.id === selectedPose);
-      const outfit = NSFW_OUTFITS.find(o => o.id === selectedOutfit);
 
-      if (!pose || !outfit) {
-        console.error('❌ Invalid pose or outfit selection');
+      if (!pose) {
+        console.error('❌ Invalid pose selection');
         return;
       }
 
-      // Build prompt from pose + outfit (match the "Send me a picture" format)
-      const combinedPrompt = `Send me a picture ${pose.prompt}, ${outfit.prompt}`;
+      // Build prompt from pose + fully nude keywords (match the "Send me a picture" format)
+      const fullyNudeKeywords = 'completely naked, fully nude, no clothes, bare skin, nude body, naked breasts, exposed pussy, totally naked, unclothed, full nudity, NSFW';
+      const combinedPrompt = `Send me a picture ${pose.prompt}, ${fullyNudeKeywords}`;
       console.log('🎨 Generated prompt from selectors:', combinedPrompt);
 
       // Put prompt in message input and trigger send
@@ -2771,9 +2741,8 @@
         }
       }
 
-      // Reset selections
+      // Reset selection
       selectedPose = null;
-      selectedOutfit = null;
     }
 
     // Hide image prompt suggestions
