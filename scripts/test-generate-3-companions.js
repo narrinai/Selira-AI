@@ -76,10 +76,10 @@ Guidelines for GREETINGS:
 - Use first person ("I'm ${name}")
 
 Guidelines for DESCRIPTION:
-- Write 25-50 words max (2-3 sentences)
-- Focus on WHO they are, personality, and what makes them unique
-- Include one subtle hint about desires, fears, or secrets
-- Make it engaging and mysterious - leave room for discovery
+- CRITICAL: Maximum 40 words, strictly 2 sentences
+- Focus on personality and ONE unique trait
+- Include ONE subtle hint about desire, fear, or secret
+- Make it engaging and mysterious
 - Use vivid, concise language
 - Match tone: ${tone}
 - Third person narrative style
