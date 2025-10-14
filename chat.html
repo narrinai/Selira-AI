@@ -4320,6 +4320,7 @@
         name: name,
         slug: slug,
         avatar: fixAvatarUrl(avatar),
+        avatar_url_2: character.avatar_url_2, // Second avatar for carousel
         creator: '@' + (character.creator || character.createdBy || 'Selira'),
         description: character.description || 'Start a conversation with ' + name,
         greeting: getCharacterGreeting(character) || generateGreetingForNewCharacter(character),
@@ -5789,12 +5790,14 @@
       }
 
       // Add second image (avatar_url_2) - ONLY for Selira companions
-      if (currentCharacter.creator === 'Selira' && currentCharacter.avatar_url_2) {
+      const isSeliraCreator = currentCharacter.creator === 'Selira' || currentCharacter.creator === '@Selira';
+      if (isSeliraCreator && currentCharacter.avatar_url_2) {
         carouselImages.push(fixAvatarUrl(currentCharacter.avatar_url_2));
         console.log('🎠 Added Avatar_URL_2 for Selira companion');
       } else {
         console.log('🎠 No second image:', {
-          isSelira: currentCharacter.creator === 'Selira',
+          creator: currentCharacter.creator,
+          isSelira: isSeliraCreator,
           hasAvatar2: !!currentCharacter.avatar_url_2
         });
       }
