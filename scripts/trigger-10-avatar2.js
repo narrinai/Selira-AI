@@ -7,7 +7,7 @@ async function triggerGeneration(index) {
   console.log(`\n[${index + 1}/10] Triggering avatar_url_2 generation...`);
 
   try {
-    const response = await fetch('https://selira.ai/.netlify/functions/generate-avatar-2-bulk?trigger=manual', {
+    const response = await fetch('https://selira.ai/.netlify/functions/generate-avatar-2-manual?trigger=manual', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
