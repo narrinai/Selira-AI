@@ -124,7 +124,9 @@ exports.handler = async (event, context) => {
       hair_length: record.fields.hair_length || 'long',
       hair_color: record.fields.hair_color || 'brown',
       // Content filter - return raw value from Airtable (default to "Censored" for safety)
-      content_filter: record.fields.content_filter || 'Censored'
+      content_filter: record.fields.content_filter || 'Censored',
+      // Creator info for carousel filtering (default to Selira for all official companions)
+      creator: 'Selira' // TODO: Add proper creator field in Airtable when user-generated companions are supported
     }));
 
     return {
