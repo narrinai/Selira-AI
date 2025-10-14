@@ -5109,11 +5109,11 @@
       
       // Add loading message
       const loadingId = 'loading-' + Date.now();
-      // Male uncensored takes longer (15-20s), female uncensored is faster (10-15s), censored is quick (7-8s)
+      // Male uncensored takes longer (10-12s), female uncensored is fast (7-8s), censored is quick (7-8s)
       const isMaleCompanion = characterSex === 'male';
       let estimatedTime;
       if (unfilteredMode) {
-        estimatedTime = isMaleCompanion ? '15-20 seconds' : '10-15 seconds';
+        estimatedTime = isMaleCompanion ? '10-12 seconds' : '7-8 seconds';
       } else {
         estimatedTime = '7-8 seconds';
       }
