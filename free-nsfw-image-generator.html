@@ -1080,12 +1080,7 @@
             </div>
 
             <!-- Outfit selector removed - fully nude by default -->
-
-            <div>
-              <label for="customPrompt" style="display: block; font-weight: 600; margin-bottom: 10px; font-size: 15px;">Custom Prompt (Optional)</label>
-              <textarea id="customPrompt" placeholder="Add additional details like location, lighting, mood, etc..." style="width: 100%; padding: 12px 16px; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary); font-size: 15px; resize: vertical; min-height: 100px;"></textarea>
-              <small style="font-size: 13px; color: var(--text-muted); margin-top: 6px; display: block;">This will be added to the image generation prompt</small>
-            </div>
+            <!-- Custom prompt removed - button-only for faster generation -->
           </div>
 
           <!-- Preview Panel -->
@@ -1468,8 +1463,8 @@
       document.getElementById('generateBtn').disabled = true;
 
       try {
-        const customPrompt = document.getElementById('customPrompt').value.trim();
-        const fullPrompt = [selectedPose.prompt, fullyNudePrompt, customPrompt].filter(Boolean).join(', ');
+        // Custom prompt removed - use only pose + fully nude keywords for faster generation
+        const fullPrompt = [selectedPose.prompt, fullyNudePrompt].filter(Boolean).join(', ');
 
         const response = await fetch('/.netlify/functions/selira-generate-custom-image', {
           method: 'POST',
