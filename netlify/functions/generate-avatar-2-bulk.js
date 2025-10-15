@@ -10,7 +10,7 @@ const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA || process.env.AIRT
 const AIRTABLE_TABLE_ID = 'Characters';
 
 // Configuration
-const BATCH_SIZE = 1; // Process 1 companion per run (avoid Netlify 26s timeout)
+const BATCH_SIZE = 5; // Process 5 companions per run (testing uncensored females with POV poses)
 const DELAY_BETWEEN_GENERATIONS = 5000; // 5 seconds delay to avoid rate limits
 
 // Sleep function
@@ -60,25 +60,27 @@ async function generateAvatar2(companion) {
   const appearance = buildAppearanceString(companion);
   const uncensored = companion.content_filter === 'Uncensored';
 
-  // Variation prompts for different angles/poses - SOLO POSES ONLY (no POV/penis poses for bulk avatars)
+  // Variation prompts - 4 specific poses that rotate
   const variations = companion.sex === 'male' ? [
-    'different angle, looking over shoulder, full body visible',
-    'unique pose, turned to the side, showing complete physique',
-    'different perspective, confident expression, entire body in frame',
-    'alternative angle, alluring gaze, full figure visible',
-    'varied pose, seductive smile, complete body portrait'
+    'full body portrait, handsome man sitting with legs spread wide apart, large erect cock and big hanging balls fully visible between legs, full frontal nudity, showing entire body from head to knees, explicit masculine pose',
+    'full body shot, muscular man lying on back with legs spread open, big hard cock erect and pointing up, balls visible, showing face chest abs and cock, full exposure, inviting seductive pose',
+    'full body view, athletic man bent over looking back, firm ass cheeks spread, thick cock hanging down visible between legs, balls dangling, showing face and body, doggy style position'
   ] : [
-    // FEMALE SOLO ONLY - NO POV POSES, NO PENIS, just beautiful woman alone
-    'beautiful woman alone, different angle looking over shoulder, full body visible, solo portrait',
-    'gorgeous woman by herself, unique pose turned to side, complete figure, single person',
-    'attractive woman solo, different perspective with confident expression, entire body in frame, alone',
-    'stunning woman alone, alternative angle with alluring gaze, full figure visible, solo shot',
-    'beautiful woman by herself, varied pose with seductive smile, complete body portrait, single person only'
+    // FEMALE: 4 rotating poses - POV Blowjob, Masturbating, Doggy Style, Reverse Cowgirl
+    'beautiful woman kneeling looking up at camera, large erect cock in her mouth from man standing above, thick penis shaft attached to male groin and thighs visible, lips stretched around cock, hand gripping penis base, breasts exposed, saliva dripping, man\'s head out of frame above, POV blowjob from man\'s perspective',
+    'gorgeous woman lying on back with legs spread wide, fingers touching pussy, masturbating alone, pussy lips visible, breasts exposed with erect nipples, pleasuring herself, SOLO masturbation, single woman only, intimate self-pleasure',
+    'sexy woman on all fours ass up, man behind her, big hard cock from male groin penetrating pussy from behind, thick penis shaft connected to man\'s pelvis and thighs visible, pussy lips spread around cock, breasts hanging, woman looking back, man\'s torso visible but head out of frame, POV doggy style from man\'s perspective',
+    'hot woman riding cock facing away from man, large erect penis from male groin penetrating pussy from below, pussy lips stretched around thick shaft connected to man\'s pelvis, round ass bouncing, woman looking back, man\'s legs and torso visible but head out of frame below, POV reverse cowgirl from man\'s perspective'
   ];
   const randomVariation = variations[Math.floor(Math.random() * variations.length)];
 
+  // Check if this is a POV pose (contains "man" or "male")
+  const isPOVPose = randomVariation.toLowerCase().includes('man') || randomVariation.toLowerCase().includes('male groin');
+
   const customPrompt = uncensored
-    ? `${randomVariation}, seductive, alluring, intimate, artistic portrait, sensual atmosphere, SOLO portrait of single person only, NO other people`
+    ? (isPOVPose
+        ? `${randomVariation}, seductive, alluring, intimate, artistic portrait, sensual atmosphere, POV perspective`
+        : `${randomVariation}, seductive, alluring, intimate, artistic portrait, sensual atmosphere, SOLO portrait of single person only`)
     : `${randomVariation}, professional portrait, elegant, tasteful, single person only`;
 
   console.log(`   📝 Appearance: ${appearance}`);
@@ -214,14 +216,14 @@ exports.handler = async (event, context) => {
 
   try {
     // 1. Fetch companions without avatar_url_2
-    console.log('📊 Fetching censored Selira companions without Avatar_URL_2...');
+    console.log('📊 Fetching UNCENSORED FEMALE Selira companions without Avatar_URL_2...');
 
     let allCompanions = [];
     let offset = null;
 
     do {
-      // Filter: No Avatar_URL_2 AND Created_by = 'Selira' AND content_filter = 'Censored'
-      const filterFormula = encodeURIComponent("AND(NOT({Avatar_URL_2}), {Created_by} = 'Selira', {content_filter} = 'Censored')");
+      // Filter: No Avatar_URL_2 AND Created_by = 'Selira' AND content_filter = 'Uncensored' AND sex = 'female'
+      const filterFormula = encodeURIComponent("AND(NOT({Avatar_URL_2}), {Created_by} = 'Selira', {content_filter} = 'Uncensored', {sex} = 'female')");
       const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_ID}?filterByFormula=${filterFormula}&maxRecords=${BATCH_SIZE}${offset ? `&offset=${offset}` : ''}`;
 
       const response = await fetch(url, {
