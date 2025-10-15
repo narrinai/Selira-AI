@@ -236,10 +236,11 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // 2. Process companions
+    // 2. Process companions - STAGE updates first, then batch update at end
     let successCount = 0;
     let failCount = 0;
     const errors = [];
+    const stagedUpdates = []; // Collect updates here
 
     for (let i = 0; i < Math.min(allCompanions.length, BATCH_SIZE); i++) {
       const record = allCompanions[i];
@@ -264,11 +265,15 @@ exports.handler = async (event, context) => {
         // Upload to ImgBB to get permanent ibb.co URL
         const imgbbUrl = await uploadToImgbb(replicateUrl, companion.name);
 
-        // Update Airtable with imgbb URL
-        await updateCompanionAvatar3(record.id, imgbbUrl);
+        // STAGE update instead of pushing immediately
+        stagedUpdates.push({
+          id: record.id,
+          name: companion.name,
+          imageUrl: imgbbUrl
+        });
 
         successCount++;
-        console.log(`   🎉 Success for ${companion.name}`);
+        console.log(`   ✅ Staged update for ${companion.name}`);
 
         // Delay before next generation (except for last one)
         if (i < Math.min(allCompanions.length, BATCH_SIZE) - 1) {
@@ -284,6 +289,55 @@ exports.handler = async (event, context) => {
 
         // Continue to next companion even if this one failed
         continue;
+      }
+    }
+
+    // 3. Batch update all companions at once (single Airtable API call = single deployment)
+    if (stagedUpdates.length > 0) {
+      console.log(`\n💾 Pushing ${stagedUpdates.length} staged updates to Airtable in one batch...`);
+
+      try {
+        // Airtable batch update API (max 10 records per request)
+        const batchUpdateUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_ID}`;
+
+        const records = stagedUpdates.map(update => ({
+          id: update.id,
+          fields: {
+            avatar_url_3: update.imageUrl
+          }
+        }));
+
+        const response = await fetch(batchUpdateUrl, {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ records })
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Batch update failed: ${response.status} - ${errorText}`);
+        }
+
+        const result = await response.json();
+        console.log(`✅ Batch update successful! Updated ${result.records.length} companions`);
+        console.log(`🎉 This triggers only ONE Netlify deployment instead of ${stagedUpdates.length}!`);
+
+      } catch (error) {
+        console.error('❌ Batch update failed:', error.message);
+        console.log('⚠️ Falling back to individual updates...');
+
+        // Fallback: update individually if batch fails
+        for (const update of stagedUpdates) {
+          try {
+            await updateCompanionAvatar3(update.id, update.imageUrl);
+            console.log(`   ✅ Individual update for ${update.name}`);
+          } catch (err) {
+            console.error(`   ❌ Individual update failed for ${update.name}:`, err.message);
+          }
+        }
       }
     }
 
