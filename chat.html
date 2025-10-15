@@ -5725,7 +5725,9 @@
 
       // Get avatar URLs
       const avatar1 = fixAvatarUrl(currentCharacter.avatar);
-      const avatar2 = currentCharacter.avatar2 ? fixAvatarUrl(currentCharacter.avatar2) : null;
+      const avatar2 = currentCharacter.avatar_url_2 ? fixAvatarUrl(currentCharacter.avatar_url_2) : null;
+
+      console.log('📸 Opening carousel with avatars:', { avatar1, avatar2 });
 
       const modal = document.createElement('div');
       modal.id = 'carouselFullscreenModal';
