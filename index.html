@@ -2335,9 +2335,9 @@
       search: '',
       category: 'all',
       tags: [],
-      content: null, // null = show all (will be set by URL params or UI)
-      sex: null, // null = show all (will be set by URL params or UI)
-      style: null, // null = show all (will be set by URL params or UI)
+      content: 'uncensored', // Default to uncensored (can be overridden by URL params)
+      sex: 'female', // Default to female (can be overridden by URL params)
+      style: 'realistic', // Default to realistic (can be overridden by URL params)
       animated: undefined, // undefined = show all, true = only animated, false = only realistic
       unfiltered: true // Legacy field
     };
@@ -2529,12 +2529,6 @@
       // Handle URL parameters FIRST before loading characters
       handleInitialURL();
 
-      // Initialize mobile sex filter to show default "Female"
-      const mobileSexText = document.getElementById('mobileSexText');
-      if (mobileSexText && currentFilters.sex === 'female') {
-        mobileSexText.textContent = 'Female';
-      }
-
       loadCharacters();
       initializeFilters();
       setupInfiniteScroll();
@@ -2679,6 +2673,9 @@
 
           if (activeFilters.length > 0) {
             console.log('🔍 URL parameters set currentFilters:', activeFilters.join(', '), '→', currentFilters);
+
+            // Update UI to reflect URL parameter filters
+            updateFilterUI();
           }
 
           console.log('✅ Loaded characters:', allCharacters.length);
@@ -3185,6 +3182,109 @@
 
       console.log('Style filter changed to:', currentFilters.style);
       applyFilters();
+    }
+
+    // Update filter UI based on currentFilters (used after URL parameters are applied)
+    function updateFilterUI() {
+      // Labels mapping
+      const contentLabels = {
+        'censored': 'Censored',
+        'uncensored': 'Uncensored',
+        'null': 'All',
+        'undefined': 'All'
+      };
+      const sexLabels = {
+        'female': 'Female',
+        'male': 'Male',
+        'null': 'All',
+        'undefined': 'All'
+      };
+      const styleLabels = {
+        'realistic': 'Realistic',
+        'anime': 'Anime',
+        'null': 'All',
+        'undefined': 'All'
+      };
+
+      // Get filter values
+      const contentValue = currentFilters.content || 'null';
+      const sexValue = currentFilters.sex || 'null';
+      const styleValue = currentFilters.style || 'null';
+
+      // Update desktop content filter button
+      const contentBtn = document.getElementById('contentDropdownBtn');
+      if (contentBtn) {
+        contentBtn.querySelector('span:first-child').textContent = contentLabels[contentValue] || 'All';
+      }
+
+      // Update desktop sex filter button
+      const sexBtn = document.getElementById('sexDropdownBtn');
+      if (sexBtn) {
+        sexBtn.querySelector('span:first-child').textContent = sexLabels[sexValue] || 'All';
+      }
+
+      // Update desktop style filter button
+      const styleBtn = document.getElementById('styleDropdownBtn');
+      if (styleBtn) {
+        styleBtn.querySelector('span:first-child').textContent = styleLabels[styleValue] || 'All';
+      }
+
+      // Update mobile content filter
+      const mobileContentText = document.getElementById('mobileContentText');
+      if (mobileContentText) {
+        mobileContentText.textContent = contentLabels[contentValue] || 'All';
+      }
+
+      // Update mobile sex filter
+      const mobileSexText = document.getElementById('mobileSexText');
+      if (mobileSexText) {
+        mobileSexText.textContent = sexLabels[sexValue] || 'All';
+      }
+
+      // Update mobile style filter
+      const mobileStyleText = document.getElementById('mobileStyleText');
+      if (mobileStyleText) {
+        mobileStyleText.textContent = styleLabels[styleValue] || 'All';
+      }
+
+      // Update mobile dropdown selected states
+      const mobileContentMenu = document.getElementById('mobileContentMenu');
+      if (mobileContentMenu) {
+        mobileContentMenu.querySelectorAll('.mobile-dropdown-item').forEach(item => {
+          item.classList.remove('selected');
+          const itemText = item.textContent.toLowerCase();
+          if ((contentValue === 'null' && itemText === 'all') ||
+              (contentValue !== 'null' && itemText === contentValue)) {
+            item.classList.add('selected');
+          }
+        });
+      }
+
+      const mobileSexMenu = document.getElementById('mobileSexMenu');
+      if (mobileSexMenu) {
+        mobileSexMenu.querySelectorAll('.mobile-dropdown-item').forEach(item => {
+          item.classList.remove('selected');
+          const itemText = item.textContent.toLowerCase();
+          if ((sexValue === 'null' && itemText === 'all') ||
+              (sexValue !== 'null' && itemText === sexValue)) {
+            item.classList.add('selected');
+          }
+        });
+      }
+
+      const mobileStyleMenu = document.getElementById('mobileStyleMenu');
+      if (mobileStyleMenu) {
+        mobileStyleMenu.querySelectorAll('.mobile-dropdown-item').forEach(item => {
+          item.classList.remove('selected');
+          const itemText = item.textContent.toLowerCase();
+          if ((styleValue === 'null' && itemText === 'all') ||
+              (styleValue !== 'null' && itemText === styleValue)) {
+            item.classList.add('selected');
+          }
+        });
+      }
+
+      console.log('✅ Filter UI (desktop & mobile) updated to reflect currentFilters:', currentFilters);
     }
 
     function toggleSwitch(type) {
