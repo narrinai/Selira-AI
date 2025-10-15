@@ -2644,35 +2644,49 @@
           const urlParams = new URLSearchParams(window.location.search);
           const activeFilters = [];
 
-          // Content filter (uncensored/censored)
+          // Content filter (uncensored/censored/all)
           if (urlParams.has('uncensored')) {
             currentFilters.content = 'uncensored';
             activeFilters.push('uncensored');
           } else if (urlParams.has('censored')) {
             currentFilters.content = 'censored';
             activeFilters.push('censored');
+          } else if (urlParams.has('content') && urlParams.get('content') === 'all') {
+            currentFilters.content = null;
+            activeFilters.push('content:all');
           }
 
-          // Sex filter (male/female)
+          // Sex filter (male/female/all)
           if (urlParams.has('male')) {
             currentFilters.sex = 'male';
             activeFilters.push('male');
           } else if (urlParams.has('female')) {
             currentFilters.sex = 'female';
             activeFilters.push('female');
+          } else if (urlParams.has('sex') && urlParams.get('sex') === 'all') {
+            currentFilters.sex = null;
+            activeFilters.push('sex:all');
           }
 
-          // Companion type filter (anime/realistic)
+          // Companion type filter (anime/realistic/all)
           if (urlParams.has('anime')) {
             currentFilters.style = 'anime';
             activeFilters.push('anime');
           } else if (urlParams.has('realistic')) {
             currentFilters.style = 'realistic';
             activeFilters.push('realistic');
+          } else if (urlParams.has('style') && urlParams.get('style') === 'all') {
+            currentFilters.style = null;
+            activeFilters.push('style:all');
           }
 
           if (activeFilters.length > 0) {
             console.log('🔍 URL parameters set currentFilters:', activeFilters.join(', '), '→', currentFilters);
+            console.log('📋 All possible URL patterns:');
+            console.log('   Content: ?uncensored, ?censored, ?content=all');
+            console.log('   Sex: ?male, ?female, ?sex=all');
+            console.log('   Style: ?anime, ?realistic, ?style=all');
+            console.log('   Combine: ?censored&male&anime, ?uncensored&female&realistic, etc.');
             // Note: UI will be updated after DOM is fully loaded (see setTimeout at end of loadCharacters)
           }
 
