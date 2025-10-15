@@ -210,6 +210,22 @@
             <strong>Note:</strong> This is a test page for Promptchan API integration. Make sure you have your API key configured in Netlify environment variables.
         </div>
 
+        <!-- Quick Test Buttons for Companion Traits -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; padding: 20px; background: #f5f5f5; border-radius: 10px;">
+            <div>
+                <h3 style="margin-bottom: 10px; color: #333;">🧔 Test Male Companion</h3>
+                <button type="button" onclick="testMaleCompanion()" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);">
+                    Test: Indian Male, Red Hair, Short
+                </button>
+            </div>
+            <div>
+                <h3 style="margin-bottom: 10px; color: #333;">👩 Test Female Companion</h3>
+                <button type="button" onclick="testFemaleCompanion()" style="background: linear-gradient(135deg, #E91E63 0%, #C2185B 100%);">
+                    Test: Black Female, Blonde Hair, Long
+                </button>
+            </div>
+        </div>
+
         <form id="generateForm">
             <div class="form-section">
                 <div class="form-group full-width">
@@ -330,6 +346,95 @@
     </div>
 
     <script>
+        // Quick test functions
+        async function testMaleCompanion() {
+            const testData = {
+                customPrompt: 'beautiful woman alone, different angle looking over shoulder, full body visible, solo portrait, professional portrait, elegant, tasteful, single person only',
+                characterName: 'Test Male',
+                sex: 'male',
+                ethnicity: 'indian',
+                hairColor: 'red',
+                hairLength: 'short',
+                style: 'realistic',
+                shotType: 'portrait',
+                uncensored: true,
+                source: 'avatar-2-bulk-generation'
+            };
+            await testCompanion(testData, 'Indian Male with Red Hair (Short)');
+        }
+
+        async function testFemaleCompanion() {
+            const testData = {
+                customPrompt: 'beautiful woman alone, different angle looking over shoulder, full body visible, solo portrait, professional portrait, elegant, tasteful, single person only',
+                characterName: 'Test Female',
+                sex: 'female',
+                ethnicity: 'black',
+                hairColor: 'blonde',
+                hairLength: 'long',
+                style: 'realistic',
+                shotType: 'portrait',
+                uncensored: true,
+                source: 'avatar-2-bulk-generation'
+            };
+            await testCompanion(testData, 'Black Female with Blonde Hair (Long)');
+        }
+
+        async function testCompanion(testData, description) {
+            const resultSection = document.getElementById('resultSection');
+            const resultContent = document.getElementById('resultContent');
+
+            resultSection.style.display = 'block';
+            resultContent.innerHTML = `<div class="loading"><div class="spinner"></div>Testing: ${description}...</div>`;
+
+            try {
+                console.log('Testing companion:', testData);
+
+                const response = await fetch('/.netlify/functions/selira-generate-custom-image', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(testData)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to generate image');
+                }
+
+                console.log('Response:', data);
+
+                resultContent.innerHTML = `
+                    <div class="success">
+                        <strong>Success!</strong> Generated image for ${description}
+                        <br><strong>Provider:</strong> ${data.provider || 'unknown'}
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <h3>Expected Traits:</h3>
+                        <ul>
+                            <li><strong>Sex:</strong> ${testData.sex}</li>
+                            <li><strong>Ethnicity:</strong> ${testData.ethnicity}</li>
+                            <li><strong>Hair Color:</strong> ${testData.hairColor}</li>
+                            <li><strong>Hair Length:</strong> ${testData.hairLength}</li>
+                        </ul>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <img src="${data.imageUrl}" alt="Generated image" class="result-image">
+                        <p style="margin-top: 10px; font-size: 12px; color: #666;">
+                            <strong>Verify:</strong> Does this image match the expected traits above?
+                        </p>
+                    </div>
+                `;
+
+            } catch (error) {
+                console.error('Error:', error);
+                resultContent.innerHTML = `
+                    <div class="error">
+                        <strong>Error:</strong> ${error.message}
+                    </div>
+                `;
+            }
+        }
+
         // Update slider values
         document.getElementById('detail').addEventListener('input', (e) => {
             document.getElementById('detailValue').textContent = e.target.value;
