@@ -83,18 +83,18 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   // This ensures the pose is at the START of the prompt (like chat image gen)
   if (isCompanionCreation && uncensored) {
     const nsfwPoses = sex === 'male' ? [
-      'legs spread wide apart, sitting pose, cock and balls fully visible, intimate view, explicit position',
-      'lying on back, legs spread open, erect penis prominent, full exposure, inviting pose',
-      'bent over pose, ass up, cock hanging visible, looking back over shoulder, doggy style position',
-      'standing, cock erect and visible, balls hanging, full frontal nudity, explicit masculine pose',
-      'kneeling pose, legs apart, erect penis front and center, looking at camera, submissive position',
-      'sitting spread eagle, cock and balls fully exposed center frame, full frontal exposure',
-      'lying on side, erect penis visible, seductive side view, intimate pose',
-      'squatting pose, cock and balls hanging visible, full exposure, explicit position',
-      'reclining back, cock erect pointing up, inviting position, intimate view',
-      'standing with legs apart, cock prominently displayed, full exposure, confident pose',
-      'on knees, cock erect and visible, masculine display, intimate angle',
-      'lying face down with ass up, cock visible from behind, seductive prone position'
+      'full body portrait, handsome man sitting with legs spread wide apart, large erect cock and big hanging balls fully visible between legs, full frontal nudity, showing entire body from head to knees, explicit masculine pose',
+      'full body shot, muscular man lying on back with legs spread open, big hard cock erect and pointing up, balls visible, showing face chest abs and cock, full exposure, inviting seductive pose',
+      'full body view, athletic man bent over looking back, firm ass cheeks spread, thick cock hanging down visible between legs, balls dangling, showing face and body, doggy style position',
+      'full body portrait, fit man standing with legs apart, big erect penis and balls prominently displayed center frame, showing face chest abs and genitals, full frontal nudity, confident dominant pose',
+      'full body shot, handsome man kneeling with legs spread apart, large hard cock front and center pointing at camera, balls visible, showing face torso and genitals, looking at camera, submissive explicit position',
+      'full body view, man sitting spread eagle on bed, big cock and hanging balls fully exposed between spread legs, showing face chest and genitals, explicit frontal exposure',
+      'full body portrait, attractive man lying on side, big erect cock prominent and visible, showing face torso and penis, seductive side view, intimate masculine pose',
+      'full body shot, muscular man squatting with legs wide, large cock and balls hanging down center frame, showing face chest abs and genitals, full explicit exposure',
+      'full body view, fit man reclining back propped on elbows, big hard cock erect pointing up towards abs, showing face chest abs cock and balls, inviting dominant position',
+      'full body portrait, handsome man standing confidently with legs apart, thick erect cock prominently displayed, showing face chest abs and genitals, full masculine exposure, powerful pose',
+      'full body shot, athletic man on knees with legs spread, big hard cock erect and visible center frame, showing face torso and penis, masculine explicit display, intimate camera angle',
+      'full body view, man lying face down with muscular ass up, thick cock and balls visible hanging between legs, showing back ass and genitals from behind, seductive prone position'
     ] : [
       // Solo poses (14 variations)
       'lying on back with legs spread wide, arms above head, pussy visible, full frontal nudity, breasts exposed, nipples erect',
