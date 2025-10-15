@@ -1386,7 +1386,7 @@
         // Store original src as data attribute for reference
         img.setAttribute('data-original-src', avatar1);
 
-        // Alternate between avatar 1 and 2 every 2 seconds
+        // Alternate between avatar 1 and 2 every 1.5 seconds
         let showingAvatar1 = true;
         setInterval(() => {
           if (showingAvatar1) {
@@ -1395,7 +1395,7 @@
             img.src = avatar1;
           }
           showingAvatar1 = !showingAvatar1;
-        }, 2000);
+        }, 1500);
       });
     }
 

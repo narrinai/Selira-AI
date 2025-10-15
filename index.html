@@ -2984,7 +2984,7 @@
 
         console.log('✅ Setting up alternating for:', { avatar1: avatar1.substring(0, 50), avatar2: avatar2.substring(0, 50) });
 
-        // Alternate between avatar 1 and 2 every 2 seconds
+        // Alternate between avatar 1 and 2 every 1.5 seconds
         let showingAvatar1 = true;
         setInterval(() => {
           if (showingAvatar1) {
@@ -2993,7 +2993,7 @@
             img.src = avatar1;
           }
           showingAvatar1 = !showingAvatar1;
-        }, 2000);
+        }, 1500);
       });
     }
 
