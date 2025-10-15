@@ -5783,13 +5783,30 @@
 
     // Setup carousel navigation for cloned carousel
     function setupCarouselNavigation(carousel) {
+      console.log('📸 Setting up carousel navigation...');
+
       let currentIndex = 0;
       const images = carousel.querySelectorAll('.carousel-image');
       const indicators = carousel.querySelectorAll('.carousel-indicator');
       const prevBtn = carousel.querySelector('.carousel-nav-prev');
       const nextBtn = carousel.querySelector('.carousel-nav-next');
 
+      console.log('📸 Found elements:', {
+        images: images.length,
+        indicators: indicators.length,
+        prevBtn: !!prevBtn,
+        nextBtn: !!nextBtn
+      });
+
+      // Find which image is currently active
+      images.forEach((img, i) => {
+        if (img.classList.contains('active') || img.style.display !== 'none') {
+          currentIndex = i;
+        }
+      });
+
       function showImage(index) {
+        console.log('📸 Switching to image:', index);
         images.forEach((img, i) => {
           if (i === index) {
             img.style.display = 'block';
@@ -5813,7 +5830,9 @@
 
       if (prevBtn) {
         prevBtn.addEventListener('click', (e) => {
+          e.preventDefault();
           e.stopPropagation();
+          console.log('◀️ Prev button clicked');
           const newIndex = currentIndex === 0 ? images.length - 1 : currentIndex - 1;
           showImage(newIndex);
         });
@@ -5821,7 +5840,9 @@
 
       if (nextBtn) {
         nextBtn.addEventListener('click', (e) => {
+          e.preventDefault();
           e.stopPropagation();
+          console.log('▶️ Next button clicked');
           const newIndex = (currentIndex + 1) % images.length;
           showImage(newIndex);
         });
@@ -5829,10 +5850,14 @@
 
       indicators.forEach((ind, index) => {
         ind.addEventListener('click', (e) => {
+          e.preventDefault();
           e.stopPropagation();
+          console.log('⚫ Indicator clicked:', index);
           showImage(index);
         });
       });
+
+      console.log('✅ Carousel navigation setup complete');
     }
 
     // ===== MEMORY FUNCTIONS =====
