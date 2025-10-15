@@ -60,72 +60,14 @@ async function generateAvatar3(companion) {
   const appearance = buildAppearanceString(companion);
   const uncensored = companion.content_filter === 'Uncensored';
 
-  // Variation prompts for different angles/poses - gender specific
-  const variations = uncensored ? (companion.sex === 'male' ? [
-    // Explicit NSFW poses for MALE companions
-    'lying on back with legs spread wide, arms above head, cock and balls visible, full frontal male nudity, erect penis prominent',
-    'sitting with legs spread apart, leaning back, cock erect and visible, balls hanging, full nude exposure',
-    'kneeling upright with legs spread, hands on thighs, cock front view, muscular chest, full body nude',
-    'lying on side with top leg raised, cock visible from side angle, muscular body, completely naked',
-    'standing with legs apart, one hand on hip, full frontal nude, cock and balls visible, masculine pose',
-    'sitting with knees pulled up, cock visible between legs, muscular torso, nude intimate pose',
-    'on all fours with ass up, cock hanging visible from behind, muscular back, doggy style position nude',
-    'reclining with legs spread open, one arm behind head, cock erect, muscular body, inviting nude pose',
-    'squatting with legs wide apart, cock and balls fully visible hanging, low angle explicit nude',
-    'lying on back with one leg raised high, cock visible, muscular legs, flexible nude pose',
-    'sitting with one leg up, other spread, cock visible, muscular torso, asymmetric nude composition',
-    'kneeling with legs spread, sitting back, cock visible from front, muscular thighs, submissive nude angle',
-    'standing bent over, ass and cock visible from behind, muscular glutes, explicit rear nude view',
-    'lying face down with ass up, cock visible hanging down, muscular back, prone position nude',
-    'sitting legs spread eagle, cock and balls fully exposed center frame, muscular body, explicit frontal nude',
-    'lying on side with legs scissored open, cock visible, muscular physique, intimate side nude',
-    'squatting on toes, legs wide, cock hanging visible, muscular legs, explicit low angle nude',
-    'reclining with legs over head, cock and balls visible, muscular flexibility, explicit nude pose'
-  ] : [
-    // Explicit NSFW poses for FEMALE companions - mix of solo and POV with penis
-    'lying on back with legs spread wide, arms above head, pussy visible, full frontal nudity, breasts exposed, nipples erect',
-    'POV blowjob, kneeling looking up, cock in mouth, lips wrapped around penis, breasts visible, focus on face and breasts',
-    'sitting with legs spread apart, leaning back, pussy lips visible, breasts hanging, full nude exposure',
-    'POV doggy style, on all fours, ass up, cock penetrating pussy from behind, breasts hanging, looking back over shoulder',
-    'kneeling upright with legs spread, hands on thighs, pussy front view, naked breasts, full body nude',
-    'POV cowgirl, riding on top, cock inside pussy, breasts bouncing, looking down at camera, hands on chest',
-    'lying on side with top leg raised, pussy visible from side angle, breasts exposed, completely naked',
-    'POV missionary, lying on back legs spread, cock penetrating pussy, breasts exposed, intimate face expression',
-    'standing with legs apart, one hand on hip, full frontal nude, pussy visible, breasts exposed',
-    'POV handjob, kneeling, hand stroking cock, breasts pressed together, looking at camera seductively',
-    'on all fours with ass up, pussy visible from behind, breasts hanging, doggy style position nude',
-    'POV titjob, breasts wrapped around cock, looking up, nipples visible, penis between breasts',
-    'reclining with legs spread open, one arm behind head, pussy spread, breasts exposed, inviting nude pose',
-    'POV reverse cowgirl, riding cock facing away, ass visible, pussy lips stretched around penis, looking back',
-    'squatting with legs wide apart, pussy fully visible, breasts exposed, low angle explicit nude',
-    'POV prone bone, lying flat on stomach, ass up, cock penetrating from behind, face turned to side',
-    'lying on back with one leg raised high, pussy spread visible, breasts exposed, flexible nude pose',
-    'POV standing fuck, bent over, hands on wall, cock penetrating from behind, breasts hanging, ass visible',
-    'sitting with one leg up, other spread, pussy visible, breasts exposed, asymmetric nude composition',
-    'POV deepthroat, head tilted back, cock deep in throat, drool visible, breasts exposed, submissive position',
-    'kneeling with legs spread, sitting back, pussy visible from front, breasts exposed, submissive nude angle',
-    'POV spooning sex, lying on side, cock penetrating from behind, breasts visible, intimate close angle',
-    'standing bent over, ass and pussy visible from behind, breasts hanging, explicit rear nude view',
-    'POV cumshot, kneeling mouth open, tongue out, breasts exposed, anticipating facial, seductive expression',
-    'sitting legs spread eagle, pussy fully exposed center frame, breasts out, explicit frontal nude',
-    'lying on side with legs scissored open, pussy visible, breasts exposed, intimate side nude'
-  ]) : [
-    'different angle, looking over shoulder',
-    'unique pose, turned to the side',
-    'different perspective, confident expression',
-    'alternative angle, alluring gaze',
-    'varied pose, seductive smile'
-  ];
-  const randomVariation = variations[Math.floor(Math.random() * variations.length)];
-
+  // Simple prompt - let selira-generate-custom-image.js handle pose variations
   const customPrompt = uncensored
-    ? `${randomVariation}, naked, completely nude, no clothes, full nudity, explicit, pornographic, XXX, NSFW, seductive expression, intimate lighting`
-    : `${randomVariation}, professional portrait, elegant, tasteful`;
+    ? `varied pose, different angle, naked, completely nude, no clothes, full nudity, explicit, pornographic, XXX, NSFW, seductive expression, intimate lighting`
+    : `varied pose, different angle, professional portrait, elegant, tasteful`;
 
   console.log(`   📝 Appearance: ${appearance}`);
   console.log(`   🎭 Style: ${companion.companion_type || 'realistic'}`);
   console.log(`   🔒 Censored: ${!uncensored}`);
-  console.log(`   ✨ Variation: ${randomVariation}`);
 
   try {
     // Call the image generation function
