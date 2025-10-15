@@ -60,6 +60,10 @@ ${descriptionGuidelines}
 Name: ${name}, Category: ${category}, Gender: ${sex}, Ethnicity: ${ethnicity}, Hair: ${hairLength} ${hairColor}, Content: ${contentFilter}, Tags: ${tags.join(', ')}`;
 
   try {
+    console.log('📤 Calling OpenAI API for character generation...');
+    console.log('🔑 Using API key:', OPENAI_API_KEY.substring(0, 10) + '...');
+    console.log('📋 Parameters:', { name, sex, ethnicity, hairLength, hairColor, category, contentFilter });
+
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -76,48 +80,88 @@ Name: ${name}, Category: ${category}, Gender: ${sex}, Ethnicity: ${ethnicity}, H
         max_tokens: 500,
         response_format: { type: "json_object" }
       })
+    }).catch(fetchError => {
+      console.error('❌ Fetch to OpenAI failed:', fetchError.message);
+      console.error('❌ Stack trace:', fetchError.stack);
+      throw fetchError;
     });
+
+    console.log('📨 OpenAI response status:', response.status);
+    console.log('📨 OpenAI response headers:', Object.fromEntries(response.headers.entries()));
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.log('❌ OpenAI API failed:', response.status, errorText.substring(0, 200));
+      console.log('❌ OpenAI API failed:', response.status, errorText.substring(0, 500));
+      console.log('❌ Full error details:', {
+        status: response.status,
+        statusText: response.statusText
+      });
       return null;
     }
 
     const data = await response.json();
-    const content = data.choices[0].message.content;
-    console.log('🤖 OpenAI raw response:', content.substring(0, 200));
+    console.log('📊 OpenAI full response:', JSON.stringify(data, null, 2).substring(0, 300));
 
-    const result = JSON.parse(content);
+    const content = data.choices[0]?.message?.content;
+
+    if (!content) {
+      console.log('❌ No content in OpenAI response');
+      return null;
+    }
+
+    console.log('🤖 OpenAI raw response:', content.substring(0, 300));
+
+    let result;
+    try {
+      result = JSON.parse(content);
+    } catch (parseError) {
+      console.log('❌ Failed to parse OpenAI JSON response:', parseError.message);
+      console.log('   Response content:', content);
+      return null;
+    }
 
     // Validate the response format
     if (!result.greetings || !Array.isArray(result.greetings)) {
       console.log('❌ Invalid OpenAI response: greetings is not an array');
+      console.log('   Received:', result);
       return null;
     }
 
     if (result.greetings.length !== 4) {
-      console.log('❌ Invalid OpenAI response: expected 4 greetings, got', result.greetings.length);
-      return null;
+      console.log('⚠️ Warning: expected 4 greetings, got', result.greetings.length);
+      // Don't fail - just log the warning. We can work with 1-4 greetings.
+      // Pad with duplicates if needed
+      while (result.greetings.length < 4) {
+        result.greetings.push(result.greetings[0]);
+      }
+      console.log('✅ Padded greetings to 4');
     }
 
     if (!result.description || typeof result.description !== 'string') {
       console.log('❌ Invalid OpenAI response: description is missing or not a string');
+      console.log('   Received:', result);
       return null;
     }
 
-    // Check for problematic content in description
+    // Check for problematic content in description (made less strict)
     const desc = result.description.toLowerCase();
-    if (desc.includes('{{char}}') || desc.includes('|||') ||
-        desc.split('*').length > 3) { // Too many action markers suggests greetings mixed in
-      console.log('❌ Invalid OpenAI response: description contains invalid formatting');
+    if (desc.includes('{{char}}') || desc.includes('|||')) {
+      console.log('❌ Invalid OpenAI response: description contains placeholders or separators');
       console.log('   Description:', result.description);
       return null;
     }
 
+    // Only warn about action markers, don't fail
+    const actionMarkerCount = (result.description.match(/\*/g) || []).length;
+    if (actionMarkerCount > 2) {
+      console.log('⚠️ Warning: description has', actionMarkerCount, 'action markers (might contain greetings)');
+      console.log('   Description:', result.description);
+      // Still allow it - OpenAI might legitimately use emphasis
+    }
+
     console.log('✅ Valid OpenAI response received');
-    console.log('   Description:', result.description.substring(0, 100));
-    console.log('   Greetings count:', result.greetings.length);
+    console.log('   Description:', result.description);
+    console.log('   Greetings:', result.greetings);
 
     return {
       greetings: result.greetings.join('|||'),
