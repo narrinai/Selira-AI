@@ -2673,9 +2673,7 @@
 
           if (activeFilters.length > 0) {
             console.log('🔍 URL parameters set currentFilters:', activeFilters.join(', '), '→', currentFilters);
-
-            // Update UI to reflect URL parameter filters
-            updateFilterUI();
+            // Note: UI will be updated after DOM is fully loaded (see setTimeout at end of loadCharacters)
           }
 
           console.log('✅ Loaded characters:', allCharacters.length);
@@ -2700,6 +2698,12 @@
       if (createAvailableTags && createAvailableTags.length > 0) {
         populateTagFilters(createAvailableTags);
       }
+
+      // Update UI after everything is loaded to ensure DOM elements exist
+      // This handles URL parameter filters being reflected in the UI
+      setTimeout(() => {
+        updateFilterUI();
+      }, 250);
     }
 
     function getDemoCharacters() {
@@ -3186,6 +3190,8 @@
 
     // Update filter UI based on currentFilters (used after URL parameters are applied)
     function updateFilterUI() {
+      console.log('🎨 updateFilterUI() called with currentFilters:', currentFilters);
+
       // Labels mapping
       const contentLabels = {
         'censored': 'Censored',
@@ -3211,22 +3217,39 @@
       const sexValue = currentFilters.sex || 'null';
       const styleValue = currentFilters.style || 'null';
 
+      console.log('🎨 Filter values:', { contentValue, sexValue, styleValue });
+
       // Update desktop content filter button
       const contentBtn = document.getElementById('contentDropdownBtn');
       if (contentBtn) {
-        contentBtn.querySelector('span:first-child').textContent = contentLabels[contentValue] || 'All';
+        const span = contentBtn.querySelector('span:first-child');
+        const newText = contentLabels[contentValue] || 'All';
+        console.log('🎨 Updating content button from "' + span.textContent + '" to "' + newText + '"');
+        span.textContent = newText;
+      } else {
+        console.warn('⚠️ Content button not found');
       }
 
       // Update desktop sex filter button
       const sexBtn = document.getElementById('sexDropdownBtn');
       if (sexBtn) {
-        sexBtn.querySelector('span:first-child').textContent = sexLabels[sexValue] || 'All';
+        const span = sexBtn.querySelector('span:first-child');
+        const newText = sexLabels[sexValue] || 'All';
+        console.log('🎨 Updating sex button from "' + span.textContent + '" to "' + newText + '"');
+        span.textContent = newText;
+      } else {
+        console.warn('⚠️ Sex button not found');
       }
 
       // Update desktop style filter button
       const styleBtn = document.getElementById('styleDropdownBtn');
       if (styleBtn) {
-        styleBtn.querySelector('span:first-child').textContent = styleLabels[styleValue] || 'All';
+        const span = styleBtn.querySelector('span:first-child');
+        const newText = styleLabels[styleValue] || 'All';
+        console.log('🎨 Updating style button from "' + span.textContent + '" to "' + newText + '"');
+        span.textContent = newText;
+      } else {
+        console.warn('⚠️ Style button not found');
       }
 
       // Update mobile content filter
