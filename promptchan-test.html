@@ -228,6 +228,73 @@
 
         <form id="generateForm">
             <div class="form-section">
+                <!-- Companion Traits Section -->
+                <div class="form-group full-width" style="background: #f0f8ff; padding: 15px; border-radius: 8px; margin-bottom: 10px;">
+                    <h3 style="margin-bottom: 15px; color: #333;">👤 Companion Traits (Optional - Auto-builds appearance)</h3>
+
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;">
+                        <div class="form-group">
+                            <label for="companion_sex">Sex</label>
+                            <select id="companion_sex" name="companion_sex">
+                                <option value="">-- None --</option>
+                                <option value="female">Female</option>
+                                <option value="male">Male</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="companion_ethnicity">Ethnicity</label>
+                            <select id="companion_ethnicity" name="companion_ethnicity">
+                                <option value="">-- None --</option>
+                                <option value="white">White/Caucasian</option>
+                                <option value="black">Black/African American</option>
+                                <option value="asian">Asian (East Asian)</option>
+                                <option value="indian">Indian (South Asian)</option>
+                                <option value="latina">Latina/Hispanic</option>
+                                <option value="middle-eastern">Middle Eastern</option>
+                                <option value="mixed">Mixed</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="companion_hair_color">Hair Color</label>
+                            <select id="companion_hair_color" name="companion_hair_color">
+                                <option value="">-- None --</option>
+                                <option value="black">Black</option>
+                                <option value="brown">Brown</option>
+                                <option value="blonde">Blonde</option>
+                                <option value="red">Red/Ginger</option>
+                                <option value="auburn">Auburn</option>
+                                <option value="gray">Gray/Silver</option>
+                                <option value="white">White/Platinum</option>
+                                <option value="purple">Purple</option>
+                                <option value="pink">Pink</option>
+                                <option value="blue">Blue</option>
+                                <option value="green">Green</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="companion_hair_length">Hair Length</label>
+                            <select id="companion_hair_length" name="companion_hair_length">
+                                <option value="">-- None --</option>
+                                <option value="bald">Bald</option>
+                                <option value="short">Short</option>
+                                <option value="medium">Medium</option>
+                                <option value="long">Long</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="checkbox-group" style="margin-top: 15px;">
+                        <input type="checkbox" id="use_companion_traits" name="use_companion_traits">
+                        <label for="use_companion_traits">
+                            <strong>Auto-build appearance from traits above</strong>
+                            <span style="color: #666; font-size: 12px;">(will prepend to prompt)</span>
+                        </label>
+                    </div>
+                </div>
+
                 <div class="form-group full-width">
                     <label for="prompt">Prompt *</label>
                     <textarea id="prompt" name="prompt" required placeholder="Describe the image you want to generate..."></textarea>
@@ -323,6 +390,16 @@
                 <div class="form-group slider-group">
                     <label for="weight_slider">Weight (-1 to 1): <span class="slider-value" id="weightValue">0</span></label>
                     <input type="range" id="weight_slider" name="weight_slider" min="-1" max="1" step="0.1" value="0">
+                </div>
+
+                <div class="form-group slider-group">
+                    <label for="breast_slider">Breast Size (-1 to 1): <span class="slider-value" id="breastValue">0</span></label>
+                    <input type="range" id="breast_slider" name="breast_slider" min="-1" max="1" step="0.1" value="0">
+                </div>
+
+                <div class="form-group slider-group">
+                    <label for="ass_slider">Ass Size (-1 to 1): <span class="slider-value" id="assValue">0</span></label>
+                    <input type="range" id="ass_slider" name="ass_slider" min="-1" max="1" step="0.1" value="0">
                 </div>
 
                 <div class="form-group">
@@ -448,6 +525,64 @@
             document.getElementById('weightValue').textContent = e.target.value;
         });
 
+        document.getElementById('breast_slider').addEventListener('input', (e) => {
+            document.getElementById('breastValue').textContent = e.target.value;
+        });
+
+        document.getElementById('ass_slider').addEventListener('input', (e) => {
+            document.getElementById('assValue').textContent = e.target.value;
+        });
+
+        // Build appearance string from companion traits
+        function buildAppearanceString() {
+            const sex = document.getElementById('companion_sex').value;
+            const ethnicity = document.getElementById('companion_ethnicity').value;
+            const hairColor = document.getElementById('companion_hair_color').value;
+            const hairLength = document.getElementById('companion_hair_length').value;
+
+            if (!sex && !ethnicity && !hairColor && !hairLength) {
+                return '';
+            }
+
+            const parts = [];
+
+            // Gender base
+            if (sex === 'male') {
+                parts.push('handsome man, masculine physique, strong features');
+            } else if (sex === 'female') {
+                parts.push('beautiful woman, feminine physique, attractive features');
+            }
+
+            // Ethnicity
+            const ethnicityMap = {
+                'white': 'Caucasian features, pale skin',
+                'black': 'Black African American, DARK BROWN SKIN TONE, African features',
+                'asian': 'East Asian features, light Asian skin',
+                'indian': 'South Asian features, brown skin',
+                'latina': 'Latina features, tan skin',
+                'middle-eastern': 'Middle Eastern features, olive skin',
+                'mixed': 'mixed ethnicity features'
+            };
+            if (ethnicity && ethnicityMap[ethnicity]) {
+                parts.push(ethnicityMap[ethnicity]);
+            }
+
+            // Hair (skip if bald)
+            if (hairLength !== 'bald') {
+                if (hairColor && hairLength) {
+                    parts.push(`${hairLength} ${hairColor} hair`);
+                } else if (hairColor) {
+                    parts.push(`${hairColor} hair`);
+                } else if (hairLength) {
+                    parts.push(`${hairLength} hair`);
+                }
+            } else if (hairLength === 'bald') {
+                parts.push('bald head, shaved head');
+            }
+
+            return parts.join(', ');
+        }
+
         // Handle form submission
         document.getElementById('generateForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -462,9 +597,21 @@
             resultSection.style.display = 'block';
             resultContent.innerHTML = '<div class="loading"><div class="spinner"></div>Generating your image...</div>';
 
+            // Build prompt with companion traits if enabled
+            let finalPrompt = document.getElementById('prompt').value;
+            const useTraits = document.getElementById('use_companion_traits').checked;
+
+            if (useTraits) {
+                const appearance = buildAppearanceString();
+                if (appearance) {
+                    finalPrompt = `${appearance}, ${finalPrompt}`;
+                    console.log('Enhanced prompt with traits:', finalPrompt);
+                }
+            }
+
             // Collect form data
             const formData = {
-                prompt: document.getElementById('prompt').value,
+                prompt: finalPrompt,
                 negative_prompt: document.getElementById('negative_prompt').value || undefined,
                 style: document.getElementById('style').value,
                 filter: document.getElementById('filter').value,
@@ -475,6 +622,8 @@
                 detail: parseFloat(document.getElementById('detail').value),
                 age_slider: parseInt(document.getElementById('age_slider').value),
                 weight_slider: parseFloat(document.getElementById('weight_slider').value),
+                breast_slider: parseFloat(document.getElementById('breast_slider').value),
+                ass_slider: parseFloat(document.getElementById('ass_slider').value),
                 seed: parseInt(document.getElementById('seed').value),
                 restore_faces: document.getElementById('restore_faces').checked
             };
