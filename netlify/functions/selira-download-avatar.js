@@ -91,16 +91,18 @@ exports.handler = async (event, context) => {
 
         if (imgbbResponse.ok) {
           const imgbbData = await imgbbResponse.json();
+          console.log('📥 ImgBB response:', JSON.stringify(imgbbData).substring(0, 300));
           if (imgbbData.success && imgbbData.data && imgbbData.data.url) {
             finalUrl = imgbbData.data.url;
             console.log('✅ Uploaded to ImgBB successfully:', finalUrl);
           } else {
             console.log('⚠️ ImgBB upload succeeded but no URL returned');
+            console.log('   Full response:', JSON.stringify(imgbbData));
           }
         } else {
           const errorText = await imgbbResponse.text();
           console.log(`⚠️ ImgBB upload failed: ${imgbbResponse.status}`);
-          console.log(`   Error: ${errorText.substring(0, 200)}`);
+          console.log(`   Error: ${errorText.substring(0, 500)}`);
         }
       } catch (imgbbError) {
         console.log('⚠️ ImgBB upload failed:', imgbbError.message);
