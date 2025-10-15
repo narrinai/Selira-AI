@@ -2956,12 +2956,15 @@
 
     // Add automatic avatar alternating every 2 seconds
     function addHoverImageListeners() {
-      const images = document.querySelectorAll('.character-image[data-hover-image]');
+      const images = document.querySelectorAll('.character-image[data-hover-image]:not([data-alternating])');
       images.forEach(img => {
         const avatar2 = img.getAttribute('data-hover-image');
         const avatar1 = img.src;
 
         if (!avatar2) return; // Skip if no second avatar
+
+        // Mark as alternating to prevent duplicate intervals
+        img.setAttribute('data-alternating', 'true');
 
         // Store original src as data attribute for reference
         img.setAttribute('data-original-src', avatar1);
