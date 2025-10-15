@@ -60,9 +60,29 @@ async function generateAvatar2(companion) {
   const appearance = buildAppearanceString(companion);
   const uncensored = companion.content_filter === 'Uncensored';
 
-  // Variation prompts for different angles/poses
-  const variations = uncensored ? [
-    // Explicit NSFW poses with full nudity emphasis
+  // Variation prompts for different angles/poses - gender specific
+  const variations = uncensored ? (companion.sex === 'male' ? [
+    // Explicit NSFW poses for MALE companions
+    'lying on back with legs spread wide, arms above head, cock and balls visible, full frontal male nudity, erect penis prominent',
+    'sitting with legs spread apart, leaning back, cock erect and visible, balls hanging, full nude exposure',
+    'kneeling upright with legs spread, hands on thighs, cock front view, muscular chest, full body nude',
+    'lying on side with top leg raised, cock visible from side angle, muscular body, completely naked',
+    'standing with legs apart, one hand on hip, full frontal nude, cock and balls visible, masculine pose',
+    'sitting with knees pulled up, cock visible between legs, muscular torso, nude intimate pose',
+    'on all fours with ass up, cock hanging visible from behind, muscular back, doggy style position nude',
+    'reclining with legs spread open, one arm behind head, cock erect, muscular body, inviting nude pose',
+    'squatting with legs wide apart, cock and balls fully visible hanging, low angle explicit nude',
+    'lying on back with one leg raised high, cock visible, muscular legs, flexible nude pose',
+    'sitting with one leg up, other spread, cock visible, muscular torso, asymmetric nude composition',
+    'kneeling with legs spread, sitting back, cock visible from front, muscular thighs, submissive nude angle',
+    'standing bent over, ass and cock visible from behind, muscular glutes, explicit rear nude view',
+    'lying face down with ass up, cock visible hanging down, muscular back, prone position nude',
+    'sitting legs spread eagle, cock and balls fully exposed center frame, muscular body, explicit frontal nude',
+    'lying on side with legs scissored open, cock visible, muscular physique, intimate side nude',
+    'squatting on toes, legs wide, cock hanging visible, muscular legs, explicit low angle nude',
+    'reclining with legs over head, cock and balls visible, muscular flexibility, explicit nude pose'
+  ] : [
+    // Explicit NSFW poses for FEMALE companions
     'lying on back with legs spread wide, arms above head, pussy visible, full frontal nudity, breasts exposed, nipples erect',
     'sitting with legs spread apart, leaning back, pussy lips visible, breasts hanging, full nude exposure',
     'kneeling upright with legs spread, hands on thighs, pussy front view, naked breasts, full body nude',
@@ -81,7 +101,7 @@ async function generateAvatar2(companion) {
     'lying on side with legs scissored open, pussy visible, breasts exposed, intimate side nude',
     'squatting on toes, legs wide, pussy spread open, breasts exposed, explicit low angle nude',
     'reclining with legs over head, pussy fully exposed, breasts visible, flexible explicit nude pose'
-  ] : [
+  ]) : [
     'different angle, looking over shoulder',
     'unique pose, turned to the side',
     'different perspective, confident expression',
