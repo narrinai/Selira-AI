@@ -86,7 +86,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     console.log(`✅ [${requestId}] Detected pre-enhanced prompt from frontend (chat image gen), using directly without modification`);
 
     // Use the enhanced prompt directly without any modifications
-    const negativePrompt = 'clothes, clothing, dressed, covered, censored, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white, giant breasts, huge ass, unrealistic proportions, exaggerated features, cartoonish body, distorted anatomy';
+    const negativePrompt = 'clothes, clothing, dressed, covered, censored, censorship, red box, red block, red square, pixelated, mosaic, blur bar, black bar, censor bar, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white, giant breasts, huge ass, unrealistic proportions, exaggerated features, cartoonish body, distorted anatomy';
 
     // Determine Promptchan model style based on companion type
     let promptchanModelStyle = 'Photo XL+';  // Use Photo XL+ with fixed parameters
@@ -186,7 +186,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
       image_size: '512x512', // Valid size for Photo XL+ (was 256x256 - not supported!)
       creativity: 50, // High creativity for Photo XL+
       seed: -1,
-      filter: 'Default',
+      filter: 'None', // No filter for fully uncensored (removes secondary censorship blocks)
       emotion: 'Default',
       detail: 0, // Detail level (0 = default)
       age_slider: 23, // Slightly younger for more attractive faces
@@ -343,7 +343,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
 
     console.log(`✅ [${requestId}] Direct sex prompt:`, directPrompt);
 
-    const negativePrompt = 'clothes, clothing, dressed, covered, censored, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white, giant breasts, huge ass, unrealistic proportions, exaggerated features, cartoonish body, distorted anatomy';
+    const negativePrompt = 'clothes, clothing, dressed, covered, censored, censorship, red box, red block, red square, pixelated, mosaic, blur bar, black bar, censor bar, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white, giant breasts, huge ass, unrealistic proportions, exaggerated features, cartoonish body, distorted anatomy';
 
     const promptchanStyle = (style === 'anime' || style === 'animated') ? 'Anime XL+' : 'Photo XL+';
 
@@ -357,7 +357,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
       image_size: '512x512', // Valid size for Photo XL+ (was 256x256 - not supported!)
       creativity: 50, // HIGH creativity for complex sex poses with Photo XL+
       seed: -1,
-      filter: 'Default',
+      filter: 'None', // No filter for fully uncensored (removes secondary censorship blocks)
       emotion: 'Default',
       detail: 0, // Detail level (0 = default)
       age_slider: 23, // Slightly younger for more attractive faces
@@ -588,18 +588,18 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
 
   // Determine Promptchan style based on our style parameter
   let promptchanStyle = 'Photo XL+';  // Use Photo XL+ with fixed parameters (512x512, sliders -1 to 1)
-  let promptchanFilter = 'Default';       // Use Default filter
+  let promptchanFilter = 'None';       // No filter for fully uncensored (removes secondary censorship blocks)
 
   if (style === 'anime' || style === 'animated') {
     promptchanStyle = 'Anime XL+';
-    promptchanFilter = 'Default';  // Use Default filter for anime too
+    promptchanFilter = 'None';  // No filter for fully uncensored (removes secondary censorship blocks)
     console.log(`🎌 [${requestId}] Using ANIME style for Promptchan`);
   } else {
     console.log(`📸 [${requestId}] Using Photo XL+ for Promptchan with FIXED parameters`);
   }
 
   // Add negative prompt to reduce unwanted elements and extreme proportions
-  const negativePrompt = 'clothes, clothing, dressed, covered, censored, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white, giant breasts, huge ass, unrealistic proportions, exaggerated features, cartoonish body, distorted anatomy';
+  const negativePrompt = 'clothes, clothing, dressed, covered, censored, censorship, red box, red block, red square, pixelated, mosaic, blur bar, black bar, censor bar, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white, giant breasts, huge ass, unrealistic proportions, exaggerated features, cartoonish body, distorted anatomy';
 
   // Build Promptchan API request
   // For solo/simple poses, use HIGH creativity (50) for better pose variety
@@ -611,7 +611,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     image_size: '512x512', // Valid size for Photo XL+ (was 256x256 - not supported!)
     creativity: 50, // High creativity for Photo XL+ (was 20, increased to 50)
     seed: -1, // Random seed
-    filter: promptchanFilter, // Default filter
+    filter: promptchanFilter, // No filter (uncensored)
     emotion: 'Default',
     detail: 0, // Detail level (0 = default, keeping simple for now)
     age_slider: 23, // Slightly younger for more attractive faces
