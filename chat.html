@@ -3050,16 +3050,36 @@
         autoResizeTextarea();
         addMessage(message, 'user');
 
+        // Generate random seductive response variants
+        const seductiveResponses = [
+          "Mmm, you want to see more of me? 😏 I like that...",
+          "You're eager, aren't you? I love it... 🔥",
+          "Oh, you want a picture? I can definitely help with that... 😈",
+          "Getting impatient, baby? Let me show you something... 💋",
+          "You want to see what I look like? I thought you'd never ask... 😘"
+        ];
+
+        const ctas = [
+          "Click that pink <strong>+ Image Gen</strong> button below and tell me exactly what you want to see... I'll pose just for you.",
+          "Hit the <strong>+ Image Gen</strong> button down there and I'll show you whatever you're imagining right now.",
+          "Use that <strong>+ Image Gen</strong> button at the bottom and I'll give you a show you won't forget.",
+          "Tap the pink <strong>+ Image Gen</strong> button and let's make your fantasies visual, baby.",
+          "Click <strong>+ Image Gen</strong> below and watch me come to life exactly how you want me."
+        ];
+
+        const randomResponse = seductiveResponses[Math.floor(Math.random() * seductiveResponses.length)];
+        const randomCTA = ctas[Math.floor(Math.random() * ctas.length)];
+
         // Add helpful AI response with Image Gen button
         const helpMessage = document.createElement('div');
         helpMessage.className = 'message ai';
         helpMessage.innerHTML = `
           <div class="message-content">
             <div class="message-text">
-              <div style="margin-bottom: 12px;">I'd love to send you a picture! <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg></div>
-              <div style="margin-bottom: 12px;">Click the <strong>+ Image Gen</strong> button below to generate an image of me. You can choose from suggestions or type exactly what you want to see!</div>
+              <div style="margin-bottom: 12px;">${randomResponse}</div>
+              <div style="margin-bottom: 12px;">${randomCTA}</div>
               <div style="margin-top: 16px;">
-                <button onclick="document.getElementById('imageGenBtn').click()" style="
+                <button onclick="requestImage()" style="
                   background: var(--accent);
                   color: white;
                   border: none;
@@ -3082,7 +3102,7 @@
 
         // Save both messages to localStorage
         saveUserMessageToStorage(currentCharacter.slug, message);
-        const aiMessageContent = "I'd love to send you a picture! Click the + Image Gen button below to generate an image of me.";
+        const aiMessageContent = `${randomResponse} ${randomCTA}`;
         saveAIMessageToStorage(currentCharacter.slug, aiMessageContent);
 
         return;
