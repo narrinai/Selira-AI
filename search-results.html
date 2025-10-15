@@ -1164,6 +1164,7 @@
         createdBy: null, // Not used in search
         // Avatar URL from API
         avatarUrl: character.avatar_url || character.avatar_file || null,
+        avatarUrl2: character.avatar_url_2 || null,
         // Character URL
         characterUrl: `/chat?char=${character.slug || 'unknown'}`,
         // Appearance traits for comprehensive search
@@ -1258,7 +1259,9 @@
       ` : '';
 
       const imageHtml = character.avatarUrl ?
-        `<img src="${character.avatarUrl}" alt="${character.name}" class="character-image" loading="lazy" onerror="this.style.display='none';">` :
+        `<img src="${character.avatarUrl}" alt="${character.name}" class="character-image" loading="lazy"
+              ${character.avatarUrl2 ? `data-hover-image="${character.avatarUrl2}"` : ''}
+              onerror="this.style.display='none';">` :
         `<div class="character-image-placeholder">${character.name.charAt(0)}</div>`;
 
       card.innerHTML = `
@@ -1366,6 +1369,34 @@
         grid.appendChild(card);
       });
       console.log('✅ Render complete!');
+
+      // Add avatar alternating functionality
+      addAvatarAlternating();
+    }
+
+    // Add automatic avatar alternating every 2 seconds
+    function addAvatarAlternating() {
+      const images = document.querySelectorAll('.character-image[data-hover-image]');
+      images.forEach(img => {
+        const avatar2 = img.getAttribute('data-hover-image');
+        const avatar1 = img.src;
+
+        if (!avatar2) return; // Skip if no second avatar
+
+        // Store original src as data attribute for reference
+        img.setAttribute('data-original-src', avatar1);
+
+        // Alternate between avatar 1 and 2 every 2 seconds
+        let showingAvatar1 = true;
+        setInterval(() => {
+          if (showingAvatar1) {
+            img.src = avatar2;
+          } else {
+            img.src = avatar1;
+          }
+          showingAvatar1 = !showingAvatar1;
+        }, 2000);
+      });
     }
 
     function showEmptyState(message) {
