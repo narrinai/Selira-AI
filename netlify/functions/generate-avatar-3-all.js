@@ -1,5 +1,5 @@
-// netlify/functions/generate-avatar-3-uncensored.js
-// Scheduled function to generate avatar_url_3 for companions that don't have one yet
+// netlify/functions/generate-avatar-3-all.js
+// Scheduled function to generate avatar_url_3 for ALL companions (censored + uncensored) that don't have one yet
 // Runs daily at 4:00 AM UTC to gradually fill in missing third avatars
 
 const fetch = require('node-fetch');
@@ -212,7 +212,7 @@ exports.handler = async (event, context) => {
   const isManualTrigger = queryParams.trigger === 'manual' || queryParams.run === 'now';
 
   if (isManualTrigger) {
-    console.log('✨ Manual trigger detected - will process Selira companions only');
+    console.log('✨ Manual trigger detected - will process ALL Selira companions (censored + uncensored)');
   } else {
     console.log('⏰ Scheduled trigger (cron job)');
   }
@@ -226,14 +226,14 @@ exports.handler = async (event, context) => {
 
   try {
     // 1. Fetch companions without avatar_url_3
-    console.log('📊 Fetching UNCENSORED Selira companions without Avatar_URL_3...');
+    console.log('📊 Fetching ALL Selira companions (censored + uncensored) without Avatar_URL_3...');
 
     let allCompanions = [];
     let offset = null;
 
     do {
-      // Filter: No Avatar_URL_3 AND Created_by = 'Selira' AND content_filter = 'Uncensored'
-      const filterFormula = encodeURIComponent("AND(NOT({avatar_url_3}), {Created_by} = 'Selira', {content_filter} = 'Uncensored')");
+      // Filter: No Avatar_URL_3 AND Created_by = 'Selira' (both censored and uncensored)
+      const filterFormula = encodeURIComponent("AND(NOT({avatar_url_3}), {Created_by} = 'Selira')");
       const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_ID}?filterByFormula=${filterFormula}&maxRecords=${BATCH_SIZE}${offset ? `&offset=${offset}` : ''}`;
 
       const response = await fetch(url, {
