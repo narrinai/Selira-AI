@@ -2630,7 +2630,7 @@
             title: char.Character_Title || '',
             description: cleanDescription(char.Character_Description || ''),
             avatar: char.Avatar_URL || null,
-            avatar_url_2: char.Avatar_URL_2 || null,
+            avatar_url_2: char.avatar_url_2 || char.Avatar_URL_2 || null,
             category: char.Category || 'Other',
             slug: char.Slug || (char.Name ? char.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'unknown'),
             creator: char.Created_by || 'Selira',
