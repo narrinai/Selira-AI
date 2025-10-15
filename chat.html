@@ -3037,15 +3037,8 @@
       const isImageRequest = imageRequestPatterns.some(pattern => lowerMessage.includes(pattern));
 
       if (isImageRequest) {
-        // Check if it starts with "send me a picture" - if so, use the existing flow
-        if (lowerMessage.startsWith('send me a picture')) {
-          messageInput.value = '';
-          autoResizeTextarea();
-          await handleImageRequest(message);
-          return;
-        }
-
-        // Otherwise, show a helpful message directing to Image Gen button
+        // Always show seductive response directing to Image Gen button
+        // (removed automatic image generation - users should use Image Gen panel)
         messageInput.value = '';
         autoResizeTextarea();
         addMessage(message, 'user');
