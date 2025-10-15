@@ -82,25 +82,33 @@ async function generateAvatar2(companion) {
     'squatting on toes, legs wide, cock hanging visible, muscular legs, explicit low angle nude',
     'reclining with legs over head, cock and balls visible, muscular flexibility, explicit nude pose'
   ] : [
-    // Explicit NSFW poses for FEMALE companions
+    // Explicit NSFW poses for FEMALE companions - mix of solo and POV with penis
     'lying on back with legs spread wide, arms above head, pussy visible, full frontal nudity, breasts exposed, nipples erect',
+    'POV blowjob, kneeling looking up, cock in mouth, lips wrapped around penis, breasts visible, focus on face and breasts',
     'sitting with legs spread apart, leaning back, pussy lips visible, breasts hanging, full nude exposure',
+    'POV doggy style, on all fours, ass up, cock penetrating pussy from behind, breasts hanging, looking back over shoulder',
     'kneeling upright with legs spread, hands on thighs, pussy front view, naked breasts, full body nude',
+    'POV cowgirl, riding on top, cock inside pussy, breasts bouncing, looking down at camera, hands on chest',
     'lying on side with top leg raised, pussy visible from side angle, breasts exposed, completely naked',
+    'POV missionary, lying on back legs spread, cock penetrating pussy, breasts exposed, intimate face expression',
     'standing with legs apart, one hand on hip, full frontal nude, pussy visible, breasts exposed',
-    'sitting with knees pulled up and spread, pussy visible between legs, breasts exposed, nude intimate pose',
+    'POV handjob, kneeling, hand stroking cock, breasts pressed together, looking at camera seductively',
     'on all fours with ass up, pussy visible from behind, breasts hanging, doggy style position nude',
+    'POV titjob, breasts wrapped around cock, looking up, nipples visible, penis between breasts',
     'reclining with legs spread open, one arm behind head, pussy spread, breasts exposed, inviting nude pose',
+    'POV reverse cowgirl, riding cock facing away, ass visible, pussy lips stretched around penis, looking back',
     'squatting with legs wide apart, pussy fully visible, breasts exposed, low angle explicit nude',
+    'POV prone bone, lying flat on stomach, ass up, cock penetrating from behind, face turned to side',
     'lying on back with one leg raised high, pussy spread visible, breasts exposed, flexible nude pose',
+    'POV standing fuck, bent over, hands on wall, cock penetrating from behind, breasts hanging, ass visible',
     'sitting with one leg up, other spread, pussy visible, breasts exposed, asymmetric nude composition',
+    'POV deepthroat, head tilted back, cock deep in throat, drool visible, breasts exposed, submissive position',
     'kneeling with legs spread, sitting back, pussy visible from front, breasts exposed, submissive nude angle',
+    'POV spooning sex, lying on side, cock penetrating from behind, breasts visible, intimate close angle',
     'standing bent over, ass and pussy visible from behind, breasts hanging, explicit rear nude view',
-    'lying face down with ass up, pussy visible, breasts pressed down, prone bone position nude',
+    'POV cumshot, kneeling mouth open, tongue out, breasts exposed, anticipating facial, seductive expression',
     'sitting legs spread eagle, pussy fully exposed center frame, breasts out, explicit frontal nude',
-    'lying on side with legs scissored open, pussy visible, breasts exposed, intimate side nude',
-    'squatting on toes, legs wide, pussy spread open, breasts exposed, explicit low angle nude',
-    'reclining with legs over head, pussy fully exposed, breasts visible, flexible explicit nude pose'
+    'lying on side with legs scissored open, pussy visible, breasts exposed, intimate side nude'
   ]) : [
     'different angle, looking over shoulder',
     'unique pose, turned to the side',
