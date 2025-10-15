@@ -578,18 +578,34 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
         ', on knees, cock erect and visible, masculine display, intimate angle',
         ', lying face down with ass up, cock visible from behind, seductive prone position'
       ] : [
-        ', legs spread wide apart, sitting pose, pussy lips visible, intimate view, explicit position',
-        ', lying on back, legs spread open, pussy fully exposed, full exposure, inviting pose',
-        ', bent over pose, ass up, pussy visible from behind, looking back over shoulder, doggy style position',
-        ', on all fours, pussy and ass visible, crawling pose, intimate angle, seductive position',
-        ', kneeling pose, legs apart, pussy visible, looking up at camera, submissive position',
-        ', sitting spread eagle, pussy fully exposed center frame, legs wide open, full frontal exposure',
-        ', lying on side, one leg raised high, pussy visible, seductive side view, intimate pose',
-        ', squatting pose, pussy spread open and visible, legs spread, full exposure, explicit position',
-        ', reclining back, legs spread, pussy visible, inviting position, intimate view',
-        ', standing with one leg raised high, pussy visible, full exposure, flexible pose',
-        ', on knees, leaning forward, breasts hanging, pussy visible from behind, intimate angle',
-        ', lying face down, ass up, pussy visible, looking back, seductive prone position'
+        // Solo poses (14 variations)
+        ', lying on back with legs spread wide, arms above head, pussy visible, full frontal nudity, breasts exposed, nipples erect',
+        ', sitting with legs spread apart, leaning back, pussy lips visible, breasts hanging, full nude exposure',
+        ', kneeling upright with legs spread, hands on thighs, pussy front view, naked breasts, full body nude',
+        ', lying on side with top leg raised, pussy visible from side angle, breasts exposed, completely naked',
+        ', standing with legs apart, one hand on hip, full frontal nude, pussy visible, breasts exposed',
+        ', on all fours with ass up, pussy visible from behind, breasts hanging, doggy style position nude',
+        ', reclining with legs spread open, one arm behind head, pussy spread, breasts exposed, inviting nude pose',
+        ', squatting with legs wide apart, pussy fully visible, breasts exposed, low angle explicit nude',
+        ', lying on back with one leg raised high, pussy spread visible, breasts exposed, flexible nude pose',
+        ', sitting with one leg up, other spread, pussy visible, breasts exposed, asymmetric nude composition',
+        ', kneeling with legs spread, sitting back, pussy visible from front, breasts exposed, submissive nude angle',
+        ', standing bent over, ass and pussy visible from behind, breasts hanging, explicit rear nude view',
+        ', sitting legs spread eagle, pussy fully exposed center frame, breasts out, explicit frontal nude',
+        ', lying on side with legs scissored open, pussy visible, breasts exposed, intimate side nude',
+        // POV poses with penis (12 variations)
+        ', POV blowjob, kneeling looking up, cock in mouth, lips wrapped around penis, breasts visible, focus on face and breasts',
+        ', POV doggy style, on all fours, ass up, cock penetrating pussy from behind, breasts hanging, looking back over shoulder',
+        ', POV cowgirl, riding on top, cock inside pussy, breasts bouncing, looking down at camera, hands on chest',
+        ', POV missionary, lying on back legs spread, cock penetrating pussy, breasts exposed, intimate face expression',
+        ', POV handjob, kneeling, hand stroking cock, breasts pressed together, looking at camera seductively',
+        ', POV titjob, breasts wrapped around cock, looking up, nipples visible, penis between breasts',
+        ', POV reverse cowgirl, riding cock facing away, ass visible, pussy lips stretched around penis, looking back',
+        ', POV prone bone, lying flat on stomach, ass up, cock penetrating from behind, face turned to side',
+        ', POV standing fuck, bent over, hands on wall, cock penetrating from behind, breasts hanging, ass visible',
+        ', POV deepthroat, head tilted back, cock deep in throat, drool visible, breasts exposed, submissive position',
+        ', POV spooning sex, lying on side, cock penetrating from behind, breasts visible, intimate close angle',
+        ', POV cumshot, kneeling mouth open, tongue out, breasts exposed, anticipating facial, seductive expression'
       ];
       const randomPose = nsfwPoses[Math.floor(Math.random() * nsfwPoses.length)];
       enhancedPrompt += randomPose;
