@@ -67,25 +67,25 @@ exports.handler = async (event, context) => {
       // Get character data for context
       const characterData = await getCharacterData(character_slug, AIRTABLE_BASE_ID, AIRTABLE_TOKEN);
 
-      // Randomly select message length (short/medium/long) - ALL under 25 words
+      // Randomly select message length (short/medium/long)
       const lengthOptions = ['short', 'medium', 'long'];
       const randomLength = lengthOptions[Math.floor(Math.random() * lengthOptions.length)];
 
       let messageLengthInstruction = '';
-      let maxTokens = 50;
+      let maxTokens = 150;
 
       if (randomLength === 'short') {
-        messageLengthInstruction = '\n\n⚠️ CRITICAL LENGTH REQUIREMENT: Keep this response VERY SHORT (1 sentence, 8-12 words MAXIMUM). Be concise and direct.';
-        maxTokens = 30;
+        messageLengthInstruction = '\n\n⚠️ CRITICAL LENGTH REQUIREMENT: Keep this response SHORT (1-2 sentences, 15-25 words). Be concise and direct.';
+        maxTokens = 80;
       } else if (randomLength === 'medium') {
-        messageLengthInstruction = '\n\n⚠️ CRITICAL LENGTH REQUIREMENT: Make this response MEDIUM length (1-2 sentences, 13-18 words MAXIMUM). Be conversational but brief.';
-        maxTokens = 40;
+        messageLengthInstruction = '\n\n⚠️ CRITICAL LENGTH REQUIREMENT: Make this response MEDIUM length (2-3 sentences, 25-40 words). Be conversational and engaging.';
+        maxTokens = 120;
       } else {
-        messageLengthInstruction = '\n\n⚠️ CRITICAL LENGTH REQUIREMENT: Make this response slightly LONGER (2-3 sentences, 19-25 words MAXIMUM). Be expressive but stay under 25 words total.';
-        maxTokens = 50;
+        messageLengthInstruction = '\n\n⚠️ CRITICAL LENGTH REQUIREMENT: Make this response LONGER (3-5 sentences, 40-60 words). Be expressive and detailed.';
+        maxTokens = 150;
       }
 
-      console.log(`📏 Randomly selected length: ${randomLength.toUpperCase()} (${maxTokens} tokens, max 25 words)`);
+      console.log(`📏 Randomly selected length: ${randomLength.toUpperCase()} (${maxTokens} tokens)`);
 
       // Build system prompt with character info and memory context
       const isMale = characterData.sex && characterData.sex.toLowerCase() === 'male';
