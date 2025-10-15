@@ -5715,13 +5715,17 @@
       }
     }
 
-    // Open existing carousel in modal (for mobile)
+    // Open simple 2-image carousel in modal (for mobile)
     function openCarouselInModal() {
       const existingModal = document.getElementById('carouselFullscreenModal');
       if (existingModal) {
         existingModal.remove();
         return;
       }
+
+      // Get avatar URLs
+      const avatar1 = fixAvatarUrl(currentCharacter.avatar);
+      const avatar2 = currentCharacter.avatar2 ? fixAvatarUrl(currentCharacter.avatar2) : null;
 
       const modal = document.createElement('div');
       modal.id = 'carouselFullscreenModal';
@@ -5732,29 +5736,6 @@
         backdrop-filter: blur(8px);
       `;
 
-      // Clone the carousel element
-      const originalCarousel = document.getElementById('imageCarousel');
-      const carouselClone = originalCarousel.cloneNode(true);
-      carouselClone.id = 'modalCarouselClone';
-
-      // Style the cloned carousel for modal
-      carouselClone.style.cssText = `
-        max-width: 400px;
-        width: 85vw;
-        margin: 0;
-        border-radius: 16px;
-        overflow: hidden;
-        position: relative;
-      `;
-
-      // Ensure buttons are clickable
-      const navButtons = carouselClone.querySelectorAll('.carousel-nav');
-      navButtons.forEach(btn => {
-        btn.style.zIndex = '100';
-        btn.style.pointerEvents = 'auto';
-        btn.style.cursor = 'pointer';
-      });
-
       modal.innerHTML = `
         <div style="position: relative; width: 85vw; max-width: 400px;">
           <button onclick="document.getElementById('carouselFullscreenModal').remove()" style="
@@ -5764,103 +5745,97 @@
             align-items: center; justify-content: center; border-radius: 50%;
             border: 1px solid var(--border); z-index: 10;
           ">&times;</button>
+
+          <div style="position: relative; width: 100%; aspect-ratio: 3/4; border-radius: 16px; overflow: hidden;">
+            <img src="${avatar1}" id="simpleCarouselImg" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='/avatars/placeholder.webp';">
+
+            ${avatar2 ? `
+              <!-- Left Arrow -->
+              <button id="simpleCarouselPrev" style="
+                position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+                background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);
+                border: 1px solid rgba(255,255,255,0.2); color: white;
+                width: 44px; height: 44px; border-radius: 50%; cursor: pointer;
+                display: flex; align-items: center; justify-content: center;
+                z-index: 100;
+              ">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+              </button>
+
+              <!-- Right Arrow -->
+              <button id="simpleCarouselNext" style="
+                position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+                background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);
+                border: 1px solid rgba(255,255,255,0.2); color: white;
+                width: 44px; height: 44px; border-radius: 50%; cursor: pointer;
+                display: flex; align-items: center; justify-content: center;
+                z-index: 100;
+              ">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </button>
+
+              <!-- Indicator dots -->
+              <div style="
+                position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%);
+                display: flex; gap: 8px; z-index: 100;
+              ">
+                <div id="simpleIndicator1" style="width: 8px; height: 8px; border-radius: 50%; background: white;"></div>
+                <div id="simpleIndicator2" style="width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.4);"></div>
+              </div>
+            ` : ''}
+          </div>
         </div>
       `;
 
       document.body.appendChild(modal);
 
-      // Add the cloned carousel to the modal
-      const container = modal.querySelector('div');
-      container.appendChild(carouselClone);
+      // Setup simple navigation if there's a second avatar
+      if (avatar2) {
+        let currentAvatar = 1;
 
-      // Re-attach carousel navigation events for the clone
-      // Use setTimeout to ensure DOM is ready
-      setTimeout(() => {
-        setupCarouselNavigation(carouselClone);
-      }, 50);
+        function switchAvatar() {
+          const img = document.getElementById('simpleCarouselImg');
+          const ind1 = document.getElementById('simpleIndicator1');
+          const ind2 = document.getElementById('simpleIndicator2');
+
+          if (currentAvatar === 1) {
+            img.src = avatar2;
+            currentAvatar = 2;
+            if (ind1) ind1.style.background = 'rgba(255,255,255,0.4)';
+            if (ind2) ind2.style.background = 'white';
+          } else {
+            img.src = avatar1;
+            currentAvatar = 1;
+            if (ind1) ind1.style.background = 'white';
+            if (ind2) ind2.style.background = 'rgba(255,255,255,0.4)';
+          }
+        }
+
+        const prevBtn = document.getElementById('simpleCarouselPrev');
+        const nextBtn = document.getElementById('simpleCarouselNext');
+
+        if (prevBtn) {
+          prevBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            switchAvatar();
+          });
+        }
+
+        if (nextBtn) {
+          nextBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            switchAvatar();
+          });
+        }
+      }
 
       modal.addEventListener('click', (e) => {
         if (e.target === modal) modal.remove();
       });
-    }
-
-    // Setup carousel navigation for cloned carousel
-    function setupCarouselNavigation(carousel) {
-      console.log('📸 Setting up carousel navigation...');
-
-      let currentIndex = 0;
-      const images = carousel.querySelectorAll('.carousel-image');
-      const indicators = carousel.querySelectorAll('.carousel-indicator');
-      const prevBtn = carousel.querySelector('.carousel-nav-prev');
-      const nextBtn = carousel.querySelector('.carousel-nav-next');
-
-      console.log('📸 Found elements:', {
-        images: images.length,
-        indicators: indicators.length,
-        prevBtn: !!prevBtn,
-        nextBtn: !!nextBtn
-      });
-
-      // Find which image is currently active
-      images.forEach((img, i) => {
-        if (img.classList.contains('active') || img.style.display !== 'none') {
-          currentIndex = i;
-        }
-      });
-
-      function showImage(index) {
-        console.log('📸 Switching to image:', index);
-        images.forEach((img, i) => {
-          if (i === index) {
-            img.style.display = 'block';
-            img.classList.add('active');
-          } else {
-            img.style.display = 'none';
-            img.classList.remove('active');
-          }
-        });
-
-        indicators.forEach((ind, i) => {
-          if (i === index) {
-            ind.classList.add('active');
-          } else {
-            ind.classList.remove('active');
-          }
-        });
-
-        currentIndex = index;
-      }
-
-      if (prevBtn) {
-        prevBtn.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          console.log('◀️ Prev button clicked');
-          const newIndex = currentIndex === 0 ? images.length - 1 : currentIndex - 1;
-          showImage(newIndex);
-        });
-      }
-
-      if (nextBtn) {
-        nextBtn.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          console.log('▶️ Next button clicked');
-          const newIndex = (currentIndex + 1) % images.length;
-          showImage(newIndex);
-        });
-      }
-
-      indicators.forEach((ind, index) => {
-        ind.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          console.log('⚫ Indicator clicked:', index);
-          showImage(index);
-        });
-      });
-
-      console.log('✅ Carousel navigation setup complete');
     }
 
     // ===== MEMORY FUNCTIONS =====
