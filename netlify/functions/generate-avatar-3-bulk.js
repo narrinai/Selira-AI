@@ -66,11 +66,11 @@ async function generateAvatar2(companion) {
     'full body shot, muscular man lying on back with legs spread open, big hard cock erect and pointing up, balls visible, showing face chest abs and cock, full exposure, inviting seductive pose',
     'full body view, athletic man bent over looking back, firm ass cheeks spread, thick cock hanging down visible between legs, balls dangling, showing face and body, doggy style position'
   ] : [
-    // FEMALE: 4 rotating poses - POV Blowjob, Masturbating, Doggy Style, Reverse Cowgirl
-    'beautiful woman kneeling looking up at camera, large erect cock in her mouth from man standing above, thick penis shaft attached to male groin and thighs visible, lips stretched around cock, hand gripping penis base, breasts exposed, saliva dripping, man\'s head out of frame above, POV blowjob from man\'s perspective',
-    'gorgeous woman lying on back with legs spread wide, fingers touching pussy, masturbating alone, pussy lips visible, breasts exposed with erect nipples, pleasuring herself, SOLO masturbation, single woman only, intimate self-pleasure',
-    'sexy woman on all fours ass up, man behind her, big hard cock from male groin penetrating pussy from behind, thick penis shaft connected to man\'s pelvis and thighs visible, pussy lips spread around cock, breasts hanging, woman looking back, man\'s torso visible but head out of frame, POV doggy style from man\'s perspective',
-    'hot woman riding cock facing away from man, large erect penis from male groin penetrating pussy from below, pussy lips stretched around thick shaft connected to man\'s pelvis, round ass bouncing, woman looking back, man\'s legs and torso visible but head out of frame below, POV reverse cowgirl from man\'s perspective'
+    // FEMALE: 4 NEW poses - NO legs spread, different from avatar_url_2
+    'beautiful woman standing in shower, water cascading down naked body, hands running through wet hair, breasts glistening with water droplets, sensual wet skin, steamy atmosphere, SOLO shower scene, single woman only, intimate self-care',
+    'gorgeous woman lying on stomach on bed, legs bent up behind her, looking seductively over shoulder at camera, bare ass visible, breasts pressed against mattress, inviting bedroom pose, SOLO bedroom scene, single woman only',
+    'sexy woman sitting on edge of bed, legs crossed, leaning back on hands, breasts exposed, confident seductive expression, intimate bedroom setting, elegant nude portrait, SOLO scene, single woman only',
+    'stunning woman kneeling upright on bed, hands behind head, arching back, breasts thrust forward, confident sensual pose, bedroom lighting, artistic nude photography, SOLO portrait, single woman only'
   ];
   const randomVariation = variations[Math.floor(Math.random() * variations.length)];
 
