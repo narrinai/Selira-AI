@@ -564,19 +564,32 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
 
     // Add random NSFW poses for companion creation (make them more varied and explicit)
     if (isCompanionCreation) {
-      const nsfwPoses = [
-        ', legs spread wide apart, sitting pose, intimate view, explicit position',
-        ', lying on back, legs spread open, full exposure, inviting pose',
-        ', bent over pose, ass up, looking back over shoulder, doggy style position',
-        ', on all fours, crawling pose, intimate angle, seductive position',
-        ', kneeling pose, legs apart, looking up at camera, submissive position',
-        ', sitting spread eagle, legs wide open, full frontal exposure',
-        ', lying on side, one leg raised, seductive side view, intimate pose',
-        ', squatting pose, legs spread, full exposure, explicit position',
-        ', reclining back, legs spread, inviting position, intimate view',
-        ', standing with one leg raised, full exposure, flexible pose',
-        ', on knees, leaning forward, breasts hanging, intimate angle',
-        ', lying face down, ass up, looking back, seductive prone position'
+      const nsfwPoses = sex === 'male' ? [
+        ', legs spread wide apart, sitting pose, cock and balls fully visible, intimate view, explicit position',
+        ', lying on back, legs spread open, erect penis prominent, full exposure, inviting pose',
+        ', bent over pose, ass up, cock hanging visible, looking back over shoulder, doggy style position',
+        ', standing, cock erect and visible, balls hanging, full frontal nudity, explicit masculine pose',
+        ', kneeling pose, legs apart, erect penis front and center, looking at camera, submissive position',
+        ', sitting spread eagle, cock and balls fully exposed center frame, full frontal exposure',
+        ', lying on side, erect penis visible, seductive side view, intimate pose',
+        ', squatting pose, cock and balls hanging visible, full exposure, explicit position',
+        ', reclining back, cock erect pointing up, inviting position, intimate view',
+        ', standing with legs apart, cock prominently displayed, full exposure, confident pose',
+        ', on knees, cock erect and visible, masculine display, intimate angle',
+        ', lying face down with ass up, cock visible from behind, seductive prone position'
+      ] : [
+        ', legs spread wide apart, sitting pose, pussy lips visible, intimate view, explicit position',
+        ', lying on back, legs spread open, pussy fully exposed, full exposure, inviting pose',
+        ', bent over pose, ass up, pussy visible from behind, looking back over shoulder, doggy style position',
+        ', on all fours, pussy and ass visible, crawling pose, intimate angle, seductive position',
+        ', kneeling pose, legs apart, pussy visible, looking up at camera, submissive position',
+        ', sitting spread eagle, pussy fully exposed center frame, legs wide open, full frontal exposure',
+        ', lying on side, one leg raised high, pussy visible, seductive side view, intimate pose',
+        ', squatting pose, pussy spread open and visible, legs spread, full exposure, explicit position',
+        ', reclining back, legs spread, pussy visible, inviting position, intimate view',
+        ', standing with one leg raised high, pussy visible, full exposure, flexible pose',
+        ', on knees, leaning forward, breasts hanging, pussy visible from behind, intimate angle',
+        ', lying face down, ass up, pussy visible, looking back, seductive prone position'
       ];
       const randomPose = nsfwPoses[Math.floor(Math.random() * nsfwPoses.length)];
       enhancedPrompt += randomPose;
