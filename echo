@@ -1,0 +1,4 @@
+Testing bulk avatar generation after ImgBB upgrade... curl -X POST https://selira.ai/.netlify/functions/generate-avatar-2-bulk?trigger=manual  -H Content-Type: application/json  -w 
+
+HTTP Status: %{http_code}
+  -s --max-time 60
