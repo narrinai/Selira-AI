@@ -60,19 +60,26 @@ async function generateAvatar2(companion) {
   const appearance = buildAppearanceString(companion);
   const uncensored = companion.content_filter === 'Uncensored';
 
-  // Variation prompts for different angles/poses
-  const variations = [
-    'different angle, looking over shoulder',
-    'unique pose, turned to the side',
-    'different perspective, confident expression',
-    'alternative angle, alluring gaze',
-    'varied pose, seductive smile'
+  // Variation prompts for different angles/poses - SOLO POSES ONLY (no POV/penis poses for bulk avatars)
+  const variations = companion.sex === 'male' ? [
+    'different angle, looking over shoulder, full body visible',
+    'unique pose, turned to the side, showing complete physique',
+    'different perspective, confident expression, entire body in frame',
+    'alternative angle, alluring gaze, full figure visible',
+    'varied pose, seductive smile, complete body portrait'
+  ] : [
+    // FEMALE SOLO ONLY - NO POV POSES, NO PENIS, just beautiful woman alone
+    'beautiful woman alone, different angle looking over shoulder, full body visible, solo portrait',
+    'gorgeous woman by herself, unique pose turned to side, complete figure, single person',
+    'attractive woman solo, different perspective with confident expression, entire body in frame, alone',
+    'stunning woman alone, alternative angle with alluring gaze, full figure visible, solo shot',
+    'beautiful woman by herself, varied pose with seductive smile, complete body portrait, single person only'
   ];
   const randomVariation = variations[Math.floor(Math.random() * variations.length)];
 
   const customPrompt = uncensored
-    ? `${randomVariation}, seductive, alluring, intimate, artistic portrait, sensual atmosphere`
-    : `${randomVariation}, professional portrait, elegant, tasteful`;
+    ? `${randomVariation}, seductive, alluring, intimate, artistic portrait, sensual atmosphere, SOLO portrait of single person only, NO other people`
+    : `${randomVariation}, professional portrait, elegant, tasteful, single person only`;
 
   console.log(`   📝 Appearance: ${appearance}`);
   console.log(`   🎭 Style: ${companion.companion_type || 'realistic'}`);

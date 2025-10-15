@@ -78,10 +78,12 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
 
   // Check if this is companion creation with uncensored mode
   const isCompanionCreation = source === 'companion-creation';
+  const isBulkAvatarGeneration = source === 'avatar-2-bulk-generation';
 
   // If companion creation AND uncensored, REPLACE customPrompt with random NSFW pose
   // This ensures the pose is at the START of the prompt (like chat image gen)
-  if (isCompanionCreation && uncensored) {
+  // IMPORTANT: For bulk avatar generation, NEVER use POV poses with penis for females
+  if (isCompanionCreation && uncensored && !isBulkAvatarGeneration) {
     const nsfwPoses = sex === 'male' ? [
       'full body portrait, handsome man sitting with legs spread wide apart, large erect cock and big hanging balls fully visible between legs, full frontal nudity, showing entire body from head to knees, explicit masculine pose',
       'full body shot, muscular man lying on back with legs spread open, big hard cock erect and pointing up, balls visible, showing face chest abs and cock, full exposure, inviting seductive pose',
@@ -587,23 +589,27 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   // Build prompt with shot description matching Replicate format
   let shotDesc, enhancedPrompt;
 
+  // IMPORTANT: For bulk female avatars, add SOLO emphasis to prevent multiple people/penis
+  const soloEmphasis = (isBulkAvatarGeneration && sex === 'female') ?
+    ', SOLO portrait of ONE WOMAN ONLY, single person, alone, by herself, NO other people, NO men, NO couples, NO POV' : '';
+
   if (style === 'anime' || style === 'animated') {
     shotDesc = isFullBody ? 'full body anime illustration' : 'anime portrait';
     // For companion creation: focus on portrait/full body beauty shot
     if (isCompanionCreation) {
-      enhancedPrompt = `${shotDesc} of ${appearance}, anime style, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}, detailed anime art, vibrant colors, clean background, single character`;
+      enhancedPrompt = `${shotDesc} of ${appearance}, anime style, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}${soloEmphasis}, detailed anime art, vibrant colors, clean background, single character`;
     } else {
       // For image generator: keep appearance emphasis
-      enhancedPrompt = `${appearance}, ${shotDesc}, anime style, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}, ${appearance}, detailed anime art, vibrant colors`;
+      enhancedPrompt = `${appearance}, ${shotDesc}, anime style, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}${soloEmphasis}, ${appearance}, detailed anime art, vibrant colors`;
     }
   } else {
     shotDesc = isFullBody ? 'full body photograph' : 'portrait photograph';
     // For companion creation: match Replicate's format for consistency
     if (isCompanionCreation) {
-      enhancedPrompt = `${shotDesc} of ${appearance}, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}, realistic skin texture, realistic facial features, realistic proportions, professional photography, clean background, single person`;
+      enhancedPrompt = `${shotDesc} of ${appearance}, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}${soloEmphasis}, realistic skin texture, realistic facial features, realistic proportions, professional photography, clean background, single person`;
     } else {
       // For image generator: keep appearance emphasis
-      enhancedPrompt = `${appearance}, ${shotDesc}, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}, ${appearance}, photorealistic, ultra realistic, professional photography, detailed`;
+      enhancedPrompt = `${appearance}, ${shotDesc}, ${sanitizedPrompt}${contextualEnhancement}${nsfwEnhancement}${soloEmphasis}, ${appearance}, photorealistic, ultra realistic, professional photography, detailed`;
     }
   }
 
@@ -613,7 +619,9 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
 
   // Add extra nudity emphasis for ALL poses when uncensored (Photo XL+ tends to add clothes)
   if (uncensored) {
-    enhancedPrompt += ', completely naked, fully nude, no clothes at all, zero clothing, bare naked body, exposed genitals';
+    // For bulk female avatars, reinforce SOLO emphasis with nudity boost
+    const soloReinforcement = (isBulkAvatarGeneration && sex === 'female') ? ', woman ALONE, SOLO female, single woman by herself' : '';
+    enhancedPrompt += `, completely naked, fully nude, no clothes at all, zero clothing, bare naked body, exposed genitals${soloReinforcement}`;
     console.log(`🔥 [${requestId}] Added nudity boost to enhanced prompt (uncensored mode)`);
     // NOTE: NSFW poses are now injected at the START via sanitizedPrompt (lines 84-131)
     // This ensures poses are the PRIMARY instruction, not an afterthought
@@ -632,7 +640,13 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   }
 
   // Add negative prompt to reduce unwanted elements and extreme proportions
-  const negativePrompt = 'clothes, clothing, dressed, covered, censored, censorship, red box, red block, red square, pixelated, mosaic, blur bar, black bar, censor bar, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white, giant breasts, huge ass, unrealistic proportions, exaggerated features, cartoonish body, distorted anatomy';
+  // IMPORTANT: For female bulk avatars, BLOCK penis/male genitals to prevent floating penis without body
+  let negativePrompt = 'clothes, clothing, dressed, covered, censored, censorship, red box, red block, red square, pixelated, mosaic, blur bar, black bar, censor bar, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white, giant breasts, huge ass, unrealistic proportions, exaggerated features, cartoonish body, distorted anatomy';
+
+  if (isBulkAvatarGeneration && sex === 'female') {
+    negativePrompt += ', penis, cock, dick, male genitals, male genitalia, erect penis, hard cock, testicles, balls, scrotum, POV, point of view shot, man, male, guy, boyfriend, multiple people, two people, couple, sex, intercourse, penetration, blowjob, oral sex, handjob, facial, cumshot';
+    console.log(`🚫 [${requestId}] Bulk female avatar - added penis/male blocking to negative prompt`);
+  }
 
   // Build Promptchan API request
   // For solo/simple poses, use HIGH creativity (50) for better pose variety
