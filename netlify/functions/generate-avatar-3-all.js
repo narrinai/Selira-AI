@@ -62,25 +62,25 @@ async function generateAvatar3(companion) {
 
   // Variation prompts for different angles/poses
   const variations = uncensored ? [
-    // Diverse NSFW poses for variety
-    'lying on back with one knee bent, arms above head, relaxed intimate pose',
-    'sitting on edge, legs crossed, leaning back on hands, playful pose',
-    'kneeling upright, hands on thighs, confident frontal view',
-    'lying on side, head propped on hand, one leg slightly bent, seductive side angle',
-    'standing, one hand on hip, weight on one leg, casual confident stance',
-    'sitting with knees up, arms wrapped around legs, intimate close-up',
-    'lying on stomach, propped up on elbows, looking at camera, playful angle',
-    'reclining against pillows, one arm behind head, relaxed bedroom pose',
-    'sitting cross-legged, hands resting on knees, centered composition',
-    'on all fours, looking back over shoulder, dynamic pose',
-    'squatting pose, balanced on toes, intimate low angle view',
-    'lying on back, one leg raised and bent, artistic composition',
-    'sitting with one leg extended, other bent, asymmetric pose',
-    'kneeling, sitting back on heels, hands on thighs, submissive angle',
-    'standing with back arched, hands behind head, confident pose',
-    'lying face down, head turned to side, arms stretched forward, relaxed prone position',
-    'sitting, leaning forward with arms between legs, intimate perspective',
-    'reclining on side, top leg bent over bottom leg, classic artist pose'
+    // Explicit NSFW poses with full nudity emphasis
+    'lying on back with legs spread wide, arms above head, pussy visible, full frontal nudity, breasts exposed, nipples erect',
+    'sitting with legs spread apart, leaning back, pussy lips visible, breasts hanging, full nude exposure',
+    'kneeling upright with legs spread, hands on thighs, pussy front view, naked breasts, full body nude',
+    'lying on side with top leg raised, pussy visible from side angle, breasts exposed, completely naked',
+    'standing with legs apart, one hand on hip, full frontal nude, pussy visible, breasts exposed',
+    'sitting with knees pulled up and spread, pussy visible between legs, breasts exposed, nude intimate pose',
+    'on all fours with ass up, pussy visible from behind, breasts hanging, doggy style position nude',
+    'reclining with legs spread open, one arm behind head, pussy spread, breasts exposed, inviting nude pose',
+    'squatting with legs wide apart, pussy fully visible, breasts exposed, low angle explicit nude',
+    'lying on back with one leg raised high, pussy spread visible, breasts exposed, flexible nude pose',
+    'sitting with one leg up, other spread, pussy visible, breasts exposed, asymmetric nude composition',
+    'kneeling with legs spread, sitting back, pussy visible from front, breasts exposed, submissive nude angle',
+    'standing bent over, ass and pussy visible from behind, breasts hanging, explicit rear nude view',
+    'lying face down with ass up, pussy visible, breasts pressed down, prone bone position nude',
+    'sitting legs spread eagle, pussy fully exposed center frame, breasts out, explicit frontal nude',
+    'lying on side with legs scissored open, pussy visible, breasts exposed, intimate side nude',
+    'squatting on toes, legs wide, pussy spread open, breasts exposed, explicit low angle nude',
+    'reclining with legs over head, pussy fully exposed, breasts visible, flexible explicit nude pose'
   ] : [
     'different angle, looking over shoulder',
     'unique pose, turned to the side',
@@ -91,7 +91,7 @@ async function generateAvatar3(companion) {
   const randomVariation = variations[Math.floor(Math.random() * variations.length)];
 
   const customPrompt = uncensored
-    ? `${randomVariation}, seductive expression, alluring, intimate, artistic portrait, sensual atmosphere`
+    ? `${randomVariation}, naked, completely nude, no clothes, full nudity, explicit, pornographic, XXX, NSFW, seductive expression, intimate lighting`
     : `${randomVariation}, professional portrait, elegant, tasteful`;
 
   console.log(`   📝 Appearance: ${appearance}`);
@@ -116,7 +116,7 @@ async function generateAvatar3(companion) {
         ethnicity: companion.ethnicity || 'white',
         hairLength: companion.hair_length || 'long',
         hairColor: companion.hair_color || 'brown',
-        source: 'avatar-3-bulk-generation',
+        source: 'companion-creation',
         uncensored: uncensored
       })
     });
