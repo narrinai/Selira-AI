@@ -299,16 +299,17 @@
       display: none;
     }
 
-    /* Style the 3 dots menu button */
+    /* Style the 3 dots menu button - only color the dots */
     #actionMenuBtn {
-      background: var(--accent);
-      color: white;
-      border-color: var(--accent);
+      background: var(--bg-tertiary);
+      color: var(--accent);
+      border-color: var(--border);
     }
 
     #actionMenuBtn:hover {
-      background: var(--accent-hover);
-      border-color: var(--accent-hover);
+      background: var(--bg-secondary);
+      color: var(--accent);
+      border-color: var(--accent);
     }
 
     /* Action Menu Dropdown */
@@ -5743,7 +5744,16 @@
         margin: 0;
         border-radius: 16px;
         overflow: hidden;
+        position: relative;
       `;
+
+      // Ensure buttons are clickable
+      const navButtons = carouselClone.querySelectorAll('.carousel-nav');
+      navButtons.forEach(btn => {
+        btn.style.zIndex = '100';
+        btn.style.pointerEvents = 'auto';
+        btn.style.cursor = 'pointer';
+      });
 
       modal.innerHTML = `
         <div style="position: relative; width: 85vw; max-width: 400px;">
@@ -5764,7 +5774,10 @@
       container.appendChild(carouselClone);
 
       // Re-attach carousel navigation events for the clone
-      setupCarouselNavigation(carouselClone);
+      // Use setTimeout to ensure DOM is ready
+      setTimeout(() => {
+        setupCarouselNavigation(carouselClone);
+      }, 50);
 
       modal.addEventListener('click', (e) => {
         if (e.target === modal) modal.remove();
