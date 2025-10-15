@@ -2954,45 +2954,28 @@
       addHoverImageListeners();
     }
 
-    // Add hover image listeners to all character images
+    // Add automatic avatar alternating every 2 seconds
     function addHoverImageListeners() {
       const images = document.querySelectorAll('.character-image[data-hover-image]');
       images.forEach(img => {
-        const hoverImage = img.getAttribute('data-hover-image');
-        const originalImage = img.src;
-        let touchStartTime = 0;
-        let touchTimer = null;
+        const avatar2 = img.getAttribute('data-hover-image');
+        const avatar1 = img.src;
 
-        // Desktop hover
-        img.addEventListener('mouseenter', function() {
-          if (hoverImage) {
-            img.src = hoverImage;
+        if (!avatar2) return; // Skip if no second avatar
+
+        // Store original src as data attribute for reference
+        img.setAttribute('data-original-src', avatar1);
+
+        // Alternate between avatar 1 and 2 every 2 seconds
+        let showingAvatar1 = true;
+        setInterval(() => {
+          if (showingAvatar1) {
+            img.src = avatar2;
+          } else {
+            img.src = avatar1;
           }
-        });
-
-        img.addEventListener('mouseleave', function() {
-          img.src = originalImage;
-        });
-
-        // Mobile touch and hold
-        img.addEventListener('touchstart', function(e) {
-          touchStartTime = Date.now();
-
-          // Show hover image immediately when touching
-          if (hoverImage) {
-            img.src = hoverImage;
-          }
-        }, { passive: true });
-
-        img.addEventListener('touchend', function(e) {
-          // Restore original image when touch ends
-          img.src = originalImage;
-        }, { passive: true });
-
-        img.addEventListener('touchcancel', function(e) {
-          // Restore original image if touch is cancelled
-          img.src = originalImage;
-        }, { passive: true });
+          showingAvatar1 = !showingAvatar1;
+        }, 2000);
       });
     }
 
