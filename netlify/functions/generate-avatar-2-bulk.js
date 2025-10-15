@@ -30,13 +30,13 @@ function buildAppearanceString(companion) {
   // Ethnicity
   if (companion.ethnicity) {
     const ethnicityMap = {
-      'white': 'Caucasian',
-      'black': 'African',
-      'asian': 'East Asian',
-      'indian': 'South Asian',
-      'latina': 'Latina',
-      'middle-eastern': 'Middle Eastern',
-      'mixed': 'mixed ethnicity'
+      'white': 'Caucasian features, pale skin',
+      'black': 'Black African American, DARK BROWN SKIN TONE, African features, Black person',
+      'asian': 'East Asian features, light Asian skin',
+      'indian': 'South Asian features, brown skin',
+      'latina': 'Latina features, tan skin',
+      'middle-eastern': 'Middle Eastern features, olive skin',
+      'mixed': 'mixed ethnicity features'
     };
     parts.push(ethnicityMap[companion.ethnicity] || companion.ethnicity);
   }

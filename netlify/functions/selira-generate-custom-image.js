@@ -33,15 +33,15 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
   const genderDesc = sex === 'male' ? 'handsome man' : 'beautiful woman';
 
   const ethnicityMap = {
-    'white': 'Caucasian',
-    'black': 'African American',
-    'indian': 'South Asian',
-    'middle-east': 'Middle Eastern',
-    'hispanic': 'Hispanic',
-    'korean': 'Korean',
-    'chinese': 'Chinese',
-    'japanese': 'Japanese',
-    'vietnamese': 'Vietnamese'
+    'white': 'Caucasian features, pale skin',
+    'black': 'Black African American, DARK BROWN SKIN TONE, African features, Black person',
+    'indian': 'South Asian features, brown skin',
+    'middle-east': 'Middle Eastern features, olive skin',
+    'hispanic': 'Hispanic features, tan skin',
+    'korean': 'Korean features, light Asian skin',
+    'chinese': 'Chinese features, light Asian skin',
+    'japanese': 'Japanese features, light Asian skin',
+    'vietnamese': 'Vietnamese features, light Asian skin'
   };
 
   const hairLengthMap = {
