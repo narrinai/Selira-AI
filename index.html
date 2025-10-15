@@ -2335,11 +2335,11 @@
       search: '',
       category: 'all',
       tags: [],
-      content: 'uncensored', // Default to uncensored
-      sex: 'female', // Default to female
-      style: 'realistic', // Default to realistic
+      content: null, // null = show all (will be set by URL params or UI)
+      sex: null, // null = show all (will be set by URL params or UI)
+      style: null, // null = show all (will be set by URL params or UI)
       animated: undefined, // undefined = show all, true = only animated, false = only realistic
-      unfiltered: true // Default to uncensored
+      unfiltered: true // Legacy field
     };
 
     // Global state
@@ -2646,57 +2646,39 @@
             created: char.Created || new Date().toISOString()
           }));
 
-          // Check URL parameters for content filtering (supports multiple filters)
+          // Check URL parameters and update currentFilters
           const urlParams = new URLSearchParams(window.location.search);
           const activeFilters = [];
 
           // Content filter (uncensored/censored)
           if (urlParams.has('uncensored')) {
-            allCharacters = allCharacters.filter(char => {
-              const filter = (char.content_filter || 'Censored').toLowerCase();
-              return filter === 'uncensored';
-            });
+            currentFilters.content = 'uncensored';
             activeFilters.push('uncensored');
           } else if (urlParams.has('censored')) {
-            allCharacters = allCharacters.filter(char => {
-              const filter = (char.content_filter || 'Censored').toLowerCase();
-              return filter === 'censored';
-            });
+            currentFilters.content = 'censored';
             activeFilters.push('censored');
           }
 
           // Sex filter (male/female)
           if (urlParams.has('male')) {
-            allCharacters = allCharacters.filter(char => {
-              const sex = (char.sex || '').toLowerCase();
-              return sex === 'male';
-            });
+            currentFilters.sex = 'male';
             activeFilters.push('male');
           } else if (urlParams.has('female')) {
-            allCharacters = allCharacters.filter(char => {
-              const sex = (char.sex || '').toLowerCase();
-              return sex === 'female';
-            });
+            currentFilters.sex = 'female';
             activeFilters.push('female');
           }
 
           // Companion type filter (anime/realistic)
           if (urlParams.has('anime')) {
-            allCharacters = allCharacters.filter(char => {
-              const type = (char.companion_type || '').toLowerCase();
-              return type === 'anime';
-            });
+            currentFilters.style = 'anime';
             activeFilters.push('anime');
           } else if (urlParams.has('realistic')) {
-            allCharacters = allCharacters.filter(char => {
-              const type = (char.companion_type || '').toLowerCase();
-              return type === 'realistic';
-            });
+            currentFilters.style = 'realistic';
             activeFilters.push('realistic');
           }
 
           if (activeFilters.length > 0) {
-            console.log('🔍 Active URL filters:', activeFilters.join(', '), '- Total:', allCharacters.length);
+            console.log('🔍 URL parameters set currentFilters:', activeFilters.join(', '), '→', currentFilters);
           }
 
           console.log('✅ Loaded characters:', allCharacters.length);
