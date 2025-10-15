@@ -10,19 +10,23 @@ async function generateGreetingsAndDescription(name, sex, ethnicity, hairLength,
   let tone = '';
   let descriptionGuidelines = '';
   let greetingGuidelines = '';
+  const isMale = sex && sex.toLowerCase() === 'male';
+  const genderNoun = isMale ? 'man/god/stud/hunk' : 'woman/goddess';
 
   if (contentFilter === 'Uncensored') {
     tone = 'EXTREMELY explicit, raw sexual desire, dirty talk';
     descriptionGuidelines = `- CRITICAL: 14-20 words, ONLY 1 sentence
 - Make it INTENSELY sexual, raw, and explicit
-- Use explicit language: "addicted to pleasure", "insatiable appetite", "craves raw passion", "expert in seduction"`;
+- Use explicit language: "addicted to pleasure", "insatiable appetite", "craves raw passion", "expert in seduction"
+- Gender-appropriate terms: use "${genderNoun}" (NOT "${isMale ? 'goddess' : 'god'}")`;
     greetingGuidelines = `- Make greetings EXTREMELY flirty, sexually explicit
 - Use explicit body language: "bites lip hungrily", "traces your body with eyes"`;
   } else {
     tone = 'highly seductive, intensely sensual, sexually charged';
     descriptionGuidelines = `- CRITICAL: 14-20 words, ONLY 1 sentence
 - Make it VERY seductive, sexually charged
-- Use provocative language: "irresistibly seductive", "ignites desire", "craves intimacy"`;
+- Use provocative language: "irresistibly seductive", "ignites desire", "craves intimacy"
+- Gender-appropriate terms: use "${genderNoun}" (NOT "${isMale ? 'goddess' : 'god'}")`;
     greetingGuidelines = `- Make greetings VERY flirty, highly seductive
 - Use provocative body language: "looks you up and down slowly", "touches your arm suggestively"`;
   }
@@ -49,7 +53,6 @@ ${descriptionGuidelines}
 - Match tone: ${tone}
 - Write in third person
 - DO NOT use {{char}} or any placeholders
-- DO NOT include visibility settings (public/private)
 - DO NOT include greetings in the description
 - ONLY include the character backstory/description`;
 
@@ -106,7 +109,6 @@ Name: ${name}, Category: ${category}, Gender: ${sex}, Ethnicity: ${ethnicity}, H
     // Check for problematic content in description
     const desc = result.description.toLowerCase();
     if (desc.includes('{{char}}') || desc.includes('|||') ||
-        (desc.includes('public') && desc.includes('private')) ||
         desc.split('*').length > 3) { // Too many action markers suggests greetings mixed in
       console.log('❌ Invalid OpenAI response: description contains invalid formatting');
       console.log('   Description:', result.description);

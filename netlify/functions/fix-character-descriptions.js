@@ -59,16 +59,15 @@ exports.handler = async (event, context) => {
     // Find characters with problematic descriptions
     const problematicCharacters = allRecords.filter(record => {
       const desc = record.fields.Character_Description || '';
+      const sex = (record.fields.sex || '').toLowerCase();
 
       // Check for problematic patterns
       const hasCharPlaceholder = desc.includes('{{char}}');
       const hasGreetingSeparator = desc.includes('|||');
-      const hasVisibilityMixed = desc.includes('    private    ') || desc.includes('    public    ');
       const hasTooManyActions = (desc.match(/\*/g) || []).length > 4; // More than 2 action pairs suggests mixed content
-      const hasMultipleSpaces = /\s{4,}/.test(desc); // 4+ consecutive spaces
+      const hasGenderMismatch = sex === 'male' && desc.toLowerCase().includes('goddess'); // Male character called "goddess"
 
-      return hasCharPlaceholder || hasGreetingSeparator || hasVisibilityMixed ||
-             hasTooManyActions || hasMultipleSpaces;
+      return hasCharPlaceholder || hasGreetingSeparator || hasTooManyActions || hasGenderMismatch;
     }).slice(0, limit);
 
     console.log(`🔍 Found ${problematicCharacters.length} characters with problematic descriptions`);
@@ -91,8 +90,9 @@ exports.handler = async (event, context) => {
       const preview = problematicCharacters.map(r => ({
         id: r.id,
         name: r.fields.Name,
+        sex: r.fields.sex,
         description: r.fields.Character_Description?.substring(0, 150) + '...',
-        issues: detectIssues(r.fields.Character_Description)
+        issues: detectIssues(r.fields.Character_Description, r.fields.sex)
       }));
 
       return {
@@ -125,15 +125,15 @@ exports.handler = async (event, context) => {
         let cleanDescription = desc;
 
         // Try to extract just the first sentence before any markers
-        if (desc.includes('    private    ') || desc.includes('    public    ')) {
-          cleanDescription = desc.split('    private    ')[0].split('    public    ')[0].trim();
-        }
         if (cleanDescription.includes('|||')) {
           cleanDescription = cleanDescription.split('|||')[0].trim();
         }
 
         // If description is still problematic or too short, regenerate with OpenAI
-        if (cleanDescription.length < 50 || cleanDescription.includes('{{char}}')) {
+        const isMale = (fields.sex || '').toLowerCase() === 'male';
+        const hasGenderMismatch = isMale && cleanDescription.toLowerCase().includes('goddess');
+
+        if (cleanDescription.length < 50 || cleanDescription.includes('{{char}}') || hasGenderMismatch) {
           console.log('   🤖 Regenerating description with OpenAI...');
 
           const newDescription = await generateDescriptionViaOpenAI(
@@ -219,15 +219,14 @@ exports.handler = async (event, context) => {
 };
 
 // Helper function to detect specific issues
-function detectIssues(description) {
+function detectIssues(description, sex) {
   const issues = [];
   if (description.includes('{{char}}')) issues.push('has {{char}} placeholder');
   if (description.includes('|||')) issues.push('has greeting separator');
-  if (description.includes('    private    ') || description.includes('    public    ')) {
-    issues.push('has visibility mixed in');
-  }
   if ((description.match(/\*/g) || []).length > 4) issues.push('too many action markers');
-  if (/\s{4,}/.test(description)) issues.push('excessive spacing');
+  if (sex && sex.toLowerCase() === 'male' && description.toLowerCase().includes('goddess')) {
+    issues.push('gender mismatch (male called goddess)');
+  }
   return issues;
 }
 
@@ -238,13 +237,16 @@ async function generateDescriptionViaOpenAI(name, sex, ethnicity, hairLength, ha
     return null;
   }
 
+  const isMale = sex && sex.toLowerCase() === 'male';
+  const genderNoun = isMale ? 'man/god/stud/hunk' : 'woman/goddess';
+
   let tone = contentFilter === 'Uncensored'
     ? 'EXTREMELY explicit, raw sexual desire'
     : 'highly seductive, intensely sensual';
 
   const descriptionGuidelines = contentFilter === 'Uncensored'
-    ? '14-20 words, ONLY 1 sentence, INTENSELY sexual and explicit'
-    : '14-20 words, ONLY 1 sentence, VERY seductive and sexually charged';
+    ? `14-20 words, ONLY 1 sentence, INTENSELY sexual and explicit. Use "${genderNoun}" (NOT "${isMale ? 'goddess' : 'god'}")`
+    : `14-20 words, ONLY 1 sentence, VERY seductive and sexually charged. Use "${genderNoun}" (NOT "${isMale ? 'goddess' : 'god'}")`;
 
   const systemPrompt = `You are a creative writer. Generate ONLY a character description - nothing else.
 
@@ -253,7 +255,6 @@ CRITICAL RULES:
 - Third person (use "${name}")
 - NO placeholders like {{char}}
 - NO greetings or dialogue
-- NO visibility settings (public/private)
 - NO action markers like *smiles*
 - Match tone: ${tone}
 - ${descriptionGuidelines}`;
