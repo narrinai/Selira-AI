@@ -2646,15 +2646,57 @@
             created: char.Created || new Date().toISOString()
           }));
 
-          // Check URL parameters for content filtering
+          // Check URL parameters for content filtering (supports multiple filters)
           const urlParams = new URLSearchParams(window.location.search);
+          const activeFilters = [];
 
+          // Content filter (uncensored/censored)
           if (urlParams.has('uncensored')) {
             allCharacters = allCharacters.filter(char => {
               const filter = (char.content_filter || 'Censored').toLowerCase();
               return filter === 'uncensored';
             });
-            console.log('🔓 Filtered to uncensored companions only:', allCharacters.length);
+            activeFilters.push('uncensored');
+          } else if (urlParams.has('censored')) {
+            allCharacters = allCharacters.filter(char => {
+              const filter = (char.content_filter || 'Censored').toLowerCase();
+              return filter === 'censored';
+            });
+            activeFilters.push('censored');
+          }
+
+          // Sex filter (male/female)
+          if (urlParams.has('male')) {
+            allCharacters = allCharacters.filter(char => {
+              const sex = (char.sex || '').toLowerCase();
+              return sex === 'male';
+            });
+            activeFilters.push('male');
+          } else if (urlParams.has('female')) {
+            allCharacters = allCharacters.filter(char => {
+              const sex = (char.sex || '').toLowerCase();
+              return sex === 'female';
+            });
+            activeFilters.push('female');
+          }
+
+          // Companion type filter (anime/realistic)
+          if (urlParams.has('anime')) {
+            allCharacters = allCharacters.filter(char => {
+              const type = (char.companion_type || '').toLowerCase();
+              return type === 'anime';
+            });
+            activeFilters.push('anime');
+          } else if (urlParams.has('realistic')) {
+            allCharacters = allCharacters.filter(char => {
+              const type = (char.companion_type || '').toLowerCase();
+              return type === 'realistic';
+            });
+            activeFilters.push('realistic');
+          }
+
+          if (activeFilters.length > 0) {
+            console.log('🔍 Active URL filters:', activeFilters.join(', '), '- Total:', allCharacters.length);
           }
 
           console.log('✅ Loaded characters:', allCharacters.length);
