@@ -299,6 +299,18 @@
       display: none;
     }
 
+    /* Style the 3 dots menu button */
+    #actionMenuBtn {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    #actionMenuBtn:hover {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+    }
+
     /* Action Menu Dropdown */
     .action-menu-container {
       position: relative;
@@ -5724,7 +5736,7 @@
       const avatar2 = currentCharacter.avatar2 ? fixAvatarUrl(currentCharacter.avatar2) : null;
 
       modal.innerHTML = `
-        <div style="position: relative; width: 90vw; max-width: 500px;">
+        <div style="position: relative; width: 85vw; max-width: 400px;">
           <button onclick="document.getElementById('carouselModal').remove()" style="
             position: absolute; top: -50px; right: 0; background: var(--bg-secondary);
             border: none; color: var(--text-primary); font-size: 24px;
@@ -5737,13 +5749,40 @@
             <img src="${avatar1}" id="modalCarouselImg" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='/avatars/placeholder.webp';">
 
             ${avatar2 ? `
+              <!-- Left Arrow -->
               <button onclick="toggleModalCarouselImage()" style="
-                position: absolute; left: 10px; bottom: 10px;
+                position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
                 background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);
                 border: 1px solid rgba(255,255,255,0.2); color: white;
-                padding: 8px 16px; border-radius: 20px; cursor: pointer;
-                font-size: 14px; font-weight: 600;
-              ">Switch Photo</button>
+                width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
+                display: flex; align-items: center; justify-content: center;
+              ">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+              </button>
+
+              <!-- Right Arrow -->
+              <button onclick="toggleModalCarouselImage()" style="
+                position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+                background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);
+                border: 1px solid rgba(255,255,255,0.2); color: white;
+                width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
+                display: flex; align-items: center; justify-content: center;
+              ">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </button>
+
+              <!-- Indicator dots -->
+              <div style="
+                position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%);
+                display: flex; gap: 8px; z-index: 10;
+              ">
+                <div id="modalIndicator1" style="width: 8px; height: 8px; border-radius: 50%; background: white;"></div>
+                <div id="modalIndicator2" style="width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.4);"></div>
+              </div>
             ` : ''}
 
             <div style="
@@ -5775,12 +5814,21 @@
       if (!img || !window.modalCarouselAvatars) return;
 
       const avatars = window.modalCarouselAvatars;
+      const indicator1 = document.getElementById('modalIndicator1');
+      const indicator2 = document.getElementById('modalIndicator2');
+
       if (avatars.current === 1 && avatars.avatar2) {
         img.src = avatars.avatar2;
         avatars.current = 2;
+        // Update indicators
+        if (indicator1) indicator1.style.background = 'rgba(255,255,255,0.4)';
+        if (indicator2) indicator2.style.background = 'white';
       } else {
         img.src = avatars.avatar1;
         avatars.current = 1;
+        // Update indicators
+        if (indicator1) indicator1.style.background = 'white';
+        if (indicator2) indicator2.style.background = 'rgba(255,255,255,0.4)';
       }
     }
 
