@@ -129,10 +129,17 @@ exports.handler = async (event, context) => {
           cleanDescription = cleanDescription.split('|||')[0].trim();
         }
 
-        // If description is still problematic or too short, regenerate with OpenAI
+        // Check for gender mismatch
         const isMale = (fields.sex || '').toLowerCase() === 'male';
         const hasGenderMismatch = isMale && cleanDescription.toLowerCase().includes('goddess');
 
+        // ALWAYS regenerate if there's a gender mismatch, regardless of length
+        if (hasGenderMismatch) {
+          console.log('   🚫 Gender mismatch detected - MUST regenerate with OpenAI');
+          cleanDescription = ''; // Force regeneration
+        }
+
+        // Also regenerate if description is problematic or too short
         if (cleanDescription.length < 50 || cleanDescription.includes('{{char}}') || hasGenderMismatch) {
           console.log('   🤖 Regenerating description with OpenAI...');
 
