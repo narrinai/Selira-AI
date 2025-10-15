@@ -135,7 +135,8 @@ async function uploadToImgbb(replicateUrl, companionName) {
       },
       body: JSON.stringify({
         imageUrl: replicateUrl,
-        filename: filename
+        filename: filename,
+        skipGitBackup: true  // Skip GitHub commits during bulk operations to prevent deployment spam
       })
     });
 

@@ -48,7 +48,7 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const { imageUrl, filename } = JSON.parse(event.body || '{}');
+    const { imageUrl, filename, skipGitBackup } = JSON.parse(event.body || '{}');
 
     if (!imageUrl || !filename) {
       return {
@@ -110,11 +110,12 @@ exports.handler = async (event, context) => {
     }
 
     // Fallback: also upload to GitHub for backup (async, non-blocking)
+    // SKIP if skipGitBackup flag is set (used by bulk operations to prevent deployment spam)
     const GITHUB_TOKEN = process.env.GITHUB_TOKEN_SELIRA || process.env.GITHUB_TOKEN;
     const GITHUB_OWNER = process.env.GITHUB_OWNER || 'narrinai';
     const GITHUB_REPO = process.env.GITHUB_REPO || 'Selira-AI';
 
-    if (GITHUB_TOKEN) {
+    if (GITHUB_TOKEN && !skipGitBackup) {
       // Upload to GitHub in background (don't wait for it)
       fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/avatars/${filename}`, {
         method: 'PUT',
@@ -128,6 +129,8 @@ exports.handler = async (event, context) => {
           branch: 'main'
         })
       }).then(() => console.log('✅ Backup to GitHub complete')).catch(e => console.log('⚠️ GitHub backup failed'));
+    } else if (skipGitBackup) {
+      console.log('⏭️ Skipping GitHub backup (bulk operation mode)');
     }
 
     return {
