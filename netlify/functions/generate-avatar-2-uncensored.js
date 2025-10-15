@@ -161,7 +161,7 @@ async function updateCompanionAvatar2(companionId, imageUrl) {
     },
     body: JSON.stringify({
       fields: {
-        avatar_url_2: imageUrl
+        Avatar_URL_2: imageUrl  // Use uppercase to match Airtable field name
       }
     })
   });
@@ -203,7 +203,7 @@ exports.handler = async (event, context) => {
 
     do {
       // Filter: No Avatar_URL_2 AND Created_by = 'Selira' AND content_filter = 'Uncensored'
-      const filterFormula = encodeURIComponent("AND(NOT({avatar_url_2}), {Created_by} = 'Selira', {content_filter} = 'Uncensored')");
+      const filterFormula = encodeURIComponent("AND(NOT({Avatar_URL_2}), {Created_by} = 'Selira', {content_filter} = 'Uncensored')");
       const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_ID}?filterByFormula=${filterFormula}&maxRecords=${BATCH_SIZE}${offset ? `&offset=${offset}` : ''}`;
 
       const response = await fetch(url, {
@@ -303,7 +303,7 @@ exports.handler = async (event, context) => {
         const records = stagedUpdates.map(update => ({
           id: update.id,
           fields: {
-            avatar_url_2: update.imageUrl
+            Avatar_URL_2: update.imageUrl  // Use uppercase to match Airtable field name
           }
         }));
 
