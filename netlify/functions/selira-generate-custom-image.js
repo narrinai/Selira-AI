@@ -573,11 +573,11 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
       : ', naked woman, huge natural breasts exposed with erect nipples visible, wet glistening pussy clearly visible with labia spread open, pussy lips prominent in frame, genitals fully exposed and in focus, legs spread wide showing everything, beautiful curves, explicit female nudity, pornographic XXX adult content, full frontal nudity, aroused wet pussy, intimate POV angle showing genitals';
     console.log(`🔥 [${requestId}] UNCENSORED mode - using EXTREME explicit prompts`);
   } else if (isCompanionCreation) {
-    // CENSORED companion creation: tasteful nude portrait
+    // CENSORED companion creation: minimal clothing (just enough to not be naked)
     nsfwEnhancement = sex === 'male'
-      ? ', naked, nude, bare chest showing, muscular body, confident pose, seductive expression, sensual, intimate, artistic nude photography, tasteful nudity, elegant masculine beauty'
-      : ', naked, nude, bare breasts showing, beautiful curves, elegant pose, seductive gaze, alluring expression, sensual, intimate, artistic nude photography, soft lighting, tasteful nudity, natural beauty, elegant feminine beauty';
-    console.log(`🎨 [${requestId}] CENSORED companion creation - using tasteful nude prompts`);
+      ? ', shirtless man wearing minimal black underwear, bare chest showing, muscular body, confident seductive pose, sensual expression, intimate portrait, just enough clothing to cover genitals, alluring masculine beauty'
+      : ', woman wearing minimal black lace lingerie barely covering, bare breasts mostly visible, beautiful curves exposed, legs spread slightly, seductive pose, alluring gaze, sensual intimate portrait, just enough fabric to cover private areas, elegant feminine beauty';
+    console.log(`🎨 [${requestId}] CENSORED companion creation - using minimal clothing prompts`);
   } else {
     // CENSORED chat/image-generator: explicit but not as extreme as uncensored
     nsfwEnhancement = sex === 'male'
