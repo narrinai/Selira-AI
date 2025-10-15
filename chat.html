@@ -3057,60 +3057,82 @@
         autoResizeTextarea();
         addMessage(message, 'user');
 
-        // Generate random seductive response variants
-        const seductiveResponses = [
-          "Mmm, you want to see more of me? 😏 I like that...",
-          "You're eager, aren't you? I love it... 🔥",
-          "Oh, you want a picture? I can definitely help with that... 😈",
-          "Getting impatient, baby? Let me show you something... 💋",
-          "You want to see what I look like? I thought you'd never ask... 😘"
-        ];
+        // Check if we've already shown the Image Gen suggestion for this character
+        const imageGenShownKey = `imageGenShown_${currentCharacter.slug}`;
+        const alreadyShown = sessionStorage.getItem(imageGenShownKey);
 
-        const ctas = [
-          "Click that pink <strong>+ Image Gen</strong> button below and tell me exactly what you want to see... I'll pose just for you.",
-          "Hit the <strong>+ Image Gen</strong> button down there and I'll show you whatever you're imagining right now.",
-          "Use that <strong>+ Image Gen</strong> button at the bottom and I'll give you a show you won't forget.",
-          "Tap the pink <strong>+ Image Gen</strong> button and let's make your fantasies visual, baby.",
-          "Click <strong>+ Image Gen</strong> below and watch me come to life exactly how you want me."
-        ];
+        if (!alreadyShown) {
+          // First time - show full response with button
+          // Generate random seductive response variants
+          const seductiveResponses = [
+            "Mmm, you want to see more of me? 😏 I like that...",
+            "You're eager, aren't you? I love it... 🔥",
+            "Oh, you want a picture? I can definitely help with that... 😈",
+            "Getting impatient, baby? Let me show you something... 💋",
+            "You want to see what I look like? I thought you'd never ask... 😘"
+          ];
 
-        const randomResponse = seductiveResponses[Math.floor(Math.random() * seductiveResponses.length)];
-        const randomCTA = ctas[Math.floor(Math.random() * ctas.length)];
+          const ctas = [
+            "Click that pink <strong>+ Image Gen</strong> button below and tell me exactly what you want to see... I'll pose just for you.",
+            "Hit the <strong>+ Image Gen</strong> button down there and I'll show you whatever you're imagining right now.",
+            "Use that <strong>+ Image Gen</strong> button at the bottom and I'll give you a show you won't forget.",
+            "Tap the pink <strong>+ Image Gen</strong> button and let's make your fantasies visual, baby.",
+            "Click <strong>+ Image Gen</strong> below and watch me come to life exactly how you want me."
+          ];
 
-        // Add helpful AI response with Image Gen button
-        const helpMessage = document.createElement('div');
-        helpMessage.className = 'message ai';
-        helpMessage.innerHTML = `
-          <div class="message-content">
-            <div class="message-text">
-              <div style="margin-bottom: 12px;">${randomResponse}</div>
-              <div style="margin-bottom: 12px;">${randomCTA}</div>
-              <div style="margin-top: 16px;">
-                <button onclick="requestImage()" style="
-                  background: var(--accent);
-                  color: white;
-                  border: none;
-                  padding: 10px 20px;
-                  border-radius: 20px;
-                  font-size: 14px;
-                  font-weight: 600;
-                  cursor: pointer;
-                  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
-                ">
-                  Open Image Gen ✨
-                </button>
+          const randomResponse = seductiveResponses[Math.floor(Math.random() * seductiveResponses.length)];
+          const randomCTA = ctas[Math.floor(Math.random() * ctas.length)];
+
+          // Add helpful AI response with Image Gen button
+          const helpMessage = document.createElement('div');
+          helpMessage.className = 'message ai';
+          helpMessage.innerHTML = `
+            <div class="message-content">
+              <div class="message-text">
+                <div style="margin-bottom: 12px;">${randomResponse}</div>
+                <div style="margin-bottom: 12px;">${randomCTA}</div>
+                <div style="margin-top: 16px;">
+                  <button onclick="requestImage()" style="
+                    background: var(--accent);
+                    color: white;
+                    border: none;
+                    padding: 10px 20px;
+                    border-radius: 20px;
+                    font-size: 14px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+                  ">
+                    Open Image Gen ✨
+                  </button>
+                </div>
               </div>
+              <div class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
             </div>
-            <div class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
-          </div>
-        `;
-        document.getElementById('chatMessages').appendChild(helpMessage);
-        document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
+          `;
+          document.getElementById('chatMessages').appendChild(helpMessage);
+          document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
 
-        // Save both messages to localStorage
-        saveUserMessageToStorage(currentCharacter.slug, message);
-        const aiMessageContent = `${randomResponse} ${randomCTA}`;
-        saveAIMessageToStorage(currentCharacter.slug, aiMessageContent);
+          // Save both messages to localStorage
+          saveUserMessageToStorage(currentCharacter.slug, message);
+          const aiMessageContent = `${randomResponse} ${randomCTA}`;
+          saveAIMessageToStorage(currentCharacter.slug, aiMessageContent);
+
+          // Mark as shown for this session
+          sessionStorage.setItem(imageGenShownKey, 'true');
+        } else {
+          // Already shown before - just remind them briefly
+          const shortReminders = [
+            "Use the + Image Gen button below to generate what you want to see 😏",
+            "The Image Gen button is waiting for you down there... 🔥",
+            "Click + Image Gen below and show me what you're thinking about 😈",
+            "That pink button at the bottom will make your fantasies visual, baby 💋"
+          ];
+
+          const reminder = shortReminders[Math.floor(Math.random() * shortReminders.length)];
+          addMessage(reminder, 'ai');
+          saveAIMessageToStorage(currentCharacter.slug, reminder);
+        }
 
         return;
       }
