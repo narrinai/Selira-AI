@@ -559,8 +559,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     console.log(`📝 [${requestId}] User provided detailed instructions - skipping auto background`);
   }
 
-  // Check if this is companion creation - different enhancement approach
-  const isCompanionCreation = source === 'companion-creation';
+  // NOTE: isCompanionCreation is already declared at line 80, so we don't redeclare it here
 
   let nsfwEnhancement;
   // For UNCENSORED mode, always use EXTREME explicit prompts (even for companion creation)
