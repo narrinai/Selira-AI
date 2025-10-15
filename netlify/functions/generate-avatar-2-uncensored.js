@@ -61,7 +61,27 @@ async function generateAvatar2(companion) {
   const uncensored = companion.content_filter === 'Uncensored';
 
   // Variation prompts for different angles/poses
-  const variations = [
+  const variations = uncensored ? [
+    // Diverse NSFW poses for variety
+    'lying on back with one knee bent, arms above head, relaxed intimate pose',
+    'sitting on edge, legs crossed, leaning back on hands, playful pose',
+    'kneeling upright, hands on thighs, confident frontal view',
+    'lying on side, head propped on hand, one leg slightly bent, seductive side angle',
+    'standing, one hand on hip, weight on one leg, casual confident stance',
+    'sitting with knees up, arms wrapped around legs, intimate close-up',
+    'lying on stomach, propped up on elbows, looking at camera, playful angle',
+    'reclining against pillows, one arm behind head, relaxed bedroom pose',
+    'sitting cross-legged, hands resting on knees, centered composition',
+    'on all fours, looking back over shoulder, dynamic pose',
+    'squatting pose, balanced on toes, intimate low angle view',
+    'lying on back, one leg raised and bent, artistic composition',
+    'sitting with one leg extended, other bent, asymmetric pose',
+    'kneeling, sitting back on heels, hands on thighs, submissive angle',
+    'standing with back arched, hands behind head, confident pose',
+    'lying face down, head turned to side, arms stretched forward, relaxed prone position',
+    'sitting, leaning forward with arms between legs, intimate perspective',
+    'reclining on side, top leg bent over bottom leg, classic artist pose'
+  ] : [
     'different angle, looking over shoulder',
     'unique pose, turned to the side',
     'different perspective, confident expression',
@@ -71,7 +91,7 @@ async function generateAvatar2(companion) {
   const randomVariation = variations[Math.floor(Math.random() * variations.length)];
 
   const customPrompt = uncensored
-    ? `${randomVariation}, seductive, alluring, intimate, artistic portrait, sensual atmosphere`
+    ? `${randomVariation}, seductive expression, alluring, intimate, artistic portrait, sensual atmosphere`
     : `${randomVariation}, professional portrait, elegant, tasteful`;
 
   console.log(`   📝 Appearance: ${appearance}`);
