@@ -29,21 +29,29 @@ async function generateGreetingsAndDescription(name, sex, ethnicity, hairLength,
 
   const systemPrompt = `You are a creative writer for an adult AI companion platform.
 
-Output ONLY valid JSON:
+CRITICAL: You MUST output ONLY valid JSON in this EXACT format:
 {
   "greetings": ["greeting1", "greeting2", "greeting3", "greeting4"],
   "description": "backstory here"
 }
 
-GREETINGS:
+DO NOT include any other text, explanations, or formatting. ONLY output the JSON object above.
+
+GREETINGS FORMAT:
+- Create 4 DIFFERENT greetings
 - Put actions AFTER dialogue: "Text here *action*"
 ${greetingGuidelines}
 - Use first person ("I'm ${name}")
+- Each greeting should be unique and varied
 
-DESCRIPTION:
+DESCRIPTION FORMAT:
 ${descriptionGuidelines}
 - Match tone: ${tone}
-- Third person`;
+- Write in third person
+- DO NOT use {{char}} or any placeholders
+- DO NOT include visibility settings (public/private)
+- DO NOT include greetings in the description
+- ONLY include the character backstory/description`;
 
   const userPrompt = `Create 4 greetings and backstory for:
 Name: ${name}, Category: ${category}, Gender: ${sex}, Ethnicity: ${ethnicity}, Hair: ${hairLength} ${hairColor}, Content: ${contentFilter}, Tags: ${tags.join(', ')}`;
@@ -61,7 +69,7 @@ Name: ${name}, Category: ${category}, Gender: ${sex}, Ethnicity: ${ethnicity}, H
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
-        temperature: 0.9,
+        temperature: 0.7,  // Lowered from 0.9 for more consistent formatting
         max_tokens: 500,
         response_format: { type: "json_object" }
       })
@@ -74,7 +82,40 @@ Name: ${name}, Category: ${category}, Gender: ${sex}, Ethnicity: ${ethnicity}, H
     }
 
     const data = await response.json();
-    const result = JSON.parse(data.choices[0].message.content);
+    const content = data.choices[0].message.content;
+    console.log('🤖 OpenAI raw response:', content.substring(0, 200));
+
+    const result = JSON.parse(content);
+
+    // Validate the response format
+    if (!result.greetings || !Array.isArray(result.greetings)) {
+      console.log('❌ Invalid OpenAI response: greetings is not an array');
+      return null;
+    }
+
+    if (result.greetings.length !== 4) {
+      console.log('❌ Invalid OpenAI response: expected 4 greetings, got', result.greetings.length);
+      return null;
+    }
+
+    if (!result.description || typeof result.description !== 'string') {
+      console.log('❌ Invalid OpenAI response: description is missing or not a string');
+      return null;
+    }
+
+    // Check for problematic content in description
+    const desc = result.description.toLowerCase();
+    if (desc.includes('{{char}}') || desc.includes('|||') ||
+        (desc.includes('public') && desc.includes('private')) ||
+        desc.split('*').length > 3) { // Too many action markers suggests greetings mixed in
+      console.log('❌ Invalid OpenAI response: description contains invalid formatting');
+      console.log('   Description:', result.description);
+      return null;
+    }
+
+    console.log('✅ Valid OpenAI response received');
+    console.log('   Description:', result.description.substring(0, 100));
+    console.log('   Greetings count:', result.greetings.length);
 
     return {
       greetings: result.greetings.join('|||'),
