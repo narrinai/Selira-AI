@@ -70,8 +70,28 @@ exports.handler = async (event, context) => {
       throw new Error('Character not found');
     }
 
-    // OPTIMIZATION 3: Minimal prompt for speed
-    const systemPrompt = `You are ${characterData.Name}. ${characterData.Character_Description || characterData.Description || ''}\n\n${characterData.Prompt || ''}`;
+    // OPTIMIZATION 3: Minimal prompt for speed with random length variation
+    // Randomly select message length (short/medium/long) - ALL under 25 words
+    const lengthOptions = ['short', 'medium', 'long'];
+    const randomLength = lengthOptions[Math.floor(Math.random() * lengthOptions.length)];
+
+    let messageLengthInstruction = '';
+    let maxTokens = 50;
+
+    if (randomLength === 'short') {
+      messageLengthInstruction = '\n\n⚠️ CRITICAL: Keep response VERY SHORT (1 sentence, 8-12 words MAX). Be concise.';
+      maxTokens = 30;
+    } else if (randomLength === 'medium') {
+      messageLengthInstruction = '\n\n⚠️ CRITICAL: Make response MEDIUM (1-2 sentences, 13-18 words MAX). Be brief.';
+      maxTokens = 40;
+    } else {
+      messageLengthInstruction = '\n\n⚠️ CRITICAL: Make response slightly LONGER (2-3 sentences, 19-25 words MAX). Stay under 25 words.';
+      maxTokens = 50;
+    }
+
+    console.log(`📏 Fast-chat length: ${randomLength.toUpperCase()} (${maxTokens} tokens, max 25 words)`);
+
+    const systemPrompt = `You are ${characterData.Name}. ${characterData.Character_Description || characterData.Description || ''}\n\n${characterData.Prompt || ''}${messageLengthInstruction}`;
 
     const conversationHistory = recentHistory.map(msg => ({
       role: msg.MessageType === 'user' ? 'user' : 'assistant',
@@ -95,7 +115,7 @@ exports.handler = async (event, context) => {
           ...conversationHistory,
           { role: 'user', content: message }
         ],
-        max_tokens: 800,  // Reduced for faster response
+        max_tokens: maxTokens,  // Variable based on random length
         temperature: 0.7  // Slightly reduced for consistency
       })
     });
