@@ -2646,6 +2646,17 @@
             created: char.Created || new Date().toISOString()
           }));
 
+          // Debug: Check how many characters have avatar_url_2
+          const withAvatar2 = allCharacters.filter(c => c.avatar_url_2);
+          console.log('🖼️ Characters with avatar_url_2:', withAvatar2.length, '/', allCharacters.length);
+          if (withAvatar2.length > 0) {
+            console.log('📸 Sample character with avatar_url_2:', {
+              name: withAvatar2[0].name,
+              avatar: withAvatar2[0].avatar?.substring(0, 50),
+              avatar_url_2: withAvatar2[0].avatar_url_2?.substring(0, 50)
+            });
+          }
+
           // Check URL parameters and update currentFilters
           const urlParams = new URLSearchParams(window.location.search);
           const activeFilters = [];
