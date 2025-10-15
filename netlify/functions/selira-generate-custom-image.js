@@ -111,19 +111,19 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
       'standing bent over, ass and pussy visible from behind, breasts hanging, explicit rear nude view',
       'sitting legs spread eagle, pussy fully exposed center frame, breasts out, explicit frontal nude',
       'lying on side with legs scissored open, pussy visible, breasts exposed, intimate side nude',
-      // POV poses with penis (12 variations)
-      'POV blowjob, kneeling looking up, cock in mouth, lips wrapped around penis, breasts visible, focus on face and breasts',
-      'POV doggy style, on all fours, ass up, cock penetrating pussy from behind, breasts hanging, looking back over shoulder',
-      'POV cowgirl, riding on top, cock inside pussy, breasts bouncing, looking down at camera, hands on chest',
-      'POV missionary, lying on back legs spread, cock penetrating pussy, breasts exposed, intimate face expression',
-      'POV handjob, kneeling, hand stroking cock, breasts pressed together, looking at camera seductively',
-      'POV titjob, breasts wrapped around cock, looking up, nipples visible, penis between breasts',
-      'POV reverse cowgirl, riding cock facing away, ass visible, pussy lips stretched around penis, looking back',
-      'POV prone bone, lying flat on stomach, ass up, cock penetrating from behind, face turned to side',
-      'POV standing fuck, bent over, hands on wall, cock penetrating from behind, breasts hanging, ass visible',
-      'POV deepthroat, head tilted back, cock deep in throat, drool visible, breasts exposed, submissive position',
-      'POV spooning sex, lying on side, cock penetrating from behind, breasts visible, intimate close angle',
-      'POV cumshot, kneeling mouth open, tongue out, breasts exposed, anticipating facial, seductive expression'
+      // POV poses with penis (12 variations) - Penis attached to male body, man's head out of frame
+      'beautiful woman kneeling looking up at camera, large erect cock in her mouth from man standing above, thick penis shaft attached to male groin and thighs visible, lips stretched around cock, hand gripping penis base, breasts exposed, saliva dripping, man\'s head out of frame above, POV blowjob from man\'s perspective',
+      'sexy woman on all fours ass up, man behind her, big hard cock from male groin penetrating pussy from behind, thick penis shaft connected to man\'s pelvis and thighs visible, pussy lips spread around cock, breasts hanging, woman looking back, man\'s torso visible but head out of frame, POV doggy style',
+      'hot woman riding on top straddling man below, large erect cock from male groin inside pussy, thick penis shaft connected to man\'s pelvis visible between legs, breasts bouncing, woman looking down, man\'s chest and abs visible but head out of frame below, POV cowgirl from man\'s perspective',
+      'gorgeous woman lying on back legs spread wide, man on top, big hard cock from male groin penetrating pussy, thick penis shaft connected to man\'s pelvis visible entering pussy, breasts bouncing, man\'s torso and arms visible but head out of frame above, POV missionary from man\'s perspective',
+      'beautiful woman kneeling close, delicate hand wrapped around man\'s large erect cock, long penis shaft attached to male groin and thighs visible, cock emerging from man\'s body, breasts pressed together, woman looking at camera seductively, man\'s legs and lower torso visible but head out of frame, POV handjob',
+      'busty woman with breasts wrapped around man\'s thick erect cock, hard penis shaft connected to male groin visible emerging between breasts, nipples visible, woman looking up at camera, man\'s lower torso and thighs visible but head out of frame above, POV titjob from man\'s perspective',
+      'sexy woman riding cock facing away from man, large erect penis from male groin penetrating pussy from below, pussy lips stretched around thick shaft connected to man\'s pelvis, round ass bouncing, woman looking back, man\'s legs and torso visible but head out of frame, POV reverse cowgirl from man\'s perspective',
+      'beautiful woman lying flat on stomach ass raised, man above her, big hard cock from male groin penetrating pussy from behind, thick penis shaft connected to man\'s pelvis and thighs visible entering pussy, woman\'s face turned to side, man\'s lower body visible but head out of frame, POV prone bone from man\'s perspective',
+      'hot woman bent over hands on wall, man standing behind, large erect cock from male groin penetrating pussy from behind, thick penis shaft connected to man\'s pelvis visible between ass cheeks, breasts hanging, man\'s torso and legs visible but head out of frame, POV standing fuck from man\'s perspective',
+      'gorgeous woman head tilted back mouth wide open, man standing above, massive thick cock from male groin deep in throat, penis shaft connected to man\'s pelvis and thighs disappearing past lips, drool dripping, breasts exposed, man\'s lower body visible but head out of frame above, POV deepthroat from man\'s perspective',
+      'beautiful woman lying on side facing camera, man behind her spooning, big hard cock from male groin penetrating pussy from behind, thick penis shaft connected to man\'s pelvis visible sliding between legs, breasts visible, man\'s arm and torso visible but head out of frame, POV spooning sex from man\'s perspective',
+      'sexy woman kneeling mouth open tongue out, man standing in front, large erect cock from male groin in front of face ready to cum, thick penis shaft connected to man\'s pelvis and thighs visible inches from mouth, breasts exposed, man\'s lower body visible but head out of frame, POV cumshot from man\'s perspective'
     ];
     const randomPose = nsfwPoses[Math.floor(Math.random() * nsfwPoses.length)];
     sanitizedPrompt = randomPose; // REPLACE prompt with pose
