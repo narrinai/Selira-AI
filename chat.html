@@ -2603,13 +2603,21 @@
 
     // Show image prompt suggestions
     async function showImagePromptSuggestions() {
-      if (!currentCharacter || !currentCharacter.name) return;
+      if (!currentCharacter || !currentCharacter.name) {
+        console.error('❌ Cannot show Image Gen - character not loaded');
+        return;
+      }
+
+      console.log('🎨 Opening Image Gen panel for:', currentCharacter.name);
 
       const isUncensored = localStorage.getItem('unfilteredMode') === 'true';
       const suggestionContainer = document.getElementById('suggestionButtons');
       const suggestionsDiv = document.getElementById('imagePromptSuggestions');
 
-      if (!suggestionContainer || !suggestionsDiv) return;
+      if (!suggestionContainer || !suggestionsDiv) {
+        console.error('❌ Image Gen panel elements not found');
+        return;
+      }
 
       // Check user permissions
       const permissions = await checkUserImagePermissions();
@@ -2708,6 +2716,12 @@
 
       // Show suggestions
       suggestionsDiv.classList.add('visible');
+      console.log('✅ Image Gen panel opened successfully');
+
+      // Scroll to make panel visible
+      setTimeout(() => {
+        suggestionsDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 100);
     }
 
     // Select pose for NSFW image generation (fully nude by default)
