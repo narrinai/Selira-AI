@@ -14,6 +14,17 @@ This is a static website project without Node.js dependencies. Development invol
 - **Deploy**: Push to Git - Netlify auto-deploys from main branch
 - **Functions Testing**: Use Netlify CLI: `netlify dev` (requires installation)
 
+## Git Workflow
+
+**Default behavior: Commit but don't push**
+- Make changes with Edit/Write tools
+- Run `git add` and `git commit` with descriptive messages
+- **DO NOT run `git push`** unless explicitly requested by the user
+- At the end, inform user: "Changes committed. Run `git push` to deploy when ready."
+- Only push if user explicitly says: "commit and push", "deploy this", or "push this"
+
+**Rationale:** This saves Netlify deploys and allows the user to bundle multiple changes into a single deployment.
+
 ## Architecture
 
 ### Frontend Structure
