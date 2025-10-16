@@ -1499,6 +1499,77 @@
       background: rgba(255, 255, 255, 0.3);
     }
 
+    .avatar-modal-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      cursor: pointer;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      z-index: 10;
+    }
+
+    .avatar-modal-nav:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    .avatar-modal-prev {
+      left: -60px;
+    }
+
+    .avatar-modal-next {
+      right: -60px;
+    }
+
+    .avatar-modal-indicators {
+      position: absolute;
+      bottom: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      padding: 10px;
+    }
+
+    .avatar-modal-indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .avatar-modal-indicator.active {
+      background: var(--accent);
+      width: 28px;
+      border-radius: 5px;
+    }
+
+    @media (max-width: 768px) {
+      .avatar-modal-prev {
+        left: 10px;
+      }
+
+      .avatar-modal-next {
+        right: 10px;
+      }
+
+      .avatar-modal-indicators {
+        bottom: -50px;
+      }
+    }
+
     .clickable-avatar {
       cursor: pointer;
       transition: transform 0.2s ease;
@@ -1842,7 +1913,18 @@
   <div class="avatar-modal" id="avatarModal">
     <div class="avatar-modal-content">
       <button class="avatar-modal-close" onclick="closeAvatarModal()">&times;</button>
+      <button class="avatar-modal-nav avatar-modal-prev" id="avatarModalPrev" onclick="changeModalImage(-1)" style="display: none;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+      <button class="avatar-modal-nav avatar-modal-next" id="avatarModalNext" onclick="changeModalImage(1)" style="display: none;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
       <img id="avatarModalImage" src="" alt="Character Avatar">
+      <div class="avatar-modal-indicators" id="avatarModalIndicators" style="display: none;"></div>
     </div>
   </div>
 
@@ -6113,8 +6195,12 @@
     }
 
     // Avatar Modal Functions
-    function openAvatarModal(avatarUrl, characterName) {
-      console.log('🖼️ Opening avatar modal:', { avatarUrl, characterName });
+    let modalCarouselImages = [];
+    let currentModalIndex = 0;
+
+    function openAvatarModal(avatarUrl, characterName, allImages = null, startIndex = 0) {
+      console.log('🖼️ Opening avatar modal:', { avatarUrl, characterName, allImages, startIndex });
+
       if (!avatarUrl || avatarUrl === '/avatars/placeholder.webp' || avatarUrl === '/avatars/default-avatar.webp') {
         console.log('⚠️ No avatar to display - avatarUrl:', avatarUrl);
         alert('No avatar available for this character yet.');
@@ -6123,8 +6209,36 @@
 
       const modal = document.getElementById('avatarModal');
       const modalImage = document.getElementById('avatarModalImage');
+      const prevBtn = document.getElementById('avatarModalPrev');
+      const nextBtn = document.getElementById('avatarModalNext');
+      const indicatorsContainer = document.getElementById('avatarModalIndicators');
 
-      modalImage.src = avatarUrl;
+      // Setup images array
+      if (allImages && allImages.length > 1) {
+        modalCarouselImages = allImages;
+        currentModalIndex = startIndex || 0;
+
+        // Show navigation
+        prevBtn.style.display = 'flex';
+        nextBtn.style.display = 'flex';
+        indicatorsContainer.style.display = 'flex';
+
+        // Create indicators
+        indicatorsContainer.innerHTML = modalCarouselImages.map((_, index) =>
+          `<button class="avatar-modal-indicator ${index === currentModalIndex ? 'active' : ''}" onclick="setModalImage(${index})"></button>`
+        ).join('');
+
+        console.log('🎠 Modal carousel enabled with', modalCarouselImages.length, 'images');
+      } else {
+        // Single image mode
+        modalCarouselImages = [avatarUrl];
+        currentModalIndex = 0;
+        prevBtn.style.display = 'none';
+        nextBtn.style.display = 'none';
+        indicatorsContainer.style.display = 'none';
+      }
+
+      modalImage.src = modalCarouselImages[currentModalIndex];
       modalImage.alt = `${characterName} - Full Size Avatar`;
 
       modal.classList.add('show');
@@ -6136,17 +6250,53 @@
         }
       };
 
-      // Close modal with Escape key
-      document.addEventListener('keydown', function(event) {
+      // Close modal with Escape key and arrow key navigation
+      const keyHandler = function(event) {
         if (event.key === 'Escape') {
           closeAvatarModal();
+        } else if (event.key === 'ArrowLeft' && modalCarouselImages.length > 1) {
+          changeModalImage(-1);
+        } else if (event.key === 'ArrowRight' && modalCarouselImages.length > 1) {
+          changeModalImage(1);
         }
-      });
+      };
+
+      document.removeEventListener('keydown', keyHandler);
+      document.addEventListener('keydown', keyHandler);
     }
 
     function closeAvatarModal() {
       const modal = document.getElementById('avatarModal');
       modal.classList.remove('show');
+      modalCarouselImages = [];
+      currentModalIndex = 0;
+    }
+
+    function changeModalImage(direction) {
+      if (modalCarouselImages.length <= 1) return;
+
+      currentModalIndex = (currentModalIndex + direction + modalCarouselImages.length) % modalCarouselImages.length;
+      updateModalDisplay();
+    }
+
+    function setModalImage(index) {
+      currentModalIndex = index;
+      updateModalDisplay();
+    }
+
+    function updateModalDisplay() {
+      const modalImage = document.getElementById('avatarModalImage');
+      const indicators = document.querySelectorAll('.avatar-modal-indicator');
+
+      modalImage.src = modalCarouselImages[currentModalIndex];
+
+      indicators.forEach((indicator, index) => {
+        if (index === currentModalIndex) {
+          indicator.classList.add('active');
+        } else {
+          indicator.classList.remove('active');
+        }
+      });
     }
 
     // Image Carousel Functions
@@ -6283,9 +6433,9 @@
         };
       });
 
-      // Make carousel images clickable to open fullscreen
+      // Make carousel images clickable to open fullscreen with all images
       carouselContainer.onclick = () => {
-        openAvatarModal(carouselImages[currentCarouselIndex], currentCharacter.name);
+        openAvatarModal(carouselImages[currentCarouselIndex], currentCharacter.name, carouselImages, currentCarouselIndex);
       };
     }
 
