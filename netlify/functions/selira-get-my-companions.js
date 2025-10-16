@@ -111,39 +111,50 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Try both approaches: direct SupabaseID match AND linked record search
-    const userFilter = `OR({User}='${userSupabaseID}',SEARCH("${userRecordId}",ARRAYJOIN({User})))`;
-    console.log('🔍 Using dual filter - SupabaseID:', userSupabaseID, 'Record ID:', userRecordId);
-    const chatHistoryUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/ChatHistory?filterByFormula=${encodeURIComponent(userFilter)}&sort[0][field]=CreatedTime&sort[0][direction]=desc`;
+    // Airtable formulas don't work on linked record fields, so we fetch all and filter client-side
+    console.log('🔍 Fetching ChatHistory to filter by User Record ID:', userRecordId);
 
-    console.log('🔍 Chat history filter:', userFilter);
+    let allChatHistory = [];
+    let chatOffset = null;
 
-    const chatResponse = await fetch(chatHistoryUrl, {
-      method: 'GET',
-      headers: airtableHeaders
+    do {
+      const chatHistoryUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/ChatHistory?sort[0][field]=CreatedTime&sort[0][direction]=desc${chatOffset ? `&offset=${chatOffset}` : ''}`;
+
+      const chatResponse = await fetch(chatHistoryUrl, {
+        method: 'GET',
+        headers: airtableHeaders
+      });
+
+      if (!chatResponse.ok) {
+        const errorText = await chatResponse.text();
+        console.log('⚠️ Could not fetch chat history:', chatResponse.status, chatResponse.statusText);
+        console.log('⚠️ Error details:', errorText);
+        break;
+      }
+
+      const chatData = await chatResponse.json();
+      allChatHistory = allChatHistory.concat(chatData.records);
+      chatOffset = chatData.offset;
+    } while (chatOffset);
+
+    // Filter client-side for this user's chats
+    const userChats = allChatHistory.filter(record => {
+      const recordUserId = record.fields.User ? record.fields.User[0] : null;
+      return recordUserId === userRecordId;
     });
 
-    let chattedCharacterIds = [];
-    if (chatResponse.ok) {
-      const chatData = await chatResponse.json();
-      console.log('💬 Found', chatData.records.length, 'chat messages');
-      console.log('🔍 First 3 chat records:', JSON.stringify(chatData.records.slice(0, 3), null, 2));
+    console.log('💬 Found', userChats.length, 'chat messages for this user (from', allChatHistory.length, 'total)');
 
-      // Extract unique character IDs from chat history
-      const characterIdSet = new Set();
-      chatData.records.forEach(record => {
-        const characterId = record.fields.Character ? record.fields.Character[0] : null;
-        if (characterId) {
-          characterIdSet.add(characterId);
-        }
-      });
-      chattedCharacterIds = Array.from(characterIdSet);
-      console.log('🎭 Found chats with', chattedCharacterIds.length, 'different characters');
-    } else {
-      const errorText = await chatResponse.text();
-      console.log('⚠️ Could not fetch chat history:', chatResponse.status, chatResponse.statusText);
-      console.log('⚠️ Error details:', errorText);
-    }
+    // Extract unique character IDs from user's chat history
+    const characterIdSet = new Set();
+    userChats.forEach(record => {
+      const characterId = record.fields.Character ? record.fields.Character[0] : null;
+      if (characterId) {
+        characterIdSet.add(characterId);
+      }
+    });
+    const chattedCharacterIds = Array.from(characterIdSet);
+    console.log('🎭 Found chats with', chattedCharacterIds.length, 'different characters');
 
     // Step 3: Get user-created companions (same logic as characters.js with user_created=true)
     let userCreatedCharacters = [];
