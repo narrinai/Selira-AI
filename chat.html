@@ -2897,21 +2897,12 @@
       const combinedPrompt = `Send me a picture ${pose.prompt}, ${fullyNudeKeywords}`;
       console.log('🎨 Generated prompt from selectors:', combinedPrompt);
 
-      // Put prompt in message input and trigger send
-      const messageInput = document.getElementById('messageInput');
-      if (messageInput) {
-        messageInput.value = combinedPrompt;
-        autoResizeTextarea();
+      // Hide suggestions
+      hideImagePromptSuggestions();
 
-        // Hide suggestions
-        hideImagePromptSuggestions();
-
-        // Trigger send button click to generate image
-        const sendButton = document.getElementById('sendButton') || document.querySelector('[onclick*="sendMessage"]');
-        if (sendButton) {
-          sendButton.click();
-        }
-      }
+      // Call handleImageRequest directly to generate the image
+      // This bypasses the AI chat and goes straight to image generation
+      await handleImageRequest(combinedPrompt);
 
       // Reset selection
       selectedPose = null;
