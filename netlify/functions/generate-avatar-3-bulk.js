@@ -86,8 +86,8 @@ async function generateAvatar2(companion) {
   console.log(`   ✨ Variation: ${randomVariation}`);
 
   try {
-    // Call the image generation function
-    const response = await fetch('https://selira.ai/.netlify/functions/selira-generate-custom-image', {
+    // Call the image generation function - using Photo XL+ v2 model for avatar_url_3
+    const response = await fetch('https://selira.ai/.netlify/functions/selira-generate-custom-image-xl2', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
