@@ -1,6 +1,7 @@
 const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA;
 const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA;
 
+// Force deploy - User_ID field support added
 console.log('🔐 Environment check:', {
   hasToken: !!AIRTABLE_TOKEN,
   hasBaseId: !!AIRTABLE_BASE_ID,
