@@ -10,7 +10,7 @@ const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA || process.env.AIRT
 const AIRTABLE_TABLE_ID = 'Characters';
 
 // Configuration
-const BATCH_SIZE = 1; // Process 1 companion per run (avoid Netlify 26s timeout)
+const BATCH_SIZE = 5; // Process 5 companions per run for testing
 const DELAY_BETWEEN_GENERATIONS = 5000; // 5 seconds delay to avoid rate limits
 
 // Sleep function
@@ -66,11 +66,8 @@ async function generateAvatar2(companion) {
     'full body shot, muscular man lying on back with legs spread open, big hard cock erect and pointing up, balls visible, showing face chest abs and cock, full exposure, inviting seductive pose',
     'full body view, athletic man bent over looking back, firm ass cheeks spread, thick cock hanging down visible between legs, balls dangling, showing face and body, doggy style position'
   ] : [
-    // FEMALE: 4 NEW poses - NO legs spread, different from avatar_url_2
-    'beautiful woman standing in shower, water cascading down naked body, hands running through wet hair, breasts glistening with water droplets, sensual wet skin, steamy atmosphere, SOLO shower scene, single woman only, intimate self-care',
-    'gorgeous woman lying on stomach on bed, legs bent up behind her, looking seductively over shoulder at camera, bare ass visible, breasts pressed against mattress, inviting bedroom pose, SOLO bedroom scene, single woman only',
-    'sexy woman sitting on edge of bed, legs crossed, leaning back on hands, breasts exposed, confident seductive expression, intimate bedroom setting, elegant nude portrait, SOLO scene, single woman only',
-    'stunning woman kneeling upright on bed, hands behind head, arching back, breasts thrust forward, confident sensual pose, bedroom lighting, artistic nude photography, SOLO portrait, single woman only'
+    // FEMALE: Reverse cowgirl position with visible penetration - view from behind
+    'sexy woman in reverse cowgirl position sitting on large erect cock, view from behind showing her bare back and round ass, thick penis shaft from male groin visibly penetrating pussy between her legs, pussy lips stretched around cock, man\'s thighs and pelvis visible below, woman looking back seductively over shoulder, hands on male thighs, explicit penetration clearly visible, POV from behind perspective, intimate bedroom setting'
   ];
   const randomVariation = variations[Math.floor(Math.random() * variations.length)];
 
