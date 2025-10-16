@@ -3113,15 +3113,32 @@
       if (!message) return;
 
       // Check authentication first
-      const isAuthenticated = window.isUserAuthenticated ? window.isUserAuthenticated() : false;
-      const user = window.getCurrentUser ? window.getCurrentUser() : null;
+      let isAuthenticated = window.isUserAuthenticated ? window.isUserAuthenticated() : false;
+      let user = window.getCurrentUser ? window.getCurrentUser() : null;
+
+      // Fallback: Check localStorage if window functions fail
+      if (!isAuthenticated || !user) {
+        const localUser = localStorage.getItem('user');
+        const localEmail = localStorage.getItem('user_email');
+
+        if (localUser || localEmail) {
+          console.log('🔄 Auth function failed, but found user in localStorage - treating as authenticated');
+          try {
+            user = localUser ? JSON.parse(localUser) : { email: localEmail };
+            isAuthenticated = true;
+          } catch (e) {
+            console.error('❌ Failed to parse localStorage user:', e);
+          }
+        }
+      }
 
       console.log('🔍 Auth check in sendMessage():', {
         isAuthenticated,
         hasUser: !!user,
         userEmail: user?.email,
         seliraAuthExists: !!window.seliraAuth,
-        functionExists: !!window.isUserAuthenticated
+        functionExists: !!window.isUserAuthenticated,
+        localStorageUser: !!localStorage.getItem('user')
       });
 
       if (!isAuthenticated || !user) {
