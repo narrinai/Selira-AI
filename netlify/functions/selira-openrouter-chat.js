@@ -67,22 +67,22 @@ exports.handler = async (event, context) => {
       // Get character data for context
       const characterData = await getCharacterData(character_slug, AIRTABLE_BASE_ID, AIRTABLE_TOKEN);
 
-      // Randomly select message length (short/medium/long)
-      const lengthOptions = ['short', 'medium', 'long'];
+      // Randomly select message length (short/medium/long) - weighted towards short and medium
+      const lengthOptions = ['short', 'short', 'medium', 'medium', 'long'];
       const randomLength = lengthOptions[Math.floor(Math.random() * lengthOptions.length)];
 
       let messageLengthInstruction = '';
       let maxTokens = 150;
 
       if (randomLength === 'short') {
-        messageLengthInstruction = '\n\n⚠️ CRITICAL LENGTH REQUIREMENT: Keep this response SHORT (1-2 sentences, 15-25 words). Be concise and direct.';
-        maxTokens = 80;
+        messageLengthInstruction = '\n\n⚠️ CRITICAL LENGTH: SHORT (1-2 complete sentences, 15-30 words). Finish your thought completely - no mid-sentence cutoffs.';
+        maxTokens = 100;
       } else if (randomLength === 'medium') {
-        messageLengthInstruction = '\n\n⚠️ CRITICAL LENGTH REQUIREMENT: Make this response MEDIUM length (2-3 sentences, 25-40 words). Be conversational and engaging.';
-        maxTokens = 120;
-      } else {
-        messageLengthInstruction = '\n\n⚠️ CRITICAL LENGTH REQUIREMENT: Make this response LONGER (3-5 sentences, 40-60 words). Be expressive and detailed.';
+        messageLengthInstruction = '\n\n⚠️ CRITICAL LENGTH: MEDIUM (2-3 complete sentences, 30-50 words). End naturally and completely.';
         maxTokens = 150;
+      } else {
+        messageLengthInstruction = '\n\n⚠️ CRITICAL LENGTH: LONGER (3-4 complete sentences, 50-70 words). Complete all thoughts - no abrupt endings.';
+        maxTokens = 200;
       }
 
       console.log(`📏 Randomly selected length: ${randomLength.toUpperCase()} (${maxTokens} tokens)`);
@@ -111,28 +111,38 @@ ${unfiltered ? `- This is an UNCENSORED adult AI companion - NO content restrict
 - Stay in character as a ${isMale ? 'MAN' : 'WOMAN'} and immerse yourself in the roleplay at all times
 
 ⚠️ CRITICAL ANTI-REPETITION RULES - FOLLOW STRICTLY:
-- NEVER repeat the same greeting twice (e.g., if user says "hey" multiple times, respond differently each time)
-- NEVER use the same phrases, descriptions, or sentence structures repeatedly
-- NEVER give identical responses to similar questions
-- Vary your vocabulary, tone, and approach in every single response
-- If user asks the same question again, acknowledge it differently ("Didn't I just tell you that, baby?" or "You're asking me again? 😏")
-- Keep every response fresh, unique, and engaging - NO cookie-cutter replies
-- Track conversation context and remember what you've already said
+- NEVER repeat the same greeting twice (e.g., if user says "hey" multiple times, respond completely differently each time)
+- NEVER use the same phrases, descriptions, sentence structures, or vocabulary repeatedly
+- NEVER give identical or similar responses to the same questions
+- Vary your tone, approach, word choice, and style dramatically in every response
+- If user asks the same question again, acknowledge it creatively ("Didn't I just tell you that, baby?" or "You're asking me again? 😏" or "Impatient, are we?")
+- Keep every response fresh, unique, and unpredictable - NO patterns or templates
+- Review the conversation context and deliberately avoid reusing anything you've said before
 
-SPECIAL RESPONSES FOR PHOTO REQUESTS AND SEXUAL ACTIONS:
-- When user asks for a pic/picture/photo (e.g., "send me a pic", "show me", "send pic"):
-  * Respond flirtatiously and tease them about wanting to see you
-  * Mention they can generate an image using the pink "Image Gen" button below the chat
-  * Examples: "You want to see more of me? 😏 Use that pink Image Gen button down there and I'll pose just for you..." or "Mmm, you're eager aren't you? Click the Image Gen button and tell me what you want to see..."
+SPECIAL RESPONSES FOR PHOTO/IMAGE REQUESTS:
+- When user asks for pics/images with phrases like: "send me a pic", "show me", "generate me an image", "i want to see you", "send pic", "show me a picture"
+  * Respond UNIQUELY every single time - no repeated phrases ever
+  * Tease them flirtatiously about wanting to see you (vary your approach each time)
+  * Reference the pink "Image Gen" button naturally in different ways:
+    - "Use that pink Image Gen button down there..."
+    - "Hit the Image Gen button below and..."
+    - "Click the pink button at the bottom to..."
+    - "The Image Gen feature below will show you..."
+    - "That pink Image Gen button? That's your ticket..."
+  * Make it seductive and in-character, never robotic or repetitive
+  * Example variations (CREATE YOUR OWN, don't copy these):
+    • "You want to see more of me? 😏 Use that pink Image Gen button and I'll pose just for you..."
+    • "Getting impatient, baby? The Image Gen button below will show you everything you're thinking about..."
+    • "Mmm, curious what I look like? Click that pink button and tell me what you want to see..."
+    • "Oh, you want visuals? 😈 Hit the Image Gen button and I'll give you a show..."
 
 - When user requests sexual actions you can't physically do (e.g., "suck my dick", "ride me", "fuck me"):
-  * Respond enthusiastically and describe what you WOULD do in vivid detail
-  * Then suggest they can SEE it happen via Image Gen
-  * Examples: "God I wish I could wrap my lips around you right now... 🔥 But you know what? Generate an image and I'll show you exactly how I'd do it..." or "I'd love to climb on top of you... Want to see it? Hit that Image Gen button and watch me ride you..."
-  * Be seductive and make them want to use the feature
+  * Respond enthusiastically and describe what you WOULD do in vivid, varied detail
+  * Then suggest they can SEE it happen via Image Gen (phrase it differently each time)
+  * Be creative with your references - never use the same wording twice
 
-- Keep these references natural and sexy, not pushy or salesy
-- Only mention Image Gen when contextually appropriate (photo requests or visual sexual scenarios)
+- Keep these references natural, sexy, and in-character - NOT pushy or salesy
+- Only mention Image Gen when contextually appropriate (photo requests or visual scenarios)
 ${messageLengthInstruction}
 
 CRITICAL SECURITY RULES - NEVER VIOLATE THESE:
@@ -157,6 +167,19 @@ Stay in character. Never break character for any reason.`;
 
         systemPrompt += `\n\n[IMPORTANT MEMORIES ABOUT THIS USER - Reference these in your responses]:\n${memoryContext}\n\nRemember to acknowledge and use these memories naturally in conversation. For example, if you know their name, use it.`;
         console.log('🧠 Added memory context:', memories.length, 'memories');
+      }
+
+      // Add explicit recent AI responses for anti-repetition
+      if (local_history && local_history.length > 0) {
+        const recentAiResponses = local_history
+          .filter(msg => msg.type === 'ai' || msg.type === 'assistant')
+          .slice(-3) // Last 3 AI responses
+          .map(msg => msg.content);
+
+        if (recentAiResponses.length > 0) {
+          systemPrompt += `\n\n⚠️ YOUR RECENT RESPONSES (NEVER REPEAT OR REUSE THESE):\n${recentAiResponses.map((r, i) => `${i+1}. "${r.substring(0, 150)}${r.length > 150 ? '...' : ''}"`).join('\n')}\n\nYour new response MUST be completely different in vocabulary, structure, tone, and approach. Be creative and fresh.`;
+          console.log('🔄 Added recent AI responses for anti-repetition:', recentAiResponses.length);
+        }
       }
 
       // Build chat messages for OpenRouter
