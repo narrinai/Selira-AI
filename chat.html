@@ -860,12 +860,60 @@
       display: flex;
       align-items: center;
       gap: 4px;
+      position: relative; /* For badge positioning */
     }
 
     .request-image-btn:hover {
       background: var(--bg-tertiary);
       border-color: var(--border);
       color: var(--text-secondary);
+    }
+
+    /* Badge notification for first-time users */
+    .image-gen-badge {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      background: var(--accent-secondary); /* Felle pink voor attention */
+      color: white;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 10px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(236, 72, 153, 0.4);
+      z-index: 10;
+      animation: badgeFadeIn 0.3s ease-out;
+    }
+
+    @keyframes badgeFadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.5);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* Pulse animation for first-time users (eerste 5 seconden) */
+    .request-image-btn.first-time-pulse {
+      animation: imageGenPulse 2s ease-in-out 3; /* 3x herhalen = 6 seconden */
+    }
+
+    @keyframes imageGenPulse {
+      0%, 100% {
+        box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.7);
+        transform: scale(1);
+      }
+      50% {
+        box-shadow: 0 0 0 6px rgba(236, 72, 153, 0);
+        transform: scale(1.02);
+      }
     }
 
     .image-credits-display {
@@ -1225,6 +1273,27 @@
       .request-image-btn {
         padding: 4px 8px;
         font-size: 10px;
+      }
+
+      /* Smaller badge on mobile */
+      .image-gen-badge {
+        width: 16px;
+        height: 16px;
+        font-size: 9px;
+        top: -5px;
+        right: -5px;
+      }
+
+      /* Smaller pulse on mobile */
+      @keyframes imageGenPulse {
+        0%, 100% {
+          box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.7);
+          transform: scale(1);
+        }
+        50% {
+          box-shadow: 0 0 0 4px rgba(236, 72, 153, 0);
+          transform: scale(1.015);
+        }
       }
 
 
@@ -2290,6 +2359,67 @@
     function setupEventListeners() {
     }
 
+    // Initialize Image Gen button badge for first-time users
+    function initializeImageGenBadge() {
+      if (!currentCharacter || !currentCharacter.slug) {
+        return;
+      }
+
+      const storageKey = `imageGenSeen_${currentCharacter.slug}`;
+      const hasSeenImageGen = localStorage.getItem(storageKey);
+
+      if (!hasSeenImageGen) {
+        console.log('🎨 First time with this character - showing Image Gen badge');
+
+        // Get the button
+        const imageGenBtn = document.querySelector('.request-image-btn');
+        if (!imageGenBtn) {
+          return;
+        }
+
+        // Add badge
+        const badge = document.createElement('span');
+        badge.className = 'image-gen-badge';
+        badge.textContent = '1';
+        badge.id = 'imageGenBadge';
+        imageGenBtn.appendChild(badge);
+
+        // Add pulse animation class
+        imageGenBtn.classList.add('first-time-pulse');
+
+        // Remove pulse animation after 6 seconds (3 pulses × 2s each)
+        setTimeout(() => {
+          imageGenBtn.classList.remove('first-time-pulse');
+          console.log('🎨 Pulse animation stopped');
+        }, 6000);
+      }
+    }
+
+    // Remove Image Gen badge when user clicks button
+    function removeImageGenBadge() {
+      if (!currentCharacter || !currentCharacter.slug) {
+        return;
+      }
+
+      const storageKey = `imageGenSeen_${currentCharacter.slug}`;
+
+      // Mark as seen in localStorage
+      localStorage.setItem(storageKey, 'true');
+
+      // Remove badge element
+      const badge = document.getElementById('imageGenBadge');
+      if (badge) {
+        badge.remove();
+        console.log('🎨 Image Gen badge removed');
+      }
+
+      // Remove pulse animation if still active
+      const imageGenBtn = document.querySelector('.request-image-btn');
+      if (imageGenBtn) {
+        imageGenBtn.classList.remove('first-time-pulse');
+      }
+    }
+
     // Generate image prompt suggestions based on character
     function generateImagePromptSuggestions(character) {
       const name = character.name || 'companion';
@@ -3031,9 +3161,11 @@
       // Check if this is an image request (multiple patterns)
       const lowerMessage = message.toLowerCase();
       const imageRequestPatterns = [
+        // Direct image requests
         'send me a picture',
         'send me a pic',
         'send me an image',
+        'send me a photo',
         'show me a picture',
         'show me a pic',
         'show me an image',
@@ -3059,7 +3191,40 @@
         'pic of you',
         'photo of you',
         'image of you',
-        'selfie'
+        'selfie',
+
+        // Visual action requests (from CSV analysis)
+        // Clothing changes
+        'undress',
+        'strip',
+        'take off your',
+        'remove your',
+        'wear a',
+        'wear your',
+        'put on a',
+        'put on your',
+        'change into',
+        'get naked',
+        'get nude',
+
+        // Poses and positions
+        'bend over',
+        'turn around',
+        'get on your knees',
+        'kneel down',
+        'spread your',
+        'open your',
+        'show your',
+        'show off your',
+        'pose for',
+        'position yourself',
+        'display your',
+
+        // Body part visibility requests
+        'let me see your',
+        'show me your',
+        'i want to see your',
+        'lemme see your'
       ];
 
       const isImageRequest = imageRequestPatterns.some(pattern => lowerMessage.includes(pattern));
@@ -3072,6 +3237,7 @@
         // UNCENSORED mode: Always redirect to Image Gen buttons for control
         if (!isUncensored && (lowerMessage.startsWith('send me a picture of') ||
             lowerMessage.startsWith('send me a pic of') ||
+            lowerMessage.startsWith('send me a photo of') ||
             lowerMessage.startsWith('show me a picture of') ||
             lowerMessage.startsWith('show me a pic of'))) {
           messageInput.value = '';
@@ -4079,13 +4245,16 @@
 
       // Load chat history for this character
       loadChatHistoryFromStorage(slug);
-      
+
       // Only clear if no history was loaded
       setTimeout(() => {
         const hasMessages = document.querySelectorAll('.message:not(.welcome-message)').length > 0;
         if (!hasMessages) {
           clearChat();
         }
+
+        // Initialize Image Gen badge for first-time users
+        initializeImageGenBadge();
       }, 100);
     }
 
@@ -4132,16 +4301,19 @@
       updateUrlForCharacter(slug);
 
       closeCharacterSearch();
-      
+
       // Load chat history for this character
       loadChatHistoryFromStorage(slug);
-      
+
       // Only clear if no history was loaded
       setTimeout(() => {
         const hasMessages = document.querySelectorAll('.message:not(.welcome-message)').length > 0;
         if (!hasMessages) {
           clearChat();
         }
+
+        // Initialize Image Gen badge for first-time users
+        initializeImageGenBadge();
       }, 100);
     }
 
@@ -4986,6 +5158,9 @@
 
     // Request image function - fills input with "Send me a picture "
     async function requestImage() {
+      // Remove badge when user clicks (first-time indicator)
+      removeImageGenBadge();
+
       // Check user permissions first
       const permissions = await checkUserImagePermissions();
 
