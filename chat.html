@@ -3237,6 +3237,10 @@
 
         // Both CENSORED and UNCENSORED modes: Allow direct image generation via text prompts
         // Users can type "send me a picture..." OR use the Image Gen buttons
+        // Also detect body part requests like "show me your ass/tits/pussy"
+        const bodyPartRequests = ['show me your', 'send me a pic of your', 'let me see your', 'show your'];
+        const isBodyPartRequest = bodyPartRequests.some(pattern => lowerMessage.includes(pattern));
+
         if (lowerMessage.startsWith('send me a picture') ||
             lowerMessage.startsWith('send me a pic') ||
             lowerMessage.startsWith('send me a photo') ||
@@ -3245,7 +3249,8 @@
             lowerMessage.startsWith('show me a pic') ||
             lowerMessage.startsWith('show me an image') ||
             lowerMessage.startsWith('generate me a picture') ||
-            lowerMessage.startsWith('generate me an image')) {
+            lowerMessage.startsWith('generate me an image') ||
+            isBodyPartRequest) {
           messageInput.value = '';
           autoResizeTextarea();
           await handleImageRequest(message);
