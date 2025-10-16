@@ -1864,6 +1864,27 @@
       }
     }
 
+    // Listen for auth state changes BEFORE doing initial check
+    // This ensures we catch login events that happen after page load
+    window.addEventListener('auth-state-changed', async function(e) {
+      console.log('🔔 Auth state changed event received:', e.detail);
+
+      if (e.detail && e.detail.isAuthenticated) {
+        // Check if we're showing the login prompt (not the actual profile)
+        const profileGrid = document.querySelector('.profile-grid');
+        const hasLoginPrompt = profileGrid && profileGrid.querySelector('h2')?.textContent === 'Sign In Required';
+
+        if (hasLoginPrompt) {
+          console.log('🔄 User just logged in - reloading to show profile');
+          // Small delay to ensure localStorage is updated
+          await new Promise(resolve => setTimeout(resolve, 200));
+          window.location.reload();
+        } else {
+          console.log('✅ Profile already loaded, no action needed');
+        }
+      }
+    });
+
     // Initialize profile on page load
     document.addEventListener('DOMContentLoaded', async function() {
       // Check if user is authenticated (using Supabase auth)
@@ -1953,27 +1974,6 @@
 
       // Wait for all to complete
       await Promise.all([profilePromise, subscriptionPromise, preferencesPromise]);
-    });
-
-    // Listen for auth state changes (when user logs in via modal)
-    // Reload page to show profile after successful login
-    window.addEventListener('auth-state-changed', async function(e) {
-      console.log('🔔 Auth state changed event received:', e.detail);
-
-      if (e.detail && e.detail.isAuthenticated) {
-        // Check if we're showing the login prompt (not the actual profile)
-        const profileGrid = document.querySelector('.profile-grid');
-        const hasLoginPrompt = profileGrid && profileGrid.querySelector('h2')?.textContent === 'Sign In Required';
-
-        if (hasLoginPrompt) {
-          console.log('🔄 User just logged in - reloading to show profile');
-          // Small delay to ensure localStorage is updated
-          await new Promise(resolve => setTimeout(resolve, 200));
-          window.location.reload();
-        } else {
-          console.log('✅ Profile already loaded, no action needed');
-        }
-      }
     });
 
   </script>
