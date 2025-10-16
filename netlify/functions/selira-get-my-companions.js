@@ -111,9 +111,9 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // ChatHistory User field is a linked record (array of record IDs), so we use SEARCH
-    const userFilter = `SEARCH("${userRecordId}", ARRAYJOIN({User}))`;
-    console.log('🔍 Using User Record ID for chat history:', userRecordId, '(SupabaseID:', userSupabaseID, ')');
+    // Try both approaches: direct SupabaseID match AND linked record search
+    const userFilter = `OR({User}='${userSupabaseID}',SEARCH("${userRecordId}",ARRAYJOIN({User})))`;
+    console.log('🔍 Using dual filter - SupabaseID:', userSupabaseID, 'Record ID:', userRecordId);
     const chatHistoryUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/ChatHistory?filterByFormula=${encodeURIComponent(userFilter)}&sort[0][field]=CreatedTime&sort[0][direction]=desc`;
 
     console.log('🔍 Chat history filter:', userFilter);
