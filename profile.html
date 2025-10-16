@@ -1892,20 +1892,27 @@
         return hasValidAuth0Token || hasUserData;
       };
 
-      // Wait for Supabase auth to initialize (max 2 seconds)
+      // Wait for Supabase auth to initialize (max 3 seconds)
       let authReady = await checkAuth();
+      console.log('🔍 Initial auth check result:', authReady);
+
       if (!authReady) {
         console.log('⏳ Waiting for Supabase auth to initialize...');
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i < 30; i++) {
           await new Promise(resolve => setTimeout(resolve, 100));
           authReady = await checkAuth();
-          if (authReady) break;
+          if (authReady) {
+            console.log(`✅ Auth detected after ${i + 1} retries`);
+            break;
+          }
         }
       }
 
+      console.log('🔍 Final auth check result:', authReady);
+
       // If not authenticated, show login/register prompt instead of redirecting
       if (!authReady) {
-        console.log('🚫 User not authenticated - showing login prompt');
+        console.log('🚫 User not authenticated after all retries - showing login prompt');
 
         // Show login/register message in the main content area
         const profileGrid = document.querySelector('.profile-grid');
@@ -1949,34 +1956,25 @@
     });
 
     // Listen for auth state changes (when user logs in via modal)
-    // Only reload if we're currently showing the login prompt
-    let authListenerAdded = false;
-    if (!authListenerAdded) {
-      window.addEventListener('auth-state-changed', function(e) {
-        if (e.detail && e.detail.isAuthenticated) {
-          // Check if we're showing the login prompt (not the actual profile)
-          const profileGrid = document.querySelector('.profile-grid');
-          const hasLoginPrompt = profileGrid && profileGrid.innerHTML.includes('Sign In Required');
+    // Reload page to show profile after successful login
+    window.addEventListener('auth-state-changed', async function(e) {
+      console.log('🔔 Auth state changed event received:', e.detail);
 
-          if (hasLoginPrompt) {
-            console.log('🔄 Auth state changed to authenticated - reloading profile');
-            // Set flag to prevent multiple reloads
-            if (!sessionStorage.getItem('profile_reloading')) {
-              sessionStorage.setItem('profile_reloading', 'true');
-              window.location.reload();
-            }
-          } else {
-            console.log('✅ Already showing profile content, no reload needed');
-          }
+      if (e.detail && e.detail.isAuthenticated) {
+        // Check if we're showing the login prompt (not the actual profile)
+        const profileGrid = document.querySelector('.profile-grid');
+        const hasLoginPrompt = profileGrid && profileGrid.querySelector('h2')?.textContent === 'Sign In Required';
+
+        if (hasLoginPrompt) {
+          console.log('🔄 User just logged in - reloading to show profile');
+          // Small delay to ensure localStorage is updated
+          await new Promise(resolve => setTimeout(resolve, 200));
+          window.location.reload();
+        } else {
+          console.log('✅ Profile already loaded, no action needed');
         }
-      }, { once: true });
-      authListenerAdded = true;
-    }
-
-    // Clear reload flag after page loads
-    if (sessionStorage.getItem('profile_reloading')) {
-      sessionStorage.removeItem('profile_reloading');
-    }
+      }
+    });
 
   </script>
 
