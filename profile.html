@@ -1101,7 +1101,7 @@
             </div>
 
             <!-- Delete Account Section - Desktop -->
-            <div class="delete-account-desktop" style="margin-top: 40px; padding-top: 40px; border-top: 1px solid var(--border-color);">
+            <div id="deleteAccountDesktop" class="delete-account-desktop" style="display: none; margin-top: 40px; padding-top: 40px; border-top: 1px solid var(--border-color);">
               <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 8px;">
                 Need to close your account? <a href="#" onclick="showDeleteAccountModal(); return false;" style="color: #dc3545; text-decoration: underline;">Delete my account</a>
               </p>
@@ -1149,7 +1149,7 @@
       </section>
 
       <!-- Delete Account Link - Mobile Only (at bottom) -->
-      <div class="delete-account-mobile" style="display: none; text-align: center; padding: 20px; margin-top: 20px; border-top: 1px solid var(--border-color);">
+      <div id="deleteAccountMobile" class="delete-account-mobile" style="display: none; text-align: center; padding: 20px; margin-top: 20px; border-top: 1px solid var(--border-color);">
         <p style="color: var(--text-secondary); font-size: 12px;">
           <a href="#" onclick="showDeleteAccountModal(); return false;" style="color: var(--text-secondary); text-decoration: underline;">Delete my account</a>
         </p>
@@ -1855,9 +1855,18 @@
 
     // Initialize profile on page load
     document.addEventListener('DOMContentLoaded', async function() {
-      // Check if user is authenticated
-      const checkAuth = () => {
-        // Check Auth0 tokens
+      // Check if user is authenticated (using Supabase auth)
+      const checkAuth = async () => {
+        // First check Supabase auth (modern system)
+        if (window.isUserAuthenticated && window.isUserAuthenticated()) {
+          const user = window.getCurrentUser();
+          if (user && user.email) {
+            console.log('✅ Supabase auth detected:', user.email);
+            return true;
+          }
+        }
+
+        // Fallback: Check Auth0 tokens
         const auth0Token = localStorage.getItem('auth0_access_token');
         const auth0Expires = localStorage.getItem('auth0_token_expires');
 
@@ -1872,8 +1881,19 @@
         return hasValidAuth0Token || hasUserData;
       };
 
+      // Wait for Supabase auth to initialize (max 2 seconds)
+      let authReady = await checkAuth();
+      if (!authReady) {
+        console.log('⏳ Waiting for Supabase auth to initialize...');
+        for (let i = 0; i < 20; i++) {
+          await new Promise(resolve => setTimeout(resolve, 100));
+          authReady = await checkAuth();
+          if (authReady) break;
+        }
+      }
+
       // If not authenticated, show login/register prompt instead of redirecting
-      if (!checkAuth()) {
+      if (!authReady) {
         console.log('🚫 User not authenticated - showing login prompt');
 
         // Show login/register message in the main content area
@@ -1896,6 +1916,12 @@
 
       console.log('✅ User authenticated - loading profile');
 
+      // Show delete account sections (only when authenticated)
+      const deleteAccountDesktop = document.getElementById('deleteAccountDesktop');
+      const deleteAccountMobile = document.getElementById('deleteAccountMobile');
+      if (deleteAccountDesktop) deleteAccountDesktop.style.display = 'block';
+      if (deleteAccountMobile) deleteAccountMobile.style.display = 'block';
+
       // Load profile, subscription info, and email preferences in parallel
       const profilePromise = loadUserProfile();
       const subscriptionPromise = loadSubscriptionInfo();
@@ -1903,6 +1929,15 @@
 
       // Wait for all to complete
       await Promise.all([profilePromise, subscriptionPromise, preferencesPromise]);
+    });
+
+    // Listen for auth state changes (when user logs in via modal)
+    window.addEventListener('auth-state-changed', function(e) {
+      if (e.detail && e.detail.isAuthenticated) {
+        console.log('🔄 Auth state changed to authenticated - reloading profile');
+        // Reload the page to show profile content
+        window.location.reload();
+      }
     });
 
   </script>
