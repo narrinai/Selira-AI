@@ -127,6 +127,7 @@ exports.handler = async (event, context) => {
     if (chatResponse.ok) {
       const chatData = await chatResponse.json();
       console.log('💬 Found', chatData.records.length, 'chat messages');
+      console.log('🔍 First 3 chat records:', JSON.stringify(chatData.records.slice(0, 3), null, 2));
 
       // Extract unique character IDs from chat history
       const characterIdSet = new Set();
@@ -139,7 +140,9 @@ exports.handler = async (event, context) => {
       chattedCharacterIds = Array.from(characterIdSet);
       console.log('🎭 Found chats with', chattedCharacterIds.length, 'different characters');
     } else {
-      console.log('⚠️ Could not fetch chat history, continuing with user-created only');
+      const errorText = await chatResponse.text();
+      console.log('⚠️ Could not fetch chat history:', chatResponse.status, chatResponse.statusText);
+      console.log('⚠️ Error details:', errorText);
     }
 
     // Step 3: Get user-created companions (same logic as characters.js with user_created=true)
