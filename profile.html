@@ -800,12 +800,13 @@
     }
 
     /* Delete Account Sections - Show/Hide based on screen size */
+    /* Note: Initially hidden, shown via JavaScript when authenticated */
     .delete-account-desktop {
-      display: block;
+      /* display set via inline style - don't override here */
     }
 
     .delete-account-mobile {
-      display: none !important;
+      /* display set via inline style - don't override here */
     }
 
     @media (max-width: 768px) {
@@ -813,8 +814,18 @@
         display: none !important;
       }
 
-      .delete-account-mobile {
+      .delete-account-mobile.authenticated {
         display: block !important;
+      }
+    }
+
+    @media (min-width: 769px) {
+      .delete-account-desktop.authenticated {
+        display: block !important;
+      }
+
+      .delete-account-mobile {
+        display: none !important;
       }
     }
 
@@ -1919,8 +1930,14 @@
       // Show delete account sections (only when authenticated)
       const deleteAccountDesktop = document.getElementById('deleteAccountDesktop');
       const deleteAccountMobile = document.getElementById('deleteAccountMobile');
-      if (deleteAccountDesktop) deleteAccountDesktop.style.display = 'block';
-      if (deleteAccountMobile) deleteAccountMobile.style.display = 'block';
+      if (deleteAccountDesktop) {
+        deleteAccountDesktop.classList.add('authenticated');
+        deleteAccountDesktop.style.display = 'block';
+      }
+      if (deleteAccountMobile) {
+        deleteAccountMobile.classList.add('authenticated');
+        deleteAccountMobile.style.display = 'block';
+      }
 
       // Load profile, subscription info, and email preferences in parallel
       const profilePromise = loadUserProfile();
