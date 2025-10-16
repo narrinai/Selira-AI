@@ -2619,6 +2619,7 @@
             description: cleanDescription(char.Character_Description || ''),
             avatar: char.Avatar_URL || null,
             avatar_url_2: char.avatar_url_2 || char.Avatar_URL_2 || null,
+            avatar_url_3: char.avatar_url_3 || char.Avatar_URL_3 || null,
             category: char.Category || 'Other',
             slug: char.Slug || (char.Name ? char.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'unknown'),
             creator: char.Created_by || 'Selira',
@@ -2634,14 +2635,17 @@
             created: char.Created || new Date().toISOString()
           }));
 
-          // Debug: Check how many characters have avatar_url_2
+          // Debug: Check how many characters have avatar_url_2 and avatar_url_3
           const withAvatar2 = allCharacters.filter(c => c.avatar_url_2);
+          const withAvatar3 = allCharacters.filter(c => c.avatar_url_3);
           console.log('🖼️ Characters with avatar_url_2:', withAvatar2.length, '/', allCharacters.length);
+          console.log('🖼️ Characters with avatar_url_3:', withAvatar3.length, '/', allCharacters.length);
           if (withAvatar2.length > 0) {
             console.log('📸 Sample character with avatar_url_2:', {
               name: withAvatar2[0].name,
               avatar: withAvatar2[0].avatar?.substring(0, 50),
-              avatar_url_2: withAvatar2[0].avatar_url_2?.substring(0, 50)
+              avatar_url_2: withAvatar2[0].avatar_url_2?.substring(0, 50),
+              avatar_url_3: withAvatar2[0].avatar_url_3?.substring(0, 50)
             });
           }
 
@@ -2903,6 +2907,7 @@
           ${character.avatar ?
             `<img src="${character.avatar}" alt="${character.name}" class="character-image" loading="lazy"
                   ${character.avatar_url_2 ? `data-hover-image="${character.avatar_url_2}"` : ''}
+                  ${character.avatar_url_3 ? `data-hover-image-3="${character.avatar_url_3}"` : ''}
                   onerror="this.onerror=null; this.src='https://selira.ai/avatars/${getWorkingAvatar(character.name, character.sex)}'; console.log('🔧 Fixed broken avatar for ${character.name}');">` :
             `<div class="character-image-placeholder">${character.name.charAt(0)}</div>`
           }
@@ -2959,8 +2964,9 @@
       console.log('🔄 Found', images.length, 'images to alternate');
 
       images.forEach(img => {
-        const avatar2 = img.getAttribute('data-hover-image');
         const avatar1 = img.getAttribute('src');
+        const avatar2 = img.getAttribute('data-hover-image');
+        const avatar3 = img.getAttribute('data-hover-image-3');
 
         if (!avatar2 || !avatar1) {
           console.log('⚠️ Skipping image - missing avatar:', { avatar1, avatar2 });
@@ -2970,18 +2976,41 @@
         // Mark as alternating to prevent duplicate intervals
         img.setAttribute('data-alternating', 'true');
 
-        console.log('✅ Setting up alternating for:', { avatar1: avatar1.substring(0, 50), avatar2: avatar2.substring(0, 50) });
+        // Check if there's a third avatar
+        const hasThirdAvatar = avatar3 && avatar3.trim() !== '';
 
-        // Alternate between avatar 1 and 2 every 1.5 seconds
-        let showingAvatar1 = true;
-        setInterval(() => {
-          if (showingAvatar1) {
-            img.src = avatar2;
-          } else {
-            img.src = avatar1;
-          }
-          showingAvatar1 = !showingAvatar1;
-        }, 1500);
+        if (hasThirdAvatar) {
+          console.log('✅ Setting up 3-image alternating for:', {
+            avatar1: avatar1.substring(0, 50),
+            avatar2: avatar2.substring(0, 50),
+            avatar3: avatar3.substring(0, 50)
+          });
+
+          // Cycle through 3 avatars
+          let currentIndex = 0;
+          const avatars = [avatar1, avatar2, avatar3];
+
+          setInterval(() => {
+            currentIndex = (currentIndex + 1) % 3;
+            img.src = avatars[currentIndex];
+          }, 1500);
+        } else {
+          console.log('✅ Setting up 2-image alternating for:', {
+            avatar1: avatar1.substring(0, 50),
+            avatar2: avatar2.substring(0, 50)
+          });
+
+          // Alternate between avatar 1 and 2 every 1.5 seconds
+          let showingAvatar1 = true;
+          setInterval(() => {
+            if (showingAvatar1) {
+              img.src = avatar2;
+            } else {
+              img.src = avatar1;
+            }
+            showingAvatar1 = !showingAvatar1;
+          }, 1500);
+        }
       });
     }
 
@@ -4122,6 +4151,7 @@
             ${character.avatar ?
               `<img src="${character.avatar}" alt="${character.name}" class="character-image" loading="lazy"
                     ${character.avatar_url_2 ? `data-hover-image="${character.avatar_url_2}"` : ''}
+                    ${character.avatar_url_3 ? `data-hover-image-3="${character.avatar_url_3}"` : ''}
                     onerror="this.onerror=null; this.src='https://selira.ai/avatars/${getWorkingAvatar(character.name, 'female')}'; console.log('🔧 Fixed broken avatar for ${character.name}');">` :
               `<div class="character-image-placeholder">${character.name.charAt(0)}</div>`
             }
@@ -4949,6 +4979,7 @@
           ${character.avatar ?
             `<img src="${character.avatar}" alt="${character.name}" class="character-image" loading="lazy"
                   ${character.avatar_url_2 ? `data-hover-image="${character.avatar_url_2}"` : ''}
+                  ${character.avatar_url_3 ? `data-hover-image-3="${character.avatar_url_3}"` : ''}
                   onerror="this.onerror=null; this.src='https://selira.ai/avatars/${getWorkingAvatar(character.name, character.sex)}'; console.log('🔧 Fixed broken avatar for ${character.name}');">` :
             `<div class="character-image-placeholder">${character.name.charAt(0)}</div>`
           }

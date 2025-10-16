@@ -2013,6 +2013,7 @@
           <div class="carousel-images">
             <img src="/avatars/laura-blurred-placeholder.webp" alt="Character" class="carousel-image active" id="carouselImage1">
             <img src="/avatars/laura-blurred-placeholder.webp" alt="Character" class="carousel-image" id="carouselImage2" style="display: none;">
+            <img src="/avatars/laura-blurred-placeholder.webp" alt="Character" class="carousel-image" id="carouselImage3" style="display: none;">
           </div>
           <button class="carousel-nav carousel-nav-prev" id="carouselPrev">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -2027,6 +2028,7 @@
           <div class="carousel-indicators" id="carouselIndicators">
             <button class="carousel-indicator active" data-index="0"></button>
             <button class="carousel-indicator" data-index="1"></button>
+            <button class="carousel-indicator" data-index="2"></button>
           </div>
         </div>
 
@@ -3828,6 +3830,7 @@
             description: char.Character_Description || '',
             avatar: char.Avatar_URL ? char.Avatar_URL.replace('narrin.ai', 'selira.ai') : null,
             avatar_url_2: (char.Avatar_URL_2 || char.avatar_url_2) ? (char.Avatar_URL_2 || char.avatar_url_2).replace('narrin.ai', 'selira.ai') : null,
+            avatar_url_3: (char.Avatar_URL_3 || char.avatar_url_3) ? (char.Avatar_URL_3 || char.avatar_url_3).replace('narrin.ai', 'selira.ai') : null,
             category: char.Category || 'Other',
             slug: char.Slug || (char.Name ? char.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'unknown'),
             creator: char.Created_by || char.Nickname || 'Selira',
@@ -4149,6 +4152,7 @@
                 description: airtableChar.Character_Description || '',
                 avatar: airtableChar.Avatar_URL ? airtableChar.Avatar_URL.replace('narrin.ai', 'selira.ai') : null,
                 avatar_url_2: (airtableChar.Avatar_URL_2 || airtableChar.avatar_url_2) ? (airtableChar.Avatar_URL_2 || airtableChar.avatar_url_2).replace('narrin.ai', 'selira.ai') : null,
+                avatar_url_3: (airtableChar.Avatar_URL_3 || airtableChar.avatar_url_3) ? (airtableChar.Avatar_URL_3 || airtableChar.avatar_url_3).replace('narrin.ai', 'selira.ai') : null,
                 category: airtableChar.Category || 'Other',
                 slug: airtableChar.Slug || slug,
                 creator: airtableChar.Created_by || airtableChar.Nickname || 'Selira',
@@ -4551,6 +4555,7 @@
         slug: slug,
         avatar: fixAvatarUrl(avatar),
         avatar_url_2: character.avatar_url_2, // Second avatar for carousel
+        avatar_url_3: character.avatar_url_3, // Third avatar for carousel
         creator: '@' + (character.creator || character.createdBy || 'Selira'),
         description: character.description || 'Start a conversation with ' + name,
         greeting: getCharacterGreeting(character) || generateGreetingForNewCharacter(character),
@@ -4828,6 +4833,7 @@
               description: character.Character_Description || '',
               avatar: character.Avatar_URL ? character.Avatar_URL.replace('narrin.ai', 'selira.ai') : null,
               avatar_url_2: (character.Avatar_URL_2 || character.avatar_url_2) ? (character.Avatar_URL_2 || character.avatar_url_2).replace('narrin.ai', 'selira.ai') : null,
+              avatar_url_3: (character.Avatar_URL_3 || character.avatar_url_3) ? (character.Avatar_URL_3 || character.avatar_url_3).replace('narrin.ai', 'selira.ai') : null,
               category: character.Category || 'Other',
               slug: character.Slug || characterSlug,
               creator: character.Created_by || 'Selira',
@@ -6153,7 +6159,8 @@
         name: currentCharacter.name,
         creator: currentCharacter.creator,
         avatar: currentCharacter.avatar,
-        avatar_url_2: currentCharacter.avatar_url_2
+        avatar_url_2: currentCharacter.avatar_url_2,
+        avatar_url_3: currentCharacter.avatar_url_3
       });
 
       carouselImages = [];
@@ -6176,12 +6183,19 @@
         });
       }
 
+      // Add third image (avatar_url_3) - ONLY for Selira companions
+      if (isSeliraCreator && currentCharacter.avatar_url_3) {
+        carouselImages.push(fixAvatarUrl(currentCharacter.avatar_url_3));
+        console.log('🎠 Added Avatar_URL_3 for Selira companion');
+      }
+
       console.log('🎠 Carousel images:', carouselImages);
 
       if (carouselImages.length > 0) {
         // Set carousel images
         const img1 = document.getElementById('carouselImage1');
         const img2 = document.getElementById('carouselImage2');
+        const img3 = document.getElementById('carouselImage3');
 
         // Set blur placeholder immediately for img1
         img1.src = '/avatars/laura-blurred-placeholder.webp';
@@ -6215,6 +6229,19 @@
             setTimeout(() => img2.classList.add('loaded'), 100);
           };
           preloadImg2.src = carouselImages[1]; // Start loading
+
+          // If there's a third image, preload it too
+          if (carouselImages.length > 2) {
+            img3.src = '/avatars/laura-blurred-placeholder.webp';
+            img3.style.display = 'block';
+
+            const preloadImg3 = new Image();
+            preloadImg3.onload = () => {
+              img3.src = carouselImages[2];
+              setTimeout(() => img3.classList.add('loaded'), 100);
+            };
+            preloadImg3.src = carouselImages[2]; // Start loading
+          }
 
           // Show navigation for multiple images
           prevBtn.style.display = 'flex';
