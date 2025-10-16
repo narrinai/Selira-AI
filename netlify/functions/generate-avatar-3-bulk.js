@@ -66,8 +66,8 @@ async function generateAvatar2(companion) {
     'full body shot, muscular man lying on back with legs spread open, big hard cock erect and pointing up, balls visible, showing face chest abs and cock, full exposure, inviting seductive pose',
     'full body view, athletic man bent over looking back, firm ass cheeks spread, thick cock hanging down visible between legs, balls dangling, showing face and body, doggy style position'
   ] : [
-    // FEMALE: Reverse cowgirl position with visible penetration - view from behind
-    'sexy woman in reverse cowgirl position sitting on large erect cock, view from behind showing her bare back and round ass, thick penis shaft from male groin visibly penetrating pussy between her legs, pussy lips stretched around cock, man\'s thighs and pelvis visible below, woman looking back seductively over shoulder, hands on male thighs, explicit penetration clearly visible, POV from behind perspective, intimate bedroom setting'
+    // FEMALE: POV Blowjob - proven to work well from avatar_url_2
+    'beautiful woman kneeling looking up at camera, large erect cock in her mouth from man standing above, thick penis shaft attached to male groin and thighs visible, lips stretched around cock, hand gripping penis base, breasts exposed, saliva dripping, man\'s head out of frame above, POV blowjob from man\'s perspective'
   ];
   const randomVariation = variations[Math.floor(Math.random() * variations.length)];
 
