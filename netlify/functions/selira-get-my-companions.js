@@ -94,31 +94,28 @@ exports.handler = async (event, context) => {
 
     const userRecordId = targetUser.id;
     const userEmail = targetUser.fields.Email;
-    const userAuth0ID = targetUser.fields.Auth0ID;
     const userSupabaseID = targetUser.fields.SupabaseID;
-    console.log('✅ Found user:', userRecordId, userEmail, 'Auth0ID:', userAuth0ID, 'SupabaseID:', userSupabaseID);
+    console.log('✅ Found user:', userRecordId, userEmail, 'SupabaseID:', userSupabaseID);
 
-    // Step 2: Get companions from chat history - use SupabaseID (modern) or Auth0ID (legacy)
-    const userId = userSupabaseID || userAuth0ID;
-
-    if (!userId) {
-      console.log('⚠️ User has no SupabaseID or Auth0ID, cannot find chat history');
+    // Step 2: Get companions from chat history - use SupabaseID
+    if (!userSupabaseID) {
+      console.log('⚠️ User has no SupabaseID, cannot find chat history');
       return {
         statusCode: 200,
         headers,
         body: JSON.stringify({
           success: true,
           companions: [],
-          message: 'No user ID found - please re-login to see your companions'
+          message: 'No SupabaseID found - please re-login to see your companions'
         })
       };
     }
 
-    const userFilter = `{User}='${userId}'`;
-    console.log('🔍 Using user ID for chat history:', userId, '(type:', userSupabaseID ? 'Supabase' : 'Auth0', ')');
+    const userFilter = `{User}='${userSupabaseID}'`;
+    console.log('🔍 Using SupabaseID for chat history:', userSupabaseID);
     const chatHistoryUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/ChatHistory?filterByFormula=${userFilter}&sort[0][field]=CreatedTime&sort[0][direction]=desc`;
 
-    console.log('🔍 Chat history filter (Auth0ID - working approach):', userFilter);
+    console.log('🔍 Chat history filter:', userFilter);
 
     const chatResponse = await fetch(chatHistoryUrl, {
       method: 'GET',
@@ -149,18 +146,11 @@ exports.handler = async (event, context) => {
     let charactersOffset = null;
 
     do {
-      // Build filter for user-created characters: Try multiple approaches for Created_By field
-      let createdByFilter;
-      if (userId) {
-        // Try SupabaseID/Auth0ID first (most likely match), then Users record ID, then email
-        createdByFilter = `OR({Created_By}='${userId}',SEARCH("${userRecordId}", ARRAYJOIN({Created_By})),{Created_By}='${userEmail}')`;
-      } else {
-        // Fallback to Users record ID and email
-        createdByFilter = `OR(SEARCH("${userRecordId}", ARRAYJOIN({Created_By})),{Created_By}='${userEmail}')`;
-      }
+      // Build filter for user-created characters: Try SupabaseID first, then Users record ID, then email
+      const createdByFilter = `OR({Created_By}='${userSupabaseID}',SEARCH("${userRecordId}", ARRAYJOIN({Created_By})),{Created_By}='${userEmail}')`;
 
-      console.log('🔍 Filter for user-created characters (SupabaseID/Auth0ID + record ID + email):', createdByFilter);
-      console.log('🔍 Search parameters:', { userEmail, userRecordId, userAuth0ID, userSupabaseID, userId });
+      console.log('🔍 Filter for user-created characters (SupabaseID + record ID + email):', createdByFilter);
+      console.log('🔍 Search parameters:', { userEmail, userRecordId, userSupabaseID });
 
       const userCreatedUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters?filterByFormula=${encodeURIComponent(createdByFilter)}${charactersOffset ? `&offset=${charactersOffset}` : ''}`;
       console.log('🔍 Full Airtable URL:', userCreatedUrl);
