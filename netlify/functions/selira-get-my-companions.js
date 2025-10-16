@@ -111,11 +111,13 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Airtable formulas don't work on linked record fields, so we fetch all and filter client-side
-    console.log('🔍 Fetching ChatHistory to filter by User Record ID:', userRecordId);
+    // Airtable formulas don't work on linked record fields, so we fetch recent records and filter client-side
+    // Limit to recent 2000 records to avoid performance issues (5000+ total records in table)
+    console.log('🔍 Fetching recent ChatHistory to filter by User Record ID:', userRecordId);
 
     let allChatHistory = [];
     let chatOffset = null;
+    const MAX_RECORDS = 2000; // Limit to prevent timeout with large tables
 
     do {
       const chatHistoryUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/ChatHistory?sort[0][field]=CreatedTime&sort[0][direction]=desc${chatOffset ? `&offset=${chatOffset}` : ''}`;
@@ -135,6 +137,12 @@ exports.handler = async (event, context) => {
       const chatData = await chatResponse.json();
       allChatHistory = allChatHistory.concat(chatData.records);
       chatOffset = chatData.offset;
+
+      // Stop if we've fetched enough records
+      if (allChatHistory.length >= MAX_RECORDS) {
+        console.log('⚠️ Reached max records limit:', MAX_RECORDS);
+        break;
+      }
     } while (chatOffset);
 
     // Filter client-side for this user's chats
