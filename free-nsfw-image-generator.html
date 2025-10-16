@@ -1191,29 +1191,42 @@
     // Outfits removed - fully nude by default
     const fullyNudePrompt = 'completely naked, fully nude, no clothes, bare skin, nude body, naked breasts, exposed pussy, totally naked, unclothed, full nudity, NSFW';
 
-    // Check authentication (using global helpers from auth0-login.js)
+    // Check authentication (using Supabase auth)
     async function checkAuthentication() {
       try {
-        // Wait for auth0-login.js to load
+        // Wait for Supabase auth to load
         let attempts = 0;
-        while (!window.isUserAuthenticated && attempts < 20) {
+        while (!window.supabaseAuth && attempts < 50) {
           await new Promise(resolve => setTimeout(resolve, 100));
           attempts++;
         }
 
-        if (window.isUserAuthenticated && window.isUserAuthenticated()) {
-          const user = window.getCurrentUser();
-          if (user) {
-            console.log('✅ Image Generator: User authenticated:', user.email);
-            return user;
-          }
+        if (window.supabaseAuth && window.supabaseAuth.user) {
+          const user = window.supabaseAuth.user;
+          console.log('✅ Image Generator: User authenticated:', user.email);
+          return user;
         }
         console.log('ℹ️ Image Generator: User not authenticated');
         return null;
       } catch (error) {
-        console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Image Generator auth check error:', error);
+        console.error('❌ Image Generator auth check error:', error);
         return null;
       }
+    }
+
+    // Listen for auth state changes and update userData
+    function setupAuthListener() {
+      // Check periodically if auth state has changed
+      setInterval(async () => {
+        if (window.supabaseAuth && window.supabaseAuth.user && !userData) {
+          console.log('🔄 Image Generator: User logged in, updating userData');
+          userData = window.supabaseAuth.user;
+          await loadUserCredits();
+        } else if (!window.supabaseAuth?.user && userData) {
+          console.log('🔄 Image Generator: User logged out, clearing userData');
+          userData = null;
+        }
+      }, 1000);
     }
 
     // Load user credits
@@ -1621,6 +1634,9 @@
 
     async function init() {
       userData = await checkAuthentication();
+
+      // Setup auth listener to detect login after page load
+      setupAuthListener();
 
       await loadCompanions();
       renderPoseOptions();
