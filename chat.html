@@ -3116,6 +3116,14 @@
       const isAuthenticated = window.isUserAuthenticated ? window.isUserAuthenticated() : false;
       const user = window.getCurrentUser ? window.getCurrentUser() : null;
 
+      console.log('🔍 Auth check in sendMessage():', {
+        isAuthenticated,
+        hasUser: !!user,
+        userEmail: user?.email,
+        seliraAuthExists: !!window.seliraAuth,
+        functionExists: !!window.isUserAuthenticated
+      });
+
       if (!isAuthenticated || !user) {
         // Show signup modal directly (which has login link at bottom)
         console.log('🔒 User not authenticated, showing signup modal');
