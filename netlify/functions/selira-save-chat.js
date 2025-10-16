@@ -127,18 +127,20 @@ exports.handler = async (event, context) => {
           Role: 'user',
           Message: user_message.trim(),
           User: [userRecord.id],
+          User_ID: userRecord.id, // Add text field for filtering (linked records can't be filtered)
           Character: [characterRecord.id]
         }
       });
     }
 
-    // AI response  
+    // AI response
     if (ai_response?.trim()) {
       messagesToSave.push({
         fields: {
           Role: 'assistant',
           Message: ai_response.trim(),
           User: [userRecord.id],
+          User_ID: userRecord.id, // Add text field for filtering (linked records can't be filtered)
           Character: [characterRecord.id]
         }
       });
