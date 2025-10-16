@@ -367,6 +367,7 @@ async function saveChatMessages(user_email, character_slug, user_message, ai_res
         'Role': 'user',
         'Message': user_message.trim(),
         'User': [userRecordId],
+        'User_ID': userRecordId, // Add text field for filtering (linked records can't be filtered)
         'Character': [characterRecordId]
       }
     });
@@ -379,6 +380,7 @@ async function saveChatMessages(user_email, character_slug, user_message, ai_res
         'Role': 'ai assistant',
         'Message': ai_response.trim(),
         'User': [userRecordId],
+        'User_ID': userRecordId, // Add text field for filtering (linked records can't be filtered)
         'Character': [characterRecordId]
       }
     });
