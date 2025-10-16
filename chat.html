@@ -2749,38 +2749,18 @@
         return;
       }
 
-      // Check user permissions
+      // Check user permissions for display info (but don't block showing poses/prompts)
       const permissions = await checkUserImagePermissions();
 
       // Clear existing suggestions
       suggestionContainer.innerHTML = '';
 
-      if (!permissions.canGenerate) {
-        // Show upgrade notice instead of suggestions
-        const upgradeNotice = document.createElement('div');
-        upgradeNotice.className = 'image-upgrade-notice';
-        upgradeNotice.innerHTML = `
-          <div class="upgrade-notice-content">
-            <span class="upgrade-notice-icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-              </svg>
-            </span>
-            <div class="upgrade-notice-text">
-              <div class="upgrade-notice-title">${permissions.plan === 'Guest' ? 'Login Required' : 'Upgrade Required'}</div>
-              <div class="upgrade-notice-subtitle">${permissions.plan === 'Guest' ? 'Sign up to generate images' : 'Image generation requires Basic plan or higher'}</div>
-            </div>
-            <button class="upgrade-notice-btn" onclick="showImageUpgradeModal(${JSON.stringify(permissions).replace(/"/g, '&quot;')})">
-              ${permissions.plan === 'Guest' ? 'Sign Up' : 'Upgrade'}
-            </button>
-          </div>
-        `;
-        suggestionContainer.appendChild(upgradeNotice);
-      } else {
-        // Show plan info
-        const planInfo = document.createElement('div');
-        planInfo.className = 'image-plan-info';
+      // Always show plan info (even for guests/free users)
+      const planInfo = document.createElement('div');
+      planInfo.className = 'image-plan-info';
+
+      if (permissions.canGenerate) {
+        // Show remaining images for users who can generate
         const usingCredits = permissions.usingCredits || permissions.imageCreditsRemaining > 0;
         const creditsText = usingCredits ? ' credits' : '';
         const imageText = (permissions.remaining === 1 && !usingCredits) ? 'image' : 'images';
@@ -2788,60 +2768,66 @@
           <span class="plan-badge">${permissions.plan} Plan</span>
           <span class="plan-remaining">${permissions.remaining || 0}${creditsText} ${imageText} left</span>
         `;
-        suggestionContainer.appendChild(planInfo);
+      } else {
+        // Show plan for users who cannot generate (upgrade modal will appear when they click)
+        planInfo.innerHTML = `
+          <span class="plan-badge">${permissions.plan === 'Guest' ? 'Not Logged In' : permissions.plan + ' Plan'}</span>
+          <span class="plan-remaining" style="color: #888;">Select a pose to continue</span>
+        `;
+      }
+      suggestionContainer.appendChild(planInfo);
 
-        // UNCENSORED MODE: Show pose & outfit selectors
-        if (isUncensored) {
-          // Set gender-specific pose/outfit arrays
-          const isMale = (currentCharacter.sex || currentCharacter.Sex || currentCharacter.Gender || '').toLowerCase() === 'male';
-          NSFW_POSES = isMale ? NSFW_POSES_MALE : NSFW_POSES_FEMALE;
-          NSFW_OUTFITS = isMale ? NSFW_OUTFITS_MALE : NSFW_OUTFITS_FEMALE;
+      // UNCENSORED MODE: Show pose & outfit selectors
+      if (isUncensored) {
+        // Set gender-specific pose/outfit arrays
+        const isMale = (currentCharacter.sex || currentCharacter.Sex || currentCharacter.Gender || '').toLowerCase() === 'male';
+        NSFW_POSES = isMale ? NSFW_POSES_MALE : NSFW_POSES_FEMALE;
+        NSFW_OUTFITS = isMale ? NSFW_OUTFITS_MALE : NSFW_OUTFITS_FEMALE;
 
-          const selectorContainer = document.createElement('div');
-          selectorContainer.className = 'pose-outfit-selector';
+        const selectorContainer = document.createElement('div');
+        selectorContainer.className = 'pose-outfit-selector';
 
-          // Pose selector (fully nude by default)
-          const poseSection = document.createElement('div');
-          poseSection.className = 'selector-section';
-          poseSection.innerHTML = `
-            <div class="selector-label">Select Pose (Fully Nude):</div>
-            <div class="selector-buttons" id="poseButtons"></div>
-          `;
-          selectorContainer.appendChild(poseSection);
+        // Pose selector (fully nude by default)
+        const poseSection = document.createElement('div');
+        poseSection.className = 'selector-section';
+        poseSection.innerHTML = `
+          <div class="selector-label">Select Pose (Fully Nude):</div>
+          <div class="selector-buttons" id="poseButtons"></div>
+        `;
+        selectorContainer.appendChild(poseSection);
 
-          // Generate button (BOTTOM, sticky for visibility)
-          const generateBtn = document.createElement('button');
-          generateBtn.className = 'generate-image-btn';
-          generateBtn.textContent = 'Generate Image';
-          generateBtn.disabled = true;
-          generateBtn.onclick = () => generateImageFromSelectors();
-          selectorContainer.appendChild(generateBtn);
+        // Generate button (BOTTOM, sticky for visibility)
+        const generateBtn = document.createElement('button');
+        generateBtn.className = 'generate-image-btn';
+        generateBtn.textContent = 'Generate Image';
+        generateBtn.disabled = true;
+        generateBtn.onclick = () => generateImageFromSelectors();
+        selectorContainer.appendChild(generateBtn);
 
-          suggestionContainer.appendChild(selectorContainer);
+        suggestionContainer.appendChild(selectorContainer);
 
-          // Populate pose buttons
-          const poseButtonsContainer = document.getElementById('poseButtons');
-          NSFW_POSES.forEach(pose => {
-            const btn = document.createElement('button');
-            btn.className = 'selector-btn';
-            btn.textContent = pose.label;
-            btn.onclick = () => selectPose(pose.id);
-            poseButtonsContainer.appendChild(btn);
-          });
+        // Populate pose buttons
+        const poseButtonsContainer = document.getElementById('poseButtons');
+        NSFW_POSES.forEach(pose => {
+          const btn = document.createElement('button');
+          btn.className = 'selector-btn';
+          btn.textContent = pose.label;
+          btn.onclick = () => selectPose(pose.id);
+          poseButtonsContainer.appendChild(btn);
+        });
 
-          // Outfits removed - fully nude by default
+        // Outfits removed - fully nude by default
 
-        } else {
-          // CENSORED MODE: Show original suggestion buttons
-          const suggestions = generateImagePromptSuggestions(currentCharacter);
-          suggestions.forEach(suggestion => {
-            const button = document.createElement('button');
-            button.className = 'suggestion-button';
-            button.textContent = suggestion;
-            button.onclick = () => useSuggestion(suggestion);
-            suggestionContainer.appendChild(button);
-          });
-        }
+      } else {
+        // CENSORED MODE: Show original suggestion buttons
+        const suggestions = generateImagePromptSuggestions(currentCharacter);
+        suggestions.forEach(suggestion => {
+          const button = document.createElement('button');
+          button.className = 'suggestion-button';
+          button.textContent = suggestion;
+          button.onclick = () => useSuggestion(suggestion);
+          suggestionContainer.appendChild(button);
+        });
       }
 
       // Show suggestions
