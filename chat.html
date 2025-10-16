@@ -5317,16 +5317,8 @@
         const updatedMessageCount = getMessageCount(currentCharacter.slug);
         document.getElementById('sidebarCharacterChats').textContent = updatedMessageCount;
 
-        // Show upgrade modal and add explanation message
+        // Show upgrade modal (no AI text message needed - modal explains everything)
         showImageUpgradeModal(permissions);
-
-        const explanationText = permissions.plan === 'Guest'
-          ? '🔐 Please log in to generate images. Create a free account to get started!'
-          : `🔐 Image generation is not available on the ${permissions.plan} plan. Upgrade to Basic or Premium to generate images!`;
-
-        setTimeout(() => {
-          addMessage(explanationText, 'ai');
-        }, 500);
         return;
       }
 
