@@ -233,9 +233,10 @@ exports.handler = async (event, context) => {
         'Role': 'user',
         'Message': user_message.trim(),
         'User': [userRecordId],
+        'User_ID': userRecordId, // Add text field for filtering (linked records can't be filtered)
         'Character': [characterRecordId]
       };
-      
+
       console.log('✅ Creating user message with lookups:', { userRecordId, characterRecordId });
       recordsToCreate.push({ fields: userMessageFields });
     }
@@ -246,9 +247,10 @@ exports.handler = async (event, context) => {
         'Role': 'ai assistant',
         'Message': ai_response.trim(),
         'User': [userRecordId],
+        'User_ID': userRecordId, // Add text field for filtering (linked records can't be filtered)
         'Character': [characterRecordId]
       };
-      
+
       console.log('✅ Creating AI message with lookups:', { userRecordId, characterRecordId });
       recordsToCreate.push({ fields: aiMessageFields });
     }
