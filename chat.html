@@ -3224,22 +3224,26 @@
         // Check if uncensored mode is active
         const isUncensored = localStorage.getItem('unfilteredMode') === 'true';
 
-        // CENSORED mode: Allow direct generation via "send me a picture of..."
-        // UNCENSORED mode: Always redirect to Image Gen buttons for control
-        if (!isUncensored && (lowerMessage.startsWith('send me a picture of') ||
-            lowerMessage.startsWith('send me a pic of') ||
-            lowerMessage.startsWith('send me a photo of') ||
-            lowerMessage.startsWith('show me a picture of') ||
-            lowerMessage.startsWith('show me a pic of'))) {
+        // Both CENSORED and UNCENSORED modes: Allow direct image generation via text prompts
+        // Users can type "send me a picture..." OR use the Image Gen buttons
+        if (lowerMessage.startsWith('send me a picture') ||
+            lowerMessage.startsWith('send me a pic') ||
+            lowerMessage.startsWith('send me a photo') ||
+            lowerMessage.startsWith('send me an image') ||
+            lowerMessage.startsWith('show me a picture') ||
+            lowerMessage.startsWith('show me a pic') ||
+            lowerMessage.startsWith('show me an image') ||
+            lowerMessage.startsWith('generate me a picture') ||
+            lowerMessage.startsWith('generate me an image')) {
           messageInput.value = '';
           autoResizeTextarea();
           await handleImageRequest(message);
           return;
         }
 
-        // For uncensored mode OR generic requests, let AI respond naturally via OpenRouter
+        // For other generic visual requests (without specific "send me a picture" phrasing),
+        // let AI respond naturally with instructions to use Image Gen button
         // The AI has instructions in the system prompt to mention Image Gen button
-        // So we just continue with normal chat flow - no hardcoded response needed
       }
 
       // Add user message
