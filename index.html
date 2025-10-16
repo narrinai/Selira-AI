@@ -1404,7 +1404,7 @@
           width: 100%;
           display: flex;
           align-items: center;
-          justify-content: space-between;
+          justify-content: center;
           padding: 10px 10px;
           background: var(--bg-secondary);
           border: 1px solid var(--border);
@@ -2192,10 +2192,7 @@
         <div class="mobile-filter-bar">
         <div class="mobile-filter-dropdown">
           <button class="mobile-dropdown-btn" id="mobileContentFilter" onclick="toggleMobileContentDropdown()">
-            <span id="mobileContentText">Uncensored</span>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" style="margin-left: 6px;">
-              <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
+            <span id="mobileContentText">Uncensored ▼</span>
           </button>
           <div class="mobile-dropdown-menu" id="mobileContentMenu">
             <div class="mobile-dropdown-item" onclick="selectMobileContent('all')">All</div>
@@ -2205,10 +2202,7 @@
         </div>
         <div class="mobile-filter-dropdown">
           <button class="mobile-dropdown-btn" id="mobileSexFilter" onclick="toggleMobileSexDropdown()">
-            <span id="mobileSexText">Female</span>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" style="margin-left: 6px;">
-              <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
+            <span id="mobileSexText">Female ▼</span>
           </button>
           <div class="mobile-dropdown-menu" id="mobileSexMenu">
             <div class="mobile-dropdown-item" onclick="selectMobileSex('all')">All</div>
@@ -2218,10 +2212,7 @@
         </div>
         <div class="mobile-filter-dropdown">
           <button class="mobile-dropdown-btn" id="mobileStyleFilter" onclick="toggleMobileStyleDropdown()">
-            <span id="mobileStyleText">Realistic</span>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" style="margin-left: 6px;">
-              <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
+            <span id="mobileStyleText">Realistic ▼</span>
           </button>
           <div class="mobile-dropdown-menu" id="mobileStyleMenu">
             <div class="mobile-dropdown-item" onclick="selectMobileStyle('all')">All</div>
@@ -2231,10 +2222,7 @@
         </div>
         <div class="mobile-filter-dropdown">
           <button class="mobile-dropdown-btn" id="mobileTagFilter" onclick="toggleMobileTagDropdown()">
-            <span id="mobileTagText">Tags</span>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" style="margin-left: 6px;">
-              <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
+            <span id="mobileTagText">Tags ▼</span>
           </button>
           <div class="mobile-dropdown-menu" id="mobileTagMenu">
             <!-- Dynamic tags will be added here -->
@@ -3323,19 +3311,19 @@
       // Update mobile content filter
       const mobileContentText = document.getElementById('mobileContentText');
       if (mobileContentText) {
-        mobileContentText.textContent = contentLabels[contentValue] || 'All';
+        mobileContentText.textContent = (contentLabels[contentValue] || 'All') + ' ▼';
       }
 
       // Update mobile sex filter
       const mobileSexText = document.getElementById('mobileSexText');
       if (mobileSexText) {
-        mobileSexText.textContent = sexLabels[sexValue] || 'All';
+        mobileSexText.textContent = (sexLabels[sexValue] || 'All') + ' ▼';
       }
 
       // Update mobile style filter
       const mobileStyleText = document.getElementById('mobileStyleText');
       if (mobileStyleText) {
-        mobileStyleText.textContent = styleLabels[styleValue] || 'All';
+        mobileStyleText.textContent = (styleLabels[styleValue] || 'All') + ' ▼';
       }
 
       // Update mobile dropdown selected states
@@ -5845,10 +5833,10 @@ Please be thorough and include important details from our conversations.`;
       event.target.classList.add('selected');
 
       if (content === 'all') {
-        contentText.textContent = 'All';
+        contentText.textContent = 'All ▼';
         currentFilters.content = undefined;
       } else {
-        contentText.textContent = content.charAt(0).toUpperCase() + content.slice(1);
+        contentText.textContent = (content.charAt(0).toUpperCase() + content.slice(1)) + ' ▼';
         currentFilters.content = content;
       }
 
@@ -5868,10 +5856,10 @@ Please be thorough and include important details from our conversations.`;
       event.target.classList.add('selected');
 
       if (style === 'all') {
-        styleText.textContent = 'All Styles';
+        styleText.textContent = 'All Styles ▼';
         currentFilters.style = null;
       } else {
-        styleText.textContent = style.charAt(0).toUpperCase() + style.slice(1);
+        styleText.textContent = (style.charAt(0).toUpperCase() + style.slice(1)) + ' ▼';
         currentFilters.style = style;
       }
 
@@ -5891,10 +5879,10 @@ Please be thorough and include important details from our conversations.`;
       event.target.classList.add('selected');
 
       if (sex === 'all') {
-        sexText.textContent = 'All';
+        sexText.textContent = 'All ▼';
         currentFilters.sex = null;
       } else {
-        sexText.textContent = sex.charAt(0).toUpperCase() + sex.slice(1);
+        sexText.textContent = (sex.charAt(0).toUpperCase() + sex.slice(1)) + ' ▼';
         currentFilters.sex = sex;
       }
 
@@ -5920,10 +5908,10 @@ Please be thorough and include important details from our conversations.`;
       event.target.classList.add('selected');
 
       if (tag === 'all') {
-        tagText.textContent = 'All Tags';
+        tagText.textContent = 'All Tags ▼';
         currentFilters.tags = [];
       } else {
-        tagText.textContent = tag;
+        tagText.textContent = tag + ' ▼';
         currentFilters.tags = [tag];
       }
 
