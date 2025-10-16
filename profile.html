@@ -1949,13 +1949,34 @@
     });
 
     // Listen for auth state changes (when user logs in via modal)
-    window.addEventListener('auth-state-changed', function(e) {
-      if (e.detail && e.detail.isAuthenticated) {
-        console.log('🔄 Auth state changed to authenticated - reloading profile');
-        // Reload the page to show profile content
-        window.location.reload();
-      }
-    });
+    // Only reload if we're currently showing the login prompt
+    let authListenerAdded = false;
+    if (!authListenerAdded) {
+      window.addEventListener('auth-state-changed', function(e) {
+        if (e.detail && e.detail.isAuthenticated) {
+          // Check if we're showing the login prompt (not the actual profile)
+          const profileGrid = document.querySelector('.profile-grid');
+          const hasLoginPrompt = profileGrid && profileGrid.innerHTML.includes('Sign In Required');
+
+          if (hasLoginPrompt) {
+            console.log('🔄 Auth state changed to authenticated - reloading profile');
+            // Set flag to prevent multiple reloads
+            if (!sessionStorage.getItem('profile_reloading')) {
+              sessionStorage.setItem('profile_reloading', 'true');
+              window.location.reload();
+            }
+          } else {
+            console.log('✅ Already showing profile content, no reload needed');
+          }
+        }
+      }, { once: true });
+      authListenerAdded = true;
+    }
+
+    // Clear reload flag after page loads
+    if (sessionStorage.getItem('profile_reloading')) {
+      sessionStorage.removeItem('profile_reloading');
+    }
 
   </script>
 
