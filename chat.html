@@ -6367,6 +6367,16 @@
         // Always setup click handlers
         setupCarouselNavigation();
 
+        // Show/hide indicators based on number of images
+        const allIndicators = indicators.querySelectorAll('.carousel-indicator');
+        allIndicators.forEach((indicator, index) => {
+          if (index < carouselImages.length) {
+            indicator.style.display = 'block';
+          } else {
+            indicator.style.display = 'none';
+          }
+        });
+
         if (carouselImages.length > 1) {
           // Set blur placeholder immediately for img2
           img2.src = '/avatars/laura-blurred-placeholder.webp';
