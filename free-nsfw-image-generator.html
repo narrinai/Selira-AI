@@ -1233,7 +1233,17 @@
     // Check authentication (using Supabase auth)
     async function checkAuthentication() {
       try {
-        // Wait for Supabase auth to load
+        // First check localStorage (most reliable, like chat.html does)
+        const localUser = localStorage.getItem('user');
+        const localEmail = localStorage.getItem('user_email');
+
+        if (localUser || localEmail) {
+          const user = localUser ? JSON.parse(localUser) : { email: localEmail };
+          console.log('✅ Image Generator: User authenticated from localStorage:', user.email);
+          return user;
+        }
+
+        // Fallback: Wait for Supabase auth to load
         let attempts = 0;
         while (!window.supabaseAuth && attempts < 50) {
           await new Promise(resolve => setTimeout(resolve, 100));
@@ -1242,9 +1252,10 @@
 
         if (window.supabaseAuth && window.supabaseAuth.user) {
           const user = window.supabaseAuth.user;
-          console.log('✅ Image Generator: User authenticated:', user.email);
+          console.log('✅ Image Generator: User authenticated from window.supabaseAuth:', user.email);
           return user;
         }
+
         console.log('ℹ️ Image Generator: User not authenticated');
         return null;
       } catch (error) {
@@ -1257,11 +1268,16 @@
     function setupAuthListener() {
       // Check periodically if auth state has changed
       setInterval(async () => {
-        if (window.supabaseAuth && window.supabaseAuth.user && !userData) {
+        // Check localStorage first (most reliable)
+        const localUser = localStorage.getItem('user');
+        const localEmail = localStorage.getItem('user_email');
+        const hasLocalUser = !!(localUser || localEmail);
+
+        if (hasLocalUser && !userData) {
           console.log('🔄 Image Generator: User logged in, updating userData');
-          userData = window.supabaseAuth.user;
+          userData = localUser ? JSON.parse(localUser) : { email: localEmail };
           await loadUserCredits();
-        } else if (!window.supabaseAuth?.user && userData) {
+        } else if (!hasLocalUser && userData) {
           console.log('🔄 Image Generator: User logged out, clearing userData');
           userData = null;
         }
@@ -1571,10 +1587,20 @@
     async function generateImage() {
       console.log('🎨 Generate Image clicked!');
 
-      // ALWAYS check auth in real-time from supabaseAuth
-      const currentUser = window.supabaseAuth?.user;
+      // ALWAYS check auth in real-time - check localStorage first (most reliable)
+      let currentUser = null;
+
+      const localUser = localStorage.getItem('user');
+      const localEmail = localStorage.getItem('user_email');
+
+      if (localUser || localEmail) {
+        currentUser = localUser ? JSON.parse(localUser) : { email: localEmail };
+      } else if (window.supabaseAuth?.user) {
+        currentUser = window.supabaseAuth.user;
+      }
 
       console.log('🔍 Auth check:', {
+        hasLocalStorage: !!(localUser || localEmail),
         hasSupabase: !!window.supabaseAuth,
         currentUser: currentUser?.email || 'none',
         cachedUserData: userData?.email || 'none'
