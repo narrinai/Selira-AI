@@ -60,19 +60,12 @@ async function generateAvatar2(companion) {
   const appearance = buildAppearanceString(companion);
   const uncensored = companion.content_filter === 'Uncensored';
 
-  // Variation prompts - 4 specific poses that rotate
-  const variations = companion.sex === 'male' ? [
-    'full body portrait, handsome man sitting with legs spread wide apart, large erect cock and big hanging balls fully visible between legs, full frontal nudity, showing entire body from head to knees, explicit masculine pose',
-    'full body shot, muscular man lying on back with legs spread open, big hard cock erect and pointing up, balls visible, showing face chest abs and cock, full exposure, inviting seductive pose',
-    'full body view, athletic man bent over looking back, firm ass cheeks spread, thick cock hanging down visible between legs, balls dangling, showing face and body, doggy style position'
-  ] : [
-    // FEMALE: 4 rotating poses - POV Blowjob, Masturbating, Doggy Style, Reverse Cowgirl
-    'beautiful woman kneeling looking up at camera, large erect cock in her mouth from man standing above, thick penis shaft attached to male groin and thighs visible, lips stretched around cock, hand gripping penis base, breasts exposed, saliva dripping, man\'s head out of frame above, POV blowjob from man\'s perspective',
-    'gorgeous woman lying on back with legs spread wide, fingers touching pussy, masturbating alone, pussy lips visible, breasts exposed with erect nipples, pleasuring herself, SOLO masturbation, single woman only, intimate self-pleasure',
-    'sexy woman on all fours ass up, man behind her, big hard cock from male groin penetrating pussy from behind, thick penis shaft connected to man\'s pelvis and thighs visible, pussy lips spread around cock, breasts hanging, woman looking back, man\'s torso visible but head out of frame, POV doggy style from man\'s perspective',
-    'hot woman riding cock facing away from man, large erect penis from male groin penetrating pussy from below, pussy lips stretched around thick shaft connected to man\'s pelvis, round ass bouncing, woman looking back, man\'s legs and torso visible but head out of frame below, POV reverse cowgirl from man\'s perspective'
-  ];
-  const randomVariation = variations[Math.floor(Math.random() * variations.length)];
+  // Fixed pose: Doggy Style only for avatar_url_2
+  const fixedPose = companion.sex === 'male'
+    ? 'full body view, athletic man bent over looking back, firm ass cheeks spread, thick cock hanging down visible between legs, balls dangling, showing face and body, doggy style position'
+    : 'sexy woman on all fours ass up, man behind her, big hard cock from male groin penetrating pussy from behind, thick penis shaft connected to man\'s pelvis and thighs visible, pussy lips spread around cock, breasts hanging, woman looking back, man\'s torso visible but head out of frame, POV doggy style from man\'s perspective';
+
+  const randomVariation = fixedPose;
 
   // Check if this is a POV pose (contains "man" or "male")
   const isPOVPose = randomVariation.toLowerCase().includes('man') || randomVariation.toLowerCase().includes('male groin');
