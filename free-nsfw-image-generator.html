@@ -1447,16 +1447,34 @@
 
     async function generateImage() {
       console.log('🎨 Generate Image clicked!');
+
+      // Check auth in real-time instead of relying on cached userData
+      const currentUser = window.supabaseAuth?.user;
+      if (!currentUser) {
+        // Update userData if it's stale
+        userData = currentUser;
+      } else if (!userData) {
+        // User is logged in but userData is null - update it
+        userData = currentUser;
+        console.log('🔄 Updated stale userData from supabaseAuth');
+      }
+
       console.log('User data:', userData);
+      console.log('Supabase user:', currentUser);
       console.log('Selected companion:', selectedCompanion);
       console.log('Selected pose:', selectedPose);
 
-      if (!userData) {
+      if (!userData && !currentUser) {
         showAlert('Please log in to generate images', 'error');
         if (typeof openLoginModal === 'function') {
           setTimeout(() => openLoginModal('signup'), 600);
         }
         return;
+      }
+
+      // Use currentUser if userData is still null
+      if (!userData) {
+        userData = currentUser;
       }
 
       if (!selectedCompanion) return showAlert('Please select a companion', 'warning');

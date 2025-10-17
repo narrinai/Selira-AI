@@ -934,7 +934,7 @@
 
       .character-card img {
         width: 100%;
-        height: 75%;
+        height: 65%;
         object-fit: cover;
       }
 
@@ -2340,7 +2340,8 @@
     let currentTab = 'discover';
     let currentPage = 1;
     let isLoading = false;
-    const charactersPerPage = 12;
+    // Reduce characters per page on mobile for faster loading
+    const charactersPerPage = window.innerWidth <= 768 ? 8 : 12;
 
     // Emoji mapping for tags (matching index.html)
     function getTagEmoji(tag) {
