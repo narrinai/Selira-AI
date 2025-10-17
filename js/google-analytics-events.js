@@ -120,10 +120,18 @@ class GoogleAnalyticsTracking {
 
   // Track sign_up - when user successfully registers (equivalent to CompleteRegistration)
   trackSignUp() {
-    // Listen for Auth0 registration success
-    window.addEventListener('auth0-registration-complete', (event) => {
+    // Listen for Supabase registration success
+    window.addEventListener('supabase-registration-complete', (event) => {
       this.trackEvent('sign_up', {
-        method: 'Auth0',
+        method: 'Supabase',
+        content_name: 'User Registration'
+      }, `signup_${event.detail?.email || Date.now()}`);
+    });
+
+    // Also listen for generic registration complete event (backward compatibility)
+    window.addEventListener('registration-complete', (event) => {
+      this.trackEvent('sign_up', {
+        method: 'Supabase',
         content_name: 'User Registration'
       }, `signup_${event.detail?.email || Date.now()}`);
     });
@@ -135,7 +143,7 @@ class GoogleAnalyticsTracking {
 
       if (justRegistered === 'true' && userEmail) {
         this.trackEvent('sign_up', {
-          method: 'Auth0',
+          method: 'Supabase',
           content_name: 'User Registration'
         }, `signup_${userEmail}`);
 

@@ -1852,6 +1852,7 @@
           'premium': 19.99
         };
 
+        // Track Facebook Pixel InitiateCheckout event
         if (window.seliraPixelTracking) {
           window.seliraPixelTracking.trackEvent('InitiateCheckout', {
             content_name: `${planType.charAt(0).toUpperCase() + planType.slice(1)} Plan`,
@@ -1860,6 +1861,21 @@
             currency: 'USD',
             content_type: 'product'
           }, `checkout_subscription_${planType}_${Date.now()}`);
+        }
+
+        // Track Google Analytics begin_checkout event
+        if (typeof gtag !== 'undefined') {
+          gtag('event', 'begin_checkout', {
+            currency: 'USD',
+            value: planValues[planType],
+            items: [{
+              item_id: `plan_${planType}`,
+              item_name: `${planType.charAt(0).toUpperCase() + planType.slice(1)} Plan`,
+              item_category: 'Subscription',
+              price: planValues[planType],
+              quantity: 1
+            }]
+          });
         }
 
         // Create Stripe checkout session
@@ -2291,6 +2307,21 @@
           currency: 'USD',
           content_type: 'product'
         }, `checkout_credits_${packageType}_${Date.now()}`);
+      }
+
+      // Track Google Analytics begin_checkout event
+      if (details && typeof gtag !== 'undefined') {
+        gtag('event', 'begin_checkout', {
+          currency: 'USD',
+          value: details.value,
+          items: [{
+            item_id: `credits_${packageType}`,
+            item_name: `${details.credits} Image Credits`,
+            item_category: 'Image Credits',
+            price: details.value,
+            quantity: 1
+          }]
+        });
       }
 
       try {
