@@ -10,8 +10,8 @@ const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA || process.env.AIRT
 const AIRTABLE_TABLE_ID = 'Characters';
 
 // Configuration
-const BATCH_SIZE = 2; // Process 2 companions per run for testing
-const DELAY_BETWEEN_GENERATIONS = 5000; // 5 seconds delay to avoid rate limits
+const BATCH_SIZE = 10; // Process 10 companions per run for production rollout
+const DELAY_BETWEEN_GENERATIONS = 3000; // 3 seconds delay to avoid rate limits
 
 // Sleep function
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
