@@ -66,8 +66,8 @@ async function generateAvatar2(companion) {
     'full body shot, muscular man lying on back with legs spread open, big hard cock erect and pointing up, balls visible, showing face chest abs and cock, full exposure, inviting seductive pose',
     'full body view, athletic man bent over looking back, firm ass cheeks spread, thick cock hanging down visible between legs, balls dangling, showing face and body, doggy style position'
   ] : [
-    // FEMALE: POV Blowjob - proven to work well from avatar_url_2
-    'beautiful woman kneeling looking up at camera, large erect cock in her mouth from man standing above, thick penis shaft attached to male groin and thighs visible, lips stretched around cock, hand gripping penis base, breasts exposed, saliva dripping, man\'s head out of frame above, POV blowjob from man\'s perspective'
+    // FEMALE: Side View Blowjob
+    'beautiful woman kneeling in profile, side view, large erect cock in her mouth, thick penis shaft attached to man\'s groin visible from the side, lips wrapped around cock, side angle showing both faces, man standing, woman\'s breasts visible from side, head bobbing, saliva dripping, side profile blowjob, sexual act from side perspective, NSFW, completely naked, fully nude, explicit side view'
   ];
   const randomVariation = variations[Math.floor(Math.random() * variations.length)];
 
