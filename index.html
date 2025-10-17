@@ -1405,22 +1405,22 @@
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 5px 1px;
+          padding: 6px 4px;
           background: var(--accent);
           border: 1px solid var(--accent);
           border-radius: 8px;
           color: white;
-          font-size: 4.5px !important;
+          font-size: 9px !important;
           font-weight: 600;
           cursor: pointer;
           transition: all 0.2s ease;
-          line-height: 1.1 !important;
-          letter-spacing: -0.02em;
+          line-height: 1.2 !important;
+          letter-spacing: -0.01em;
         }
 
         .mobile-dropdown-btn span {
-          font-size: 4.5px !important;
-          line-height: 1.1 !important;
+          font-size: 9px !important;
+          line-height: 1.2 !important;
           display: inline-block;
         }
 
@@ -2348,7 +2348,7 @@
     let currentPage = 1;
     let isLoading = false;
     // Reduce characters per page on mobile for faster loading
-    const charactersPerPage = window.innerWidth <= 768 ? 8 : 12;
+    const charactersPerPage = window.innerWidth <= 768 ? 6 : 12;
 
     // Emoji mapping for tags (matching index.html)
     function getTagEmoji(tag) {
