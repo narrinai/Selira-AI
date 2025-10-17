@@ -5998,7 +5998,7 @@
       }
     }
 
-    // Open simple 2-image carousel in modal (for mobile)
+    // Open carousel in modal (for mobile) - supports 1, 2, or 3 images
     function openCarouselInModal() {
       const existingModal = document.getElementById('carouselFullscreenModal');
       if (existingModal) {
@@ -6006,11 +6006,17 @@
         return;
       }
 
-      // Get avatar URLs
+      // Get avatar URLs - support all 3 avatars
       const avatar1 = fixAvatarUrl(currentCharacter.avatar);
       const avatar2 = currentCharacter.avatar_url_2 ? fixAvatarUrl(currentCharacter.avatar_url_2) : null;
+      const avatar3 = currentCharacter.avatar_url_3 ? fixAvatarUrl(currentCharacter.avatar_url_3) : null;
 
-      console.log('📸 Opening carousel with avatars:', { avatar1, avatar2 });
+      // Build array of available avatars
+      const avatars = [avatar1];
+      if (avatar2) avatars.push(avatar2);
+      if (avatar3) avatars.push(avatar3);
+
+      console.log('📸 Opening carousel with avatars:', { avatar1, avatar2, avatar3, count: avatars.length });
 
       const modal = document.createElement('div');
       modal.id = 'carouselFullscreenModal';
@@ -6034,7 +6040,7 @@
           <div style="position: relative; width: 100%; aspect-ratio: 3/4; border-radius: 16px; overflow: hidden;">
             <img src="${avatar1}" id="simpleCarouselImg" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='/avatars/placeholder.webp';">
 
-            ${avatar2 ? `
+            ${avatars.length > 1 ? `
               <!-- Left Arrow -->
               <button id="simpleCarouselPrev" style="
                 position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
@@ -6063,13 +6069,14 @@
                 </svg>
               </button>
 
-              <!-- Indicator dots -->
+              <!-- Indicator dots - dynamic based on number of avatars -->
               <div style="
                 position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%);
                 display: flex; gap: 8px; z-index: 100;
-              ">
-                <div id="simpleIndicator1" style="width: 8px; height: 8px; border-radius: 50%; background: white;"></div>
-                <div id="simpleIndicator2" style="width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.4);"></div>
+              " id="simpleIndicators">
+                ${avatars.map((_, index) =>
+                  `<div id="simpleIndicator${index + 1}" style="width: 8px; height: 8px; border-radius: 50%; background: ${index === 0 ? 'white' : 'rgba(255,255,255,0.4)'};"></div>`
+                ).join('')}
               </div>
             ` : ''}
           </div>
@@ -6078,26 +6085,32 @@
 
       document.body.appendChild(modal);
 
-      // Setup simple navigation if there's a second avatar
-      if (avatar2) {
-        let currentAvatar = 1;
+      // Setup navigation if there are multiple avatars
+      if (avatars.length > 1) {
+        let currentIndex = 0;
 
-        function switchAvatar() {
+        function updateIndicators() {
+          // Update all indicator dots
+          avatars.forEach((_, index) => {
+            const indicator = document.getElementById(`simpleIndicator${index + 1}`);
+            if (indicator) {
+              indicator.style.background = index === currentIndex ? 'white' : 'rgba(255,255,255,0.4)';
+            }
+          });
+        }
+
+        function nextAvatar() {
+          currentIndex = (currentIndex + 1) % avatars.length;
           const img = document.getElementById('simpleCarouselImg');
-          const ind1 = document.getElementById('simpleIndicator1');
-          const ind2 = document.getElementById('simpleIndicator2');
+          if (img) img.src = avatars[currentIndex];
+          updateIndicators();
+        }
 
-          if (currentAvatar === 1) {
-            img.src = avatar2;
-            currentAvatar = 2;
-            if (ind1) ind1.style.background = 'rgba(255,255,255,0.4)';
-            if (ind2) ind2.style.background = 'white';
-          } else {
-            img.src = avatar1;
-            currentAvatar = 1;
-            if (ind1) ind1.style.background = 'white';
-            if (ind2) ind2.style.background = 'rgba(255,255,255,0.4)';
-          }
+        function prevAvatar() {
+          currentIndex = (currentIndex - 1 + avatars.length) % avatars.length;
+          const img = document.getElementById('simpleCarouselImg');
+          if (img) img.src = avatars[currentIndex];
+          updateIndicators();
         }
 
         const prevBtn = document.getElementById('simpleCarouselPrev');
@@ -6106,14 +6119,14 @@
         if (prevBtn) {
           prevBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            switchAvatar();
+            prevAvatar();
           });
         }
 
         if (nextBtn) {
           nextBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            switchAvatar();
+            nextAvatar();
           });
         }
       }
