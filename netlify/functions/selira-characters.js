@@ -115,6 +115,7 @@ exports.handler = async (event, context) => {
       tags: record.fields.Tags || [],
       avatar_url: record.fields.Avatar_URL || null, // Explicitly set null if empty
       avatar_url_2: record.fields.Avatar_URL_2 || record.fields.avatar_url_2 || null, // Second image for carousel (check both capitalizations)
+      avatar_url_3: record.fields.Avatar_URL_3 || record.fields.avatar_url_3 || null, // Third image for carousel (check both capitalizations)
       avatar_file: record.fields.Avatar_File?.[0]?.url || null,
       prompt: record.fields.Prompt,
       // Appearance traits for image generation
