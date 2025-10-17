@@ -60,9 +60,9 @@ async function generateAvatar2(companion) {
   const appearance = buildAppearanceString(companion);
   const uncensored = companion.content_filter === 'Uncensored';
 
-  // Fixed pose: Doggy Style only for avatar_url_2
+  // Fixed poses for avatar_url_2: Female = Doggy Style, Male = Masturbating
   const fixedPose = companion.sex === 'male'
-    ? 'doggy style position, ass up face down, from behind, rear view, legs spread, thick cock and balls visible hanging down between legs, full body visible, completely naked, fully nude, no clothes, bare skin, nude body, totally naked, unclothed, full nudity, NSFW'
+    ? 'handsome man lying on back, hand stroking large erect cock, masturbating solo, thick penis shaft fully visible gripped in hand, big balls visible, stroking himself, pleasuring himself, SOLO masturbation, single man only, completely naked, fully nude, no clothes, bare skin, nude body, totally naked, unclothed, full nudity, full body visible from head to thighs, NSFW, intimate self-pleasure'
     : 'doggy style position, ass up face down, from behind, rear view, legs spread, explicit penetration, man behind her with big hard cock from male groin penetrating pussy, thick penis shaft connected to man\'s pelvis visible, pussy visible, sexual position, NSFW, completely naked, fully nude, no clothes, bare skin, nude body, naked breasts, exposed pussy, totally naked, unclothed, full nudity, man\'s torso visible but head out of frame, POV from man\'s perspective';
 
   const randomVariation = fixedPose;
