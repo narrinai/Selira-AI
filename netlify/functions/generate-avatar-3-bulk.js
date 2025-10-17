@@ -10,7 +10,7 @@ const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA || process.env.AIRT
 const AIRTABLE_TABLE_ID = 'Characters';
 
 // Configuration
-const BATCH_SIZE = 5; // Process 5 companions per run for testing
+const BATCH_SIZE = 2; // Process 2 companions per run for testing
 const DELAY_BETWEEN_GENERATIONS = 5000; // 5 seconds delay to avoid rate limits
 
 // Sleep function
@@ -213,14 +213,14 @@ exports.handler = async (event, context) => {
 
   try {
     // 1. Fetch companions without avatar_url_3
-    console.log('📊 Fetching UNCENSORED FEMALE Selira companions without Avatar_URL_3...');
+    console.log('📊 Fetching UNCENSORED FEMALE (Realistic & Anime) Selira companions without Avatar_URL_3...');
 
     let allCompanions = [];
     let offset = null;
 
     do {
-      // Filter: No Avatar_URL_3 AND Created_by = 'Selira' AND content_filter = 'Uncensored' AND sex = 'female'
-      const filterFormula = encodeURIComponent("AND(NOT({Avatar_URL_3}), {Created_by} = 'Selira', {content_filter} = 'Uncensored', {sex} = 'female')");
+      // Filter: No Avatar_URL_3 AND Created_by = 'Selira' AND content_filter = 'Uncensored' AND sex = 'female' AND (realistic OR anime)
+      const filterFormula = encodeURIComponent("AND(NOT({Avatar_URL_3}), {Created_by} = 'Selira', {content_filter} = 'Uncensored', {sex} = 'female', OR({companion_type} = 'realistic', {companion_type} = 'anime'))");
       const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_ID}?filterByFormula=${filterFormula}&maxRecords=${BATCH_SIZE}${offset ? `&offset=${offset}` : ''}`;
 
       const response = await fetch(url, {
