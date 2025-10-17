@@ -1668,7 +1668,7 @@
             hairLength: selectedCompanion.hairLength || 'long',
             hairColor: selectedCompanion.hairColor || 'brown',
             email: userData.email,
-            auth0_id: userData.sub,
+            supabase_id: userData.id || userData.sub,
             source: 'image-generator',
             uncensored: true // Always use Promptchan for image generator page
           })

@@ -11,7 +11,7 @@ let globalRequestCount = 0; // Track total requests in this instance
 let activeReplicateRequests = 0; // Track concurrent Replicate API calls
 
 // PROMPTCHAN IMAGE GENERATION FUNCTION
-async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0_id) {
+async function generateWithPromptchan(body, requestId, corsHeaders, email, supabase_id) {
   const { customPrompt, characterName, sex, ethnicity, hairLength, hairColor, style, shotType, source, uncensored } = body;
 
   console.log(`🎨 [${requestId}] Generating with Promptchan API`);
@@ -290,13 +290,13 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     // If Promptchan succeeded, return the result
     if (promptchanSuccess && promptchanResult) {
       // Increment usage counter
-      if ((source === 'chat' || source === 'image-generator') && (email || auth0_id)) {
+      if ((source === 'chat' || source === 'image-generator') && (email || supabase_id)) {
         console.log(`📈 [${requestId}] Incrementing usage counter for ${source} (Promptchan)`);
         try {
           const incrementResponse = await fetch(`${process.env.NETLIFY_FUNCTIONS_URL || 'https://selira.ai/.netlify/functions'}/selira-increment-image-usage`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId: auth0_id })
+            body: JSON.stringify({ userId: supabase_id })
           });
 
           if (incrementResponse.ok) {
@@ -464,13 +464,13 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     // If Promptchan succeeded, return the result
     if (promptchanSuccess && promptchanResult) {
       // Increment usage counter
-      if ((source === 'chat' || source === 'image-generator') && (email || auth0_id)) {
+      if ((source === 'chat' || source === 'image-generator') && (email || supabase_id)) {
         console.log(`📈 [${requestId}] Incrementing usage counter for ${source} (Promptchan explicit)`);
         try {
           const incrementResponse = await fetch(`${process.env.NETLIFY_FUNCTIONS_URL || 'https://selira.ai/.netlify/functions'}/selira-increment-image-usage`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId: auth0_id })
+            body: JSON.stringify({ userId: supabase_id })
           });
 
           if (incrementResponse.ok) {
@@ -698,13 +698,13 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, auth0
     console.log(`✅ [${requestId}] Promptchan image generated, gems used:`, result.gems);
 
     // Increment usage counter for chat and image-generator
-    if ((source === 'chat' || source === 'image-generator') && (email || auth0_id)) {
+    if ((source === 'chat' || source === 'image-generator') && (email || supabase_id)) {
       console.log(`📈 [${requestId}] Incrementing usage counter for ${source} (Promptchan)`);
       try {
         const incrementResponse = await fetch(`${process.env.NETLIFY_FUNCTIONS_URL || 'https://selira.ai/.netlify/functions'}/selira-increment-image-usage`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId: auth0_id })
+          body: JSON.stringify({ userId: supabase_id })
         });
 
         if (incrementResponse.ok) {
@@ -864,7 +864,7 @@ exports.handler = async (event, context) => {
       };
     }
 
-    const { customPrompt, characterName, category, style, shotType, sex, ethnicity, hairLength, hairColor, email, auth0_id, source, skipAutoDownload, uncensored } = body;
+    const { customPrompt, characterName, category, style, shotType, sex, ethnicity, hairLength, hairColor, email, supabase_id, source, skipAutoDownload, uncensored } = body;
 
     console.log(`📋 [${requestId}] Received:`, {
       customPrompt,
@@ -880,14 +880,14 @@ exports.handler = async (event, context) => {
       uncensored,
       uncensoredType: typeof uncensored,
       email,
-      auth0_id: auth0_id ? auth0_id.substring(0, 15) + '...' : 'none'
+      supabase_id: supabase_id ? supabase_id.substring(0, 15) + '...' : 'none'
     });
 
     // ROUTE TO PROMPTCHAN FOR UNCENSORED IMAGES WITH REPLICATE FALLBACK
     console.log(`🔍 [${requestId}] Uncensored check: uncensored=${uncensored}, type=${typeof uncensored}, === true: ${uncensored === true}, == true: ${uncensored == true}`);
     if (uncensored === true) {
       console.log(`🔓 [${requestId}] Uncensored mode - routing to Promptchan API`);
-      const promptchanResult = await generateWithPromptchan(body, requestId, corsHeaders, email, auth0_id);
+      const promptchanResult = await generateWithPromptchan(body, requestId, corsHeaders, email, supabase_id);
 
       // If Promptchan fails (500 error), fall back to Replicate (censored)
       if (promptchanResult.statusCode === 500) {
@@ -911,14 +911,14 @@ exports.handler = async (event, context) => {
     }
 
     // Check hourly image limits for authenticated users
-    if (email || auth0_id) {
-      console.log(`🔍 [${requestId}] Checking hourly limits for user:`, { email, auth0_id });
+    if (email || supabase_id) {
+      console.log(`🔍 [${requestId}] Checking hourly limits for user:`, { email, supabase_id });
 
       try {
         const limitResponse = await fetch(`${process.env.NETLIFY_FUNCTIONS_URL || 'https://selira.ai/.netlify/functions'}/selira-check-image-limit`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, auth0_id })
+          body: JSON.stringify({ email, supabase_id })
         });
 
         const limitData = await limitResponse.json();
@@ -1326,16 +1326,16 @@ exports.handler = async (event, context) => {
     console.log(`🔍 [${requestId}] Checking increment conditions:`, {
       source,
       hasEmail: !!email,
-      hasAuth0Id: !!auth0_id,
+      hasSupabaseId: !!supabase_id,
       hasLimitData: !!body.limitData,
       limitDataUserId: body.limitData?.userId
     });
 
-    if ((source === 'chat' || source === 'image-generator') && (email || auth0_id)) {
+    if ((source === 'chat' || source === 'image-generator') && (email || supabase_id)) {
       console.log(`📈 [${requestId}] ✅ Incrementing usage counter for ${source} image generation`);
       try {
-        // Use auth0_id directly (should be Airtable record ID from frontend)
-        const userId = auth0_id;
+        // Use supabase_id directly (should be Supabase UUID from frontend)
+        const userId = supabase_id;
 
         console.log(`📈 [${requestId}] Full increment details:`, {
           userId: userId,
@@ -1343,7 +1343,7 @@ exports.handler = async (event, context) => {
           isAirtableId: userId?.startsWith('rec'),
           isAuth0Id: userId?.startsWith('auth0|'),
           isSupabaseId: userId?.length === 36 && userId?.includes('-'),
-          auth0_id_param: auth0_id,
+          supabase_id_param: supabase_id,
           limitData: body.limitData
         });
 
