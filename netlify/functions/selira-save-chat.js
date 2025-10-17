@@ -23,24 +23,24 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const { auth0_id, email, character_slug, user_message, ai_response } = JSON.parse(event.body);
+    const { supabase_id, email, character_slug, user_message, ai_response } = JSON.parse(event.body);
     
     console.log('💾 Selira chat save:', { 
       email, 
-      auth0_id: auth0_id?.substring(0, 20) + '...', 
+      supabase_id: supabase_id?.substring(0, 20) + '...', 
       character: character_slug,
       hasUserMsg: !!user_message,
       hasAiMsg: !!ai_response
     });
 
     // Validate required fields
-    if (!email || !auth0_id || !character_slug) {
+    if (!email || !supabase_id || !character_slug) {
       return {
         statusCode: 400,
         headers,
         body: JSON.stringify({ 
           success: false,
-          error: 'Missing required fields: email, auth0_id, character_slug'
+          error: 'Missing required fields: email, supabase_id, character_slug'
         })
       };
     }
