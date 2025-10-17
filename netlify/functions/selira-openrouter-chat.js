@@ -67,22 +67,19 @@ exports.handler = async (event, context) => {
       // Get character data for context
       const characterData = await getCharacterData(character_slug, AIRTABLE_BASE_ID, AIRTABLE_TOKEN);
 
-      // Randomly select message length (short/medium/long) - weighted towards short and medium
-      const lengthOptions = ['short', 'short', 'medium', 'medium', 'long'];
+      // Randomly select message length (short/medium) - heavily weighted towards short for concise responses
+      const lengthOptions = ['short', 'short', 'short', 'medium', 'medium'];
       const randomLength = lengthOptions[Math.floor(Math.random() * lengthOptions.length)];
 
       let messageLengthInstruction = '';
-      let maxTokens = 150;
+      let maxTokens = 120;
 
       if (randomLength === 'short') {
-        messageLengthInstruction = '\n\n⚠️ CRITICAL LENGTH: SHORT (1-2 complete sentences, 15-30 words). Finish your thought completely - no mid-sentence cutoffs.';
+        messageLengthInstruction = '\n\n⚠️ CRITICAL LENGTH REQUIREMENT: SHORT (1-2 complete sentences, 15-35 words maximum).\n🚫 NEVER end mid-sentence or mid-thought. Always finish completely with proper punctuation.\n✅ Keep it brief but ALWAYS complete. Quality over quantity.';
         maxTokens = 100;
-      } else if (randomLength === 'medium') {
-        messageLengthInstruction = '\n\n⚠️ CRITICAL LENGTH: MEDIUM (2-3 complete sentences, 30-50 words). End naturally and completely.';
-        maxTokens = 150;
       } else {
-        messageLengthInstruction = '\n\n⚠️ CRITICAL LENGTH: LONGER (3-4 complete sentences, 50-70 words). Complete all thoughts - no abrupt endings.';
-        maxTokens = 200;
+        messageLengthInstruction = '\n\n⚠️ CRITICAL LENGTH REQUIREMENT: MEDIUM (2-3 complete sentences, 35-50 words maximum).\n🚫 NEVER cut off mid-sentence. Always end naturally with full closure.\n✅ Be concise but ALWAYS finish your complete thought with proper ending.';
+        maxTokens = 140;
       }
 
       console.log(`📏 Randomly selected length: ${randomLength.toUpperCase()} (${maxTokens} tokens)`);
