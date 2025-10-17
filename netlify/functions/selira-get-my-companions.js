@@ -112,12 +112,12 @@ exports.handler = async (event, context) => {
     }
 
     // Step 2: Get companions from chat history
-    // ChatHistory User field is a linked record (array of record IDs), so we use SEARCH
-    const userFilter = `SEARCH("${userRecordId}", ARRAYJOIN({User}))`;
-    console.log('🔍 Using User Record ID for chat history:', userRecordId, '(SupabaseID:', userSupabaseID, ')');
-    const chatHistoryUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/ChatHistory?filterByFormula=${encodeURIComponent(userFilter)}&sort[0][field]=CreatedTime&sort[0][direction]=desc`;
+    // Use User_ID field which contains SupabaseID for fast filtering
+    const userIdFilter = `{User_ID}='${userSupabaseID}'`;
+    console.log('🔍 Using SupabaseID for chat history:', userSupabaseID);
+    const chatHistoryUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/ChatHistory?filterByFormula=${encodeURIComponent(userIdFilter)}&sort[0][field]=CreatedTime&sort[0][direction]=desc`;
 
-    console.log('🔍 Chat history filter:', userFilter);
+    console.log('🔍 Chat history filter:', userIdFilter);
 
     const chatResponse = await fetch(chatHistoryUrl, {
       method: 'GET',
