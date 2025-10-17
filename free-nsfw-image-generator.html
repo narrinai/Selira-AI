@@ -932,6 +932,13 @@
         grid-template-columns: repeat(2, 1fr) !important;
       }
     }
+
+    /* Hide CompanionGuide rating on desktop (already in footer) - mobile only */
+    @media (min-width: 769px) {
+      .mobile-rating-link {
+        display: none !important;
+      }
+    }
   </style>
 
   <!-- Meta Pixel Code -->

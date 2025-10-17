@@ -807,6 +807,13 @@
         display: none;
       }
     }
+
+    /* Hide CompanionGuide rating on desktop (already in footer) - mobile only */
+    @media (min-width: 769px) {
+      .mobile-rating-link {
+        display: none !important;
+      }
+    }
   </style>
 
   <!-- Meta Pixel Code -->
@@ -948,6 +955,13 @@
       /* Position support widget above mobile bottom nav on mobile */
       .support-widget-btn {
         bottom: 80px !important;
+      }
+    }
+
+    /* Hide CompanionGuide rating on desktop (already in footer) - mobile only */
+    @media (min-width: 769px) {
+      .mobile-rating-link {
+        display: none !important;
       }
     }
   </style>

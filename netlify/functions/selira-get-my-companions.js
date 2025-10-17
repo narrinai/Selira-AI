@@ -112,72 +112,25 @@ exports.handler = async (event, context) => {
     }
 
     // Step 2: Get companions from chat history
-    // Try User_ID text field first (fast, works with formulas), fallback to linked User field (slow, requires client filtering)
-    console.log('🔍 Fetching ChatHistory by User_ID:', userRecordId);
+    // ChatHistory User field is a linked record (array of record IDs), so we use SEARCH
+    const userFilter = `SEARCH("${userRecordId}", ARRAYJOIN({User}))`;
+    console.log('🔍 Using User Record ID for chat history:', userRecordId, '(SupabaseID:', userSupabaseID, ')');
+    const chatHistoryUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/ChatHistory?filterByFormula=${encodeURIComponent(userFilter)}&sort[0][field]=CreatedTime&sort[0][direction]=desc`;
 
-    // Try using User_ID text field (added for new records)
-    let userChats = [];
-    const userIdFilter = `{User_ID}='${userRecordId}'`;
-    const chatHistoryUrlWithFilter = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/ChatHistory?filterByFormula=${encodeURIComponent(userIdFilter)}&sort[0][field]=CreatedTime&sort[0][direction]=desc`;
+    console.log('🔍 Chat history filter:', userFilter);
 
-    const testResponse = await fetch(chatHistoryUrlWithFilter, {
+    const chatResponse = await fetch(chatHistoryUrl, {
       method: 'GET',
       headers: airtableHeaders
     });
 
-    if (testResponse.ok) {
-      const testData = await testResponse.json();
-      if (testData.records && testData.records.length > 0) {
-        // User_ID field exists and has data - use it (fast!)
-        console.log('✅ Using User_ID text field for filtering');
-        let chatOffset = null;
-        do {
-          const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/ChatHistory?filterByFormula=${encodeURIComponent(userIdFilter)}&sort[0][field]=CreatedTime&sort[0][direction]=desc${chatOffset ? `&offset=${chatOffset}` : ''}`;
-          const resp = await fetch(url, { method: 'GET', headers: airtableHeaders });
-          if (resp.ok) {
-            const data = await resp.json();
-            userChats = userChats.concat(data.records);
-            chatOffset = data.offset;
-          } else {
-            break;
-          }
-        } while (chatOffset);
-        console.log('💬 Found', userChats.length, 'chat messages via User_ID field');
-      } else {
-        // User_ID field doesn't exist or is empty - fallback to client-side filtering (slow)
-        console.log('⚠️ User_ID field empty, falling back to client-side filtering');
-
-        let allChatHistory = [];
-        let chatOffset = null;
-        const MAX_RECORDS = 2000; // Limit to prevent timeout
-
-        do {
-          const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/ChatHistory?sort[0][field]=CreatedTime&sort[0][direction]=desc${chatOffset ? `&offset=${chatOffset}` : ''}`;
-          const resp = await fetch(url, { method: 'GET', headers: airtableHeaders });
-
-          if (!resp.ok) break;
-
-          const data = await resp.json();
-          allChatHistory = allChatHistory.concat(data.records);
-          chatOffset = data.offset;
-
-          if (allChatHistory.length >= MAX_RECORDS) {
-            console.log('⚠️ Reached max records limit:', MAX_RECORDS);
-            break;
-          }
-        } while (chatOffset);
-
-        // Filter client-side by linked User field
-        userChats = allChatHistory.filter(record => {
-          const recordUserId = record.fields.User ? record.fields.User[0] : null;
-          return recordUserId === userRecordId;
-        });
-
-        console.log('💬 Found', userChats.length, 'chat messages for this user (from', allChatHistory.length, 'total)');
-      }
+    let userChats = [];
+    if (chatResponse.ok) {
+      const chatData = await chatResponse.json();
+      console.log('💬 Found', chatData.records.length, 'chat messages');
+      userChats = chatData.records;
     } else {
-      console.log('⚠️ Could not fetch chat history:', testResponse.status);
-      userChats = [];
+      console.log('⚠️ Could not fetch chat history:', chatResponse.status);
     }
 
     // Extract unique character IDs from user's chat history
