@@ -1281,41 +1281,65 @@
       carousel.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px;">Loading companions...</div>';
 
       try {
-        console.log('📥 Loading companions...');
-        const response = await fetch('/.netlify/functions/selira-characters-fetch?limit=30');
+        // Check cache first (5 minute cache)
+        const cacheKey = 'nsfw_companions_cache';
+        const cacheTimeKey = 'nsfw_companions_cache_time';
+        const cached = sessionStorage.getItem(cacheKey);
+        const cacheTime = sessionStorage.getItem(cacheTimeKey);
+        const now = Date.now();
+
+        if (cached && cacheTime && (now - parseInt(cacheTime)) < 300000) {
+          console.log('✅ Using cached companions (fast load)');
+          const data = JSON.parse(cached);
+          processCompanionData(data);
+          return;
+        }
+
+        console.log('📥 Loading companions from API...');
+        const response = await fetch('/.netlify/functions/selira-characters-fetch?limit=20');
         if (!response.ok) {
           throw new Error(`Failed to load companions: ${response.status}`);
         }
         const data = await response.json();
-        // Map to consistent format (API uses capital Name, Slug)
-        allCompanions = (data.characters || [])
-          .filter(c => c.Slug && c.Name)
-          .map(c => ({
-            slug: c.Slug,
-            name: c.Name,
-            avatar: c.Avatar_URL,
-            category: c.Category,
-            sex: c.sex,
-            ethnicity: c.ethnicity,
-            hairLength: c.hair_length,
-            hairColor: c.hair_color
-          }));
-        console.log(`✅ Loaded ${allCompanions.length} companions`);
 
-        // Debug: Log unique sex values to see what we have
-        const uniqueSexValues = [...new Set(allCompanions.map(c => c.sex))];
-        console.log('🔍 Unique sex values in companions:', uniqueSexValues);
+        // Cache the response
+        sessionStorage.setItem(cacheKey, JSON.stringify(data));
+        sessionStorage.setItem(cacheTimeKey, now.toString());
+        console.log('💾 Cached companions for 5 minutes');
 
-        // Shuffle all companions array on initial load
-        allCompanions = allCompanions.sort(() => Math.random() - 0.5);
-        // Filter to female companions by default
-        companions = allCompanions.filter(c => (c.sex || '').toLowerCase() === 'female');
-        console.log(`✅ Filtered to ${companions.length} female companions (default)`);
-        renderCarousel();
-        updateCarouselNav();
+        processCompanionData(data);
       } catch (error) {
-        console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Error loading companions:', error);
+        console.error('❌ Error loading companions:', error);
       }
+    }
+
+    function processCompanionData(data) {
+      // Map to consistent format (API uses capital Name, Slug)
+      allCompanions = (data.characters || [])
+        .filter(c => c.Slug && c.Name)
+        .map(c => ({
+          slug: c.Slug,
+          name: c.Name,
+          avatar: c.Avatar_URL,
+          category: c.Category,
+          sex: c.sex,
+          ethnicity: c.ethnicity,
+          hairLength: c.hair_length,
+          hairColor: c.hair_color
+        }));
+      console.log(`✅ Loaded ${allCompanions.length} companions`);
+
+      // Debug: Log unique sex values to see what we have
+      const uniqueSexValues = [...new Set(allCompanions.map(c => c.sex))];
+      console.log('🔍 Unique sex values in companions:', uniqueSexValues);
+
+      // Shuffle all companions array on initial load
+      allCompanions = allCompanions.sort(() => Math.random() - 0.5);
+      // Filter to female companions by default
+      companions = allCompanions.filter(c => (c.sex || '').toLowerCase() === 'female');
+      console.log(`✅ Filtered to ${companions.length} female companions (default)`);
+      renderCarousel();
+      updateCarouselNav();
     }
 
     function renderCarousel() {
