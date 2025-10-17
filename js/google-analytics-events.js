@@ -59,6 +59,9 @@ class GoogleAnalyticsTracking {
     this.trackGenerateLead();
     this.trackSearch();
     this.trackPurchase();
+    this.trackImageGenClick();
+    this.trackTagClick();
+    this.trackCharacterCardClick();
   }
 
   // Track page_view (automatic on every page load)
@@ -328,6 +331,67 @@ class GoogleAnalyticsTracking {
     };
 
     setTimeout(checkPaymentSuccess, 1000);
+  }
+
+  // Track image_gen_click - when user clicks Image Gen button on chat.html or free-nsfw-image-generator.html
+  trackImageGenClick() {
+    // Track Image Gen button clicks on chat page
+    document.addEventListener('click', (e) => {
+      const imageGenBtn = e.target.closest('.request-image-btn, #generateImageBtn, button[onclick*="generateImage"]');
+      if (imageGenBtn) {
+        const page = window.location.pathname.includes('chat') ? 'Chat Page' :
+                     window.location.pathname.includes('nsfw') ? 'NSFW Generator Page' : 'Unknown Page';
+
+        this.trackEvent('image_gen_click', {
+          page_location: page,
+          content_category: 'Image Generation',
+          button_text: imageGenBtn.textContent?.trim() || 'Image Gen'
+        }, `image_gen_${page}_${Date.now()}`);
+      }
+    });
+
+    console.log('✅ image_gen_click tracking initialized');
+  }
+
+  // Track tag_click - when user clicks tag filters on index page
+  trackTagClick() {
+    document.addEventListener('click', (e) => {
+      // Check for tag filter clicks
+      const tagFilter = e.target.closest('.tag-filter, .filter-button, button[onclick*="filterByTag"], button[onclick*="filterBy"]');
+      if (tagFilter && window.location.pathname.includes('index')) {
+        const tagName = tagFilter.textContent?.trim() || tagFilter.getAttribute('data-tag') || 'Unknown Tag';
+
+        this.trackEvent('tag_click', {
+          tag_name: tagName,
+          content_category: 'Filter',
+          page_location: 'Index Page'
+        }, `tag_click_${tagName}_${Date.now()}`);
+      }
+    });
+
+    console.log('✅ tag_click tracking initialized');
+  }
+
+  // Track character_card_click - when user clicks character cards on index page
+  trackCharacterCardClick() {
+    document.addEventListener('click', (e) => {
+      const characterCard = e.target.closest('.character-card, .companion-card');
+      if (characterCard) {
+        const characterName = characterCard.querySelector('.character-name, .companion-name')?.textContent?.trim() || 'Unknown';
+        const characterSlug = characterCard.querySelector('a')?.href?.split('character=')[1]?.split('&')[0] || '';
+        const characterLink = characterCard.querySelector('a')?.href || '';
+
+        this.trackEvent('character_card_click', {
+          character_name: characterName,
+          character_slug: characterSlug,
+          page_location: window.location.pathname.includes('index') ? 'Home Page' :
+                        window.location.pathname.includes('search') ? 'Search Results' : 'Other',
+          link_url: characterLink
+        }, `card_click_${characterSlug}_${Date.now()}`);
+      }
+    });
+
+    console.log('✅ character_card_click tracking initialized');
   }
 }
 
