@@ -62,8 +62,8 @@ async function generateAvatar2(companion) {
 
   // Fixed pose: Doggy Style only for avatar_url_2
   const fixedPose = companion.sex === 'male'
-    ? 'full body view, athletic man bent over looking back, firm ass cheeks spread, thick cock hanging down visible between legs, balls dangling, showing face and body, doggy style position'
-    : 'sexy woman on all fours ass up, man behind her, big hard cock from male groin penetrating pussy from behind, thick penis shaft connected to man\'s pelvis and thighs visible, pussy lips spread around cock, breasts hanging, woman looking back, man\'s torso visible but head out of frame, POV doggy style from man\'s perspective';
+    ? 'doggy style position, ass up face down, from behind, rear view, legs spread, thick cock and balls visible hanging down between legs, full body visible, completely naked, fully nude, no clothes, bare skin, nude body, totally naked, unclothed, full nudity, NSFW'
+    : 'doggy style position, ass up face down, from behind, rear view, legs spread, explicit penetration, man behind her with big hard cock from male groin penetrating pussy, thick penis shaft connected to man\'s pelvis visible, pussy visible, sexual position, NSFW, completely naked, fully nude, no clothes, bare skin, nude body, naked breasts, exposed pussy, totally naked, unclothed, full nudity, man\'s torso visible but head out of frame, POV from man\'s perspective';
 
   const randomVariation = fixedPose;
 
