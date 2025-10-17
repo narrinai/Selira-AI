@@ -818,6 +818,26 @@
       color: white !important;
     }
 
+    /* Companion selection button hover */
+    #openCompanionModalBtn:hover {
+      border-color: var(--accent);
+      background: rgba(206, 147, 216, 0.05);
+    }
+
+    /* Modal close button hover */
+    #companionModal button[onclick="closeCompanionModal()"]:hover {
+      background: var(--bg-tertiary);
+    }
+
+    /* Modal backdrop click-to-close */
+    #companionModal {
+      cursor: pointer;
+    }
+
+    #companionModal > div {
+      cursor: default;
+    }
+
     /* Mobile Bottom Navigation */
     .mobile-bottom-nav {
       display: none;
@@ -891,6 +911,25 @@
       /* Position support widget above mobile bottom nav on mobile */
       .support-widget-btn {
         bottom: 80px !important;
+      }
+
+      /* Companion modal responsive */
+      #companionModal {
+        padding: 10px;
+      }
+
+      #companionModal > div {
+        margin: 20px auto;
+        padding: 20px;
+      }
+
+      #companionModal h2 {
+        font-size: 22px;
+        margin-bottom: 16px;
+      }
+
+      #companionCarousel {
+        grid-template-columns: repeat(2, 1fr) !important;
       }
     }
   </style>
@@ -1062,17 +1101,16 @@
             <div style="margin-bottom: 28px;">
               <label style="display: block; font-weight: 600; margin-bottom: 10px; font-size: 15px;">Select Companion</label>
 
-              <!-- Gender Filter -->
-              <div style="display: flex; gap: 8px; margin-bottom: 16px;">
-                <button id="filterFemale" class="gender-filter-btn active" onclick="filterByGender('female')" style="flex: 1; padding: 8px 16px; background: var(--accent); border: none; border-radius: var(--radius-sm); color: white; font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.2s;">Female</button>
-                <button id="filterMale" class="gender-filter-btn" onclick="filterByGender('male')" style="flex: 1; padding: 8px 16px; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary); font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.2s;">Male</button>
-              </div>
-
-              <div style="position: relative;">
-                <button id="companionPrev" style="position: absolute; left: -16px; top: 50%; transform: translateY(-50%); background: var(--accent); border: none; border-radius: var(--radius-sm); width: 40px; height: 40px; cursor: pointer; z-index: 2; color: white; font-size: 20px; font-weight: 700; display: none; box-shadow: 0 4px 12px rgba(206, 147, 216, 0.3); transition: all 0.2s;">‹</button>
-                <div id="companionCarousel" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; overflow: hidden;"></div>
-                <button id="companionNext" style="position: absolute; right: -16px; top: 50%; transform: translateY(-50%); background: var(--accent); border: none; border-radius: var(--radius-sm); width: 40px; height: 40px; cursor: pointer; z-index: 2; color: white; font-size: 20px; font-weight: 700; box-shadow: 0 4px 12px rgba(206, 147, 216, 0.3); transition: all 0.2s;">›</button>
-              </div>
+              <!-- Companion Selection Button -->
+              <button id="openCompanionModalBtn" onclick="openCompanionModal()" style="width: 100%; padding: 16px 20px; background: var(--bg-tertiary); border: 2px solid var(--border); border-radius: var(--radius-md); color: var(--text-primary); font-weight: 600; font-size: 15px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <div id="selectedCompanionAvatar" style="width: 40px; height: 40px; border-radius: var(--radius-sm); background: var(--accent); display: none; overflow: hidden;">
+                    <img id="selectedCompanionAvatarImg" src="" style="width: 100%; height: 100%; object-fit: cover;">
+                  </div>
+                  <span id="selectedCompanionText">Choose a companion...</span>
+                </div>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </button>
             </div>
 
             <div style="margin-bottom: 28px;">
@@ -1164,7 +1202,7 @@
 
     // Companion carousel state
     let currentCarouselPage = 0;
-    const companionsPerPage = 2;
+    const companionsPerPage = 6; // Show 2 rows of 3 companions in modal
     let currentGenderFilter = 'female'; // Default to female filter
 
     // Pose options - EXACT same as chat.html for FEMALE companions
@@ -1397,6 +1435,62 @@
     function selectCompanion(companion) {
       selectedCompanion = companion;
       renderCarousel();
+
+      // Update the companion selection button
+      document.getElementById('selectedCompanionText').textContent = companion.name;
+      const avatarDiv = document.getElementById('selectedCompanionAvatar');
+      const avatarImg = document.getElementById('selectedCompanionAvatarImg');
+      avatarDiv.style.display = 'block';
+      avatarImg.src = companion.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${companion.name}`;
+
+      // Close the modal
+      closeCompanionModal();
+    }
+
+    // Modal functions
+    let companionsLoaded = false;
+
+    async function openCompanionModal() {
+      console.log('🎭 Opening companion modal...');
+      const modal = document.getElementById('companionModal');
+      modal.style.display = 'block';
+      document.body.style.overflow = 'hidden'; // Prevent background scrolling
+
+      // Close modal when clicking backdrop (but not the content)
+      modal.onclick = function(e) {
+        if (e.target === modal) {
+          closeCompanionModal();
+        }
+      };
+
+      // Load companions on first open only
+      if (!companionsLoaded) {
+        console.log('📥 Loading companions for first time...');
+        await loadCompanions();
+        companionsLoaded = true;
+      }
+    }
+
+    function closeCompanionModal() {
+      document.getElementById('companionModal').style.display = 'none';
+      document.body.style.overflow = 'auto'; // Restore scrolling
+    }
+
+    function prevCarouselPage() {
+      if (currentCarouselPage > 0) {
+        currentCarouselPage--;
+        renderCarousel();
+        updateCarouselNav();
+      }
+    }
+
+    function nextCarouselPage() {
+      const totalPages = Math.ceil(companions.length / companionsPerPage);
+      if (currentCarouselPage < totalPages - 1) {
+        currentCarouselPage++;
+        renderCarousel();
+        updateCarouselNav();
+      }
     }
 
     // Filter companions by gender
@@ -1681,8 +1775,7 @@
       // Setup auth listener to detect login after page load
       setupAuthListener();
 
-      // Load companions in background (non-blocking) for faster page load
-      loadCompanions(); // Don't await - let it load asynchronously
+      // Don't load companions on page init - they'll load when modal opens (faster page load!)
       renderPoseOptions();
       // renderOutfitOptions() removed - fully nude by default
 
@@ -1691,22 +1784,7 @@
         await loadUserCredits();
       }
 
-      // Setup event listeners
-      document.getElementById('companionPrev').addEventListener('click', () => {
-        if (currentCarouselPage > 0) {
-          currentCarouselPage--;
-          renderCarousel();
-          updateCarouselNav();
-        }
-      });
-      document.getElementById('companionNext').addEventListener('click', () => {
-        const totalPages = Math.ceil(companions.length / companionsPerPage);
-        if (currentCarouselPage < totalPages - 1) {
-          currentCarouselPage++;
-          renderCarousel();
-          updateCarouselNav();
-        }
-      });
+      // Setup event listeners (prev/next buttons now in modal with onclick handlers)
       const generateBtn = document.getElementById('generateBtn');
       console.log('🔧 Setting up Generate button:', generateBtn);
       if (generateBtn) {
@@ -1768,6 +1846,29 @@
       </a>
     </div>
   </nav>
+
+  <!-- Companion Selection Modal -->
+  <div id="companionModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 9999; overflow-y: auto; padding: 20px;">
+    <div style="max-width: 800px; margin: 40px auto; background: var(--bg-secondary); border-radius: var(--radius-lg); padding: 30px; position: relative;">
+      <!-- Close Button -->
+      <button onclick="closeCompanionModal()" style="position: absolute; top: 20px; right: 20px; background: none; border: none; color: var(--text-primary); font-size: 28px; cursor: pointer; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-sm); transition: background 0.2s;">×</button>
+
+      <h2 style="font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; margin-bottom: 20px; color: var(--text-primary);">Select Companion</h2>
+
+      <!-- Gender Filter -->
+      <div style="display: flex; gap: 8px; margin-bottom: 24px;">
+        <button id="modalFilterFemale" class="gender-filter-btn active" onclick="filterByGender('female')" style="flex: 1; padding: 10px 16px; background: var(--accent); border: none; border-radius: var(--radius-sm); color: white; font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.2s;">Female</button>
+        <button id="modalFilterMale" class="gender-filter-btn" onclick="filterByGender('male')" style="flex: 1; padding: 10px 16px; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary); font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.2s;">Male</button>
+      </div>
+
+      <!-- Carousel Navigation -->
+      <div style="position: relative;">
+        <button id="companionPrev" onclick="prevCarouselPage()" style="position: absolute; left: -16px; top: 50%; transform: translateY(-50%); background: var(--accent); border: none; border-radius: var(--radius-sm); width: 44px; height: 44px; cursor: pointer; z-index: 2; color: white; font-size: 24px; font-weight: 700; display: none; box-shadow: 0 4px 12px rgba(206, 147, 216, 0.3); transition: all 0.2s;">‹</button>
+        <div id="companionCarousel" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; overflow: hidden; min-height: 300px;"></div>
+        <button id="companionNext" onclick="nextCarouselPage()" style="position: absolute; right: -16px; top: 50%; transform: translateY(-50%); background: var(--accent); border: none; border-radius: var(--radius-sm); width: 44px; height: 44px; cursor: pointer; z-index: 2; color: white; font-size: 24px; font-weight: 700; box-shadow: 0 4px 12px rgba(206, 147, 216, 0.3); transition: all 0.2s;">›</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Email Verification Handler -->
   <script src="js/email-verification-handler.js"></script>
