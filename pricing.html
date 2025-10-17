@@ -1873,7 +1873,7 @@
             userEmail: userEmail,
             userId: userId,
             planName: planType,
-            successUrl: window.location.origin + '/profile?payment=success',
+            successUrl: window.location.origin + `/profile?payment=success&plan=${planType}&amount=${planValues[planType]}`,
             cancelUrl: window.location.origin + '/pricing'
           })
         });
