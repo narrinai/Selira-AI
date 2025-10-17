@@ -354,17 +354,6 @@ class SupabaseAuthModal {
 
       this.user = data.user;
 
-      // For signups: Check if email verification is required
-      if (isSignupMode && !data.user.email_confirmed_at) {
-        this.setLoading(false);
-        this.showVerificationMessage(
-          '✅ Account created! Please check your email to verify your account before logging in.',
-          email
-        );
-        console.log('📧 Email verification required - user needs to check inbox');
-        return;
-      }
-
       // Sync user to Airtable
       await this.syncUserToAirtable(this.user);
 
@@ -383,7 +372,13 @@ class SupabaseAuthModal {
       this.setLoading(false);
 
       // Show success message
-      this.showSuccess(isSignupMode ? 'Account created successfully! 🎉' : 'Welcome back! 👋');
+      if (isSignupMode && !data.user.email_confirmed_at) {
+        // Show email verification notice but still log user in
+        this.showSuccess('Account created! 🎉 (Check your email to verify your account)');
+        console.log('📧 User logged in - email verification pending');
+      } else {
+        this.showSuccess(isSignupMode ? 'Account created successfully! 🎉' : 'Welcome back! 👋');
+      }
 
     } catch (error) {
       console.error('❌ Email/password authentication failed:', error);

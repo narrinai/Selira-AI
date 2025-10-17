@@ -28,16 +28,16 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const { email, auth0_id } = JSON.parse(event.body || '{}');
+    const { email, supabase_id } = JSON.parse(event.body || '{}');
 
-    if (!email && !auth0_id) {
+    if (!email && !supabase_id) {
       return {
         statusCode: 400,
         headers: {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*'
         },
-        body: JSON.stringify({ error: 'Email or Auth0 ID required' })
+        body: JSON.stringify({ error: 'Email or Supabase ID required' })
       };
     }
 
@@ -59,16 +59,16 @@ exports.handler = async (event, context) => {
     const base = new Airtable({ apiKey: AIRTABLE_TOKEN }).base(AIRTABLE_BASE_ID);
 
     // Get user profile to check their plan
-    console.log('👤 Getting user profile for image limit check', { email, auth0_id });
+    console.log('👤 Getting user profile for image limit check', { email, supabase_id });
 
-    // Try Email first, then SupabaseID or Auth0ID
+    // Try Email first, then SupabaseID
     let filterFormula = '';
     if (email) {
       filterFormula = `{Email} = '${email}'`;
       console.log('🔍 Trying lookup by Email:', email);
-    } else if (auth0_id) {
-      filterFormula = `OR({SupabaseID} = '${auth0_id}', {Auth0ID} = '${auth0_id}')`;
-      console.log('🔍 Trying lookup by SupabaseID or Auth0ID:', auth0_id);
+    } else if (supabase_id) {
+      filterFormula = `{SupabaseID} = '${supabase_id}'`;
+      console.log('🔍 Trying lookup by SupabaseID:', supabase_id);
     }
 
     console.log('🔍 Filter formula:', filterFormula);
