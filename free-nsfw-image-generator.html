@@ -1167,25 +1167,26 @@
     const companionsPerPage = 2;
     let currentGenderFilter = 'female'; // Default to female filter
 
-    // Pose options
+    // Pose options - EXACT same as chat.html for FEMALE companions
     const poses = [
-      { id: 'standing', label: 'Standing', prompt: 'standing pose, full body' },
-      { id: 'sitting', label: 'Sitting', prompt: 'sitting pose, relaxed' },
-      { id: 'lying', label: 'Lying Down', prompt: 'lying down, comfortable pose' },
-      { id: 'leaning', label: 'Leaning', prompt: 'leaning forward, confident pose' },
-      { id: 'kneeling', label: 'Kneeling', prompt: 'kneeling on knees, submissive pose, looking up, POV from above' },
-      { id: 'portrait', label: 'Portrait', prompt: 'close-up portrait, face focus' },
-      { id: 'pov-oral', label: '🔥 POV Blowjob', prompt: 'POV blowjob, woman kneeling, large penis in mouth visible, dick clearly shown, oral sex, fellatio, cock sucking, penis shaft visible in frame, explicit oral, POV from above, NSFW' },
-      { id: 'doggy', label: '🔥 Doggy Style', prompt: 'doggy style position, ass up face down, from behind, rear view, legs spread, explicit penetration, pussy visible, sexual position, NSFW' },
-      { id: 'cowgirl', label: '🔥 Cowgirl', prompt: 'cowgirl position, riding, straddling, on top, explicit sex position, breasts visible, intimate angle, NSFW' },
-      { id: 'missionary', label: '🔥 Missionary', prompt: 'missionary position, legs spread, laying on back, intimate angle, explicit sex position, pussy visible, NSFW' },
-      { id: 'fingering', label: '🔥 Masturbating', prompt: 'masturbating explicitly, hand between legs, fingers penetrating pussy, fingering herself, self-pleasure, legs spread wide open, touching genitals, rubbing clit, explicit masturbation, pleasuring herself, finger in vagina, NSFW porn' },
-      { id: 'reverse-cowgirl', label: '🔥 Reverse Cowgirl', prompt: 'reverse cowgirl position, riding facing away, ass view, straddling backwards, explicit sex position, penetration visible, rear angle, NSFW' },
-      { id: 'spread-legs', label: '🔥 Legs Spread', prompt: 'legs spread wide open, sitting or lying, pussy exposed, vulva visible, spread eagle position, legs apart showing genitals, explicit spread, NSFW' },
-      { id: 'bent-over', label: '🔥 Bent Over', prompt: 'bent over pose, ass up, leaning forward over furniture, rear view, bent at waist, showing ass and pussy, explicit bent over position, NSFW' },
-      { id: 'on-knees', label: '🔥 On Knees POV', prompt: 'on knees submissive position, looking up at camera, POV angle from above, mouth open, tongue out, ready pose, kneeling down, NSFW' },
-      { id: 'titfuck', label: '🔥 Titty Fuck', prompt: 'penis between breasts, titty fuck position, boob job, cock between tits, breasts squeezed around dick, explicit titfuck, paizuri, NSFW' },
-      { id: 'anal', label: '🔥 Anal', prompt: 'anal sex position, penetration from behind, ass penetration, anal intercourse, explicit anal, spreading ass cheeks, asshole visible, NSFW' }
+      { id: 'pov-oral', label: 'POV Blowjob', prompt: 'POV blowjob, woman kneeling, large penis in mouth visible, dick clearly shown, oral sex, fellatio, cock sucking, penis shaft visible in frame, explicit oral, POV from above, NSFW' },
+      { id: 'doggy', label: 'Doggy Style', prompt: 'doggy style position, ass up face down, from behind, rear view, legs spread, explicit penetration, pussy visible, sexual position, NSFW' },
+      { id: 'cowgirl', label: 'Cowgirl', prompt: 'cowgirl position, riding, straddling, on top, explicit sex position, breasts visible, intimate angle, NSFW' },
+      { id: 'missionary', label: 'Missionary', prompt: 'missionary position, legs spread, laying on back, intimate angle, explicit sex position, pussy visible, NSFW' },
+      { id: 'fingering', label: 'Masturbating', prompt: 'masturbating explicitly, hand between legs, fingers penetrating pussy, fingering herself, self-pleasure, legs spread wide open, touching genitals, rubbing clit, explicit masturbation, pleasuring herself, finger in vagina, NSFW porn' },
+      { id: 'reverse-cowgirl', label: 'Reverse Cowgirl', prompt: 'reverse cowgirl position, riding facing away, ass view, straddling backwards, explicit sex position, penetration visible, rear angle, NSFW' },
+      { id: 'bent-over', label: 'Bent Over', prompt: 'bent over pose, ass up, leaning forward over furniture, rear view, bent at waist, showing ass and pussy, explicit bent over position, NSFW' },
+      { id: 'anal', label: 'Anal', prompt: 'beautiful woman bent over looking back at camera, man behind her, big hard cock from male groin penetrating tight asshole from behind, thick penis shaft connected to man\'s pelvis visible sliding deep in ass, ass cheeks spread, anal penetration clearly visible, woman\'s face looking back seductively, man\'s lower body visible but head out of frame, POV anal sex from man\'s perspective, NSFW' },
+      { id: 'deepthroat', label: 'Deepthroat', prompt: 'gorgeous woman head tilted back mouth wide open, man standing above, massive thick cock from male groin deep in throat past lips, penis shaft connected to man\'s pelvis and thighs disappearing down throat, drool dripping from chin, breasts exposed, throat visibly bulging, woman gagging, eyes watering, man\'s lower body visible but head out of frame above, POV deepthroat blowjob from man\'s perspective, NSFW' },
+      { id: 'footjob', label: 'Footjob', prompt: 'footjob, feet stroking penis, toes wrapped around cock, foot job, feet pleasuring dick, soles on shaft, explicit foot fetish, NSFW' },
+      { id: 'spooning', label: 'Spooning', prompt: 'spooning sex position, lying on side, penetration from behind, intimate side angle, legs intertwined, spooning intercourse, explicit side position, NSFW' },
+      { id: 'trimming', label: 'Trimming', prompt: 'trimming pubic hair, shaving pussy, grooming genitals, intimate grooming, pussy shaving, explicit trimming, personal grooming, NSFW' },
+      { id: 'spread-ass', label: 'Spread Ass', prompt: 'spreading ass cheeks, bent over showing asshole and pussy, hands spreading ass wide, explicit rear view, asshole visible, pussy visible, spreading cheeks, NSFW' },
+      { id: 'holding-legs', label: 'Holding Legs', prompt: 'holding legs up spread wide, legs held back, explicit pussy view, legs spread and held, missionary with legs up, intimate angle, explicit penetration, NSFW' },
+      { id: 'blowjob-side', label: 'BJ Side View', prompt: 'blowjob side view, sucking dick from side angle, penis in mouth side profile, oral sex side angle, cock in mouth side view, explicit side oral, NSFW' },
+      { id: 'face-fuck', label: 'Face Fuck', prompt: 'face fucking, aggressive oral, hands on head throat fucking, intense face fuck, rough blowjob, deep throat pounding, explicit rough oral, NSFW' },
+      { id: 'licking-dick', label: 'Licking Dick', prompt: 'licking penis shaft, tongue on cock, licking dick tip, tongue along shaft, explicit licking, oral teasing, tongue on penis, NSFW' },
+      { id: 'squatting-bj', label: 'Squatting BJ', prompt: 'squatting blowjob, woman squatting down sucking dick, squatting position oral, crouching blowjob, squatting oral sex, explicit squatting oral, NSFW' }
     ];
 
     // Outfits removed - fully nude by default
@@ -1275,6 +1276,10 @@
 
     // Load companions
     async function loadCompanions() {
+      // Show loading state immediately
+      const carousel = document.getElementById('companionCarousel');
+      carousel.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px;">Loading companions...</div>';
+
       try {
         console.log('📥 Loading companions...');
         const response = await fetch('/.netlify/functions/selira-characters-fetch?limit=30');
@@ -1448,23 +1453,20 @@
     async function generateImage() {
       console.log('🎨 Generate Image clicked!');
 
-      // Check auth in real-time instead of relying on cached userData
+      // ALWAYS check auth in real-time from supabaseAuth
       const currentUser = window.supabaseAuth?.user;
+
+      console.log('🔍 Auth check:', {
+        hasSupabase: !!window.supabaseAuth,
+        currentUser: currentUser?.email || 'none',
+        cachedUserData: userData?.email || 'none'
+      });
+
+      // Update userData to match current auth state
+      userData = currentUser;
+
       if (!currentUser) {
-        // Update userData if it's stale
-        userData = currentUser;
-      } else if (!userData) {
-        // User is logged in but userData is null - update it
-        userData = currentUser;
-        console.log('🔄 Updated stale userData from supabaseAuth');
-      }
-
-      console.log('User data:', userData);
-      console.log('Supabase user:', currentUser);
-      console.log('Selected companion:', selectedCompanion);
-      console.log('Selected pose:', selectedPose);
-
-      if (!userData && !currentUser) {
+        console.error('❌ No authenticated user found');
         showAlert('Please log in to generate images', 'error');
         if (typeof openLoginModal === 'function') {
           setTimeout(() => openLoginModal('signup'), 600);
@@ -1472,10 +1474,9 @@
         return;
       }
 
-      // Use currentUser if userData is still null
-      if (!userData) {
-        userData = currentUser;
-      }
+      console.log('✅ User authenticated:', currentUser.email);
+      console.log('Selected companion:', selectedCompanion);
+      console.log('Selected pose:', selectedPose);
 
       if (!selectedCompanion) return showAlert('Please select a companion', 'warning');
       if (!selectedPose) return showAlert('Please select a pose', 'warning');
@@ -1656,7 +1657,8 @@
       // Setup auth listener to detect login after page load
       setupAuthListener();
 
-      await loadCompanions();
+      // Load companions in background (non-blocking) for faster page load
+      loadCompanions(); // Don't await - let it load asynchronously
       renderPoseOptions();
       // renderOutfitOptions() removed - fully nude by default
 
