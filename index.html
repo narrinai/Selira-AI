@@ -2996,9 +2996,12 @@
             avatar3: avatar3.substring(0, 50)
           });
 
-          // Cycle through 3 avatars
-          let currentIndex = 0;
+          // Cycle through 3 avatars - start with random avatar
           const avatars = [avatar1, avatar2, avatar3];
+          let currentIndex = Math.floor(Math.random() * 3); // Random start: 0, 1, or 2
+
+          // Set initial random image
+          img.src = avatars[currentIndex];
 
           setInterval(() => {
             currentIndex = (currentIndex + 1) % 3;
@@ -3010,8 +3013,12 @@
             avatar2: avatar2.substring(0, 50)
           });
 
-          // Alternate between avatar 1 and 2 every 1.5 seconds
-          let showingAvatar1 = true;
+          // Alternate between avatar 1 and 2 every 1.5 seconds - start with random avatar
+          let showingAvatar1 = Math.random() < 0.5; // Random start: true or false
+
+          // Set initial random image
+          img.src = showingAvatar1 ? avatar1 : avatar2;
+
           setInterval(() => {
             if (showingAvatar1) {
               img.src = avatar2;
