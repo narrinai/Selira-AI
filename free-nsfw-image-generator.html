@@ -1070,14 +1070,14 @@
 
               <div style="position: relative;">
                 <button id="companionPrev" style="position: absolute; left: -16px; top: 50%; transform: translateY(-50%); background: var(--accent); border: none; border-radius: var(--radius-sm); width: 40px; height: 40px; cursor: pointer; z-index: 2; color: white; font-size: 20px; font-weight: 700; display: none; box-shadow: 0 4px 12px rgba(206, 147, 216, 0.3); transition: all 0.2s;">‹</button>
-                <div id="companionCarousel" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; overflow: hidden;"></div>
+                <div id="companionCarousel" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; overflow: hidden;"></div>
                 <button id="companionNext" style="position: absolute; right: -16px; top: 50%; transform: translateY(-50%); background: var(--accent); border: none; border-radius: var(--radius-sm); width: 40px; height: 40px; cursor: pointer; z-index: 2; color: white; font-size: 20px; font-weight: 700; box-shadow: 0 4px 12px rgba(206, 147, 216, 0.3); transition: all 0.2s;">›</button>
               </div>
             </div>
 
             <div style="margin-bottom: 28px;">
               <label style="display: block; font-weight: 600; margin-bottom: 10px; font-size: 15px;">Pose</label>
-              <div id="poseOptions" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;"></div>
+              <div id="poseOptions" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;"></div>
             </div>
 
             <!-- Outfit selector removed - fully nude by default -->
@@ -1164,7 +1164,7 @@
 
     // Companion carousel state
     let currentCarouselPage = 0;
-    const companionsPerPage = 3;
+    const companionsPerPage = 2;
     let currentGenderFilter = 'female'; // Default to female filter
 
     // Pose options
@@ -1277,7 +1277,7 @@
     async function loadCompanions() {
       try {
         console.log('📥 Loading companions...');
-        const response = await fetch('/.netlify/functions/selira-characters-fetch?limit=1000');
+        const response = await fetch('/.netlify/functions/selira-characters-fetch?limit=100');
         if (!response.ok) {
           throw new Error(`Failed to load companions: ${response.status}`);
         }
