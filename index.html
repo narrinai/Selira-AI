@@ -3628,11 +3628,36 @@
       const container = document.getElementById('mobileFilterTags');
       if (!container) return;
 
-      // Use the same tags from the desktop version
-      const tags = createAvailableTags.slice(0, 20); // Show up to 20 tags on mobile
+      // Filter tags with 5+ companions (same as desktop)
+      const systemTags = ['All', 'Unfiltered'];
+      const currentSex = currentFilters.sex;
 
-      if (tags.length > 0) {
-        const tagButtons = tags.map(tag => {
+      // Count companions per tag for current sex filter
+      const tagCounts = {};
+      createAvailableTags.forEach(tag => {
+        if (systemTags.includes(tag) || !tag || tag.trim() === '') return;
+
+        // Count companions with this tag that match current sex filter
+        const count = allCharacters.filter(char => {
+          const matchesSex = !currentSex || char.sex === currentSex;
+          const hasTag = char.tags && char.tags.some(t =>
+            t.toLowerCase() === tag.toLowerCase()
+          );
+          return matchesSex && hasTag;
+        }).length;
+
+        if (count >= 5) { // Only show tags with 5+ companions
+          tagCounts[tag] = count;
+        }
+      });
+
+      // Sort tags by count (descending) and take top 20
+      const filteredTags = Object.keys(tagCounts)
+        .sort((a, b) => tagCounts[b] - tagCounts[a])
+        .slice(0, 20);
+
+      if (filteredTags.length > 0) {
+        const tagButtons = filteredTags.map(tag => {
           return `<button class="mobile-filter-tag" onclick="filterByTag('${tag}')">${tag}</button>`;
         }).join('');
         container.innerHTML = tagButtons;
@@ -5987,13 +6012,41 @@ Please be thorough and include important details from our conversations.`;
       const menu = document.getElementById('mobileTagMenu');
       if (!menu || !createAvailableTags || createAvailableTags.length === 0) return;
 
+      // Filter tags with 5+ companions (same as desktop)
+      const systemTags = ['All', 'Unfiltered'];
+      const currentSex = currentFilters.sex;
+
+      // Count companions per tag for current sex filter
+      const tagCounts = {};
+      createAvailableTags.forEach(tag => {
+        if (systemTags.includes(tag) || !tag || tag.trim() === '') return;
+
+        // Count companions with this tag that match current sex filter
+        const count = allCharacters.filter(char => {
+          const matchesSex = !currentSex || char.sex === currentSex;
+          const hasTag = char.tags && char.tags.some(t =>
+            t.toLowerCase() === tag.toLowerCase()
+          );
+          return matchesSex && hasTag;
+        }).length;
+
+        if (count >= 5) { // Only show tags with 5+ companions
+          tagCounts[tag] = count;
+        }
+      });
+
+      // Sort tags by count (descending) and take top 20
+      const filteredTags = Object.keys(tagCounts)
+        .sort((a, b) => tagCounts[b] - tagCounts[a])
+        .slice(0, 20);
+
       const allItem = '<div class="mobile-dropdown-item" onclick="selectMobileTag(\'all\')">All Tags</div>';
-      const tagItems = createAvailableTags.slice(0, 20).map(tag => {
+      const tagItems = filteredTags.map(tag => {
         return `<div class="mobile-dropdown-item" onclick="selectMobileTag('${tag}')">${tag}</div>`;
       }).join('');
 
       menu.innerHTML = allItem + tagItems;
-      console.log('✅ Populated mobile tag dropdown with', createAvailableTags.length, 'tags');
+      console.log('✅ Populated mobile tag dropdown with', filteredTags.length, 'filtered tags');
     }
 
     // ===== CREATE FLOW TAGS SYSTEM =====
