@@ -213,14 +213,14 @@ exports.handler = async (event, context) => {
 
   try {
     // 1. Fetch companions without avatar_url_3
-    console.log('📊 Fetching ALL UNCENSORED FEMALE companions without Avatar_URL_3 (including user-created)...');
+    console.log('📊 Fetching PUBLIC UNCENSORED FEMALE companions without Avatar_URL_3...');
 
     let allCompanions = [];
     let offset = null;
 
     do {
-      // Filter: No Avatar_URL_3 AND content_filter = 'Uncensored' AND sex = 'female' (ALL companions, including user-created)
-      const filterFormula = encodeURIComponent("AND(NOT({Avatar_URL_3}), {content_filter} = 'Uncensored', {sex} = 'female')");
+      // Filter: No Avatar_URL_3 AND content_filter = 'Uncensored' AND sex = 'female' AND Public = 1 (only public companions)
+      const filterFormula = encodeURIComponent("AND(NOT({Avatar_URL_3}), {content_filter} = 'Uncensored', {sex} = 'female', {Public} = 1)");
       const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_ID}?filterByFormula=${filterFormula}&maxRecords=${BATCH_SIZE}${offset ? `&offset=${offset}` : ''}`;
 
       const response = await fetch(url, {
