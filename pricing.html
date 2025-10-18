@@ -762,7 +762,7 @@
     .pricing-section {
       animation: fadeIn 0.6s ease;
     }
-    /* Sidebar Footer Links (Desktop only) */
+    /* Sidebar Footer Links */
     .sidebar-footer-links {
       margin-top: auto;
       padding: 16px 10px 20px;
@@ -849,15 +849,18 @@
       /* Show footer links on mobile with smaller font */
       .sidebar-footer-links {
         display: flex !important;
-        padding-top: 12px;
+        flex-direction: column !important;
+        padding: 12px 10px;
         margin-top: 12px;
         border-top: 1px solid rgba(255, 255, 255, 0.1);
+        gap: 6px;
       }
 
       .footer-link {
-        font-size: 10px;
-        padding: 3px 0;
+        font-size: 11px;
+        padding: 4px 0;
         line-height: 1.4;
+        color: rgba(255, 255, 255, 0.6);
       }
     }
 
