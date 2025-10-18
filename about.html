@@ -981,11 +981,19 @@
           <!-- Search -->
           <div class="search-container">
             <div class="search-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></div>
-            <input type="text" class="search-input" placeholder="Search for companions..." onclick="window.location.href='/'">
+            <input
+              type="text"
+              class="search-input"
+              placeholder="blonde"
+              id="searchInput"
+            >
           </div>
 
           <!-- User Actions -->
           <div class="user-actions">
+            <select class="dropdown-btn" style="border: none; background: none; color: white; font-size: 13px;">
+              <option>English</option>
+            </select>
             <a href="#" class="user-btn secondary login-btn" onclick="openLoginModal('login'); return false;">Login</a>
             <a href="#" class="user-btn signup-btn" onclick="openLoginModal('signup'); return false;">Register</a>
           </div>
