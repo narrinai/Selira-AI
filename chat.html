@@ -6551,15 +6551,24 @@
       const companionGender = currentCharacter.gender || currentCharacter.Gender || 'Female';
 
       // Set appropriate image based on style and gender
-      // Default to realistic female if we can't determine
-      if (companionStyle.toLowerCase() === 'anime' && companionGender.toLowerCase() === 'female') {
+      const style = companionStyle.toLowerCase();
+      const gender = companionGender.toLowerCase();
+
+      if (style === 'anime' && gender === 'female') {
+        // Anime female
         modalImage.src = 'https://i.ibb.co/zHJYDn4j/ember-rogue-avatar-2-1760689723063-webp.jpg';
+      } else if (style === 'anime' && gender === 'male') {
+        // Anime male
+        modalImage.src = 'https://i.ibb.co/27CfkfP3/eager-roommate-grey-avatar-2-1760557977284-webp.jpg';
+      } else if (style === 'realistic' && gender === 'male') {
+        // Realistic male
+        modalImage.src = 'https://i.ibb.co/RGg6sJkL/liam-rogue-avatar-2-1760557033759-webp.jpg';
       } else {
-        // Default to realistic female for all other cases
+        // Realistic female (default)
         modalImage.src = 'https://i.ibb.co/sJp85K0J/aurora-shadow-avatar-2-1760702600650-webp.jpg';
       }
 
-      console.log('🖼️ Showing upgrade modal with', companionStyle, companionGender, 'image');
+      console.log('🖼️ Showing upgrade modal with', style, gender, 'image');
 
       modal.classList.add('show');
 
