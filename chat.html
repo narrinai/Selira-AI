@@ -1934,19 +1934,29 @@
       <button class="image-upgrade-close" onclick="closeImageUpgradeModal()">&times;</button>
 
       <div class="image-upgrade-header">
-        <img src="https://storage.googleapis.com/promptchan-fe814.appspot.com/generated_images_v2/personal/2025-10-12/mw4epOLyrtVYQx1TbNLd0n7eq7i2/aYZOzDeaykEr8vIF0dV3?Expires=4913873470&GoogleAccessId=firebase-adminsdk-jjn1g%40promptchan-fe814.iam.gserviceaccount.com&Signature=tDtc%2Fpck%2Bmq3w1B2HnepsFraIzMdUnF4b2s68LAlenME318vPb9UZ9wEMiNEuLLAYKHv60SGzF9u04vp38%2FqpbhQnJMifZabzrgElGqge0likvm6ga4y1ZugNwIrB68NPtiR0UZk0InoOCOSot1l6GGrV8KsGWZpmfmqeMeliOjFWb0aLlbo76sRCdPgvkp4xyQR5Q%2FeqP%2F8PttyReWY6fmpwIRoxjrFBT2eFyfLBG7r1ElEDuTcEABQyhRHUDLA8KRKCiqLO1jNdOqC6sD8zBBe%2BGT0Z7ZqxoyZ%2F9n%2BIfOQe0Q1UH%2FSTiqTDnQsPh51vguoQ1%2FBjP0PUqFdA8ydtw%3D%3D" alt="AI Generated Image Example" style="width: 100%; border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
-        <div class="image-upgrade-title" id="upgradeModalTitle">Unlock Image Generation</div>
-        <p style="color: var(--text-secondary); font-size: 13px; margin-top: 8px;">Get unlimited AI images with a subscription</p>
+        <img id="upgradeModalImage" src="https://i.ibb.co/sJp85K0J/aurora-shadow-avatar-2-1760702600650-webp.jpg" alt="AI Generated Image Example" style="width: 100%; border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
+        <div style="background: linear-gradient(135deg, #ce93d8 0%, #ec4899 100%); color: white; padding: 4px 12px; border-radius: 20px; display: inline-block; font-size: 12px; font-weight: 600; margin-top: 12px;">LIMITED TIME: 40% OFF</div>
+        <div class="image-upgrade-title" id="upgradeModalTitle">Get More Image Credits</div>
+        <p style="color: var(--text-secondary); font-size: 13px; margin-top: 8px;">One-time purchase, credits never expire</p>
       </div>
 
       <div class="image-upgrade-features">
         <div class="image-upgrade-feature">
           <div class="image-upgrade-feature-icon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+          </div>
+          <div><strong>No subscription needed</strong></div>
+        </div>
+        <div class="image-upgrade-feature">
+          <div class="image-upgrade-feature-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 2v20M2 12h20"></path>
             </svg>
           </div>
-          <div><strong>Unlimited image generation</strong></div>
+          <div>Credits never expire</div>
         </div>
         <div class="image-upgrade-feature">
           <div class="image-upgrade-feature-icon">
@@ -1962,12 +1972,12 @@
 
       <div class="image-upgrade-buttons">
         <button class="image-upgrade-btn secondary" onclick="closeImageUpgradeModal()">Maybe Later</button>
-        <a href="/pricing" class="image-upgrade-btn primary" id="upgradeButton">View Plans</a>
+        <a href="/pricing?tab=credits" class="image-upgrade-btn primary" id="upgradeButton">Get Credits (40% OFF)</a>
       </div>
 
       <div style="text-align: center; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);">
-        <p style="color: var(--text-muted); font-size: 11px; margin-bottom: 6px;">Or buy one-time credits instead</p>
-        <a href="/pricing?tab=credits" style="color: var(--text-secondary); font-size: 12px; text-decoration: none;">Buy Credits →</a>
+        <p style="color: var(--text-muted); font-size: 11px; margin-bottom: 6px;">Want unlimited images instead?</p>
+        <a href="/pricing" style="color: var(--text-secondary); font-size: 12px; text-decoration: none;">View Subscription Plans →</a>
       </div>
     </div>
   </div>
@@ -6534,32 +6544,22 @@
 
       // For logged-in users with insufficient plan, show upgrade modal
       const modal = document.getElementById('imageUpgradeModal');
-      const title = document.getElementById('upgradeModalTitle');
-      const subtitle = modal.querySelector('.image-upgrade-header p');
-      const featureText = modal.querySelector('.image-upgrade-feature strong');
-      const upgradeButton = document.getElementById('upgradeButton');
+      const modalImage = document.getElementById('upgradeModalImage');
 
-      // Detect if user is on Light/Basic plan (hourly limit) vs Free plan (lifetime limit)
-      const userPlan = permissions?.plan || 'Free';
-      const isExistingSubscriber = ['Light', 'Basic'].includes(userPlan);
+      // Determine companion style (realistic vs anime) and gender
+      const companionStyle = currentCharacter.companion_type || currentCharacter.Companion_Type || 'realistic';
+      const companionGender = currentCharacter.gender || currentCharacter.Gender || 'Female';
 
-      if (isExistingSubscriber) {
-        // For Light/Basic users hitting hourly limits
-        title.textContent = 'Upgrade for More Images';
-        subtitle.textContent = 'Get more images per hour with Premium';
-        featureText.innerHTML = '<strong>20 images per hour</strong> with Premium';
-        upgradeButton.textContent = 'View Premium Plan';
-        upgradeButton.href = '/pricing#premium';
-        console.log('💎 Showing hourly limit upgrade modal for', userPlan, 'plan user');
+      // Set appropriate image based on style and gender
+      // Default to realistic female if we can't determine
+      if (companionStyle.toLowerCase() === 'anime' && companionGender.toLowerCase() === 'female') {
+        modalImage.src = 'https://i.ibb.co/zHJYDn4j/ember-rogue-avatar-2-1760689723063-webp.jpg';
       } else {
-        // For Free users hitting lifetime limit
-        title.textContent = 'Unlock Image Generation';
-        subtitle.textContent = 'Get unlimited AI images with a subscription';
-        featureText.innerHTML = '<strong>Unlimited image generation</strong> - No limits';
-        upgradeButton.textContent = 'View Plans';
-        upgradeButton.href = '/pricing';
-        console.log('🆓 Showing lifetime limit upgrade modal for', userPlan, 'plan user');
+        // Default to realistic female for all other cases
+        modalImage.src = 'https://i.ibb.co/sJp85K0J/aurora-shadow-avatar-2-1760702600650-webp.jpg';
       }
+
+      console.log('🖼️ Showing upgrade modal with', companionStyle, companionGender, 'image');
 
       modal.classList.add('show');
 
