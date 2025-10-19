@@ -6547,6 +6547,14 @@
       const modalImage = document.getElementById('upgradeModalImage');
 
       // Determine companion style (realistic vs anime) and gender
+      console.log('🔍 DEBUG: currentCharacter data:', {
+        companion_type: currentCharacter.companion_type,
+        Companion_Type: currentCharacter.Companion_Type,
+        gender: currentCharacter.gender,
+        Gender: currentCharacter.Gender,
+        name: currentCharacter.Name || currentCharacter.name
+      });
+
       const companionStyle = currentCharacter.companion_type || currentCharacter.Companion_Type || 'realistic';
       const companionGender = currentCharacter.gender || currentCharacter.Gender || 'Female';
 
@@ -6554,21 +6562,29 @@
       const style = companionStyle.toLowerCase();
       const gender = companionGender.toLowerCase();
 
+      console.log('🔍 DEBUG: Processed values:', { style, gender });
+
+      let imagePath = '';
       if (style === 'anime' && gender === 'female') {
         // Anime female
-        modalImage.src = 'https://i.ibb.co/zHJYDn4j/ember-rogue-avatar-2-1760689723063-webp.jpg';
+        imagePath = 'https://i.ibb.co/zHJYDn4j/ember-rogue-avatar-2-1760689723063-webp.jpg';
+        console.log('✅ Using anime female image');
       } else if (style === 'anime' && gender === 'male') {
         // Anime male
-        modalImage.src = 'https://i.ibb.co/27CfkfP3/eager-roommate-grey-avatar-2-1760557977284-webp.jpg';
+        imagePath = 'https://i.ibb.co/27CfkfP3/eager-roommate-grey-avatar-2-1760557977284-webp.jpg';
+        console.log('✅ Using anime male image');
       } else if (style === 'realistic' && gender === 'male') {
         // Realistic male
-        modalImage.src = 'https://i.ibb.co/RGg6sJkL/liam-rogue-avatar-2-1760557033759-webp.jpg';
+        imagePath = 'https://i.ibb.co/RGg6sJkL/liam-rogue-avatar-2-1760557033759-webp.jpg';
+        console.log('✅ Using realistic male image');
       } else {
         // Realistic female (default)
-        modalImage.src = 'https://i.ibb.co/sJp85K0J/aurora-shadow-avatar-2-1760702600650-webp.jpg';
+        imagePath = 'https://i.ibb.co/sJp85K0J/aurora-shadow-avatar-2-1760702600650-webp.jpg';
+        console.log('✅ Using realistic female image (default)');
       }
 
-      console.log('🖼️ Showing upgrade modal with', style, gender, 'image');
+      modalImage.src = imagePath;
+      console.log('🖼️ Final image URL:', imagePath);
 
       modal.classList.add('show');
 
