@@ -6552,11 +6552,13 @@
         Companion_Type: currentCharacter.Companion_Type,
         gender: currentCharacter.gender,
         Gender: currentCharacter.Gender,
+        sex: currentCharacter.sex,
+        Sex: currentCharacter.Sex,
         name: currentCharacter.Name || currentCharacter.name
       });
 
       const companionStyle = currentCharacter.companion_type || currentCharacter.Companion_Type || 'realistic';
-      const companionGender = currentCharacter.gender || currentCharacter.Gender || 'Female';
+      const companionGender = currentCharacter.sex || currentCharacter.Sex || currentCharacter.gender || currentCharacter.Gender || 'Female';
 
       // Set appropriate image based on style and gender
       const style = companionStyle.toLowerCase();
