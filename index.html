@@ -2762,6 +2762,8 @@
       // Refresh tag filters now that characters are loaded
       if (createAvailableTags && createAvailableTags.length > 0) {
         populateTagFilters(createAvailableTags);
+        // Also populate mobile tag dropdown now that character counts are available
+        populateMobileTagDropdown();
       }
 
       // Update UI after everything is loaded to ensure DOM elements exist
@@ -6111,11 +6113,9 @@ Please be thorough and include important details from our conversations.`;
             sample: data.tags.slice(0, 10)
           });
 
-          // Don't populate filter pills yet - wait for characters to load
-          // This will be done in loadCharacters() after allCharacters is populated
-
-          // Populate mobile filter dropdown (doesn't need character counts)
-          populateMobileTagDropdown();
+          // Don't populate filters yet - wait for characters to load
+          // Both desktop filter pills and mobile tag dropdown will be populated
+          // in loadCharacters() after allCharacters is populated (needed for tag counts)
         }
       } catch (error) {
         console.warn('⚠️ Error loading tags from API:', error.message);
