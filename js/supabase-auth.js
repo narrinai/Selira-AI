@@ -594,10 +594,10 @@ class SupabaseAuthModal {
     if (isAuthenticated) {
       if (loginBtn) {
         loginBtn.href = '/pricing';
-        loginBtn.textContent = 'Upgrade -40% off';
+        loginBtn.textContent = 'Image Gen Deals -40%';
         loginBtn.className = 'user-btn signup-btn';
         loginBtn.onclick = null;
-        loginBtn.style.background = 'var(--accent, #ce93d8)';
+        loginBtn.style.background = 'linear-gradient(135deg, #ec4899 0%, #a855f7 100%)';
         loginBtn.style.color = 'white';
         loginBtn.style.padding = '8px 16px';
         loginBtn.style.fontSize = '13px';
@@ -641,13 +641,13 @@ class SupabaseAuthModal {
 
     if (loginBtn) {
       if (isAuthenticated) {
-        loginBtn.textContent = 'Upgrade';
+        loginBtn.textContent = 'Deals';
         loginBtn.onclick = (e) => {
           e.preventDefault();
           window.location.href = '/pricing';
           return false;
         };
-        loginBtn.style.background = 'var(--accent, #ce93d8)';
+        loginBtn.style.background = 'linear-gradient(135deg, #ec4899 0%, #a855f7 100%)';
       } else {
         loginBtn.textContent = 'Register';
         loginBtn.onclick = (e) => {
