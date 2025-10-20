@@ -329,13 +329,13 @@ function addMobileNavStyles() {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 20px;
+      padding: 16px 20px;
       border-bottom: 1px solid var(--border, #333333);
     }
     
     .mobile-menu-logo {
       font-family: 'Playfair Display', serif;
-      font-size: 24px;
+      font-size: 20px;
       font-weight: 700;
       color: var(--accent, #ce93d8);
     }
@@ -356,18 +356,18 @@ function addMobileNavStyles() {
     }
     
     .mobile-menu-nav {
-      padding: 20px 0;
+      padding: 12px 0;
     }
-    
+
     .mobile-menu-link {
       display: flex;
       align-items: center;
-      gap: 16px;
-      padding: 16px 20px;
+      gap: 12px;
+      padding: 10px 20px;
       color: var(--text-primary, #ffffff);
       text-decoration: none;
       transition: background 0.2s ease;
-      font-size: 16px;
+      font-size: 15px;
     }
     
     .mobile-menu-link:hover {
@@ -387,13 +387,13 @@ function addMobileNavStyles() {
 
     .mobile-menu-btn-register {
       display: block;
-      margin: 8px 20px;
-      padding: 12px 16px;
+      margin: 6px 20px;
+      padding: 10px 16px;
       background: var(--accent, #ce93d8);
       color: white;
       border: 1px solid transparent;
       border-radius: 8px;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 600;
       text-align: center;
       text-decoration: none;
@@ -407,15 +407,15 @@ function addMobileNavStyles() {
     .mobile-menu-divider {
       height: 1px;
       background: var(--border, #333333);
-      margin: 16px 20px;
+      margin: 10px 20px;
     }
 
     /* Mobile Footer Links */
     .mobile-footer-links {
       display: flex;
       flex-direction: column;
-      padding: 0 20px 20px;
-      gap: 4px;
+      padding: 0 20px 16px;
+      gap: 2px;
     }
 
     .mobile-footer-link {
@@ -423,9 +423,9 @@ function addMobileNavStyles() {
       text-decoration: none;
       font-size: 11px;
       font-weight: 400;
-      padding: 6px 0;
+      padding: 4px 0;
       transition: color 0.2s ease;
-      line-height: 1.4;
+      line-height: 1.3;
     }
 
     .mobile-footer-link:hover {
