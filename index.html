@@ -379,6 +379,14 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
       z-index: 1000;
       margin-top: 4px;
+      white-space: nowrap;
+    }
+
+    /* Community dropdown - make it wider to prevent text wrapping */
+    #communityDropdown {
+      min-width: 150px;
+      left: auto;
+      right: auto;
     }
 
     .dropdown-btn span {
@@ -3229,17 +3237,21 @@
           }
         }
 
-        // Community filter (Created_By field from Airtable)
+        // Community filter (Created_by field from Airtable)
         if (currentFilters.community && currentFilters.community !== 'all') {
-          const createdBy = (character.Created_By || '').toLowerCase();
-          const isOfficialCreator = createdBy === 'hello@selira.ai' || createdBy.includes('selira');
+          const createdBy = character.Created_by || '';
 
-          // Debug logging for first 3 characters
-          if (allCharacters.indexOf(character) < 3) {
+          // Official creators: "Selira" (case-insensitive) or contains "selira" or empty
+          const isOfficialCreator = !createdBy ||
+                                    createdBy.toLowerCase() === 'selira' ||
+                                    createdBy.toLowerCase().includes('selira') ||
+                                    createdBy.toLowerCase() === 'hello@selira.ai';
+
+          // Debug logging for first 10 characters when filter is active
+          if (allCharacters.indexOf(character) < 10) {
             console.log('🔍 Community filter debug:', {
-              name: character.name,
-              Created_By: character.Created_By,
-              createdBy: createdBy,
+              name: character.Name,
+              Created_by: character.Created_by,
               isOfficialCreator: isOfficialCreator,
               filterMode: currentFilters.community
             });
