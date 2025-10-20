@@ -1278,19 +1278,19 @@
       { id: 'squatting-bj', label: 'Squatting BJ', prompt: 'squatting blowjob, woman squatting down sucking dick, squatting position oral, crouching blowjob, squatting oral sex, explicit squatting oral, NSFW' }
     ];
 
-    // NSFW Outfit options
+    // NSFW Outfit options - kept short to avoid timeouts
     const outfits = [
-      { id: 'fully-nude', label: 'Fully Nude', prompt: 'completely naked, fully nude, no clothes, bare skin, nude body, naked breasts, exposed pussy, totally naked, unclothed, full nudity, NSFW' },
-      { id: 'lingerie', label: 'Lingerie', prompt: 'sexy lingerie, lace bra and panties, see-through lingerie, erotic underwear, revealing lingerie, NSFW' },
-      { id: 'stockings', label: 'Stockings', prompt: 'wearing stockings, thigh-high stockings, garter belt, sexy hosiery, stockings and heels, NSFW' },
-      { id: 'bodysuit', label: 'Bodysuit', prompt: 'tight bodysuit, skintight outfit, revealing bodysuit, body-hugging suit, sexy bodysuit, NSFW' },
-      { id: 'leather', label: 'Leather', prompt: 'leather outfit, dominatrix attire, leather bodysuit, BDSM outfit, black leather, NSFW' },
-      { id: 'bikini', label: 'Bikini', prompt: 'skimpy bikini, micro bikini, tiny swimsuit, revealing bikini, string bikini, NSFW' },
-      { id: 'topless', label: 'Topless', prompt: 'topless, bare breasts, naked chest, no top, exposed breasts, nude upper body, NSFW' },
-      { id: 'bottomless', label: 'Bottomless', prompt: 'bottomless, no pants, no panties, exposed pussy, bare lower body, naked bottom half, NSFW' }
+      { id: 'fully-nude', label: 'Fully Nude', prompt: 'fully nude, naked, bare skin' },
+      { id: 'lingerie', label: 'Lingerie', prompt: 'sexy lingerie' },
+      { id: 'stockings', label: 'Stockings', prompt: 'thigh-high stockings' },
+      { id: 'bodysuit', label: 'Bodysuit', prompt: 'tight bodysuit' },
+      { id: 'leather', label: 'Leather', prompt: 'leather outfit' },
+      { id: 'bikini', label: 'Bikini', prompt: 'micro bikini' },
+      { id: 'topless', label: 'Topless', prompt: 'topless' },
+      { id: 'bottomless', label: 'Bottomless', prompt: 'bottomless' }
     ];
 
-    const fullyNudePrompt = 'completely naked, fully nude, no clothes, bare skin, nude body, naked breasts, exposed pussy, totally naked, unclothed, full nudity, NSFW';
+    const fullyNudePrompt = 'fully nude, naked, bare skin'; // Shortened to match outfits
 
     // Check authentication (using Supabase auth)
     async function checkAuthentication() {
@@ -1732,16 +1732,15 @@
       document.getElementById('generateBtn').disabled = true;
 
       try {
-        // Build prompt from pose, outfit, and custom prompt
+        // Build prompt from pose, outfit, and custom prompt with natural language prefix
         const customPromptValue = document.getElementById('customPromptInput')?.value.trim() || '';
         const outfitPrompt = selectedOutfit?.prompt || fullyNudePrompt;
-        const fullPrompt = [selectedPose.prompt, outfitPrompt, customPromptValue].filter(Boolean).join(', ');
+        const promptParts = [selectedPose.prompt, outfitPrompt, customPromptValue].filter(Boolean).join(', ');
+        const fullPrompt = `send me a picture of ${promptParts}`;
 
         console.log('🎨 Building prompt:', {
           pose: selectedPose.label,
-          posePrompt: selectedPose.prompt,
           outfit: selectedOutfit?.label || 'default nude',
-          outfitPrompt: outfitPrompt,
           customPrompt: customPromptValue,
           fullPrompt: fullPrompt
         });
