@@ -494,6 +494,34 @@
       color: inherit;
     }
 
+    /* Community Filter - Less prominent styling */
+    .community-filter-btn {
+      background: var(--bg-tertiary) !important;
+      color: var(--text-secondary) !important;
+      border-color: var(--border) !important;
+      opacity: 0.7;
+    }
+
+    .community-filter-btn:hover {
+      background: var(--bg-tertiary) !important;
+      color: var(--text-primary) !important;
+      border-color: var(--text-muted) !important;
+      opacity: 1;
+    }
+
+    .community-filter-btn.active {
+      background: var(--bg-tertiary) !important;
+      color: var(--text-primary) !important;
+      border-color: var(--text-secondary) !important;
+      opacity: 1;
+    }
+
+    /* Hide community filter on mobile */
+    @media (max-width: 768px) {
+      .community-filter-dropdown {
+        display: none !important;
+      }
+    }
 
     .tag-pill.category {
       background: var(--accent);
@@ -2340,6 +2368,19 @@
             </div>
           </div>
 
+          <!-- Community Filter (Desktop Only) -->
+          <div class="filter-dropdown community-filter-dropdown">
+            <button class="dropdown-btn community-filter-btn" id="communityDropdownBtn" onclick="toggleDropdown('community')">
+              <span>All Companions</span>
+              <span class="dropdown-arrow">▼</span>
+            </button>
+            <div class="dropdown-menu" id="communityDropdown">
+              <a href="#" onclick="setCommunityFilter('all'); return false;">All Companions</a>
+              <a href="#" onclick="setCommunityFilter('community'); return false;">Community Made</a>
+              <a href="#" onclick="setCommunityFilter('official'); return false;">Official Only</a>
+            </div>
+          </div>
+
           <!-- Dynamic tags will be inserted here with All button first -->
           <div id="dynamicTagFilters" style="display: contents;">
             <!-- Loading placeholder -->
@@ -2373,7 +2414,8 @@
       sex: 'female', // Default to female (can be overridden by URL params)
       style: 'realistic', // Default to realistic (can be overridden by URL params)
       animated: undefined, // undefined = show all, true = only animated, false = only realistic
-      unfiltered: true // Legacy field
+      unfiltered: true, // Legacy field
+      community: 'all' // 'all', 'community' (user-made), or 'official' (Selira-made)
     };
 
     // Global state
@@ -3187,6 +3229,19 @@
           }
         }
 
+        // Community filter (Created_By field from Airtable)
+        if (currentFilters.community && currentFilters.community !== 'all') {
+          const createdBy = (character.Created_By || '').toLowerCase();
+          const isOfficialCreator = createdBy === 'hello@selira.ai' || createdBy.includes('selira');
+
+          if (currentFilters.community === 'community' && isOfficialCreator) {
+            return false; // Hide official companions when community filter is selected
+          }
+          if (currentFilters.community === 'official' && !isOfficialCreator) {
+            return false; // Hide community companions when official filter is selected
+          }
+        }
+
         // Category filter
         if (currentFilters.category && currentFilters.category !== 'all') {
           if (character.category.toLowerCase() !== currentFilters.category.toLowerCase()) {
@@ -3321,6 +3376,34 @@
       document.getElementById('styleDropdown').style.display = 'none';
 
       console.log('Style filter changed to:', currentFilters.style);
+      applyFilters();
+    }
+
+    function setCommunityFilter(community) {
+      currentFilters.community = community;
+
+      // Update button text and active state
+      const dropdownBtn = document.getElementById('communityDropdownBtn');
+      if (dropdownBtn) {
+        const communityLabels = {
+          'all': 'All Companions',
+          'community': 'Community Made',
+          'official': 'Official Only'
+        };
+        dropdownBtn.querySelector('span:first-child').textContent = communityLabels[community] || 'All Companions';
+
+        // Add active class only when not 'all'
+        if (community === 'all') {
+          dropdownBtn.classList.remove('active');
+        } else {
+          dropdownBtn.classList.add('active');
+        }
+      }
+
+      // Hide dropdown
+      document.getElementById('communityDropdown').style.display = 'none';
+
+      console.log('Community filter changed to:', currentFilters.community);
       applyFilters();
     }
 
