@@ -2891,27 +2891,20 @@
 
       // Load permissions in background without blocking UI
       checkUserImagePermissions().then(permissions => {
-        if (permissions.canGenerate) {
-          // Show remaining images for users who can generate
-          const usingCredits = permissions.usingCredits || permissions.imageCreditsRemaining > 0;
-          const creditsText = usingCredits ? ' credits' : '';
-          const imageText = (permissions.remaining === 1 && !usingCredits) ? 'image' : 'images';
-          planInfo.innerHTML = `
-            <span class="plan-badge">${permissions.plan} Plan</span>
-            <span class="plan-remaining">${permissions.remaining || 0}${creditsText} ${imageText} left</span>
-          `;
-        } else {
-          // Show plan for users who cannot generate (upgrade modal will appear when they click)
-          planInfo.innerHTML = `
-            <span class="plan-badge">${permissions.plan === 'Guest' ? 'Not Logged In' : permissions.plan + ' Plan'}</span>
-            <span class="plan-remaining" style="color: #888;">Select a pose to continue</span>
-          `;
-        }
+        // Always show remaining images/credits count
+        const usingCredits = permissions.usingCredits || permissions.imageCreditsRemaining > 0;
+        const creditsText = usingCredits ? ' credits' : '';
+        const imageText = (permissions.remaining === 1 && !usingCredits) ? 'image' : 'images';
+
+        planInfo.innerHTML = `
+          <span class="plan-badge">${permissions.plan === 'Guest' ? 'Not Logged In' : permissions.plan + ' Plan'}</span>
+          <span class="plan-remaining">${permissions.remaining || 0}${creditsText} ${imageText} left</span>
+        `;
       }).catch(error => {
         console.error('❌ Error loading permissions:', error);
         planInfo.innerHTML = `
           <span class="plan-badge">Unknown</span>
-          <span class="plan-remaining" style="color: #888;">Select a pose to continue</span>
+          <span class="plan-remaining">0 images left</span>
         `;
       });
 
