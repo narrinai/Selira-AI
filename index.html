@@ -3005,9 +3005,6 @@
 
         // Render regular character card
         const character = item;
-        // Check if community created
-        const isCommunityCreated = character.Created_by && character.Created_by !== 'Selira' && character.Created_by !== '';
-
         return `
         <div class="character-card" onclick="openCharacter('${character.slug}')">
           ${character.avatar ?
@@ -3016,10 +3013,6 @@
                   ${character.avatar_url_3 ? `data-hover-image-3="${character.avatar_url_3}"` : ''}
                   onerror="this.onerror=null; this.src='https://selira.ai/avatars/${getWorkingAvatar(character.name, character.sex)}'; console.log('🔧 Fixed broken avatar for ${character.name}');">` :
             `<div class="character-image-placeholder">${character.name.charAt(0)}</div>`
-          }
-
-          ${isCommunityCreated ?
-            `<div class="character-badge community-badge" style="position: absolute; top: 8px; right: 8px; background: rgba(139, 92, 246, 0.9); color: white; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.2);">Community</div>` : ''
           }
 
           <!-- Stats Overlay -->
