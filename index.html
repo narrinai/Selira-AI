@@ -353,6 +353,24 @@
       box-shadow: 0 4px 12px rgba(206, 147, 216, 0.3);
     }
 
+    /* Deals button text switching */
+    .desktop-deals-text {
+      display: inline;
+    }
+
+    .mobile-deals-text {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .desktop-deals-text {
+        display: none;
+      }
+
+      .mobile-deals-text {
+        display: inline;
+      }
+    }
 
     /* Filter Section */
     .filter-section {
@@ -2268,7 +2286,10 @@
                 <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="var(--text-primary)" stroke-width="2"/>
               </svg>
             </button>
-            <button class="user-btn mobile-auth-btn" onclick="openLoginModal('signup'); return false;" style="padding: 10px 20px; font-size: 14px; border-radius: 25px; background: var(--accent); color: white; border: none; font-weight: 600; flex-shrink: 0;">Register</button>
+            <a href="/pricing.html" class="user-btn mobile-auth-btn" style="padding: 10px 20px; font-size: 14px; border-radius: 25px; background: linear-gradient(135deg, #ec4899 0%, #a855f7 100%); color: white; border: none; font-weight: 600; flex-shrink: 0; text-decoration: none; display: inline-block;">
+              <span class="desktop-deals-text">Image Gen Deals -40%</span>
+              <span class="mobile-deals-text">Deals</span>
+            </a>
           </div>
         </div>
 
@@ -2335,7 +2356,10 @@
               <option>English</option>
             </select>
             <a href="#" class="user-btn login-btn" onclick="openLoginModal('login'); return false;" style="margin-right: 8px;">Login</a>
-            <a href="#" class="user-btn signup-btn" onclick="openLoginModal('signup'); return false;">Register</a>
+            <a href="/pricing.html" class="user-btn signup-btn" style="background: linear-gradient(135deg, #ec4899 0%, #a855f7 100%);">
+              <span class="desktop-deals-text">Image Gen Deals -40%</span>
+              <span class="mobile-deals-text">Deals</span>
+            </a>
           </div>
         </div>
       </header>
