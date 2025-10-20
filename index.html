@@ -2371,13 +2371,13 @@
           <!-- Community Filter (Desktop Only) -->
           <div class="filter-dropdown community-filter-dropdown">
             <button class="dropdown-btn community-filter-btn" id="communityDropdownBtn" onclick="toggleDropdown('community')">
-              <span>All Companions</span>
+              <span>All</span>
               <span class="dropdown-arrow">▼</span>
             </button>
             <div class="dropdown-menu" id="communityDropdown">
               <a href="#" onclick="setCommunityFilter('all'); return false;">All Companions</a>
-              <a href="#" onclick="setCommunityFilter('community'); return false;">Community Made</a>
-              <a href="#" onclick="setCommunityFilter('official'); return false;">Official Only</a>
+              <a href="#" onclick="setCommunityFilter('community'); return false;">Community</a>
+              <a href="#" onclick="setCommunityFilter('official'); return false;">Selira Official</a>
             </div>
           </div>
 
@@ -3386,11 +3386,11 @@
       const dropdownBtn = document.getElementById('communityDropdownBtn');
       if (dropdownBtn) {
         const communityLabels = {
-          'all': 'All Companions',
-          'community': 'Community Made',
-          'official': 'Official Only'
+          'all': 'All',
+          'community': 'Community',
+          'official': 'Selira Official'
         };
-        dropdownBtn.querySelector('span:first-child').textContent = communityLabels[community] || 'All Companions';
+        dropdownBtn.querySelector('span:first-child').textContent = communityLabels[community] || 'All';
 
         // Add active class only when not 'all'
         if (community === 'all') {
@@ -6248,8 +6248,8 @@ Please be thorough and include important details from our conversations.`;
         counts: filteredTags.slice(0, 5).map(t => `${t}: ${tagCounts[t]}`)
       });
 
-      // Create tag pills with "All" button first
-      const allButton = '<a href="#" class="tag-pill active" data-tag="all">All</a>';
+      // Create tag pills with "All Tags" button first
+      const allButton = '<a href="#" class="tag-pill active" data-tag="all">All Tags</a>';
       const tagPills = filteredTags.map(tag => {
         return `<a href="#" class="tag-pill" data-tag="${tag}">${tag}</a>`;
       }).join('');
