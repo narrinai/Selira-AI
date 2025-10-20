@@ -1053,8 +1053,8 @@
 
           <!-- User Actions -->
           <div class="user-actions">
-            <select class="dropdown-btn" style="border: none; background: none; color: var(--text-secondary);">
-              <option>English</option>
+            <select id="languageSelector" class="dropdown-btn" style="border: none; background: none; color: var(--text-secondary);">
+              <option value="en">English</option>
             </select>
             <a href="#" class="user-btn secondary login-btn" onclick="openLoginModal('login'); return false;">Sign In</a>
             <a href="#" class="user-btn signup-btn" onclick="openLoginModal('signup'); return false;">Register</a>
@@ -2694,5 +2694,54 @@
 
   <!-- Support Widget -->
   <script src="/js/support-widget.js"></script>
+
+  <!-- Language Selector Custom Event -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const languageSelector = document.getElementById('languageSelector');
+
+      if (languageSelector) {
+        languageSelector.addEventListener('change', function(event) {
+          const selectedLanguage = event.target.value;
+          const languageName = event.target.options[event.target.selectedIndex].text;
+
+          // Google Analytics Event
+          if (typeof gtag !== 'undefined') {
+            gtag('event', 'language_change', {
+              'event_category': 'Language',
+              'event_label': languageName,
+              'language_code': selectedLanguage
+            });
+          }
+
+          // Meta Pixel Custom Event
+          if (typeof fbq !== 'undefined') {
+            fbq('trackCustom', 'LanguageChanged', {
+              language: selectedLanguage,
+              languageName: languageName
+            });
+          }
+
+          // Dispatch custom browser event with language data
+          const languageChangeEvent = new CustomEvent('languageChanged', {
+            detail: {
+              language: selectedLanguage,
+              languageName: languageName,
+              timestamp: new Date().toISOString()
+            },
+            bubbles: true,
+            cancelable: true
+          });
+
+          document.dispatchEvent(languageChangeEvent);
+
+          // Log for debugging
+          console.log('Language changed to:', selectedLanguage);
+          console.log('✅ Google Analytics event sent');
+          console.log('✅ Meta Pixel event sent');
+        });
+      }
+    });
+  </script>
 </body>
 </html>

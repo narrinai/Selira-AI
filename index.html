@@ -6576,12 +6576,30 @@ Please be thorough and include important details from our conversations.`;
       if (languageSelector) {
         languageSelector.addEventListener('change', function(event) {
           const selectedLanguage = event.target.value;
+          const languageName = event.target.options[event.target.selectedIndex].text;
 
-          // Dispatch custom event with language data
+          // Google Analytics Event
+          if (typeof gtag !== 'undefined') {
+            gtag('event', 'language_change', {
+              'event_category': 'Language',
+              'event_label': languageName,
+              'language_code': selectedLanguage
+            });
+          }
+
+          // Meta Pixel Custom Event
+          if (typeof fbq !== 'undefined') {
+            fbq('trackCustom', 'LanguageChanged', {
+              language: selectedLanguage,
+              languageName: languageName
+            });
+          }
+
+          // Dispatch custom browser event with language data
           const languageChangeEvent = new CustomEvent('languageChanged', {
             detail: {
               language: selectedLanguage,
-              languageName: event.target.options[event.target.selectedIndex].text,
+              languageName: languageName,
               timestamp: new Date().toISOString()
             },
             bubbles: true,
@@ -6592,6 +6610,8 @@ Please be thorough and include important details from our conversations.`;
 
           // Log for debugging
           console.log('Language changed to:', selectedLanguage);
+          console.log('✅ Google Analytics event sent');
+          console.log('✅ Meta Pixel event sent');
         });
       }
     });

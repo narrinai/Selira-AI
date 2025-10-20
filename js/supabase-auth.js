@@ -343,7 +343,28 @@ class SupabaseAuthModal {
 
       if (error) throw error;
 
-      // Check if email is verified (for login only, not signup)
+      // For signup: Check if user needs email verification
+      if (isSignupMode && data.user && !data.user.email_confirmed_at) {
+        this.setLoading(false);
+        this.showSuccess('Account created! 📧 Please check your email to verify your account before logging in.');
+        console.log('📧 Signup successful - email verification required');
+
+        // Track registration event for Facebook Pixel (but don't log user in)
+        localStorage.setItem('just_registered', 'true');
+        window.dispatchEvent(new CustomEvent('supabase-registration-complete', {
+          detail: { email: data.user.email }
+        }));
+        console.log('📊 Registration event dispatched for tracking');
+
+        // Don't log user in - they need to verify email first
+        // Close modal after 3 seconds to let user read the message
+        setTimeout(() => {
+          this.closeModal();
+        }, 3000);
+        return;
+      }
+
+      // For login: Check if email is verified
       if (!isSignupMode && data.user && !data.user.email_confirmed_at) {
         this.setLoading(false);
         this.showError('Please verify your email address first. Check your inbox for the verification link.');
@@ -357,28 +378,13 @@ class SupabaseAuthModal {
       // Sync user to Airtable
       await this.syncUserToAirtable(this.user);
 
-      // Track registration event for Facebook Pixel
-      if (isSignupMode) {
-        localStorage.setItem('just_registered', 'true');
-        window.dispatchEvent(new CustomEvent('supabase-registration-complete', {
-          detail: { email: data.user.email }
-        }));
-        console.log('📊 Registration event dispatched for tracking');
-      }
-
       // Update UI
       this.updateAuthState(true);
       this.closeModal();
       this.setLoading(false);
 
       // Show success message
-      if (isSignupMode && !data.user.email_confirmed_at) {
-        // Show email verification notice but still log user in
-        this.showSuccess('Account created! 🎉 (Check your email to verify your account)');
-        console.log('📧 User logged in - email verification pending');
-      } else {
-        this.showSuccess(isSignupMode ? 'Account created successfully! 🎉' : 'Welcome back! 👋');
-      }
+      this.showSuccess('Welcome back! 👋');
 
     } catch (error) {
       console.error('❌ Email/password authentication failed:', error);
