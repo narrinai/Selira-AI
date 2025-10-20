@@ -1640,8 +1640,11 @@
         card.addEventListener('mouseout', () => { if (!card.classList.contains('selected')) card.style.borderColor = 'var(--border)'; });
         container.appendChild(card);
       });
-      // Auto-select "Fully Nude" by default
-      selectOutfit('fully-nude');
+      // Auto-select "Fully Nude" by default after DOM is ready
+      setTimeout(() => {
+        selectOutfit('fully-nude');
+        console.log('👔 Auto-selected Fully Nude outfit');
+      }, 50);
     }
 
     function selectPose(poseId) {
@@ -1734,6 +1737,15 @@
         const outfitPrompt = selectedOutfit?.prompt || fullyNudePrompt;
         const fullPrompt = [selectedPose.prompt, outfitPrompt, customPromptValue].filter(Boolean).join(', ');
 
+        console.log('🎨 Building prompt:', {
+          pose: selectedPose.label,
+          posePrompt: selectedPose.prompt,
+          outfit: selectedOutfit?.label || 'default nude',
+          outfitPrompt: outfitPrompt,
+          customPrompt: customPromptValue,
+          fullPrompt: fullPrompt
+        });
+
         const response = await fetch('/.netlify/functions/selira-generate-custom-image', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -1763,10 +1775,16 @@
         try {
           data = await response.json();
         } catch (jsonError) {
+          console.error('❌ Failed to parse response:', jsonError);
           throw new Error('Server error. Please try again.');
         }
 
-        if (!response.ok) throw new Error(data.error || 'Image generation failed');
+        console.log('📡 API Response:', { status: response.status, ok: response.ok, data });
+
+        if (!response.ok) {
+          console.error('❌ API Error:', data);
+          throw new Error(data.error || 'Image generation failed');
+        }
 
         generatedImageUrl = data.imageUrl;
         document.getElementById('generatedImage').src = generatedImageUrl;
