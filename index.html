@@ -2019,8 +2019,10 @@
       /* Show footer links on mobile with smaller font */
       .sidebar-footer-links {
         display: flex !important;
+        flex-direction: column !important;
         padding-top: 10px;
         margin-top: 10px;
+        gap: 6px;
       }
 
       .footer-link {
@@ -2715,6 +2717,7 @@
             category: char.Category || 'Other',
             slug: char.Slug || (char.Name ? char.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'unknown'),
             creator: char.Created_by || 'Selira',
+            Created_by: char.Created_by || '',  // Keep original field for filtering
             tags: Array.isArray(char.Tags) ? char.Tags : (char.Tags || '').toString().split(',').filter(Boolean),
             chats: (Math.floor(Math.random() * 14) + 1) + '.' + Math.floor(Math.random() * 10) + 'k',
             character_url: char.Character_URL || `https://selira.ai/chat.html?char=${char.Slug || (char.Name ? char.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'unknown')}`,
