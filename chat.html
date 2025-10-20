@@ -5299,18 +5299,10 @@
       }
     }
 
-    // Request image function - fills input with "Send me a picture "
+    // Request image function - shows image generation suggestions
     async function requestImage() {
       // Remove badge when user clicks (first-time indicator)
       removeImageGenBadge();
-
-      // Check user permissions first
-      const permissions = await checkUserImagePermissions();
-
-      if (!permissions.canGenerate) {
-        showImageUpgradeModal(permissions);
-        return;
-      }
 
       // Check if suggestions are already visible
       const suggestionsDiv = document.getElementById('imagePromptSuggestions');
@@ -5320,6 +5312,7 @@
         hideImagePromptSuggestions();
       } else {
         // Show suggestions
+        // Permission check will happen when user actually clicks "Generate Image"
         showImagePromptSuggestions();
       }
     }
