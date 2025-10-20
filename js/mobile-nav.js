@@ -156,6 +156,15 @@ function createMobileNav() {
             Register
           </a>
           <div class="mobile-menu-divider"></div>
+
+          <!-- Footer Links Section -->
+          <div class="mobile-footer-links">
+            <a href="/about" class="mobile-footer-link">About</a>
+            <a href="/contact" class="mobile-footer-link">Contact</a>
+            <a href="/privacy-policy" class="mobile-footer-link">Privacy Policy</a>
+            <a href="/terms-and-conditions" class="mobile-footer-link">Terms & Conditions</a>
+            <a href="https://companionguide.ai/companions/selira-ai" target="_blank" rel="noopener noreferrer" class="mobile-footer-link">CompanionGuide.ai 9.3/10 <span style="color: #FFD700; filter: brightness(1.2);">★★★★★</span></a>
+          </div>
         </nav>
       </div>
     </div>
@@ -400,7 +409,29 @@ function addMobileNavStyles() {
       background: var(--border, #333333);
       margin: 16px 20px;
     }
-    
+
+    /* Mobile Footer Links */
+    .mobile-footer-links {
+      display: flex;
+      flex-direction: column;
+      padding: 0 20px 20px;
+      gap: 4px;
+    }
+
+    .mobile-footer-link {
+      color: rgba(255, 255, 255, 0.5);
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 400;
+      padding: 6px 0;
+      transition: color 0.2s ease;
+      line-height: 1.4;
+    }
+
+    .mobile-footer-link:hover {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
     /* Mobile Search Overlay */
     .mobile-search-overlay {
       position: fixed;
