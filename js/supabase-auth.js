@@ -346,7 +346,7 @@ class SupabaseAuthModal {
       // For signup: Check if user needs email verification
       if (isSignupMode && data.user && !data.user.email_confirmed_at) {
         this.setLoading(false);
-        this.showSuccess('Account created! 📧 Please check your email to verify your account before logging in.');
+        this.showVerificationMessage('Please verify your email to continue', data.user.email);
         console.log('📧 Signup successful - email verification required');
 
         // Track registration event for Facebook Pixel (but don't log user in)
@@ -357,10 +357,7 @@ class SupabaseAuthModal {
         console.log('📊 Registration event dispatched for tracking');
 
         // Don't log user in - they need to verify email first
-        // Close modal after 3 seconds to let user read the message
-        setTimeout(() => {
-          this.closeModal();
-        }, 3000);
+        // Keep modal open so user can read the verification message
         return;
       }
 
