@@ -75,6 +75,15 @@ class SupabaseAuthModal {
       this.supabase.auth.onAuthStateChange(async (event, session) => {
         console.log('🔄 Auth state changed:', event);
 
+        // Check if this is a signup that needs email verification
+        if (session && event === 'SIGNED_UP' && !session.user.email_confirmed_at) {
+          console.log('📧 Signup requires email verification - not logging user in');
+          // Don't log the user in - they need to verify email first
+          this.user = null;
+          this.updateAuthState(false);
+          return;
+        }
+
         // Only sync on actual sign-in events, not on initial session or token refresh
         if (session && (event === 'SIGNED_IN' || event === 'USER_UPDATED')) {
           this.user = session.user;
@@ -343,24 +352,6 @@ class SupabaseAuthModal {
 
       if (error) throw error;
 
-      // For signup: Check if user needs email verification
-      if (isSignupMode && data.user && !data.user.email_confirmed_at) {
-        this.setLoading(false);
-        this.showVerificationMessage('Please verify your email to continue', data.user.email);
-        console.log('📧 Signup successful - email verification required');
-
-        // Track registration event for Facebook Pixel (but don't log user in)
-        localStorage.setItem('just_registered', 'true');
-        window.dispatchEvent(new CustomEvent('supabase-registration-complete', {
-          detail: { email: data.user.email }
-        }));
-        console.log('📊 Registration event dispatched for tracking');
-
-        // Don't log user in - they need to verify email first
-        // Keep modal open so user can read the verification message
-        return;
-      }
-
       // For login: Check if email is verified
       if (!isSignupMode && data.user && !data.user.email_confirmed_at) {
         this.setLoading(false);
@@ -372,8 +363,28 @@ class SupabaseAuthModal {
 
       this.user = data.user;
 
+      // For signup: Check if email verification is required
+      if (isSignupMode && !data.user.email_confirmed_at) {
+        this.setLoading(false);
+        this.showVerificationMessage(
+          'Account created! Please check your email to verify your account before logging in.',
+          email
+        );
+        console.log('📧 Email verification required - user needs to check inbox');
+        return;
+      }
+
       // Sync user to Airtable
       await this.syncUserToAirtable(this.user);
+
+      // Track registration event for Facebook Pixel
+      if (isSignupMode) {
+        localStorage.setItem('just_registered', 'true');
+        window.dispatchEvent(new CustomEvent('supabase-registration-complete', {
+          detail: { email: data.user.email }
+        }));
+        console.log('📊 Registration event dispatched for tracking');
+      }
 
       // Update UI
       this.updateAuthState(true);
@@ -381,7 +392,7 @@ class SupabaseAuthModal {
       this.setLoading(false);
 
       // Show success message
-      this.showSuccess('Welcome back! 👋');
+      this.showSuccess(isSignupMode ? 'Account created successfully! 🎉' : 'Welcome back! 👋');
 
     } catch (error) {
       console.error('❌ Email/password authentication failed:', error);
