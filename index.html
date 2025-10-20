@@ -3234,6 +3234,17 @@
           const createdBy = (character.Created_By || '').toLowerCase();
           const isOfficialCreator = createdBy === 'hello@selira.ai' || createdBy.includes('selira');
 
+          // Debug logging for first 3 characters
+          if (allCharacters.indexOf(character) < 3) {
+            console.log('🔍 Community filter debug:', {
+              name: character.name,
+              Created_By: character.Created_By,
+              createdBy: createdBy,
+              isOfficialCreator: isOfficialCreator,
+              filterMode: currentFilters.community
+            });
+          }
+
           if (currentFilters.community === 'community' && isOfficialCreator) {
             return false; // Hide official companions when community filter is selected
           }
