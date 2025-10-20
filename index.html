@@ -2795,6 +2795,12 @@
           console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Sample character names:', allCharacters.slice(-5).map(c => c.name));
           console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Sample character tags:', allCharacters.slice(0, 10).map(c => ({name: c.name, tags: c.tags})));
           console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> New test characters:', allCharacters.filter(c => c.name.includes('Emma') || c.name.includes('Sarah') || c.name.includes('Visible')));
+
+          // Diagnostic: Check Created_by field
+          const withCreatedBy = allCharacters.filter(c => c.Created_by);
+          const communityChars = allCharacters.filter(c => c.Created_by && c.Created_by !== 'Selira');
+          console.log('👤 Created_by stats:', withCreatedBy.length, 'with field,', communityChars.length, 'community');
+          console.log('👤 Sample Created_by values:', allCharacters.slice(0, 10).map(c => ({name: c.Name, creator: c.Created_by})));
         } else {
           throw new Error('Invalid API response');
         }
@@ -2996,6 +3002,9 @@
 
         // Render regular character card
         const character = item;
+        // Check if community created
+        const isCommunityCreated = character.Created_by && character.Created_by !== 'Selira' && character.Created_by !== '';
+
         return `
         <div class="character-card" onclick="openCharacter('${character.slug}')">
           ${character.avatar ?
@@ -3004,6 +3013,10 @@
                   ${character.avatar_url_3 ? `data-hover-image-3="${character.avatar_url_3}"` : ''}
                   onerror="this.onerror=null; this.src='https://selira.ai/avatars/${getWorkingAvatar(character.name, character.sex)}'; console.log('🔧 Fixed broken avatar for ${character.name}');">` :
             `<div class="character-image-placeholder">${character.name.charAt(0)}</div>`
+          }
+
+          ${isCommunityCreated ?
+            `<div class="character-badge community-badge" style="position: absolute; top: 8px; right: 8px; background: rgba(139, 92, 246, 0.9); color: white; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.2);">Community</div>` : ''
           }
 
           <!-- Stats Overlay -->
@@ -3247,14 +3260,12 @@
                                     createdBy.toLowerCase().includes('selira') ||
                                     createdBy.toLowerCase() === 'hello@selira.ai';
 
-          // Debug logging for first 10 characters when filter is active
-          if (allCharacters.indexOf(character) < 10) {
-            console.log('🔍 Community filter debug:', {
-              name: character.Name,
-              Created_by: character.Created_by,
-              isOfficialCreator: isOfficialCreator,
-              filterMode: currentFilters.community
-            });
+          // Debug logging for first 5 characters when filter is active
+          if (allCharacters.indexOf(character) < 5) {
+            console.log('🔍 Community filter:', character.Name,
+              '| Created_by:', character.Created_by,
+              '| isOfficial:', isOfficialCreator,
+              '| filterMode:', currentFilters.community);
           }
 
           if (currentFilters.community === 'community' && isOfficialCreator) {
