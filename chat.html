@@ -2897,20 +2897,25 @@
 
       // Load permissions in background without blocking UI
       checkUserImagePermissions().then(permissions => {
+        // Define coin icon SVG
+        const coinIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-left: 3px; opacity: 0.8;"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle></svg>`;
+
         // Always show remaining images/credits count
         const usingCredits = permissions.usingCredits || permissions.imageCreditsRemaining > 0;
         const creditsText = usingCredits ? ' credits' : '';
         const imageText = (permissions.remaining === 1 && !usingCredits) ? 'image' : 'images';
+        const hourlyText = permissions.hourlyLimitReached ? ' this hour' : '';
 
         planInfo.innerHTML = `
           <span class="plan-badge">${permissions.plan === 'Guest' ? 'Not Logged In' : permissions.plan + ' Plan'}</span>
-          <span class="plan-remaining">${permissions.remaining || 0}${creditsText} ${imageText} left</span>
+          <span class="plan-remaining">${permissions.remaining || 0}${coinIcon}${creditsText} ${imageText} left${hourlyText}</span>
         `;
       }).catch(error => {
         console.error('❌ Error loading permissions:', error);
+        const coinIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-left: 3px; opacity: 0.8;"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle></svg>`;
         planInfo.innerHTML = `
           <span class="plan-badge">Unknown</span>
-          <span class="plan-remaining">0 images left</span>
+          <span class="plan-remaining">0${coinIcon} images left</span>
         `;
       });
 
@@ -2949,10 +2954,10 @@
           const btn = document.createElement('button');
           btn.className = 'selector-btn';
           btn.dataset.poseId = pose.id; // Add data attribute for easier selection
-          // Add coin icon and credit cost
-          const creditCount = pose.credits === 2 ? '2' : '1';
+          // Show coin icons based on credits (1 icon for 1 credit, 2 icons for 2 credits)
           const coinIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-left: 3px; opacity: 0.8;"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle></svg>`;
-          btn.innerHTML = `${pose.label} <span style="white-space: nowrap;">(${creditCount}${coinIcon})</span>`;
+          const coinIcons = pose.credits === 2 ? `${coinIcon}${coinIcon}` : coinIcon;
+          btn.innerHTML = `${pose.label} <span style="white-space: nowrap;">(${coinIcons})</span>`;
           btn.onclick = () => selectPose(pose.id);
           poseButtonsContainer.appendChild(btn);
         });
@@ -3085,7 +3090,9 @@
         const usingCredits = permissions.usingCredits || permissions.imageCreditsRemaining > 0;
         const creditsText = usingCredits ? ' credits' : '';
         const imageText = (permissions.remaining === 1 && !usingCredits) ? 'image' : 'images';
-        planRemainingElement.textContent = `${permissions.remaining || 0}${creditsText} ${imageText} left`;
+        const hourlyText = permissions.hourlyLimitReached ? ' this hour' : '';
+        const coinIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-left: 3px; opacity: 0.8;"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle></svg>`;
+        planRemainingElement.innerHTML = `${permissions.remaining || 0}${coinIcon}${creditsText} ${imageText} left${hourlyText}`;
         console.log('✅ Updated image counter:', permissions.remaining, creditsText);
       } catch (error) {
         console.warn('⚠️ Failed to update image plan counter:', error);
