@@ -2351,6 +2351,25 @@
       } catch (error) {
         console.log('Could not get user info, using anonymous');
       }
+
+      // Check if user is logged in - if not, open signup modal
+      if (userEmail === 'anonymous' || !userEmail) {
+        console.log('🔒 User not logged in, opening signup modal');
+
+        // Hide loading message
+        if (timeMessage) {
+          timeMessage.style.display = 'none';
+        }
+
+        // Open signup modal
+        if (window.openLoginModal) {
+          window.openLoginModal('signup');
+        } else if (window.seliraAuth) {
+          window.seliraAuth.openModal('signup');
+        }
+
+        return; // Stop companion creation
+      }
       
       // Get visibility setting from toggle
       const visibilityToggle = document.getElementById('visibilityToggle');
