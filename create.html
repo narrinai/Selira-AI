@@ -813,14 +813,41 @@
         height: 120px !important;
       }
 
-      /* Make ethnicity, hair length, and hair color cards smaller on mobile */
+      /* Make ethnicity and hair length cards smaller on mobile */
       .ethnicity-option {
-        max-width: 300px;
+        max-width: 90%;
         margin: 0 auto;
       }
 
       .ethnicity-option .image-container {
         height: 120px !important;
+      }
+
+      /* Step 6: Body customization responsive on mobile */
+      #step6 h3 {
+        font-size: 22px !important;
+        margin-bottom: 20px !important;
+      }
+
+      #step6 > div {
+        max-width: 100% !important;
+        padding: 0 16px;
+      }
+
+      #step6 label {
+        font-size: 14px !important;
+      }
+
+      /* Make breast and ass size buttons wrap better on mobile */
+      #step6 [style*="grid-template-columns: repeat(5, 1fr)"] {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 8px !important;
+      }
+
+      /* Smaller buttons on mobile */
+      .body-selector-btn {
+        padding: 10px 12px !important;
+        font-size: 13px !important;
       }
     }
     
@@ -2228,10 +2255,10 @@
             ? `handsome anime man, very attractive masculine face, confident expression, detailed anime art, muscular pose, wearing ${stylishClothing}, anime style, vibrant colors, high quality anime artwork, detailed facial features, anime eyes, perfect anatomy, correct human anatomy, two arms, two hands, defined abs, muscular chest, athletic body, masculine physique, single character, solo, no extra limbs, proper proportions`
             : `handsome man, attractive masculine face, confident expression, strong pose, wearing ${stylishClothing}, photorealistic, professional photography, dramatic lighting, male model photography style, eye contact, sharp focus, athletic model, confident masculine pose, single person, solo, perfect human anatomy, two arms, two hands, correct proportions, no extra limbs`;
         } else {
-          // Female prompts
+          // Female prompts - IMPORTANT: Include explicit female anatomy to prevent male anatomy
           attractivePrompt = style === 'anime'
-            ? `very attractive face, extremely seductive expression, detailed anime art, very erotic pose, wearing ${stylishClothing}, vibrant colors, high quality anime artwork, detailed facial features, anime eyes, perfect anatomy, correct human anatomy, two arms, two hands, very sensual pose, large breasts, curvy figure, big butt, voluptuous body, exposed skin, revealing clothing, single character, solo, no extra limbs, proper proportions`
-            : `attractive face, seductive expression, alluring pose, wearing ${stylishClothing}, photorealistic, professional photography, soft romantic lighting, glamour photography style, eye contact, sharp focus, attractive model, confident pose, single person, solo, perfect human anatomy, two arms, two hands, correct proportions, no extra limbs`;
+            ? `very attractive face, extremely seductive expression, detailed anime art, very erotic pose, wearing ${stylishClothing}, vibrant colors, high quality anime artwork, detailed facial features, anime eyes, perfect anatomy, correct human anatomy, two arms, two hands, very sensual pose, large breasts, curvy figure, big butt, voluptuous body, exposed skin, revealing clothing, FEMALE ANATOMY, vagina, no penis, no male genitals, feminine body, woman, single character, solo, no extra limbs, proper proportions`
+            : `attractive face, seductive expression, alluring pose, wearing ${stylishClothing}, photorealistic, professional photography, soft romantic lighting, glamour photography style, eye contact, sharp focus, attractive model, confident pose, FEMALE ANATOMY, vagina, no penis, no male genitals, feminine body, woman, single person, solo, perfect human anatomy, two arms, two hands, correct proportions, no extra limbs`;
         }
 
         console.log('🖼️ Testing avatar generation (traits via params):', attractivePrompt.substring(0, 80) + '...');
