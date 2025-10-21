@@ -1636,6 +1636,15 @@
     // ===== STEP NAVIGATION =====
     function nextStep() {
       if (characterCreationState.currentStep < totalSteps) {
+        // Start avatar generation for females when leaving step 6 (body customization)
+        // This runs in parallel with the step transition to save time
+        if (characterCreationState.currentStep === 6 &&
+            characterCreationState.sex === 'female' &&
+            !avatarGenerationInProgress) {
+          console.log('🔄 Starting avatar generation in background (female, leaving body customization step)...');
+          generateAvatarPreview();
+        }
+
         // Hide current step
         hideCurrentStep();
 
@@ -1691,10 +1700,11 @@
         if (currentStep === 7) {
           updateAvailableTags();
 
-          // For females, start avatar generation now (after body customization)
+          // Fallback: Start avatar generation if not already in progress
+          // (Should already be running from nextStep transition, but this is a safety check)
           // For males, it already started after step 5
           if (characterCreationState.sex === 'female' && !avatarGenerationInProgress) {
-            console.log('🔄 Starting avatar generation in background (female, after body customization)...');
+            console.log('🔄 Starting avatar generation in background (female, fallback check)...');
             generateAvatarPreview();
           }
         }
