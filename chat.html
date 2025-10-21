@@ -5624,6 +5624,9 @@
       const characterEthnicity = currentCharacter.ethnicity || 'white';
       const characterHairLength = currentCharacter.hair_length || 'medium';
       const characterHairColor = currentCharacter.hair_color || 'brown';
+      const characterAge = currentCharacter.age || currentCharacter.Age || 25;
+      const characterBreastSize = currentCharacter.breast_size || currentCharacter.Breast_Size || 0;
+      const characterAssSize = currentCharacter.ass_size || currentCharacter.Ass_Size || 0;
 
       // Get uncensored mode state
       const unfilteredMode = localStorage.getItem('unfilteredMode') === 'true';
@@ -5681,6 +5684,9 @@
           ethnicity: characterEthnicity,
           hair_length: characterHairLength,
           hair_color: characterHairColor,
+          age: characterAge,
+          breast_size: characterBreastSize,
+          ass_size: characterAssSize,
           style: characterStyle,
           category: currentCharacter.category,
           companion_type: currentCharacter.companion_type
@@ -5711,6 +5717,9 @@
             ethnicity: characterEthnicity,
             hairLength: characterHairLength,
             hairColor: characterHairColor,
+            age: characterAge,
+            breastSize: characterBreastSize,
+            assSize: characterAssSize,
             email: userEmail,
             supabase_id: userSupabaseId,
             source: 'chat', // Mark as chat-generated image for usage tracking

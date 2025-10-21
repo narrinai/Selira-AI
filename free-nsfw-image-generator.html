@@ -1791,8 +1791,11 @@
             style: selectedCompanion.companion_type || 'realistic', // Add style parameter for Photo XL+
             sex: selectedCompanion.sex || 'female',
             ethnicity: selectedCompanion.ethnicity || 'white',
-            hairLength: selectedCompanion.hairLength || 'long',
-            hairColor: selectedCompanion.hairColor || 'brown',
+            hairLength: selectedCompanion.hairLength || selectedCompanion.hair_length || 'long',
+            hairColor: selectedCompanion.hairColor || selectedCompanion.hair_color || 'brown',
+            age: selectedCompanion.age || selectedCompanion.Age || 25,
+            breastSize: selectedCompanion.breast_size || selectedCompanion.Breast_Size || 0,
+            assSize: selectedCompanion.ass_size || selectedCompanion.Ass_Size || 0,
             email: userData.email,
             supabase_id: userData.id || userData.sub,
             source: 'image-generator',
