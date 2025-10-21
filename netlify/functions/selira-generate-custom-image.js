@@ -240,7 +240,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, supab
       style: promptchanModelStyle,  // Use correct model based on companion style
       quality: 'Ultra', // Only valid option
       image_size: '512x512', // Valid size for Photo XL+ v2 (was 256x256 - not supported!)
-      creativity: 70, // Higher creativity for Photo XL+ v2
+      creativity: 50, // Balanced creativity for Photo XL+ v2
       seed: -1,
       filter: 'None', // No filter for fully uncensored (removes secondary censorship blocks)
       emotion: 'Default',
@@ -411,7 +411,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, supab
       style: promptchanStyle,
       quality: 'Ultra', // Only valid option
       image_size: '512x512', // Valid size for Photo XL+ v2 (was 256x256 - not supported!)
-      creativity: 70, // HIGHER creativity for complex sex poses with Photo XL+ v2
+      creativity: 50, // Balanced creativity for complex sex poses with Photo XL+ v2
       seed: -1,
       filter: 'None', // No filter for fully uncensored (removes secondary censorship blocks)
       emotion: 'Default',
@@ -656,7 +656,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, supab
     style: promptchanStyle,
     quality: 'Ultra', // Only valid option - 1 Gem
     image_size: '512x512', // Valid size for Photo XL+ v2 (was 256x256 - not supported!)
-    creativity: 70, // Higher creativity for Photo XL+ v2 (was 20, then 50, now 70)
+    creativity: 50, // Balanced creativity for Photo XL+ v2 (was 20, now 50)
     seed: -1, // Random seed
     filter: promptchanFilter, // No filter (uncensored)
     emotion: 'Default',
