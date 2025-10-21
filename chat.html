@@ -2978,9 +2978,6 @@
 
     // Select pose for NSFW image generation (fully nude by default)
     async function selectPose(poseId) {
-      selectedPose = poseId;
-      selectedOutfit = 'fully-nude'; // Always fully nude
-
       // Find the pose object to get credits
       const pose = NSFW_POSES.find(p => p.id === poseId);
       selectedPoseCredits = pose ? (pose.credits || 1) : 1;
@@ -2999,11 +2996,18 @@
         }
       }
 
-      // Update button styles
-      document.querySelectorAll('#poseButtons .selector-btn').forEach(btn => {
+      // Permission check passed - select the pose
+      selectedPose = poseId;
+      selectedOutfit = 'fully-nude'; // Always fully nude
+
+      // Update button styles - find all buttons and update their state
+      document.querySelectorAll('#poseButtons .selector-btn').forEach((btn, index) => {
         btn.classList.remove('selected');
+        // Match button by index with pose array
+        if (NSFW_POSES[index] && NSFW_POSES[index].id === poseId) {
+          btn.classList.add('selected');
+        }
       });
-      event.target.classList.add('selected');
 
       // Enable generate button if pose selected
       updateGenerateButton();
