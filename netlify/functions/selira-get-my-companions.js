@@ -196,10 +196,11 @@ exports.handler = async (event, context) => {
     let charactersOffset = null;
 
     do {
-      // Build filter for user-created characters: Try SupabaseID first, then Users record ID, then email
-      const createdByFilter = `OR({Created_By}='${userSupabaseID}',SEARCH("${userRecordId}", ARRAYJOIN({Created_By})),{Created_By}='${userEmail}')`;
+      // Build filter for user-created characters
+      // Use SEARCH on Created_By linked field (array of user record IDs) OR match Created_by text field (email)
+      const createdByFilter = `OR(SEARCH("${userRecordId}", ARRAYJOIN({Created_By})), {Created_by}='${userEmail}')`;
 
-      console.log('🔍 Filter for user-created characters (SupabaseID + record ID + email):', createdByFilter);
+      console.log('🔍 Filter for user-created characters (record ID in linked field OR email in text field):', createdByFilter);
       console.log('🔍 Search parameters:', { userEmail, userRecordId, userSupabaseID });
 
       const userCreatedUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters?filterByFormula=${encodeURIComponent(createdByFilter)}${charactersOffset ? `&offset=${charactersOffset}` : ''}`;
