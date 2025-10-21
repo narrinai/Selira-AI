@@ -2912,9 +2912,9 @@
       planInfo.innerHTML = `
         <div style="display: flex; align-items: center; gap: 8px;">
           <span class="plan-badge">Loading...</span>
-          <span class="plan-remaining">Checking permissions...</span>
+          <a href="/pricing.html" class="buy-credits-btn">Buy Image Credits -40% off</a>
         </div>
-        <a href="/pricing.html" class="buy-credits-btn">Buy Image Credits -40% off</a>
+        <span class="plan-remaining">Checking permissions...</span>
       `;
       suggestionContainer.appendChild(planInfo);
 
@@ -2932,9 +2932,9 @@
         planInfo.innerHTML = `
           <div style="display: flex; align-items: center; gap: 8px;">
             <span class="plan-badge">${permissions.plan === 'Guest' ? 'Not Logged In' : permissions.plan + ' Plan'}</span>
-            <span class="plan-remaining">${permissions.remaining || 0}${coinIcon} ${imageText}${creditsText} left${hourlyText}</span>
+            <a href="/pricing.html" class="buy-credits-btn">Buy Image Credits -40% off</a>
           </div>
-          <a href="/pricing.html" class="buy-credits-btn">Buy Image Credits -40% off</a>
+          <span class="plan-remaining">${permissions.remaining || 0}${coinIcon} ${imageText}${creditsText} left${hourlyText}</span>
         `;
       }).catch(error => {
         console.error('❌ Error loading permissions:', error);
@@ -2942,9 +2942,9 @@
         planInfo.innerHTML = `
           <div style="display: flex; align-items: center; gap: 8px;">
             <span class="plan-badge">Unknown</span>
-            <span class="plan-remaining">0${coinIcon} images left</span>
+            <a href="/pricing.html" class="buy-credits-btn">Buy Image Credits -40% off</a>
           </div>
-          <a href="/pricing.html" class="buy-credits-btn">Buy Image Credits -40% off</a>
+          <span class="plan-remaining">0${coinIcon} images left</span>
         `;
       });
 

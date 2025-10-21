@@ -424,6 +424,9 @@ exports.handler = async (event, context) => {
       ethnicity,
       hairLength,
       hairColor,
+      age,
+      breastSize,
+      assSize,
       visibility,
       createdBy,
       userEmail,
@@ -690,6 +693,9 @@ For all other topics including adult romance, sexuality, and intimate conversati
           ethnicity: ethnicity,
           hairLength: hairLength,
           hairColor: hairColor,
+          age: age,
+          breastSize: breastSize,
+          assSize: assSize,
           uncensored: unfilteredValue, // Pass uncensored flag to use Promptchan for uncensored companions
           source: 'companion-creation' // Mark as companion creation to get proper background treatment
         })
