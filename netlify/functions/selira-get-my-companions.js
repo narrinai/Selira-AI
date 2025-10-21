@@ -214,9 +214,10 @@ exports.handler = async (event, context) => {
       if (userCreatedResponse.ok) {
         const pageData = await userCreatedResponse.json();
         console.log('✅ Found', pageData.records.length, 'user-created characters in this page');
-        console.log('🔍 Raw response data:', JSON.stringify(pageData, null, 2));
+        console.log('🔍 Raw response sample (first 3):', JSON.stringify(pageData.records.slice(0, 3), null, 2));
         if (pageData.records.length > 0) {
-          console.log('🔍 First character Created_by field:', pageData.records[0].fields.Created_by);
+          console.log('🔍 First character Created_By field (linked):', pageData.records[0].fields.Created_By);
+          console.log('🔍 First character Created_by field (text):', pageData.records[0].fields.Created_by);
         }
         userCreatedCharacters = userCreatedCharacters.concat(pageData.records);
         charactersOffset = pageData.offset;
