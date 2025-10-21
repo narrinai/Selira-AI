@@ -1260,35 +1260,35 @@
     const poses = [
       // 2-credit poses first
       { id: 'pov-oral', label: 'POV Blowjob', prompt: 'POV blowjob, penis in mouth, oral sex', credits: 2 },
-      { id: 'reverse-cowgirl', label: 'Reverse Cowgirl', prompt: 'reverse cowgirl, riding backwards', credits: 2 },
+      { id: 'reverse-cowgirl', label: 'Reverse Cowgirl', prompt: 'reverse cowgirl, riding backwards, penetration', credits: 2 },
       { id: 'footjob', label: 'Footjob', prompt: 'footjob, feet on penis', credits: 2 },
       { id: 'spooning', label: 'Spooning', prompt: 'spooning sex, penetration from behind', credits: 2 },
-      { id: 'holding-legs', label: 'Holding Legs', prompt: 'legs up spread wide, missionary', credits: 2 },
+      { id: 'holding-legs', label: 'Holding Legs', prompt: 'legs up spread wide, missionary penetration', credits: 2 },
       { id: 'blowjob-side', label: 'BJ Side View', prompt: 'blowjob side view, oral sex', credits: 2 },
-      { id: 'face-fuck', label: 'Face Fuck', prompt: 'face fucking, aggressive oral', credits: 2 },
-      { id: 'squatting-bj', label: 'Squatting BJ', prompt: 'squatting blowjob, sucking dick', credits: 2 },
+      { id: 'face-fuck', label: 'Face Fuck', prompt: 'rough face fucking, aggressive oral', credits: 2 },
+      { id: 'squatting-bj', label: 'Squatting BJ', prompt: 'squatting blowjob, oral sex', credits: 2 },
       // 1-credit poses
-      { id: 'doggy', label: 'Doggy Style', prompt: 'doggy style, ass up, from behind, penetration', credits: 1 },
-      { id: 'cowgirl', label: 'Cowgirl', prompt: 'cowgirl position, riding on top', credits: 1 },
-      { id: 'missionary', label: 'Missionary', prompt: 'missionary position, legs spread', credits: 1 },
+      { id: 'doggy', label: 'Doggy Style', prompt: 'doggy style, from behind, penetration', credits: 1 },
+      { id: 'cowgirl', label: 'Cowgirl', prompt: 'cowgirl, riding on top, penetration', credits: 1 },
+      { id: 'missionary', label: 'Missionary', prompt: 'missionary, legs spread, penetration', credits: 1 },
       { id: 'fingering', label: 'Masturbating', prompt: 'masturbating, fingering pussy, legs spread', credits: 1 },
       { id: 'bent-over', label: 'Bent Over', prompt: 'bent over, ass up, rear view', credits: 1 },
-      { id: 'spread-ass', label: 'Spread Ass', prompt: 'spreading ass cheeks, bent over', credits: 1 }
+      { id: 'spread-ass', label: 'Spread Ass', prompt: 'spreading ass, bent over', credits: 1 }
     ];
 
     // NSFW Outfit options - kept short to avoid timeouts
     const outfits = [
-      { id: 'fully-nude', label: 'Fully Nude', prompt: 'fully nude, naked, bare skin' },
+      { id: 'fully-nude', label: 'Fully Nude', prompt: 'naked, fully nude' },
       { id: 'lingerie', label: 'Lingerie', prompt: 'sexy lingerie' },
-      { id: 'stockings', label: 'Stockings', prompt: 'thigh-high stockings' },
+      { id: 'stockings', label: 'Stockings', prompt: 'stockings only' },
       { id: 'bodysuit', label: 'Bodysuit', prompt: 'tight bodysuit' },
       { id: 'leather', label: 'Leather', prompt: 'leather outfit' },
-      { id: 'bikini', label: 'Bikini', prompt: 'wearing tiny bikini, swimsuit' },
+      { id: 'bikini', label: 'Bikini', prompt: 'tiny bikini' },
       { id: 'topless', label: 'Topless', prompt: 'topless' },
       { id: 'bottomless', label: 'Bottomless', prompt: 'bottomless' }
     ];
 
-    const fullyNudePrompt = 'fully nude, naked, bare skin'; // Shortened to match outfits
+    const fullyNudePrompt = 'naked, fully nude'; // Shortened to match outfits
 
     // Check authentication (using Supabase auth)
     async function checkAuthentication() {
