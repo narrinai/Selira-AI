@@ -636,6 +636,15 @@
       }
     }
 
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
     .message-content {
       background: var(--bg-secondary);
       padding: 12px 16px;
@@ -3771,32 +3780,57 @@
       }
     }
 
-    function addMessage(content, sender, autoScroll = true) {
+    function addMessage(content, sender, autoScrollOrId = true) {
       const messagesContainer = document.getElementById('chatMessages');
       const welcomeMessage = messagesContainer.querySelector('.welcome-message');
-      
+
       if (welcomeMessage) {
         welcomeMessage.remove();
       }
-      
+
       const messageDiv = document.createElement('div');
       messageDiv.className = `message ${sender}`;
-      
+
+      // Check if third parameter is an ID string (for loading messages)
+      const isLoadingId = typeof autoScrollOrId === 'string';
+      const autoScroll = isLoadingId ? true : autoScrollOrId;
+
+      if (isLoadingId) {
+        messageDiv.id = autoScrollOrId;
+      }
+
+      // Check if this is a loading message (contains "Generating")
+      const isLoadingMessage = content.includes('Generating your image');
+
       if (sender === 'ai') {
         messageDiv.innerHTML = `
           <div class="message-avatar">
             <img src="${fixAvatarUrl(currentCharacter.avatar)}" alt="${currentCharacter.name}" onerror="this.style.display='none'">
           </div>
-          <div class="message-content">${content}</div>
+          <div class="message-content">
+            ${isLoadingMessage ? `
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <div class="spinner" style="
+                  width: 20px;
+                  height: 20px;
+                  border: 3px solid rgba(206, 147, 216, 0.3);
+                  border-top-color: var(--accent);
+                  border-radius: 50%;
+                  animation: spin 0.8s linear infinite;
+                "></div>
+                <span>${content}</span>
+              </div>
+            ` : content}
+          </div>
         `;
       } else {
         messageDiv.innerHTML = `
           <div class="message-content">${content}</div>
         `;
       }
-      
+
       messagesContainer.appendChild(messageDiv);
-      
+
       if (autoScroll) {
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
       }
