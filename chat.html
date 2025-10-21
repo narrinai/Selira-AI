@@ -2945,6 +2945,7 @@
         NSFW_POSES.forEach(pose => {
           const btn = document.createElement('button');
           btn.className = 'selector-btn';
+          btn.dataset.poseId = pose.id; // Add data attribute for easier selection
           // Add (2) or (1) label to show credit cost
           const creditLabel = pose.credits === 2 ? ' (2)' : ' (1)';
           btn.textContent = `${pose.label}${creditLabel}`;
@@ -3000,14 +3001,16 @@
       selectedPose = poseId;
       selectedOutfit = 'fully-nude'; // Always fully nude
 
-      // Update button styles - find all buttons and update their state
-      document.querySelectorAll('#poseButtons .selector-btn').forEach((btn, index) => {
+      // Update button styles - use data attribute for precise matching
+      document.querySelectorAll('#poseButtons .selector-btn').forEach(btn => {
         btn.classList.remove('selected');
-        // Match button by index with pose array
-        if (NSFW_POSES[index] && NSFW_POSES[index].id === poseId) {
-          btn.classList.add('selected');
-        }
       });
+
+      // Select the clicked button
+      const selectedBtn = document.querySelector(`#poseButtons .selector-btn[data-pose-id="${poseId}"]`);
+      if (selectedBtn) {
+        selectedBtn.classList.add('selected');
+      }
 
       // Enable generate button if pose selected
       updateGenerateButton();
