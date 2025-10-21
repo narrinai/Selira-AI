@@ -289,23 +289,9 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, supab
 
     // If Promptchan succeeded, return the result
     if (promptchanSuccess && promptchanResult) {
-      // Increment usage counter
-      if ((source === 'chat' || source === 'image-generator') && (email || supabase_id)) {
-        console.log(`📈 [${requestId}] Incrementing usage counter for ${source} (Promptchan) with ${credits || 1} credits`);
-        try {
-          const incrementResponse = await fetch(`${process.env.NETLIFY_FUNCTIONS_URL || 'https://selira.ai/.netlify/functions'}/selira-increment-image-usage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId: supabase_id, credits: credits || 1 })
-          });
-
-          if (incrementResponse.ok) {
-            console.log(`✅ [${requestId}] Usage incremented successfully (Promptchan)`);
-          }
-        } catch (err) {
-          console.error(`❌ [${requestId}] Error incrementing usage:`, err.message);
-        }
-      }
+      // Usage counter already incremented BEFORE generation (see pre-increment above)
+      // No need to increment again here to avoid double-counting
+      console.log(`ℹ️ [${requestId}] Skipping post-generation increment (already done pre-generation)`);
 
       return {
         statusCode: 200,
@@ -463,23 +449,9 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, supab
 
     // If Promptchan succeeded, return the result
     if (promptchanSuccess && promptchanResult) {
-      // Increment usage counter
-      if ((source === 'chat' || source === 'image-generator') && (email || supabase_id)) {
-        console.log(`📈 [${requestId}] Incrementing usage counter for ${source} (Promptchan explicit) with ${credits || 1} credits`);
-        try {
-          const incrementResponse = await fetch(`${process.env.NETLIFY_FUNCTIONS_URL || 'https://selira.ai/.netlify/functions'}/selira-increment-image-usage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId: supabase_id, credits: credits || 1 })
-          });
-
-          if (incrementResponse.ok) {
-            console.log(`✅ [${requestId}] Usage incremented successfully (Promptchan explicit)`);
-          }
-        } catch (err) {
-          console.error(`❌ [${requestId}] Error incrementing usage:`, err.message);
-        }
-      }
+      // Usage counter already incremented BEFORE generation (see pre-increment above)
+      // No need to increment again here to avoid double-counting
+      console.log(`ℹ️ [${requestId}] Skipping post-generation increment (already done pre-generation)`);
 
       return {
         statusCode: 200,
@@ -697,23 +669,9 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, supab
     const result = await response.json();
     console.log(`✅ [${requestId}] Promptchan image generated, gems used:`, result.gems);
 
-    // Increment usage counter for chat and image-generator
-    if ((source === 'chat' || source === 'image-generator') && (email || supabase_id)) {
-      console.log(`📈 [${requestId}] Incrementing usage counter for ${source} (Promptchan) with ${credits || 1} credits`);
-      try {
-        const incrementResponse = await fetch(`${process.env.NETLIFY_FUNCTIONS_URL || 'https://selira.ai/.netlify/functions'}/selira-increment-image-usage`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId: supabase_id, credits: credits || 1 })
-        });
-
-        if (incrementResponse.ok) {
-          console.log(`✅ [${requestId}] Usage incremented successfully (Promptchan)`);
-        }
-      } catch (err) {
-        console.error(`❌ [${requestId}] Error incrementing usage:`, err.message);
-      }
-    }
+    // Usage counter already incremented BEFORE generation (see pre-increment above)
+    // No need to increment again here to avoid double-counting
+    console.log(`ℹ️ [${requestId}] Skipping post-generation increment (already done pre-generation)`);
 
     return {
       statusCode: 200,
@@ -966,6 +924,26 @@ exports.handler = async (event, context) => {
           console.log(`✅ [${requestId}] Limit check passed:`, limitData);
           // Store limit data for later use when incrementing
           body.limitData = limitData;
+
+          // IMPORTANT: Increment usage counter IMMEDIATELY after limit check passes
+          // This prevents race conditions where multiple rapid requests can bypass the limit
+          // because the counter hasn't been incremented yet
+          console.log(`📈 [${requestId}] Pre-incrementing usage counter to prevent race conditions`);
+          try {
+            const preIncrementResponse = await fetch(`${process.env.NETLIFY_FUNCTIONS_URL || 'https://selira.ai/.netlify/functions'}/selira-increment-image-usage`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ userId: supabase_id, credits: credits || 1 })
+            });
+
+            if (preIncrementResponse.ok) {
+              console.log(`✅ [${requestId}] Pre-increment successful - counter updated before image generation`);
+            } else {
+              console.warn(`⚠️ [${requestId}] Pre-increment failed (${preIncrementResponse.status}), continuing anyway`);
+            }
+          } catch (preIncrementError) {
+            console.warn(`⚠️ [${requestId}] Pre-increment error:`, preIncrementError.message);
+          }
         }
       } catch (limitError) {
         console.warn(`⚠️ [${requestId}] Limit check failed, allowing generation:`, limitError.message);
@@ -1331,43 +1309,10 @@ exports.handler = async (event, context) => {
       limitDataUserId: body.limitData?.userId
     });
 
+    // Usage counter already incremented BEFORE generation (see pre-increment above)
+    // No need to increment again here to avoid double-counting
     if ((source === 'chat' || source === 'image-generator') && (email || supabase_id)) {
-      console.log(`📈 [${requestId}] ✅ Incrementing usage counter for ${source} image generation`);
-      try {
-        // Use supabase_id directly (should be Supabase UUID from frontend)
-        const userId = supabase_id;
-
-        console.log(`📈 [${requestId}] Full increment details:`, {
-          userId: userId,
-          userIdLength: userId?.length,
-          isAirtableId: userId?.startsWith('rec'),
-          isAuth0Id: userId?.startsWith('auth0|'),
-          isSupabaseId: userId?.length === 36 && userId?.includes('-'),
-          supabase_id_param: supabase_id,
-          limitData: body.limitData
-        });
-
-        const incrementResponse = await fetch(`${process.env.NETLIFY_FUNCTIONS_URL || 'https://selira.ai/.netlify/functions'}/selira-increment-image-usage`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            userId: userId,
-            credits: credits || 1
-          })
-        });
-
-        console.log(`📊 [${requestId}] Increment response status:`, incrementResponse.status);
-
-        if (incrementResponse.ok) {
-          const incrementData = await incrementResponse.json();
-          console.log(`✅ [${requestId}] Usage incremented successfully:`, incrementData);
-        } else {
-          const errorText = await incrementResponse.text();
-          console.error(`❌ [${requestId}] Increment failed with status ${incrementResponse.status}:`, errorText);
-        }
-      } catch (incrementError) {
-        console.error(`❌ [${requestId}] Error incrementing usage:`, incrementError.message, incrementError.stack);
-      }
+      console.log(`ℹ️ [${requestId}] Skipping post-generation increment (already done pre-generation)`);
     } else if (source && source !== 'chat' && source !== 'image-generator') {
       console.log(`🎨 [${requestId}] Companion creation image - skipping usage tracking (source: ${source})`);
     } else {
