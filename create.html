@@ -2418,6 +2418,26 @@
           try {
             const errorData = await response.json();
             console.error('❌ Backend error response:', errorData);
+
+            // Handle 401 auth errors specially
+            if (response.status === 401 && errorData.requiresAuth) {
+              console.log('🔒 Backend auth check failed, opening signup modal');
+
+              // Hide loading message
+              if (timeMessage) {
+                timeMessage.style.display = 'none';
+              }
+
+              // Open signup modal
+              if (window.openLoginModal) {
+                window.openLoginModal('signup');
+              } else if (window.seliraAuth) {
+                window.seliraAuth.openModal('signup');
+              }
+
+              return; // Stop execution without throwing error
+            }
+
             errorMessage = errorData.error || errorData.details || errorMessage;
 
             // Add more specific error details if available

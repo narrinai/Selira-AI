@@ -785,72 +785,27 @@ For all other topics including adult romance, sexuality, and intimate conversati
     console.log('🔍 Final avatarUrlToUse before saving:', avatarUrlToUse);
     console.log('🔍 Avatar_URL in characterData:', characterData.Avatar_URL);
 
-    // Add Created_By field - try to link to user record, or create text fallback
+    // Add Created_By field - require valid user record
     console.log('🔧 Setting up Created_By field. userRecordId:', userRecordId, 'userEmail:', userEmail);
 
     if (userRecordId) {
       characterData.Created_By = [userRecordId];
       console.log('✅ Linking character to user record ID:', userRecordId);
-    } else if (userEmail || createdBy) {
-      // If no user record found, try to create one
-      console.log('⚠️ No user record ID found, attempting to create/find user for:', userEmail || createdBy);
-
-      try {
-        // Try to create a basic user record for the creator
-        console.log('📝 Attempting to create new user record with email:', userEmail);
-        const createUserResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            fields: {
-              Email: userEmail || `${createdBy}@system.local`,
-              display_name: createdBy || userEmail || 'System User'
-              // Removed Plan and subscription_status - let Airtable use defaults
-            }
-          })
-        });
-
-        console.log('📊 Create user response status:', createUserResponse.status);
-
-        if (createUserResponse.ok) {
-          const newUserData = await createUserResponse.json();
-          userRecordId = newUserData.id;
-          characterData.Created_By = [userRecordId];
-          console.log('✅ Created new user record and linked:', userRecordId);
-        } else {
-          const errorText = await createUserResponse.text();
-          console.log('❌ Could not create user record:', createUserResponse.status, errorText);
-
-          // Try one more lookup in case user was just created (case-insensitive)
-          console.log('🔄 Retrying user lookup after creation failure...');
-          const emailLower = userEmail.toLowerCase();
-          const retryLookupResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula=LOWER({Email})="${emailLower}"`, {
-            method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
-              'Content-Type': 'application/json'
-            }
-          });
-
-          if (retryLookupResponse.ok) {
-            const retryData = await retryLookupResponse.json();
-            if (retryData.records && retryData.records.length > 0) {
-              userRecordId = retryData.records[0].id;
-              characterData.Created_By = [userRecordId];
-              console.log('✅ Found user on retry, linking:', userRecordId);
-            } else {
-              console.log('❌ User still not found on retry. Created_By will be empty.');
-            }
-          }
-        }
-      } catch (error) {
-        console.log('❌ Error in user creation/lookup:', error.message, error.stack);
-      }
     } else {
-      console.log('⚠️ No creator information provided, Created_By will be empty');
+      // User not found - reject companion creation
+      console.log('❌ User record not found for:', userEmail);
+      return {
+        statusCode: 401,
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          error: 'User not found',
+          message: 'Please login or signup to create companions',
+          requiresAuth: true
+        })
+      };
     }
 
     console.log('🔍 Final Created_By value:', characterData.Created_By);
