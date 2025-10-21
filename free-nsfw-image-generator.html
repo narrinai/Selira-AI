@@ -1258,24 +1258,24 @@
 
     // Pose options - shortened to prevent timeouts
     const poses = [
-      { id: 'pov-oral', label: 'POV Blowjob', prompt: 'POV blowjob, penis in mouth, oral sex' },
-      { id: 'doggy', label: 'Doggy Style', prompt: 'doggy style, ass up, from behind, penetration' },
-      { id: 'cowgirl', label: 'Cowgirl', prompt: 'cowgirl position, riding on top' },
-      { id: 'missionary', label: 'Missionary', prompt: 'missionary position, legs spread' },
-      { id: 'fingering', label: 'Masturbating', prompt: 'masturbating, fingering pussy, legs spread' },
-      { id: 'reverse-cowgirl', label: 'Reverse Cowgirl', prompt: 'reverse cowgirl, riding backwards' },
-      { id: 'bent-over', label: 'Bent Over', prompt: 'bent over, ass up, rear view' },
-      { id: 'anal', label: 'Anal', prompt: 'anal sex, bent over, penetration from behind' },
-      { id: 'deepthroat', label: 'Deepthroat', prompt: 'oral sex, deep throat blowjob, mouth full' },
-      { id: 'footjob', label: 'Footjob', prompt: 'footjob, feet on penis' },
-      { id: 'spooning', label: 'Spooning', prompt: 'spooning sex, penetration from behind' },
-      { id: 'trimming', label: 'Trimming', prompt: 'shaving pussy, grooming' },
-      { id: 'spread-ass', label: 'Spread Ass', prompt: 'spreading ass cheeks, bent over' },
-      { id: 'holding-legs', label: 'Holding Legs', prompt: 'legs up spread wide, missionary' },
-      { id: 'blowjob-side', label: 'BJ Side View', prompt: 'blowjob side view, oral sex' },
-      { id: 'face-fuck', label: 'Face Fuck', prompt: 'face fucking, aggressive oral' },
-      { id: 'licking-dick', label: 'Licking Dick', prompt: 'licking penis, tongue on cock' },
-      { id: 'squatting-bj', label: 'Squatting BJ', prompt: 'squatting blowjob, sucking dick' }
+      { id: 'pov-oral', label: 'POV Blowjob', prompt: 'POV blowjob, penis in mouth, oral sex', credits: 2 },
+      { id: 'doggy', label: 'Doggy Style', prompt: 'doggy style, ass up, from behind, penetration', credits: 1 },
+      { id: 'cowgirl', label: 'Cowgirl', prompt: 'cowgirl position, riding on top', credits: 1 },
+      { id: 'missionary', label: 'Missionary', prompt: 'missionary position, legs spread', credits: 1 },
+      { id: 'fingering', label: 'Masturbating', prompt: 'masturbating, fingering pussy, legs spread', credits: 1 },
+      { id: 'reverse-cowgirl', label: 'Reverse Cowgirl', prompt: 'reverse cowgirl, riding backwards', credits: 2 },
+      { id: 'bent-over', label: 'Bent Over', prompt: 'bent over, ass up, rear view', credits: 1 },
+      { id: 'anal', label: 'Anal', prompt: 'anal sex, bent over, penetration from behind', credits: 2 },
+      { id: 'deepthroat', label: 'Deepthroat', prompt: 'oral sex, deep throat blowjob, mouth full', credits: 1 },
+      { id: 'footjob', label: 'Footjob', prompt: 'footjob, feet on penis', credits: 2 },
+      { id: 'spooning', label: 'Spooning', prompt: 'spooning sex, penetration from behind', credits: 1 },
+      { id: 'trimming', label: 'Trimming', prompt: 'shaving pussy, grooming', credits: 1 },
+      { id: 'spread-ass', label: 'Spread Ass', prompt: 'spreading ass cheeks, bent over', credits: 1 },
+      { id: 'holding-legs', label: 'Holding Legs', prompt: 'legs up spread wide, missionary', credits: 1 },
+      { id: 'blowjob-side', label: 'BJ Side View', prompt: 'blowjob side view, oral sex', credits: 2 },
+      { id: 'face-fuck', label: 'Face Fuck', prompt: 'face fucking, aggressive oral', credits: 1 },
+      { id: 'licking-dick', label: 'Licking Dick', prompt: 'licking penis, tongue on cock', credits: 1 },
+      { id: 'squatting-bj', label: 'Squatting BJ', prompt: 'squatting blowjob, sucking dick', credits: 2 }
     ];
 
     // NSFW Outfit options - kept short to avoid timeouts
@@ -1619,7 +1619,9 @@
         const card = document.createElement('div');
         card.style.cssText = 'background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 12px; text-align: center; cursor: pointer; transition: all 0.2s ease; position: relative;';
         card.dataset.poseId = pose.id;
-        card.innerHTML = `<div style="font-size: 13px; font-weight: 500; color: var(--text-primary);">${pose.label}</div>`;
+        // Add (2) for premium poses that cost 2 credits
+        const label = pose.credits === 2 ? `${pose.label} (2)` : pose.label;
+        card.innerHTML = `<div style="font-size: 13px; font-weight: 500; color: var(--text-primary);">${label}</div>`;
         card.addEventListener('click', () => selectPose(pose.id));
         card.addEventListener('mouseover', () => card.style.borderColor = 'var(--accent)');
         card.addEventListener('mouseout', () => { if (!card.classList.contains('selected')) card.style.borderColor = 'var(--border)'; });
@@ -1771,7 +1773,8 @@
             email: userData.email,
             supabase_id: userData.id || userData.sub,
             source: 'image-generator',
-            uncensored: true // Always use Promptchan for image generator page
+            uncensored: true, // Always use Promptchan for image generator page
+            credits: selectedPose?.credits || 1 // Number of credits to deduct (1 or 2)
           })
         });
 
