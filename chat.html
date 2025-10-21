@@ -3813,6 +3813,9 @@
                 <div class="spinner" style="
                   width: 20px;
                   height: 20px;
+                  min-width: 20px;
+                  min-height: 20px;
+                  flex-shrink: 0;
                   border: 3px solid rgba(206, 147, 216, 0.3);
                   border-top-color: var(--accent);
                   border-radius: 50%;
@@ -5589,7 +5592,7 @@
       // Get uncensored mode state
       const unfilteredMode = localStorage.getItem('unfilteredMode') === 'true';
 
-      // Use the full user prompt if provided, otherwise get random sexy clothing
+      // Use the full user prompt if provided, otherwise fully nude in uncensored mode
       let simplePrompt; // Short version for UI
       let enhancedPrompt; // Longer version for backend
       if (promptPart && promptPart.length > 0) {
@@ -5597,9 +5600,14 @@
         simplePrompt = promptPart;
         enhancedPrompt = promptPart; // Send full prompt to backend (like NSFW image gen page)
       } else {
-        // No specific prompt - use random sexy clothing
-        simplePrompt = getStylishClothing(characterStyle);
-        enhancedPrompt = simplePrompt; // No enhancement needed for clothing prompts
+        // No specific prompt - use fully nude if uncensored, otherwise random clothing
+        if (unfilteredMode) {
+          simplePrompt = 'naked, fully nude';
+          enhancedPrompt = simplePrompt;
+        } else {
+          simplePrompt = getStylishClothing(characterStyle);
+          enhancedPrompt = simplePrompt;
+        }
       }
       
       // Add user message
