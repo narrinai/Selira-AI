@@ -2902,13 +2902,13 @@
 
         // Always show remaining images/credits count
         const usingCredits = permissions.usingCredits || permissions.imageCreditsRemaining > 0;
+        const imageText = (permissions.remaining === 1) ? 'image' : 'images';
         const creditsText = usingCredits ? ' credits' : '';
-        const imageText = (permissions.remaining === 1 && !usingCredits) ? 'image' : 'images';
         const hourlyText = permissions.hourlyLimitReached ? ' this hour' : '';
 
         planInfo.innerHTML = `
           <span class="plan-badge">${permissions.plan === 'Guest' ? 'Not Logged In' : permissions.plan + ' Plan'}</span>
-          <span class="plan-remaining">${permissions.remaining || 0}${coinIcon}${creditsText} ${imageText} left${hourlyText}</span>
+          <span class="plan-remaining">${permissions.remaining || 0}${coinIcon} ${imageText}${creditsText} left${hourlyText}</span>
         `;
       }).catch(error => {
         console.error('❌ Error loading permissions:', error);
@@ -3088,11 +3088,11 @@
         console.log('♻️ Cache invalidated for fresh counter update');
         const permissions = await checkUserImagePermissions(false);
         const usingCredits = permissions.usingCredits || permissions.imageCreditsRemaining > 0;
+        const imageText = (permissions.remaining === 1) ? 'image' : 'images';
         const creditsText = usingCredits ? ' credits' : '';
-        const imageText = (permissions.remaining === 1 && !usingCredits) ? 'image' : 'images';
         const hourlyText = permissions.hourlyLimitReached ? ' this hour' : '';
         const coinIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-left: 3px; opacity: 0.8;"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle></svg>`;
-        planRemainingElement.innerHTML = `${permissions.remaining || 0}${coinIcon}${creditsText} ${imageText} left${hourlyText}`;
+        planRemainingElement.innerHTML = `${permissions.remaining || 0}${coinIcon} ${imageText}${creditsText} left${hourlyText}`;
         console.log('✅ Updated image counter:', permissions.remaining, creditsText);
       } catch (error) {
         console.warn('⚠️ Failed to update image plan counter:', error);
