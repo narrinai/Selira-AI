@@ -2433,6 +2433,15 @@
       community: 'all' // 'all', 'community' (user-made), or 'official' (Selira-made)
     };
 
+    // Featured companions (always show first on index page for female uncensored)
+    const featuredCompanionSlugs = [
+      'seductive-secretary-stone-1760212642419',
+      'ruby-moon-1760211481064',
+      'phoenix-hunter-1760203798633',
+      'zoe-storm-1760211803316',
+      'ember-cruz-1760206220376'
+    ];
+
     // Global state
     let currentTab = 'discover';
     let currentPage = 1;
@@ -2955,7 +2964,7 @@
     // ===== CHARACTER RENDERING =====
     function renderCharacters() {
       const grid = document.getElementById('charactersGrid');
-      
+
       if (filteredCharacters.length === 0) {
         grid.innerHTML = `
           <div class="loading-grid">
@@ -2967,15 +2976,53 @@
 
       // Reset pagination for new search/filter
       currentPage = 1;
-      
-      // Show first batch of characters
-      const initialCharacters = filteredCharacters.slice(0, charactersPerPage);
 
-      // Create array with deal card inserted at position 4 (5th card, index 4)
+      // Check if we're in default state (female uncensored, no search, no category, no tags)
+      const isDefaultState = currentFilters.sex === 'female' &&
+                             currentFilters.content === 'uncensored' &&
+                             currentFilters.category === 'all' &&
+                             !currentFilters.search &&
+                             currentFilters.tags.length === 0;
+
+      let initialCharacters;
+
+      if (isDefaultState) {
+        // Featured companions mode: show 5 featured + rest
+        const featured = [];
+        const remaining = [];
+
+        // Separate featured companions from the rest
+        filteredCharacters.forEach(char => {
+          if (featuredCompanionSlugs.includes(char.slug)) {
+            featured.push(char);
+          } else {
+            remaining.push(char);
+          }
+        });
+
+        // Sort featured companions in the exact order specified
+        featured.sort((a, b) => {
+          return featuredCompanionSlugs.indexOf(a.slug) - featuredCompanionSlugs.indexOf(b.slug);
+        });
+
+        // Combine: featured first, then remaining
+        const orderedCharacters = [...featured, ...remaining];
+        initialCharacters = orderedCharacters.slice(0, charactersPerPage);
+
+        console.log('✨ Featured mode active:', featured.length, 'featured companions');
+      } else {
+        // Normal mode: show characters as filtered
+        initialCharacters = filteredCharacters.slice(0, charactersPerPage);
+        console.log('📋 Normal mode: showing filtered characters');
+      }
+
+      // Create array with deal card inserted at position 5 (6th card, index 5) in featured mode,
+      // or position 4 (5th card, index 4) in normal mode
+      const dealCardPosition = isDefaultState ? 5 : 4;
       const charactersWithDeal = [];
       initialCharacters.forEach((character, index) => {
-        if (index === 4) {
-          // Insert deal card before 5th character
+        if (index === dealCardPosition) {
+          // Insert deal card at the specified position
           charactersWithDeal.push('DEAL_CARD');
         }
         charactersWithDeal.push(character);
