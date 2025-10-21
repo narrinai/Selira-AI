@@ -2498,6 +2498,14 @@
         'ruby-moon-1760211481064',
         'ember-cruz-1760206220376',
         'eager-roommate-grey-1760211529959'
+      ],
+      all: [
+        'seductive-secretary-stone-1760212642419',
+        'ruby-moon-1760211481064',
+        'phoenix-hunter-1760203798633',
+        'zoe-storm-1760211803316',
+        'ember-cruz-1760206220376',
+        'eager-roommate-grey-1760211529959'
       ]
     };
 
@@ -3048,9 +3056,11 @@
       if (isFemaleUncensored) {
         if (currentFilters.style === 'anime') {
           featuredList = featuredCompanions.anime;
-        } else if (currentFilters.style === 'realistic' || currentFilters.style === 'all' || !currentFilters.style) {
-          // Default to realistic featured companions when style is 'all' or realistic
+        } else if (currentFilters.style === 'realistic') {
           featuredList = featuredCompanions.realistic;
+        } else if (currentFilters.style === 'all' || !currentFilters.style) {
+          // Show all featured companions (realistic + anime mixed) when style is 'all' or not set
+          featuredList = featuredCompanions.all;
         }
       }
 
