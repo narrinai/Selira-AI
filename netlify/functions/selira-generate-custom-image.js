@@ -145,12 +145,12 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, supab
     const negativePrompt = 'clothes, clothing, dressed, covered, censored, censorship, red box, red block, red square, pixelated, mosaic, blur bar, black bar, censor bar, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white, giant breasts, huge ass, unrealistic proportions, exaggerated features, cartoonish body, distorted anatomy';
 
     // Determine Promptchan model style based on companion type
-    let promptchanModelStyle = 'Photo XL+';  // Use Photo XL+ with fixed parameters
+    let promptchanModelStyle = 'Photo XL+ v2';  // Use Photo XL+ v2 with fixed parameters
     if (style === 'anime' || style === 'animated') {
       promptchanModelStyle = 'Anime XL+';
       console.log(`🎌 [${requestId}] Using Anime XL+ model for anime companion`);
     } else {
-      console.log(`📸 [${requestId}] Using Photo XL+ model with FIXED parameters (512x512, sliders -1 to 1)`);
+      console.log(`📸 [${requestId}] Using Photo XL+ v2 model with FIXED parameters (512x512, sliders -1 to 1)`);
     }
 
     // Enhance prompt with explicit detail keywords for maximum visibility
@@ -230,7 +230,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, supab
     enhancedPrompt += nsfwBoost;
     console.log(`🔥 [${requestId}] Added minimal NSFW boost:`, nsfwBoost);
 
-    // Add extra nudity emphasis for ALL poses (Photo XL+ tends to add clothes)
+    // Add extra nudity emphasis for ALL poses (Photo XL+ v2 tends to add clothes)
     enhancedPrompt += ', completely naked, fully nude, no clothes at all, zero clothing, bare naked body, exposed genitals';
     console.log(`🔥 [${requestId}] Added nudity boost to pre-enhanced prompt`);
 
@@ -239,8 +239,8 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, supab
       negative_prompt: negativePrompt,
       style: promptchanModelStyle,  // Use correct model based on companion style
       quality: 'Ultra', // Only valid option
-      image_size: '512x512', // Valid size for Photo XL+ (was 256x256 - not supported!)
-      creativity: 50, // High creativity for Photo XL+
+      image_size: '512x512', // Valid size for Photo XL+ v2 (was 256x256 - not supported!)
+      creativity: 50, // High creativity for Photo XL+ v2
       seed: -1,
       filter: 'None', // No filter for fully uncensored (removes secondary censorship blocks)
       emotion: 'Default',
@@ -387,7 +387,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, supab
     ];
     const randomBg = randomBackgrounds[Math.floor(Math.random() * randomBackgrounds.length)];
 
-    // Add extra nudity emphasis for ALL explicit sex poses (Photo XL+ tends to add clothes)
+    // Add extra nudity emphasis for ALL explicit sex poses (Photo XL+ v2 tends to add clothes)
     const nudityBoost = ', completely naked, fully nude, no clothes at all, zero clothing, bare naked body, exposed genitals';
 
     let directPrompt;
@@ -401,7 +401,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, supab
 
     const negativePrompt = 'clothes, clothing, dressed, covered, censored, censorship, red box, red block, red square, pixelated, mosaic, blur bar, black bar, censor bar, underwear, bra, panties, bikini, blur, low quality, bad anatomy, extra limbs, deformed, ugly, text, watermark, logo, signature, bad hands, bad face, monochrome, black and white, giant breasts, huge ass, unrealistic proportions, exaggerated features, cartoonish body, distorted anatomy';
 
-    const promptchanStyle = (style === 'anime' || style === 'animated') ? 'Anime XL+' : 'Photo XL+';
+    const promptchanStyle = (style === 'anime' || style === 'animated') ? 'Anime XL+' : 'Photo XL+ v2';
 
     // For explicit sex acts, use HIGH creativity (50) for better pose interpretation
     // Complex poses like blowjob, doggy, cowgirl need more creative freedom
@@ -410,8 +410,8 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, supab
       negative_prompt: negativePrompt,
       style: promptchanStyle,
       quality: 'Ultra', // Only valid option
-      image_size: '512x512', // Valid size for Photo XL+ (was 256x256 - not supported!)
-      creativity: 50, // HIGH creativity for complex sex poses with Photo XL+
+      image_size: '512x512', // Valid size for Photo XL+ v2 (was 256x256 - not supported!)
+      creativity: 50, // HIGH creativity for complex sex poses with Photo XL+ v2
       seed: -1,
       filter: 'None', // No filter for fully uncensored (removes secondary censorship blocks)
       emotion: 'Default',
@@ -567,7 +567,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, supab
   // For UNCENSORED mode, always use EXTREME explicit prompts (even for companion creation)
   // For CENSORED mode, use mild tasteful prompts for companion creation
   if (uncensored) {
-    // UNCENSORED: EXTREME explicit prompts for Promptchan Photo XL+
+    // UNCENSORED: EXTREME explicit prompts for Promptchan Photo XL+ v2
     nsfwEnhancement = sex === 'male'
       ? ', naked man, big hard erect penis visible and prominent in frame, cock standing up, balls hanging visible, shaft and head clearly shown, genitals fully exposed and in focus, muscular body, explicit male nudity, pornographic XXX adult content, full frontal nudity showing everything, aroused hard cock, intimate POV angle'
       : ', naked woman, huge natural breasts exposed with erect nipples visible, wet glistening pussy clearly visible with labia spread open, pussy lips prominent in frame, genitals fully exposed and in focus, legs spread wide showing everything, beautiful curves, explicit female nudity, pornographic XXX adult content, full frontal nudity, aroused wet pussy, intimate POV angle showing genitals';
@@ -617,7 +617,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, supab
 
   console.log(`✨ [${requestId}] Promptchan enhanced prompt:`, enhancedPrompt);
 
-  // Add extra nudity emphasis for ALL poses when uncensored (Photo XL+ tends to add clothes)
+  // Add extra nudity emphasis for ALL poses when uncensored (Photo XL+ v2 tends to add clothes)
   if (uncensored) {
     // For bulk female avatars, reinforce SOLO emphasis with nudity boost
     const soloReinforcement = (isBulkAvatarGeneration && sex === 'female') ? ', woman ALONE, SOLO female, single woman by herself' : '';
@@ -628,7 +628,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, supab
   }
 
   // Determine Promptchan style based on our style parameter
-  let promptchanStyle = 'Photo XL+';  // Use Photo XL+ with fixed parameters (512x512, sliders -1 to 1)
+  let promptchanStyle = 'Photo XL+ v2';  // Use Photo XL+ v2 with fixed parameters (512x512, sliders -1 to 1)
   let promptchanFilter = 'None';       // No filter for fully uncensored (removes secondary censorship blocks)
 
   if (style === 'anime' || style === 'animated') {
@@ -636,7 +636,7 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, supab
     promptchanFilter = 'None';  // No filter for fully uncensored (removes secondary censorship blocks)
     console.log(`🎌 [${requestId}] Using ANIME style for Promptchan`);
   } else {
-    console.log(`📸 [${requestId}] Using Photo XL+ for Promptchan with FIXED parameters`);
+    console.log(`📸 [${requestId}] Using Photo XL+ v2 for Promptchan with FIXED parameters`);
   }
 
   // Add negative prompt to reduce unwanted elements and extreme proportions
@@ -655,8 +655,8 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, supab
     negative_prompt: negativePrompt,
     style: promptchanStyle,
     quality: 'Ultra', // Only valid option - 1 Gem
-    image_size: '512x512', // Valid size for Photo XL+ (was 256x256 - not supported!)
-    creativity: 50, // High creativity for Photo XL+ (was 20, increased to 50)
+    image_size: '512x512', // Valid size for Photo XL+ v2 (was 256x256 - not supported!)
+    creativity: 50, // High creativity for Photo XL+ v2 (was 20, increased to 50)
     seed: -1, // Random seed
     filter: promptchanFilter, // No filter (uncensored)
     emotion: 'Default',
