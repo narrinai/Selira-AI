@@ -1617,9 +1617,10 @@
         const card = document.createElement('div');
         card.style.cssText = 'background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 12px; text-align: center; cursor: pointer; transition: all 0.2s ease; position: relative;';
         card.dataset.poseId = pose.id;
-        // Add (2) or (1) label to show credit cost
-        const creditLabel = pose.credits === 2 ? ' (2)' : ' (1)';
-        const label = `${pose.label}${creditLabel}`;
+        // Add coin icon and credit cost
+        const creditCount = pose.credits === 2 ? '2' : '1';
+        const coinIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-left: 3px; opacity: 0.8;"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle></svg>`;
+        const label = `${pose.label} <span style="white-space: nowrap;">(${creditCount}${coinIcon})</span>`;
         card.innerHTML = `<div style="font-size: 13px; font-weight: 500; color: var(--text-primary);">${label}</div>`;
         card.addEventListener('click', () => selectPose(pose.id));
         card.addEventListener('mouseover', () => card.style.borderColor = 'var(--accent)');

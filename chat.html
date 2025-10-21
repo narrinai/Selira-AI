@@ -2940,9 +2940,10 @@
           const btn = document.createElement('button');
           btn.className = 'selector-btn';
           btn.dataset.poseId = pose.id; // Add data attribute for easier selection
-          // Add (2) or (1) label to show credit cost
-          const creditLabel = pose.credits === 2 ? ' (2)' : ' (1)';
-          btn.textContent = `${pose.label}${creditLabel}`;
+          // Add coin icon and credit cost
+          const creditCount = pose.credits === 2 ? '2' : '1';
+          const coinIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-left: 3px; opacity: 0.8;"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle></svg>`;
+          btn.innerHTML = `${pose.label} <span style="white-space: nowrap;">(${creditCount}${coinIcon})</span>`;
           btn.onclick = () => selectPose(pose.id);
           poseButtonsContainer.appendChild(btn);
         });
