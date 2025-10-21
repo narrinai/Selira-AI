@@ -470,7 +470,10 @@ exports.handler = async (event, context) => {
       try {
         console.log('🔍 Looking up user record for Created_By field and display_name...');
         console.log('🔍 Searching for email:', userEmail);
-        const userLookupResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula={Email}="${userEmail}"`, {
+
+        // Use case-insensitive email lookup with LOWER() function
+        const emailLower = userEmail.toLowerCase();
+        const userLookupResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula=LOWER({Email})="${emailLower}"`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
@@ -483,6 +486,10 @@ exports.handler = async (event, context) => {
         if (userLookupResponse.ok) {
           const userLookupData = await userLookupResponse.json();
           console.log('🔍 User lookup found', userLookupData.records?.length || 0, 'records');
+
+          if (userLookupData.records && userLookupData.records.length > 0) {
+            console.log('🔍 First user record fields:', JSON.stringify(userLookupData.records[0].fields, null, 2));
+          }
 
           if (userLookupData.records && userLookupData.records.length > 0) {
             userRecordId = userLookupData.records[0].id;
@@ -767,6 +774,9 @@ For all other topics including adult romance, sexuality, and intimate conversati
       ethnicity: ethnicity || 'white',
       hair_length: hairLength || 'long',
       hair_color: hairColor || 'brown',
+      Age: age || 25, // Body customization: age
+      Breast_Size: breastSize !== undefined ? breastSize : 0, // Body customization: breast size
+      Ass_Size: assSize !== undefined ? assSize : 0, // Body customization: ass size
       Avatar_URL: avatarUrlToUse,
       content_filter: contentFilterValue
       // chats and rating fields don't exist in Airtable - removed
@@ -797,9 +807,8 @@ For all other topics including adult romance, sexuality, and intimate conversati
           body: JSON.stringify({
             fields: {
               Email: userEmail || `${createdBy}@system.local`,
-              display_name: createdBy || userEmail || 'System User',
-              Plan: 'free', // Default to free plan for new users
-              subscription_status: 'active'
+              display_name: createdBy || userEmail || 'System User'
+              // Removed Plan and subscription_status - let Airtable use defaults
             }
           })
         });
@@ -815,9 +824,10 @@ For all other topics including adult romance, sexuality, and intimate conversati
           const errorText = await createUserResponse.text();
           console.log('❌ Could not create user record:', createUserResponse.status, errorText);
 
-          // Try one more lookup in case user was just created
+          // Try one more lookup in case user was just created (case-insensitive)
           console.log('🔄 Retrying user lookup after creation failure...');
-          const retryLookupResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula={Email}="${userEmail}"`, {
+          const emailLower = userEmail.toLowerCase();
+          const retryLookupResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?filterByFormula=LOWER({Email})="${emailLower}"`, {
             method: 'GET',
             headers: {
               'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
