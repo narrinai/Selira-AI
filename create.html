@@ -791,9 +791,15 @@
         padding: 0 20px;
       }
       
-      .style-grid, .ethnicity-grid, .hair-grid {
+      .style-grid {
         grid-template-columns: 1fr;
         gap: 16px;
+        padding: 0 20px;
+      }
+
+      .ethnicity-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
         padding: 0 20px;
       }
       
@@ -1144,7 +1150,7 @@
             <!-- Censorship Toggle for Avatar Generation -->
             <div style="margin-bottom: 30px; padding: 20px; background: var(--bg-secondary); border-radius: var(--radius-md); border: 1px solid var(--border);">
               <div style="display: flex; align-items: center; justify-content: center; gap: 16px;">
-                <span style="color: var(--text-secondary); font-size: 14px; font-weight: 500;">Companion Profile Image:</span>
+                <span style="color: var(--text-secondary); font-size: 14px; font-weight: 500;">Companion Type:</span>
                 <div class="unfiltered-toggle active" id="createFlowUncensoredToggle" onclick="toggleCreateFlowCensorship()" title="Toggle censorship for avatar generation" style="cursor: pointer; user-select: none; display: flex; align-items: center; gap: 8px;">
                   <div class="toggle-switch" style="position: relative; width: 44px; height: 24px; background: linear-gradient(135deg, #ce93d8 0%, #ec4899 100%); border-radius: 12px; transition: background 0.3s ease; border: 1px solid rgba(206, 147, 216, 0.3);">
                     <div style="position: absolute; top: 2px; left: calc(100% - 22px); width: 20px; height: 20px; background: white; border-radius: 50%; transition: left 0.3s ease; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);"></div>
@@ -2106,14 +2112,8 @@
     }
 
     function checkBodyCustomizationComplete() {
-      // If all three options are selected, auto-advance after a short delay
-      if (characterCreationState.age &&
-          characterCreationState.breastSize !== null &&
-          characterCreationState.assSize !== null) {
-        setTimeout(() => {
-          nextStep();
-        }, 500);
-      }
+      // No auto-advance - user must click Continue button
+      // This function is kept for potential future use
     }
 
     function updateFinalPreview() {

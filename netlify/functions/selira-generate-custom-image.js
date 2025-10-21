@@ -12,7 +12,7 @@ let activeReplicateRequests = 0; // Track concurrent Replicate API calls
 
 // PROMPTCHAN IMAGE GENERATION FUNCTION
 async function generateWithPromptchan(body, requestId, corsHeaders, email, supabase_id) {
-  const { customPrompt, characterName, sex, ethnicity, hairLength, hairColor, style, shotType, source, uncensored, credits } = body;
+  const { customPrompt, characterName, sex, ethnicity, hairLength, hairColor, age, breastSize, assSize, style, shotType, source, uncensored, credits } = body;
 
   console.log(`🎨 [${requestId}] Generating with Promptchan API`);
   console.log(`🎨 [${requestId}] Style parameter received:`, style);
@@ -245,10 +245,10 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, supab
       filter: 'None', // No filter for fully uncensored (removes secondary censorship blocks)
       emotion: 'Default',
       detail: 0, // Detail level (0 = default)
-      age_slider: 23, // Slightly younger for more attractive faces
+      age_slider: age || 23, // Use specified age or default to 23
       weight_slider: -0.5, // Slimmer body (range: -1 to 1, was -10!)
-      breast_slider: 0.3,  // Moderate breast size (range: -1 to 1, was 30!)
-      ass_slider: 0.3  // Moderate ass size (range: -1 to 1, was 30!)
+      breast_slider: sex === 'male' ? 0 : (breastSize !== undefined ? breastSize : 0.3),  // Use specified breast size or default to 0.3
+      ass_slider: sex === 'male' ? 0 : (assSize !== undefined ? assSize : 0.3)  // Use specified ass size or default to 0.3
     };
 
     console.log(`📤 [${requestId}] Using pre-enhanced prompt directly:`, promptchanRequest);
@@ -416,10 +416,10 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, supab
       filter: 'None', // No filter for fully uncensored (removes secondary censorship blocks)
       emotion: 'Default',
       detail: 0, // Detail level (0 = default)
-      age_slider: 23, // Slightly younger for more attractive faces
+      age_slider: age || 23, // Use specified age or default to 23
       weight_slider: -0.5, // Slimmer body (range: -1 to 1, was -10 out of range!)
-      breast_slider: sex === 'male' ? 0 : 0.3,  // Moderate breast size (range: -1 to 1, was 30!)
-      ass_slider: sex === 'male' ? 0 : 0.3      // Moderate ass size (range: -1 to 1, was 30!)
+      breast_slider: sex === 'male' ? 0 : (breastSize !== undefined ? breastSize : 0.3),  // Use specified breast size or default to 0.3
+      ass_slider: sex === 'male' ? 0 : (assSize !== undefined ? assSize : 0.3)      // Use specified ass size or default to 0.3
     };
 
     console.log(`📤 [${requestId}] Promptchan request with DIRECT sex prompt:`, promptchanRequest);
@@ -661,10 +661,10 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, supab
     filter: promptchanFilter, // No filter (uncensored)
     emotion: 'Default',
     detail: 0, // Detail level (0 = default, keeping simple for now)
-    age_slider: 23, // Slightly younger for more attractive faces
+    age_slider: age || 23, // Use specified age or default to 23
     weight_slider: -0.5, // Slimmer body (range: -1 to 1, was -10 out of range!)
-    breast_slider: sex === 'male' ? 0 : 0.3, // Moderate breast size (range: -1 to 1, was 30!)
-    ass_slider: sex === 'male' ? 0 : 0.3 // Moderate ass size (range: -1 to 1, was 30!)
+    breast_slider: sex === 'male' ? 0 : (breastSize !== undefined ? breastSize : 0.3), // Use specified breast size or default to 0.3
+    ass_slider: sex === 'male' ? 0 : (assSize !== undefined ? assSize : 0.3) // Use specified ass size or default to 0.3
   };
 
   console.log(`📤 [${requestId}] Promptchan request (Ultra quality):`, promptchanRequest);
