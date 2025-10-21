@@ -2352,7 +2352,7 @@
         console.log('Could not get user info, using anonymous');
       }
 
-      // Check if user is logged in - if not, open signup modal
+      // Check if user is logged in - if not, open signup modal and wait for login
       if (userEmail === 'anonymous' || !userEmail) {
         console.log('🔒 User not logged in, opening signup modal');
 
@@ -2361,6 +2361,23 @@
           timeMessage.style.display = 'none';
         }
 
+        // Set up listener for auth state change - retry creation after login
+        const authStateHandler = function(event) {
+          console.log('✅ Auth state changed, user logged in - retrying companion creation');
+          window.removeEventListener('auth-state-changed', authStateHandler);
+
+          // Retry creation after short delay to ensure user data is saved
+          setTimeout(function() {
+            const createButton = document.querySelector('.create-character-btn');
+            if (createButton) {
+              console.log('🔄 Automatically retrying companion creation...');
+              createButton.click();
+            }
+          }, 500);
+        };
+
+        window.addEventListener('auth-state-changed', authStateHandler);
+
         // Open signup modal
         if (window.openLoginModal) {
           window.openLoginModal('signup');
@@ -2368,7 +2385,7 @@
           window.seliraAuth.openModal('signup');
         }
 
-        return; // Stop companion creation
+        return; // Stop companion creation for now
       }
       
       // Get visibility setting from toggle
@@ -2427,6 +2444,23 @@
               if (timeMessage) {
                 timeMessage.style.display = 'none';
               }
+
+              // Set up listener for auth state change - retry creation after login
+              const authStateHandler = function(event) {
+                console.log('✅ Auth state changed after backend 401, retrying companion creation');
+                window.removeEventListener('auth-state-changed', authStateHandler);
+
+                // Retry creation after short delay to ensure user data is saved
+                setTimeout(function() {
+                  const createButton = document.querySelector('.create-character-btn');
+                  if (createButton) {
+                    console.log('🔄 Automatically retrying companion creation after backend auth...');
+                    createButton.click();
+                  }
+                }, 500);
+              };
+
+              window.addEventListener('auth-state-changed', authStateHandler);
 
               // Open signup modal
               if (window.openLoginModal) {
