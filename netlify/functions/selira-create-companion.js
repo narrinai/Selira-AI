@@ -430,6 +430,7 @@ exports.handler = async (event, context) => {
       visibility,
       createdBy,
       userEmail,
+      userAirtableId, // Airtable record ID from frontend (faster than email lookup)
       preGeneratedAvatarUrl,
       isUnfiltered
     } = body;
@@ -446,6 +447,7 @@ exports.handler = async (event, context) => {
       visibility,
       createdBy,
       userEmail,
+      userAirtableId,
       preGeneratedAvatarUrl: preGeneratedAvatarUrl ? 'PROVIDED' : 'NOT PROVIDED',
       preGeneratedAvatarUrlLength: preGeneratedAvatarUrl?.length || 0
     });
@@ -466,9 +468,37 @@ exports.handler = async (event, context) => {
     let displayName = createdBy || 'Unknown User';
     let creatorIdentifier = userEmail || createdBy || 'Unknown'; // Fallback identifier
 
-    if (userEmail) {
+    // Try using Airtable ID first (fastest, most reliable)
+    if (userAirtableId && userAirtableId.startsWith('rec')) {
       try {
-        console.log('🔍 Looking up user record for Created_By field and display_name...');
+        console.log('🔍 Using Airtable record ID from frontend:', userAirtableId);
+        const directLookupResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users/${userAirtableId}`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (directLookupResponse.ok) {
+          const userData = await directLookupResponse.json();
+          userRecordId = userData.id;
+          displayName = userData.fields.display_name || userEmail || createdBy || 'Unknown User';
+          creatorIdentifier = userData.fields.supabase_id || userData.fields.SupabaseID || userEmail;
+          console.log('✅ Found user by record ID:', userRecordId);
+          console.log('✅ Using display_name:', displayName);
+        } else {
+          console.log('⚠️ Direct lookup by ID failed, falling back to email lookup');
+        }
+      } catch (error) {
+        console.log('⚠️ Direct lookup error, falling back to email lookup:', error.message);
+      }
+    }
+
+    // Fallback to email lookup if Airtable ID wasn't provided or failed
+    if (!userRecordId && userEmail) {
+      try {
+        console.log('🔍 Looking up user record by email...');
         console.log('🔍 Searching for email:', userEmail);
 
         // Use case-insensitive email lookup with LOWER() function
@@ -495,11 +525,11 @@ exports.handler = async (event, context) => {
             userRecordId = userLookupData.records[0].id;
             displayName = userLookupData.records[0].fields.display_name || userEmail || createdBy || 'Unknown User';
             creatorIdentifier = userLookupData.records[0].fields.supabase_id || userLookupData.records[0].fields.SupabaseID || userEmail;
-            console.log('✅ Found user record ID:', userRecordId);
+            console.log('✅ Found user record ID by email:', userRecordId);
             console.log('✅ Using display_name:', displayName);
             console.log('✅ Creator identifier (SupabaseID):', creatorIdentifier);
           } else {
-            console.log('⚠️ No user found with email:', userEmail, '- will create or use fallback');
+            console.log('⚠️ No user found with email:', userEmail);
           }
         } else {
           const errorText = await userLookupResponse.text();

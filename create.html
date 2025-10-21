@@ -2338,15 +2338,18 @@
       // Get user info for creator identification
       let userEmail = 'anonymous';
       let createdBy = 'Anonymous';
+      let userAirtableId = null;
 
       try {
         const user = JSON.parse(localStorage.getItem('user') || '{}');
         userEmail = user.email || 'anonymous';
         createdBy = user.display_name || 'Anonymous';
+        userAirtableId = user.airtable_record_id || null; // Get Airtable record ID if available
 
         console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> User info for character creation:', {
           email: userEmail,
-          displayName: createdBy
+          displayName: createdBy,
+          airtableId: userAirtableId
         });
       } catch (error) {
         console.log('Could not get user info, using anonymous');
@@ -2425,6 +2428,7 @@
             visibility: visibility,
             createdBy: createdBy,
             userEmail: userEmail,
+            userAirtableId: userAirtableId, // Send Airtable record ID for faster lookup
             preGeneratedAvatarUrl: preGeneratedAvatarUrl, // Use the pre-generated avatar
             isUnfiltered: characterCreationState.uncensored // Set is_unfiltered based on toggle
           })
