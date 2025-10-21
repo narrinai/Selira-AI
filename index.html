@@ -275,6 +275,42 @@
       gap: 24px;
     }
 
+    /* Hero Header */
+    .hero-header {
+      background: var(--bg-primary);
+      padding: 24px 40px;
+      text-align: center;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .hero-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0 0 8px 0;
+      line-height: 1.2;
+    }
+
+    .hero-header h1 .accent-text {
+      color: var(--accent);
+    }
+
+    .hero-header p {
+      font-size: 15px;
+      color: var(--text-secondary);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .hero-header .sparkle {
+      color: var(--accent);
+      font-size: 12px;
+    }
+
     .search-container {
       flex: 1;
       max-width: 600px;
@@ -942,6 +978,18 @@
 
       .top-header {
         display: none;
+      }
+
+      .hero-header {
+        padding: 16px 20px;
+      }
+
+      .hero-header h1 {
+        font-size: 24px;
+      }
+
+      .hero-header p {
+        font-size: 13px;
       }
 
       .login-btn {
@@ -2339,6 +2387,12 @@
           </div>
         </div>
       </header>
+
+      <!-- Hero Header -->
+      <div class="hero-header">
+        <h1>Find your <span class="accent-text">dream girl</span></h1>
+        <p><span class="sparkle">✦</span> or create your own <span class="sparkle">✦</span></p>
+      </div>
 
       <!-- Filter Section -->
       <section class="filter-section">
