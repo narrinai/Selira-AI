@@ -2957,7 +2957,7 @@
           // Show coin icons based on credits (1 icon for 1 credit, 2 icons for 2 credits)
           const coinIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-left: 3px; opacity: 0.8;"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle></svg>`;
           const coinIcons = pose.credits === 2 ? `${coinIcon}${coinIcon}` : coinIcon;
-          btn.innerHTML = `${pose.label} <span style="white-space: nowrap;">(${coinIcons})</span>`;
+          btn.innerHTML = `${pose.label} <span style="white-space: nowrap;">${coinIcons}</span>`;
           btn.onclick = () => selectPose(pose.id);
           poseButtonsContainer.appendChild(btn);
         });
