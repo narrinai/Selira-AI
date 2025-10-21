@@ -1861,6 +1861,26 @@
       color: var(--text-secondary);
     }
 
+    .buy-credits-btn {
+      background: linear-gradient(135deg, #ec4899 0%, #d946ef 100%);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 11px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .buy-credits-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
+    }
+
     /* Payment Icons (Desktop only) */
     .payment-icons {
       display: flex;
@@ -2890,8 +2910,11 @@
       const planInfo = document.createElement('div');
       planInfo.className = 'image-plan-info';
       planInfo.innerHTML = `
-        <span class="plan-badge">Loading...</span>
-        <span class="plan-remaining">Checking permissions...</span>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span class="plan-badge">Loading...</span>
+          <span class="plan-remaining">Checking permissions...</span>
+        </div>
+        <a href="/pricing.html" class="buy-credits-btn">Buy Image Credits -40% off</a>
       `;
       suggestionContainer.appendChild(planInfo);
 
@@ -2907,15 +2930,21 @@
         const hourlyText = permissions.hourlyLimitReached ? ' this hour' : '';
 
         planInfo.innerHTML = `
-          <span class="plan-badge">${permissions.plan === 'Guest' ? 'Not Logged In' : permissions.plan + ' Plan'}</span>
-          <span class="plan-remaining">${permissions.remaining || 0}${coinIcon} ${imageText}${creditsText} left${hourlyText}</span>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="plan-badge">${permissions.plan === 'Guest' ? 'Not Logged In' : permissions.plan + ' Plan'}</span>
+            <span class="plan-remaining">${permissions.remaining || 0}${coinIcon} ${imageText}${creditsText} left${hourlyText}</span>
+          </div>
+          <a href="/pricing.html" class="buy-credits-btn">Buy Image Credits -40% off</a>
         `;
       }).catch(error => {
         console.error('❌ Error loading permissions:', error);
         const coinIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-left: 3px; opacity: 0.8;"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle></svg>`;
         planInfo.innerHTML = `
-          <span class="plan-badge">Unknown</span>
-          <span class="plan-remaining">0${coinIcon} images left</span>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="plan-badge">Unknown</span>
+            <span class="plan-remaining">0${coinIcon} images left</span>
+          </div>
+          <a href="/pricing.html" class="buy-credits-btn">Buy Image Credits -40% off</a>
         `;
       });
 
