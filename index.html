@@ -2433,14 +2433,19 @@
       community: 'all' // 'all', 'community' (user-made), or 'official' (Selira-made)
     };
 
-    // Featured companions (always show first on index page for female uncensored)
-    const featuredCompanionSlugs = [
-      'seductive-secretary-stone-1760212642419',
-      'ruby-moon-1760211481064',
-      'phoenix-hunter-1760203798633',
-      'zoe-storm-1760211803316',
-      'ember-cruz-1760206220376'
-    ];
+    // Featured companions for different style combinations (female uncensored)
+    const featuredCompanions = {
+      realistic: [
+        'seductive-secretary-stone-1760212642419',
+        'phoenix-hunter-1760203798633',
+        'zoe-storm-1760211803316'
+      ],
+      anime: [
+        'ruby-moon-1760211481064',
+        'ember-cruz-1760206220376',
+        'eager-roommate-grey-1760211529959'
+      ]
+    };
 
     // Global state
     let currentTab = 'discover';
@@ -2977,23 +2982,34 @@
       // Reset pagination for new search/filter
       currentPage = 1;
 
-      // Check if we're in default state (female uncensored, no search, no category, no tags)
-      const isDefaultState = currentFilters.sex === 'female' &&
-                             currentFilters.content === 'uncensored' &&
-                             currentFilters.category === 'all' &&
-                             !currentFilters.search &&
-                             currentFilters.tags.length === 0;
+      // Check if we're in featured state (female uncensored + realistic OR anime, no search, no category, no tags)
+      const isFemaleUncensored = currentFilters.sex === 'female' &&
+                                 currentFilters.content === 'uncensored' &&
+                                 currentFilters.category === 'all' &&
+                                 !currentFilters.search &&
+                                 currentFilters.tags.length === 0;
+
+      // Determine which featured list to use based on style filter
+      let featuredList = null;
+      if (isFemaleUncensored) {
+        if (currentFilters.style === 'anime') {
+          featuredList = featuredCompanions.anime;
+        } else if (currentFilters.style === 'realistic' || currentFilters.style === 'all' || !currentFilters.style) {
+          // Default to realistic featured companions when style is 'all' or realistic
+          featuredList = featuredCompanions.realistic;
+        }
+      }
 
       let initialCharacters;
 
-      if (isDefaultState) {
-        // Featured companions mode: show 5 featured + rest
+      if (featuredList && featuredList.length > 0) {
+        // Featured companions mode: show featured + rest
         const featured = [];
         const remaining = [];
 
         // Separate featured companions from the rest
         filteredCharacters.forEach(char => {
-          if (featuredCompanionSlugs.includes(char.slug)) {
+          if (featuredList.includes(char.slug)) {
             featured.push(char);
           } else {
             remaining.push(char);
@@ -3002,23 +3018,23 @@
 
         // Sort featured companions in the exact order specified
         featured.sort((a, b) => {
-          return featuredCompanionSlugs.indexOf(a.slug) - featuredCompanionSlugs.indexOf(b.slug);
+          return featuredList.indexOf(a.slug) - featuredList.indexOf(b.slug);
         });
 
         // Combine: featured first, then remaining
         const orderedCharacters = [...featured, ...remaining];
         initialCharacters = orderedCharacters.slice(0, charactersPerPage);
 
-        console.log('✨ Featured mode active:', featured.length, 'featured companions');
+        console.log('✨ Featured mode active:', currentFilters.style, '-', featured.length, 'featured companions');
       } else {
         // Normal mode: show characters as filtered
         initialCharacters = filteredCharacters.slice(0, charactersPerPage);
         console.log('📋 Normal mode: showing filtered characters');
       }
 
-      // Create array with deal card inserted at position 5 (6th card, index 5) in featured mode,
+      // Create array with deal card inserted at position 3 (4th card, index 3) in featured mode,
       // or position 4 (5th card, index 4) in normal mode
-      const dealCardPosition = isDefaultState ? 5 : 4;
+      const dealCardPosition = (featuredList && featuredList.length > 0) ? 3 : 4;
       const charactersWithDeal = [];
       initialCharacters.forEach((character, index) => {
         if (index === dealCardPosition) {
