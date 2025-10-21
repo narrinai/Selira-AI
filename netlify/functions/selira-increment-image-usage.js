@@ -28,7 +28,8 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const { userId } = JSON.parse(event.body || '{}');
+    const { userId, credits } = JSON.parse(event.body || '{}');
+    const creditsToDeduct = credits || 1; // Default to 1 if not provided
 
     if (!userId) {
       return {
@@ -40,6 +41,8 @@ exports.handler = async (event, context) => {
         body: JSON.stringify({ error: 'userId required' })
       };
     }
+
+    console.log(`💳 Credits to deduct for this image generation: ${creditsToDeduct}`);
 
     const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA;
     const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA;
@@ -134,11 +137,11 @@ exports.handler = async (event, context) => {
 
     const userRecordId = userRecord.id;
     const currentImagesGenerated = userRecord.fields?.images_generated || 0;
-    const newImagesGenerated = currentImagesGenerated + 1;
+    const newImagesGenerated = currentImagesGenerated + creditsToDeduct;
     const currentCreditsRemaining = userRecord.fields?.image_credits_remaining || 0;
     const userPlan = userRecord.fields?.Plan || 'Free';
 
-    console.log(`📊 Found user record ${userRecordId}, updating: ${currentImagesGenerated} → ${newImagesGenerated}`);
+    console.log(`📊 Found user record ${userRecordId}, updating: ${currentImagesGenerated} → ${newImagesGenerated} (adding ${creditsToDeduct} credits)`);
     console.log(`💳 User plan: ${userPlan}, Credits remaining: ${currentCreditsRemaining}`);
 
     // Get current hour in format YYYY-MM-DD-HH
@@ -225,9 +228,9 @@ exports.handler = async (event, context) => {
     if (existingRecord) {
       // Record exists - increment Count
       const currentCount = existingRecord.fields.Count || 0;
-      const newCount = currentCount + 1;
+      const newCount = currentCount + creditsToDeduct;
 
-      console.log(`📊 ImageUsage record exists, incrementing: ${currentCount} → ${newCount}`);
+      console.log(`📊 ImageUsage record exists, incrementing: ${currentCount} → ${newCount} (adding ${creditsToDeduct} credits)`);
       console.log(`📊 Existing ImageUsage record ID: ${existingRecord.id}`);
       console.log(`📊 Existing ImageUsage Hour: ${existingRecord.fields.Hour}`);
       console.log(`📊 Current Hour we're checking: ${currentHour}`);
@@ -274,7 +277,7 @@ exports.handler = async (event, context) => {
       imageUsageUpdateResult = await updateImageUsage();
     } else {
       // Record doesn't exist - create new one
-      console.log(`➕ Creating new ImageUsage record for user ${userRecordId}, hour ${currentHour}`);
+      console.log(`➕ Creating new ImageUsage record for user ${userRecordId}, hour ${currentHour} with ${creditsToDeduct} credits`);
 
       const createImageUsage = () => {
         return new Promise((resolve, reject) => {
@@ -282,7 +285,7 @@ exports.handler = async (event, context) => {
             fields: {
               User: [userRecordId],
               Hour: currentHour,
-              Count: 1
+              Count: creditsToDeduct
             }
           });
 
@@ -340,12 +343,12 @@ exports.handler = async (event, context) => {
         // 2. User is on a plan with hourly limits (Light/Basic/Premium), AND
         // 3. User has hit their hourly limit
         if (currentCreditsRemaining > 0 && willHitHourlyLimit) {
-          updateFields.image_credits_remaining = currentCreditsRemaining - 1;
-          console.log(`💳 User hit hourly limit - decrementing credits: ${currentCreditsRemaining} → ${currentCreditsRemaining - 1}`);
+          updateFields.image_credits_remaining = currentCreditsRemaining - creditsToDeduct;
+          console.log(`💳 User hit hourly limit - decrementing credits: ${currentCreditsRemaining} → ${currentCreditsRemaining - creditsToDeduct} (deducting ${creditsToDeduct} credits)`);
         } else if (currentCreditsRemaining > 0 && userPlan === 'Free') {
           // Free users always use credits if they have them
-          updateFields.image_credits_remaining = currentCreditsRemaining - 1;
-          console.log(`💳 Free user with credits - decrementing: ${currentCreditsRemaining} → ${currentCreditsRemaining - 1}`);
+          updateFields.image_credits_remaining = currentCreditsRemaining - creditsToDeduct;
+          console.log(`💳 Free user with credits - decrementing: ${currentCreditsRemaining} → ${currentCreditsRemaining - creditsToDeduct} (deducting ${creditsToDeduct} credits)`);
         } else {
           console.log(`ℹ️ Not deducting credits (willHitHourlyLimit: ${willHitHourlyLimit}, currentCredits: ${currentCreditsRemaining}, plan: ${userPlan})`);
         }

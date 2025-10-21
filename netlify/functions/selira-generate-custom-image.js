@@ -291,12 +291,12 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, supab
     if (promptchanSuccess && promptchanResult) {
       // Increment usage counter
       if ((source === 'chat' || source === 'image-generator') && (email || supabase_id)) {
-        console.log(`📈 [${requestId}] Incrementing usage counter for ${source} (Promptchan)`);
+        console.log(`📈 [${requestId}] Incrementing usage counter for ${source} (Promptchan) with ${credits || 1} credits`);
         try {
           const incrementResponse = await fetch(`${process.env.NETLIFY_FUNCTIONS_URL || 'https://selira.ai/.netlify/functions'}/selira-increment-image-usage`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId: supabase_id })
+            body: JSON.stringify({ userId: supabase_id, credits: credits || 1 })
           });
 
           if (incrementResponse.ok) {
@@ -465,12 +465,12 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, supab
     if (promptchanSuccess && promptchanResult) {
       // Increment usage counter
       if ((source === 'chat' || source === 'image-generator') && (email || supabase_id)) {
-        console.log(`📈 [${requestId}] Incrementing usage counter for ${source} (Promptchan explicit)`);
+        console.log(`📈 [${requestId}] Incrementing usage counter for ${source} (Promptchan explicit) with ${credits || 1} credits`);
         try {
           const incrementResponse = await fetch(`${process.env.NETLIFY_FUNCTIONS_URL || 'https://selira.ai/.netlify/functions'}/selira-increment-image-usage`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId: supabase_id })
+            body: JSON.stringify({ userId: supabase_id, credits: credits || 1 })
           });
 
           if (incrementResponse.ok) {
@@ -699,12 +699,12 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, supab
 
     // Increment usage counter for chat and image-generator
     if ((source === 'chat' || source === 'image-generator') && (email || supabase_id)) {
-      console.log(`📈 [${requestId}] Incrementing usage counter for ${source} (Promptchan)`);
+      console.log(`📈 [${requestId}] Incrementing usage counter for ${source} (Promptchan) with ${credits || 1} credits`);
       try {
         const incrementResponse = await fetch(`${process.env.NETLIFY_FUNCTIONS_URL || 'https://selira.ai/.netlify/functions'}/selira-increment-image-usage`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId: supabase_id })
+          body: JSON.stringify({ userId: supabase_id, credits: credits || 1 })
         });
 
         if (incrementResponse.ok) {
@@ -864,7 +864,7 @@ exports.handler = async (event, context) => {
       };
     }
 
-    const { customPrompt, characterName, category, style, shotType, sex, ethnicity, hairLength, hairColor, email, supabase_id, source, skipAutoDownload, uncensored } = body;
+    const { customPrompt, characterName, category, style, shotType, sex, ethnicity, hairLength, hairColor, email, supabase_id, source, skipAutoDownload, uncensored, credits } = body;
 
     console.log(`📋 [${requestId}] Received:`, {
       customPrompt,
@@ -1351,7 +1351,8 @@ exports.handler = async (event, context) => {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            userId: userId
+            userId: userId,
+            credits: credits || 1
           })
         });
 
