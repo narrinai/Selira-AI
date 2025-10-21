@@ -1690,6 +1690,13 @@
         // Update tags when showing step 7 (Final Details)
         if (currentStep === 7) {
           updateAvailableTags();
+
+          // For females, start avatar generation now (after body customization)
+          // For males, it already started after step 5
+          if (characterCreationState.sex === 'female' && !avatarGenerationInProgress) {
+            console.log('🔄 Starting avatar generation in background (female, after body customization)...');
+            generateAvatarPreview();
+          }
         }
 
         // Scroll to top of the step
@@ -2061,13 +2068,15 @@
 
       console.log('Selected hair color:', hairColor);
 
-      // Auto-advance to next step and start avatar generation
+      // Auto-advance to next step and start avatar generation (for males only, females generate after body customization)
       setTimeout(() => {
         nextStep();
-        // Always start avatar generation after step 5
-        // User can continue filling in steps while avatar generates in background
-        console.log('🔄 Starting avatar generation in background...');
-        generateAvatarPreview();
+        // For males, start avatar generation after step 5 (they skip step 6)
+        // For females, avatar generation happens after step 6 (body customization)
+        if (characterCreationState.sex === 'male') {
+          console.log('🔄 Starting avatar generation in background (male)...');
+          generateAvatarPreview();
+        }
       }, 500);
     }
 
