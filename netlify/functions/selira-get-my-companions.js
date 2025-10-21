@@ -197,10 +197,11 @@ exports.handler = async (event, context) => {
 
     do {
       // Build filter for user-created characters
-      // Use SEARCH on Created_By linked field (array of user record IDs) OR match Created_by text field (email)
-      const createdByFilter = `OR(SEARCH("${userRecordId}", ARRAYJOIN({Created_By})), {Created_by}='${userEmail}')`;
+      // Use FIND to check if user record ID exists in Created_By linked field
+      // FIND returns position (>0) if found, 0 if not found
+      const createdByFilter = `FIND("${userRecordId}", ARRAYJOIN({Created_By}, ",")) > 0`;
 
-      console.log('🔍 Filter for user-created characters (record ID in linked field OR email in text field):', createdByFilter);
+      console.log('🔍 Filter for user-created characters (FIND user record ID in Created_By):', createdByFilter);
       console.log('🔍 Search parameters:', { userEmail, userRecordId, userSupabaseID });
 
       const userCreatedUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters?filterByFormula=${encodeURIComponent(createdByFilter)}${charactersOffset ? `&offset=${charactersOffset}` : ''}`;
