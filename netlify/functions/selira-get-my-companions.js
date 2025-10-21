@@ -191,47 +191,33 @@ exports.handler = async (event, context) => {
     const chattedCharacterIds = Array.from(characterIdSet);
     console.log('🎭 Found chats with', chattedCharacterIds.length, 'different characters');
 
-    // Step 3: Get user-created companions (same logic as characters.js with user_created=true)
-    let userCreatedCharacters = [];
-    let charactersOffset = null;
+    // Step 3: Get user-created companions from the user's Characters linked field
+    console.log('🔍 Fetching user-created companions from user record:', userRecordId);
 
-    do {
-      // Build filter for user-created characters
-      // Try FIND instead of SEARCH - FIND works better with ARRAYJOIN
-      const createdByFilter = `FIND("${userRecordId}", ARRAYJOIN({Created_By}, ","))`;
+    // Fetch the full user record to get the Characters linked field
+    const userRecordUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users/${userRecordId}`;
+    const userRecordResponse = await fetch(userRecordUrl, {
+      method: 'GET',
+      headers: airtableHeaders
+    });
 
-      console.log('🔍 Filter for user-created characters (FIND record ID in Created_By with comma separator):', createdByFilter);
-      console.log('🔍 Search parameters:', { userEmail, userRecordId, userSupabaseID });
+    let userCreatedIds = [];
+    if (userRecordResponse.ok) {
+      const userRecordData = await userRecordResponse.json();
+      console.log('✅ Fetched user record, checking Characters field');
 
-      const userCreatedUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters?filterByFormula=${encodeURIComponent(createdByFilter)}${charactersOffset ? `&offset=${charactersOffset}` : ''}`;
-      console.log('🔍 Full Airtable URL:', userCreatedUrl);
-      console.log('🔍 Using base ID:', AIRTABLE_BASE_ID);
-
-      const userCreatedResponse = await fetch(userCreatedUrl, {
-        method: 'GET',
-        headers: airtableHeaders
-      });
-
-      if (userCreatedResponse.ok) {
-        const pageData = await userCreatedResponse.json();
-        console.log('✅ Found', pageData.records.length, 'user-created characters in this page');
-        console.log('🔍 Raw response sample (first 3):', JSON.stringify(pageData.records.slice(0, 3), null, 2));
-        if (pageData.records.length > 0) {
-          console.log('🔍 First character Created_By field (linked):', pageData.records[0].fields.Created_By);
-          console.log('🔍 First character Created_by field (text):', pageData.records[0].fields.Created_by);
-        }
-        userCreatedCharacters = userCreatedCharacters.concat(pageData.records);
-        charactersOffset = pageData.offset;
+      // The Characters field is a linked field containing array of character record IDs
+      if (userRecordData.fields.Characters && Array.isArray(userRecordData.fields.Characters)) {
+        userCreatedIds = userRecordData.fields.Characters;
+        console.log('👤 Found', userCreatedIds.length, 'user-created characters in Characters linked field:', userCreatedIds);
       } else {
-        const errorText = await userCreatedResponse.text();
-        console.log('⚠️ Could not fetch user-created characters:', userCreatedResponse.status, userCreatedResponse.statusText);
-        console.log('⚠️ Error details:', errorText);
-        break;
+        console.log('👤 No Characters field or empty Characters array');
       }
-    } while (charactersOffset);
-
-    console.log('👤 Found', userCreatedCharacters.length, 'user-created characters');
-    const userCreatedIds = userCreatedCharacters.map(char => char.id);
+    } else {
+      const errorText = await userRecordResponse.text();
+      console.log('⚠️ Could not fetch user record:', userRecordResponse.status, userRecordResponse.statusText);
+      console.log('⚠️ Error details:', errorText);
+    }
 
     // Step 4: Combine all character IDs (remove duplicates)
     const allCharacterIds = [...new Set([...chattedCharacterIds, ...userCreatedIds])];
