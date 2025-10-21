@@ -657,6 +657,31 @@
     .create-selected-tag .remove-tag:hover {
       opacity: 1;
     }
+
+    /* Body Customization Buttons */
+    .body-selector-btn {
+      background: var(--bg-tertiary);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 20px;
+      color: var(--text-primary);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+
+    .body-selector-btn:hover {
+      border-color: var(--accent);
+      background: var(--bg-secondary);
+    }
+
+    .body-selector-btn.selected {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: white;
+    }
     
     #createTagSearchResults .tag-search-result {
       padding: 6px 10px;
@@ -1078,7 +1103,7 @@
         <!-- Progress Bar -->
         <div class="creation-progress">
           <div style="display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 11px; color: var(--text-secondary); text-transform: uppercase; font-weight: 600;">
-            <span id="stepIndicator">Step 1 of 6</span>
+            <span id="stepIndicator">Step 1 of 7</span>
             <span id="stepTitle">Choose Gender</span>
           </div>
           <div class="progress-bar">
@@ -1363,8 +1388,53 @@
             </div>
           </div>
 
-          <!-- Step 6: Final Details -->
+          <!-- Step 6: Body Customization (Female only) -->
           <div class="creation-step" id="step6">
+            <h3 style="color: var(--text-primary); margin-bottom: 30px; font-size: 28px; font-weight: 700; text-align: center;">Customize Body</h3>
+            <div style="max-width: 700px; margin: 0 auto;">
+
+              <!-- Age -->
+              <div style="margin-bottom: 32px;">
+                <label style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 12px; font-size: 16px;">Age</label>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 12px;">
+                  <button class="body-selector-btn" data-age="18" onclick="selectAge(18)">18</button>
+                  <button class="body-selector-btn" data-age="21" onclick="selectAge(21)">21</button>
+                  <button class="body-selector-btn" data-age="25" onclick="selectAge(25)">25</button>
+                  <button class="body-selector-btn" data-age="30" onclick="selectAge(30)">30</button>
+                  <button class="body-selector-btn" data-age="35" onclick="selectAge(35)">35</button>
+                  <button class="body-selector-btn" data-age="40" onclick="selectAge(40)">40</button>
+                </div>
+              </div>
+
+              <!-- Breast Size -->
+              <div style="margin-bottom: 32px;">
+                <label style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 12px; font-size: 16px;">Breast Size</label>
+                <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;">
+                  <button class="body-selector-btn" data-breast="-1" onclick="selectBreastSize(-1)">Small</button>
+                  <button class="body-selector-btn" data-breast="-0.5" onclick="selectBreastSize(-0.5)">Medium</button>
+                  <button class="body-selector-btn" data-breast="0" onclick="selectBreastSize(0)">Large</button>
+                  <button class="body-selector-btn" data-breast="0.5" onclick="selectBreastSize(0.5)">X-Large</button>
+                  <button class="body-selector-btn" data-breast="1" onclick="selectBreastSize(1)">XX-Large</button>
+                </div>
+              </div>
+
+              <!-- Ass Size -->
+              <div style="margin-bottom: 32px;">
+                <label style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 12px; font-size: 16px;">Ass Size</label>
+                <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;">
+                  <button class="body-selector-btn" data-ass="-1" onclick="selectAssSize(-1)">Small</button>
+                  <button class="body-selector-btn" data-ass="-0.5" onclick="selectAssSize(-0.5)">Medium</button>
+                  <button class="body-selector-btn" data-ass="0" onclick="selectAssSize(0)">Large</button>
+                  <button class="body-selector-btn" data-ass="0.5" onclick="selectAssSize(0.5)">X-Large</button>
+                  <button class="body-selector-btn" data-ass="1" onclick="selectAssSize(1)">XX-Large</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Step 7: Final Details -->
+          <div class="creation-step" id="step7">
             <h3 style="color: var(--text-primary); margin-bottom: 30px; font-size: 28px; font-weight: 700; text-align: center;">Final Details</h3>
             <div style="max-width: 600px; margin: 0 auto; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px;">
               
@@ -1546,13 +1616,16 @@
       sex: 'female', // Default to female, updated in Step 1
       hairLength: '',
       hairColor: '',
+      age: 25, // Default age
+      breastSize: 0, // Default breast size (Large)
+      assSize: 0, // Default ass size (Large)
       category: 'fantasy',
       description: '',
       currentStep: 1,
       uncensored: true // Default to uncensored avatar generation (Promptchan)
     };
 
-    let totalSteps = 6;
+    let totalSteps = 7; // 7 steps for females, 6 for males (males skip body customization)
 
     // ===== STEP NAVIGATION =====
     function nextStep() {
@@ -1562,6 +1635,11 @@
 
         // Move to next step
         characterCreationState.currentStep++;
+
+        // Skip step 6 (body customization) for males
+        if (characterCreationState.currentStep === 6 && characterCreationState.sex === 'male') {
+          characterCreationState.currentStep = 7; // Jump to final details
+        }
 
         // Show next step
         showCurrentStep();
@@ -1589,8 +1667,22 @@
         // Update images based on selected sex for steps 2, 3, 4, 5
         updateStepImages(currentStep);
 
-        // Update tags when showing step 6 (Final Details)
-        if (currentStep === 6) {
+        // Set default selections for body customization when showing step 6 (females only)
+        if (currentStep === 6 && characterCreationState.sex === 'female') {
+          // Set default selections visually
+          setTimeout(() => {
+            const ageBtn = document.querySelector(`[data-age="${characterCreationState.age}"]`);
+            const breastBtn = document.querySelector(`[data-breast="${characterCreationState.breastSize}"]`);
+            const assBtn = document.querySelector(`[data-ass="${characterCreationState.assSize}"]`);
+
+            if (ageBtn) ageBtn.classList.add('selected');
+            if (breastBtn) breastBtn.classList.add('selected');
+            if (assBtn) assBtn.classList.add('selected');
+          }, 50);
+        }
+
+        // Update tags when showing step 7 (Final Details)
+        if (currentStep === 7) {
           updateAvailableTags();
         }
 
@@ -1721,6 +1813,11 @@
         // Move to previous step
         characterCreationState.currentStep--;
 
+        // Skip step 6 (body customization) for males when going back
+        if (characterCreationState.currentStep === 6 && characterCreationState.sex === 'male') {
+          characterCreationState.currentStep = 5; // Jump back to hair color
+        }
+
         // Show previous step
         showCurrentStep();
 
@@ -1790,7 +1887,8 @@
         3: 'Choose Ethnicity',
         4: 'Choose Hair Length',
         5: 'Choose Hair Color',
-        6: 'Final Details'
+        6: 'Customize Body',
+        7: 'Final Details'
       };
       document.getElementById('stepTitle').textContent = stepTitles[currentStep];
       
@@ -1855,8 +1953,8 @@
         }
       }
 
-      // Repopulate tag UI if we're on Step 6
-      if (characterCreationState.currentStep === 6) {
+      // Repopulate tag UI if we're on Step 7 (Final Details)
+      if (characterCreationState.currentStep === 7) {
         populatePopularTags(createAvailableTags);
       }
     }
@@ -1965,6 +2063,57 @@
         console.log('🔄 Starting avatar generation in background...');
         generateAvatarPreview();
       }, 500);
+    }
+
+    // ===== BODY CUSTOMIZATION SELECTION FUNCTIONS =====
+    function selectAge(age) {
+      characterCreationState.age = age;
+
+      // Update visual selection
+      document.querySelectorAll('[data-age]').forEach(btn => {
+        btn.classList.remove('selected');
+      });
+      document.querySelector(`[data-age="${age}"]`).classList.add('selected');
+
+      console.log('Selected age:', age);
+      checkBodyCustomizationComplete();
+    }
+
+    function selectBreastSize(size) {
+      characterCreationState.breastSize = size;
+
+      // Update visual selection
+      document.querySelectorAll('[data-breast]').forEach(btn => {
+        btn.classList.remove('selected');
+      });
+      document.querySelector(`[data-breast="${size}"]`).classList.add('selected');
+
+      console.log('Selected breast size:', size);
+      checkBodyCustomizationComplete();
+    }
+
+    function selectAssSize(size) {
+      characterCreationState.assSize = size;
+
+      // Update visual selection
+      document.querySelectorAll('[data-ass]').forEach(btn => {
+        btn.classList.remove('selected');
+      });
+      document.querySelector(`[data-ass="${size}"]`).classList.add('selected');
+
+      console.log('Selected ass size:', size);
+      checkBodyCustomizationComplete();
+    }
+
+    function checkBodyCustomizationComplete() {
+      // If all three options are selected, auto-advance after a short delay
+      if (characterCreationState.age &&
+          characterCreationState.breastSize !== null &&
+          characterCreationState.assSize !== null) {
+        setTimeout(() => {
+          nextStep();
+        }, 500);
+      }
     }
 
     function updateFinalPreview() {
@@ -2082,6 +2231,9 @@
             ethnicity: ethnicity,
             hairLength: hairLength,
             hairColor: hairColor,
+            age: characterCreationState.age,
+            breastSize: characterCreationState.breastSize,
+            assSize: characterCreationState.assSize,
             source: 'companion-creation', // Mark as companion creation for clean backgrounds
             uncensored: characterCreationState.uncensored // Use toggle state for avatar generation
           })
@@ -2222,6 +2374,9 @@
             ethnicity: characterCreationState.ethnicity,
             hairLength: characterCreationState.hairLength,
             hairColor: characterCreationState.hairColor,
+            age: characterCreationState.age,
+            breastSize: characterCreationState.breastSize,
+            assSize: characterCreationState.assSize,
             visibility: visibility,
             createdBy: createdBy,
             userEmail: userEmail,
