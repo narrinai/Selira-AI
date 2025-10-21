@@ -2945,8 +2945,9 @@
         NSFW_POSES.forEach(pose => {
           const btn = document.createElement('button');
           btn.className = 'selector-btn';
-          // Add (2) for premium poses that cost 2 credits
-          btn.textContent = pose.credits === 2 ? `${pose.label} (2)` : pose.label;
+          // Add (2) or (1) label to show credit cost
+          const creditLabel = pose.credits === 2 ? ' (2)' : ' (1)';
+          btn.textContent = `${pose.label}${creditLabel}`;
           btn.onclick = () => selectPose(pose.id);
           poseButtonsContainer.appendChild(btn);
         });
@@ -2976,7 +2977,7 @@
     }
 
     // Select pose for NSFW image generation (fully nude by default)
-    function selectPose(poseId) {
+    async function selectPose(poseId) {
       selectedPose = poseId;
       selectedOutfit = 'fully-nude'; // Always fully nude
 
@@ -2984,6 +2985,19 @@
       const pose = NSFW_POSES.find(p => p.id === poseId);
       selectedPoseCredits = pose ? (pose.credits || 1) : 1;
       console.log('🎨 Selected pose:', poseId, 'Credits:', selectedPoseCredits);
+
+      // If this is a 2-credit pose, check if user has enough permissions
+      if (selectedPoseCredits === 2) {
+        const permissions = await checkUserImagePermissions(true);
+        console.log('💳 Checking permissions for 2-credit pose:', permissions);
+
+        // Show upgrade modal if user can't generate OR doesn't have enough remaining
+        if (!permissions.canGenerate || (permissions.remaining !== undefined && permissions.remaining < 2)) {
+          console.log('🔒 User cannot afford 2-credit pose, showing upgrade modal');
+          showImageUpgradeModal(permissions);
+          return; // Don't select the pose
+        }
+      }
 
       // Update button styles
       document.querySelectorAll('#poseButtons .selector-btn').forEach(btn => {

@@ -1620,8 +1620,9 @@
         const card = document.createElement('div');
         card.style.cssText = 'background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 12px; text-align: center; cursor: pointer; transition: all 0.2s ease; position: relative;';
         card.dataset.poseId = pose.id;
-        // Add (2) for premium poses that cost 2 credits
-        const label = pose.credits === 2 ? `${pose.label} (2)` : pose.label;
+        // Add (2) or (1) label to show credit cost
+        const creditLabel = pose.credits === 2 ? ' (2)' : ' (1)';
+        const label = `${pose.label}${creditLabel}`;
         card.innerHTML = `<div style="font-size: 13px; font-weight: 500; color: var(--text-primary);">${label}</div>`;
         card.addEventListener('click', () => selectPose(pose.id));
         card.addEventListener('mouseover', () => card.style.borderColor = 'var(--accent)');
@@ -1650,7 +1651,30 @@
       }, 50);
     }
 
-    function selectPose(poseId) {
+    async function selectPose(poseId) {
+      const pose = poses.find(p => p.id === poseId);
+
+      // If this is a 2-credit pose, check if user has enough
+      if (pose && pose.credits === 2) {
+        const creditsCheck = await loadUserCredits();
+
+        // Check if user can afford this pose (need at least 2 credits/images)
+        const hasEnough = creditsCheck && (
+          creditsCheck.plan !== 'Free' || // Non-free plans generally have hourly limits
+          creditsCheck.creditsRemaining >= 2 // Or they have 2+ purchased credits
+        );
+
+        if (!hasEnough) {
+          showAlert('This pose requires 2 credits. Upgrade to a paid plan or purchase credits to use premium poses!', 'warning');
+          // Open pricing page after a short delay
+          setTimeout(() => {
+            window.open('/pricing.html', '_blank');
+          }, 1500);
+          return; // Don't select the pose
+        }
+      }
+
+      // Select the pose visually
       document.querySelectorAll('#poseOptions > div').forEach(card => {
         card.classList.remove('selected');
         card.style.borderColor = 'var(--border)';
@@ -1662,7 +1686,7 @@
         card.style.borderColor = 'var(--accent)';
         card.style.background = 'rgba(206, 147, 216, 0.1)';
       }
-      selectedPose = poses.find(p => p.id === poseId);
+      selectedPose = pose;
     }
 
     function selectOutfit(outfitId) {
