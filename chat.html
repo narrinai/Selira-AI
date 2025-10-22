@@ -5778,12 +5778,46 @@
         if (response.ok) {
           const result = await response.json();
 
-          // Remove loading message
+          // Replace loading message with image (preserves position in chat)
           const loadingMsg = document.getElementById(loadingId);
-          if (loadingMsg) loadingMsg.remove();
+          if (loadingMsg) {
+            // Generate companion message
+            const companionMessage = generateImageCompanionMessage();
 
-          // Add generated image as AI response
-          addImageMessage(result.imageUrl, result.fullPrompt || simplePrompt, characterStyle);
+            // Replace the loading message content with the image
+            loadingMsg.className = 'message ai'; // Ensure it's styled as AI message
+            loadingMsg.innerHTML = `
+              <div class="message-content">
+                <div class="message-text" style="margin-left: 0;">
+                  <div style="margin-bottom: 12px;">${companionMessage}</div>
+                  <img src="${result.imageUrl}" alt="Generated image" style="
+                    max-width: 300px; border-radius: 12px; cursor: pointer;
+                    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+                  " onclick="openImageFullscreen('${result.imageUrl}', '${result.fullPrompt || simplePrompt}')">
+                </div>
+                <div class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+              </div>
+            `;
+
+            // Save to localStorage
+            if (currentCharacter.slug) {
+              saveImageMessageToStorage(currentCharacter.slug, result.imageUrl, result.fullPrompt || simplePrompt, characterStyle);
+
+              // Update chat count in sidebar
+              const updatedMessageCount = getMessageCount(currentCharacter.slug);
+              document.getElementById('sidebarCharacterChats').textContent = updatedMessageCount;
+
+              // Update sidebar to reflect new activity
+              updateActiveChatsSidebar();
+            }
+
+            // Scroll to the image
+            loadingMsg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          } else {
+            // Fallback: loading message was removed/not found, add image normally
+            console.log('⚠️ Loading message not found, adding image at bottom');
+            addImageMessage(result.imageUrl, result.fullPrompt || simplePrompt, characterStyle);
+          }
 
           // Note: images_generated counter is now incremented by the backend function
           // Wait for backend increment to complete before refreshing counter
