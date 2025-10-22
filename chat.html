@@ -5277,6 +5277,7 @@
     // Cache for image permissions (to speed up UI)
     let imagePermissionsCache = null;
     let imagePermissionsCacheTime = 0;
+    let imagePermissionsPromise = null; // Track ongoing fetch to prevent duplicate requests
     const IMAGE_PERMISSIONS_CACHE_DURATION = 30000; // 30 seconds
 
     // Rate limiting for image generation to prevent 500 errors
@@ -5302,68 +5303,86 @@
         return imagePermissionsCache;
       }
 
-      console.log('🔄 Fetching fresh image permissions from server');
-      try {
-        const response = await fetch('/.netlify/functions/selira-check-image-limit', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email: user.email,
-            supabase_id: user.id || user.sub || user.auth0_id // Supabase uses .id, Auth0 uses .sub
-          })
-        });
-
-        if (response.status === 403) {
-          const error = await response.json();
-          const permissions = {
-            canGenerate: false,
-            plan: error.plan || 'Free',
-            reason: 'Image generation requires Basic plan or higher'
-          };
-
-          // Cache blocked permissions for shorter time (5 seconds)
-          imagePermissionsCache = permissions;
-          imagePermissionsCacheTime = Date.now() - (IMAGE_PERMISSIONS_CACHE_DURATION - 5000);
-          console.log('💾 Cached blocked permissions (short cache):', permissions);
-
-          return permissions;
-        }
-
-        if (response.ok) {
-          const data = await response.json();
-          const permissions = {
-            canGenerate: true,
-            plan: data.plan,
-            remaining: data.remaining,
-            limit: data.limit
-          };
-
-          // Cache the result
-          imagePermissionsCache = permissions;
-          imagePermissionsCacheTime = Date.now();
-          console.log('💾 Cached fresh image permissions:', permissions);
-
-          return permissions;
-        }
-
-        // Default to blocking if server returns unexpected response
-        const fallbackPermissions = {
-          canGenerate: false,
-          plan: 'Free',
-          reason: 'Could not verify image generation permissions'
-        };
-        console.warn('⚠️ Unexpected response status:', response.status, '- blocking image generation');
-        return fallbackPermissions;
-      } catch (error) {
-        console.warn('⚠️ Could not check image permissions:', error);
-        // Default to blocking on errors for safety
-        const fallbackPermissions = {
-          canGenerate: false,
-          plan: 'Free',
-          reason: 'Could not verify image generation permissions'
-        };
-        return fallbackPermissions;
+      // If there's already a fetch in progress, wait for it instead of starting a new one
+      if (imagePermissionsPromise) {
+        console.log('⏳ Waiting for ongoing permissions check to complete');
+        return imagePermissionsPromise;
       }
+
+      console.log('🔄 Fetching fresh image permissions from server');
+
+      // Start fetch and store promise
+      imagePermissionsPromise = (async () => {
+        try {
+          const response = await fetch('/.netlify/functions/selira-check-image-limit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: user.email,
+              supabase_id: user.id || user.sub || user.auth0_id // Supabase uses .id, Auth0 uses .sub
+            })
+          });
+
+          if (response.status === 403) {
+            const error = await response.json();
+            const permissions = {
+              canGenerate: false,
+              plan: error.plan || 'Free',
+              reason: 'Image generation requires Basic plan or higher'
+            };
+
+            // Cache blocked permissions for shorter time (5 seconds)
+            imagePermissionsCache = permissions;
+            imagePermissionsCacheTime = Date.now() - (IMAGE_PERMISSIONS_CACHE_DURATION - 5000);
+            console.log('💾 Cached blocked permissions (short cache):', permissions);
+
+            return permissions;
+          }
+
+          if (response.ok) {
+            const data = await response.json();
+            const permissions = {
+              canGenerate: true,
+              plan: data.plan,
+              remaining: data.remaining,
+              limit: data.limit,
+              imageCreditsRemaining: data.imageCreditsRemaining,
+              usingCredits: data.usingCredits,
+              hourlyLimitReached: data.hourlyLimitReached
+            };
+
+            // Cache the result
+            imagePermissionsCache = permissions;
+            imagePermissionsCacheTime = Date.now();
+            console.log('💾 Cached fresh image permissions:', permissions);
+
+            return permissions;
+          }
+
+          // Default to blocking if server returns unexpected response
+          const fallbackPermissions = {
+            canGenerate: false,
+            plan: 'Free',
+            reason: 'Could not verify image generation permissions'
+          };
+          console.warn('⚠️ Unexpected response status:', response.status, '- blocking image generation');
+          return fallbackPermissions;
+        } catch (error) {
+          console.warn('⚠️ Could not check image permissions:', error);
+          // Default to blocking on errors for safety
+          const fallbackPermissions = {
+            canGenerate: false,
+            plan: 'Free',
+            reason: 'Could not verify image generation permissions'
+          };
+          return fallbackPermissions;
+        } finally {
+          // Clear promise after completion
+          imagePermissionsPromise = null;
+        }
+      })();
+
+      return imagePermissionsPromise;
     }
 
     // Load and display image credits
