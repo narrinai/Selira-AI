@@ -929,21 +929,30 @@ exports.handler = async (event, context) => {
           // This prevents race conditions where multiple rapid requests can bypass the limit
           // because the counter hasn't been incremented yet
           console.log(`📈 [${requestId}] Pre-incrementing usage counter to prevent race conditions`);
-          try {
-            const preIncrementResponse = await fetch(`${process.env.NETLIFY_FUNCTIONS_URL || 'https://selira.ai/.netlify/functions'}/selira-increment-image-usage`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ userId: supabase_id, credits: credits || 1 })
-            });
+          const preIncrementResponse = await fetch(`${process.env.NETLIFY_FUNCTIONS_URL || 'https://selira.ai/.netlify/functions'}/selira-increment-image-usage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: supabase_id, credits: credits || 1 })
+          });
 
-            if (preIncrementResponse.ok) {
-              console.log(`✅ [${requestId}] Pre-increment successful - counter updated before image generation`);
-            } else {
-              console.warn(`⚠️ [${requestId}] Pre-increment failed (${preIncrementResponse.status}), continuing anyway`);
-            }
-          } catch (preIncrementError) {
-            console.warn(`⚠️ [${requestId}] Pre-increment error:`, preIncrementError.message);
+          if (!preIncrementResponse.ok) {
+            const errorText = await preIncrementResponse.text();
+            console.error(`❌ [${requestId}] Pre-increment failed (${preIncrementResponse.status}):`, errorText);
+            // CRITICAL: If increment fails, don't generate image - return error
+            return {
+              statusCode: 500,
+              headers: {
+                ...corsHeaders,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                success: false,
+                error: 'Failed to update usage counter. Please try again.'
+              })
+            };
           }
+
+          console.log(`✅ [${requestId}] Pre-increment successful - counter updated before image generation`);
         }
       } catch (limitError) {
         console.warn(`⚠️ [${requestId}] Limit check failed, allowing generation:`, limitError.message);
