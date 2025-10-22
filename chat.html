@@ -5744,9 +5744,14 @@
           userIdType: userSupabaseId?.startsWith('rec') ? 'Airtable' : (userSupabaseId?.startsWith('auth0|') ? 'Auth0' : 'Supabase UUID')
         });
 
+        // Create AbortController for timeout (90 seconds to allow for slow Promptchan generations)
+        const abortController = new AbortController();
+        const timeoutId = setTimeout(() => abortController.abort(), 90000); // 90 second timeout
+
         const response = await fetch('/.netlify/functions/selira-generate-custom-image', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          signal: abortController.signal,
           body: JSON.stringify({
             customPrompt: enhancedPrompt, // Send enhanced long prompt to backend
             characterName: currentCharacter.name,
@@ -5767,7 +5772,9 @@
             credits: selectedPoseCredits // Number of credits to deduct (1 or 2)
           })
         });
-        
+
+        clearTimeout(timeoutId); // Clear timeout on successful response
+
         if (response.ok) {
           const result = await response.json();
 
@@ -5881,13 +5888,32 @@
         }
         
       } catch (error) {
-        console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Image generation error:', error);
+        clearTimeout(timeoutId); // Clear timeout on error
+        console.error('❌ Image generation error:', error);
+
         // Replace loading with error
         const loadingMsg = document.getElementById(loadingId);
         if (loadingMsg) {
           const messageText = loadingMsg.querySelector('.message-text');
           if (messageText) {
-            messageText.textContent = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Sorry, there was an error generating your image. ${error.message || ''}`;
+            // Check if this was a timeout/abort error
+            if (error.name === 'AbortError') {
+              messageText.innerHTML = `
+                <div style="color: #ff9800; font-weight: 500;">
+                  ⏱️ Generation Timeout
+                </div>
+                <div style="margin-top: 8px; color: #666; font-size: 14px;">
+                  The image generation took too long (>90 seconds). This sometimes happens during peak usage.
+                </div>
+                <div style="margin-top: 12px;">
+                  <button onclick="document.getElementById('${loadingId}').remove(); document.getElementById('generateImageBtn').click();" style="background: var(--accent); color: white; padding: 8px 16px; border-radius: 20px; border: none; font-size: 14px; font-weight: 600; cursor: pointer;">
+                    Try Again
+                  </button>
+                </div>
+              `;
+            } else {
+              messageText.textContent = `❌ Sorry, there was an error generating your image. ${error.message || 'Please try again.'}`;
+            }
           }
         }
       } finally {
