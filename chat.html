@@ -881,20 +881,22 @@
     /* Badge notification for first-time users */
     .image-gen-badge {
       position: absolute;
-      top: -6px;
-      right: -6px;
+      top: -8px;
+      right: -8px;
       background: var(--accent-secondary); /* Felle pink voor attention */
       color: white;
       border-radius: 50%;
-      width: 18px;
-      height: 18px;
-      font-size: 10px;
+      width: 20px;
+      height: 20px;
+      font-size: 11px;
       font-weight: 700;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 2px 6px rgba(236, 72, 153, 0.4);
-      z-index: 10;
+      box-shadow: 0 2px 8px rgba(236, 72, 153, 0.6);
+      border: 2px solid var(--bg-primary); /* White border for visibility */
+      z-index: 100;
+      pointer-events: none; /* Don't interfere with button clicks */
       animation: badgeFadeIn 0.3s ease-out;
     }
 
@@ -1286,11 +1288,12 @@
 
       /* Smaller badge on mobile */
       .image-gen-badge {
-        width: 16px;
-        height: 16px;
-        font-size: 9px;
-        top: -5px;
-        right: -5px;
+        width: 18px;
+        height: 18px;
+        font-size: 10px;
+        top: -6px;
+        right: -6px;
+        border: 2px solid var(--bg-primary);
       }
 
       /* Smaller pulse on mobile */
@@ -2528,19 +2531,40 @@
 
     // Initialize Image Gen button badge for first-time users
     function initializeImageGenBadge() {
+      console.log('🎨 initializeImageGenBadge called', {
+        hasCurrentCharacter: !!currentCharacter,
+        characterSlug: currentCharacter?.slug,
+        buttonExists: !!document.querySelector('.request-image-btn')
+      });
+
       if (!currentCharacter || !currentCharacter.slug) {
+        console.log('⚠️ Cannot initialize badge - no character loaded yet');
         return;
       }
 
       const storageKey = `imageGenSeen_${currentCharacter.slug}`;
       const hasSeenImageGen = localStorage.getItem(storageKey);
 
+      console.log('🎨 Badge check:', {
+        storageKey,
+        hasSeenImageGen,
+        shouldShowBadge: !hasSeenImageGen
+      });
+
       if (!hasSeenImageGen) {
-        console.log('🎨 First time with this character - showing Image Gen badge');
+        console.log('✨ First time with this character - showing Image Gen badge');
 
         // Get the button
         const imageGenBtn = document.querySelector('.request-image-btn');
         if (!imageGenBtn) {
+          console.error('❌ Image Gen button not found in DOM');
+          return;
+        }
+
+        // Check if badge already exists (prevent duplicates)
+        const existingBadge = document.getElementById('imageGenBadge');
+        if (existingBadge) {
+          console.log('⚠️ Badge already exists, skipping');
           return;
         }
 
@@ -2549,7 +2573,10 @@
         badge.className = 'image-gen-badge';
         badge.textContent = '1';
         badge.id = 'imageGenBadge';
+        badge.title = 'New feature: Generate custom images!';
         imageGenBtn.appendChild(badge);
+
+        console.log('✅ Badge added to button');
 
         // Add pulse animation class
         imageGenBtn.classList.add('first-time-pulse');
@@ -2559,6 +2586,8 @@
           imageGenBtn.classList.remove('first-time-pulse');
           console.log('🎨 Pulse animation stopped');
         }, 6000);
+      } else {
+        console.log('✓ User has already seen the badge for this character');
       }
     }
 
