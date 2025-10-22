@@ -97,99 +97,94 @@ exports.handler = async (event, context) => {
     const userSupabaseID = targetUser.fields.SupabaseID;
     console.log('✅ Found user:', userRecordId, userEmail, 'SupabaseID:', userSupabaseID);
 
-    // Step 2: Get companions from chat history - use SupabaseID
+    // Step 2: Get companions from chat history - requires SupabaseID
+    let chattedCharacterIds = [];
+
     if (!userSupabaseID) {
-      console.log('⚠️ User has no SupabaseID, cannot find chat history');
-      return {
-        statusCode: 200,
-        headers,
-        body: JSON.stringify({
-          success: true,
-          companions: [],
-          message: 'No SupabaseID found - please re-login to see your companions'
-        })
-      };
-    }
-
-    // Step 2: Get companions from chat history
-    // Try User_ID text field first (fast, works with formulas), fallback to linked User field (slow, requires client filtering)
-    console.log('🔍 Fetching ChatHistory by User_ID:', userRecordId);
-
-    // Try using User_ID text field (added for new records)
-    let userChats = [];
-    const userIdFilter = `{User_ID}='${userRecordId}'`;
-    const chatHistoryUrlWithFilter = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/ChatHistory?filterByFormula=${encodeURIComponent(userIdFilter)}&sort[0][field]=CreatedTime&sort[0][direction]=desc`;
-
-    const testResponse = await fetch(chatHistoryUrlWithFilter, {
-      method: 'GET',
-      headers: airtableHeaders
-    });
-
-    if (testResponse.ok) {
-      const testData = await testResponse.json();
-      if (testData.records && testData.records.length > 0) {
-        // User_ID field exists and has data - use it (fast!)
-        console.log('✅ Using User_ID text field for filtering');
-        let chatOffset = null;
-        do {
-          const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/ChatHistory?filterByFormula=${encodeURIComponent(userIdFilter)}&sort[0][field]=CreatedTime&sort[0][direction]=desc${chatOffset ? `&offset=${chatOffset}` : ''}`;
-          const resp = await fetch(url, { method: 'GET', headers: airtableHeaders });
-          if (resp.ok) {
-            const data = await resp.json();
-            userChats = userChats.concat(data.records);
-            chatOffset = data.offset;
-          } else {
-            break;
-          }
-        } while (chatOffset);
-        console.log('💬 Found', userChats.length, 'chat messages via User_ID field');
-      } else {
-        // User_ID field doesn't exist or is empty - fallback to client-side filtering (slow)
-        console.log('⚠️ User_ID field empty, falling back to client-side filtering');
-
-        let allChatHistory = [];
-        let chatOffset = null;
-        const MAX_RECORDS = 2000; // Limit to prevent timeout
-
-        do {
-          const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/ChatHistory?sort[0][field]=CreatedTime&sort[0][direction]=desc${chatOffset ? `&offset=${chatOffset}` : ''}`;
-          const resp = await fetch(url, { method: 'GET', headers: airtableHeaders });
-
-          if (!resp.ok) break;
-
-          const data = await resp.json();
-          allChatHistory = allChatHistory.concat(data.records);
-          chatOffset = data.offset;
-
-          if (allChatHistory.length >= MAX_RECORDS) {
-            console.log('⚠️ Reached max records limit:', MAX_RECORDS);
-            break;
-          }
-        } while (chatOffset);
-
-        // Filter client-side by linked User field
-        userChats = allChatHistory.filter(record => {
-          const recordUserId = record.fields.User ? record.fields.User[0] : null;
-          return recordUserId === userRecordId;
-        });
-
-        console.log('💬 Found', userChats.length, 'chat messages for this user (from', allChatHistory.length, 'total)');
-      }
+      console.log('⚠️ User has no SupabaseID yet, skipping chat history (will only show user-created companions)');
+      // Don't return - continue to fetch user-created companions from Characters field
+      chattedCharacterIds = []; // Empty array for users without SupabaseID
     } else {
-      console.log('⚠️ Could not fetch chat history:', testResponse.status);
-      userChats = [];
-    }
+      // User has SupabaseID - fetch chat history
+      // Try User_ID text field first (fast, works with formulas), fallback to linked User field (slow, requires client filtering)
+      console.log('🔍 Fetching ChatHistory by User_ID:', userRecordId);
 
-    // Extract unique character IDs from user's chat history
-    const characterIdSet = new Set();
-    userChats.forEach(record => {
-      const characterId = record.fields.Character ? record.fields.Character[0] : null;
-      if (characterId) {
-        characterIdSet.add(characterId);
+      // Try using User_ID text field (added for new records)
+      let userChats = [];
+      const userIdFilter = `{User_ID}='${userRecordId}'`;
+      const chatHistoryUrlWithFilter = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/ChatHistory?filterByFormula=${encodeURIComponent(userIdFilter)}&sort[0][field]=CreatedTime&sort[0][direction]=desc`;
+
+      const testResponse = await fetch(chatHistoryUrlWithFilter, {
+        method: 'GET',
+        headers: airtableHeaders
+      });
+
+      if (testResponse.ok) {
+        const testData = await testResponse.json();
+        if (testData.records && testData.records.length > 0) {
+          // User_ID field exists and has data - use it (fast!)
+          console.log('✅ Using User_ID text field for filtering');
+          let chatOffset = null;
+          do {
+            const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/ChatHistory?filterByFormula=${encodeURIComponent(userIdFilter)}&sort[0][field]=CreatedTime&sort[0][direction]=desc${chatOffset ? `&offset=${chatOffset}` : ''}`;
+            const resp = await fetch(url, { method: 'GET', headers: airtableHeaders });
+            if (resp.ok) {
+              const data = await resp.json();
+              userChats = userChats.concat(data.records);
+              chatOffset = data.offset;
+            } else {
+              break;
+            }
+          } while (chatOffset);
+          console.log('💬 Found', userChats.length, 'chat messages via User_ID field');
+          } else {
+          // User_ID field doesn't exist or is empty - fallback to client-side filtering (slow)
+          console.log('⚠️ User_ID field empty, falling back to client-side filtering');
+
+          let allChatHistory = [];
+          let chatOffset = null;
+          const MAX_RECORDS = 2000; // Limit to prevent timeout
+
+          do {
+            const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/ChatHistory?sort[0][field]=CreatedTime&sort[0][direction]=desc${chatOffset ? `&offset=${chatOffset}` : ''}`;
+            const resp = await fetch(url, { method: 'GET', headers: airtableHeaders });
+
+            if (!resp.ok) break;
+
+            const data = await resp.json();
+            allChatHistory = allChatHistory.concat(data.records);
+            chatOffset = data.offset;
+
+            if (allChatHistory.length >= MAX_RECORDS) {
+              console.log('⚠️ Reached max records limit:', MAX_RECORDS);
+              break;
+            }
+          } while (chatOffset);
+
+          // Filter client-side by linked User field
+          userChats = allChatHistory.filter(record => {
+            const recordUserId = record.fields.User ? record.fields.User[0] : null;
+            return recordUserId === userRecordId;
+          });
+
+          console.log('💬 Found', userChats.length, 'chat messages for this user (from', allChatHistory.length, 'total)');
+        }
+      } else {
+        console.log('⚠️ Could not fetch chat history:', testResponse.status);
+        userChats = [];
       }
-    });
-    const chattedCharacterIds = Array.from(characterIdSet);
-    console.log('🎭 Found chats with', chattedCharacterIds.length, 'different characters');
+
+      // Extract unique character IDs from user's chat history
+      const characterIdSet = new Set();
+      userChats.forEach(record => {
+        const characterId = record.fields.Character ? record.fields.Character[0] : null;
+        if (characterId) {
+          characterIdSet.add(characterId);
+        }
+      });
+      chattedCharacterIds = Array.from(characterIdSet);
+      console.log('🎭 Found chats with', chattedCharacterIds.length, 'different characters');
+    } // Close else block for SupabaseID check
 
     // Step 3: Get user-created companions from the user's Characters linked field
     console.log('🔍 Fetching user-created companions from user record:', userRecordId);
