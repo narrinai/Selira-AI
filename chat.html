@@ -2932,7 +2932,20 @@
       suggestionContainer.appendChild(planInfo);
 
       // Load permissions in background without blocking UI
-      checkUserImagePermissions().then(permissions => {
+      // Wait a bit for auth to complete if needed
+      const loadPermissions = async () => {
+        // Wait for user to be available (max 5 seconds)
+        let retries = 0;
+        while (retries < 50) {
+          const user = window.getCurrentUser ? window.getCurrentUser() : null;
+          if (user?.email || user?.sub) break;
+          await new Promise(resolve => setTimeout(resolve, 100));
+          retries++;
+        }
+        return checkUserImagePermissions();
+      };
+
+      loadPermissions().then(permissions => {
         // Define coin icon SVG
         const coinIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-left: 3px; opacity: 0.8;"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle></svg>`;
 
@@ -5301,14 +5314,21 @@
       // Start fetch and store promise
       imagePermissionsPromise = (async () => {
         try {
+          // Add timeout to prevent hanging forever
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
           const response = await fetch('/.netlify/functions/selira-check-image-limit', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               email: user.email,
               supabase_id: user.id || user.sub || user.auth0_id // Supabase uses .id, Auth0 uses .sub
-            })
+            }),
+            signal: controller.signal
           });
+
+          clearTimeout(timeoutId);
 
           if (response.status === 403) {
             const error = await response.json();
@@ -5355,7 +5375,11 @@
           console.warn('⚠️ Unexpected response status:', response.status, '- blocking image generation');
           return fallbackPermissions;
         } catch (error) {
-          console.warn('⚠️ Could not check image permissions:', error);
+          if (error.name === 'AbortError') {
+            console.error('❌ Image permissions check timed out after 10 seconds');
+          } else {
+            console.error('❌ Could not check image permissions:', error);
+          }
           // Default to blocking on errors for safety
           const fallbackPermissions = {
             canGenerate: false,
