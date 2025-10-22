@@ -67,19 +67,22 @@ exports.handler = async (event, context) => {
       // Get character data for context
       const characterData = await getCharacterData(character_slug, AIRTABLE_BASE_ID, AIRTABLE_TOKEN);
 
-      // Randomly select message length (short/medium) - heavily weighted towards short for concise responses
-      const lengthOptions = ['short', 'short', 'short', 'medium', 'medium'];
+      // Randomly select message length (short/medium/long) - balanced for engaging conversations
+      const lengthOptions = ['short', 'short', 'medium', 'medium', 'long'];
       const randomLength = lengthOptions[Math.floor(Math.random() * lengthOptions.length)];
 
       let messageLengthInstruction = '';
-      let maxTokens = 120;
+      let maxTokens = 180;
 
       if (randomLength === 'short') {
         messageLengthInstruction = '\n\n⚠️ CRITICAL LENGTH REQUIREMENT: SHORT (1-2 complete sentences, 15-35 words maximum).\n🚫 NEVER end mid-sentence or mid-thought. Always finish completely with proper punctuation.\n✅ Keep it brief but ALWAYS complete. Quality over quantity.';
-        maxTokens = 100;
+        maxTokens = 150;
+      } else if (randomLength === 'medium') {
+        messageLengthInstruction = '\n\n⚠️ CRITICAL LENGTH REQUIREMENT: MEDIUM (2-4 complete sentences, 40-80 words).\n🚫 NEVER cut off mid-sentence or mid-paragraph. Always end naturally with full closure.\n✅ Be descriptive but ALWAYS finish your complete thought with proper ending.';
+        maxTokens = 220;
       } else {
-        messageLengthInstruction = '\n\n⚠️ CRITICAL LENGTH REQUIREMENT: MEDIUM (2-3 complete sentences, 35-50 words maximum).\n🚫 NEVER cut off mid-sentence. Always end naturally with full closure.\n✅ Be concise but ALWAYS finish your complete thought with proper ending.';
-        maxTokens = 140;
+        messageLengthInstruction = '\n\n⚠️ CRITICAL LENGTH REQUIREMENT: LONG (3-5 complete sentences, 80-120 words).\n🚫 ABSOLUTELY NEVER cut off mid-sentence, mid-action, or mid-thought. You MUST complete every sentence fully.\n✅ Be detailed and immersive but ALWAYS wrap up naturally with proper punctuation and closure.';
+        maxTokens = 300;
       }
 
       console.log(`📏 Randomly selected length: ${randomLength.toUpperCase()} (${maxTokens} tokens)`);
