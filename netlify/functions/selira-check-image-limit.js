@@ -61,20 +61,22 @@ exports.handler = async (event, context) => {
     // Get user profile to check their plan
     console.log('👤 Getting user profile for image limit check', { email, supabase_id });
 
-    // Try Email first, then SupabaseID
+    // Try SupabaseID FIRST (faster, more unique), then Email
     let filterFormula = '';
-    if (email) {
-      filterFormula = `{Email} = '${email}'`;
-      console.log('🔍 Trying lookup by Email:', email);
-    } else if (supabase_id) {
+    if (supabase_id) {
       filterFormula = `{SupabaseID} = '${supabase_id}'`;
-      console.log('🔍 Trying lookup by SupabaseID:', supabase_id);
+      console.log('🔍 Trying lookup by SupabaseID (primary):', supabase_id);
+    } else if (email) {
+      filterFormula = `{Email} = '${email}'`;
+      console.log('🔍 Trying lookup by Email (fallback):', email);
     }
 
     console.log('🔍 Filter formula:', filterFormula);
 
     const users = await base('Users').select({
-      filterByFormula: filterFormula
+      filterByFormula: filterFormula,
+      maxRecords: 1, // Only need first match
+      fields: ['Plan', 'images_generated', 'image_credits_remaining'] // Only fetch needed fields for speed
     }).firstPage();
 
     console.log('👥 Users found:', users.length);
@@ -94,14 +96,14 @@ exports.handler = async (event, context) => {
     }
 
     const userRecord = users[0];
-    const userPlan = userRecord.fields.Plan || 'Basic';
+    const userPlan = userRecord.fields.Plan || 'Free';
     const userId = userRecord.id;
     const imageCreditsRemaining = userRecord.fields.image_credits_remaining || 0;
 
     console.log('👤 User plan:', userPlan);
     console.log('💳 Image credits remaining:', imageCreditsRemaining);
 
-    // For Free plan users, check lifetime usage OR credits
+    // For Free plan users, check lifetime usage OR credits (FAST PATH - no ImageUsage lookup needed)
     if (userPlan === 'Free') {
       // Check if they have purchased credits first
       if (imageCreditsRemaining > 0) {
@@ -175,9 +177,11 @@ exports.handler = async (event, context) => {
 
     console.log('🕐 Checking usage for hour:', currentHour);
 
-    // Query ImageUsage table using Airtable SDK
+    // Query ImageUsage table using Airtable SDK (optimized)
     const usageRecords = await base('ImageUsage').select({
-      filterByFormula: `{Hour} = '${currentHour}'`
+      filterByFormula: `{Hour} = '${currentHour}'`,
+      maxRecords: 100, // Limit to prevent slow queries
+      fields: ['User', 'Count', 'Hour'] // Only fetch needed fields
     }).firstPage();
 
     console.log('📊 ImageUsage records found for hour:', usageRecords.length);

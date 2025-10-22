@@ -3120,12 +3120,11 @@
       }
 
       try {
-        console.log('🔄 Updating image plan counter...');
-        // Force fresh fetch AND invalidate cache to get updated count
+        console.log('🔄 Updating image plan counter (forcing fresh check for accuracy)...');
+        // Invalidate cache to get accurate count after generation
         imagePermissionsCache = null;
         imagePermissionsCacheTime = 0;
-        console.log('♻️ Cache invalidated for fresh counter update');
-        const permissions = await checkUserImagePermissions(false);
+        const permissions = await checkUserImagePermissions(false); // Force fresh check
         const usingCredits = permissions.usingCredits || permissions.imageCreditsRemaining > 0;
         const imageText = (permissions.remaining === 1) ? 'image' : 'images';
         const creditsText = usingCredits ? ' credits' : '';
