@@ -4082,7 +4082,7 @@
       }
 
       // Check if this is a loading message (contains "Generating")
-      const isLoadingMessage = content.includes('Generating your image');
+      const isLoadingMessage = content.includes('Sending your image');
 
       if (sender === 'ai') {
         messageDiv.innerHTML = `
@@ -5930,7 +5930,7 @@
       } else {
         estimatedTime = '7-8 seconds';
       }
-      addMessage(`Generating your image... (takes about ${estimatedTime})`, 'ai', loadingId);
+      addMessage(`Sending your image... (takes about ${estimatedTime})`, 'ai', loadingId);
       
       try {
         console.log('🎨 Generating image:', {
