@@ -28,16 +28,16 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const { email, supabase_id } = JSON.parse(event.body || '{}');
+    const { email, supabase_id, airtable_record_id } = JSON.parse(event.body || '{}');
 
-    if (!email && !supabase_id) {
+    if (!email && !supabase_id && !airtable_record_id) {
       return {
         statusCode: 400,
         headers: {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*'
         },
-        body: JSON.stringify({ error: 'Email or Supabase ID required' })
+        body: JSON.stringify({ error: 'Email, Supabase ID, or Airtable record ID required' })
       };
     }
 
@@ -59,45 +59,73 @@ exports.handler = async (event, context) => {
     const base = new Airtable({ apiKey: AIRTABLE_TOKEN }).base(AIRTABLE_BASE_ID);
 
     // Get user profile to check their plan
-    console.log('👤 Getting user profile for image limit check', { email, supabase_id });
+    console.log('👤 Getting user profile for image limit check', { email, supabase_id, airtable_record_id });
 
-    // Try SupabaseID FIRST (faster, more unique), then Email
-    let filterFormula = '';
-    if (supabase_id) {
-      filterFormula = `{SupabaseID} = '${supabase_id}'`;
-      console.log('🔍 Trying lookup by SupabaseID (primary):', supabase_id);
-    } else if (email) {
-      filterFormula = `{Email} = '${email}'`;
-      console.log('🔍 Trying lookup by Email (fallback):', email);
+    let userRecord;
+    let userId;
+
+    // FAST PATH: If Airtable record ID provided, fetch directly (no formula query needed)
+    if (airtable_record_id && airtable_record_id.startsWith('rec')) {
+      console.log('⚡ Fast path: Using Airtable record ID directly:', airtable_record_id);
+      try {
+        userRecord = await base('Users').find(airtable_record_id);
+        userId = userRecord.id;
+        console.log('✅ User found via record ID:', userId);
+      } catch (err) {
+        console.error('❌ User not found by record ID:', airtable_record_id, err.message);
+        return {
+          statusCode: 404,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+          },
+          body: JSON.stringify({
+            error: 'User not found'
+          })
+        };
+      }
+    } else {
+      // SLOW PATH: Lookup by SupabaseID or Email (requires filterByFormula query)
+      console.log('🐌 Slow path: Looking up user by SupabaseID/Email');
+
+      let filterFormula = '';
+      if (supabase_id) {
+        filterFormula = `{SupabaseID} = '${supabase_id}'`;
+        console.log('🔍 Trying lookup by SupabaseID (primary):', supabase_id);
+      } else if (email) {
+        filterFormula = `{Email} = '${email}'`;
+        console.log('🔍 Trying lookup by Email (fallback):', email);
+      }
+
+      console.log('🔍 Filter formula:', filterFormula);
+
+      const users = await base('Users').select({
+        filterByFormula: filterFormula,
+        maxRecords: 1,
+        fields: ['Plan', 'images_generated', 'image_credits_remaining']
+      }).firstPage();
+
+      console.log('👥 Users found:', users.length);
+
+      if (users.length === 0) {
+        console.error('❌ User not found in Airtable:', { email, supabase_id });
+        return {
+          statusCode: 404,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+          },
+          body: JSON.stringify({
+            error: 'User not found'
+          })
+        };
+      }
+
+      userRecord = users[0];
+      userId = userRecord.id;
     }
 
-    console.log('🔍 Filter formula:', filterFormula);
-
-    const users = await base('Users').select({
-      filterByFormula: filterFormula,
-      maxRecords: 1, // Only need first match
-      fields: ['Plan', 'images_generated', 'image_credits_remaining'] // Only fetch needed fields for speed
-    }).firstPage();
-
-    console.log('👥 Users found:', users.length);
-
-    if (users.length === 0) {
-      console.error('❌ User not found in Airtable:', { email, auth0_id });
-      return {
-        statusCode: 404,
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
-        },
-        body: JSON.stringify({
-          error: 'User not found'
-        })
-      };
-    }
-
-    const userRecord = users[0];
     const userPlan = userRecord.fields.Plan || 'Free';
-    const userId = userRecord.id;
     const imageCreditsRemaining = userRecord.fields.image_credits_remaining || 0;
 
     console.log('👤 User plan:', userPlan);

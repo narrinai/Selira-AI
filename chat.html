@@ -5323,7 +5323,8 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               email: user.email,
-              supabase_id: user.id || user.sub || user.auth0_id // Supabase uses .id, Auth0 uses .sub
+              supabase_id: user.id || user.sub || user.auth0_id, // Supabase uses .id, Auth0 uses .sub
+              airtable_record_id: user.airtableRecordId || localStorage.getItem('airtableRecordId') // Fast path - direct record lookup
             }),
             signal: controller.signal
           });
