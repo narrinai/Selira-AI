@@ -41,7 +41,7 @@ function updateMobileNavAuthState(authDetail = null) {
 
   // Update profile button text and style
   if (isAuthenticated) {
-    profileText.textContent = 'Upgrade';
+    profileText.textContent = 'Image Deals';
     profileBtn.style.background = 'var(--accent, #ce93d8)';
     profileBtn.style.color = 'white';
     profileBtn.style.borderRadius = '8px';
@@ -715,8 +715,8 @@ function attachMobileNavEvents() {
   // Profile button - handle both authenticated and non-authenticated states
   profileBtn.addEventListener('click', function() {
     if (window.isUserAuthenticated && window.isUserAuthenticated()) {
-      // User is authenticated, go to pricing (Upgrade button)
-      window.location.href = '/pricing';
+      // User is authenticated, go to pricing credits tab (Image Deals button)
+      window.location.href = '/pricing?tab=credits';
     } else {
       // User not authenticated, always open signup modal
       if (window.openLoginModal) {
