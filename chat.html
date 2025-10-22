@@ -2482,7 +2482,9 @@
     // Initialize chat interface
     document.addEventListener('DOMContentLoaded', function() {
       console.log('🚀 Selira AI Chat interface loading...');
-      loadCharactersFromDatabase();
+      // OPTIMIZATION: Load specific character FIRST (fast), then all characters in background (slow)
+      loadCharacterFromURL();  // Load specific character immediately
+
       initializeChatInterface();
       setupEventListeners();
       setupMobileKeyboardDetection();
@@ -2499,7 +2501,8 @@
       // Refresh sidebar periodically (every 30 seconds)
       setInterval(updateActiveChatsSidebar, 30000);
 
-      // Character from URL will be loaded after characters are fetched in loadCharactersFromDatabase
+      // Load all characters in background for search modal (non-blocking)
+      setTimeout(() => loadCharactersFromDatabase(), 100);
     });
 
     function initializeChatInterface() {
@@ -4073,25 +4076,9 @@
           updateActiveChatsSidebar();
 
           console.log('✅ Loaded characters from database:', characters.length);
-          
-          // Now load character from URL parameter
-          loadCharacterFromURL();
 
-          // Only try direct loading if no new character flag exists
-          const urlParams = new URLSearchParams(window.location.search);
-          const characterSlug = urlParams.get('char');
-          const newCharacterKey = `new_character_${characterSlug}`;
-          const isNewCharacter = localStorage.getItem(newCharacterKey);
-
-          if (!isNewCharacter && !characterLoadedFromURL) {
-            // Also try to load a specific character directly from URL if available
-            // But only if not already loaded by loadCharacterFromURL
-            loadCharacterDirectly();
-          } else if (characterLoadedFromURL) {
-            console.log('⏭️ Skipping loadCharacterDirectly - already loaded from URL');
-          } else {
-            console.log('⏳ Skipping direct load for new character, waiting for API...');
-          }
+          // Character already loaded by loadCharacterFromURL() called earlier
+          // This function now only loads all characters for search modal
         }
       } catch (error) {
         console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Error loading characters:', error);
