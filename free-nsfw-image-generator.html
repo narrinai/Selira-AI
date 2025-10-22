@@ -1204,6 +1204,12 @@
               </button>
             </div>
 
+            <!-- Premium Pose Warning (shown when user tries to select 2-credit pose without enough credits) -->
+            <div id="premiumPoseWarning" style="display: none; text-align: center; margin-bottom: 16px; padding: 12px 16px; background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.3); border-radius: var(--radius-sm); color: #fbbf24;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 8px;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+              <span style="font-size: 14px; font-weight: 500;">This pose requires 2 credits. Upgrade to a paid plan or purchase credits to use premium poses!</span>
+            </div>
+
             <!-- Get More Credits Button (shown when needed) -->
             <div style="text-align: center; margin-bottom: 20px;">
               <a href="/pricing" id="buyCreditsBtn" style="background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%); color: white; border: none; padding: 8px 16px; border-radius: var(--radius-sm); font-weight: 600; font-size: 12px; text-decoration: none; display: none;">Get More Credits</a>
@@ -1663,11 +1669,11 @@
         );
 
         if (!hasEnough) {
-          showAlert('This pose requires 2 credits. Upgrade to a paid plan or purchase credits to use premium poses!', 'warning');
-          // Open pricing page after a short delay
-          setTimeout(() => {
-            window.open('/pricing.html', '_blank');
-          }, 1500);
+          // Show inline warning message near Generate button instead of popup
+          const warningDiv = document.getElementById('premiumPoseWarning');
+          if (warningDiv) {
+            warningDiv.style.display = 'block';
+          }
           return; // Don't select the pose
         }
       }
@@ -1847,13 +1853,21 @@
     async function downloadImage() {
       if (!generatedImageUrl) return;
       try {
+        // Fetch the image as a blob to avoid CORS issues
+        console.log('🖼️ Fetching image for download:', generatedImageUrl);
+        const response = await fetch(generatedImageUrl);
+        if (!response.ok) throw new Error('Failed to fetch image');
+
+        const blob = await response.blob();
+        console.log('✅ Image blob fetched, size:', blob.size);
+
         // Create canvas to add watermark
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
 
-        // Load the generated image
+        // Load the image from blob
         const img = new Image();
-        img.crossOrigin = 'anonymous';
+        const blobUrl = URL.createObjectURL(blob);
 
         await new Promise((resolve, reject) => {
           img.onload = resolve;
@@ -1861,11 +1875,13 @@
             console.error('Image load error:', err);
             reject(err);
           };
-          // Add timestamp to bypass cache and potential CORS issues
-          img.src = generatedImageUrl + (generatedImageUrl.includes('?') ? '&' : '?') + 't=' + Date.now();
+          img.src = blobUrl;
         });
 
         console.log('Image loaded for watermark:', img.width, 'x', img.height);
+
+        // Clean up blob URL
+        URL.revokeObjectURL(blobUrl);
 
         // Set canvas size to match image
         canvas.width = img.width;
