@@ -1857,24 +1857,41 @@
     async function downloadImage() {
       if (!generatedImageUrl) return;
       try {
-        // Use the already-loaded image from the DOM to avoid CORS issues
-        const displayedImg = document.getElementById('generatedImage');
-        if (!displayedImg || !displayedImg.complete) {
-          throw new Error('Image not loaded yet');
-        }
+        // Fetch image through our proxy to add CORS headers
+        const proxyUrl = `/.netlify/functions/proxy-image?url=${encodeURIComponent(generatedImageUrl)}`;
+        console.log('🖼️ Fetching image through proxy:', proxyUrl);
 
-        console.log('🖼️ Using already-loaded image from DOM:', displayedImg.naturalWidth, 'x', displayedImg.naturalHeight);
+        const response = await fetch(proxyUrl);
+        if (!response.ok) throw new Error('Failed to fetch image through proxy');
+
+        const blob = await response.blob();
+        console.log('✅ Image fetched, size:', blob.size);
+
+        // Create an image element from the blob
+        const img = new Image();
+        const blobUrl = URL.createObjectURL(blob);
+
+        await new Promise((resolve, reject) => {
+          img.onload = resolve;
+          img.onerror = reject;
+          img.src = blobUrl;
+        });
+
+        console.log('🖼️ Image loaded for watermark:', img.width, 'x', img.height);
 
         // Create canvas to add watermark
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
 
-        // Set canvas size to match image natural dimensions
-        canvas.width = displayedImg.naturalWidth;
-        canvas.height = displayedImg.naturalHeight;
+        // Set canvas size to match image
+        canvas.width = img.width;
+        canvas.height = img.height;
 
         // Draw the image
-        ctx.drawImage(displayedImg, 0, 0);
+        ctx.drawImage(img, 0, 0);
+
+        // Clean up blob URL
+        URL.revokeObjectURL(blobUrl);
 
         // Add watermark background (bottom right)
         const watermarkPadding = 30;
