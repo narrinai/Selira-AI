@@ -391,8 +391,10 @@ class SupabaseAuthModal {
       this.closeModal();
       this.setLoading(false);
 
-      // Show success message
-      this.showSuccess(isSignupMode ? 'Account created successfully! 🎉' : 'Welcome back! 👋');
+      // Show success message only for signup
+      if (isSignupMode) {
+        this.showSuccess('Account created successfully! 🎉');
+      }
 
     } catch (error) {
       console.error('❌ Email/password authentication failed:', error);
