@@ -682,6 +682,68 @@
       padding-bottom: 8px;
     }
 
+    /* Conversation starters */
+    .conversation-starters {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+      animation: fadeInUp 0.4s ease-out;
+      order: -2; /* Appear before image suggestions */
+    }
+
+    .conversation-starters-header {
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .conversation-starters-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 8px;
+    }
+
+    .conversation-starter-btn {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 13px;
+      color: var(--text-primary);
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s ease;
+      line-height: 1.4;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .conversation-starter-btn:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(206, 147, 216, 0.3);
+    }
+
+    .conversation-starter-btn:active {
+      transform: translateY(0);
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     .suggestions-header {
       font-size: 12px;
       color: var(--text-secondary);
@@ -1308,6 +1370,22 @@
         }
       }
 
+      /* Mobile conversation starters */
+      .conversation-starters {
+        margin-bottom: 12px;
+      }
+
+      .conversation-starters-buttons {
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+
+      .conversation-starter-btn {
+        padding: 8px 10px;
+        font-size: 12px;
+        white-space: normal;
+        text-align: left;
+      }
 
       .message {
         max-width: 90%;
@@ -2118,6 +2196,14 @@
 
       <!-- Chat Input -->
       <div class="chat-input-container" id="chatInputContainer">
+        <!-- Conversation Starters (only shown for new chats) -->
+        <div class="conversation-starters" id="conversationStarters" style="display: none;">
+          <div class="conversation-starters-header">Quick starters:</div>
+          <div class="conversation-starters-buttons" id="conversationStartersButtons">
+            <!-- Starters will be populated by JavaScript -->
+          </div>
+        </div>
+
         <!-- Image Prompt Suggestions (appears above input) -->
         <div class="image-prompt-suggestions" id="imagePromptSuggestions">
           <div class="suggestion-buttons" id="suggestionButtons">
@@ -2517,6 +2603,10 @@
       if (messageInput) {
         messageInput.addEventListener('input', function() {
           autoResizeTextarea();
+          // Hide conversation starters when user starts typing
+          if (messageInput.value) {
+            hideConversationStarters();
+          }
           // Hide suggestions when user starts typing (unless they just used a suggestion)
           if (messageInput.value && !messageInput.value.startsWith('Send me a picture')) {
             hideImagePromptSuggestions();
@@ -2613,6 +2703,105 @@
       const imageGenBtn = document.querySelector('.request-image-btn');
       if (imageGenBtn) {
         imageGenBtn.classList.remove('first-time-pulse');
+      }
+    }
+
+    // Conversation Starters - NSFW themed quick messages
+    const conversationStartersFemale = [
+      "Hey cutie 😘",
+      "I'm feeling naughty...",
+      "Show me something",
+      "What are you wearing?",
+      "I need attention",
+      "Let's have some fun",
+      "I'm alone right now",
+      "Wanna play?",
+      "Tell me your fantasy",
+      "Make me yours"
+    ];
+
+    const conversationStartersMale = [
+      "Hey handsome 😏",
+      "I'm feeling frisky...",
+      "Show me yours",
+      "Flexing for me?",
+      "I need you",
+      "Let's get wild",
+      "I'm waiting for you",
+      "Wanna have fun?",
+      "What's your fantasy?",
+      "Take control"
+    ];
+
+    // Show conversation starters for new chats
+    function showConversationStarters() {
+      if (!currentCharacter) return;
+
+      // Check if this is a new chat (no history)
+      const chatHistory = JSON.parse(localStorage.getItem(`chat_${currentCharacter.slug}`) || '[]');
+
+      // Only show starters if chat is empty
+      if (chatHistory.length > 0) {
+        console.log('💬 Chat has history, not showing conversation starters');
+        return;
+      }
+
+      const container = document.getElementById('conversationStarters');
+      const buttonsContainer = document.getElementById('conversationStartersButtons');
+
+      if (!container || !buttonsContainer) return;
+
+      // Get character gender
+      const characterSex = currentCharacter.sex || currentCharacter.Sex || 'female';
+
+      // Select appropriate starters based on gender
+      const starters = characterSex === 'male' ? conversationStartersMale : conversationStartersFemale;
+
+      // Pick 3 random starters
+      const shuffled = [...starters].sort(() => 0.5 - Math.random());
+      const selectedStarters = shuffled.slice(0, 3);
+
+      console.log('💬 Showing conversation starters:', selectedStarters);
+
+      // Clear existing buttons
+      buttonsContainer.innerHTML = '';
+
+      // Create buttons
+      selectedStarters.forEach(starter => {
+        const button = document.createElement('button');
+        button.className = 'conversation-starter-btn';
+        button.textContent = starter;
+        button.onclick = () => useConversationStarter(starter);
+        buttonsContainer.appendChild(button);
+      });
+
+      // Show container
+      container.style.display = 'flex';
+    }
+
+    // Use a conversation starter (send it as message)
+    function useConversationStarter(message) {
+      console.log('💬 Using conversation starter:', message);
+
+      // Hide starters immediately
+      hideConversationStarters();
+
+      // Set message in input
+      const messageInput = document.getElementById('messageInput');
+      if (messageInput) {
+        messageInput.value = message;
+
+        // Send the message automatically
+        sendMessage();
+      }
+    }
+
+    // Hide conversation starters
+    function hideConversationStarters() {
+      const container = document.getElementById('conversationStarters');
+      if (container) {
+        container.style.display = 'none';
+        console.log('💬 Conversation starters hidden');
       }
     }
 
@@ -3832,7 +4021,10 @@
             }
           }
         }
-        
+
+        // Show conversation starters for new chats
+        showConversationStarters();
+
       } catch (error) {
         console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Error loading from localStorage:', error);
       }
