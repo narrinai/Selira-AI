@@ -338,19 +338,14 @@ exports.handler = async (event, context) => {
           images_generated: newImagesGenerated
         };
 
-        // Only deduct credits if:
-        // 1. User has credits available, AND
-        // 2. User is on a plan with hourly limits (Light/Basic/Premium), AND
-        // 3. User has hit their hourly limit
-        if (currentCreditsRemaining > 0 && willHitHourlyLimit) {
+        // Deduct credits if user has any purchased credits
+        // Priority: Always deduct from purchased credits first before using plan allowance
+        if (currentCreditsRemaining > 0) {
           updateFields.image_credits_remaining = currentCreditsRemaining - creditsToDeduct;
-          console.log(`💳 User hit hourly limit - decrementing credits: ${currentCreditsRemaining} → ${currentCreditsRemaining - creditsToDeduct} (deducting ${creditsToDeduct} credits)`);
-        } else if (currentCreditsRemaining > 0 && userPlan === 'Free') {
-          // Free users always use credits if they have them
-          updateFields.image_credits_remaining = currentCreditsRemaining - creditsToDeduct;
-          console.log(`💳 Free user with credits - decrementing: ${currentCreditsRemaining} → ${currentCreditsRemaining - creditsToDeduct} (deducting ${creditsToDeduct} credits)`);
+          console.log(`💳 Decrementing purchased credits: ${currentCreditsRemaining} → ${currentCreditsRemaining - creditsToDeduct} (deducting ${creditsToDeduct} credits)`);
+          console.log(`💳 User plan: ${userPlan}, willHitHourlyLimit: ${willHitHourlyLimit}`);
         } else {
-          console.log(`ℹ️ Not deducting credits (willHitHourlyLimit: ${willHitHourlyLimit}, currentCredits: ${currentCreditsRemaining}, plan: ${userPlan})`);
+          console.log(`ℹ️ No purchased credits to deduct (currentCredits: ${currentCreditsRemaining}, plan: ${userPlan})`);
         }
 
         const data = JSON.stringify({ fields: updateFields });
