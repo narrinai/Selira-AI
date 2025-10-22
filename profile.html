@@ -1523,14 +1523,13 @@
           const data = await response.json();
           console.log('💳 Image credits loaded:', data);
 
-          if (data.creditsRemaining > 0) {
-            const creditsSection = document.getElementById('creditsSection');
-            const creditsRemaining = document.getElementById('creditsRemaining');
+          // Always show credits section, even if 0
+          const creditsSection = document.getElementById('creditsSection');
+          const creditsRemaining = document.getElementById('creditsRemaining');
 
-            if (creditsSection && creditsRemaining) {
-              creditsSection.style.display = 'block';
-              creditsRemaining.textContent = data.creditsRemaining;
-            }
+          if (creditsSection && creditsRemaining) {
+            creditsSection.style.display = 'block';
+            creditsRemaining.textContent = data.creditsRemaining || 0;
           }
         }
       } catch (error) {
