@@ -352,6 +352,16 @@ class SupabaseAuthModal {
 
       if (error) throw error;
 
+      // For signup: Check if email already exists by examining identities array
+      // Supabase doesn't always return an error for duplicate emails (security feature)
+      // But we can detect it by checking if identities array is empty
+      if (isSignupMode && data.user && (!data.user.identities || data.user.identities.length === 0)) {
+        this.setLoading(false);
+        this.showError('This email is already registered. Please log in instead or use a different email.');
+        console.log('❌ Duplicate email detected - identities array is empty');
+        return;
+      }
+
       // For login: Check if email is verified
       if (!isSignupMode && data.user && !data.user.email_confirmed_at) {
         this.setLoading(false);
