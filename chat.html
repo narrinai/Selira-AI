@@ -2658,26 +2658,7 @@
           return;
         }
 
-        // Add badge
-        const badge = document.createElement('span');
-        badge.className = 'image-gen-badge';
-        badge.textContent = '1';
-        badge.id = 'imageGenBadge';
-        badge.title = 'New feature: Generate custom images!';
-        imageGenBtn.appendChild(badge);
-
-        console.log('✅ Badge added to button');
-
-        // Add pulse animation class
-        imageGenBtn.classList.add('first-time-pulse');
-
-        // Remove pulse animation after 6 seconds (3 pulses × 2s each)
-        setTimeout(() => {
-          imageGenBtn.classList.remove('first-time-pulse');
-          console.log('🎨 Pulse animation stopped');
-        }, 6000);
-      } else {
-        console.log('✓ User has already seen the badge for this character');
+        // Badge feature removed - no longer needed
       }
     }
 
@@ -2757,16 +2738,16 @@
       // Select appropriate starters based on gender
       const starters = characterSex === 'male' ? conversationStartersMale : conversationStartersFemale;
 
-      // Pick 3 random starters
+      // Pick 2 random starters (1 replaced with image gen button)
       const shuffled = [...starters].sort(() => 0.5 - Math.random());
-      const selectedStarters = shuffled.slice(0, 3);
+      const selectedStarters = shuffled.slice(0, 2);
 
       console.log('💬 Showing conversation starters:', selectedStarters);
 
       // Clear existing buttons
       buttonsContainer.innerHTML = '';
 
-      // Create buttons
+      // Create conversation starter buttons
       selectedStarters.forEach(starter => {
         const button = document.createElement('button');
         button.className = 'conversation-starter-btn';
@@ -2774,6 +2755,32 @@
         button.onclick = () => useConversationStarter(starter);
         buttonsContainer.appendChild(button);
       });
+
+      // Add Image Gen button (Missionary pose, 1 credit)
+      const imageGenButton = document.createElement('button');
+      imageGenButton.className = 'conversation-starter-btn';
+      imageGenButton.style.cssText = `
+        background: linear-gradient(135deg, #ce93d8 0%, #ba68c8 100%);
+        color: white;
+        border: 2px solid #ce93d8;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      `;
+      imageGenButton.innerHTML = `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <circle cx="12" cy="12" r="6"></circle>
+        </svg>
+        <span>Generate Missionary</span>
+      `;
+      imageGenButton.onclick = () => {
+        hideConversationStarters();
+        openImageGenerationWithPose('missionary');
+      };
+      buttonsContainer.appendChild(imageGenButton);
 
       // Show container
       container.style.display = 'flex';
@@ -3122,6 +3129,9 @@
         console.error('❌ Cannot show Image Gen - character not loaded');
         return;
       }
+
+      // Hide conversation starters when opening image gen
+      hideConversationStarters();
 
       console.log('🎨 Opening Image Gen panel for:', currentCharacter.name);
 
@@ -5681,6 +5691,27 @@
       }
     }
 
+    // Open image generation with a specific pose pre-selected
+    async function openImageGenerationWithPose(poseId) {
+      console.log('🎨 Opening Image Gen with pre-selected pose:', poseId);
+
+      // First open the image gen panel
+      await showImagePromptSuggestions();
+
+      // Wait a bit for the panel to render
+      setTimeout(() => {
+        // Find and click the pose button
+        const poseButtons = document.querySelectorAll('.image-suggestion-btn');
+        for (const button of poseButtons) {
+          const buttonText = button.textContent.toLowerCase();
+          if (buttonText.includes(poseId.toLowerCase())) {
+            console.log('✅ Auto-clicking pose button:', buttonText);
+            button.click();
+            break;
+          }
+        }
+      }, 300);
+    }
 
     // Stylish clothing options for companion avatars - extremely explicit
     function getStylishClothing(style, category = 'default') {
