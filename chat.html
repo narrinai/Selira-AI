@@ -2814,6 +2814,24 @@
     function useConversationStarter(message) {
       console.log('💬 Using conversation starter:', message);
 
+      // Check authentication first
+      let isAuthenticated = window.isUserAuthenticated ? window.isUserAuthenticated() : false;
+      let user = window.getCurrentUser ? window.getCurrentUser() : null;
+
+      if (!isAuthenticated || !user) {
+        // Show signup modal for unauthenticated users
+        console.log('🔒 User not authenticated, showing signup modal');
+        hideConversationStarters();
+
+        if (window.openLoginModal) {
+          window.openLoginModal('signup');
+        } else {
+          console.error('Auth system not ready, showing fallback message');
+          alert('Please sign up or login to chat with AI companions on Selira AI.');
+        }
+        return;
+      }
+
       // Hide starters immediately
       hideConversationStarters();
 
@@ -5699,6 +5717,23 @@
 
     // Request image function - shows image generation suggestions
     async function requestImage() {
+      // Check authentication first
+      let isAuthenticated = window.isUserAuthenticated ? window.isUserAuthenticated() : false;
+      let user = window.getCurrentUser ? window.getCurrentUser() : null;
+
+      if (!isAuthenticated || !user) {
+        // Show signup modal for unauthenticated users
+        console.log('🔒 User not authenticated, showing signup modal');
+
+        if (window.openLoginModal) {
+          window.openLoginModal('signup');
+        } else {
+          console.error('Auth system not ready, showing fallback message');
+          alert('Please sign up or login to use Image Gen on Selira AI.');
+        }
+        return;
+      }
+
       // Remove badge when user clicks (first-time indicator)
       removeImageGenBadge();
 
@@ -5718,6 +5753,23 @@
     // Open image generation with a specific pose pre-selected
     async function openImageGenerationWithPose(poseId) {
       console.log('🎨 Opening Image Gen with pre-selected pose:', poseId);
+
+      // Check authentication first
+      let isAuthenticated = window.isUserAuthenticated ? window.isUserAuthenticated() : false;
+      let user = window.getCurrentUser ? window.getCurrentUser() : null;
+
+      if (!isAuthenticated || !user) {
+        // Show signup modal for unauthenticated users
+        console.log('🔒 User not authenticated, showing signup modal');
+
+        if (window.openLoginModal) {
+          window.openLoginModal('signup');
+        } else {
+          console.error('Auth system not ready, showing fallback message');
+          alert('Please sign up or login to use Image Gen on Selira AI.');
+        }
+        return;
+      }
 
       // First open the image gen panel
       await showImagePromptSuggestions();
