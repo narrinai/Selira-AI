@@ -2756,7 +2756,10 @@
         buttonsContainer.appendChild(button);
       });
 
-      // Add Image Gen button (Missionary pose, 1 credit) - same format as chat image gen
+      // Add Image Gen button (Missionary pose, 1 credit) with close button
+      const imageGenWrapper = document.createElement('div');
+      imageGenWrapper.style.cssText = 'position: relative;';
+
       const imageGenButton = document.createElement('button');
       imageGenButton.className = 'conversation-starter-btn';
       imageGenButton.style.cssText = `
@@ -2766,17 +2769,52 @@
         font-weight: 600;
         display: flex;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-start;
         gap: 8px;
+        padding-left: 16px;
+        padding-right: 32px;
+        position: relative;
       `;
-      // Use exact same format as pose buttons in image gen: "Missionary" + coin icon
+      // Use coin icon
       const coinIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-left: 3px; opacity: 0.8;"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle></svg>`;
-      imageGenButton.innerHTML = `Missionary <span style="white-space: nowrap;">${coinIcon}</span>`;
+      imageGenButton.innerHTML = `Image Gen: Missionary <span style="white-space: nowrap;">${coinIcon}</span>`;
       imageGenButton.onclick = () => {
         hideConversationStarters();
         openImageGenerationWithPose('missionary');
       };
-      buttonsContainer.appendChild(imageGenButton);
+
+      // Add close button
+      const closeButton = document.createElement('button');
+      closeButton.innerHTML = '×';
+      closeButton.style.cssText = `
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        background: rgba(0, 0, 0, 0.2);
+        border: none;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: white;
+        font-size: 18px;
+        line-height: 1;
+        padding: 0;
+        transition: background 0.2s;
+      `;
+      closeButton.onmouseover = () => closeButton.style.background = 'rgba(0, 0, 0, 0.4)';
+      closeButton.onmouseout = () => closeButton.style.background = 'rgba(0, 0, 0, 0.2)';
+      closeButton.onclick = (e) => {
+        e.stopPropagation();
+        imageGenWrapper.remove();
+      };
+
+      imageGenButton.appendChild(closeButton);
+      imageGenWrapper.appendChild(imageGenButton);
+      buttonsContainer.appendChild(imageGenWrapper);
 
       // Show container
       container.style.display = 'flex';
