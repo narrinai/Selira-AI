@@ -2756,7 +2756,7 @@
         buttonsContainer.appendChild(button);
       });
 
-      // Add Image Gen button (Missionary pose, 1 credit)
+      // Add Image Gen button (Missionary pose, 1 credit) - same format as chat image gen
       const imageGenButton = document.createElement('button');
       imageGenButton.className = 'conversation-starter-btn';
       imageGenButton.style.cssText = `
@@ -2769,13 +2769,9 @@
         justify-content: center;
         gap: 8px;
       `;
-      imageGenButton.innerHTML = `
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"></circle>
-          <circle cx="12" cy="12" r="6"></circle>
-        </svg>
-        <span>Generate Missionary</span>
-      `;
+      // Use exact same format as pose buttons in image gen: "Missionary" + coin icon
+      const coinIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-left: 3px; opacity: 0.8;"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle></svg>`;
+      imageGenButton.innerHTML = `Missionary <span style="white-space: nowrap;">${coinIcon}</span>`;
       imageGenButton.onclick = () => {
         hideConversationStarters();
         openImageGenerationWithPose('missionary');
