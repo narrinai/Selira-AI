@@ -2877,15 +2877,6 @@
           }
 
           console.log('✅ Loaded characters:', allCharacters.length);
-          console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Sample character names:', allCharacters.slice(-5).map(c => c.name));
-          console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Sample character tags:', allCharacters.slice(0, 10).map(c => ({name: c.name, tags: c.tags})));
-          console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> New test characters:', allCharacters.filter(c => c.name.includes('Emma') || c.name.includes('Sarah') || c.name.includes('Visible')));
-
-          // Diagnostic: Check Created_by field
-          const withCreatedBy = allCharacters.filter(c => c.Created_by);
-          const communityChars = allCharacters.filter(c => c.Created_by && c.Created_by !== 'Selira');
-          console.log('👤 Created_by stats:', withCreatedBy.length, 'with field,', communityChars.length, 'community');
-          console.log('👤 Sample Created_by values:', allCharacters.slice(0, 10).map(c => ({name: c.Name, creator: c.Created_by})));
         } else {
           throw new Error('Invalid API response');
         }
@@ -3197,7 +3188,6 @@
     // Add automatic avatar alternating every 2 seconds
     function addHoverImageListeners() {
       const images = document.querySelectorAll('.character-image[data-hover-image]:not([data-alternating])');
-      console.log('🔄 Found', images.length, 'images to alternate');
 
       images.forEach(img => {
         const avatar1 = img.getAttribute('src');
@@ -3216,11 +3206,7 @@
         const hasThirdAvatar = avatar3 && avatar3.trim() !== '';
 
         if (hasThirdAvatar) {
-          console.log('✅ Setting up 3-image alternating for:', {
-            avatar1: avatar1.substring(0, 50),
-            avatar2: avatar2.substring(0, 50),
-            avatar3: avatar3.substring(0, 50)
-          });
+          // 3-image alternating setup (logging disabled for performance)
 
           // Cycle through 3 avatars - start with random avatar
           const avatars = [avatar1, avatar2, avatar3];
@@ -3443,20 +3429,13 @@
       }
 
       renderCharacters();
-      console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Filtered characters:', filteredCharacters.length, '/', allCharacters.length, 'with filters:', currentFilters);
+      // Filtering complete (logging disabled for performance)
 
-      // Debug: Count companions with content_filter
-      if (currentFilters.content === 'uncensored') {
-        const uncensoredCount = allCharacters.filter(c => (c.content_filter || 'Censored').toLowerCase() === 'uncensored').length;
-        console.log('🔍 Total companions with content_filter=Uncensored:', uncensoredCount);
-        console.log('🔍 Sample content_filter values:', allCharacters.slice(0, 10).map(c => ({ name: c.name, content_filter: c.content_filter || 'default:Censored' })));
-        console.log('🔍 Filtered result:', filteredCharacters.length, 'companions shown');
-      }
+      // Debug logging disabled for performance
     }
 
     // ===== UI INTERACTIONS =====
     function toggleDropdown(type) {
-      console.log('Toggle dropdown:', type);
 
       // Close all other dropdowns first
       document.querySelectorAll('.dropdown-menu').forEach(menu => {
@@ -3572,7 +3551,7 @@
 
     // Update filter UI based on currentFilters (used after URL parameters are applied)
     function updateFilterUI() {
-      console.log('🎨 updateFilterUI() called with currentFilters:', currentFilters);
+      // Update filter UI (logging disabled for performance)
 
       // Labels mapping
       const contentLabels = {
@@ -3599,17 +3578,12 @@
       const sexValue = currentFilters.sex || 'null';
       const styleValue = currentFilters.style || 'null';
 
-      console.log('🎨 Filter values:', { contentValue, sexValue, styleValue });
-
       // Update desktop content filter button
       const contentBtn = document.getElementById('contentDropdownBtn');
       if (contentBtn) {
         const span = contentBtn.querySelector('span:first-child');
         const newText = contentLabels[contentValue] || 'All';
-        console.log('🎨 Updating content button from "' + span.textContent + '" to "' + newText + '"');
         span.textContent = newText;
-      } else {
-        console.warn('⚠️ Content button not found');
       }
 
       // Update desktop sex filter button
@@ -3617,10 +3591,7 @@
       if (sexBtn) {
         const span = sexBtn.querySelector('span:first-child');
         const newText = sexLabels[sexValue] || 'All';
-        console.log('🎨 Updating sex button from "' + span.textContent + '" to "' + newText + '"');
         span.textContent = newText;
-      } else {
-        console.warn('⚠️ Sex button not found');
       }
 
       // Update desktop style filter button
@@ -3628,10 +3599,7 @@
       if (styleBtn) {
         const span = styleBtn.querySelector('span:first-child');
         const newText = styleLabels[styleValue] || 'All';
-        console.log('🎨 Updating style button from "' + span.textContent + '" to "' + newText + '"');
         span.textContent = newText;
-      } else {
-        console.warn('⚠️ Style button not found');
       }
 
       // Update mobile content filter
@@ -3689,7 +3657,7 @@
         });
       }
 
-      console.log('✅ Filter UI (desktop & mobile) updated to reflect currentFilters:', currentFilters);
+      // Filter UI updated (logging disabled for performance)
     }
 
     function toggleSwitch(type) {
@@ -6328,7 +6296,7 @@ Please be thorough and include important details from our conversations.`;
       }).join('');
 
       menu.innerHTML = allItem + tagItems;
-      console.log('✅ Populated mobile tag dropdown with', filteredTags.length, 'filtered tags');
+      // Mobile tag dropdown populated (logging disabled for performance)
     }
 
     // ===== CREATE FLOW TAGS SYSTEM =====
@@ -6405,11 +6373,7 @@ Please be thorough and include important details from our conversations.`;
         .sort((a, b) => tagCounts[b] - tagCounts[a])
         .slice(0, 20);
 
-      console.log(`🏷️ Filtered tags for ${currentSex || 'all'} companions:`, {
-        total: filteredTags.length,
-        sample: filteredTags.slice(0, 5),
-        counts: filteredTags.slice(0, 5).map(t => `${t}: ${tagCounts[t]}`)
-      });
+      // Tags filtered (logging disabled for performance)
 
       // Create tag pills with "All Tags" button first
       const allButton = '<a href="#" class="tag-pill active" data-tag="all">All Tags</a>';
@@ -6442,7 +6406,7 @@ Please be thorough and include important details from our conversations.`;
         });
       });
 
-      console.log('✅ Populated tag filters with', filteredTags.length, 'dynamic tags');
+      // Tag filters populated (logging disabled for performance)
     }
 
     // Filter characters by tag
