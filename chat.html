@@ -6673,6 +6673,20 @@
             border: 1px solid var(--border); z-index: 10;
           ">&times;</button>
 
+          <button id="carouselDownloadBtn" style="
+            position: absolute; top: -50px; right: 50px; background: var(--bg-secondary);
+            border: none; color: var(--text-primary);
+            cursor: pointer; width: 40px; height: 40px; display: flex;
+            align-items: center; justify-content: center; border-radius: 50%;
+            border: 1px solid var(--border); z-index: 10;
+          ">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+          </button>
+
           <div style="position: relative; width: 100%; aspect-ratio: 3/4; border-radius: 16px; overflow: hidden;">
             <img src="${avatar1}" id="simpleCarouselImg" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='/avatars/placeholder.webp';">
 
@@ -6770,6 +6784,125 @@
       modal.addEventListener('click', (e) => {
         if (e.target === modal) modal.remove();
       });
+
+      // Add download button functionality
+      const downloadBtn = document.getElementById('carouselDownloadBtn');
+      if (downloadBtn) {
+        downloadBtn.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          const currentImgElement = document.getElementById('simpleCarouselImg');
+          if (!currentImgElement || !currentImgElement.src) return;
+
+          const currentImageUrl = currentImgElement.src;
+          console.log('📥 Downloading carousel image:', currentImageUrl);
+
+          // Use the same download function as chat images
+          try {
+            await downloadCarouselImage(currentImageUrl);
+          } catch (error) {
+            console.error('❌ Carousel download error:', error);
+            alert('Failed to download image: ' + error.message);
+          }
+        });
+      }
+    }
+
+    // Download carousel image with watermark
+    async function downloadCarouselImage(imageUrl) {
+      try {
+        // Fetch image through our proxy to add CORS headers and enable watermarking
+        const proxyUrl = `/.netlify/functions/proxy-image?url=${encodeURIComponent(imageUrl)}`;
+        console.log('🖼️ Fetching carousel image through proxy for download:', proxyUrl);
+
+        const response = await fetch(proxyUrl);
+        if (!response.ok) throw new Error('Failed to fetch image through proxy');
+
+        const blob = await response.blob();
+        console.log('✅ Image fetched, size:', blob.size);
+
+        // Create an image element from the blob
+        const img = new Image();
+        const blobUrl = URL.createObjectURL(blob);
+
+        await new Promise((resolve, reject) => {
+          img.onload = resolve;
+          img.onerror = reject;
+          img.src = blobUrl;
+        });
+
+        console.log('🖼️ Image loaded for watermark:', img.width, 'x', img.height);
+
+        // Create canvas to add watermark
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Set canvas size to match image
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        // Draw the image
+        ctx.drawImage(img, 0, 0);
+
+        // Clean up blob URL
+        URL.revokeObjectURL(blobUrl);
+
+        // Add watermark background (bottom right)
+        const watermarkPadding = 30;
+        const watermarkHeight = 50;
+        const watermarkWidth = 150;
+        const x = canvas.width - watermarkWidth - watermarkPadding;
+        const y = canvas.height - watermarkHeight - watermarkPadding;
+
+        // Black background with rounded corners
+        const radius = 10;
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.lineTo(x + watermarkWidth - radius, y);
+        ctx.arcTo(x + watermarkWidth, y, x + watermarkWidth, y + radius, radius);
+        ctx.lineTo(x + watermarkWidth, y + watermarkHeight - radius);
+        ctx.arcTo(x + watermarkWidth, y + watermarkHeight, x + watermarkWidth - radius, y + watermarkHeight, radius);
+        ctx.lineTo(x + radius, y + watermarkHeight);
+        ctx.arcTo(x, y + watermarkHeight, x, y + watermarkHeight - radius, radius);
+        ctx.lineTo(x, y + radius);
+        ctx.arcTo(x, y, x + radius, y, radius);
+        ctx.closePath();
+        ctx.fill();
+
+        // Add text "Selira.ai" in pink/purple using Playfair Display font
+        ctx.fillStyle = '#CE93D8'; // Pink/purple color
+        ctx.font = 'bold 24px "Playfair Display", serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('Selira.ai', x + watermarkWidth / 2, y + watermarkHeight / 2);
+
+        console.log('Watermark added, converting to blob...');
+
+        // Convert canvas to blob
+        canvas.toBlob((blob) => {
+          if (!blob) {
+            console.error('Failed to create blob from canvas');
+            alert('Failed to create watermarked image');
+            return;
+          }
+
+          console.log('Blob created, size:', blob.size);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `selira-avatar-${Date.now()}.png`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(url);
+          console.log('✅ Carousel image downloaded with watermark!');
+        }, 'image/png', 1.0);
+
+      } catch (error) {
+        console.error('Download error:', error);
+        console.error('Error stack:', error.stack);
+        throw error;
+      }
     }
 
     // ===== MEMORY FUNCTIONS =====
