@@ -210,23 +210,128 @@
             <strong>Note:</strong> This is a test page for Promptchan API integration. Make sure you have your API key configured in Netlify environment variables.
         </div>
 
-        <!-- Quick Test Buttons for Companion Traits -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; padding: 20px; background: #f5f5f5; border-radius: 10px;">
-            <div>
-                <h3 style="margin-bottom: 10px; color: #333;">🧔 Test Male Companion</h3>
-                <button type="button" onclick="testMaleCompanion()" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);">
-                    Test: Indian Male, Red Hair, Short
-                </button>
-            </div>
-            <div>
-                <h3 style="margin-bottom: 10px; color: #333;">👩 Test Female Companion</h3>
-                <button type="button" onclick="testFemaleCompanion()" style="background: linear-gradient(135deg, #E91E63 0%, #C2185B 100%);">
-                    Test: Black Female, Blonde Hair, Long
-                </button>
-            </div>
+        <!-- Tab Navigation -->
+        <div style="display: flex; gap: 10px; margin-bottom: 30px; border-bottom: 2px solid #e0e0e0;">
+            <button type="button" onclick="switchTab('image')" id="imageTab" style="flex: 1; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px 10px 0 0;">
+                🖼️ Image Generation
+            </button>
+            <button type="button" onclick="switchTab('video')" id="videoTab" style="flex: 1; background: #e0e0e0; color: #333; border-radius: 10px 10px 0 0;">
+                🎬 Video Generation (Image-to-Video)
+            </button>
         </div>
 
-        <form id="generateForm">
+        <!-- VIDEO GENERATION SECTION -->
+        <div id="videoSection" style="display: none;">
+            <form id="videoForm">
+                <div class="form-section">
+                    <div class="form-group full-width">
+                        <label for="video_image_url">Image URL *</label>
+                        <input type="text" id="video_image_url" name="video_image_url" required placeholder="https://example.com/image.jpg">
+                        <small style="color: #666; margin-top: 5px; display: block;">Direct URL to the image you want to animate</small>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="video_prompt">Video Prompt</label>
+                        <textarea id="video_prompt" name="video_prompt" placeholder="Describe the motion/animation you want (optional)"></textarea>
+                        <small style="color: #666; margin-top: 5px; display: block;">Optional: Describe how you want the image to move/animate</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="video_model">Model</label>
+                        <select id="video_model" name="video_model">
+                            <option value="stable-video-diffusion">Stable Video Diffusion</option>
+                            <option value="svd-xt">SVD XT (Extended)</option>
+                            <option value="animate-diff">AnimateDiff</option>
+                            <option value="runway-gen2">Runway Gen-2</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="video_duration">Duration</label>
+                        <select id="video_duration" name="video_duration">
+                            <option value="2">2 seconds</option>
+                            <option value="4" selected>4 seconds</option>
+                            <option value="6">6 seconds</option>
+                            <option value="8">8 seconds</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="video_fps">Frames Per Second</label>
+                        <select id="video_fps" name="video_fps">
+                            <option value="6">6 FPS</option>
+                            <option value="12">12 FPS</option>
+                            <option value="24" selected>24 FPS</option>
+                            <option value="30">30 FPS</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="video_quality">Quality</label>
+                        <select id="video_quality" name="video_quality">
+                            <option value="draft">Draft (Fast)</option>
+                            <option value="standard" selected>Standard</option>
+                            <option value="high">High Quality</option>
+                            <option value="ultra">Ultra Quality</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group slider-group">
+                        <label for="motion_intensity">Motion Intensity (0-255): <span class="slider-value" id="motionValue">127</span></label>
+                        <input type="range" id="motion_intensity" name="motion_intensity" min="0" max="255" value="127">
+                        <small style="color: #666; margin-top: 5px; display: block;">Higher values = more movement</small>
+                    </div>
+
+                    <div class="form-group slider-group">
+                        <label for="noise_augmentation">Noise Augmentation (0-1): <span class="slider-value" id="noiseValue">0.02</span></label>
+                        <input type="range" id="noise_augmentation" name="noise_augmentation" min="0" max="1" step="0.01" value="0.02">
+                        <small style="color: #666; margin-top: 5px; display: block;">Adds variation to the animation</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="video_seed">Seed (-1 for random)</label>
+                        <input type="number" id="video_seed" name="video_seed" value="-1">
+                    </div>
+
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="loop_video" name="loop_video" checked>
+                        <label for="loop_video">Create seamless loop</label>
+                    </div>
+
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="upscale_video" name="upscale_video">
+                        <label for="upscale_video">Upscale output (+2 Gems)</label>
+                    </div>
+
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="stabilize_video" name="stabilize_video" checked>
+                        <label for="stabilize_video">Video stabilization</label>
+                    </div>
+                </div>
+
+                <button type="submit" id="videoGenerateBtn">Generate Video</button>
+            </form>
+        </div>
+
+        <!-- IMAGE GENERATION SECTION -->
+        <div id="imageSection">
+            <!-- Quick Test Buttons for Companion Traits -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; padding: 20px; background: #f5f5f5; border-radius: 10px;">
+                <div>
+                    <h3 style="margin-bottom: 10px; color: #333;">🧔 Test Male Companion</h3>
+                    <button type="button" onclick="testMaleCompanion()" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);">
+                        Test: Indian Male, Red Hair, Short
+                    </button>
+                </div>
+                <div>
+                    <h3 style="margin-bottom: 10px; color: #333;">👩 Test Female Companion</h3>
+                    <button type="button" onclick="testFemaleCompanion()" style="background: linear-gradient(135deg, #E91E63 0%, #C2185B 100%);">
+                        Test: Black Female, Blonde Hair, Long
+                    </button>
+                </div>
+            </div>
+
+            <form id="generateForm">
             <div class="form-section">
                 <!-- Companion Traits Section -->
                 <div class="form-group full-width" style="background: #f0f8ff; padding: 15px; border-radius: 8px; margin-bottom: 10px;">
@@ -415,6 +520,7 @@
 
             <button type="submit" id="generateBtn">Generate Image</button>
         </form>
+        </div>
 
         <div class="result-section" id="resultSection" style="display: none;">
             <h2>Result</h2>
@@ -423,6 +529,119 @@
     </div>
 
     <script>
+        // Tab switching
+        function switchTab(tab) {
+            const imageSection = document.getElementById('imageSection');
+            const videoSection = document.getElementById('videoSection');
+            const imageTab = document.getElementById('imageTab');
+            const videoTab = document.getElementById('videoTab');
+
+            if (tab === 'image') {
+                imageSection.style.display = 'block';
+                videoSection.style.display = 'none';
+                imageTab.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                imageTab.style.color = 'white';
+                videoTab.style.background = '#e0e0e0';
+                videoTab.style.color = '#333';
+            } else {
+                imageSection.style.display = 'none';
+                videoSection.style.display = 'block';
+                imageTab.style.background = '#e0e0e0';
+                imageTab.style.color = '#333';
+                videoTab.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                videoTab.style.color = 'white';
+            }
+        }
+
+        // Update video slider values
+        document.getElementById('motion_intensity').addEventListener('input', (e) => {
+            document.getElementById('motionValue').textContent = e.target.value;
+        });
+
+        document.getElementById('noise_augmentation').addEventListener('input', (e) => {
+            document.getElementById('noiseValue').textContent = e.target.value;
+        });
+
+        // Handle video form submission
+        document.getElementById('videoForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const generateBtn = document.getElementById('videoGenerateBtn');
+            const resultSection = document.getElementById('resultSection');
+            const resultContent = document.getElementById('resultContent');
+
+            // Disable button and show loading
+            generateBtn.disabled = true;
+            generateBtn.textContent = 'Generating Video...';
+            resultSection.style.display = 'block';
+            resultContent.innerHTML = '<div class="loading"><div class="spinner"></div>Generating your video... This may take a few minutes.</div>';
+
+            // Collect form data
+            const formData = {
+                image_url: document.getElementById('video_image_url').value,
+                prompt: document.getElementById('video_prompt').value || undefined,
+                model: document.getElementById('video_model').value,
+                duration: parseInt(document.getElementById('video_duration').value),
+                fps: parseInt(document.getElementById('video_fps').value),
+                quality: document.getElementById('video_quality').value,
+                motion_bucket_id: parseInt(document.getElementById('motion_intensity').value),
+                cond_aug: parseFloat(document.getElementById('noise_augmentation').value),
+                seed: parseInt(document.getElementById('video_seed').value),
+                loop: document.getElementById('loop_video').checked,
+                upscale: document.getElementById('upscale_video').checked,
+                stabilize: document.getElementById('stabilize_video').checked
+            };
+
+            try {
+                console.log('Sending video generation request with data:', formData);
+
+                const response = await fetch('/.netlify/functions/promptchan-generate-video', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to generate video');
+                }
+
+                console.log('Response:', data);
+
+                // Display success
+                resultContent.innerHTML = `
+                    <div class="success">
+                        <strong>Success!</strong> Video generated successfully.
+                        ${data.gems ? `Used ${data.gems} gems.` : ''}
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <video controls class="result-image" style="max-width: 100%;">
+                            <source src="${data.video}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                        <p style="margin-top: 10px;">
+                            <a href="${data.video}" download style="color: #667eea; font-weight: 600;">Download Video</a>
+                        </p>
+                    </div>
+                `;
+
+            } catch (error) {
+                console.error('Error:', error);
+                resultContent.innerHTML = `
+                    <div class="error">
+                        <strong>Error:</strong> ${error.message}
+                    </div>
+                `;
+            } finally {
+                // Re-enable button
+                generateBtn.disabled = false;
+                generateBtn.textContent = 'Generate Video';
+            }
+        });
+
         // Quick test functions
         async function testMaleCompanion() {
             const testData = {
