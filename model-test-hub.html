@@ -278,6 +278,9 @@
             <button type="button" onclick="switchTab('video-i2v-runpod')" id="videoI2vRunpodTab" style="flex: 1; min-width: 150px; background: #e0e0e0; color: #333; border-radius: 10px 10px 0 0; padding: 12px;">
                 🚀 I2V RunPod<br><small style="font-size: 11px;">AnimateDiff $0.02</small>
             </button>
+            <button type="button" onclick="switchTab('video-t2v-traits')" id="videoT2vTraitsTab" style="flex: 1; min-width: 150px; background: #e0e0e0; color: #333; border-radius: 10px 10px 0 0; padding: 12px;">
+                👤 T2V Traits<br><small style="font-size: 11px;">RunPod + Traits</small>
+            </button>
         </div>
 
         <!-- FAL.AI HUNYUAN I2V SECTION -->
@@ -544,6 +547,132 @@
             </form>
         </div>
 
+        <!-- TEXT-TO-VIDEO WITH TRAITS SECTION -->
+        <div id="videoT2vTraitsSection" style="display: none;">
+            <h2 style="margin-bottom: 20px;">👤 Text-to-Video with Companion Traits (RunPod)</h2>
+            <div class="info" style="margin-bottom: 20px;">
+                <strong>2-Step Process:</strong> First generates image from companion traits (PromptChan), then animates with RunPod I2V. Total cost: ~$0.03/video
+            </div>
+            <form id="videoT2vTraitsForm">
+                <div class="form-section">
+                    <!-- Companion Traits -->
+                    <div class="form-group full-width" style="background: #f0f8ff; padding: 15px; border-radius: 8px;">
+                        <h3 style="margin-bottom: 15px; color: #333;">👤 Companion Traits</h3>
+
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 15px;">
+                            <div class="form-group">
+                                <label for="traits_name">Name (optional)</label>
+                                <input type="text" id="traits_name" name="traits_name" placeholder="e.g., Laura">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="traits_age">Age</label>
+                                <input type="number" id="traits_age" name="traits_age" value="25" min="18" max="60">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="traits_ethnicity">Ethnicity</label>
+                                <select id="traits_ethnicity" name="traits_ethnicity">
+                                    <option value="caucasian" selected>Caucasian</option>
+                                    <option value="asian">Asian</option>
+                                    <option value="black">Black</option>
+                                    <option value="latina">Latina</option>
+                                    <option value="middle-eastern">Middle Eastern</option>
+                                    <option value="indian">Indian</option>
+                                    <option value="mixed">Mixed</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="traits_body_type">Body Type</label>
+                                <select id="traits_body_type" name="traits_body_type">
+                                    <option value="slim">Slim</option>
+                                    <option value="athletic" selected>Athletic</option>
+                                    <option value="curvy">Curvy</option>
+                                    <option value="petite">Petite</option>
+                                    <option value="average">Average</option>
+                                    <option value="plus-size">Plus Size</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div class="form-group">
+                                <label for="traits_hair_color">Hair Color</label>
+                                <select id="traits_hair_color" name="traits_hair_color">
+                                    <option value="black">Black</option>
+                                    <option value="brown" selected>Brown</option>
+                                    <option value="blonde">Blonde</option>
+                                    <option value="red">Red</option>
+                                    <option value="gray">Gray</option>
+                                    <option value="white">White</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="traits_hair_length">Hair Length</label>
+                                <select id="traits_hair_length" name="traits_hair_length">
+                                    <option value="short">Short</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="long" selected>Long</option>
+                                    <option value="very long">Very Long</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action & Setting -->
+                    <div class="form-group full-width">
+                        <label for="traits_action">Action/Motion *</label>
+                        <textarea id="traits_action" name="traits_action" required placeholder="e.g., smiling at camera, gentle head movement, blowing a kiss">Smiling at camera, gentle head movement</textarea>
+                        <small>Describe what the companion should be doing in the video</small>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="traits_setting">Setting/Background *</label>
+                        <input type="text" id="traits_setting" name="traits_setting" required value="Indoor lighting, soft background" placeholder="e.g., outdoor park, beach sunset, bedroom">
+                        <small>Describe the environment/location</small>
+                    </div>
+
+                    <!-- Provider Selection -->
+                    <div class="form-group">
+                        <label for="traits_provider">Video Provider</label>
+                        <select id="traits_provider" name="traits_provider">
+                            <option value="runpod" selected>RunPod (cheapest ~$0.03)</option>
+                            <option value="fal">Fal.ai Kling (~$0.50)</option>
+                            <option value="replicate">Replicate Hunyuan (~$1.25)</option>
+                        </select>
+                        <small>RunPod uses 2-step process (image → video)</small>
+                    </div>
+
+                    <!-- Advanced Settings -->
+                    <div class="form-group">
+                        <label for="traits_duration">Video Duration</label>
+                        <select id="traits_duration" name="traits_duration">
+                            <option value="5" selected>5 seconds</option>
+                            <option value="10">10 seconds</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="traits_aspect_ratio">Aspect Ratio</label>
+                        <select id="traits_aspect_ratio" name="traits_aspect_ratio">
+                            <option value="1:1">1:1 (Square)</option>
+                            <option value="16:9" selected>16:9 (Landscape)</option>
+                            <option value="9:16">9:16 (Portrait)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="traits_negative_prompt">Negative Prompt (optional)</label>
+                        <input type="text" id="traits_negative_prompt" name="traits_negative_prompt" value="low quality, blurry, distorted, deformed" placeholder="Things to avoid">
+                    </div>
+                </div>
+
+                <button type="submit" id="videoT2vTraitsGenerateBtn">Generate Video from Traits</button>
+            </form>
+        </div>
+
         <!-- IMAGE GENERATION SECTION -->
         <div id="imageSection">
             <!-- Quick Test Buttons for Companion Traits -->
@@ -766,14 +895,16 @@
                 'image': document.getElementById('imageSection'),
                 'video-i2v-fal': document.getElementById('videoI2vFalSection'),
                 'video-t2v-replicate': document.getElementById('videoT2vReplicateSection'),
-                'video-i2v-runpod': document.getElementById('videoI2vRunpodSection')
+                'video-i2v-runpod': document.getElementById('videoI2vRunpodSection'),
+                'video-t2v-traits': document.getElementById('videoT2vTraitsSection')
             };
 
             const tabs = {
                 'image': document.getElementById('imageTab'),
                 'video-i2v-fal': document.getElementById('videoI2vFalTab'),
                 'video-t2v-replicate': document.getElementById('videoT2vReplicateTab'),
-                'video-i2v-runpod': document.getElementById('videoI2vRunpodTab')
+                'video-i2v-runpod': document.getElementById('videoI2vRunpodTab'),
+                'video-t2v-traits': document.getElementById('videoT2vTraitsTab')
             };
 
             // Hide all sections and deactivate all tabs
@@ -1065,6 +1196,154 @@
                 resultContent.innerHTML = `<div class="error"><strong>Error:</strong> ${error.message}</div>`;
                 generateBtn.disabled = false;
                 generateBtn.textContent = 'Generate Video with RunPod (~$0.02)';
+            }
+        });
+
+        // Handle Text-to-Video with Traits form submission
+        document.getElementById('videoT2vTraitsForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const generateBtn = document.getElementById('videoT2vTraitsGenerateBtn');
+            const resultSection = document.getElementById('resultSection');
+            const resultContent = document.getElementById('resultContent');
+
+            generateBtn.disabled = true;
+            generateBtn.textContent = 'Generating...';
+            resultSection.style.display = 'block';
+            resultContent.innerHTML = '<div class="loading"><div class="spinner"></div>Step 1: Generating image from traits...<br><small>This may take 30-60 seconds</small></div>';
+
+            const formData = {
+                companionName: document.getElementById('traits_name').value || 'Companion',
+                hairColor: document.getElementById('traits_hair_color').value,
+                hairLength: document.getElementById('traits_hair_length').value,
+                ethnicity: document.getElementById('traits_ethnicity').value,
+                bodyType: document.getElementById('traits_body_type').value,
+                age: parseInt(document.getElementById('traits_age').value),
+                action: document.getElementById('traits_action').value,
+                setting: document.getElementById('traits_setting').value,
+                provider: document.getElementById('traits_provider').value,
+                duration: document.getElementById('traits_duration').value,
+                aspect_ratio: document.getElementById('traits_aspect_ratio').value,
+                negative_prompt: document.getElementById('traits_negative_prompt').value
+            };
+
+            try {
+                const startTime = Date.now();
+                console.log('Generating video from traits:', formData);
+
+                // Call the companion T2V function
+                const response = await fetch('/.netlify/functions/generate-companion-t2v', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok && response.status !== 202) {
+                    throw new Error(data.error || data.message || 'Failed to generate video');
+                }
+
+                // If RunPod provider, it returns a jobId for polling
+                if (data.jobId) {
+                    resultContent.innerHTML = `
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            Step 2: Converting to video with RunPod...
+                            <br><small>Elapsed: 0s | Est: 60-120s</small>
+                            ${data.sourceImage ? `<br><small>Source image: <a href="${data.sourceImage}" target="_blank">View</a></small>` : ''}
+                        </div>
+                    `;
+                    generateBtn.textContent = 'Converting to video...';
+
+                    // Poll for completion
+                    const pollInterval = 3000;
+                    const maxWaitTime = 300000; // 5 minutes
+
+                    const pollStatus = async () => {
+                        const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+
+                        if (Date.now() - startTime > maxWaitTime) {
+                            throw new Error('Video generation timed out after 5 minutes');
+                        }
+
+                        const statusResponse = await fetch(`/.netlify/functions/runpod-check-status?jobId=${data.jobId}`);
+                        const statusData = await statusResponse.json();
+
+                        if (statusData.status === 'completed') {
+                            resultContent.innerHTML = `
+                                <div class="success">
+                                    <strong>Success!</strong> Video generated from companion traits!
+                                    <br><strong>Provider:</strong> ${statusData.provider || data.provider}
+                                    ${statusData.cost ? `<br><strong>Cost:</strong> ${statusData.cost}` : ''}
+                                    <br><strong>Time:</strong> ${elapsedSeconds}s
+                                </div>
+                                <div style="margin-top: 20px; text-align: center;">
+                                    ${data.sourceImage ? `
+                                        <div style="margin-bottom: 15px;">
+                                            <p style="font-weight: 600; margin-bottom: 5px;">Source Image:</p>
+                                            <img src="${data.sourceImage}" style="max-width: 300px; border-radius: 8px;">
+                                        </div>
+                                    ` : ''}
+                                    <p style="font-weight: 600; margin-bottom: 5px;">Generated Video:</p>
+                                    <video controls class="result-video" style="max-width: 100%;">
+                                        <source src="${statusData.video}" type="video/mp4">
+                                    </video>
+                                    <p style="margin-top: 10px;">
+                                        <a href="${statusData.video}" download style="color: #667eea; font-weight: 600;">Download Video</a>
+                                    </p>
+                                </div>
+                            `;
+                            generateBtn.disabled = false;
+                            generateBtn.textContent = 'Generate Video from Traits';
+                        } else if (statusData.status === 'failed') {
+                            throw new Error(statusData.details || statusData.error || 'Video generation failed');
+                        } else {
+                            // Still processing
+                            const progress = Math.min(Math.floor((elapsedSeconds / 120) * 100), 95);
+                            resultContent.innerHTML = `
+                                <div class="loading">
+                                    <div class="spinner"></div>
+                                    Step 2: Converting to video...
+                                    <br><small>Elapsed: ${elapsedSeconds}s | Progress: ~${progress}%</small>
+                                    ${data.sourceImage ? `<br><small>Source: <a href="${data.sourceImage}" target="_blank">View image</a></small>` : ''}
+                                </div>
+                            `;
+                            setTimeout(pollStatus, pollInterval);
+                        }
+                    };
+
+                    setTimeout(pollStatus, pollInterval);
+                } else if (data.video) {
+                    // Direct video URL (fal.ai or Replicate)
+                    const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+                    resultContent.innerHTML = `
+                        <div class="success">
+                            <strong>Success!</strong> Video generated from companion traits!
+                            <br><strong>Provider:</strong> ${data.provider}
+                            ${data.cost ? `<br><strong>Cost:</strong> ${data.cost}` : ''}
+                            <br><strong>Time:</strong> ${elapsedSeconds}s
+                        </div>
+                        <div style="margin-top: 20px; text-align: center;">
+                            <video controls class="result-video" style="max-width: 100%;">
+                                <source src="${data.video}" type="video/mp4">
+                            </video>
+                            <p style="margin-top: 10px;">
+                                <a href="${data.video}" download style="color: #667eea; font-weight: 600;">Download Video</a>
+                            </p>
+                        </div>
+                    `;
+                    generateBtn.disabled = false;
+                    generateBtn.textContent = 'Generate Video from Traits';
+                } else {
+                    throw new Error('Unexpected response: no video or job ID returned');
+                }
+
+            } catch (error) {
+                console.error('T2V Traits error:', error);
+                resultContent.innerHTML = `<div class="error"><strong>Error:</strong> ${error.message}</div>`;
+                generateBtn.disabled = false;
+                generateBtn.textContent = 'Generate Video from Traits';
             }
         });
 
