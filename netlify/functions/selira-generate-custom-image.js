@@ -923,11 +923,21 @@ exports.handler = async (event, context) => {
 
         let limitData = null;
 
-        // Try to parse limit response
+        // Try to parse limit response - FAIL CLOSED if parse error
         try {
           limitData = await limitResponse.json();
         } catch (parseError) {
-          console.warn(`⚠️ [${requestId}] Could not parse limit response, allowing generation`);
+          console.error(`❌ [${requestId}] Could not parse limit response, BLOCKING generation for security`, parseError);
+          return {
+            statusCode: 500,
+            headers: {
+              ...corsHeaders,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              error: 'Could not verify image generation limits. Please try again.'
+            })
+          };
         }
 
         // Check for blocking responses BEFORE incrementing
@@ -968,15 +978,36 @@ exports.handler = async (event, context) => {
           };
         }
 
-        // Limit check passed - store for reference
+        // FAIL CLOSED: If limit check failed, block generation for security
         if (!limitResponse.ok) {
-          console.warn(`⚠️ [${requestId}] Could not check limits (${limitResponse.status}), allowing generation`);
-        } else {
-          console.log(`✅ [${requestId}] Limit check passed:`, limitData);
-          body.limitData = limitData;
+          console.error(`❌ [${requestId}] Limit check failed (${limitResponse.status}), BLOCKING generation for security`);
+          return {
+            statusCode: 500,
+            headers: {
+              ...corsHeaders,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              error: 'Could not verify image generation limits. Please try again.'
+            })
+          };
         }
+
+        // Limit check passed - store for reference
+        console.log(`✅ [${requestId}] Limit check passed:`, limitData);
+        body.limitData = limitData;
       } catch (limitError) {
-        console.warn(`⚠️ [${requestId}] Limit check failed, allowing generation:`, limitError.message);
+        console.error(`❌ [${requestId}] Limit check threw error, BLOCKING generation for security:`, limitError.message);
+        return {
+          statusCode: 500,
+          headers: {
+            ...corsHeaders,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            error: 'Could not verify image generation limits. Please try again.'
+          })
+        };
       }
     } else {
       console.log(`👤 [${requestId}] Anonymous user - no limit checking`);
