@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>RunPod Video API Test - Selira AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .info {
+            background: #e3f2fd;
+            color: #1565c0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .pricing-comparison {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .pricing-comparison h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .pricing-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .pricing-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .pricing-card .price {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .pricing-card .best {
+            background: #4CAF50;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-left: 5px;
+        }
+
+        .form-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #555;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select,
+        textarea {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        small {
+            color: #666;
+            margin-top: 5px;
+            font-size: 12px;
+        }
+
+        .slider-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        .slider-value {
+            text-align: center;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        .result-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #667eea;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .result-video {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .error {
+            background: #fee;
+            color: #c00;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .success {
+            background: #efe;
+            color: #060;
+            padding: 15px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 RunPod Serverless Video API Test</h1>
+        <p class="subtitle">AnimateDiff Image-to-Video • Pay-per-Second • Self-Hosted Option</p>
+
+        <div class="info">
+            <strong>RunPod Serverless Advantages:</strong>
+            <ul style="margin: 10px 0 0 20px;">
+                <li>✅ <strong>Extremely Cheap</strong>: ~$0.015 per 60s generation on RTX 3090</li>
+                <li>✅ <strong>NSFW Friendly</strong>: Self-hosted, no content restrictions</li>
+                <li>✅ <strong>Pay-per-Second</strong>: Only pay for actual compute time</li>
+                <li>✅ <strong>Multiple Models</strong>: AnimateDiff, Hunyuan, SVD</li>
+            </ul>
+        </div>
+
+        <div class="pricing-comparison">
+            <h3>💰 Cost Comparison (per 5-sec video)</h3>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h4>RunPod <span class="best">CHEAPEST</span></h4>
+                    <div class="price">$0.02</div>
+                    <small>RTX 3090 • 60s gen time</small>
+                </div>
+                <div class="pricing-card">
+                    <h4>Fal.ai (Hunyuan)</h4>
+                    <div class="price">$0.40</div>
+                    <small>Fixed price per video</small>
+                </div>
+                <div class="pricing-card">
+                    <h4>Segmind (Wan 2.5)</h4>
+                    <div class="price">$0.50</div>
+                    <small>720p • 5 seconds</small>
+                </div>
+                <div class="pricing-card">
+                    <h4>Promptchan</h4>
+                    <div class="price">$3.23</div>
+                    <small>323 gems per video</small>
+                </div>
+            </div>
+        </div>
+
+        <form id="videoForm">
+            <div class="form-section">
+                <div class="form-group full-width">
+                    <label for="image_url">Image URL *</label>
+                    <input type="text" id="image_url" name="image_url" required placeholder="https://example.com/image.jpg">
+                    <small>Direct URL to the image you want to animate</small>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="prompt">Motion Prompt *</label>
+                    <textarea id="prompt" name="prompt" required placeholder="The woman slowly turns her head to the left, smiling"></textarea>
+                    <small>Describe the movement/animation you want to see</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="model">Model</label>
+                    <select id="model" name="model">
+                        <option value="animatediff" selected>AnimateDiff v3</option>
+                        <option value="animatediff-lightning">AnimateDiff Lightning (faster)</option>
+                        <option value="svd">Stable Video Diffusion</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="num_frames">Video Length</label>
+                    <select id="num_frames" name="num_frames">
+                        <option value="16">16 frames (~0.5s)</option>
+                        <option value="24">24 frames (~1s)</option>
+                        <option value="48">48 frames (~2s)</option>
+                        <option value="72" selected>72 frames (~3s)</option>
+                        <option value="96">96 frames (~4s)</option>
+                        <option value="120">120 frames (~5s)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="resolution">Resolution</label>
+                    <select id="resolution" name="resolution">
+                        <option value="512x512" selected>512x512 (fastest)</option>
+                        <option value="512x768">512x768 (portrait)</option>
+                        <option value="768x512">768x512 (landscape)</option>
+                        <option value="768x768">768x768</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="fps">FPS</label>
+                    <select id="fps" name="fps">
+                        <option value="8">8 FPS</option>
+                        <option value="16">16 FPS</option>
+                        <option value="24" selected>24 FPS</option>
+                    </select>
+                </div>
+
+                <div class="form-group slider-group">
+                    <label for="motion_scale">Motion Scale (0-3): <span class="slider-value" id="motionValue">1.0</span></label>
+                    <input type="range" id="motion_scale" name="motion_scale" min="0" max="3" step="0.1" value="1.0">
+                    <small>Higher = more movement</small>
+                </div>
+
+                <div class="form-group slider-group">
+                    <label for="guidance_scale">Guidance Scale (1-20): <span class="slider-value" id="guidanceValue">7.5</span></label>
+                    <input type="range" id="guidance_scale" name="guidance_scale" min="1" max="20" step="0.5" value="7.5">
+                    <small>How closely to follow the prompt</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="steps">Inference Steps</label>
+                    <select id="steps" name="steps">
+                        <option value="20">20 steps (fast)</option>
+                        <option value="30">30 steps (balanced)</option>
+                        <option value="50" selected>50 steps (quality)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="seed">Seed (-1 for random)</label>
+                    <input type="number" id="seed" name="seed" value="-1">
+                </div>
+            </div>
+
+            <button type="submit" id="generateBtn">Generate Video on RunPod</button>
+        </form>
+
+        <div class="result-section" id="resultSection" style="display: none;">
+            <h2>Result</h2>
+            <div id="resultContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Update slider values
+        document.getElementById('motion_scale').addEventListener('input', (e) => {
+            document.getElementById('motionValue').textContent = e.target.value;
+        });
+
+        document.getElementById('guidance_scale').addEventListener('input', (e) => {
+            document.getElementById('guidanceValue').textContent = e.target.value;
+        });
+
+        // Handle form submission
+        document.getElementById('videoForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const generateBtn = document.getElementById('generateBtn');
+            const resultSection = document.getElementById('resultSection');
+            const resultContent = document.getElementById('resultContent');
+
+            // Disable button and show loading
+            generateBtn.disabled = true;
+            generateBtn.textContent = 'Generating Video...';
+            resultSection.style.display = 'block';
+            resultContent.innerHTML = '<div class="loading"><div class="spinner"></div>Generating video on RunPod serverless... This may take 1-2 minutes.</div>';
+
+            // Collect form data
+            const formData = {
+                image_url: document.getElementById('image_url').value,
+                prompt: document.getElementById('prompt').value,
+                model: document.getElementById('model').value,
+                num_frames: parseInt(document.getElementById('num_frames').value),
+                resolution: document.getElementById('resolution').value,
+                fps: parseInt(document.getElementById('fps').value),
+                motion_scale: parseFloat(document.getElementById('motion_scale').value),
+                guidance_scale: parseFloat(document.getElementById('guidance_scale').value),
+                steps: parseInt(document.getElementById('steps').value),
+                seed: parseInt(document.getElementById('seed').value)
+            };
+
+            try {
+                console.log('Sending request to RunPod:', formData);
+
+                const response = await fetch('/.netlify/functions/runpod-generate-video', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to generate video');
+                }
+
+                console.log('Response:', data);
+
+                // Display success
+                resultContent.innerHTML = `
+                    <div class="success">
+                        <strong>Success!</strong> Video generated via ${data.provider || 'RunPod Serverless'}
+                        ${data.cost ? `<br><strong>Estimated Cost:</strong> ${data.cost}` : ''}
+                        ${data.generation_time ? `<br><strong>Generation Time:</strong> ${data.generation_time}s` : ''}
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <h3>Settings Used:</h3>
+                        <ul style="text-align: left; max-width: 600px; margin: 10px auto;">
+                            <li><strong>Model:</strong> ${formData.model}</li>
+                            <li><strong>Resolution:</strong> ${formData.resolution}</li>
+                            <li><strong>Frames:</strong> ${formData.num_frames} @ ${formData.fps} FPS</li>
+                            <li><strong>Motion Scale:</strong> ${formData.motion_scale}</li>
+                            <li><strong>Steps:</strong> ${formData.steps}</li>
+                        </ul>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <video controls class="result-video" style="max-width: 100%;">
+                            <source src="${data.video}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                        <p style="margin-top: 10px;">
+                            <a href="${data.video}" download style="color: #667eea; font-weight: 600;">Download Video</a>
+                        </p>
+                    </div>
+                `;
+
+            } catch (error) {
+                console.error('Error:', error);
+                resultContent.innerHTML = `
+                    <div class="error">
+                        <strong>Error:</strong> ${error.message}
+                        <br><br>
+                        <strong>Note:</strong> RunPod serverless endpoint needs to be configured first.
+                        Check the Netlify function logs for more details.
+                    </div>
+                `;
+            } finally {
+                // Re-enable button
+                generateBtn.disabled = false;
+                generateBtn.textContent = 'Generate Video on RunPod';
+            }
+        });
+    </script>
+</body>
+</html>
