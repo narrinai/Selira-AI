@@ -1,4 +1,11 @@
 # Netlify redirects for clean URLs
+
+# Tag redirects - MUST come first (most specific rules first)
+/tags/all-tags     /tags.html              200
+/tags/:tag         /tags.html?tag=:tag     200
+/tag/:tag          /tags.html?tag=:tag     301
+
+# General page redirects
 /category          /                       301
 /pricing           /pricing.html           200
 /profile           /profile.html           200
@@ -9,11 +16,6 @@
 /terms-and-conditions /terms-and-conditions.html 200
 /tags              /tags.html              200
 /search-results    /search-results.html    200
-
-# Tag redirects - clean URLs to query params
-/tags/all-tags     /tags.html              200
-/tags/:tag         /tags.html?tag=:tag     200
-/tag/:tag          /tags.html?tag=:tag     301
 
 # Catch-all for other clean URLs
 /:path.html        /:path.html             200
