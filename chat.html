@@ -2200,7 +2200,7 @@
       <div class="chat-input-container" id="chatInputContainer">
         <!-- Conversation Starters (only shown for new chats) -->
         <div class="conversation-starters" id="conversationStarters" style="display: none;">
-          <div class="conversation-starters-header">Quick starters:</div>
+          <div class="conversation-starters-header">Quick starters. You received 2 free image credits <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-left: 2px;"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle></svg></div>
           <div class="conversation-starters-buttons" id="conversationStartersButtons">
             <!-- Starters will be populated by JavaScript -->
           </div>
@@ -3232,7 +3232,7 @@
 
         // Always show remaining images/credits count
         const usingCredits = permissions.usingCredits || permissions.imageCreditsRemaining > 0;
-        const imageText = 'image';
+        const imageText = 'images';
         const creditsText = usingCredits ? ' credits' : '';
         const hourlyText = permissions.hourlyLimitReached ? ' this hour' : '';
 
@@ -3251,7 +3251,7 @@
             <span class="plan-badge">Unknown</span>
             <a href="/pricing.html" class="buy-credits-btn">Image Credits</a>
           </div>
-          <span class="plan-remaining">0${coinIcon} image credits left</span>
+          <span class="plan-remaining">0${coinIcon} images credits left</span>
         `;
       });
 
