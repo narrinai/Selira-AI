@@ -549,9 +549,12 @@
 
         <!-- TEXT-TO-VIDEO WITH TRAITS SECTION -->
         <div id="videoT2vTraitsSection" style="display: none;">
-            <h2 style="margin-bottom: 20px;">👤 Text-to-Video with Companion Traits (RunPod)</h2>
+            <h2 style="margin-bottom: 20px;">👤 Video Generation from Companion Traits</h2>
             <div class="info" style="margin-bottom: 20px;">
-                <strong>2-Step Process:</strong> First generates image from companion traits (PromptChan), then animates with RunPod I2V. Total cost: ~$0.03/video
+                <strong>Choose your provider:</strong><br>
+                • <strong>RunPod (~$0.03):</strong> 2-step process (image→video). Cheapest but NOT true T2V.<br>
+                • <strong>Fal.ai (~$0.50):</strong> True text-to-video with Kling AI.<br>
+                • <strong>Replicate (~$1.25):</strong> True text-to-video with Hunyuan (highest quality).
             </div>
             <form id="videoT2vTraitsForm">
                 <div class="form-section">
@@ -638,11 +641,11 @@
                     <div class="form-group">
                         <label for="traits_provider">Video Provider</label>
                         <select id="traits_provider" name="traits_provider">
-                            <option value="runpod" selected>RunPod (cheapest ~$0.03)</option>
-                            <option value="fal">Fal.ai Kling (~$0.50)</option>
-                            <option value="replicate">Replicate Hunyuan (~$1.25)</option>
+                            <option value="runpod" selected>RunPod (~$0.03) - Image→Video 2-step</option>
+                            <option value="fal">Fal.ai Kling (~$0.50) - True Text→Video</option>
+                            <option value="replicate">Replicate Hunyuan (~$1.25) - True Text→Video</option>
                         </select>
-                        <small>RunPod uses 2-step process (image → video)</small>
+                        <small>⚠️ RunPod is NOT true T2V (generates image first, then animates). Fal.ai/Replicate are true T2V but more expensive.</small>
                     </div>
 
                     <!-- Advanced Settings -->
