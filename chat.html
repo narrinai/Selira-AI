@@ -2761,10 +2761,10 @@
       // Coin icon for image gen buttons
       const coinIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-left: 3px; opacity: 0.8;"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle></svg>`;
 
-      // Add Image Gen button 1: POV Blowjob (1 credit)
+      // Add Image Gen button 1: POV Blowjob (2 credits)
       const imageGenButton1 = document.createElement('button');
       imageGenButton1.className = 'conversation-starter-btn';
-      imageGenButton1.innerHTML = `POV Blowjob <span style="white-space: nowrap;">${coinIcon}</span>`;
+      imageGenButton1.innerHTML = `POV Blowjob <span style="white-space: nowrap;">${coinIcon}${coinIcon}</span>`;
       imageGenButton1.onclick = () => {
         hideConversationStarters();
         openImageGenerationWithPose('pov blowjob');
