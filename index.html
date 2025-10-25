@@ -4233,7 +4233,32 @@
     function handleInitialURL() {
       const currentURL = window.location.pathname + window.location.search;
 
-      // /tags/ URLs are now handled by dedicated tags.html page for SEO
+      // Handle /tags/:tag URLs (redirected from Netlify to index.html)
+      if (window.location.pathname.includes('/tags/')) {
+        const tagSlug = window.location.pathname.split('/tags/')[1]?.replace(/\/$/, '');
+        if (tagSlug) {
+          // Convert slug to display name (e.g., "playful" -> "Playful")
+          const tagText = tagSlug.split('-').map(word =>
+            word.charAt(0).toUpperCase() + word.slice(1)
+          ).join(' ');
+
+          // Apply tag filter inline
+          currentFilters.style = undefined;
+          currentFilters.tags = [tagText];
+
+          // Update dropdown to show "All"
+          const dropdownBtn = document.getElementById('styleDropdownBtn');
+          if (dropdownBtn) {
+            dropdownBtn.querySelector('span:first-child').textContent = 'All';
+          }
+
+          updateActiveTag(tagText);
+          applyFilters();
+          return;
+        }
+      }
+
+      // Handle category filter URLs
       if (currentURL.includes('?filter=')) {
         // Extract category filter from URL
         const urlParams = new URLSearchParams(window.location.search);
