@@ -922,11 +922,7 @@
             document.getElementById('t2vGuidanceValue').textContent = e.target.value;
         });
 
-        // Update RunPod slider values
-        document.getElementById('runpod_motion_scale').addEventListener('input', (e) => {
-            document.getElementById('runpodMotionValue').textContent = e.target.value;
-        });
-
+        // Update RunPod slider values (only guidance scale for Wan2.2)
         document.getElementById('runpod_guidance_scale').addEventListener('input', (e) => {
             document.getElementById('runpodGuidanceValue').textContent = e.target.value;
         });
