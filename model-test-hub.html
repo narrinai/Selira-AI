@@ -494,12 +494,12 @@
                     <div class="form-group">
                         <label for="runpod_resolution">Resolution</label>
                         <select id="runpod_resolution" name="runpod_resolution">
-                            <option value="256x256">256x256 (tiny, fastest)</option>
-                            <option value="350x350" selected>350x350 (small, fast)</option>
-                            <option value="512x512">512x512 (medium)</option>
+                            <option value="256x256" selected>256x256 (fastest, recommended)</option>
+                            <option value="350x350">350x350 (balanced)</option>
+                            <option value="512x512">512x512 (high quality, slow)</option>
                             <option value="512x768">512x768 (portrait)</option>
                             <option value="768x512">768x512 (landscape)</option>
-                            <option value="768x768">768x768 (large)</option>
+                            <option value="768x768">768x768 (highest quality, slowest)</option>
                         </select>
                     </div>
 
@@ -527,9 +527,10 @@
                     <div class="form-group">
                         <label for="runpod_steps">Inference Steps</label>
                         <select id="runpod_steps" name="runpod_steps">
-                            <option value="20">20 steps (fast)</option>
+                            <option value="20">20 steps (fast, grainy)</option>
                             <option value="30">30 steps (balanced)</option>
-                            <option value="50" selected">50 steps (quality)</option>
+                            <option value="50" selected>50 steps (smooth, recommended)</option>
+                            <option value="80">80 steps (highest quality, slow)</option>
                         </select>
                     </div>
 
