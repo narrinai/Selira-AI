@@ -231,61 +231,67 @@
                     </div>
 
                     <div class="form-group full-width">
-                        <label for="video_prompt">Video Prompt</label>
-                        <textarea id="video_prompt" name="video_prompt" placeholder="Describe the motion/animation you want (optional)"></textarea>
-                        <small style="color: #666; margin-top: 5px; display: block;">Optional: Describe how you want the image to move/animate</small>
+                        <label for="video_prompt">Video Prompt *</label>
+                        <textarea id="video_prompt" name="video_prompt" required placeholder="A cat walks on the grass, realistic style"></textarea>
+                        <small style="color: #666; margin-top: 5px; display: block;">Describe the motion/animation you want</small>
                     </div>
 
                     <div class="form-group">
                         <label for="video_model">Model</label>
                         <select id="video_model" name="video_model">
+                            <option value="hunyuan-video">Hunyuan Video (Image-to-Video)</option>
                             <option value="stable-video-diffusion">Stable Video Diffusion</option>
-                            <option value="svd-xt">SVD XT (Extended)</option>
-                            <option value="animate-diff">AnimateDiff</option>
-                            <option value="runway-gen2">Runway Gen-2</option>
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label for="video_duration">Duration</label>
-                        <select id="video_duration" name="video_duration">
-                            <option value="2">2 seconds</option>
-                            <option value="4" selected>4 seconds</option>
-                            <option value="6">6 seconds</option>
-                            <option value="8">8 seconds</option>
+                        <label for="video_resolution">Resolution</label>
+                        <select id="video_resolution" name="video_resolution">
+                            <option value="540p">540p (960x540)</option>
+                            <option value="720p" selected>720p (1280x720)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="aspect_ratio">Aspect Ratio</label>
+                        <select id="aspect_ratio" name="aspect_ratio">
+                            <option value="16:9" selected>16:9 (Landscape)</option>
+                            <option value="9:16">9:16 (Portrait)</option>
+                            <option value="1:1">1:1 (Square)</option>
                         </select>
                     </div>
 
                     <div class="form-group">
                         <label for="video_fps">Frames Per Second</label>
                         <select id="video_fps" name="video_fps">
-                            <option value="6">6 FPS</option>
-                            <option value="12">12 FPS</option>
+                            <option value="15">15 FPS</option>
                             <option value="24" selected>24 FPS</option>
                             <option value="30">30 FPS</option>
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label for="video_quality">Quality</label>
-                        <select id="video_quality" name="video_quality">
-                            <option value="draft">Draft (Fast)</option>
-                            <option value="standard" selected>Standard</option>
-                            <option value="high">High Quality</option>
-                            <option value="ultra">Ultra Quality</option>
+                        <label for="num_frames">Number of Frames</label>
+                        <select id="num_frames" name="num_frames">
+                            <option value="49">49 frames (~2 sec)</option>
+                            <option value="65">65 frames (~2.7 sec)</option>
+                            <option value="97">97 frames (~4 sec)</option>
+                            <option value="129" selected>129 frames (~5.4 sec)</option>
+                            <option value="161">161 frames (~6.7 sec)</option>
                         </select>
+                        <small style="color: #666; margin-top: 5px; display: block;">Must be 4k+1 (e.g., 49, 129)</small>
                     </div>
 
                     <div class="form-group slider-group">
-                        <label for="motion_intensity">Motion Intensity (0-255): <span class="slider-value" id="motionValue">127</span></label>
-                        <input type="range" id="motion_intensity" name="motion_intensity" min="0" max="255" value="127">
-                        <small style="color: #666; margin-top: 5px; display: block;">Higher values = more movement</small>
+                        <label for="infer_steps">Inference Steps (20-100): <span class="slider-value" id="inferStepsValue">50</span></label>
+                        <input type="range" id="infer_steps" name="infer_steps" min="20" max="100" value="50">
+                        <small style="color: #666; margin-top: 5px; display: block;">Higher = better quality but slower</small>
                     </div>
 
                     <div class="form-group slider-group">
-                        <label for="noise_augmentation">Noise Augmentation (0-1): <span class="slider-value" id="noiseValue">0.02</span></label>
-                        <input type="range" id="noise_augmentation" name="noise_augmentation" min="0" max="1" step="0.01" value="0.02">
-                        <small style="color: #666; margin-top: 5px; display: block;">Adds variation to the animation</small>
+                        <label for="guidance_scale">Guidance Scale (1-10): <span class="slider-value" id="guidanceValue">6</span></label>
+                        <input type="range" id="guidance_scale" name="guidance_scale" min="1" max="10" step="0.5" value="6">
+                        <small style="color: #666; margin-top: 5px; display: block;">How closely to follow the prompt</small>
                     </div>
 
                     <div class="form-group">
@@ -294,18 +300,8 @@
                     </div>
 
                     <div class="form-group checkbox-group">
-                        <input type="checkbox" id="loop_video" name="loop_video" checked>
-                        <label for="loop_video">Create seamless loop</label>
-                    </div>
-
-                    <div class="form-group checkbox-group">
-                        <input type="checkbox" id="upscale_video" name="upscale_video">
-                        <label for="upscale_video">Upscale output (+2 Gems)</label>
-                    </div>
-
-                    <div class="form-group checkbox-group">
-                        <input type="checkbox" id="stabilize_video" name="stabilize_video" checked>
-                        <label for="stabilize_video">Video stabilization</label>
+                        <input type="checkbox" id="i2v_stability" name="i2v_stability" checked>
+                        <label for="i2v_stability">I2V Stability (reduces hallucination)</label>
                     </div>
                 </div>
 
@@ -554,12 +550,12 @@
         }
 
         // Update video slider values
-        document.getElementById('motion_intensity').addEventListener('input', (e) => {
-            document.getElementById('motionValue').textContent = e.target.value;
+        document.getElementById('infer_steps').addEventListener('input', (e) => {
+            document.getElementById('inferStepsValue').textContent = e.target.value;
         });
 
-        document.getElementById('noise_augmentation').addEventListener('input', (e) => {
-            document.getElementById('noiseValue').textContent = e.target.value;
+        document.getElementById('guidance_scale').addEventListener('input', (e) => {
+            document.getElementById('guidanceValue').textContent = e.target.value;
         });
 
         // Handle video form submission
@@ -579,17 +575,16 @@
             // Collect form data
             const formData = {
                 image_url: document.getElementById('video_image_url').value,
-                prompt: document.getElementById('video_prompt').value || undefined,
+                prompt: document.getElementById('video_prompt').value,
                 model: document.getElementById('video_model').value,
-                duration: parseInt(document.getElementById('video_duration').value),
+                resolution: document.getElementById('video_resolution').value,
+                aspect_ratio: document.getElementById('aspect_ratio').value,
                 fps: parseInt(document.getElementById('video_fps').value),
-                quality: document.getElementById('video_quality').value,
-                motion_bucket_id: parseInt(document.getElementById('motion_intensity').value),
-                cond_aug: parseFloat(document.getElementById('noise_augmentation').value),
+                num_frames: parseInt(document.getElementById('num_frames').value),
+                infer_steps: parseInt(document.getElementById('infer_steps').value),
+                guidance_scale: parseFloat(document.getElementById('guidance_scale').value),
                 seed: parseInt(document.getElementById('video_seed').value),
-                loop: document.getElementById('loop_video').checked,
-                upscale: document.getElementById('upscale_video').checked,
-                stabilize: document.getElementById('stabilize_video').checked
+                i2v_stability: document.getElementById('i2v_stability').checked
             };
 
             try {
@@ -614,8 +609,18 @@
                 // Display success
                 resultContent.innerHTML = `
                     <div class="success">
-                        <strong>Success!</strong> Video generated successfully.
-                        ${data.gems ? `Used ${data.gems} gems.` : ''}
+                        <strong>Success!</strong> Video generated successfully via ${data.provider || 'fal.ai'}
+                        ${data.cost ? `<br>Cost: ${data.cost}` : ''}
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <h3>Settings Used:</h3>
+                        <ul style="text-align: left; max-width: 600px; margin: 10px auto;">
+                            <li><strong>Aspect Ratio:</strong> ${formData.aspect_ratio}</li>
+                            <li><strong>Resolution:</strong> ${formData.resolution}</li>
+                            <li><strong>Frames:</strong> ${formData.num_frames} (~${(formData.num_frames / formData.fps).toFixed(1)}s @ ${formData.fps} FPS)</li>
+                            <li><strong>Guidance Scale:</strong> ${formData.guidance_scale}</li>
+                            <li><strong>I2V Stability:</strong> ${formData.i2v_stability ? 'Enabled' : 'Disabled'}</li>
+                        </ul>
                     </div>
                     <div style="margin-top: 20px; text-align: center;">
                         <video controls class="result-image" style="max-width: 100%;">
