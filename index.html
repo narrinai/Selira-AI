@@ -6334,9 +6334,9 @@ Please be thorough and include important details from our conversations.`;
       // Filter and display characters
       applyFilters();
 
-      // Update URL
+      // Update URL to /tags/ for SEO (stays on same page, just URL changes)
       const tagSlug = tag.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-      history.pushState({section: 'category', filter: tagSlug}, `${tag} Characters - Selira AI`, `/category?filter=${tagSlug}`);
+      history.pushState({section: 'tag', filter: tagSlug}, `${tag} Characters - Selira AI`, `/tags/${tagSlug}`);
     }
 
     function initializeCreateTags() {
