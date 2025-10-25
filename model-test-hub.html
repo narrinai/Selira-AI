@@ -455,9 +455,9 @@
 
         <!-- RUNPOD I2V SECTION -->
         <div id="videoI2vRunpodSection" style="display: none;">
-            <h2 style="margin-bottom: 20px;">🚀 RunPod - AnimateDiff Image-to-Video (~$0.02/video)</h2>
+            <h2 style="margin-bottom: 20px;">🚀 RunPod - Wan2.2 Image-to-Video (~$0.02/video)</h2>
             <div class="info" style="margin-bottom: 20px;">
-                <strong>Cheapest Option!</strong> Requires RunPod serverless endpoint setup. 20x cheaper than fal.ai.
+                <strong>Cheapest Option!</strong> Wan2.2 model - supports NSFW content. Default: 10 steps, CFG 2.0, 81 frames.
             </div>
             <form id="videoI2vRunpodForm">
                 <div class="form-section">
@@ -483,58 +483,39 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="runpod_num_frames">Video Length</label>
+                        <label for="runpod_num_frames">Video Length (Frames)</label>
                         <select id="runpod_num_frames" name="runpod_num_frames">
-                            <option value="16">16 frames (~0.5s)</option>
-                            <option value="24">24 frames (~1s)</option>
-                            <option value="48">48 frames (~2s)</option>
-                            <option value="72" selected>72 frames (~3s)</option>
-                            <option value="96">96 frames (~4s)</option>
-                            <option value="120">120 frames (~5s)</option>
+                            <option value="49">49 frames</option>
+                            <option value="81" selected>81 frames (recommended)</option>
+                            <option value="120">120 frames (longer)</option>
                         </select>
+                        <small>More frames = longer video but slower generation</small>
                     </div>
 
                     <div class="form-group">
                         <label for="runpod_resolution">Resolution</label>
                         <select id="runpod_resolution" name="runpod_resolution">
-                            <option value="256x256">256x256 (fast but low quality)</option>
-                            <option value="384x384">384x384 (good balance)</option>
-                            <option value="512x512" selected>512x512 (best quality, recommended)</option>
-                            <option value="512x768">512x768 (portrait)</option>
-                            <option value="768x512">768x512 (landscape)</option>
-                            <option value="768x768">768x768 (highest quality, very slow)</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="runpod_fps">FPS</label>
-                        <select id="runpod_fps" name="runpod_fps">
-                            <option value="8">8 FPS</option>
-                            <option value="16">16 FPS</option>
-                            <option value="24" selected>24 FPS</option>
+                            <option value="480x832" selected>480x832 (Portrait - recommended)</option>
+                            <option value="832x480">832x480 (Landscape)</option>
+                            <option value="512x512">512x512 (Square)</option>
+                            <option value="720x480">720x480 (Standard)</option>
                         </select>
                     </div>
 
                     <div class="form-group slider-group">
-                        <label for="runpod_motion_scale">Motion Scale (0-3): <span class="slider-value" id="runpodMotionValue">0.4</span></label>
-                        <input type="range" id="runpod_motion_scale" name="runpod_motion_scale" min="0" max="3" step="0.1" value="0.4">
-                        <small>Lower = sharper (less blur). Recommended: 0.3-0.5</small>
-                    </div>
-
-                    <div class="form-group slider-group">
-                        <label for="runpod_guidance_scale">Guidance Scale (1-20): <span class="slider-value" id="runpodGuidanceValue">4.5</span></label>
-                        <input type="range" id="runpod_guidance_scale" name="runpod_guidance_scale" min="1" max="20" step="0.5" value="4.5">
-                        <small>Lower = more natural (less artifacts). Recommended: 4-6</small>
+                        <label for="runpod_guidance_scale">CFG Scale (1-10): <span class="slider-value" id="runpodGuidanceValue">2.0</span></label>
+                        <input type="range" id="runpod_guidance_scale" name="runpod_guidance_scale" min="1" max="10" step="0.5" value="2.0">
+                        <small>Wan2.2 default: 2.0. Higher = stricter prompt following</small>
                     </div>
 
                     <div class="form-group">
                         <label for="runpod_steps">Inference Steps</label>
                         <select id="runpod_steps" name="runpod_steps">
-                            <option value="30">30 steps (fast, lower quality)</option>
-                            <option value="50">50 steps (balanced)</option>
-                            <option value="80">80 steps (high quality)</option>
-                            <option value="100" selected>100 steps (maximum quality, slow)</option>
+                            <option value="10" selected>10 steps (Wan2.2 default)</option>
+                            <option value="20">20 steps (higher quality)</option>
+                            <option value="30">30 steps (best quality, slower)</option>
                         </select>
+                        <small>Wan2.2 works well with just 10 steps</small>
                     </div>
 
                     <div class="form-group">

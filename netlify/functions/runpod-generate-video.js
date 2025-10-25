@@ -55,20 +55,18 @@ exports.handler = async (event, context) => {
       : parseInt(requestData.seed);
 
     // Build RunPod serverless request for Wan2.2
-    // Based on the error: expects 'cfg' instead of 'guidance_scale'
+    // Based on official Wan2.2 API docs
     const runpodInput = {
       input: {
         image_url: requestData.image_url,
         prompt: requestData.prompt,
-        negative_prompt: requestData.negative_prompt || 'low quality, blurry, deformed',
-        length: requestData.num_frames || 72,  // Wan2.2 uses 'length' not 'num_frames'
+        seed: seed,
+        cfg: requestData.guidance_scale || 2.0,  // Wan2.2 uses 'cfg' (default 2.0)
         width: width,
         height: height,
-        fps: requestData.fps || 24,
-        motion_scale: requestData.motion_scale || 1.0,
-        cfg: requestData.guidance_scale || 7.5,  // Wan2.2 uses 'cfg' not 'guidance_scale'
-        steps: requestData.steps || 50,  // Wan2.2 uses 'steps' not 'num_inference_steps'
-        seed: seed
+        length: requestData.num_frames || 81,  // Wan2.2 uses 'length' for frame count
+        steps: requestData.steps || 10,  // Default 10 steps
+        context_overlap: 48
       }
     };
 
