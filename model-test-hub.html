@@ -999,18 +999,19 @@
 
                 if (data.status === 'processing' && data.jobId) {
                     // Job started successfully, now poll for completion
-                    resultContent.innerHTML = '<div class="loading"><div class="spinner"></div>Generating video... This may take 1-3 minutes.<br><small>Job ID: ' + data.jobId + '</small></div>';
+                    const startTime = Date.now();
+                    resultContent.innerHTML = '<div class="loading"><div class="spinner"></div>Generating video...<br><small>Elapsed: 0s | Est: 60-120s</small></div>';
                     generateBtn.textContent = 'Generating...';
 
                     // Poll every 3 seconds
                     const pollInterval = 3000;
-                    const maxAttempts = 100; // 5 minutes max
-                    let attempts = 0;
+                    const maxWaitTime = 300000; // 5 minutes max
 
                     const pollStatus = async () => {
-                        attempts++;
-                        if (attempts > maxAttempts) {
-                            throw new Error('Video generation timed out. Check RunPod dashboard.');
+                        const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+
+                        if (Date.now() - startTime > maxWaitTime) {
+                            throw new Error('Video generation timed out after 5 minutes. Check RunPod dashboard.');
                         }
 
                         const statusResponse = await fetch(`/.netlify/functions/runpod-check-status?jobId=${data.jobId}`);
@@ -1022,7 +1023,7 @@
                                 <div class="success">
                                     <strong>Success!</strong> Video generated via ${statusData.provider || 'RunPod'}
                                     ${statusData.cost ? `<br><strong>Cost:</strong> ${statusData.cost}` : ''}
-                                    ${statusData.generation_time ? `<br><strong>Time:</strong> ${statusData.generation_time}s` : ''}
+                                    <br><strong>Time:</strong> ${elapsedSeconds}s
                                 </div>
                                 <div style="margin-top: 20px; text-align: center;">
                                     <video controls class="result-video" style="max-width: 100%;">
@@ -1039,7 +1040,15 @@
                             throw new Error(statusData.details || 'Video generation failed');
                         } else {
                             // Still processing, poll again
-                            resultContent.innerHTML = `<div class="loading"><div class="spinner"></div>${statusData.message || 'Generating video...'}<br><small>Attempt ${attempts}/${maxAttempts}</small></div>`;
+                            const progress = Math.min(Math.floor((elapsedSeconds / 120) * 100), 95); // Cap at 95% until complete
+                            const statusText = statusData.status === 'IN_QUEUE' ? 'In queue...' : 'Generating video...';
+                            resultContent.innerHTML = `
+                                <div class="loading">
+                                    <div class="spinner"></div>
+                                    ${statusText}
+                                    <br><small>Elapsed: ${elapsedSeconds}s | Progress: ~${progress}%</small>
+                                </div>
+                            `;
                             setTimeout(pollStatus, pollInterval);
                         }
                     };
