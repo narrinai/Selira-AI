@@ -230,34 +230,49 @@ async function generateWithRunPod(prompt, requestData) {
 
   console.log('🎨 Step 1: Generating image from companion traits...');
 
-  // Step 1: Generate image using PromptChan or another T2I service
-  const imagePrompt = prompt.replace(/video/gi, 'photo').replace(/motion/gi, 'pose');
+  // Step 1: Generate image using PromptChan
+  const imagePrompt = prompt.replace(/video/gi, 'photo').replace(/motion/gi, 'pose').replace(/movement/gi, 'pose');
 
-  const imageResponse = await fetch('https://api.promptchan.ai/generate', {
+  // Build PromptChan request
+  const promptchanRequest = {
+    prompt: imagePrompt,
+    negative_prompt: requestData.negative_prompt || 'low quality, blurry, distorted, deformed, clothes, clothing, censored',
+    style: 'Photo XL+ v2', // Realistic style for companion images
+    quality: 'Ultra',
+    image_size: '512x512',
+    creativity: 50,
+    seed: -1,
+    filter: 'None', // Fully uncensored
+    emotion: 'Default',
+    detail: 0
+  };
+
+  console.log('📝 PromptChan request:', JSON.stringify(promptchanRequest, null, 2));
+
+  const imageResponse = await fetch('https://prod.aicloudnetservices.com/api/external/create', {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${process.env.PROMPTCHAN_API_KEY_SELIRA}`,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'x-api-key': process.env.PROMPTCHAN_API_KEY_SELIRA
     },
-    body: JSON.stringify({
-      prompt: imagePrompt,
-      model: 'sdxl',
-      width: requestData.width || 512,
-      height: requestData.height || 512,
-      steps: 30,
-      guidance_scale: 7.5
-    })
+    body: JSON.stringify(promptchanRequest)
   });
 
   if (!imageResponse.ok) {
-    throw new Error(`Image generation failed: ${imageResponse.status}`);
+    const errorText = await imageResponse.text();
+    console.error('❌ PromptChan API error:', errorText);
+    throw new Error(`Image generation failed: ${imageResponse.status} - ${errorText}`);
   }
 
   const imageData = await imageResponse.json();
-  const imageUrl = imageData.images?.[0]?.url;
+  console.log('✅ PromptChan response:', JSON.stringify(imageData, null, 2));
+
+  // PromptChan returns { image: "url", gems: number, ... }
+  const imageUrl = imageData.image;
 
   if (!imageUrl) {
-    throw new Error('No image URL returned from image generation');
+    console.error('❌ No image URL in response:', imageData);
+    throw new Error('No image URL returned from PromptChan');
   }
 
   console.log('✅ Image generated:', imageUrl);
