@@ -52,20 +52,20 @@ exports.handler = async (event, context) => {
 
     const seed = requestData.seed === -1 ? Math.floor(Math.random() * 1000000) : requestData.seed;
 
-    // Build RunPod serverless request
-    // Format depends on your specific AnimateDiff endpoint setup
+    // Build RunPod serverless request for Wan2.2
+    // Based on the error: expects 'cfg' instead of 'guidance_scale'
     const runpodInput = {
       input: {
         image_url: requestData.image_url,
         prompt: requestData.prompt,
         negative_prompt: requestData.negative_prompt || 'low quality, blurry, deformed',
-        num_frames: requestData.num_frames || 72,
+        length: requestData.num_frames || 72,  // Wan2.2 uses 'length' not 'num_frames'
         width: width,
         height: height,
         fps: requestData.fps || 24,
         motion_scale: requestData.motion_scale || 1.0,
-        guidance_scale: requestData.guidance_scale || 7.5,
-        num_inference_steps: requestData.steps || 50,
+        cfg: requestData.guidance_scale || 7.5,  // Wan2.2 uses 'cfg' not 'guidance_scale'
+        steps: requestData.steps || 50,  // Wan2.2 uses 'steps' not 'num_inference_steps'
         seed: seed
       }
     };
