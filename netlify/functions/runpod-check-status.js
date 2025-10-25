@@ -98,9 +98,26 @@ exports.handler = async (event, context) => {
     if (statusData.status === 'COMPLETED') {
       console.log('✅ Video generation completed!');
 
-      // Calculate approximate cost
-      const executionTime = statusData.executionTime || 60;
-      const estimatedCost = (executionTime * 0.00025).toFixed(4);
+      // Calculate approximate cost (executionTime is in milliseconds)
+      const executionTimeMs = statusData.executionTime || 60000;
+      const executionTimeSec = Math.floor(executionTimeMs / 1000);
+      // RunPod GPU cost: ~$0.00025 per second
+      const estimatedCost = (executionTimeSec * 0.00025).toFixed(4);
+
+      // Extract video data - Wan2.2 returns base64 encoded video
+      let videoData = statusData.output;
+
+      // Handle different output formats
+      if (typeof videoData === 'object' && videoData.video) {
+        // Base64 encoded video
+        videoData = `data:video/mp4;base64,${videoData.video}`;
+      } else if (typeof videoData === 'string' && videoData.startsWith('http')) {
+        // Already a URL
+        videoData = videoData;
+      } else if (typeof videoData === 'string') {
+        // Assume base64 string
+        videoData = `data:video/mp4;base64,${videoData}`;
+      }
 
       return {
         statusCode: 200,
@@ -108,10 +125,10 @@ exports.handler = async (event, context) => {
         body: JSON.stringify({
           success: true,
           status: 'completed',
-          video: statusData.output?.video_url || statusData.output,
+          video: videoData,
           provider: 'RunPod Serverless (Wan2.2)',
           cost: `~$${estimatedCost}`,
-          generation_time: executionTime,
+          generation_time: executionTimeSec,
           jobId: jobId
         })
       };
