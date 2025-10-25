@@ -121,7 +121,7 @@ exports.handler = async (event, context) => {
     }
 
     // Poll for job completion (with timeout)
-    const maxWaitTime = 180000; // 3 minutes
+    const maxWaitTime = 300000; // 5 minutes (video generation can take time)
     const pollInterval = 3000; // 3 seconds
     const startTime = Date.now();
 
@@ -133,7 +133,22 @@ exports.handler = async (event, context) => {
         }
       });
 
-      const statusData = await statusResponse.json();
+      if (!statusResponse.ok) {
+        console.error('❌ Status check failed:', statusResponse.status);
+        await new Promise(resolve => setTimeout(resolve, pollInterval));
+        continue;
+      }
+
+      const responseText = await statusResponse.text();
+      let statusData;
+      try {
+        statusData = JSON.parse(responseText);
+      } catch (e) {
+        console.error('❌ Failed to parse status response:', responseText);
+        await new Promise(resolve => setTimeout(resolve, pollInterval));
+        continue;
+      }
+
       console.log('📊 Job status:', statusData.status);
 
       if (statusData.status === 'COMPLETED') {
