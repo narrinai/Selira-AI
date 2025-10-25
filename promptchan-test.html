@@ -902,6 +902,121 @@
             }
         });
 
+        // Handle Replicate T2V form submission
+        document.getElementById('videoT2vReplicateForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const generateBtn = document.getElementById('videoT2vReplicateGenerateBtn');
+            const resultSection = document.getElementById('resultSection');
+            const resultContent = document.getElementById('resultContent');
+
+            generateBtn.disabled = true;
+            generateBtn.textContent = 'Generating Video...';
+            resultSection.style.display = 'block';
+            resultContent.innerHTML = '<div class="loading"><div class="spinner"></div>Generating video with Replicate... This may take 3-5 minutes.</div>';
+
+            const formData = {
+                prompt: document.getElementById('t2v_prompt').value,
+                width: parseInt(document.getElementById('t2v_width').value),
+                height: parseInt(document.getElementById('t2v_height').value),
+                video_length: parseInt(document.getElementById('t2v_video_length').value),
+                fps: parseInt(document.getElementById('t2v_fps').value),
+                infer_steps: parseInt(document.getElementById('t2v_infer_steps').value),
+                guidance_scale: parseFloat(document.getElementById('t2v_guidance_scale').value),
+                seed: parseInt(document.getElementById('t2v_seed').value)
+            };
+
+            try {
+                const response = await fetch('/.netlify/functions/replicate-t2v-generate-video', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || 'Failed to generate video');
+
+                resultContent.innerHTML = `
+                    <div class="success">
+                        <strong>Success!</strong> Video generated via ${data.provider || 'Replicate'}
+                        ${data.cost ? `<br><strong>Cost:</strong> ${data.cost}` : ''}
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <video controls class="result-video" style="max-width: 100%;">
+                            <source src="${data.video}" type="video/mp4">
+                        </video>
+                        <p style="margin-top: 10px;">
+                            <a href="${data.video}" download style="color: #667eea; font-weight: 600;">Download Video</a>
+                        </p>
+                    </div>
+                `;
+            } catch (error) {
+                resultContent.innerHTML = `<div class="error"><strong>Error:</strong> ${error.message}</div>`;
+            } finally {
+                generateBtn.disabled = false;
+                generateBtn.textContent = 'Generate Video with Replicate (~$1.25)';
+            }
+        });
+
+        // Handle RunPod I2V form submission
+        document.getElementById('videoI2vRunpodForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const generateBtn = document.getElementById('videoI2vRunpodGenerateBtn');
+            const resultSection = document.getElementById('resultSection');
+            const resultContent = document.getElementById('resultContent');
+
+            generateBtn.disabled = true;
+            generateBtn.textContent = 'Generating Video...';
+            resultSection.style.display = 'block';
+            resultContent.innerHTML = '<div class="loading"><div class="spinner"></div>Generating video on RunPod... This may take 1-2 minutes.</div>';
+
+            const formData = {
+                image_url: document.getElementById('runpod_image_url').value,
+                prompt: document.getElementById('runpod_prompt').value,
+                model: document.getElementById('runpod_model').value,
+                num_frames: parseInt(document.getElementById('runpod_num_frames').value),
+                resolution: document.getElementById('runpod_resolution').value,
+                fps: parseInt(document.getElementById('runpod_fps').value),
+                motion_scale: parseFloat(document.getElementById('runpod_motion_scale').value),
+                guidance_scale: parseFloat(document.getElementById('runpod_guidance_scale').value),
+                steps: parseInt(document.getElementById('runpod_steps').value),
+                seed: parseInt(document.getElementById('runpod_seed').value)
+            };
+
+            try {
+                const response = await fetch('/.netlify/functions/runpod-generate-video', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || 'Failed to generate video');
+
+                resultContent.innerHTML = `
+                    <div class="success">
+                        <strong>Success!</strong> Video generated via ${data.provider || 'RunPod'}
+                        ${data.cost ? `<br><strong>Cost:</strong> ${data.cost}` : ''}
+                        ${data.generation_time ? `<br><strong>Time:</strong> ${data.generation_time}s` : ''}
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <video controls class="result-video" style="max-width: 100%;">
+                            <source src="${data.video}" type="video/mp4">
+                        </video>
+                        <p style="margin-top: 10px;">
+                            <a href="${data.video}" download style="color: #667eea; font-weight: 600;">Download Video</a>
+                        </p>
+                    </div>
+                `;
+            } catch (error) {
+                resultContent.innerHTML = `<div class="error"><strong>Error:</strong> ${error.message}</div>`;
+            } finally {
+                generateBtn.disabled = false;
+                generateBtn.textContent = 'Generate Video with RunPod (~$0.02)';
+            }
+        });
+
         // Quick test functions
         async function testMaleCompanion() {
             const testData = {
