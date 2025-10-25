@@ -33,8 +33,8 @@ exports.handler = async (event, context) => {
     console.log('Request data:', JSON.stringify(requestData, null, 2));
 
     // Get RunPod API credentials from environment variables
-    const RUNPOD_API_KEY = process.env.RUNPOD_API_KEY;
-    const RUNPOD_ENDPOINT_ID = process.env.RUNPOD_ANIMATEDIFF_ENDPOINT_ID;
+    const RUNPOD_API_KEY = process.env.RUNPOD_API_KEY_SELIRA || process.env.RUNPOD_API_KEY;
+    const RUNPOD_ENDPOINT_ID = process.env.RUNPOD_ENDPOINT_ID || process.env.RUNPOD_ANIMATEDIFF_ENDPOINT_ID;
 
     if (!RUNPOD_API_KEY || !RUNPOD_ENDPOINT_ID) {
       return {
@@ -42,7 +42,7 @@ exports.handler = async (event, context) => {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         body: JSON.stringify({
           error: 'RunPod API credentials not configured',
-          details: 'Set RUNPOD_API_KEY and RUNPOD_ANIMATEDIFF_ENDPOINT_ID in Netlify environment variables'
+          details: 'Set RUNPOD_API_KEY_SELIRA and RUNPOD_ENDPOINT_ID in Netlify environment variables'
         })
       };
     }
@@ -144,11 +144,11 @@ exports.handler = async (event, context) => {
           body: JSON.stringify({
             success: true,
             video: statusData.output?.video_url || statusData.output,
-            provider: 'RunPod Serverless (AnimateDiff)',
+            provider: 'RunPod Serverless (Wan2.2)',
             cost: `~$${estimatedCost}`,
             generation_time: executionTime,
             metadata: {
-              model: requestData.model,
+              model: requestData.model || 'Wan2.2',
               resolution: `${width}x${height}`,
               num_frames: requestData.num_frames,
               fps: requestData.fps,
