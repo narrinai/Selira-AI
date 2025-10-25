@@ -105,18 +105,57 @@ exports.handler = async (event, context) => {
       const estimatedCost = (executionTimeSec * 0.00025).toFixed(4);
 
       // Extract video data - Wan2.2 returns base64 encoded video
-      let videoData = statusData.output;
+      let videoBase64 = null;
+      let videoUrl = null;
 
       // Handle different output formats
-      if (typeof videoData === 'object' && videoData.video) {
-        // Base64 encoded video
-        videoData = `data:video/mp4;base64,${videoData.video}`;
-      } else if (typeof videoData === 'string' && videoData.startsWith('http')) {
-        // Already a URL
-        videoData = videoData;
-      } else if (typeof videoData === 'string') {
-        // Assume base64 string
-        videoData = `data:video/mp4;base64,${videoData}`;
+      if (typeof statusData.output === 'object' && statusData.output.video) {
+        videoBase64 = statusData.output.video;
+      } else if (typeof statusData.output === 'string' && statusData.output.startsWith('http')) {
+        videoUrl = statusData.output;
+      } else if (typeof statusData.output === 'string') {
+        videoBase64 = statusData.output;
+      }
+
+      // If we have base64, upload to ImgBB for permanent hosting
+      if (videoBase64 && !videoUrl) {
+        console.log('📤 Uploading video to ImgBB...');
+        try {
+          const IMGBB_API_KEY = process.env.IMGBB_API_KEY;
+          if (!IMGBB_API_KEY) {
+            console.warn('⚠️ ImgBB API key not configured, returning base64 data URL');
+            videoUrl = `data:video/mp4;base64,${videoBase64}`;
+          } else {
+            // ImgBB requires form data with 'image' field (even for video)
+            const FormData = require('form-data');
+            const form = new FormData();
+            form.append('key', IMGBB_API_KEY);
+            form.append('image', videoBase64); // ImgBB accepts video in 'image' field
+            form.append('expiration', '15552000'); // 180 days (max allowed)
+
+            const imgbbResponse = await fetch('https://api.imgbb.com/1/upload', {
+              method: 'POST',
+              body: form
+            });
+
+            if (imgbbResponse.ok) {
+              const imgbbData = await imgbbResponse.json();
+              if (imgbbData.success && imgbbData.data?.url) {
+                videoUrl = imgbbData.data.url;
+                console.log('✅ Video uploaded to ImgBB:', videoUrl);
+              } else {
+                console.warn('⚠️ ImgBB upload failed, returning base64 data URL');
+                videoUrl = `data:video/mp4;base64,${videoBase64}`;
+              }
+            } else {
+              console.warn('⚠️ ImgBB upload failed:', imgbbResponse.status);
+              videoUrl = `data:video/mp4;base64,${videoBase64}`;
+            }
+          }
+        } catch (uploadError) {
+          console.error('❌ ImgBB upload error:', uploadError);
+          videoUrl = `data:video/mp4;base64,${videoBase64}`;
+        }
       }
 
       return {
@@ -125,7 +164,7 @@ exports.handler = async (event, context) => {
         body: JSON.stringify({
           success: true,
           status: 'completed',
-          video: videoData,
+          video: videoUrl,
           provider: 'RunPod Serverless (Wan2.2)',
           cost: `~$${estimatedCost}`,
           generation_time: executionTimeSec,
