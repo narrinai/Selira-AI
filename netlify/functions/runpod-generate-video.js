@@ -50,7 +50,9 @@ exports.handler = async (event, context) => {
     // Parse resolution
     const [width, height] = (requestData.resolution || '512x512').split('x').map(Number);
 
-    const seed = requestData.seed === -1 ? Math.floor(Math.random() * 1000000) : requestData.seed;
+    const seed = (requestData.seed === -1 || requestData.seed === undefined)
+      ? Math.floor(Math.random() * 1000000)
+      : parseInt(requestData.seed);
 
     // Build RunPod serverless request for Wan2.2
     // Based on the error: expects 'cfg' instead of 'guidance_scale'
@@ -72,6 +74,7 @@ exports.handler = async (event, context) => {
 
     console.log('📡 Calling RunPod serverless endpoint...');
     console.log('Endpoint ID:', RUNPOD_ENDPOINT_ID);
+    console.log('Input being sent:', JSON.stringify(runpodInput, null, 2));
 
     // Call RunPod serverless API
     // https://docs.runpod.io/serverless/endpoints/send-requests
