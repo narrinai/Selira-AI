@@ -2937,6 +2937,19 @@
         'clever', 'charming', 'powerful', 'ancient', 'legendary'
       ];
 
+      // Add "All Tags" button first
+      const urlParams = new URLSearchParams(window.location.search);
+      const currentTag = urlParams.get('tag');
+
+      const allTagsButton = document.createElement('a');
+      allTagsButton.href = '/tags/all-tags';
+      allTagsButton.className = 'tag-btn';
+      allTagsButton.textContent = '📑 All Tags';
+      if (!currentTag) {
+        allTagsButton.classList.add('active');
+      }
+      tagsContainer.appendChild(allTagsButton);
+
       // Shuffle and take 15 random tags
       const shuffledTags = [...allTags].sort(() => Math.random() - 0.5);
       const selectedTags = shuffledTags.slice(0, 15);
@@ -2947,14 +2960,12 @@
         button.className = 'tag-btn';
         const icon = getTagIcon(tag);
         button.textContent = `${icon} ${tag.charAt(0).toUpperCase() + tag.slice(1)}`;
-        
+
         // Highlight active tag
-        const urlParams = new URLSearchParams(window.location.search);
-        const currentTag = urlParams.get('tag');
         if (currentTag === tag) {
           button.classList.add('active');
         }
-        
+
         tagsContainer.appendChild(button);
       });
     }

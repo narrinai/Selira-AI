@@ -4166,52 +4166,8 @@
     }, true); // Capture phase - runs FIRST before all other handlers
 
 
-    // ===== TAG FILTERING WITH URLS =====
-    document.addEventListener('click', function(e) {
-      if (e.target.classList.contains('tag-pill')) {
-        e.preventDefault();
-        
-        const tagText = e.target.textContent.trim();
-        console.log('Selected tag:', tagText);
-        
-        // Update URL based on tag selection
-        if (tagText === 'All') {
-          // Go back to /category
-          history.pushState({section: 'category', filter: null}, 'Discover Characters - Selira AI', '/category');
-          currentFilters.tags = [];
-        } else {
-          // Create SEO-friendly URL
-          const tagSlug = tagText.toLowerCase()
-            .replace('🏰 ', '')
-            .replace('🎌 ', '')
-            .replace('🏛️ ', '')
-            .replace(/[^\w\s-]/g, '') // Remove special chars
-            .replace(/\s+/g, '-') // Replace spaces with hyphens
-            .replace(/-+/g, '-') // Remove duplicate hyphens
-            .replace(/^-+|-+$/g, ''); // Remove leading and trailing hyphens
-
-          // Strip emoji prefix from tag text for filtering (Airtable tags don't have emojis)
-          // This regex handles complex multi-codepoint emojis like 🧝‍♀️
-          const tagTextClean = tagText.replace(/^[\u{1F000}-\u{1FFFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{FE00}-\u{FE0F}\u{200D}]+\s*/gu, '').trim();
-
-          // For categories, use /category?filter=, for tags use /tags/
-          if (['fantasy', 'anime-manga', 'historical'].includes(tagSlug)) {
-            history.pushState({section: 'category', filter: tagSlug}, `${tagText} Characters - Selira AI`, `/category?filter=${tagSlug}`);
-          } else {
-            history.pushState({section: 'tag', tag: tagText}, `${tagText} Characters - Selira AI`, `/tags/${tagSlug}`);
-          }
-
-          currentFilters.tags = [tagTextClean];
-        }
-        
-        // Update UI
-        updateActiveTag(tagText);
-        applyFilters();
-        
-        // Ensure filter section is visible
-        document.querySelector('.filter-section').style.display = 'block';
-      }
-    });
+    // ===== TAG FILTERING - Now handled by dedicated /tags/ pages for SEO =====
+    // Tag pills are now direct links to /tags/{slug} instead of inline filtering
 
     function updateActiveTag(selectedTag) {
       // Remove active from all tags
@@ -4277,50 +4233,8 @@
     function handleInitialURL() {
       const currentURL = window.location.pathname + window.location.search;
 
-      if (currentURL.includes('/tags/')) {
-        // Extract tag from URL
-        const tagSlug = currentURL.split('/tags/')[1];
-        const tagMap = {
-          'fantasy': '🏰 Fantasy',
-          'anime-manga': '🎌 Anime-Manga',
-          'historical': '🏛️ Historical',
-          'magic': 'Magic',
-          'warrior': 'Warrior',
-          'wizard': 'Wizard',
-          'hero': 'Hero',
-          'ninja': 'Ninja',
-          'samurai': 'Samurai',
-          'adventure': 'Adventure',
-          'romance': 'Romance',
-          'mystery': 'Mystery',
-          'action': 'Action',
-          'unfiltered': 'Unfiltered',
-          'monster': 'Monster',
-          'girlfriend': 'Girlfriend',
-          'seductive': 'Seductive',
-          'tsundere': 'Tsundere',
-          'yandere': 'Yandere',
-          'maid': 'Maid',
-          'elf': 'Elf',
-          'angel': 'Angel',
-          'vampire': 'Vampire'
-        };
-
-        const tagText = tagMap[tagSlug] || tagSlug.charAt(0).toUpperCase() + tagSlug.slice(1);
-
-        // When filtering by tag, disable style filter to show all types
-        currentFilters.style = undefined;
-        currentFilters.tags = [tagText];
-
-        // Update dropdown to show "All"
-        const dropdownBtn = document.getElementById('styleDropdownBtn');
-        if (dropdownBtn) {
-          dropdownBtn.querySelector('span:first-child').textContent = 'All';
-        }
-
-        updateActiveTag(tagText);
-        applyFilters();
-      } else if (currentURL.includes('?filter=')) {
+      // /tags/ URLs are now handled by dedicated tags.html page for SEO
+      if (currentURL.includes('?filter=')) {
         // Extract category filter from URL
         const urlParams = new URLSearchParams(window.location.search);
         const filter = urlParams.get('filter');
@@ -6375,36 +6289,18 @@ Please be thorough and include important details from our conversations.`;
 
       // Tags filtered (logging disabled for performance)
 
-      // Create tag pills with "All Tags" button first
-      const allButton = '<a href="#" class="tag-pill active" data-tag="all">All Tags</a>';
+      // Create tag pills with "All Tags" button first - link to dedicated tag pages for SEO
+      const urlParams = new URLSearchParams(window.location.search);
+      const currentTag = urlParams.get('filter');
+
+      const allButton = `<a href="/tags/all-tags" class="tag-pill ${!currentTag ? 'active' : ''}">All Tags</a>`;
       const tagPills = filteredTags.map(tag => {
-        return `<a href="#" class="tag-pill" data-tag="${tag}">${tag}</a>`;
+        const tagSlug = tag.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+        const isActive = currentTag === tagSlug ? 'active' : '';
+        return `<a href="/tags/${tagSlug}" class="tag-pill ${isActive}">${tag}</a>`;
       }).join('');
 
       dynamicFilters.innerHTML = allButton + tagPills;
-
-      // Add click handlers for new tag pills
-      dynamicFilters.querySelectorAll('.tag-pill').forEach(pill => {
-        pill.addEventListener('click', function(e) {
-          e.preventDefault();
-          const tag = this.getAttribute('data-tag');
-
-          if (tag === 'all') {
-            // Clear all filters and show all characters
-            currentFilters.tags = [];
-            applyFilters();
-
-            // Update URL for all characters
-            history.pushState({section: 'category'}, 'All Characters - Selira AI', '/category');
-          } else {
-            filterByTag(tag);
-          }
-
-          // Update active state
-          document.querySelectorAll('.tag-pill').forEach(p => p.classList.remove('active'));
-          this.classList.add('active');
-        });
-      });
 
       // Tag filters populated (logging disabled for performance)
     }
