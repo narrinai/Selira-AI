@@ -121,7 +121,7 @@ exports.handler = async (event, context) => {
       if (videoBase64 && !videoUrl) {
         console.log('📤 Uploading video to ImgBB...');
         try {
-          const IMGBB_API_KEY = process.env.IMGBB_API_KEY;
+          const IMGBB_API_KEY = process.env.IMGBB_API_KEY_SELIRA || process.env.IMGBB_API_KEY;
           if (!IMGBB_API_KEY) {
             console.warn('⚠️ ImgBB API key not configured, returning base64 data URL');
             videoUrl = `data:video/mp4;base64,${videoBase64}`;
