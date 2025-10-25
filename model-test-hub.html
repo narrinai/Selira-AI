@@ -958,7 +958,7 @@
             }
         });
 
-        // Handle RunPod I2V form submission
+        // Handle RunPod I2V form submission with async polling
         document.getElementById('videoI2vRunpodForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -967,9 +967,9 @@
             const resultContent = document.getElementById('resultContent');
 
             generateBtn.disabled = true;
-            generateBtn.textContent = 'Generating Video...';
+            generateBtn.textContent = 'Starting...';
             resultSection.style.display = 'block';
-            resultContent.innerHTML = '<div class="loading"><div class="spinner"></div>Generating video on RunPod... This may take 1-2 minutes.</div>';
+            resultContent.innerHTML = '<div class="loading"><div class="spinner"></div>Starting video generation on RunPod...</div>';
 
             const formData = {
                 image_url: document.getElementById('runpod_image_url').value,
@@ -985,6 +985,7 @@
             };
 
             try {
+                // Start the job
                 const response = await fetch('/.netlify/functions/runpod-generate-video', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -992,26 +993,64 @@
                 });
 
                 const data = await response.json();
-                if (!response.ok) throw new Error(data.error || 'Failed to generate video');
+                if (!response.ok && response.status !== 202) {
+                    throw new Error(data.error || 'Failed to start video generation');
+                }
 
-                resultContent.innerHTML = `
-                    <div class="success">
-                        <strong>Success!</strong> Video generated via ${data.provider || 'RunPod'}
-                        ${data.cost ? `<br><strong>Cost:</strong> ${data.cost}` : ''}
-                        ${data.generation_time ? `<br><strong>Time:</strong> ${data.generation_time}s` : ''}
-                    </div>
-                    <div style="margin-top: 20px; text-align: center;">
-                        <video controls class="result-video" style="max-width: 100%;">
-                            <source src="${data.video}" type="video/mp4">
-                        </video>
-                        <p style="margin-top: 10px;">
-                            <a href="${data.video}" download style="color: #667eea; font-weight: 600;">Download Video</a>
-                        </p>
-                    </div>
-                `;
+                if (data.status === 'processing' && data.jobId) {
+                    // Job started successfully, now poll for completion
+                    resultContent.innerHTML = '<div class="loading"><div class="spinner"></div>Generating video... This may take 1-3 minutes.<br><small>Job ID: ' + data.jobId + '</small></div>';
+                    generateBtn.textContent = 'Generating...';
+
+                    // Poll every 3 seconds
+                    const pollInterval = 3000;
+                    const maxAttempts = 100; // 5 minutes max
+                    let attempts = 0;
+
+                    const pollStatus = async () => {
+                        attempts++;
+                        if (attempts > maxAttempts) {
+                            throw new Error('Video generation timed out. Check RunPod dashboard.');
+                        }
+
+                        const statusResponse = await fetch(`/.netlify/functions/runpod-check-status?jobId=${data.jobId}`);
+                        const statusData = await statusResponse.json();
+
+                        if (statusData.status === 'completed') {
+                            // Success!
+                            resultContent.innerHTML = `
+                                <div class="success">
+                                    <strong>Success!</strong> Video generated via ${statusData.provider || 'RunPod'}
+                                    ${statusData.cost ? `<br><strong>Cost:</strong> ${statusData.cost}` : ''}
+                                    ${statusData.generation_time ? `<br><strong>Time:</strong> ${statusData.generation_time}s` : ''}
+                                </div>
+                                <div style="margin-top: 20px; text-align: center;">
+                                    <video controls class="result-video" style="max-width: 100%;">
+                                        <source src="${statusData.video}" type="video/mp4">
+                                    </video>
+                                    <p style="margin-top: 10px;">
+                                        <a href="${statusData.video}" download style="color: #667eea; font-weight: 600;">Download Video</a>
+                                    </p>
+                                </div>
+                            `;
+                            generateBtn.disabled = false;
+                            generateBtn.textContent = 'Generate Video with RunPod (~$0.02)';
+                        } else if (statusData.status === 'failed') {
+                            throw new Error(statusData.details || 'Video generation failed');
+                        } else {
+                            // Still processing, poll again
+                            resultContent.innerHTML = `<div class="loading"><div class="spinner"></div>${statusData.message || 'Generating video...'}<br><small>Attempt ${attempts}/${maxAttempts}</small></div>`;
+                            setTimeout(pollStatus, pollInterval);
+                        }
+                    };
+
+                    // Start polling
+                    setTimeout(pollStatus, pollInterval);
+                } else {
+                    throw new Error('Unexpected response from server');
+                }
             } catch (error) {
                 resultContent.innerHTML = `<div class="error"><strong>Error:</strong> ${error.message}</div>`;
-            } finally {
                 generateBtn.disabled = false;
                 generateBtn.textContent = 'Generate Video with RunPod (~$0.02)';
             }

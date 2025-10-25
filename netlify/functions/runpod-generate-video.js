@@ -105,8 +105,6 @@ exports.handler = async (event, context) => {
     const result = await response.json();
     console.log('📊 RunPod response:', JSON.stringify(result, null, 2));
 
-    // RunPod serverless returns a job ID, we need to poll for results
-    // For now, return the job ID and instructions to poll
     const jobId = result.id;
 
     if (!jobId) {
@@ -120,7 +118,21 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Poll for job completion (with timeout)
+    // Return job ID immediately for async polling
+    // Frontend will poll /runpod-check-status?jobId=xxx
+    return {
+      statusCode: 202,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        success: true,
+        status: 'processing',
+        jobId: jobId,
+        message: 'Video generation started. Poll /runpod-check-status?jobId=' + jobId + ' for status',
+        estimatedTime: '1-3 minutes'
+      })
+    };
+
+    /* OLD SYNC POLLING CODE - keeping for reference
     const maxWaitTime = 300000; // 5 minutes (video generation can take time)
     const pollInterval = 3000; // 3 seconds
     const startTime = Date.now();
@@ -202,6 +214,7 @@ exports.handler = async (event, context) => {
         jobId: jobId
       })
     };
+    */
 
   } catch (error) {
     console.error('❌ RunPod video generation error:', error);
