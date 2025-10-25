@@ -117,43 +117,62 @@ exports.handler = async (event, context) => {
         videoBase64 = statusData.output;
       }
 
-      // If we have base64, upload to ImgBB for permanent hosting
+      // If we have base64, upload to Cloudinary for permanent hosting
       if (videoBase64 && !videoUrl) {
-        console.log('📤 Uploading video to ImgBB...');
+        console.log('📤 Uploading video to Cloudinary...');
         try {
-          const IMGBB_API_KEY = process.env.IMGBB_API_KEY_SELIRA || process.env.IMGBB_API_KEY;
-          if (!IMGBB_API_KEY) {
-            console.warn('⚠️ ImgBB API key not configured, returning base64 data URL');
+          const CLOUDINARY_CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME_SELIRA || process.env.CLOUDINARY_CLOUD_NAME;
+          const CLOUDINARY_API_KEY = process.env.CLOUDINARY_API_KEY_SELIRA || process.env.CLOUDINARY_API_KEY;
+          const CLOUDINARY_API_SECRET = process.env.CLOUDINARY_API_SECRET_SELIRA || process.env.CLOUDINARY_API_SECRET;
+
+          if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_API_KEY || !CLOUDINARY_API_SECRET) {
+            console.warn('⚠️ Cloudinary credentials not configured, returning base64 data URL');
             videoUrl = `data:video/mp4;base64,${videoBase64}`;
           } else {
-            // ImgBB requires form data with 'image' field (even for video)
+            // Generate Cloudinary signature for upload
+            const crypto = require('crypto');
+            const timestamp = Math.round(Date.now() / 1000);
+            const paramsToSign = `timestamp=${timestamp}&upload_preset=ml_default`;
+            const signature = crypto
+              .createHash('sha256')
+              .update(paramsToSign + CLOUDINARY_API_SECRET)
+              .digest('hex');
+
+            // Upload to Cloudinary
             const FormData = require('form-data');
             const form = new FormData();
-            form.append('key', IMGBB_API_KEY);
-            form.append('image', videoBase64); // ImgBB accepts video in 'image' field
-            form.append('expiration', '15552000'); // 180 days (max allowed)
+            form.append('file', `data:video/mp4;base64,${videoBase64}`);
+            form.append('api_key', CLOUDINARY_API_KEY);
+            form.append('timestamp', timestamp);
+            form.append('signature', signature);
+            form.append('upload_preset', 'ml_default');
+            form.append('resource_type', 'video');
 
-            const imgbbResponse = await fetch('https://api.imgbb.com/1/upload', {
-              method: 'POST',
-              body: form
-            });
+            const cloudinaryResponse = await fetch(
+              `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/video/upload`,
+              {
+                method: 'POST',
+                body: form
+              }
+            );
 
-            if (imgbbResponse.ok) {
-              const imgbbData = await imgbbResponse.json();
-              if (imgbbData.success && imgbbData.data?.url) {
-                videoUrl = imgbbData.data.url;
-                console.log('✅ Video uploaded to ImgBB:', videoUrl);
+            if (cloudinaryResponse.ok) {
+              const cloudinaryData = await cloudinaryResponse.json();
+              if (cloudinaryData.secure_url) {
+                videoUrl = cloudinaryData.secure_url;
+                console.log('✅ Video uploaded to Cloudinary:', videoUrl);
               } else {
-                console.warn('⚠️ ImgBB upload failed, returning base64 data URL');
+                console.warn('⚠️ Cloudinary upload succeeded but no URL returned');
                 videoUrl = `data:video/mp4;base64,${videoBase64}`;
               }
             } else {
-              console.warn('⚠️ ImgBB upload failed:', imgbbResponse.status);
+              const errorText = await cloudinaryResponse.text();
+              console.warn('⚠️ Cloudinary upload failed:', cloudinaryResponse.status, errorText);
               videoUrl = `data:video/mp4;base64,${videoBase64}`;
             }
           }
         } catch (uploadError) {
-          console.error('❌ ImgBB upload error:', uploadError);
+          console.error('❌ Cloudinary upload error:', uploadError);
           videoUrl = `data:video/mp4;base64,${videoBase64}`;
         }
       }

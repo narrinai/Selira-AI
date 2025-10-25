@@ -6289,18 +6289,33 @@ Please be thorough and include important details from our conversations.`;
 
       // Tags filtered (logging disabled for performance)
 
-      // Create tag pills with "All Tags" button first - link to dedicated tag pages for SEO
-      const urlParams = new URLSearchParams(window.location.search);
-      const currentTag = urlParams.get('filter');
-
-      const allButton = `<a href="/tags/all-tags" class="tag-pill ${!currentTag ? 'active' : ''}">All Tags</a>`;
+      // Create tag pills with "All Tags" button first - use inline filtering for better UX
+      const allButton = '<a href="#" class="tag-pill active" data-tag="all">All Tags</a>';
       const tagPills = filteredTags.map(tag => {
-        const tagSlug = tag.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-        const isActive = currentTag === tagSlug ? 'active' : '';
-        return `<a href="/tags/${tagSlug}" class="tag-pill ${isActive}">${tag}</a>`;
+        return `<a href="#" class="tag-pill" data-tag="${tag}">${tag}</a>`;
       }).join('');
 
       dynamicFilters.innerHTML = allButton + tagPills;
+
+      // Add click handlers for new tag pills
+      dynamicFilters.querySelectorAll('.tag-pill').forEach(pill => {
+        pill.addEventListener('click', function(e) {
+          e.preventDefault();
+          const tag = this.getAttribute('data-tag');
+
+          if (tag === 'all') {
+            // Clear all filters and show all characters
+            currentFilters.tags = [];
+            applyFilters();
+          } else {
+            filterByTag(tag);
+          }
+
+          // Update active state
+          document.querySelectorAll('.tag-pill').forEach(p => p.classList.remove('active'));
+          this.classList.add('active');
+        });
+      });
 
       // Tag filters populated (logging disabled for performance)
     }
