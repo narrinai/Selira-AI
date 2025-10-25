@@ -121,9 +121,9 @@ exports.handler = async (event, context) => {
       if (videoBase64 && !videoUrl) {
         console.log('📤 Uploading video to Cloudinary...');
         try {
-          const CLOUDINARY_CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME_SELIRA || process.env.CLOUDINARY_CLOUD_NAME;
-          const CLOUDINARY_API_KEY = process.env.CLOUDINARY_API_KEY_SELIRA || process.env.CLOUDINARY_API_KEY;
-          const CLOUDINARY_API_SECRET = process.env.CLOUDINARY_API_SECRET_SELIRA || process.env.CLOUDINARY_API_SECRET;
+          const CLOUDINARY_CLOUD_NAME = process.env.CLOUDINARY_SELIRA_NAME || process.env.CLOUDINARY_CLOUD_NAME_SELIRA || process.env.CLOUDINARY_CLOUD_NAME;
+          const CLOUDINARY_API_KEY = process.env.CLOUDINARY_SELIRA_API || process.env.CLOUDINARY_API_KEY_SELIRA || process.env.CLOUDINARY_API_KEY;
+          const CLOUDINARY_API_SECRET = process.env.CLOUDINARY_SELIRA_SECRET || process.env.CLOUDINARY_API_SECRET_SELIRA || process.env.CLOUDINARY_API_SECRET;
 
           if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_API_KEY || !CLOUDINARY_API_SECRET) {
             console.warn('⚠️ Cloudinary credentials not configured, returning base64 data URL');
