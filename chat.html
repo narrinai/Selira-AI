@@ -2740,16 +2740,16 @@
       // Select appropriate starters based on gender
       const starters = characterSex === 'male' ? conversationStartersMale : conversationStartersFemale;
 
-      // Pick 2 random starters (1 replaced with image gen button)
+      // Pick 1 random text starter + 2 image gen buttons
       const shuffled = [...starters].sort(() => 0.5 - Math.random());
-      const selectedStarters = shuffled.slice(0, 2);
+      const selectedStarters = shuffled.slice(0, 1);
 
       console.log('💬 Showing conversation starters:', selectedStarters);
 
       // Clear existing buttons
       buttonsContainer.innerHTML = '';
 
-      // Create conversation starter buttons
+      // Create 1 text conversation starter button
       selectedStarters.forEach(starter => {
         const button = document.createElement('button');
         button.className = 'conversation-starter-btn';
@@ -2758,17 +2758,28 @@
         buttonsContainer.appendChild(button);
       });
 
-      // Add Image Gen button (Missionary pose, 1 credit) - same style as other starters
-      const imageGenButton = document.createElement('button');
-      imageGenButton.className = 'conversation-starter-btn';
-      // Use coin icon
+      // Coin icon for image gen buttons
       const coinIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-left: 3px; opacity: 0.8;"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle></svg>`;
-      imageGenButton.innerHTML = `Image Gen: Missionary <span style="white-space: nowrap;">${coinIcon}</span>`;
-      imageGenButton.onclick = () => {
+
+      // Add Image Gen button 1: POV Blowjob (1 credit)
+      const imageGenButton1 = document.createElement('button');
+      imageGenButton1.className = 'conversation-starter-btn';
+      imageGenButton1.innerHTML = `POV Blowjob <span style="white-space: nowrap;">${coinIcon}</span>`;
+      imageGenButton1.onclick = () => {
+        hideConversationStarters();
+        openImageGenerationWithPose('pov blowjob');
+      };
+      buttonsContainer.appendChild(imageGenButton1);
+
+      // Add Image Gen button 2: Missionary (1 credit)
+      const imageGenButton2 = document.createElement('button');
+      imageGenButton2.className = 'conversation-starter-btn';
+      imageGenButton2.innerHTML = `Missionary <span style="white-space: nowrap;">${coinIcon}</span>`;
+      imageGenButton2.onclick = () => {
         hideConversationStarters();
         openImageGenerationWithPose('missionary');
       };
-      buttonsContainer.appendChild(imageGenButton);
+      buttonsContainer.appendChild(imageGenButton2);
 
       // Add close button to the container (top-right corner)
       const closeButton = document.createElement('button');
