@@ -225,8 +225,8 @@ async function generateWithReplicate(prompt, requestData) {
 
 // Generate with RunPod (Two-step: Text-to-Image → Image-to-Video)
 async function generateWithRunPod(prompt, requestData) {
-  const RUNPOD_API_KEY = process.env.RUNPOD_API_KEY_SELIRA;
-  const RUNPOD_ENDPOINT_ID = process.env.RUNPOD_ENDPOINT_ID_SELIRA;
+  const RUNPOD_API_KEY = process.env.RUNPOD_API_KEY_SELIRA || process.env.RUNPOD_API_KEY;
+  const RUNPOD_ENDPOINT_ID = process.env.RUNPOD_ENDPOINT_ID || process.env.RUNPOD_ANIMATEDIFF_ENDPOINT_ID;
 
   console.log('🎨 Step 1: Generating image from companion traits...');
 
@@ -278,32 +278,47 @@ async function generateWithRunPod(prompt, requestData) {
   console.log('✅ Image generated:', imageUrl);
   console.log('🎬 Step 2: Converting image to video with RunPod...');
 
+  if (!RUNPOD_API_KEY || !RUNPOD_ENDPOINT_ID) {
+    throw new Error('RunPod credentials not configured. Set RUNPOD_API_KEY_SELIRA and RUNPOD_ENDPOINT_ID_SELIRA');
+  }
+
+  console.log('📡 RunPod Endpoint ID:', RUNPOD_ENDPOINT_ID);
+  console.log('📡 RunPod API Key configured:', RUNPOD_API_KEY ? 'Yes' : 'No');
+
   // Step 2: Convert image to video using RunPod I2V
+  const runpodInput = {
+    input: {
+      image_url: imageUrl,
+      prompt: prompt,
+      negative_prompt: requestData.negative_prompt || 'low quality, blurry, deformed',
+      length: requestData.num_frames || 72,
+      width: 512,
+      height: 512,
+      fps: requestData.fps || 24,
+      motion_scale: requestData.motion_scale || 0.4,
+      cfg: requestData.guidance_scale || 4.5,
+      steps: requestData.steps || 100,
+      seed: requestData.seed || Math.floor(Math.random() * 1000000)
+    }
+  };
+
+  console.log('📝 RunPod input:', JSON.stringify(runpodInput, null, 2));
+
   const videoResponse = await fetch(`https://api.runpod.ai/v2/${RUNPOD_ENDPOINT_ID}/run`, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${RUNPOD_API_KEY}`,
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({
-      input: {
-        image_url: imageUrl,
-        prompt: prompt,
-        negative_prompt: requestData.negative_prompt || 'low quality, blurry, deformed',
-        length: requestData.num_frames || 72,
-        width: requestData.width || 512,
-        height: requestData.height || 512,
-        fps: requestData.fps || 24,
-        motion_scale: requestData.motion_scale || 0.4,
-        cfg: requestData.guidance_scale || 4.5,
-        steps: requestData.steps || 100,
-        seed: requestData.seed || Math.floor(Math.random() * 1000000)
-      }
-    })
+    body: JSON.stringify(runpodInput)
   });
 
+  console.log('📊 RunPod response status:', videoResponse.status);
+
   if (!videoResponse.ok) {
-    throw new Error(`RunPod video generation failed: ${videoResponse.status}`);
+    const errorText = await videoResponse.text();
+    console.error('❌ RunPod API error:', errorText);
+    throw new Error(`RunPod video generation failed: ${videoResponse.status} - ${errorText}`);
   }
 
   const videoData = await videoResponse.json();
