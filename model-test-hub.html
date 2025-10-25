@@ -473,9 +473,9 @@
                     <div class="form-group">
                         <label for="runpod_model">Model</label>
                         <select id="runpod_model" name="runpod_model">
-                            <option value="animatediff" selected>AnimateDiff v3</option>
+                            <option value="animatediff">AnimateDiff v3 (general motion)</option>
                             <option value="animatediff-lightning">AnimateDiff Lightning (faster)</option>
-                            <option value="svd">Stable Video Diffusion</option>
+                            <option value="svd" selected>Stable Video Diffusion (better faces)</option>
                         </select>
                     </div>
 
@@ -494,12 +494,12 @@
                     <div class="form-group">
                         <label for="runpod_resolution">Resolution</label>
                         <select id="runpod_resolution" name="runpod_resolution">
-                            <option value="256x256" selected>256x256 (fastest, recommended)</option>
-                            <option value="350x350">350x350 (balanced)</option>
-                            <option value="512x512">512x512 (high quality, slow)</option>
+                            <option value="256x256">256x256 (fast but low quality)</option>
+                            <option value="384x384">384x384 (good balance)</option>
+                            <option value="512x512" selected>512x512 (best quality, recommended)</option>
                             <option value="512x768">512x768 (portrait)</option>
                             <option value="768x512">768x512 (landscape)</option>
-                            <option value="768x768">768x768 (highest quality, slowest)</option>
+                            <option value="768x768">768x768 (highest quality, very slow)</option>
                         </select>
                     </div>
 
@@ -513,24 +513,24 @@
                     </div>
 
                     <div class="form-group slider-group">
-                        <label for="runpod_motion_scale">Motion Scale (0-3): <span class="slider-value" id="runpodMotionValue">1.0</span></label>
-                        <input type="range" id="runpod_motion_scale" name="runpod_motion_scale" min="0" max="3" step="0.1" value="1.0">
-                        <small>Higher = more movement</small>
+                        <label for="runpod_motion_scale">Motion Scale (0-3): <span class="slider-value" id="runpodMotionValue">0.4</span></label>
+                        <input type="range" id="runpod_motion_scale" name="runpod_motion_scale" min="0" max="3" step="0.1" value="0.4">
+                        <small>Lower = sharper (less blur). Recommended: 0.3-0.5</small>
                     </div>
 
                     <div class="form-group slider-group">
-                        <label for="runpod_guidance_scale">Guidance Scale (1-20): <span class="slider-value" id="runpodGuidanceValue">7.5</span></label>
-                        <input type="range" id="runpod_guidance_scale" name="runpod_guidance_scale" min="1" max="20" step="0.5" value="7.5">
-                        <small>Prompt adherence</small>
+                        <label for="runpod_guidance_scale">Guidance Scale (1-20): <span class="slider-value" id="runpodGuidanceValue">4.5</span></label>
+                        <input type="range" id="runpod_guidance_scale" name="runpod_guidance_scale" min="1" max="20" step="0.5" value="4.5">
+                        <small>Lower = more natural (less artifacts). Recommended: 4-6</small>
                     </div>
 
                     <div class="form-group">
                         <label for="runpod_steps">Inference Steps</label>
                         <select id="runpod_steps" name="runpod_steps">
-                            <option value="20">20 steps (fast, grainy)</option>
-                            <option value="30">30 steps (balanced)</option>
-                            <option value="50" selected>50 steps (smooth, recommended)</option>
-                            <option value="80">80 steps (highest quality, slow)</option>
+                            <option value="30">30 steps (fast, lower quality)</option>
+                            <option value="50">50 steps (balanced)</option>
+                            <option value="80">80 steps (high quality)</option>
+                            <option value="100" selected>100 steps (maximum quality, slow)</option>
                         </select>
                     </div>
 
