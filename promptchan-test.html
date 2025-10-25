@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
-    <title>Promptchan API Test - Selira AI</title>
+    <title>AI Video Generation Test Hub - Selira AI</title>
     <style>
         * {
             margin: 0;
@@ -204,25 +204,86 @@
 </head>
 <body>
     <div class="container">
-        <h1>🎨 Promptchan API Test</h1>
+        <h1>🎬 AI Video Generation Test Hub</h1>
+        <p style="text-align: center; color: #666; margin-bottom: 20px;">Test and compare different AI video generation models & providers</p>
 
         <div class="info">
-            <strong>Note:</strong> This is a test page for Promptchan API integration. Make sure you have your API key configured in Netlify environment variables.
+            <strong>Test Hub:</strong> Compare image generation (Promptchan) and video generation (Hunyuan I2V, Hunyuan T2V, RunPod) all in one place.
+        </div>
+
+        <!-- Pricing Comparison Table -->
+        <div style="background: #f5f5f5; padding: 20px; border-radius: 10px; margin-bottom: 30px;">
+            <h3 style="margin-bottom: 15px; color: #333;">💰 Cost Comparison</h3>
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: #667eea; color: white;">
+                        <th style="padding: 10px; text-align: left;">Provider</th>
+                        <th style="padding: 10px; text-align: left;">Type</th>
+                        <th style="padding: 10px; text-align: right;">Per Video</th>
+                        <th style="padding: 10px; text-align: right;">Per 100</th>
+                        <th style="padding: 10px; text-align: center;">NSFW</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background: #e8f5e9;">
+                        <td style="padding: 10px;"><strong>RunPod</strong></td>
+                        <td style="padding: 10px;">Image-to-Video</td>
+                        <td style="padding: 10px; text-align: right;"><strong>$0.02</strong> 🏆</td>
+                        <td style="padding: 10px; text-align: right;">$2</td>
+                        <td style="padding: 10px; text-align: center;">✅</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px;">Fal.ai (Hunyuan I2V)</td>
+                        <td style="padding: 10px;">Image-to-Video</td>
+                        <td style="padding: 10px; text-align: right;">$0.40</td>
+                        <td style="padding: 10px; text-align: right;">$40</td>
+                        <td style="padding: 10px; text-align: center;">⚠️ ToS risk</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px;">Replicate (Hunyuan T2V)</td>
+                        <td style="padding: 10px;">Text-to-Video</td>
+                        <td style="padding: 10px; text-align: right;">~$1.25</td>
+                        <td style="padding: 10px; text-align: right;">$125</td>
+                        <td style="padding: 10px; text-align: center;">⚠️ ToS risk</td>
+                    </tr>
+                    <tr style="background: #ffebee;">
+                        <td style="padding: 10px;">Promptchan</td>
+                        <td style="padding: 10px;">Text-to-Video</td>
+                        <td style="padding: 10px; text-align: right;">$3.23</td>
+                        <td style="padding: 10px; text-align: right;">$323</td>
+                        <td style="padding: 10px; text-align: center;">✅</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px;">Promptchan</td>
+                        <td style="padding: 10px;">Image Gen</td>
+                        <td style="padding: 10px; text-align: right;">$0.01</td>
+                        <td style="padding: 10px; text-align: right;">$1</td>
+                        <td style="padding: 10px; text-align: center;">✅</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
         <!-- Tab Navigation -->
-        <div style="display: flex; gap: 10px; margin-bottom: 30px; border-bottom: 2px solid #e0e0e0;">
-            <button type="button" onclick="switchTab('image')" id="imageTab" style="flex: 1; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px 10px 0 0;">
-                🖼️ Image Generation
+        <div style="display: flex; gap: 10px; margin-bottom: 30px; border-bottom: 2px solid #e0e0e0; flex-wrap: wrap;">
+            <button type="button" onclick="switchTab('image')" id="imageTab" style="flex: 1; min-width: 150px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px 10px 0 0; padding: 12px;">
+                🖼️ Image Gen<br><small style="font-size: 11px;">Promptchan</small>
             </button>
-            <button type="button" onclick="switchTab('video')" id="videoTab" style="flex: 1; background: #e0e0e0; color: #333; border-radius: 10px 10px 0 0;">
-                🎬 Video Generation (Image-to-Video)
+            <button type="button" onclick="switchTab('video-i2v-fal')" id="videoI2vFalTab" style="flex: 1; min-width: 150px; background: #e0e0e0; color: #333; border-radius: 10px 10px 0 0; padding: 12px;">
+                🎬 I2V Fal.ai<br><small style="font-size: 11px;">Hunyuan $0.40</small>
+            </button>
+            <button type="button" onclick="switchTab('video-t2v-replicate')" id="videoT2vReplicateTab" style="flex: 1; min-width: 150px; background: #e0e0e0; color: #333; border-radius: 10px 10px 0 0; padding: 12px;">
+                🎥 T2V Replicate<br><small style="font-size: 11px;">Hunyuan $1.25</small>
+            </button>
+            <button type="button" onclick="switchTab('video-i2v-runpod')" id="videoI2vRunpodTab" style="flex: 1; min-width: 150px; background: #e0e0e0; color: #333; border-radius: 10px 10px 0 0; padding: 12px;">
+                🚀 I2V RunPod<br><small style="font-size: 11px;">AnimateDiff $0.02</small>
             </button>
         </div>
 
-        <!-- VIDEO GENERATION SECTION -->
-        <div id="videoSection" style="display: none;">
-            <form id="videoForm">
+        <!-- FAL.AI HUNYUAN I2V SECTION -->
+        <div id="videoI2vFalSection" style="display: none;">
+            <h2 style="margin-bottom: 20px;">🎬 Fal.ai - Hunyuan Image-to-Video ($0.40/video)</h2>
+            <form id="videoI2vFalForm">
                 <div class="form-section">
                     <div class="form-group full-width">
                         <label for="video_image_url">Image URL *</label>
@@ -305,7 +366,178 @@
                     </div>
                 </div>
 
-                <button type="submit" id="videoGenerateBtn">Generate Video</button>
+                <button type="submit" id="videoI2vFalGenerateBtn">Generate Video with Fal.ai ($0.40)</button>
+            </form>
+        </div>
+
+        <!-- REPLICATE HUNYUAN T2V SECTION -->
+        <div id="videoT2vReplicateSection" style="display: none;">
+            <h2 style="margin-bottom: 20px;">🎥 Replicate - Hunyuan Text-to-Video (~$1.25/video)</h2>
+            <div class="info" style="margin-bottom: 20px;">
+                <strong>Note:</strong> Text-to-video only (no image input). More expensive but generates from scratch.
+            </div>
+            <form id="videoT2vReplicateForm">
+                <div class="form-section">
+                    <div class="form-group full-width">
+                        <label for="t2v_prompt">Video Prompt *</label>
+                        <textarea id="t2v_prompt" name="t2v_prompt" required placeholder="A cat walks on the grass, realistic style"></textarea>
+                        <small style="color: #666; margin-top: 5px; display: block;">Describe the entire video scene and action</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="t2v_width">Width</label>
+                        <select id="t2v_width" name="t2v_width">
+                            <option value="544">544px</option>
+                            <option value="720">720px</option>
+                            <option value="864" selected>864px</option>
+                            <option value="1088">1088px</option>
+                            <option value="1280">1280px</option>
+                        </select>
+                        <small>Must be divisible by 16</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="t2v_height">Height</label>
+                        <select id="t2v_height" name="t2v_height">
+                            <option value="304">304px</option>
+                            <option value="480" selected>480px</option>
+                            <option value="544">544px</option>
+                            <option value="720">720px</option>
+                        </select>
+                        <small>Must be divisible by 16</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="t2v_video_length">Video Length (frames)</label>
+                        <select id="t2v_video_length" name="t2v_video_length">
+                            <option value="49">49 frames (~2s)</option>
+                            <option value="65">65 frames (~2.7s)</option>
+                            <option value="97">97 frames (~4s)</option>
+                            <option value="129" selected>129 frames (~5.4s)</option>
+                            <option value="161">161 frames (~6.7s)</option>
+                        </select>
+                        <small>Must be 4k+1 (e.g., 49, 129)</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="t2v_fps">FPS</label>
+                        <select id="t2v_fps" name="t2v_fps">
+                            <option value="15">15 FPS</option>
+                            <option value="24" selected>24 FPS</option>
+                            <option value="30">30 FPS</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group slider-group">
+                        <label for="t2v_infer_steps">Inference Steps (20-100): <span class="slider-value" id="t2vInferStepsValue">50</span></label>
+                        <input type="range" id="t2v_infer_steps" name="t2v_infer_steps" min="20" max="100" value="50">
+                        <small style="color: #666; margin-top: 5px; display: block;">Higher = better quality but slower</small>
+                    </div>
+
+                    <div class="form-group slider-group">
+                        <label for="t2v_guidance_scale">Guidance Scale (1-10): <span class="slider-value" id="t2vGuidanceValue">6</span></label>
+                        <input type="range" id="t2v_guidance_scale" name="t2v_guidance_scale" min="1" max="10" step="0.5" value="6">
+                        <small style="color: #666; margin-top: 5px; display: block;">How closely to follow the prompt</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="t2v_seed">Seed (-1 for random)</label>
+                        <input type="number" id="t2v_seed" name="t2v_seed" value="-1">
+                    </div>
+                </div>
+
+                <button type="submit" id="videoT2vReplicateGenerateBtn">Generate Video with Replicate (~$1.25)</button>
+            </form>
+        </div>
+
+        <!-- RUNPOD I2V SECTION -->
+        <div id="videoI2vRunpodSection" style="display: none;">
+            <h2 style="margin-bottom: 20px;">🚀 RunPod - AnimateDiff Image-to-Video (~$0.02/video)</h2>
+            <div class="info" style="margin-bottom: 20px;">
+                <strong>Cheapest Option!</strong> Requires RunPod serverless endpoint setup. 20x cheaper than fal.ai.
+            </div>
+            <form id="videoI2vRunpodForm">
+                <div class="form-section">
+                    <div class="form-group full-width">
+                        <label for="runpod_image_url">Image URL *</label>
+                        <input type="text" id="runpod_image_url" name="runpod_image_url" required placeholder="https://example.com/image.jpg">
+                        <small>Direct URL to the image you want to animate</small>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="runpod_prompt">Motion Prompt *</label>
+                        <textarea id="runpod_prompt" name="runpod_prompt" required placeholder="The woman slowly turns her head to the left, smiling"></textarea>
+                        <small>Describe the movement/animation</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="runpod_model">Model</label>
+                        <select id="runpod_model" name="runpod_model">
+                            <option value="animatediff" selected>AnimateDiff v3</option>
+                            <option value="animatediff-lightning">AnimateDiff Lightning (faster)</option>
+                            <option value="svd">Stable Video Diffusion</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="runpod_num_frames">Video Length</label>
+                        <select id="runpod_num_frames" name="runpod_num_frames">
+                            <option value="16">16 frames (~0.5s)</option>
+                            <option value="24">24 frames (~1s)</option>
+                            <option value="48">48 frames (~2s)</option>
+                            <option value="72" selected>72 frames (~3s)</option>
+                            <option value="96">96 frames (~4s)</option>
+                            <option value="120">120 frames (~5s)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="runpod_resolution">Resolution</label>
+                        <select id="runpod_resolution" name="runpod_resolution">
+                            <option value="512x512" selected>512x512 (fastest)</option>
+                            <option value="512x768">512x768 (portrait)</option>
+                            <option value="768x512">768x512 (landscape)</option>
+                            <option value="768x768">768x768</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="runpod_fps">FPS</label>
+                        <select id="runpod_fps" name="runpod_fps">
+                            <option value="8">8 FPS</option>
+                            <option value="16">16 FPS</option>
+                            <option value="24" selected>24 FPS</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group slider-group">
+                        <label for="runpod_motion_scale">Motion Scale (0-3): <span class="slider-value" id="runpodMotionValue">1.0</span></label>
+                        <input type="range" id="runpod_motion_scale" name="runpod_motion_scale" min="0" max="3" step="0.1" value="1.0">
+                        <small>Higher = more movement</small>
+                    </div>
+
+                    <div class="form-group slider-group">
+                        <label for="runpod_guidance_scale">Guidance Scale (1-20): <span class="slider-value" id="runpodGuidanceValue">7.5</span></label>
+                        <input type="range" id="runpod_guidance_scale" name="runpod_guidance_scale" min="1" max="20" step="0.5" value="7.5">
+                        <small>Prompt adherence</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="runpod_steps">Inference Steps</label>
+                        <select id="runpod_steps" name="runpod_steps">
+                            <option value="20">20 steps (fast)</option>
+                            <option value="30">30 steps (balanced)</option>
+                            <option value="50" selected">50 steps (quality)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="runpod_seed">Seed (-1 for random)</label>
+                        <input type="number" id="runpod_seed" name="runpod_seed" value="-1">
+                    </div>
+                </div>
+
+                <button type="submit" id="videoI2vRunpodGenerateBtn">Generate Video with RunPod (~$0.02)</button>
             </form>
         </div>
 
@@ -527,29 +759,34 @@
     <script>
         // Tab switching
         function switchTab(tab) {
-            const imageSection = document.getElementById('imageSection');
-            const videoSection = document.getElementById('videoSection');
-            const imageTab = document.getElementById('imageTab');
-            const videoTab = document.getElementById('videoTab');
+            const sections = {
+                'image': document.getElementById('imageSection'),
+                'video-i2v-fal': document.getElementById('videoI2vFalSection'),
+                'video-t2v-replicate': document.getElementById('videoT2vReplicateSection'),
+                'video-i2v-runpod': document.getElementById('videoI2vRunpodSection')
+            };
 
-            if (tab === 'image') {
-                imageSection.style.display = 'block';
-                videoSection.style.display = 'none';
-                imageTab.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-                imageTab.style.color = 'white';
-                videoTab.style.background = '#e0e0e0';
-                videoTab.style.color = '#333';
-            } else {
-                imageSection.style.display = 'none';
-                videoSection.style.display = 'block';
-                imageTab.style.background = '#e0e0e0';
-                imageTab.style.color = '#333';
-                videoTab.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-                videoTab.style.color = 'white';
-            }
+            const tabs = {
+                'image': document.getElementById('imageTab'),
+                'video-i2v-fal': document.getElementById('videoI2vFalTab'),
+                'video-t2v-replicate': document.getElementById('videoT2vReplicateTab'),
+                'video-i2v-runpod': document.getElementById('videoI2vRunpodTab')
+            };
+
+            // Hide all sections and deactivate all tabs
+            Object.values(sections).forEach(section => section.style.display = 'none');
+            Object.values(tabs).forEach(tabBtn => {
+                tabBtn.style.background = '#e0e0e0';
+                tabBtn.style.color = '#333';
+            });
+
+            // Show selected section and activate tab
+            sections[tab].style.display = 'block';
+            tabs[tab].style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+            tabs[tab].style.color = 'white';
         }
 
-        // Update video slider values
+        // Update fal.ai I2V slider values
         document.getElementById('infer_steps').addEventListener('input', (e) => {
             document.getElementById('inferStepsValue').textContent = e.target.value;
         });
@@ -558,11 +795,29 @@
             document.getElementById('guidanceValue').textContent = e.target.value;
         });
 
-        // Handle video form submission
-        document.getElementById('videoForm').addEventListener('submit', async (e) => {
+        // Update Replicate T2V slider values
+        document.getElementById('t2v_infer_steps').addEventListener('input', (e) => {
+            document.getElementById('t2vInferStepsValue').textContent = e.target.value;
+        });
+
+        document.getElementById('t2v_guidance_scale').addEventListener('input', (e) => {
+            document.getElementById('t2vGuidanceValue').textContent = e.target.value;
+        });
+
+        // Update RunPod slider values
+        document.getElementById('runpod_motion_scale').addEventListener('input', (e) => {
+            document.getElementById('runpodMotionValue').textContent = e.target.value;
+        });
+
+        document.getElementById('runpod_guidance_scale').addEventListener('input', (e) => {
+            document.getElementById('runpodGuidanceValue').textContent = e.target.value;
+        });
+
+        // Handle fal.ai I2V form submission
+        document.getElementById('videoI2vFalForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const generateBtn = document.getElementById('videoGenerateBtn');
+            const generateBtn = document.getElementById('videoI2vFalGenerateBtn');
             const resultSection = document.getElementById('resultSection');
             const resultContent = document.getElementById('resultContent');
 
