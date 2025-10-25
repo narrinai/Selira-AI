@@ -86,12 +86,17 @@ exports.handler = async (event, context) => {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('❌ RunPod API error:', errorText);
+      console.error('❌ RunPod API error:');
+      console.error('Status:', response.status);
+      console.error('Status Text:', response.statusText);
+      console.error('Error Body:', errorText);
       return {
         statusCode: response.status,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         body: JSON.stringify({
           error: 'Failed to start video generation on RunPod',
+          status: response.status,
+          statusText: response.statusText,
           details: errorText
         })
       };
