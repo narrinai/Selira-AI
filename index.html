@@ -3130,7 +3130,7 @@
         // Render regular character card
         const character = item;
         return `
-        <div class="character-card" onclick="openCharacter('${character.slug}')">
+        <a href="/chat?char=${character.slug}" class="character-card" style="text-decoration: none; color: inherit;">
           ${character.avatar ?
             `<img src="${character.avatar}" alt="${character.name}" class="character-image" loading="lazy"
                   ${character.avatar_url_2 ? `data-hover-image="${character.avatar_url_2}"` : ''}
@@ -3167,7 +3167,7 @@
               `).join('')}
             </div>
           </div>
-        </div>
+        </a>
         `;
       }).join('');
       
@@ -4376,7 +4376,7 @@
 
         // Render companions
         grid.innerHTML = userCompanions.map(character => `
-          <div class="character-card" onclick="openCharacter('${character.slug}')">
+          <a href="/chat?char=${character.slug}" class="character-card" style="text-decoration: none; color: inherit;">
             ${character.avatar ?
               `<img src="${character.avatar}" alt="${character.name}" class="character-image" loading="lazy"
                     ${character.avatar_url_2 ? `data-hover-image="${character.avatar_url_2}"` : ''}
@@ -4408,7 +4408,7 @@
               `).join('')}
             </div>
           </div>
-        </div>
+        </a>
       `).join('');
 
         // Add hover image functionality to My Companions
@@ -5211,7 +5211,7 @@
       }
 
       const newCharactersHTML = characters.map(character => `
-        <div class="character-card" onclick="openCharacter('${character.slug}')">
+        <a href="/chat?char=${character.slug}" class="character-card" style="text-decoration: none; color: inherit;">
           ${character.avatar ?
             `<img src="${character.avatar}" alt="${character.name}" class="character-image" loading="lazy"
                   ${character.avatar_url_2 ? `data-hover-image="${character.avatar_url_2}"` : ''}
@@ -5245,7 +5245,7 @@
               `).join('')}
             </div>
           </div>
-        </div>
+        </a>
       `).join('');
 
       grid.insertAdjacentHTML('beforeend', newCharactersHTML);

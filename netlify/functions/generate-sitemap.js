@@ -429,7 +429,7 @@ exports.handler = async (event, context) => {
 
       if (slug) {
         xml += `  <url>
-    <loc>https://selira.ai/chat?companion=${slug}</loc>
+    <loc>https://selira.ai/chat?char=${slug}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
