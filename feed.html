@@ -1162,8 +1162,10 @@
 
     // Toggle like on image
     async function toggleLike(imageId, buttonEl) {
+      // Check if user is logged in
       if (!currentUser || !currentUser.email) {
-        // Show login modal
+        // Not logged in - show signup modal
+        console.log('🔒 User not logged in - showing signup modal');
         if (window.openLoginModal) {
           window.openLoginModal('signup');
         } else {
@@ -1171,6 +1173,9 @@
         }
         return;
       }
+
+      // User is logged in - proceed with like toggle
+      console.log('❤️ User logged in, toggling like for image:', imageId);
 
       try {
         const response = await fetch('/.netlify/functions/selira-like-image', {

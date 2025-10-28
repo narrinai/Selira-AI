@@ -6144,6 +6144,15 @@
                     max-width: 300px; border-radius: 12px; cursor: pointer;
                     box-shadow: 0 4px 16px rgba(0,0,0,0.3);
                   " onclick="openImageFullscreen('${result.imageUrl}', '${result.fullPrompt || simplePrompt}')">
+                  <div style="margin-top: 12px; padding: 10px; background: rgba(206, 147, 216, 0.1); border-radius: 8px; border-left: 3px solid var(--accent);">
+                    <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 6px;">
+                      ✨ Your image has been saved to the community feed!
+                    </div>
+                    <a href="/feed" style="color: var(--accent); text-decoration: none; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 4px;">
+                      View Feed
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                    </a>
+                  </div>
                 </div>
                 <div class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
               </div>
@@ -6413,6 +6422,15 @@
               max-width: 300px; border-radius: 12px; cursor: pointer;
               box-shadow: 0 4px 16px rgba(0,0,0,0.3);
             " onclick="openImageFullscreen('${imageUrl}', '${prompt}')">
+            <div style="margin-top: 12px; padding: 10px; background: rgba(206, 147, 216, 0.1); border-radius: 8px; border-left: 3px solid var(--accent);">
+              <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 6px;">
+                ✨ Your image has been saved to the community feed!
+              </div>
+              <a href="/feed" style="color: var(--accent); text-decoration: none; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 4px;">
+                View Feed
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+              </a>
+            </div>
           </div>
           <div class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
         </div>
