@@ -115,8 +115,9 @@ exports.handler = async (event, context) => {
           const companionRecord = await companionResponse.json();
           const compFields = companionRecord.fields;
 
-          // Only include if companion is public
-          if (compFields.Visibility !== 'public') {
+          // Only include if companion is public (default to public if not set)
+          const visibility = compFields.Visibility || compFields.visibility || 'public';
+          if (visibility === 'private') {
             console.log('⚠️ Skipping private companion:', compFields.Name);
             continue;
           }
