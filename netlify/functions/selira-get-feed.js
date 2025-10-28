@@ -48,12 +48,12 @@ exports.handler = async (event, context) => {
     // Build Airtable filter - only show approved images from public companions
     // Status field should be 'approved' (or empty/missing for auto-approved)
     const filterFormula = `AND(
-      OR({Status} = 'approved', {Status} = ''),
-      {Image_URL} != ''
+      OR({status} = 'approved', {status} = ''),
+      {image_url} != ''
     )`;
 
     // Sort field based on request
-    const sortField = sort === 'popular' ? 'Like_Count' : 'Generation_Date';
+    const sortField = sort === 'popular' ? 'like_count' : 'generation_date';
     const sortDirection = 'desc';
 
     // Fetch Generated_Images records
@@ -148,13 +148,13 @@ exports.handler = async (event, context) => {
       // Build feed item
       feedItems.push({
         id: record.id,
-        image_url: fields.Image_URL,
-        prompt: fields.Prompt,
-        generation_date: fields.Generation_Date,
-        like_count: fields.Like_Count || 0,
-        view_count: fields.View_Count || 0,
+        image_url: fields.image_url,
+        prompt: fields.prompt,
+        generation_date: fields.generation_date,
+        like_count: fields.like_count || 0,
+        view_count: fields.view_count || 0,
         companion: companionData,
-        created_at: fields.Generation_Date
+        created_at: fields.generation_date
       });
     }
 

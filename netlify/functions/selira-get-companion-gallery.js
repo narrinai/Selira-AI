@@ -140,9 +140,9 @@ exports.handler = async (event, context) => {
     const imagesData = await imagesResponse.json();
     const images = (imagesData.records || []).map(record => ({
       id: record.id,
-      image_url: record.fields.Image_URL,
-      generation_date: record.fields.Generation_Date,
-      prompt: record.fields.Prompt
+      image_url: record.fields.image_url,
+      generation_date: record.fields.generation_date,
+      prompt: record.fields.prompt
     }));
 
     console.log(`✅ Found ${images.length} images`);
