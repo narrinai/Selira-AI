@@ -818,7 +818,7 @@
       try {
         console.log(`📥 Loading feed items (offset: ${currentOffset})`);
 
-        const response = await fetch(`/.netlify/functions/get-feed?limit=${ITEMS_PER_PAGE}&offset=${currentOffset}&sort=newest`);
+        const response = await fetch(`/.netlify/functions/selira-get-feed?limit=${ITEMS_PER_PAGE}&offset=${currentOffset}&sort=newest`);
 
         if (!response.ok) {
           throw new Error('Failed to load feed');
@@ -936,7 +936,7 @@
       }
 
       try {
-        const response = await fetch('/.netlify/functions/like-image', {
+        const response = await fetch('/.netlify/functions/selira-like-image', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
