@@ -4,6 +4,105 @@
 
 const fetch = require('node-fetch');
 
+// HELPER: Save generated image to Generated_Images table (feed)
+async function saveFeedImage(requestId, source, imageUrl, characterName, customPrompt, email) {
+  console.log(`🔍 [${requestId}] Feed save check: source=${source}, imageUrl=${!!imageUrl}, characterName=${characterName}`);
+
+  if ((source === 'chat' || source === 'image-generator') && imageUrl && characterName) {
+    console.log(`💾 [${requestId}] Saving generated image to feed...`);
+
+    try {
+      const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
+      const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN || process.env.AIRTABLE_API_KEY;
+
+      if (AIRTABLE_BASE_ID && AIRTABLE_TOKEN) {
+        // Find character record by name to get ID
+        const characterSearchUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters?` +
+          `filterByFormula={Name}='${characterName.replace(/'/g, "\\\'")}'&maxRecords=1`;
+
+        const characterResponse = await fetch(characterSearchUrl, {
+          headers: {
+            'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (characterResponse.ok) {
+          const characterData = await characterResponse.json();
+          console.log(`🔍 [${requestId}] Character search result: ${characterData.records?.length || 0} records found`);
+
+          if (characterData.records && characterData.records.length > 0) {
+            const characterRecord = characterData.records[0];
+            const characterId = characterRecord.id;
+            const visibility = characterRecord.fields.Visibility || characterRecord.fields.visibility || 'public';
+            console.log(`🔍 [${requestId}] Character: ${characterName} (${characterId}), visibility: ${visibility}`);
+
+            // Only save if companion is NOT explicitly private (default to public)
+            if (visibility !== 'private') {
+              // Find user record by email
+              let userRecordId = null;
+              if (email) {
+                const userSearchUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?` +
+                  `filterByFormula={Email}='${email.replace(/'/g, "\\\'")}'&maxRecords=1`;
+
+                const userResponse = await fetch(userSearchUrl, {
+                  headers: {
+                    'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+                    'Content-Type': 'application/json'
+                  }
+                });
+
+                if (userResponse.ok) {
+                  const userData = await userResponse.json();
+                  if (userData.records && userData.records.length > 0) {
+                    userRecordId = userData.records[0].id;
+                  }
+                }
+              }
+
+              // Create Generated_Images record
+              const createUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Generated_Images`;
+              const createResponse = await fetch(createUrl, {
+                method: 'POST',
+                headers: {
+                  'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  fields: {
+                    Image_URL: imageUrl,
+                    companion_id: [characterId], // Linked record (lowercase to match Airtable)
+                    User_ID: userRecordId ? [userRecordId] : undefined, // Linked record (optional)
+                    Prompt: customPrompt || '',
+                    Generation_Date: new Date().toISOString(),
+                    Like_Count: Math.floor(Math.random() * 14) + 2, // Random 2-15
+                    View_Count: 0,
+                    Status: 'approved' // Auto-approve
+                  }
+                })
+              });
+
+              if (createResponse.ok) {
+                const createdRecord = await createResponse.json();
+                console.log(`✅ [${requestId}] Saved to feed:`, createdRecord.id);
+              } else {
+                const errorText = await createResponse.text();
+                console.error(`❌ [${requestId}] Failed to save to feed:`, errorText);
+              }
+            } else {
+              console.log(`🔒 [${requestId}] Companion is private, skipping feed save`);
+            }
+          } else {
+            console.log(`⚠️ [${requestId}] Character not found:`, characterName);
+          }
+        }
+      }
+    } catch (saveError) {
+      console.error(`❌ [${requestId}] Error saving to feed (non-blocking):`, saveError.message);
+    }
+  }
+}
+
 // Track recent requests to prevent rapid-fire calls
 const recentRequests = new Map();
 const REQUEST_COOLDOWN_MS = 1000; // 1 second cooldown between requests
@@ -307,6 +406,9 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, supab
         }
       }
 
+      // Save to Generated_Images feed (Promptchan path)
+      await saveFeedImage(requestId, source, promptchanResult.image, characterName, customPrompt, email);
+
       return {
         statusCode: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -480,6 +582,9 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, supab
           console.error(`❌ [${requestId}] Error incrementing usage:`, err.message);
         }
       }
+
+      // Save to Generated_Images feed (Promptchan explicit path)
+      await saveFeedImage(requestId, source, promptchanResult.image, characterName, customPrompt, email);
 
       return {
         statusCode: 200,
@@ -714,6 +819,9 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, supab
         console.error(`❌ [${requestId}] Error incrementing usage:`, err.message);
       }
     }
+
+    // Save to Generated_Images feed (Promptchan fallback/timeout path)
+    await saveFeedImage(requestId, source, result.image, characterName, customPrompt, email);
 
     return {
       statusCode: 200,
