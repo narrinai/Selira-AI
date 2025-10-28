@@ -6163,6 +6163,22 @@
 
             // Scroll to the image
             loadingMsg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            // Add feed notification if companion is public
+            if (currentCharacter.visibility === 'public') {
+              const feedNotificationHtml = `
+                <div class="message system" style="margin-top: 8px;">
+                  <div class="message-content">
+                    <div class="message-text" style="font-size: 13px; color: var(--text-secondary); text-align: center; padding: 12px;">
+                      Shared on <a href="/feed" style="color: var(--accent); text-decoration: none; font-weight: 600;">the public feed</a> — the community will love this! Your companion is public. <a href="/create" style="color: var(--accent); text-decoration: none;">Create a private companion</a> if you don't want automatic feed posts.
+                    </div>
+                  </div>
+                </div>
+              `;
+              const messagesContainer = document.getElementById('chatMessages');
+              messagesContainer.insertAdjacentHTML('beforeend', feedNotificationHtml);
+              messagesContainer.lastElementChild.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
           } else {
             // Fallback: loading message was removed/not found, add image normally
             console.log('⚠️ Loading message not found, adding image at bottom');
