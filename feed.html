@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Community Feed - Selira AI</title>
+  <meta name="description" content="Explore generated images from the Selira AI community. Discover what others are creating with their AI companions.">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://selira.ai/feed">
+  <meta property="og:title" content="Community Feed - Selira AI">
+  <meta property="og:description" content="Explore generated images from the Selira AI community.">
+  <meta property="og:image" content="https://selira.ai/og-image.jpg">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://selira.ai/feed">
+  <meta property="twitter:title" content="Community Feed | Selira AI">
+  <meta property="twitter:description" content="Explore generated images from the Selira AI community.">
+  <meta property="twitter:image" content="https://selira.ai/og-image.jpg">
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XZXX201WKD"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XZXX201WKD');
+  </script>
+
+  <!-- Supabase Authentication System -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/supabase-auth.js"></script>
+
+  <!-- Selira AI Popup System -->
+  <script src="/js/selira-popups.js"></script>
+
+  <!-- Mobile Navigation System -->
+  <script src="/js/mobile-nav.js"></script>
+
+  <!-- Age Verification System -->
+  <script src="/js/age-verification.js"></script>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #1a1a1a;
+      --bg-tertiary: #2a2a2a;
+      --bg-sidebar: #1a1a1a;
+      --text-primary: #ffffff;
+      --text-secondary: #b3b3b3;
+      --text-muted: #888888;
+      --accent: #ce93d8;
+      --accent-hover: #ba68c8;
+      --accent-secondary: #ec4899;
+      --border: #333333;
+      --border-color: #333333;
+      --success: #10b981;
+      --error: #ef4444;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    .app-container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Left Sidebar Navigation */
+    .sidebar {
+      width: 220px;
+      background: var(--bg-sidebar);
+      border-right: none;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      height: 100vh;
+      left: 0;
+      top: 0;
+      z-index: 100;
+      overflow-y: auto;
+    }
+
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      text-decoration: none;
+      color: inherit;
+      transition: opacity 0.2s ease;
+    }
+
+    .sidebar-logo:hover {
+      opacity: 0.8;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .sidebar-logo-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .sidebar-nav {
+      flex: 1;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      margin-bottom: 2px;
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      border-radius: var(--radius-sm);
+      transition: all 0.2s ease;
+      font-weight: 500;
+      font-size: 13px;
+    }
+
+    .nav-item:hover, .nav-item.active {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    .nav-item-icon {
+      font-size: 14px;
+      width: 18px;
+      height: 18px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .nav-item-icon svg {
+      width: 18px;
+      height: 18px;
+      stroke: var(--accent);
+    }
+
+    .nav-section-title {
+      font-size: 9px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.6);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 12px 0 4px;
+      padding: 0 10px;
+    }
+
+    .sidebar-auth-btn {
+      display: block;
+      width: 100%;
+      padding: 8px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 13px;
+      text-align: center;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .sidebar-auth-btn.primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .sidebar-auth-btn.primary:hover {
+      background: var(--accent-hover);
+    }
+
+    .sidebar-footer-links {
+      margin-top: auto;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .footer-link {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.5);
+      text-decoration: none;
+      padding: 4px 10px;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+    }
+
+    .footer-link:hover {
+      color: rgba(255, 255, 255, 0.8);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    /* Mobile ratings link */
+    .mobile-rating-link {
+      display: none;
+    }
+
+    /* Payment icons */
+    .payment-icons {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      padding: 0 10px;
+      opacity: 0.6;
+    }
+
+    .payment-icons img {
+      width: 32px;
+      height: 20px;
+      object-fit: contain;
+      filter: grayscale(1) brightness(1.2);
+      transition: all 0.2s ease;
+    }
+
+    .payment-icons img:hover {
+      filter: grayscale(0) brightness(1);
+      opacity: 1;
+    }
+
+    /* Sidebar Overlay for Mobile */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 90;
+    }
+
+    .sidebar-overlay.active {
+      display: block;
+    }
+
+    /* Mobile Sidebar */
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+      }
+
+      .sidebar.active {
+        transform: translateX(0);
+      }
+
+      .mobile-rating-link {
+        display: flex;
+      }
+
+      .sidebar-footer-links,
+      .payment-icons {
+        display: none;
+      }
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      margin-left: 220px;
+      padding: 0;
+      overflow-y: auto;
+      height: 100vh;
+    }
+
+    @media (max-width: 768px) {
+      .main-content {
+        margin-left: 0;
+        margin-bottom: 60px;
+        height: calc(100vh - 60px);
+      }
+    }
+
+    /* Mobile Header */
+    .mobile-header {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    @media (max-width: 768px) {
+      .mobile-header {
+        display: flex;
+      }
+    }
+
+    .mobile-header-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .hamburger-menu {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      cursor: pointer;
+      padding: 4px 0;
+    }
+
+    .hamburger-menu span {
+      width: 100%;
+      height: 2px;
+      background: white;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    /* Feed Container */
+    .feed-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 0;
+      height: 100%;
+      overflow-y: auto;
+      scroll-snap-type: y proximity;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Feed Item (TikTok style) */
+    .feed-item {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      scroll-snap-align: start;
+      background: #000;
+    }
+
+    .feed-item-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      max-height: 100vh;
+    }
+
+    /* Feed Item Overlay */
+    .feed-item-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 20px;
+      background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+      z-index: 10;
+    }
+
+    .feed-item-companion {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      width: fit-content;
+    }
+
+    .feed-item-companion:hover {
+      opacity: 0.9;
+    }
+
+    .feed-item-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--accent);
+    }
+
+    .feed-item-info h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .feed-item-info p {
+      font-size: 12px;
+      color: var(--text-secondary);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Action Icons (Right Side) */
+    .feed-item-actions {
+      position: absolute;
+      right: 12px;
+      bottom: 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+      z-index: 15;
+    }
+
+    .action-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: white;
+      transition: all 0.2s ease;
+      padding: 0;
+      min-width: 44px;
+      min-height: 44px;
+      justify-content: center;
+    }
+
+    .action-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .action-btn.liked svg {
+      fill: #ff6b6b;
+      stroke: #ff6b6b;
+    }
+
+    .action-icon {
+      width: 32px;
+      height: 32px;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+    }
+
+    .action-count {
+      font-size: 12px;
+      font-weight: 600;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+    }
+
+    /* Loading State */
+    .feed-loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      color: var(--text-secondary);
+    }
+
+    .feed-loading.hidden {
+      display: none;
+    }
+
+    .spinner {
+      border: 3px solid rgba(206, 147, 216, 0.2);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Empty State */
+    .feed-empty {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      flex-direction: column;
+      gap: 16px;
+      color: var(--text-secondary);
+      padding: 20px;
+      text-align: center;
+    }
+
+    .feed-empty.visible {
+      display: flex;
+    }
+
+    /* Mobile Navigation */
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      padding: 8px 0;
+      z-index: 100;
+    }
+
+    @media (max-width: 768px) {
+      .mobile-nav {
+        display: block;
+      }
+    }
+
+    .mobile-nav-items {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    .mobile-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 16px;
+      text-decoration: none;
+      color: var(--text-secondary);
+      font-size: 11px;
+      transition: color 0.2s ease;
+      min-width: 60px;
+    }
+
+    .mobile-nav-item.active,
+    .mobile-nav-item:hover {
+      color: var(--accent);
+    }
+
+    .mobile-nav-item svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .mobile-nav-item.active svg {
+      stroke: var(--accent);
+    }
+  </style>
+
+  <!-- Facebook Pixel -->
+  <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '588888163609924');
+    fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=588888163609924&ev=PageView&noscript=1"
+  /></noscript>
+
+  <!-- Facebook Pixel Events -->
+  <script src="/js/facebook-pixel-events.js"></script>
+
+  <!-- Google Analytics Events -->
+  <script src="/js/google-analytics-events.js"></script>
+
+  <!-- FirstPromoter Tracking Script -->
+  <script>
+    (function(w){w.fpr=w.fpr||function(){w.fpr.q = w.fpr.q||[];w.fpr.q[arguments[0]=='set'?'unshift':'push'](arguments);};})(window);
+    fpr("init", {cid:"10y4jvgo"});
+    fpr("click");
+  </script>
+  <script src="https://cdn.firstpromoter.com/fpr.js" async></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Left Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+      <!-- Logo -->
+      <a href="/" class="sidebar-logo">
+        <div class="sidebar-logo-text">Selira AI</div>
+      </a>
+
+      <!-- Navigation -->
+      <nav class="sidebar-nav">
+        <a href="/" class="nav-item">
+          <span class="nav-item-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></span>
+          <span>Discover</span>
+        </a>
+        <a href="/feed" class="nav-item active">
+          <span class="nav-item-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg></span>
+          <span>Feed</span>
+        </a>
+        <a href="/my-companions" class="nav-item">
+          <span class="nav-item-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></span>
+          <span>My Companions</span>
+        </a>
+        <a href="/create" class="nav-item">
+          <span class="nav-item-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+          <span>Create</span>
+        </a>
+        <a href="/free-nsfw-image-generator" class="nav-item">
+          <span class="nav-item-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg></span>
+          <span>Image Generator</span>
+        </a>
+
+        <div class="nav-section-title">Account</div>
+
+        <a href="/profile" class="nav-item" id="profileNavItem" style="display: none;">
+          <span class="nav-item-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span>
+          <span>Profile</span>
+        </a>
+        <a href="/pricing" class="nav-item">
+          <span class="nav-item-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></span>
+          <span>Pricing</span>
+        </a>
+        <a href="/affiliate-program" class="nav-item">
+          <span class="nav-item-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span>
+          <span>Affiliate Program</span>
+        </a>
+
+        <!-- CompanionGuide Rating (Mobile) -->
+        <a href="https://companionguide.ai/companions/selira-ai" target="_blank" rel="noopener noreferrer" class="nav-item mobile-rating-link" style="font-size: 13px; padding: 10px 14px;">
+          <span class="nav-item-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></span>
+          <span>CompanionGuide.ai 9.3/10 <span style="color: #FFD700; filter: brightness(1.2);">★★★★★</span></span>
+        </a>
+
+        <!-- Auth buttons for logged out users -->
+        <div id="sidebarAuthButtons" style="display: none; flex-direction: column;">
+          <a href="#" class="nav-item" onclick="openLoginModal('login', event); return false;">
+            <span class="nav-item-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg></span>
+            <span>Login</span>
+          </a>
+          <a href="#" class="sidebar-auth-btn primary" onclick="openLoginModal('signup', event); return false;" style="margin: 8px 10px 0; width: calc(100% - 20px);">Register</a>
+        </div>
+      </nav>
+
+      <!-- Footer Links (Desktop only) -->
+      <div class="sidebar-footer-links">
+        <a href="/about" class="footer-link">About</a>
+        <a href="/contact" class="footer-link">Contact</a>
+        <a href="/privacy-policy" class="footer-link">Privacy Policy</a>
+        <a href="/terms-and-conditions" class="footer-link">Terms & Conditions</a>
+        <a href="https://companionguide.ai/companions/selira-ai" target="_blank" rel="noopener noreferrer" class="footer-link">CompanionGuide.ai 9.3/10 <span style="color: #FFD700; filter: brightness(1.2);">★★★★★</span></a>
+      </div>
+
+      <!-- Payment Icons (Desktop only) -->
+      <div class="payment-icons">
+        <img src="/images/paypal-icon.png" alt="PayPal" title="PayPal">
+        <img src="/images/mastercard-icon.png" alt="Mastercard" title="Mastercard">
+      </div>
+    </aside>
+
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Mobile Header -->
+      <div class="mobile-header">
+        <div class="hamburger-menu" id="hamburgerMenu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="mobile-header-title">Feed</div>
+        <div style="width: 24px;"></div>
+      </div>
+
+      <!-- Feed Container -->
+      <div class="feed-container" id="feedContainer">
+        <!-- Loading State -->
+        <div class="feed-loading" id="feedLoading">
+          <div class="spinner"></div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="feed-empty" id="feedEmpty">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+            <polyline points="21 15 16 10 5 21"></polyline>
+          </svg>
+          <h3>No images yet</h3>
+          <p>Be the first to generate and share images!</p>
+        </div>
+
+        <!-- Feed items will be inserted here by JavaScript -->
+      </div>
+    </main>
+
+    <!-- Mobile Navigation -->
+    <nav class="mobile-nav">
+      <div class="mobile-nav-items">
+        <a href="/" class="mobile-nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+          <span>Home</span>
+        </a>
+        <a href="/feed" class="mobile-nav-item active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+          <span>Feed</span>
+        </a>
+        <a href="/create" class="mobile-nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          <span>Create</span>
+        </a>
+        <a href="/my-companions" class="mobile-nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          <span>Chats</span>
+        </a>
+        <a href="/profile" class="mobile-nav-item" id="mobileProfileNav" style="display: none;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          <span>Profile</span>
+        </a>
+      </div>
+    </nav>
+  </div>
+
+  <script>
+    // Feed state
+    let currentOffset = 0;
+    let isLoading = false;
+    let hasMore = true;
+    let currentUser = null;
+    const ITEMS_PER_PAGE = 10;
+
+    // Initialize feed
+    document.addEventListener('DOMContentLoaded', async () => {
+      console.log('🎨 Feed page loaded');
+
+      // Get current user
+      if (window.getCurrentUser) {
+        currentUser = window.getCurrentUser();
+        console.log('👤 Current user:', currentUser);
+      }
+
+      // Show profile nav items for logged in users
+      if (currentUser) {
+        document.getElementById('profileNavItem')?.setAttribute('style', 'display: flex');
+        document.getElementById('mobileProfileNav')?.setAttribute('style', 'display: flex');
+      } else {
+        document.getElementById('sidebarAuthButtons')?.setAttribute('style', 'display: flex; flex-direction: column;');
+      }
+
+      // Load initial feed
+      await loadFeed();
+
+      // Setup infinite scroll
+      const feedContainer = document.getElementById('feedContainer');
+      feedContainer.addEventListener('scroll', handleScroll);
+
+      // Setup hamburger menu
+      const hamburger = document.getElementById('hamburgerMenu');
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebarOverlay');
+
+      hamburger?.addEventListener('click', () => {
+        sidebar.classList.toggle('active');
+        overlay.classList.toggle('active');
+      });
+
+      overlay?.addEventListener('click', () => {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+      });
+    });
+
+    // Load feed items
+    async function loadFeed() {
+      if (isLoading || !hasMore) return;
+
+      isLoading = true;
+      const loadingEl = document.getElementById('feedLoading');
+      const emptyEl = document.getElementById('feedEmpty');
+      const feedContainer = document.getElementById('feedContainer');
+
+      try {
+        console.log(`📥 Loading feed items (offset: ${currentOffset})`);
+
+        const response = await fetch(`/.netlify/functions/get-feed?limit=${ITEMS_PER_PAGE}&offset=${currentOffset}&sort=newest`);
+
+        if (!response.ok) {
+          throw new Error('Failed to load feed');
+        }
+
+        const data = await response.json();
+        console.log(`✅ Loaded ${data.items?.length || 0} items`);
+
+        if (!data.items || data.items.length === 0) {
+          hasMore = false;
+          if (currentOffset === 0) {
+            // Show empty state
+            loadingEl.classList.add('hidden');
+            emptyEl.classList.add('visible');
+          }
+          return;
+        }
+
+        // Hide loading/empty states
+        loadingEl.classList.add('hidden');
+        emptyEl.classList.remove('visible');
+
+        // Render feed items
+        data.items.forEach(item => {
+          const feedItem = createFeedItem(item);
+          feedContainer.appendChild(feedItem);
+        });
+
+        currentOffset += data.items.length;
+        hasMore = data.hasMore || false;
+
+      } catch (error) {
+        console.error('❌ Error loading feed:', error);
+      } finally {
+        isLoading = false;
+      }
+    }
+
+    // Create feed item element
+    function createFeedItem(item) {
+      const div = document.createElement('div');
+      div.className = 'feed-item';
+      div.dataset.itemId = item.id;
+
+      // Create image
+      const img = document.createElement('img');
+      img.className = 'feed-item-image';
+      img.src = item.image_url;
+      img.alt = item.companion.name;
+      img.loading = 'lazy';
+
+      // Create overlay
+      const overlay = document.createElement('div');
+      overlay.className = 'feed-item-overlay';
+
+      // Companion link
+      const companionLink = document.createElement('a');
+      companionLink.className = 'feed-item-companion';
+      companionLink.href = `/chat.html?char=${item.companion.slug}`;
+      companionLink.innerHTML = `
+        <img class="feed-item-avatar" src="${item.companion.avatar_url || '/avatars/default-avatar.webp'}" alt="${item.companion.name}">
+        <div class="feed-item-info">
+          <h3>${item.companion.name}</h3>
+          <p>${item.companion.title || item.companion.description || ''}</p>
+        </div>
+      `;
+
+      overlay.appendChild(companionLink);
+
+      // Action buttons (right side)
+      const actions = document.createElement('div');
+      actions.className = 'feed-item-actions';
+
+      // Chat button
+      const chatBtn = document.createElement('a');
+      chatBtn.href = `/chat.html?char=${item.companion.slug}`;
+      chatBtn.className = 'action-btn';
+      chatBtn.innerHTML = `
+        <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+      `;
+
+      // Like button (fire icon)
+      const likeBtn = document.createElement('button');
+      likeBtn.className = 'action-btn';
+      likeBtn.onclick = () => toggleLike(item.id, likeBtn);
+      likeBtn.innerHTML = `
+        <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path>
+        </svg>
+        <span class="action-count">${item.like_count || 0}</span>
+      `;
+
+      actions.appendChild(chatBtn);
+      actions.appendChild(likeBtn);
+
+      div.appendChild(img);
+      div.appendChild(overlay);
+      div.appendChild(actions);
+
+      return div;
+    }
+
+    // Toggle like on image
+    async function toggleLike(imageId, buttonEl) {
+      if (!currentUser || !currentUser.email) {
+        // Show login modal
+        if (window.openLoginModal) {
+          window.openLoginModal('signup');
+        } else {
+          alert('Please login to like images');
+        }
+        return;
+      }
+
+      try {
+        const response = await fetch('/.netlify/functions/like-image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            image_id: imageId,
+            user_email: currentUser.email
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to toggle like');
+        }
+
+        const data = await response.json();
+        console.log('❤️ Like toggled:', data);
+
+        // Update UI
+        if (data.liked) {
+          buttonEl.classList.add('liked');
+        } else {
+          buttonEl.classList.remove('liked');
+        }
+
+        // Update count
+        const countEl = buttonEl.querySelector('.action-count');
+        if (countEl) {
+          countEl.textContent = data.like_count || 0;
+        }
+
+        // Animate
+        buttonEl.style.transform = 'scale(1.2)';
+        setTimeout(() => {
+          buttonEl.style.transform = '';
+        }, 200);
+
+      } catch (error) {
+        console.error('❌ Error toggling like:', error);
+      }
+    }
+
+    // Handle scroll for infinite loading
+    function handleScroll() {
+      const feedContainer = document.getElementById('feedContainer');
+      const scrollHeight = feedContainer.scrollHeight;
+      const scrollTop = feedContainer.scrollTop;
+      const clientHeight = feedContainer.clientHeight;
+
+      // Load more when scrolled to 80% of content
+      if (scrollTop + clientHeight >= scrollHeight * 0.8) {
+        loadFeed();
+      }
+    }
+  </script>
+</body>
+</html>
