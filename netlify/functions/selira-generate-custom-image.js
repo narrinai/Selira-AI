@@ -5,15 +5,15 @@
 const fetch = require('node-fetch');
 
 // HELPER: Save generated image to Generated_Images table (feed)
-async function saveFeedImage(requestId, source, imageUrl, characterName, customPrompt, email) {
+async function saveFeedImage(requestId, source, imageUrl, characterName, customPrompt, email, airtableBaseId, airtableToken) {
   console.log(`🔍 [${requestId}] Feed save check: source=${source}, imageUrl=${!!imageUrl}, characterName=${characterName}`);
 
   if ((source === 'chat' || source === 'image-generator') && imageUrl && characterName) {
     console.log(`💾 [${requestId}] Saving generated image to feed...`);
 
     try {
-      const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
-      const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN || process.env.AIRTABLE_API_KEY;
+      const AIRTABLE_BASE_ID = airtableBaseId;
+      const AIRTABLE_TOKEN = airtableToken;
 
       if (AIRTABLE_BASE_ID && AIRTABLE_TOKEN) {
         // Find character record by name to get ID
@@ -414,7 +414,9 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, supab
       }
 
       // Save to Generated_Images feed (Promptchan path)
-      await saveFeedImage(requestId, source, promptchanResult.image, characterName, customPrompt, email);
+      const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
+      const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN || process.env.AIRTABLE_API_KEY;
+      await saveFeedImage(requestId, source, promptchanResult.image, characterName, customPrompt, email, AIRTABLE_BASE_ID, AIRTABLE_TOKEN);
 
       return {
         statusCode: 200,
@@ -591,7 +593,9 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, supab
       }
 
       // Save to Generated_Images feed (Promptchan explicit path)
-      await saveFeedImage(requestId, source, promptchanResult.image, characterName, customPrompt, email);
+      const AIRTABLE_BASE_ID_2 = process.env.AIRTABLE_BASE_ID;
+      const AIRTABLE_TOKEN_2 = process.env.AIRTABLE_TOKEN || process.env.AIRTABLE_API_KEY;
+      await saveFeedImage(requestId, source, promptchanResult.image, characterName, customPrompt, email, AIRTABLE_BASE_ID_2, AIRTABLE_TOKEN_2);
 
       return {
         statusCode: 200,
@@ -828,7 +832,9 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, supab
     }
 
     // Save to Generated_Images feed (Promptchan fallback/timeout path)
-    await saveFeedImage(requestId, source, result.image, characterName, customPrompt, email);
+    const AIRTABLE_BASE_ID_3 = process.env.AIRTABLE_BASE_ID;
+    const AIRTABLE_TOKEN_3 = process.env.AIRTABLE_TOKEN || process.env.AIRTABLE_API_KEY;
+    await saveFeedImage(requestId, source, result.image, characterName, customPrompt, email, AIRTABLE_BASE_ID_3, AIRTABLE_TOKEN_3);
 
     return {
       statusCode: 200,
