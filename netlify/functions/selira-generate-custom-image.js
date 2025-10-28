@@ -1442,7 +1442,7 @@ exports.handler = async (event, context) => {
                   body: JSON.stringify({
                     fields: {
                       Image_URL: imageUrl,
-                      Companion_ID: [characterId], // Linked record
+                      companion_id: [characterId], // Linked record (lowercase to match Airtable)
                       User_ID: userRecordId ? [userRecordId] : undefined, // Linked record (optional)
                       Prompt: customPrompt || '',
                       Generation_Date: new Date().toISOString(),
