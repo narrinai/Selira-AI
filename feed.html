@@ -365,9 +365,9 @@
       padding: 0;
       height: 100%;
       overflow-y: scroll;
-      scroll-snap-type: y mandatory;
+      scroll-snap-type: y proximity;
       -webkit-overflow-scrolling: touch;
-      scroll-behavior: auto;
+      scroll-behavior: smooth;
     }
 
     /* Feed Item (TikTok style) */
@@ -375,32 +375,37 @@
       position: relative;
       width: 100%;
       height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      height: 100dvh; /* Use dynamic viewport height for better mobile support */
       scroll-snap-align: start;
-      scroll-snap-stop: always;
       background: #000;
+      overflow: hidden;
     }
 
     .feed-item-image {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
       object-fit: contain;
       object-position: center;
-      background: #000;
     }
 
     /* Feed Item Overlay */
     .feed-item-overlay {
       position: absolute;
-      bottom: 0;
+      bottom: 70px; /* Above mobile nav (60px height + 10px margin) */
       left: 0;
       right: 0;
       padding: 20px;
-      padding-bottom: calc(20px + env(safe-area-inset-bottom));
-      background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 50%, rgba(0,0,0,0) 100%);
+      padding-bottom: 20px;
+      background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 40%, rgba(0,0,0,0) 100%);
       z-index: 10;
+      pointer-events: none;
+    }
+
+    .feed-item-overlay a,
+    .feed-item-overlay button {
       pointer-events: auto;
     }
 
@@ -470,7 +475,7 @@
     .feed-item-actions {
       position: absolute;
       right: 12px;
-      bottom: 80px;
+      bottom: 180px; /* Above overlay and mobile nav */
       display: flex;
       flex-direction: column;
       gap: 20px;
