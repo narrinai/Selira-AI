@@ -25,8 +25,8 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
-    const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN || process.env.AIRTABLE_API_KEY;
+    const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA;
+    const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA;
 
     if (!AIRTABLE_BASE_ID || !AIRTABLE_TOKEN) {
       console.error('❌ Airtable credentials not configured');

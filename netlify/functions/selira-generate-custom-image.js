@@ -414,8 +414,8 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, supab
       }
 
       // Save to Generated_Images feed (Promptchan path)
-      const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
-      const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN || process.env.AIRTABLE_API_KEY;
+      const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA;
+      const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA;
       await saveFeedImage(requestId, source, promptchanResult.image, characterName, customPrompt, email, AIRTABLE_BASE_ID, AIRTABLE_TOKEN);
 
       return {
@@ -593,8 +593,8 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, supab
       }
 
       // Save to Generated_Images feed (Promptchan explicit path)
-      const AIRTABLE_BASE_ID_2 = process.env.AIRTABLE_BASE_ID;
-      const AIRTABLE_TOKEN_2 = process.env.AIRTABLE_TOKEN || process.env.AIRTABLE_API_KEY;
+      const AIRTABLE_BASE_ID_2 = process.env.AIRTABLE_BASE_ID_SELIRA;
+      const AIRTABLE_TOKEN_2 = process.env.AIRTABLE_TOKEN_SELIRA;
       await saveFeedImage(requestId, source, promptchanResult.image, characterName, customPrompt, email, AIRTABLE_BASE_ID_2, AIRTABLE_TOKEN_2);
 
       return {
@@ -832,8 +832,8 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, supab
     }
 
     // Save to Generated_Images feed (Promptchan fallback/timeout path)
-    const AIRTABLE_BASE_ID_3 = process.env.AIRTABLE_BASE_ID;
-    const AIRTABLE_TOKEN_3 = process.env.AIRTABLE_TOKEN || process.env.AIRTABLE_API_KEY;
+    const AIRTABLE_BASE_ID_3 = process.env.AIRTABLE_BASE_ID_SELIRA;
+    const AIRTABLE_TOKEN_3 = process.env.AIRTABLE_TOKEN_SELIRA;
     await saveFeedImage(requestId, source, result.image, characterName, customPrompt, email, AIRTABLE_BASE_ID_3, AIRTABLE_TOKEN_3);
 
     return {
