@@ -906,11 +906,19 @@
       const companionLink = document.createElement('a');
       companionLink.className = 'feed-item-companion';
       companionLink.href = `/chat.html?char=${item.companion.slug}`;
+
+      // Truncate description to ~8 words
+      const description = item.companion.description || item.companion.title || '';
+      const words = description.split(' ');
+      const truncatedDescription = words.length > 8
+        ? words.slice(0, 8).join(' ') + '...'
+        : description;
+
       companionLink.innerHTML = `
         <img class="feed-item-avatar" src="${item.companion.avatar_url || '/avatars/default-avatar.webp'}" alt="${item.companion.name}">
         <div class="feed-item-info">
           <h3>${item.companion.name}</h3>
-          <p>${item.companion.title || item.companion.description || ''}</p>
+          <p>${truncatedDescription}</p>
         </div>
       `;
 

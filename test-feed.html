@@ -616,11 +616,11 @@
     ];
 
     const mockCompanions = [
-      { name: 'Amber Marie', slug: 'amber-marie', title: 'Your confident secretary', avatar: 'https://i.pravatar.cc/150?img=1', creator: 'Selira', tags: ['Realistic', 'Girlfriend', 'Romance', 'NSFW'] },
-      { name: 'Sophie Chen', slug: 'sophie-chen', title: 'Playful and adventurous', avatar: 'https://i.pravatar.cc/150?img=5', creator: 'UserX2024', tags: ['Anime-Manga', 'Adventure', 'Cute'] },
-      { name: 'Emma Wilson', slug: 'emma-wilson', title: 'Sweet and caring', avatar: 'https://i.pravatar.cc/150?img=9', creator: 'Selira', tags: ['Realistic', 'Romance', 'Girlfriend'] },
-      { name: 'Isabella Rodriguez', slug: 'isabella', title: 'Passionate latina', avatar: 'https://i.pravatar.cc/150?img=10', creator: 'CreatorPro', tags: ['Realistic', 'Latina', 'NSFW', 'Spicy'] },
-      { name: 'Luna Park', slug: 'luna-park', title: 'Mysterious and alluring', avatar: 'https://i.pravatar.cc/150?img=16', creator: 'Selira', tags: ['Anime-Manga', 'Mystery', 'Fantasy'] }
+      { name: 'Amber Marie', slug: 'amber-marie', description: 'Your confident and feminine new secretary, eager to please and make a good impression on you', avatar: 'https://i.pravatar.cc/150?img=1', creator: 'Selira', tags: ['Realistic', 'Girlfriend', 'Romance', 'NSFW'] },
+      { name: 'Sophie Chen', slug: 'sophie-chen', description: 'Playful and adventurous anime girl who loves exploring new worlds with you', avatar: 'https://i.pravatar.cc/150?img=5', creator: 'UserX2024', tags: ['Anime-Manga', 'Adventure', 'Cute'] },
+      { name: 'Emma Wilson', slug: 'emma-wilson', description: 'Sweet and caring girlfriend who always supports you through thick and thin', avatar: 'https://i.pravatar.cc/150?img=9', creator: 'Selira', tags: ['Realistic', 'Romance', 'Girlfriend'] },
+      { name: 'Isabella Rodriguez', slug: 'isabella', description: 'Passionate latina who knows exactly what she wants and how to get it', avatar: 'https://i.pravatar.cc/150?img=10', creator: 'CreatorPro', tags: ['Realistic', 'Latina', 'NSFW', 'Spicy'] },
+      { name: 'Luna Park', slug: 'luna-park', description: 'Mysterious and alluring magical girl with secrets waiting to be discovered by you', avatar: 'https://i.pravatar.cc/150?img=16', creator: 'Selira', tags: ['Anime-Manga', 'Mystery', 'Fantasy'] }
     ];
 
     let feedItems = [];
@@ -737,11 +737,19 @@
       const companionLink = document.createElement('a');
       companionLink.className = 'feed-item-companion';
       companionLink.href = `/chat.html?char=${item.companion.slug}`;
+
+      // Truncate description to ~8 words
+      const description = item.companion.description || item.companion.title || '';
+      const words = description.split(' ');
+      const truncatedDescription = words.length > 8
+        ? words.slice(0, 8).join(' ') + '...'
+        : description;
+
       companionLink.innerHTML = `
         <img class="feed-item-avatar" src="${item.companion.avatar}" alt="${item.companion.name}">
         <div class="feed-item-info">
           <h3>${item.companion.name}</h3>
-          <p>${item.companion.title}</p>
+          <p>${truncatedDescription}</p>
         </div>
       `;
 
