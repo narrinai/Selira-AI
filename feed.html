@@ -376,8 +376,9 @@
     @media (max-width: 768px) {
       .feed-container {
         padding-top: 60px; /* Height of fixed mobile header */
-        scroll-snap-type: y mandatory;
+        scroll-snap-type: y proximity; /* Changed to proximity for smoother scrolling */
         scroll-padding-top: 60px;
+        gap: 0;
       }
     }
 
@@ -393,10 +394,12 @@
 
     @media (max-width: 768px) {
       .feed-item {
-        height: calc(100vh - 60px);
-        height: calc(100dvh - 60px);
+        height: auto;
+        min-height: calc(100vh - 60px - 50px); /* Subtract header and space for next image peek */
+        display: flex;
+        flex-direction: column;
         scroll-snap-align: start;
-        overflow: visible;
+        margin-bottom: 12px; /* Gap between items to show next image */
       }
     }
 
@@ -412,11 +415,13 @@
 
     @media (max-width: 768px) {
       .feed-item-image {
-        position: absolute;
+        position: relative;
         width: 100%;
-        height: 100%;
-        object-fit: contain;
-        object-position: top center;
+        height: 65vh;
+        height: 65dvh;
+        object-fit: cover;
+        object-position: center;
+        border-radius: 0;
       }
     }
 
@@ -435,10 +440,11 @@
 
     @media (max-width: 768px) {
       .feed-item-overlay {
-        position: absolute;
-        bottom: 60px;
+        position: relative;
+        background: var(--bg-secondary);
         padding: 16px;
-        padding-bottom: 20px;
+        padding-bottom: 16px;
+        margin-bottom: 0;
       }
     }
 
@@ -523,8 +529,15 @@
 
     @media (max-width: 768px) {
       .feed-item-actions {
-        right: 12px;
-        bottom: calc(160px + env(safe-area-inset-bottom));
+        position: relative;
+        right: auto;
+        bottom: auto;
+        flex-direction: row;
+        justify-content: center;
+        gap: 40px;
+        padding: 16px 0;
+        background: var(--bg-secondary);
+        margin-bottom: calc(60px + env(safe-area-inset-bottom)); /* Space for mobile nav */
       }
     }
 
