@@ -95,7 +95,7 @@ exports.handler = async (event, context) => {
       // Get companion ID from linked record
       const companionId = fields.companion_id ? fields.companion_id[0] : null;
 
-      if (!companionId || !fields.Image_URL) {
+      if (!companionId || !fields.image_url) {
         console.log('⚠️ Skipping record without companion or image:', record.id);
         continue;
       }
