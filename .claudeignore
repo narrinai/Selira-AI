@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build artifacts
+.netlify/
+dist/
+build/
+
+# Large assets
+avatars/
+images/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
