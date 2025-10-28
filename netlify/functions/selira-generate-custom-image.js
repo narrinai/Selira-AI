@@ -1381,6 +1381,7 @@ exports.handler = async (event, context) => {
     }
 
     // Save to Generated_Images table if from chat/image-generator (user-generated content)
+    console.log(`🔍 [${requestId}] Feed save check: source=${source}, imageUrl=${!!imageUrl}, characterName=${characterName}`);
     if ((source === 'chat' || source === 'image-generator') && imageUrl && characterName) {
       console.log(`💾 [${requestId}] Saving generated image to feed...`);
 
@@ -1402,11 +1403,13 @@ exports.handler = async (event, context) => {
 
           if (characterResponse.ok) {
             const characterData = await characterResponse.json();
+            console.log(`🔍 [${requestId}] Character search result: ${characterData.records?.length || 0} records found`);
 
             if (characterData.records && characterData.records.length > 0) {
               const characterRecord = characterData.records[0];
               const characterId = characterRecord.id;
               const visibility = characterRecord.fields.Visibility || characterRecord.fields.visibility || 'public';
+              console.log(`🔍 [${requestId}] Character: ${characterName} (${characterId}), visibility: ${visibility}`);
 
               // Only save if companion is NOT explicitly private (default to public)
               if (visibility !== 'private') {
