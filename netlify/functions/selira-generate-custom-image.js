@@ -1406,10 +1406,10 @@ exports.handler = async (event, context) => {
             if (characterData.records && characterData.records.length > 0) {
               const characterRecord = characterData.records[0];
               const characterId = characterRecord.id;
-              const visibility = characterRecord.fields.Visibility;
+              const visibility = characterRecord.fields.Visibility || characterRecord.fields.visibility || 'public';
 
-              // Only save if companion is public
-              if (visibility === 'public') {
+              // Only save if companion is NOT explicitly private (default to public)
+              if (visibility !== 'private') {
                 // Find user record by email
                 let userRecordId = null;
                 if (email) {
