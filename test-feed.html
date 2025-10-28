@@ -3,60 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Community Feed - Selira AI</title>
-  <meta name="description" content="Explore generated images from the Selira AI community. Discover what others are creating with their AI companions.">
-
-  <!-- Open Graph / Facebook -->
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://selira.ai/feed">
-  <meta property="og:title" content="Community Feed - Selira AI">
-  <meta property="og:description" content="Explore generated images from the Selira AI community.">
-  <meta property="og:image" content="https://selira.ai/og-image.jpg">
-
-  <!-- Twitter -->
-  <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:url" content="https://selira.ai/feed">
-  <meta property="twitter:title" content="Community Feed | Selira AI">
-  <meta property="twitter:description" content="Explore generated images from the Selira AI community.">
-  <meta property="twitter:image" content="https://selira.ai/og-image.jpg">
-
-  <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XZXX201WKD"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-XZXX201WKD');
-  </script>
-
-  <!-- Supabase Authentication System -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="/js/supabase-auth.js"></script>
-
-  <!-- Selira AI Popup System -->
-  <script src="/js/selira-popups.js"></script>
-
-  <!-- Mobile Navigation System -->
-  <script src="/js/mobile-nav.js"></script>
-
-  <!-- Age Verification System -->
-  <script src="/js/age-verification.js"></script>
-
-  <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <title>Feed Test - Selira AI</title>
 
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
-
     :root {
       --bg-primary: #0a0a0a;
       --bg-secondary: #1a1a1a;
@@ -187,79 +136,6 @@
       padding: 0 10px;
     }
 
-    .sidebar-auth-btn {
-      display: block;
-      width: 100%;
-      padding: 8px 16px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 13px;
-      text-align: center;
-      border: none;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .sidebar-auth-btn.primary {
-      background: var(--accent);
-      color: white;
-    }
-
-    .sidebar-auth-btn.primary:hover {
-      background: var(--accent-hover);
-    }
-
-    .sidebar-footer-links {
-      margin-top: auto;
-      padding-top: 16px;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .footer-link {
-      font-size: 11px;
-      color: rgba(255, 255, 255, 0.5);
-      text-decoration: none;
-      padding: 4px 10px;
-      border-radius: 4px;
-      transition: all 0.2s ease;
-    }
-
-    .footer-link:hover {
-      color: rgba(255, 255, 255, 0.8);
-      background: rgba(255, 255, 255, 0.05);
-    }
-
-    /* Mobile ratings link */
-    .mobile-rating-link {
-      display: none;
-    }
-
-    /* Payment icons */
-    .payment-icons {
-      display: flex;
-      gap: 8px;
-      margin-top: 12px;
-      padding: 0 10px;
-      opacity: 0.6;
-    }
-
-    .payment-icons img {
-      width: 32px;
-      height: 20px;
-      object-fit: contain;
-      filter: grayscale(1) brightness(1.2);
-      transition: all 0.2s ease;
-    }
-
-    .payment-icons img:hover {
-      filter: grayscale(0) brightness(1);
-      opacity: 1;
-    }
-
     /* Sidebar Overlay for Mobile */
     .sidebar-overlay {
       display: none;
@@ -285,15 +161,6 @@
 
       .sidebar.active {
         transform: translateX(0);
-      }
-
-      .mobile-rating-link {
-        display: flex;
-      }
-
-      .sidebar-footer-links,
-      .payment-icons {
-        display: none;
       }
     }
 
@@ -466,6 +333,7 @@
       min-width: 44px;
       min-height: 44px;
       justify-content: center;
+      text-decoration: none;
     }
 
     .action-btn:hover {
@@ -513,23 +381,6 @@
 
     @keyframes spin {
       to { transform: rotate(360deg); }
-    }
-
-    /* Empty State */
-    .feed-empty {
-      display: none;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      flex-direction: column;
-      gap: 16px;
-      color: var(--text-secondary);
-      padding: 20px;
-      text-align: center;
-    }
-
-    .feed-empty.visible {
-      display: flex;
     }
 
     /* Mobile Navigation */
@@ -583,38 +434,51 @@
     .mobile-nav-item.active svg {
       stroke: var(--accent);
     }
+
+    /* Test Controls */
+    .test-controls {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      z-index: 200;
+      max-width: 300px;
+    }
+
+    .test-controls h4 {
+      margin-bottom: 12px;
+      font-size: 14px;
+      color: var(--accent);
+    }
+
+    .test-controls button {
+      width: 100%;
+      padding: 8px 12px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 12px;
+      margin-bottom: 8px;
+      transition: background 0.2s ease;
+    }
+
+    .test-controls button:hover {
+      background: var(--accent-hover);
+    }
+
+    .test-controls .status {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+    }
   </style>
-
-  <!-- Facebook Pixel -->
-  <script>
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '588888163609924');
-    fbq('track', 'PageView');
-  </script>
-  <noscript><img height="1" width="1" style="display:none"
-    src="https://www.facebook.com/tr?id=588888163609924&ev=PageView&noscript=1"
-  /></noscript>
-
-  <!-- Facebook Pixel Events -->
-  <script src="/js/facebook-pixel-events.js"></script>
-
-  <!-- Google Analytics Events -->
-  <script src="/js/google-analytics-events.js"></script>
-
-  <!-- FirstPromoter Tracking Script -->
-  <script>
-    (function(w){w.fpr=w.fpr||function(){w.fpr.q = w.fpr.q||[];w.fpr.q[arguments[0]=='set'?'unshift':'push'](arguments);};})(window);
-    fpr("init", {cid:"10y4jvgo"});
-    fpr("click");
-  </script>
-  <script src="https://cdn.firstpromoter.com/fpr.js" async></script>
 </head>
 <body>
   <div class="app-container">
@@ -631,9 +495,9 @@
           <span class="nav-item-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></span>
           <span>Discover</span>
         </a>
-        <a href="/feed" class="nav-item active">
+        <a href="#" class="nav-item active">
           <span class="nav-item-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg></span>
-          <span>Feed</span>
+          <span>Feed (TEST)</span>
         </a>
         <a href="/my-companions" class="nav-item">
           <span class="nav-item-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></span>
@@ -643,14 +507,10 @@
           <span class="nav-item-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
           <span>Create</span>
         </a>
-        <a href="/free-nsfw-image-generator" class="nav-item">
-          <span class="nav-item-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg></span>
-          <span>Image Generator</span>
-        </a>
 
         <div class="nav-section-title">Account</div>
 
-        <a href="/profile" class="nav-item" id="profileNavItem" style="display: none;">
+        <a href="/profile" class="nav-item">
           <span class="nav-item-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span>
           <span>Profile</span>
         </a>
@@ -658,41 +518,7 @@
           <span class="nav-item-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></span>
           <span>Pricing</span>
         </a>
-        <a href="/affiliate-program" class="nav-item">
-          <span class="nav-item-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span>
-          <span>Affiliate Program</span>
-        </a>
-
-        <!-- CompanionGuide Rating (Mobile) -->
-        <a href="https://companionguide.ai/companions/selira-ai" target="_blank" rel="noopener noreferrer" class="nav-item mobile-rating-link" style="font-size: 13px; padding: 10px 14px;">
-          <span class="nav-item-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></span>
-          <span>CompanionGuide.ai 9.3/10 <span style="color: #FFD700; filter: brightness(1.2);">★★★★★</span></span>
-        </a>
-
-        <!-- Auth buttons for logged out users -->
-        <div id="sidebarAuthButtons" style="display: none; flex-direction: column;">
-          <a href="#" class="nav-item" onclick="openLoginModal('login', event); return false;">
-            <span class="nav-item-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg></span>
-            <span>Login</span>
-          </a>
-          <a href="#" class="sidebar-auth-btn primary" onclick="openLoginModal('signup', event); return false;" style="margin: 8px 10px 0; width: calc(100% - 20px);">Register</a>
-        </div>
       </nav>
-
-      <!-- Footer Links (Desktop only) -->
-      <div class="sidebar-footer-links">
-        <a href="/about" class="footer-link">About</a>
-        <a href="/contact" class="footer-link">Contact</a>
-        <a href="/privacy-policy" class="footer-link">Privacy Policy</a>
-        <a href="/terms-and-conditions" class="footer-link">Terms & Conditions</a>
-        <a href="https://companionguide.ai/companions/selira-ai" target="_blank" rel="noopener noreferrer" class="footer-link">CompanionGuide.ai 9.3/10 <span style="color: #FFD700; filter: brightness(1.2);">★★★★★</span></a>
-      </div>
-
-      <!-- Payment Icons (Desktop only) -->
-      <div class="payment-icons">
-        <img src="/images/paypal-icon.png" alt="PayPal" title="PayPal">
-        <img src="/images/mastercard-icon.png" alt="Mastercard" title="Mastercard">
-      </div>
     </aside>
 
     <!-- Sidebar Overlay for Mobile -->
@@ -707,7 +533,7 @@
           <span></span>
           <span></span>
         </div>
-        <div class="mobile-header-title">Feed</div>
+        <div class="mobile-header-title">Feed Test</div>
         <div style="width: 24px;"></div>
       </div>
 
@@ -716,17 +542,6 @@
         <!-- Loading State -->
         <div class="feed-loading" id="feedLoading">
           <div class="spinner"></div>
-        </div>
-
-        <!-- Empty State -->
-        <div class="feed-empty" id="feedEmpty">
-          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-            <circle cx="8.5" cy="8.5" r="1.5"></circle>
-            <polyline points="21 15 16 10 5 21"></polyline>
-          </svg>
-          <h3>No images yet</h3>
-          <p>Be the first to generate and share images!</p>
         </div>
 
         <!-- Feed items will be inserted here by JavaScript -->
@@ -740,7 +555,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
           <span>Home</span>
         </a>
-        <a href="/feed" class="mobile-nav-item active">
+        <a href="#" class="mobile-nav-item active">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
           <span>Feed</span>
         </a>
@@ -752,46 +567,42 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
           <span>Chats</span>
         </a>
-        <a href="/profile" class="mobile-nav-item" id="mobileProfileNav" style="display: none;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-          <span>Profile</span>
-        </a>
       </div>
     </nav>
+
+    <!-- Test Controls -->
+    <div class="test-controls">
+      <h4>🧪 Test Controls</h4>
+      <button onclick="loadMockData()">Load Mock Feed</button>
+      <button onclick="addMockItem()">Add Random Item</button>
+      <button onclick="clearFeed()">Clear Feed</button>
+      <div class="status" id="testStatus">Ready to test</div>
+    </div>
   </div>
 
   <script>
-    // Feed state
-    let currentOffset = 0;
-    let isLoading = false;
-    let hasMore = true;
-    let currentUser = null;
-    const ITEMS_PER_PAGE = 10;
+    // Mock data for testing (square 1024x1024 images like image generation)
+    const mockImages = [
+      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=1024&h=1024&fit=crop',
+      'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=1024&h=1024&fit=crop',
+      'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=1024&h=1024&fit=crop',
+      'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=1024&h=1024&fit=crop',
+      'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=1024&h=1024&fit=crop'
+    ];
 
-    // Initialize feed
-    document.addEventListener('DOMContentLoaded', async () => {
-      console.log('🎨 Feed page loaded');
+    const mockCompanions = [
+      { name: 'Amber Marie', slug: 'amber-marie', title: 'Your confident secretary', avatar: 'https://i.pravatar.cc/150?img=1' },
+      { name: 'Sophie Chen', slug: 'sophie-chen', title: 'Playful and adventurous', avatar: 'https://i.pravatar.cc/150?img=5' },
+      { name: 'Emma Wilson', slug: 'emma-wilson', title: 'Sweet and caring', avatar: 'https://i.pravatar.cc/150?img=9' },
+      { name: 'Isabella Rodriguez', slug: 'isabella', title: 'Passionate latina', avatar: 'https://i.pravatar.cc/150?img=10' },
+      { name: 'Luna Park', slug: 'luna-park', title: 'Mysterious and alluring', avatar: 'https://i.pravatar.cc/150?img=16' }
+    ];
 
-      // Get current user
-      if (window.getCurrentUser) {
-        currentUser = window.getCurrentUser();
-        console.log('👤 Current user:', currentUser);
-      }
+    let feedItems = [];
 
-      // Show profile nav items for logged in users
-      if (currentUser) {
-        document.getElementById('profileNavItem')?.setAttribute('style', 'display: flex');
-        document.getElementById('mobileProfileNav')?.setAttribute('style', 'display: flex');
-      } else {
-        document.getElementById('sidebarAuthButtons')?.setAttribute('style', 'display: flex; flex-direction: column;');
-      }
-
-      // Load initial feed
-      await loadFeed();
-
-      // Setup infinite scroll
-      const feedContainer = document.getElementById('feedContainer');
-      feedContainer.addEventListener('scroll', handleScroll);
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('🧪 Test feed loaded');
 
       // Setup hamburger menu
       const hamburger = document.getElementById('hamburgerMenu');
@@ -807,57 +618,77 @@
         sidebar.classList.remove('active');
         overlay.classList.remove('active');
       });
+
+      // Auto-load mock data
+      setTimeout(() => {
+        loadMockData();
+      }, 500);
     });
 
-    // Load feed items
-    async function loadFeed() {
-      if (isLoading || !hasMore) return;
-
-      isLoading = true;
+    // Load mock feed data
+    function loadMockData() {
       const loadingEl = document.getElementById('feedLoading');
-      const emptyEl = document.getElementById('feedEmpty');
       const feedContainer = document.getElementById('feedContainer');
+      const statusEl = document.getElementById('testStatus');
 
-      try {
-        console.log(`📥 Loading feed items (offset: ${currentOffset})`);
+      loadingEl.classList.remove('hidden');
+      statusEl.textContent = 'Loading mock data...';
 
-        const response = await fetch(`/.netlify/functions/selira-get-feed?limit=${ITEMS_PER_PAGE}&offset=${currentOffset}&sort=newest`);
+      setTimeout(() => {
+        // Create 5 mock items
+        for (let i = 0; i < 5; i++) {
+          const mockItem = {
+            id: `mock-${Date.now()}-${i}`,
+            image_url: mockImages[i % mockImages.length],
+            companion: mockCompanions[i % mockCompanions.length],
+            like_count: Math.floor(Math.random() * 100),
+            prompt: 'Generated image prompt'
+          };
 
-        if (!response.ok) {
-          throw new Error('Failed to load feed');
+          feedItems.push(mockItem);
+          const feedItemEl = createFeedItem(mockItem);
+          feedContainer.appendChild(feedItemEl);
         }
 
-        const data = await response.json();
-        console.log(`✅ Loaded ${data.items?.length || 0} items`);
-
-        if (!data.items || data.items.length === 0) {
-          hasMore = false;
-          if (currentOffset === 0) {
-            // Show empty state
-            loadingEl.classList.add('hidden');
-            emptyEl.classList.add('visible');
-          }
-          return;
-        }
-
-        // Hide loading/empty states
         loadingEl.classList.add('hidden');
-        emptyEl.classList.remove('visible');
+        statusEl.textContent = `Loaded ${feedItems.length} mock items`;
+      }, 1000);
+    }
 
-        // Render feed items
-        data.items.forEach(item => {
-          const feedItem = createFeedItem(item);
-          feedContainer.appendChild(feedItem);
-        });
+    // Add single mock item
+    function addMockItem() {
+      const feedContainer = document.getElementById('feedContainer');
+      const statusEl = document.getElementById('testStatus');
 
-        currentOffset += data.items.length;
-        hasMore = data.hasMore || false;
+      const randomImg = mockImages[Math.floor(Math.random() * mockImages.length)];
+      const randomCompanion = mockCompanions[Math.floor(Math.random() * mockCompanions.length)];
 
-      } catch (error) {
-        console.error('❌ Error loading feed:', error);
-      } finally {
-        isLoading = false;
-      }
+      const mockItem = {
+        id: `mock-${Date.now()}`,
+        image_url: randomImg,
+        companion: randomCompanion,
+        like_count: Math.floor(Math.random() * 50),
+        prompt: 'Generated image prompt'
+      };
+
+      feedItems.push(mockItem);
+      const feedItemEl = createFeedItem(mockItem);
+      feedContainer.appendChild(feedItemEl);
+
+      statusEl.textContent = `Added item. Total: ${feedItems.length}`;
+    }
+
+    // Clear feed
+    function clearFeed() {
+      const feedContainer = document.getElementById('feedContainer');
+      const statusEl = document.getElementById('testStatus');
+
+      // Remove all feed items except loading
+      const items = feedContainer.querySelectorAll('.feed-item');
+      items.forEach(item => item.remove());
+
+      feedItems = [];
+      statusEl.textContent = 'Feed cleared';
     }
 
     // Create feed item element
@@ -882,10 +713,10 @@
       companionLink.className = 'feed-item-companion';
       companionLink.href = `/chat.html?char=${item.companion.slug}`;
       companionLink.innerHTML = `
-        <img class="feed-item-avatar" src="${item.companion.avatar_url || '/avatars/default-avatar.webp'}" alt="${item.companion.name}">
+        <img class="feed-item-avatar" src="${item.companion.avatar}" alt="${item.companion.name}">
         <div class="feed-item-info">
           <h3>${item.companion.name}</h3>
-          <p>${item.companion.title || item.companion.description || ''}</p>
+          <p>${item.companion.title}</p>
         </div>
       `;
 
@@ -926,70 +757,39 @@
       return div;
     }
 
-    // Toggle like on image
-    async function toggleLike(imageId, buttonEl) {
-      if (!currentUser || !currentUser.email) {
-        // Show login modal
-        if (window.openLoginModal) {
-          window.openLoginModal('signup');
-        } else {
-          alert('Please login to like images');
-        }
-        return;
+    // Toggle like (mock implementation)
+    function toggleLike(itemId, buttonEl) {
+      console.log('❤️ Like toggled for:', itemId);
+
+      // Find item
+      const item = feedItems.find(i => i.id === itemId);
+      if (!item) return;
+
+      // Toggle liked state
+      const isLiked = buttonEl.classList.contains('liked');
+      if (isLiked) {
+        buttonEl.classList.remove('liked');
+        item.like_count = Math.max(0, item.like_count - 1);
+      } else {
+        buttonEl.classList.add('liked');
+        item.like_count++;
       }
 
-      try {
-        const response = await fetch('/.netlify/functions/selira-like-image', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            image_id: imageId,
-            user_email: currentUser.email
-          })
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to toggle like');
-        }
-
-        const data = await response.json();
-        console.log('❤️ Like toggled:', data);
-
-        // Update UI
-        if (data.liked) {
-          buttonEl.classList.add('liked');
-        } else {
-          buttonEl.classList.remove('liked');
-        }
-
-        // Update count
-        const countEl = buttonEl.querySelector('.action-count');
-        if (countEl) {
-          countEl.textContent = data.like_count || 0;
-        }
-
-        // Animate
-        buttonEl.style.transform = 'scale(1.2)';
-        setTimeout(() => {
-          buttonEl.style.transform = '';
-        }, 200);
-
-      } catch (error) {
-        console.error('❌ Error toggling like:', error);
+      // Update count
+      const countEl = buttonEl.querySelector('.action-count');
+      if (countEl) {
+        countEl.textContent = item.like_count;
       }
-    }
 
-    // Handle scroll for infinite loading
-    function handleScroll() {
-      const feedContainer = document.getElementById('feedContainer');
-      const scrollHeight = feedContainer.scrollHeight;
-      const scrollTop = feedContainer.scrollTop;
-      const clientHeight = feedContainer.clientHeight;
+      // Animate
+      buttonEl.style.transform = 'scale(1.2)';
+      setTimeout(() => {
+        buttonEl.style.transform = '';
+      }, 200);
 
-      // Load more when scrolled to 80% of content
-      if (scrollTop + clientHeight >= scrollHeight * 0.8) {
-        loadFeed();
-      }
+      // Update status
+      const statusEl = document.getElementById('testStatus');
+      statusEl.textContent = `${isLiked ? 'Unliked' : 'Liked'} ${item.companion.name}`;
     }
   </script>
 </body>
