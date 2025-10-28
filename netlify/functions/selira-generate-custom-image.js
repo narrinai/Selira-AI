@@ -27,6 +27,7 @@ async function saveFeedImage(requestId, source, imageUrl, characterName, customP
           }
         });
 
+        console.log(`🔍 [${requestId}] Character search response status:`, characterResponse.status);
         if (characterResponse.ok) {
           const characterData = await characterResponse.json();
           console.log(`🔍 [${requestId}] Character search result: ${characterData.records?.length || 0} records found`);
@@ -95,11 +96,17 @@ async function saveFeedImage(requestId, source, imageUrl, characterName, customP
           } else {
             console.log(`⚠️ [${requestId}] Character not found:`, characterName);
           }
+        } else {
+          console.error(`❌ [${requestId}] Character search failed with status:`, characterResponse.status);
         }
+      } else {
+        console.error(`❌ [${requestId}] Airtable credentials missing`);
       }
     } catch (saveError) {
-      console.error(`❌ [${requestId}] Error saving to feed (non-blocking):`, saveError.message);
+      console.error(`❌ [${requestId}] Error saving to feed (non-blocking):`, saveError.message, saveError.stack);
     }
+  } else {
+    console.log(`⏭️ [${requestId}] Skipping feed save: source=${source}, hasImage=${!!imageUrl}, hasCharName=${!!characterName}`);
   }
 }
 
