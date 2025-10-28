@@ -78,8 +78,7 @@ async function saveFeedImage(requestId, source, imageUrl, characterName, customP
                     generation_date: new Date().toISOString(),
                     like_count: Math.floor(Math.random() * 14) + 2, // Random 2-15
                     view_count: 0,
-                    status: 'approved', // Auto-approve
-                    visibility: visibility // Set visibility based on companion
+                    status: 'approved' // Auto-approve
                   }
                 })
               });
@@ -1573,8 +1572,7 @@ exports.handler = async (event, context) => {
                       generation_date: new Date().toISOString(),
                       like_count: Math.floor(Math.random() * 14) + 2, // Random 2-15
                       view_count: 0,
-                      status: 'approved', // Auto-approve
-                      visibility: visibility // Set visibility based on companion
+                      status: 'approved' // Auto-approve
                     }
                   })
                 });
