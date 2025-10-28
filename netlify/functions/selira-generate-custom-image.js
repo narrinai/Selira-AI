@@ -1565,14 +1565,14 @@ exports.handler = async (event, context) => {
                   },
                   body: JSON.stringify({
                     fields: {
-                      Image_URL: imageUrl,
+                      image_url: imageUrl,
                       companion_id: [characterId], // Linked record (lowercase to match Airtable)
-                      User_ID: userRecordId ? [userRecordId] : undefined, // Linked record (optional)
-                      Prompt: customPrompt || '',
-                      Generation_Date: new Date().toISOString(),
-                      Like_Count: Math.floor(Math.random() * 14) + 2, // Random 2-15
-                      View_Count: 0,
-                      Status: 'approved' // Auto-approve
+                      user_id: userRecordId ? [userRecordId] : undefined, // Linked record (optional)
+                      prompt: customPrompt || '',
+                      generation_date: new Date().toISOString(),
+                      like_count: Math.floor(Math.random() * 14) + 2, // Random 2-15
+                      view_count: 0,
+                      status: 'approved' // Auto-approve
                     }
                   })
                 });
