@@ -375,9 +375,9 @@
 
     @media (max-width: 768px) {
       .feed-container {
-        padding-top: 60px; /* Height of fixed mobile header */
+        padding-top: 0; /* No padding - items start at top */
         scroll-snap-type: y mandatory;
-        scroll-padding-top: 60px;
+        scroll-padding-top: 60px; /* Snap position accounts for header */
       }
     }
 
@@ -393,12 +393,13 @@
 
     @media (max-width: 768px) {
       .feed-item {
-        height: calc(100vh - 60px);
-        height: calc(100dvh - 60px);
+        height: 100vh;
+        height: 100dvh;
         display: flex;
         flex-direction: column;
         scroll-snap-align: start;
         scroll-snap-stop: always;
+        padding-top: 60px; /* Space for fixed header */
       }
     }
 
@@ -416,8 +417,8 @@
       .feed-item-image {
         position: relative;
         width: 100%;
-        height: 70vh;
-        height: 70dvh;
+        height: 55vh;
+        height: 55dvh;
         object-fit: cover;
         object-position: center;
         border-radius: 0;
