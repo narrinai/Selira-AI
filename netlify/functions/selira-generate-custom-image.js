@@ -1446,7 +1446,7 @@ exports.handler = async (event, context) => {
                       User_ID: userRecordId ? [userRecordId] : undefined, // Linked record (optional)
                       Prompt: customPrompt || '',
                       Generation_Date: new Date().toISOString(),
-                      Like_Count: 0,
+                      Like_Count: Math.floor(Math.random() * 14) + 2, // Random 2-15
                       View_Count: 0,
                       Status: 'approved' // Auto-approve
                     }

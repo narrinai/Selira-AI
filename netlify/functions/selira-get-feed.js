@@ -129,7 +129,9 @@ exports.handler = async (event, context) => {
             description: compFields.Description,
             avatar_url: compFields.Avatar_URL || compFields.avatar_url,
             category: compFields.Category,
-            sex: compFields.Sex || compFields.sex || compFields.Gender
+            sex: compFields.Sex || compFields.sex || compFields.Gender,
+            creator: compFields.Created_by || 'Selira',
+            tags: Array.isArray(compFields.Tags) ? compFields.Tags : (compFields.Tags || '').toString().split(',').filter(Boolean)
           };
         }
       } catch (companionError) {

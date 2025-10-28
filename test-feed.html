@@ -307,6 +307,30 @@
       overflow: hidden;
     }
 
+    .feed-item-creator {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      margin-bottom: 8px;
+    }
+
+    .feed-item-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .feed-tag {
+      padding: 4px 8px;
+      background: rgba(206, 147, 216, 0.1);
+      border: 1px solid rgba(206, 147, 216, 0.3);
+      border-radius: 12px;
+      font-size: 10px;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
     /* Action Icons (Right Side) */
     .feed-item-actions {
       position: absolute;
@@ -349,6 +373,7 @@
       width: 32px;
       height: 32px;
       filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+      stroke: var(--accent);
     }
 
     .action-count {
@@ -591,11 +616,11 @@
     ];
 
     const mockCompanions = [
-      { name: 'Amber Marie', slug: 'amber-marie', title: 'Your confident secretary', avatar: 'https://i.pravatar.cc/150?img=1' },
-      { name: 'Sophie Chen', slug: 'sophie-chen', title: 'Playful and adventurous', avatar: 'https://i.pravatar.cc/150?img=5' },
-      { name: 'Emma Wilson', slug: 'emma-wilson', title: 'Sweet and caring', avatar: 'https://i.pravatar.cc/150?img=9' },
-      { name: 'Isabella Rodriguez', slug: 'isabella', title: 'Passionate latina', avatar: 'https://i.pravatar.cc/150?img=10' },
-      { name: 'Luna Park', slug: 'luna-park', title: 'Mysterious and alluring', avatar: 'https://i.pravatar.cc/150?img=16' }
+      { name: 'Amber Marie', slug: 'amber-marie', title: 'Your confident secretary', avatar: 'https://i.pravatar.cc/150?img=1', creator: 'Selira', tags: ['Realistic', 'Girlfriend', 'Romance', 'NSFW'] },
+      { name: 'Sophie Chen', slug: 'sophie-chen', title: 'Playful and adventurous', avatar: 'https://i.pravatar.cc/150?img=5', creator: 'UserX2024', tags: ['Anime-Manga', 'Adventure', 'Cute'] },
+      { name: 'Emma Wilson', slug: 'emma-wilson', title: 'Sweet and caring', avatar: 'https://i.pravatar.cc/150?img=9', creator: 'Selira', tags: ['Realistic', 'Romance', 'Girlfriend'] },
+      { name: 'Isabella Rodriguez', slug: 'isabella', title: 'Passionate latina', avatar: 'https://i.pravatar.cc/150?img=10', creator: 'CreatorPro', tags: ['Realistic', 'Latina', 'NSFW', 'Spicy'] },
+      { name: 'Luna Park', slug: 'luna-park', title: 'Mysterious and alluring', avatar: 'https://i.pravatar.cc/150?img=16', creator: 'Selira', tags: ['Anime-Manga', 'Mystery', 'Fantasy'] }
     ];
 
     let feedItems = [];
@@ -641,7 +666,7 @@
             id: `mock-${Date.now()}-${i}`,
             image_url: mockImages[i % mockImages.length],
             companion: mockCompanions[i % mockCompanions.length],
-            like_count: Math.floor(Math.random() * 100),
+            like_count: Math.floor(Math.random() * 14) + 2, // Random 2-15
             prompt: 'Generated image prompt'
           };
 
@@ -667,7 +692,7 @@
         id: `mock-${Date.now()}`,
         image_url: randomImg,
         companion: randomCompanion,
-        like_count: Math.floor(Math.random() * 50),
+        like_count: Math.floor(Math.random() * 14) + 2, // Random 2-15
         prompt: 'Generated image prompt'
       };
 
@@ -722,6 +747,27 @@
 
       overlay.appendChild(companionLink);
 
+      // Creator info
+      if (item.companion.creator) {
+        const creatorDiv = document.createElement('div');
+        creatorDiv.className = 'feed-item-creator';
+        creatorDiv.innerHTML = `<span>@${item.companion.creator}</span>`;
+        overlay.appendChild(creatorDiv);
+      }
+
+      // Tags
+      if (item.companion.tags && item.companion.tags.length > 0) {
+        const tagsDiv = document.createElement('div');
+        tagsDiv.className = 'feed-item-tags';
+        item.companion.tags.slice(0, 4).forEach(tag => {
+          const tagSpan = document.createElement('span');
+          tagSpan.className = 'feed-tag';
+          tagSpan.textContent = tag;
+          tagsDiv.appendChild(tagSpan);
+        });
+        overlay.appendChild(tagsDiv);
+      }
+
       // Action buttons (right side)
       const actions = document.createElement('div');
       actions.className = 'feed-item-actions';
@@ -731,7 +777,7 @@
       chatBtn.href = `/chat.html?char=${item.companion.slug}`;
       chatBtn.className = 'action-btn';
       chatBtn.innerHTML = `
-        <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
         </svg>
       `;
@@ -741,7 +787,7 @@
       likeBtn.className = 'action-btn';
       likeBtn.onclick = () => toggleLike(item.id, likeBtn);
       likeBtn.innerHTML = `
-        <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path>
         </svg>
         <span class="action-count">${item.like_count || 0}</span>
