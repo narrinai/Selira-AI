@@ -145,6 +145,13 @@ exports.handler = async (event, context) => {
         continue;
       }
 
+      // Get user who generated the image (from Generated_Images table)
+      const imageCreator = fields.user_display_name ||
+                          fields.display_name ||
+                          fields.Display_Name ||
+                          fields.user_email?.split('@')[0] ||
+                          'Anonymous';
+
       // Build feed item
       feedItems.push({
         id: record.id,
@@ -154,7 +161,8 @@ exports.handler = async (event, context) => {
         like_count: fields.like_count || 0,
         view_count: fields.view_count || 0,
         companion: companionData,
-        created_at: fields.generation_date
+        created_at: fields.generation_date,
+        created_by: imageCreator // User who generated this specific image
       });
     }
 

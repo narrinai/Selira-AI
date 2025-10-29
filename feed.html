@@ -978,41 +978,64 @@
       const message = document.createElement('div');
       message.style.cssText = `
         background: var(--bg-secondary);
-        padding: 32px;
-        border-radius: 16px;
+        border-radius: 20px;
         text-align: center;
-        max-width: 400px;
+        max-width: 500px;
         margin: 0 16px;
         border: 1px solid var(--border);
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
       `;
       message.innerHTML = `
-        <h3 style="color: var(--text-primary); margin-bottom: 16px; font-size: 24px;">🔒 Sign up to continue</h3>
-        <p style="color: var(--text-secondary); margin-bottom: 24px; line-height: 1.6;">
-          You've reached the free viewing limit. Create an account to see more amazing content!
-        </p>
-        <button onclick="window.openLoginModal('signup')" style="
-          background: var(--accent);
-          color: white;
-          border: none;
-          padding: 12px 24px;
-          border-radius: 8px;
-          font-size: 16px;
-          font-weight: 600;
-          cursor: pointer;
-          width: 100%;
-          margin-bottom: 12px;
-        ">Sign Up Free</button>
-        <button onclick="window.openLoginModal('login')" style="
-          background: transparent;
-          color: var(--text-secondary);
-          border: 1px solid var(--border);
-          padding: 12px 24px;
-          border-radius: 8px;
-          font-size: 16px;
-          font-weight: 600;
-          cursor: pointer;
-          width: 100%;
-        ">Already have an account?</button>
+        <div style="
+          height: 200px;
+          background: linear-gradient(135deg, rgba(168, 85, 247, 0.3), rgba(168, 85, 247, 0.1)),
+                      url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&h=400&fit=crop') center/cover;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+        ">
+          <div style="font-size: 80px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));">🔒</div>
+        </div>
+        <div style="padding: 32px;">
+          <h3 style="color: var(--text-primary); margin-bottom: 12px; font-size: 26px; font-weight: 700;">Sign up to continue</h3>
+          <p style="color: var(--text-secondary); margin-bottom: 28px; line-height: 1.6; font-size: 15px;">
+            You've reached the free viewing limit. Create an account to unlock unlimited access to amazing AI-generated content!
+          </p>
+          <button onclick="window.openLoginModal('signup')" style="
+            background: linear-gradient(135deg, #a855f7, #9333ea);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 12px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
+          " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(168, 85, 247, 0.4)';"
+             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(168, 85, 247, 0.3)';">
+            Sign Up Free 🚀
+          </button>
+          <button onclick="window.openLoginModal('login')" style="
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s;
+          " onmouseover="this.style.borderColor='var(--accent)'; this.style.color='var(--accent)';"
+             onmouseout="this.style.borderColor='var(--border)'; this.style.color='var(--text-secondary)';">
+            Already have an account?
+          </button>
+        </div>
       `;
 
       overlay.appendChild(message);
@@ -1047,41 +1070,64 @@
       const message = document.createElement('div');
       message.style.cssText = `
         background: var(--bg-secondary);
-        padding: 32px;
-        border-radius: 16px;
+        border-radius: 20px;
         text-align: center;
-        max-width: 400px;
+        max-width: 500px;
         margin: 0 16px;
         border: 1px solid var(--border);
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
       `;
       message.innerHTML = `
-        <h3 style="color: var(--text-primary); margin-bottom: 16px; font-size: 24px;">💎 Upgrade to continue</h3>
-        <p style="color: var(--text-secondary); margin-bottom: 24px; line-height: 1.6;">
-          You've reached the free viewing limit. Upgrade to a paid plan or purchase image credits to keep exploring!
-        </p>
-        <button onclick="window.location.href='/pricing'" style="
-          background: var(--accent);
-          color: white;
-          border: none;
-          padding: 12px 24px;
-          border-radius: 8px;
-          font-size: 16px;
-          font-weight: 600;
-          cursor: pointer;
-          width: 100%;
-          margin-bottom: 12px;
-        ">View Plans & Credits</button>
-        <button onclick="window.location.href='/pricing#credits'" style="
-          background: transparent;
-          color: var(--text-secondary);
-          border: 1px solid var(--border);
-          padding: 12px 24px;
-          border-radius: 8px;
-          font-size: 16px;
-          font-weight: 600;
-          cursor: pointer;
-          width: 100%;
-        ">Buy Image Credits Only</button>
+        <div style="
+          height: 200px;
+          background: linear-gradient(135deg, rgba(168, 85, 247, 0.3), rgba(168, 85, 247, 0.1)),
+                      url('https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=800&h=400&fit=crop') center/cover;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+        ">
+          <div style="font-size: 80px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));">💎</div>
+        </div>
+        <div style="padding: 32px;">
+          <h3 style="color: var(--text-primary); margin-bottom: 12px; font-size: 26px; font-weight: 700;">Upgrade to continue</h3>
+          <p style="color: var(--text-secondary); margin-bottom: 28px; line-height: 1.6; font-size: 15px;">
+            You've reached the free viewing limit. Upgrade to a paid plan or purchase image credits to keep exploring unlimited content!
+          </p>
+          <button onclick="window.location.href='/pricing'" style="
+            background: linear-gradient(135deg, #a855f7, #9333ea);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 12px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
+          " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(168, 85, 247, 0.4)';"
+             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(168, 85, 247, 0.3)';">
+            View Plans & Credits 💳
+          </button>
+          <button onclick="window.location.href='/pricing#credits'" style="
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s;
+          " onmouseover="this.style.borderColor='var(--accent)'; this.style.color='var(--accent)';"
+             onmouseout="this.style.borderColor='var(--border)'; this.style.color='var(--text-secondary)';">
+            Buy Image Credits Only
+          </button>
+        </div>
       `;
 
       overlay.appendChild(message);
@@ -1353,13 +1399,12 @@
       // Bottom section for creator info and tags
       const bottomSection = document.createElement('div');
 
-      // Creator info
-      if (item.companion.creator) {
-        const creatorDiv = document.createElement('div');
-        creatorDiv.className = 'feed-item-creator';
-        creatorDiv.innerHTML = `<span>Image generated by @${item.companion.creator}</span>`;
-        bottomSection.appendChild(creatorDiv);
-      }
+      // Creator info - show user who generated the image, not companion creator
+      const imageCreator = item.created_by || item.companion.creator || 'Anonymous';
+      const creatorDiv = document.createElement('div');
+      creatorDiv.className = 'feed-item-creator';
+      creatorDiv.innerHTML = `<span>Image generated by @${imageCreator}</span>`;
+      bottomSection.appendChild(creatorDiv);
 
       // Tags
       if (item.companion.tags && item.companion.tags.length > 0) {
