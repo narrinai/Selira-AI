@@ -2489,6 +2489,10 @@
     };
 
     // Featured companions for different style combinations (female uncensored)
+    // Toggle between random and featured companions
+    const USE_RANDOM_COMPANIONS = true; // Set to false to use featured companions list
+
+    // Featured companions list (used when USE_RANDOM_COMPANIONS = false)
     const featuredCompanions = {
       realistic: [
         'seductive-secretary-stone-1760212642419',
@@ -2886,9 +2890,20 @@
         // Use demo characters as fallback
         allCharacters = getDemoCharacters();
       }
-      
-      // Initial render with shuffled characters
+
+      // Initial render with shuffled characters (if random mode is enabled)
       applyFilters();
+
+      // Shuffle filtered characters if in random mode
+      if (USE_RANDOM_COMPANIONS) {
+        // Fisher-Yates shuffle algorithm
+        for (let i = filteredCharacters.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [filteredCharacters[i], filteredCharacters[j]] = [filteredCharacters[j], filteredCharacters[i]];
+        }
+        console.log('🎲 Shuffled', filteredCharacters.length, 'companions for random display');
+      }
+
       renderCharacters();
 
       // Refresh tag filters now that characters are loaded
@@ -3045,7 +3060,9 @@
 
       // Determine which featured list to use based on style filter
       let featuredList = null;
-      if (isFemaleUncensored) {
+
+      // Only use featured companions if toggle is enabled AND conditions are met
+      if (!USE_RANDOM_COMPANIONS && isFemaleUncensored) {
         if (currentFilters.style === 'anime') {
           featuredList = featuredCompanions.anime;
         } else if (currentFilters.style === 'realistic') {
@@ -3083,14 +3100,13 @@
 
         console.log('✨ Featured mode active:', currentFilters.style, '-', featured.length, 'featured companions');
       } else {
-        // Normal mode: show characters as filtered
+        // Random mode: shuffle and show characters
         initialCharacters = filteredCharacters.slice(0, charactersPerPage);
-        console.log('📋 Normal mode: showing filtered characters');
+        console.log('🎲 Random mode: showing', initialCharacters.length, 'shuffled companions');
       }
 
-      // Create array with deal card inserted at position 3 (4th card, index 3) in featured mode,
-      // or position 4 (5th card, index 4) in normal mode
-      const dealCardPosition = (featuredList && featuredList.length > 0) ? 3 : 4;
+      // Deal card always at position 5 (index 4)
+      const dealCardPosition = 4;
       const charactersWithDeal = [];
       initialCharacters.forEach((character, index) => {
         if (index === dealCardPosition) {
