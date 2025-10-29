@@ -696,6 +696,16 @@
                                 </select>
                                 <small>Higher = better quality but slower</small>
                             </div>
+
+                            <div class="form-group">
+                                <label for="traits_fps">FPS (Frames Per Second)</label>
+                                <select id="traits_fps" name="traits_fps">
+                                    <option value="20">20 fps (slower motion)</option>
+                                    <option value="24" selected>24 fps (cinematic, recommended)</option>
+                                    <option value="30">30 fps (faster motion)</option>
+                                </select>
+                                <small>Higher FPS = action appears faster</small>
+                            </div>
                         </div>
 
                         <div class="form-group slider-group" style="margin-top: 10px;">
@@ -1273,7 +1283,8 @@
                 // Advanced motion controls (Replicate only)
                 video_length: parseInt(document.getElementById('traits_video_length').value),
                 infer_steps: parseInt(document.getElementById('traits_infer_steps').value),
-                guidance_scale: parseFloat(document.getElementById('traits_guidance_scale').value)
+                guidance_scale: parseFloat(document.getElementById('traits_guidance_scale').value),
+                fps: parseInt(document.getElementById('traits_fps').value)
             };
 
             try {

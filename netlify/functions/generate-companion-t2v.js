@@ -184,7 +184,8 @@ async function generateWithReplicate(prompt, requestData) {
   console.log('📊 Parameters:', {
     video_length: requestData.video_length || 129,
     infer_steps: requestData.infer_steps || 50,
-    guidance_scale: requestData.guidance_scale || 6
+    guidance_scale: requestData.guidance_scale || 6,
+    fps: requestData.fps || 24
   });
 
   const response = await fetch('https://api.replicate.com/v1/predictions', {
@@ -202,7 +203,7 @@ async function generateWithReplicate(prompt, requestData) {
         video_length: requestData.video_length || 129, // Now controllable from UI
         infer_steps: requestData.infer_steps || 50, // Now controllable from UI
         embedded_guidance_scale: requestData.guidance_scale || 6, // Now controllable from UI
-        fps: requestData.fps || 24,
+        fps: requestData.fps || 24, // Now controllable from UI
         seed: requestData.seed || Math.floor(Math.random() * 1000000)
       }
     })
