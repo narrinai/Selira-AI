@@ -1345,17 +1345,21 @@
                             throw new Error(`Video generation timed out after ${maxWaitTime / 60000} minutes`);
                         }
 
-                        // Use appropriate status endpoint based on provider
-                        let statusEndpoint;
-                        if (isReplicate) {
-                            statusEndpoint = `/.netlify/functions/replicate-check-status?predictionId=${data.jobId}`;
-                        } else if (isFal) {
-                            statusEndpoint = `/.netlify/functions/fal-check-status?requestId=${data.jobId}`;
+                        // Fal.ai requires POST, others use GET
+                        let statusResponse;
+                        if (isFal) {
+                            // Fal.ai requires POST with body
+                            statusResponse = await fetch('/.netlify/functions/fal-check-status', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ requestId: data.jobId })
+                            });
+                        } else if (isReplicate) {
+                            statusResponse = await fetch(`/.netlify/functions/replicate-check-status?predictionId=${data.jobId}`);
                         } else {
-                            statusEndpoint = `/.netlify/functions/runpod-check-status?jobId=${data.jobId}`;
+                            statusResponse = await fetch(`/.netlify/functions/runpod-check-status?jobId=${data.jobId}`);
                         }
 
-                        const statusResponse = await fetch(statusEndpoint);
                         const statusData = await statusResponse.json();
 
                         if (statusData.status === 'completed') {

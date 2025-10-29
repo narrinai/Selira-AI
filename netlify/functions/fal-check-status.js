@@ -5,7 +5,7 @@ exports.handler = async (event, context) => {
   const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
-    'Access-Control-Allow-Methods': 'GET, OPTIONS'
+    'Access-Control-Allow-Methods': 'POST, OPTIONS'
   };
 
   // Handle preflight OPTIONS request
@@ -17,25 +17,26 @@ exports.handler = async (event, context) => {
     };
   }
 
-  if (event.httpMethod !== 'GET') {
+  if (event.httpMethod !== 'POST') {
     return {
       statusCode: 405,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ error: 'Method not allowed' })
+      body: JSON.stringify({ error: 'Method not allowed - use POST' })
     };
   }
 
   try {
-    // Get request ID from query parameters
-    const requestId = event.queryStringParameters?.requestId || event.queryStringParameters?.jobId;
+    // Get request ID from POST body
+    const requestData = JSON.parse(event.body || '{}');
+    const requestId = requestData.requestId || requestData.jobId;
 
     if (!requestId) {
       return {
         statusCode: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          error: 'Missing requestId or jobId parameter',
-          usage: 'GET /.netlify/functions/fal-check-status?requestId=xxx'
+          error: 'Missing requestId or jobId in request body',
+          usage: 'POST /.netlify/functions/fal-check-status with body: {"requestId": "xxx"}'
         })
       };
     }
@@ -55,8 +56,9 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Check request status using Queue API
+    // Check request status using Queue API - must use POST
     const statusResponse = await fetch(`https://queue.fal.run/fal-ai/kling-video/v2.1/master/text-to-video/requests/${requestId}/status`, {
+      method: 'POST',
       headers: {
         'Authorization': `Key ${FAL_API_KEY}`,
         'Content-Type': 'application/json'
@@ -84,8 +86,9 @@ exports.handler = async (event, context) => {
     if (statusData.status === 'COMPLETED' || statusData.status === 'completed') {
       console.log('✅ Video generation completed!');
 
-      // Get the video URL from the completed request using Queue API
+      // Get the video URL from the completed request using Queue API - must use POST
       const resultResponse = await fetch(`https://queue.fal.run/fal-ai/kling-video/v2.1/master/text-to-video/requests/${requestId}`, {
+        method: 'POST',
         headers: {
           'Authorization': `Key ${FAL_API_KEY}`,
           'Content-Type': 'application/json'
