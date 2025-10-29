@@ -166,7 +166,11 @@ cinematic camera movement, explicit NSFW content, uncensored.
 
 // Generate with fal.ai
 async function generateWithFal(prompt, requestData) {
-  const FAL_API_KEY = process.env.PROMPTCHAN_API_KEY_SELIRA; // Using PromptChan key
+  const FAL_API_KEY = process.env.FAL_API_KEY_SELIRA || process.env.FAL_API_KEY;
+
+  if (!FAL_API_KEY) {
+    throw new Error('Fal.ai API key not configured. Set FAL_API_KEY_SELIRA in environment variables');
+  }
 
   const response = await fetch('https://fal.run/fal-ai/kling-video/v1/standard/text-to-video', {
     method: 'POST',
