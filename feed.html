@@ -961,11 +961,33 @@
       }
     }
 
+    // Wait for Supabase auth to be ready
+    async function waitForAuth(maxWaitMs = 2000) {
+      const startTime = Date.now();
+      while (Date.now() - startTime < maxWaitMs) {
+        if (window.getCurrentUser) {
+          const user = window.getCurrentUser();
+          if (user && user.email) {
+            console.log('✅ Auth ready - user found:', user.email);
+            return user;
+          }
+        }
+        // Wait 100ms before checking again
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+      console.log('⏰ Auth wait timeout - proceeding without user');
+      return null;
+    }
+
     // Initialize feed
     document.addEventListener('DOMContentLoaded', async () => {
       console.log('🎨 Feed page loaded');
 
-      // Get current user
+      // Wait for Supabase auth to initialize (max 2 seconds)
+      console.log('⏳ Waiting for authentication...');
+      currentUser = await waitForAuth();
+
+      // Get current user (final check)
       if (window.getCurrentUser) {
         currentUser = window.getCurrentUser();
         console.log('👤 Current user:', currentUser);
