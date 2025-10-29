@@ -122,6 +122,10 @@ function createMobileNav() {
             <span class="menu-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></span>
             <span>Discover</span>
           </a>
+          <a href="/feed" class="mobile-menu-link">
+            <span class="menu-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect><polyline points="17 2 12 7 7 2"></polyline></svg></span>
+            <span>Feed</span>
+          </a>
           <a href="/my-companions" class="mobile-menu-link">
             <span class="menu-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></span>
             <span>My Companions</span>
@@ -390,7 +394,7 @@ function addMobileNavStyles() {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 10px 20px;
+      padding: 8px 20px;
       color: var(--text-primary, #ffffff);
       text-decoration: none;
       transition: background 0.2s ease;
