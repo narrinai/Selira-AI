@@ -503,25 +503,26 @@
                     </div>
 
                     <div class="form-group slider-group">
-                        <label for="runpod_guidance_scale">CFG Scale (1-10): <span class="slider-value" id="runpodGuidanceValue">2.0</span></label>
-                        <input type="range" id="runpod_guidance_scale" name="runpod_guidance_scale" min="1" max="10" step="0.5" value="2.0">
-                        <small>Wan2.2 default: 2.0. Higher = stricter prompt following</small>
+                        <label for="runpod_guidance_scale">CFG Scale (1-10): <span class="slider-value" id="runpodGuidanceValue">5.5</span></label>
+                        <input type="range" id="runpod_guidance_scale" name="runpod_guidance_scale" min="1" max="10" step="0.5" value="5.5">
+                        <small>Higher = better object consistency & less artifacts. Use 5-7 for complex scenes.</small>
                     </div>
 
                     <div class="form-group slider-group">
-                        <label for="runpod_motion_intensity">Motion Intensity (0-255): <span class="slider-value" id="runpodMotionValue">127</span></label>
-                        <input type="range" id="runpod_motion_intensity" name="runpod_motion_intensity" min="0" max="255" step="1" value="127">
-                        <small>SVD only. Higher = stronger movement. Default: 127. Try 180-220 for pronounced motion</small>
+                        <label for="runpod_motion_intensity">Motion Intensity (0-255): <span class="slider-value" id="runpodMotionValue">190</span></label>
+                        <input type="range" id="runpod_motion_intensity" name="runpod_motion_intensity" min="0" max="255" step="1" value="190">
+                        <small>SVD only. Higher = stronger movement. 190-220 for blowjob/deepthroat motion.</small>
                     </div>
 
                     <div class="form-group">
                         <label for="runpod_steps">Inference Steps</label>
                         <select id="runpod_steps" name="runpod_steps">
-                            <option value="10" selected>10 steps (Wan2.2 default)</option>
-                            <option value="20">20 steps (higher quality)</option>
-                            <option value="30">30 steps (best quality, slower)</option>
+                            <option value="10">10 steps (fast, lower quality)</option>
+                            <option value="20">20 steps (recommended)</option>
+                            <option value="30" selected>30 steps (best quality, reduces artifacts)</option>
+                            <option value="50">50 steps (highest quality, slowest)</option>
                         </select>
-                        <small>Wan2.2 works well with just 10 steps</small>
+                        <small>⚠️ Higher steps = less artifacts/glitches. Use 30+ for clean results.</small>
                     </div>
 
                     <div class="form-group">
