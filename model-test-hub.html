@@ -624,8 +624,8 @@
                     <!-- Action & Setting -->
                     <div class="form-group full-width">
                         <label for="traits_action">Action/Motion *</label>
-                        <textarea id="traits_action" name="traits_action" required placeholder="e.g., Extreme vertical head bobbing motion for POV blowjob, deepthroat pumping up and down along full shaft length">Smiling at camera, gentle head movement</textarea>
-                        <small>Describe what the companion should be doing. For explicit scenes, use keywords like "blowjob", "deepthroat", "oral" - system will auto-add POV composition and penis in frame.</small>
+                        <textarea id="traits_action" name="traits_action" required rows="4" placeholder="e.g., POV from above. Her mouth around large rigid erect penis shaft. Extreme vertical head bobbing, her head moves down engulfing the hard cock shaft deeply then back up to tip repeatedly. Fast pronounced deepthroat pumping motion along the stiff penis. The erect shaft stays rigid and visible throughout.">Smiling at camera, gentle head movement</textarea>
+                        <small><strong>Tip for object consistency:</strong> Repeat object description (e.g., "erect penis shaft", "hard cock", "rigid shaft") multiple times in prompt. Be specific: "her mouth around the shaft", "head moves along the penis". This prevents morphing.</small>
                     </div>
 
                     <div class="form-group full-width">
@@ -665,7 +665,8 @@
 
                     <div class="form-group full-width">
                         <label for="traits_negative_prompt">Negative Prompt (optional)</label>
-                        <input type="text" id="traits_negative_prompt" name="traits_negative_prompt" value="low quality, blurry, distorted, deformed" placeholder="Things to avoid">
+                        <input type="text" id="traits_negative_prompt" name="traits_negative_prompt" value="low quality, blurry, distorted, deformed, morphing, transformation, object changing, inconsistent objects, tongue instead of penis, shape-shifting" placeholder="Things to avoid">
+                        <small><strong>Anti-morphing tip:</strong> Include "morphing, transformation, object changing, inconsistent" to reduce penis→tongue transformations</small>
                     </div>
 
                     <!-- Advanced Motion Controls (Replicate/Hunyuan) -->

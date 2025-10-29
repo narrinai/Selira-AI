@@ -126,29 +126,15 @@ function buildPromptFromTraits(traits) {
     bodyTypeMap[bodyType] || bodyTypeMap['average']
   ].join(', ');
 
-  // Detect if action involves explicit content and enhance prompt accordingly
-  const actionLower = (action || '').toLowerCase();
-  const isExplicitOral = actionLower.includes('blowjob') || actionLower.includes('oral') ||
-                          actionLower.includes('deepthroat') || actionLower.includes('sucking') ||
-                          actionLower.includes('pov') || actionLower.includes('penis') ||
-                          actionLower.includes('dick') || actionLower.includes('cock');
+  // Build full prompt with action and setting - no auto-enhancement, user has full control
+  const fullPrompt = `
+${appearance}. ${action || 'smiling at camera, gentle head movement'}.
 
-  // Build full prompt with action and setting
-  let fullPrompt = `${appearance}. `;
-
-  // If explicit oral action, add POV and compositional context
-  if (isExplicitOral) {
-    fullPrompt += `POV perspective from above. ${action}. Large erect penis visible in frame entering her mouth. Close-up intimate angle showing both her face and the penis. `;
-  } else {
-    fullPrompt += `${action || 'smiling at camera, gentle head movement'}. `;
-  }
-
-  fullPrompt += `
 Setting: ${setting || 'indoor lighting, soft background'}.
 
 High quality, professional video, smooth motion, realistic skin texture,
 detailed facial features, photorealistic, 8K quality, natural lighting,
-cinematic camera movement, explicit NSFW content${isExplicitOral ? ', uncensored, explicit oral sex' : ''}.
+cinematic camera movement, explicit NSFW content, uncensored.
   `.trim();
 
   console.log('📝 Built prompt:', fullPrompt);
