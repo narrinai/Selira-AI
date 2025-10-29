@@ -145,22 +145,48 @@ exports.handler = async (event, context) => {
         continue;
       }
 
-      // Get user who generated the image (from Generated_Images table)
-      // Debug: Log all available fields to see what we have
-      console.log('🔍 Generated_Images fields for record:', record.id, {
-        user_display_name: fields.user_display_name,
-        display_name: fields.display_name,
-        Display_Name: fields.Display_Name,
-        user_email: fields.user_email,
-        user_id: fields.user_id,
-        allFieldNames: Object.keys(fields)
-      });
+      // Get user who generated the image
+      // First check if we have user_id link to lookup display name
+      let imageCreator = 'Anonymous';
 
-      const imageCreator = fields.user_display_name ||
-                          fields.display_name ||
-                          fields.Display_Name ||
-                          fields.user_email?.split('@')[0] ||
+      const userId = fields.user_id ? fields.user_id[0] : null;
+
+      if (userId) {
+        try {
+          // Fetch user from Users table to get display_name
+          const userUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users/${userId}`;
+          const userResponse = await fetch(userUrl, {
+            headers: {
+              'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+              'Content-Type': 'application/json'
+            }
+          });
+
+          if (userResponse.ok) {
+            const userRecord = await userResponse.json();
+            const userFields = userRecord.fields;
+
+            imageCreator = userFields.display_name ||
+                          userFields.Display_Name ||
+                          userFields.displayName ||
+                          userFields.email?.split('@')[0] ||
                           'Anonymous';
+
+            console.log('✅ Found user display name:', imageCreator);
+          }
+        } catch (userError) {
+          console.error('❌ Error fetching user:', userError);
+        }
+      }
+
+      // Fallback to fields in Generated_Images if no user_id
+      if (imageCreator === 'Anonymous') {
+        imageCreator = fields.user_display_name ||
+                      fields.display_name ||
+                      fields.Display_Name ||
+                      fields.user_email?.split('@')[0] ||
+                      'Anonymous';
+      }
 
       // Build feed item
       feedItems.push({
