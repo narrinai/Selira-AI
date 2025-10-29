@@ -1247,30 +1247,38 @@
                     throw new Error(data.error || data.message || 'Failed to generate video');
                 }
 
-                // If RunPod provider, it returns a jobId for polling
+                // If provider returns jobId, poll for completion (RunPod or Replicate)
                 if (data.jobId) {
+                    const isReplicate = formData.provider === 'replicate';
+                    const providerName = isReplicate ? 'Replicate (Hunyuan)' : 'RunPod';
+
                     resultContent.innerHTML = `
                         <div class="loading">
                             <div class="spinner"></div>
-                            Step 2: Converting to video with RunPod...
-                            <br><small>Elapsed: 0s | Est: 60-120s</small>
+                            ${isReplicate ? 'Generating video with ' + providerName + '...' : 'Step 2: Converting to video with ' + providerName + '...'}
+                            <br><small>Elapsed: 0s | Est: ${isReplicate ? '2-5 minutes' : '60-120s'}</small>
                             ${data.sourceImage ? `<br><small>Source image: <a href="${data.sourceImage}" target="_blank">View</a></small>` : ''}
                         </div>
                     `;
-                    generateBtn.textContent = 'Converting to video...';
+                    generateBtn.textContent = isReplicate ? 'Generating video...' : 'Converting to video...';
 
                     // Poll for completion
                     const pollInterval = 3000;
-                    const maxWaitTime = 300000; // 5 minutes
+                    const maxWaitTime = isReplicate ? 600000 : 300000; // 10 minutes for Replicate, 5 for RunPod
 
                     const pollStatus = async () => {
                         const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
 
                         if (Date.now() - startTime > maxWaitTime) {
-                            throw new Error('Video generation timed out after 5 minutes');
+                            throw new Error(`Video generation timed out after ${maxWaitTime / 60000} minutes`);
                         }
 
-                        const statusResponse = await fetch(`/.netlify/functions/runpod-check-status?jobId=${data.jobId}`);
+                        // Use appropriate status endpoint based on provider
+                        const statusEndpoint = isReplicate
+                            ? `/.netlify/functions/replicate-check-status?predictionId=${data.jobId}`
+                            : `/.netlify/functions/runpod-check-status?jobId=${data.jobId}`;
+
+                        const statusResponse = await fetch(statusEndpoint);
                         const statusData = await statusResponse.json();
 
                         if (statusData.status === 'completed') {
@@ -1303,12 +1311,17 @@
                             throw new Error(statusData.details || statusData.error || 'Video generation failed');
                         } else {
                             // Still processing
-                            const progress = Math.min(Math.floor((elapsedSeconds / 120) * 100), 95);
+                            const expectedTime = isReplicate ? 300 : 120; // 5 min for Replicate, 2 min for RunPod
+                            const progress = Math.min(Math.floor((elapsedSeconds / expectedTime) * 100), 95);
+                            const elapsedMinutes = Math.floor(elapsedSeconds / 60);
+                            const remainingSeconds = elapsedSeconds % 60;
+                            const timeDisplay = elapsedMinutes > 0 ? `${elapsedMinutes}m ${remainingSeconds}s` : `${elapsedSeconds}s`;
+
                             resultContent.innerHTML = `
                                 <div class="loading">
                                     <div class="spinner"></div>
-                                    Step 2: Converting to video...
-                                    <br><small>Elapsed: ${elapsedSeconds}s | Progress: ~${progress}%</small>
+                                    ${isReplicate ? 'Generating video with Hunyuan...' : 'Step 2: Converting to video...'}
+                                    <br><small>Elapsed: ${timeDisplay} | Progress: ~${progress}%</small>
                                     ${data.sourceImage ? `<br><small>Source: <a href="${data.sourceImage}" target="_blank">View image</a></small>` : ''}
                                 </div>
                             `;

@@ -170,9 +170,15 @@ async function generateWithFal(prompt, requestData) {
   };
 }
 
-// Generate with Replicate (Hunyuan Video)
+// Generate with Replicate (Hunyuan Video) - Async with job ID
 async function generateWithReplicate(prompt, requestData) {
   const REPLICATE_API_TOKEN = process.env.REPLICATE_API_TOKEN_SELIRA;
+
+  if (!REPLICATE_API_TOKEN) {
+    throw new Error('Replicate API token not configured. Set REPLICATE_API_TOKEN_SELIRA');
+  }
+
+  console.log('🎬 Starting Replicate Hunyuan video generation...');
 
   const response = await fetch('https://api.replicate.com/v1/predictions', {
     method: 'POST',
@@ -196,37 +202,30 @@ async function generateWithReplicate(prompt, requestData) {
   });
 
   if (!response.ok) {
-    throw new Error(`Replicate API error: ${response.status}`);
+    const errorText = await response.text();
+    console.error('❌ Replicate API error:', errorText);
+    throw new Error(`Replicate API error: ${response.status} - ${errorText}`);
   }
 
   const data = await response.json();
+  console.log('✅ Replicate job started:', data.id);
 
-  // Poll for completion
-  let prediction = data;
-  while (prediction.status === 'starting' || prediction.status === 'processing') {
-    await new Promise(resolve => setTimeout(resolve, 3000));
-
-    const statusResponse = await fetch(prediction.urls.get, {
-      headers: { 'Authorization': `Bearer ${REPLICATE_API_TOKEN}` }
-    });
-    prediction = await statusResponse.json();
-  }
-
-  if (prediction.status === 'succeeded') {
-    return {
-      provider: 'Replicate (Hunyuan Video)',
-      video: prediction.output,
-      cost: '~$0.15'
-    };
-  } else {
-    throw new Error(`Prediction failed: ${prediction.error || 'Unknown error'}`);
-  }
+  // Return job ID immediately for async polling
+  return {
+    provider: 'Replicate (Hunyuan Video)',
+    status: 'processing',
+    jobId: data.id,
+    predictionUrl: data.urls.get,
+    message: 'Video generation started. Poll for status with job ID.',
+    estimatedTime: '2-5 minutes',
+    cost: '~$1.25'
+  };
 }
 
 // Generate with RunPod (Two-step: Text-to-Image → Image-to-Video)
 async function generateWithRunPod(prompt, requestData) {
   const RUNPOD_API_KEY = process.env.RUNPOD_API_KEY_SELIRA || process.env.RUNPOD_API_KEY;
-  const RUNPOD_ENDPOINT_ID = process.env.RUNPOD_ENDPOINT_ID || process.env.RUNPOD_ANIMATEDIFF_ENDPOINT_ID;
+  const RUNPOD_ENDPOINT_ID = process.env.RUNPOD_ENDPOINT_ID_SELIRA || process.env.RUNPOD_ENDPOINT_ID || process.env.RUNPOD_ANIMATEDIFF_ENDPOINT_ID;
 
   console.log('🎨 Step 1: Generating image from companion traits...');
 
