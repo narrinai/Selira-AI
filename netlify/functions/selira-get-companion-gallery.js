@@ -87,7 +87,8 @@ exports.handler = async (event, context) => {
 
     // Build filter formula for generated images
     // Filter by character ID and optionally by user email
-    let filterFormula = `{companion_id}='${characterId}'`;
+    // Note: companion_id is a linked record field, so we use FIND() to search the array
+    let filterFormula = `FIND('${characterId}', ARRAYJOIN({companion_id}, ','))`;
 
     if (userEmail) {
       // Find user record ID first
@@ -105,7 +106,8 @@ exports.handler = async (event, context) => {
         const userData = await userResponse.json();
         if (userData.records && userData.records.length > 0) {
           const userRecordId = userData.records[0].id;
-          filterFormula = `AND({companion_id}='${characterId}', {User_ID}='${userRecordId}')`;
+          // user_id is also a linked record field
+          filterFormula = `AND(FIND('${characterId}', ARRAYJOIN({companion_id}, ',')), FIND('${userRecordId}', ARRAYJOIN({user_id}, ',')))`;
           console.log('✅ Filtering by user:', userRecordId);
         }
       }
@@ -114,7 +116,7 @@ exports.handler = async (event, context) => {
     // Fetch generated images
     const imagesUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Generated_Images?` +
       `filterByFormula=${encodeURIComponent(filterFormula)}&` +
-      `sort[0][field]=Generation_Date&` +
+      `sort[0][field]=generation_date&` +
       `sort[0][direction]=desc&` +
       `pageSize=100`; // Max 100 images
 
