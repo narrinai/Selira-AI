@@ -92,13 +92,9 @@ exports.handler = async (event, context) => {
     const characterId = charData.records[0].id;
     console.log('✅ Found character:', characterId);
 
-    // Build filter formula for generated images
-    // Filter by character ID and optionally by user email
-    // Note: companion_id is a linked record field, so we use FIND() to search the array
-    let filterFormula = `FIND('${characterId}', ARRAYJOIN({companion_id}, ','))`;
-
+    // Get user record ID if email provided (for filtering)
+    let userRecordId = null;
     if (userEmail) {
-      // Find user record ID first
       const userSearchUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?` +
         `filterByFormula={Email}='${userEmail.replace(/'/g, "\\'")}'&maxRecords=1`;
 
@@ -112,17 +108,15 @@ exports.handler = async (event, context) => {
       if (userResponse.ok) {
         const userData = await userResponse.json();
         if (userData.records && userData.records.length > 0) {
-          const userRecordId = userData.records[0].id;
-          // user_id is also a linked record field
-          filterFormula = `AND(FIND('${characterId}', ARRAYJOIN({companion_id}, ',')), FIND('${userRecordId}', ARRAYJOIN({user_id}, ',')))`;
-          console.log('✅ Filtering by user:', userRecordId);
+          userRecordId = userData.records[0].id;
+          console.log('✅ Found user:', userRecordId);
         }
       }
     }
 
-    // Fetch generated images
+    // Fetch ALL generated images (no filter - we'll filter in code like the feed does)
+    // This is more reliable than Airtable's FIND() formulas with linked records
     const imagesUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Generated_Images?` +
-      `filterByFormula=${encodeURIComponent(filterFormula)}&` +
       `sort[0][field]=generation_date&` +
       `sort[0][direction]=desc&` +
       `pageSize=100`; // Max 100 images
@@ -153,25 +147,47 @@ exports.handler = async (event, context) => {
       hasOffset: !!imagesData.offset
     });
 
-    // Log first record's fields for debugging
-    if (imagesData.records && imagesData.records.length > 0) {
-      console.log('📋 First record fields:', Object.keys(imagesData.records[0].fields));
-      console.log('📋 First record data sample:', {
-        id: imagesData.records[0].id,
-        has_image_url: !!imagesData.records[0].fields.image_url,
-        has_generation_date: !!imagesData.records[0].fields.generation_date,
-        has_prompt: !!imagesData.records[0].fields.prompt
+    // Filter images in code (like the feed function does)
+    // This is more reliable than Airtable FIND() formulas
+    const images = [];
+
+    for (const record of imagesData.records || []) {
+      const fields = record.fields;
+
+      // Check if this image belongs to our companion
+      const companionIdArray = fields.companion_id || [];
+      const matchesCompanion = companionIdArray.includes(characterId);
+
+      if (!matchesCompanion) {
+        continue; // Skip if not for this companion
+      }
+
+      // If user filter is specified, check if image belongs to that user
+      if (userRecordId) {
+        const userIdArray = fields.user_id || [];
+        const matchesUser = userIdArray.includes(userRecordId);
+
+        if (!matchesUser) {
+          continue; // Skip if not for this user
+        }
+      }
+
+      // Only include if has image_url
+      if (!fields.image_url) {
+        continue;
+      }
+
+      // Add to results
+      images.push({
+        id: record.id,
+        image_url: fields.image_url,
+        generation_date: fields.generation_date,
+        prompt: fields.prompt
       });
     }
 
-    const images = (imagesData.records || []).map(record => ({
-      id: record.id,
-      image_url: record.fields.image_url,
-      generation_date: record.fields.generation_date,
-      prompt: record.fields.prompt
-    }));
-
-    console.log(`✅ Found ${images.length} images`);
+    console.log(`✅ Found ${images.length} images for character ${characterId}` +
+                (userRecordId ? ` and user ${userRecordId}` : ''));
 
     return {
       statusCode: 200,
