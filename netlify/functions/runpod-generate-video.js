@@ -60,6 +60,7 @@ exports.handler = async (event, context) => {
       input: {
         image_url: requestData.image_url,
         prompt: requestData.prompt,
+        negative_prompt: requestData.negative_prompt || 'low quality, blurry, static, no motion',
         seed: seed,
         cfg: requestData.guidance_scale || 2.0,  // Wan2.2 uses 'cfg' (default 2.0)
         width: width,

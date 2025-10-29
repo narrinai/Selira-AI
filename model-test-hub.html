@@ -473,6 +473,12 @@
                         <small>Describe the movement/animation</small>
                     </div>
 
+                    <div class="form-group full-width">
+                        <label for="runpod_negative_prompt">Negative Prompt</label>
+                        <textarea id="runpod_negative_prompt" name="runpod_negative_prompt" placeholder="static, no motion, frozen, blurry, low quality"></textarea>
+                        <small>What to avoid in the video</small>
+                    </div>
+
                     <div class="form-group">
                         <label for="runpod_model">Model</label>
                         <select id="runpod_model" name="runpod_model">
@@ -1171,6 +1177,7 @@
             const formData = {
                 image_url: document.getElementById('runpod_image_url').value,
                 prompt: document.getElementById('runpod_prompt').value,
+                negative_prompt: document.getElementById('runpod_negative_prompt').value,
                 model: document.getElementById('runpod_model').value,
                 num_frames: parseInt(document.getElementById('runpod_num_frames').value),
                 resolution: document.getElementById('runpod_resolution').value,
