@@ -38,60 +38,71 @@ async function saveFeedImage(requestId, source, imageUrl, characterName, customP
             const visibility = characterRecord.fields.Visibility || characterRecord.fields.visibility || 'public';
             console.log(`🔍 [${requestId}] Character: ${characterName} (${characterId}), visibility: ${visibility}`);
 
-            // Only save if companion is NOT explicitly private (default to public)
-            if (visibility !== 'private') {
-              // Find user record by email
-              let userRecordId = null;
-              if (email) {
-                const userSearchUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?` +
-                  `filterByFormula={Email}='${email.replace(/'/g, "\\\'")}'&maxRecords=1`;
+            // Find user record by email (don't create if not found)
+            let userRecordId = null;
+            if (email) {
+              const userSearchUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?` +
+                `filterByFormula={Email}='${email.replace(/'/g, "\\\'")}'&maxRecords=1`;
 
-                const userResponse = await fetch(userSearchUrl, {
-                  headers: {
-                    'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
-                    'Content-Type': 'application/json'
-                  }
-                });
-
-                if (userResponse.ok) {
-                  const userData = await userResponse.json();
-                  if (userData.records && userData.records.length > 0) {
-                    userRecordId = userData.records[0].id;
-                  }
-                }
-              }
-
-              // Create Generated_Images record
-              const createUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Generated_Images`;
-              const createResponse = await fetch(createUrl, {
-                method: 'POST',
+              const userResponse = await fetch(userSearchUrl, {
                 headers: {
                   'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
                   'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                  fields: {
-                    image_url: imageUrl,
-                    companion_id: [characterId], // Linked record
-                    user_id: userRecordId ? [userRecordId] : undefined, // Linked record (optional)
-                    prompt: customPrompt || '',
-                    generation_date: new Date().toISOString(),
-                    like_count: Math.floor(Math.random() * 14) + 2, // Random 2-15
-                    view_count: 0,
-                    status: 'approved' // Auto-approve
-                  }
-                })
+                }
               });
 
-              if (createResponse.ok) {
-                const createdRecord = await createResponse.json();
-                console.log(`✅ [${requestId}] Saved to feed:`, createdRecord.id);
+              if (userResponse.ok) {
+                const userData = await userResponse.json();
+                if (userData.records && userData.records.length > 0) {
+                  userRecordId = userData.records[0].id;
+                  console.log(`✅ [${requestId}] Found user record:`, userRecordId, `for email:`, email);
+                } else {
+                  console.log(`⚠️ [${requestId}] No user record found for email:`, email);
+                }
               } else {
-                const errorText = await createResponse.text();
-                console.error(`❌ [${requestId}] Failed to save to feed:`, errorText);
+                console.log(`⚠️ [${requestId}] User search failed with status:`, userResponse.status);
               }
             } else {
-              console.log(`🔒 [${requestId}] Companion is private, skipping feed save`);
+              console.log(`⚠️ [${requestId}] No email provided`);
+            }
+
+            // Create Generated_Images record (ALWAYS save, regardless of visibility or user_id)
+            // Private companion images are saved but filtered out in feed API
+            const createUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Generated_Images`;
+            const feedFields = {
+              image_url: imageUrl,
+              companion_id: [characterId], // Linked record
+              prompt: customPrompt || '',
+              generation_date: new Date().toISOString(),
+              like_count: Math.floor(Math.random() * 14) + 2, // Random 2-15
+              view_count: 0,
+              status: visibility === 'private' ? 'private' : 'approved' // Mark private companion images
+            };
+
+            // Only add user_id if we found one
+            if (userRecordId) {
+              feedFields.user_id = [userRecordId]; // Linked record
+              console.log(`📝 [${requestId}] Saving WITH user_id (${visibility} companion)`);
+            } else {
+              console.log(`📝 [${requestId}] Saving WITHOUT user_id (${visibility} companion, email: ${email || 'none'})`);
+            }
+
+            const createResponse = await fetch(createUrl, {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ fields: feedFields })
+            });
+
+            if (createResponse.ok) {
+              const createdRecord = await createResponse.json();
+              console.log(`✅ [${requestId}] Saved to Generated_Images:`, createdRecord.id,
+                `(${visibility}, user_id: ${userRecordId ? 'yes' : 'no'})`);
+            } else {
+              const errorText = await createResponse.text();
+              console.error(`❌ [${requestId}] Failed to save:`, errorText);
             }
           } else {
             console.log(`⚠️ [${requestId}] Character not found:`, characterName);
@@ -1532,60 +1543,71 @@ exports.handler = async (event, context) => {
               const visibility = characterRecord.fields.Visibility || characterRecord.fields.visibility || 'public';
               console.log(`🔍 [${requestId}] Character: ${characterName} (${characterId}), visibility: ${visibility}`);
 
-              // Only save if companion is NOT explicitly private (default to public)
-              if (visibility !== 'private') {
-                // Find user record by email
-                let userRecordId = null;
-                if (email) {
-                  const userSearchUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?` +
-                    `filterByFormula={Email}='${email.replace(/'/g, "\\\'")}'&maxRecords=1`;
+              // Find user record by email (don't create if not found)
+              let userRecordId = null;
+              if (email) {
+                const userSearchUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?` +
+                  `filterByFormula={Email}='${email.replace(/'/g, "\\\'")}'&maxRecords=1`;
 
-                  const userResponse = await fetch(userSearchUrl, {
-                    headers: {
-                      'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
-                      'Content-Type': 'application/json'
-                    }
-                  });
-
-                  if (userResponse.ok) {
-                    const userData = await userResponse.json();
-                    if (userData.records && userData.records.length > 0) {
-                      userRecordId = userData.records[0].id;
-                    }
-                  }
-                }
-
-                // Create Generated_Images record
-                const createUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Generated_Images`;
-                const createResponse = await fetch(createUrl, {
-                  method: 'POST',
+                const userResponse = await fetch(userSearchUrl, {
                   headers: {
                     'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
                     'Content-Type': 'application/json'
-                  },
-                  body: JSON.stringify({
-                    fields: {
-                      image_url: imageUrl,
-                      companion_id: [characterId], // Linked record (lowercase to match Airtable)
-                      user_id: userRecordId ? [userRecordId] : undefined, // Linked record (optional)
-                      prompt: customPrompt || '',
-                      generation_date: new Date().toISOString(),
-                      like_count: Math.floor(Math.random() * 14) + 2, // Random 2-15
-                      view_count: 0,
-                      status: 'approved' // Auto-approve
-                    }
-                  })
+                  }
                 });
 
-                if (createResponse.ok) {
-                  const createdRecord = await createResponse.json();
-                  console.log(`✅ [${requestId}] Saved to feed:`, createdRecord.id);
+                if (userResponse.ok) {
+                  const userData = await userResponse.json();
+                  if (userData.records && userData.records.length > 0) {
+                    userRecordId = userData.records[0].id;
+                    console.log(`✅ [${requestId}] Found user record:`, userRecordId, `for email:`, email);
+                  } else {
+                    console.log(`⚠️ [${requestId}] No user record found for email:`, email);
+                  }
                 } else {
-                  const errorText = await createResponse.text();
-                  console.error(`❌ [${requestId}] Failed to save to feed:`, errorText);
+                  console.log(`⚠️ [${requestId}] User search failed with status:`, userResponse.status);
                 }
               } else {
-                console.log(`🔒 [${requestId}] Companion is private, skipping feed save`);
+                console.log(`⚠️ [${requestId}] No email provided`);
+              }
+
+              // Create Generated_Images record (ALWAYS save, regardless of visibility or user_id)
+              // Private companion images are saved but filtered out in feed API
+              const createUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Generated_Images`;
+              const feedFields = {
+                image_url: imageUrl,
+                companion_id: [characterId], // Linked record (lowercase to match Airtable)
+                prompt: customPrompt || '',
+                generation_date: new Date().toISOString(),
+                like_count: Math.floor(Math.random() * 14) + 2, // Random 2-15
+                view_count: 0,
+                status: visibility === 'private' ? 'private' : 'approved' // Mark private companion images
+              };
+
+              // Only add user_id if we found one
+              if (userRecordId) {
+                feedFields.user_id = [userRecordId]; // Linked record
+                console.log(`📝 [${requestId}] Saving WITH user_id (${visibility} companion)`);
+              } else {
+                console.log(`📝 [${requestId}] Saving WITHOUT user_id (${visibility} companion, email: ${email || 'none'})`);
+              }
+
+              const createResponse = await fetch(createUrl, {
+                method: 'POST',
+                headers: {
+                  'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ fields: feedFields })
+              });
+
+              if (createResponse.ok) {
+                const createdRecord = await createResponse.json();
+                console.log(`✅ [${requestId}] Saved to Generated_Images:`, createdRecord.id,
+                  `(${visibility}, user_id: ${userRecordId ? 'yes' : 'no'})`);
+              } else {
+                const errorText = await createResponse.text();
+                console.error(`❌ [${requestId}] Failed to save:`, errorText);
               }
             } else {
               console.log(`⚠️ [${requestId}] Character not found:`, characterName);
