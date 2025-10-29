@@ -22,6 +22,7 @@ exports.handler = async (event, context) => {
   try {
     const requestData = JSON.parse(event.body);
     console.log('🎬 Generating text-to-video with companion traits...');
+    console.log('📊 Full request data:', JSON.stringify(requestData, null, 2));
 
     const {
       companionName,
@@ -35,6 +36,8 @@ exports.handler = async (event, context) => {
       style, // 'realistic' or 'anime'
       provider // 'fal', 'replicate', or 'runpod'
     } = requestData;
+
+    console.log('🎯 Provider selected:', provider);
 
     // Build detailed prompt from companion traits
     const prompt = buildPromptFromTraits({
@@ -174,8 +177,8 @@ async function generateWithFal(prompt, requestData) {
 
   console.log('🎬 Starting Fal.ai Kling video generation...');
 
-  // Submit the job
-  const response = await fetch('https://fal.run/fal-ai/kling-video/v1/standard/text-to-video', {
+  // Submit the job to QUEUE endpoint (async)
+  const response = await fetch('https://queue.fal.run/fal-ai/kling-video/v2.1/master/text-to-video', {
     method: 'POST',
     headers: {
       'Authorization': `Key ${FAL_API_KEY}`,
@@ -185,7 +188,8 @@ async function generateWithFal(prompt, requestData) {
       prompt: prompt,
       duration: requestData.duration || '5',
       aspect_ratio: requestData.aspect_ratio || '16:9',
-      negative_prompt: requestData.negative_prompt || 'low quality, blurry, distorted, deformed'
+      negative_prompt: requestData.negative_prompt || 'low quality, blurry, distorted, deformed',
+      cfg_scale: requestData.cfg_scale || 0.5
     })
   });
 
@@ -196,18 +200,23 @@ async function generateWithFal(prompt, requestData) {
   }
 
   const data = await response.json();
-  console.log('✅ Fal.ai job started:', data);
+  console.log('✅ Fal.ai queue response:', JSON.stringify(data, null, 2));
 
-  // Fal.ai returns request_id for async polling
+  // Queue API returns: request_id, status_url, response_url, cancel_url
   const requestId = data.request_id;
+  const statusUrl = data.status_url;
 
-  if (!requestId) {
-    throw new Error('No request_id returned from Fal.ai');
+  if (!requestId || !statusUrl) {
+    console.error('❌ Missing request_id or status_url:', data);
+    throw new Error('No request_id returned from Fal.ai queue API');
   }
+
+  console.log('📊 Job submitted - request_id:', requestId);
+  console.log('📊 Status URL:', statusUrl);
 
   // Return job ID immediately for async polling
   return {
-    provider: 'Fal.ai (Kling AI)',
+    provider: 'Fal.ai (Kling AI v2.1 Master)',
     status: 'processing',
     jobId: requestId,
     message: 'Video generation started. Poll for status with job ID.',

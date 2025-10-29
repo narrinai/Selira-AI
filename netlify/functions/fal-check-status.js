@@ -55,8 +55,8 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Check request status - Fal.ai uses /requests/{id}/status endpoint
-    const statusResponse = await fetch(`https://fal.run/fal-ai/kling-video/v1/standard/text-to-video/requests/${requestId}/status`, {
+    // Check request status using Queue API
+    const statusResponse = await fetch(`https://queue.fal.run/fal-ai/kling-video/v2.1/master/text-to-video/requests/${requestId}/status`, {
       headers: {
         'Authorization': `Key ${FAL_API_KEY}`,
         'Content-Type': 'application/json'
@@ -84,15 +84,30 @@ exports.handler = async (event, context) => {
     if (statusData.status === 'COMPLETED' || statusData.status === 'completed') {
       console.log('✅ Video generation completed!');
 
-      // Get the video URL from the completed request
-      const resultResponse = await fetch(`https://fal.run/fal-ai/kling-video/v1/standard/text-to-video/requests/${requestId}`, {
+      // Get the video URL from the completed request using Queue API
+      const resultResponse = await fetch(`https://queue.fal.run/fal-ai/kling-video/v2.1/master/text-to-video/requests/${requestId}`, {
         headers: {
           'Authorization': `Key ${FAL_API_KEY}`,
           'Content-Type': 'application/json'
         }
       });
 
+      if (!resultResponse.ok) {
+        console.error('❌ Failed to fetch result:', resultResponse.status);
+        const errorText = await resultResponse.text();
+        throw new Error(`Failed to fetch result: ${errorText}`);
+      }
+
       const resultData = await resultResponse.json();
+      console.log('📊 Result data:', JSON.stringify(resultData, null, 2));
+
+      // Extract video URL from result
+      const videoUrl = resultData.data?.video?.url || resultData.video?.url || resultData.output?.video?.url;
+
+      if (!videoUrl) {
+        console.error('❌ No video URL in result:', resultData);
+        throw new Error('No video URL found in completed result');
+      }
 
       return {
         statusCode: 200,
@@ -100,8 +115,8 @@ exports.handler = async (event, context) => {
         body: JSON.stringify({
           success: true,
           status: 'completed',
-          video: resultData.data?.video?.url || resultData.video?.url,
-          provider: 'Fal.ai (Kling AI)',
+          video: videoUrl,
+          provider: 'Fal.ai (Kling AI v2.1 Master)',
           cost: '$0.50',
           requestId: requestId
         })
