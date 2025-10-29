@@ -508,6 +508,12 @@
                         <small>Wan2.2 default: 2.0. Higher = stricter prompt following</small>
                     </div>
 
+                    <div class="form-group slider-group">
+                        <label for="runpod_motion_intensity">Motion Intensity (0-255): <span class="slider-value" id="runpodMotionValue">127</span></label>
+                        <input type="range" id="runpod_motion_intensity" name="runpod_motion_intensity" min="0" max="255" step="1" value="127">
+                        <small>SVD only. Higher = stronger movement. Default: 127. Try 180-220 for pronounced motion</small>
+                    </div>
+
                     <div class="form-group">
                         <label for="runpod_steps">Inference Steps</label>
                         <select id="runpod_steps" name="runpod_steps">
@@ -932,9 +938,13 @@
             document.getElementById('t2vGuidanceValue').textContent = e.target.value;
         });
 
-        // Update RunPod slider values (only guidance scale for Wan2.2)
+        // Update RunPod slider values
         document.getElementById('runpod_guidance_scale').addEventListener('input', (e) => {
             document.getElementById('runpodGuidanceValue').textContent = e.target.value;
+        });
+
+        document.getElementById('runpod_motion_intensity').addEventListener('input', (e) => {
+            document.getElementById('runpodMotionValue').textContent = e.target.value;
         });
 
         // Handle fal.ai I2V form submission
@@ -1102,8 +1112,8 @@
                 num_frames: parseInt(document.getElementById('runpod_num_frames').value),
                 resolution: document.getElementById('runpod_resolution').value,
                 fps: parseInt(document.getElementById('runpod_fps').value),
-                // motion_scale removed for Wan2.2 (not needed)
                 guidance_scale: parseFloat(document.getElementById('runpod_guidance_scale').value),
+                motion_bucket_id: parseInt(document.getElementById('runpod_motion_intensity').value),
                 steps: parseInt(document.getElementById('runpod_steps').value),
                 seed: parseInt(document.getElementById('runpod_seed').value)
             };

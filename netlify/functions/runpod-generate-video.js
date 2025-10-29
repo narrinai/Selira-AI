@@ -54,8 +54,8 @@ exports.handler = async (event, context) => {
       ? Math.floor(Math.random() * 1000000)
       : parseInt(requestData.seed);
 
-    // Build RunPod serverless request for Wan2.2
-    // Based on official Wan2.2 API docs
+    // Build RunPod serverless request
+    // Supports both Wan2.2 and SVD models
     const runpodInput = {
       input: {
         image_url: requestData.image_url,
@@ -69,6 +69,12 @@ exports.handler = async (event, context) => {
         context_overlap: 48
       }
     };
+
+    // Add motion_bucket_id for SVD model (controls motion intensity)
+    if (requestData.motion_bucket_id !== undefined) {
+      runpodInput.input.motion_bucket_id = requestData.motion_bucket_id;
+      console.log('🎬 Motion bucket ID set to:', requestData.motion_bucket_id);
+    }
 
     console.log('📡 Calling RunPod serverless endpoint...');
     console.log('Endpoint ID:', RUNPOD_ENDPOINT_ID);
