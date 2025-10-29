@@ -34,7 +34,7 @@ exports.handler = async (event, context) => {
 
     // Get RunPod API credentials from environment variables
     const RUNPOD_API_KEY = process.env.RUNPOD_API_KEY_SELIRA || process.env.RUNPOD_API_KEY;
-    const RUNPOD_ENDPOINT_ID = process.env.RUNPOD_ENDPOINT_ID || process.env.RUNPOD_ANIMATEDIFF_ENDPOINT_ID;
+    const RUNPOD_ENDPOINT_ID = process.env.RUNPOD_ENDPOINT_ID_SELIRA || process.env.RUNPOD_ENDPOINT_ID || process.env.RUNPOD_ANIMATEDIFF_ENDPOINT_ID;
 
     if (!RUNPOD_API_KEY || !RUNPOD_ENDPOINT_ID) {
       return {
