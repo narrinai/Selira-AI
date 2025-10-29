@@ -634,6 +634,16 @@
                         <small>Describe the environment/location</small>
                     </div>
 
+                    <!-- Style Selection -->
+                    <div class="form-group">
+                        <label for="traits_style">Art Style</label>
+                        <select id="traits_style" name="traits_style">
+                            <option value="realistic" selected>Realistic / Photorealistic</option>
+                            <option value="anime">Anime / Hentai Style</option>
+                        </select>
+                        <small>💡 Anime style may handle movement and objects better due to stylized nature</small>
+                    </div>
+
                     <!-- Provider Selection -->
                     <div class="form-group">
                         <label for="traits_provider">Video Provider</label>
@@ -1276,6 +1286,7 @@
                 age: parseInt(document.getElementById('traits_age').value),
                 action: document.getElementById('traits_action').value,
                 setting: document.getElementById('traits_setting').value,
+                style: document.getElementById('traits_style').value,
                 provider: document.getElementById('traits_provider').value,
                 duration: document.getElementById('traits_duration').value,
                 aspect_ratio: document.getElementById('traits_aspect_ratio').value,

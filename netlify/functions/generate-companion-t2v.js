@@ -32,6 +32,7 @@ exports.handler = async (event, context) => {
       age,
       action,
       setting,
+      style, // 'realistic' or 'anime'
       provider // 'fal', 'replicate', or 'runpod'
     } = requestData;
 
@@ -44,7 +45,8 @@ exports.handler = async (event, context) => {
       bodyType,
       age,
       action,
-      setting
+      setting,
+      style
     });
 
     console.log('📝 Generated prompt:', prompt);
@@ -94,7 +96,8 @@ function buildPromptFromTraits(traits) {
     bodyType,
     age,
     action,
-    setting
+    setting,
+    style
   } = traits;
 
   // Map ethnicity to appearance description
@@ -126,18 +129,37 @@ function buildPromptFromTraits(traits) {
     bodyTypeMap[bodyType] || bodyTypeMap['average']
   ].join(', ');
 
-  // Build full prompt with action and setting - no auto-enhancement, user has full control
-  const fullPrompt = `
-${appearance}. ${action || 'smiling at camera, gentle head movement'}.
+  // Build full prompt based on style
+  const isAnime = style === 'anime';
+
+  let fullPrompt;
+
+  if (isAnime) {
+    // Anime-specific prompt structure
+    fullPrompt = `
+Anime art style, hentai aesthetic. ${appearance}. ${action || 'smiling at camera, gentle head movement'}.
+
+Setting: ${setting || 'indoor lighting, soft background'}.
+
+High quality anime video, smooth fluid animation, cel shaded, vibrant colors,
+detailed anime facial features, expressive large eyes, stylized proportions,
+anime line art, 2D animation style, explicit hentai content, uncensored,
+smooth motion, professional anime quality.
+    `.trim();
+  } else {
+    // Realistic prompt structure
+    fullPrompt = `
+Photorealistic style. ${appearance}. ${action || 'smiling at camera, gentle head movement'}.
 
 Setting: ${setting || 'indoor lighting, soft background'}.
 
 High quality, professional video, smooth motion, realistic skin texture,
 detailed facial features, photorealistic, 8K quality, natural lighting,
 cinematic camera movement, explicit NSFW content, uncensored.
-  `.trim();
+    `.trim();
+  }
 
-  console.log('📝 Built prompt:', fullPrompt);
+  console.log('📝 Built prompt (style: ' + (isAnime ? 'anime' : 'realistic') + '):', fullPrompt);
 
   return fullPrompt;
 }
