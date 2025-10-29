@@ -889,12 +889,34 @@
     // Check if user can view unlimited feed
     function canViewUnlimitedFeed() {
       if (!currentUser || !currentUser.email) {
+        console.log('🔍 canViewUnlimitedFeed: No user or email');
         return false; // Not logged in
       }
 
+      // Check different field name variations for image credits
+      const imageCredits = currentUser.image_credits ||
+                          currentUser.Image_Credits ||
+                          currentUser.imageCredits ||
+                          currentUser['Image Credits'] ||
+                          0;
+
+      const planName = currentUser.plan ||
+                      currentUser.Plan ||
+                      currentUser.subscription_tier ||
+                      'free';
+
       // Check if user has a paid plan or image credits
-      const hasPaidPlan = currentUser.plan && currentUser.plan.toLowerCase() !== 'free';
-      const hasImageCredits = currentUser.image_credits && parseInt(currentUser.image_credits) > 0;
+      const hasPaidPlan = planName && planName.toLowerCase() !== 'free';
+      const hasImageCredits = parseInt(imageCredits) > 0;
+
+      console.log('🔍 canViewUnlimitedFeed check:', {
+        email: currentUser.email,
+        planName: planName,
+        imageCredits: imageCredits,
+        hasPaidPlan: hasPaidPlan,
+        hasImageCredits: hasImageCredits,
+        result: hasPaidPlan || hasImageCredits
+      });
 
       return hasPaidPlan || hasImageCredits;
     }
