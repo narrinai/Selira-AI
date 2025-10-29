@@ -934,21 +934,30 @@
 
       hasShownLimitModal = true;
 
+      // Re-check current user status (in case it changed)
+      if (window.getCurrentUser) {
+        currentUser = window.getCurrentUser();
+      }
+
+      console.log('🔍 Checking limit modal - User:', currentUser);
+
       if (!currentUser || !currentUser.email) {
         // Not logged in - show signup modal
-        console.log('🔒 Free view limit reached - showing signup modal');
+        console.log('🔒 Free view limit reached - showing signup modal (not logged in)');
         if (window.openLoginModal) {
           window.openLoginModal('signup');
         }
       } else if (!canViewUnlimitedFeed()) {
         // Logged in but free user without credits - show upgrade popup
-        console.log('🔒 Free view limit reached - showing upgrade popup');
+        console.log('🔒 Free view limit reached - showing upgrade popup (logged in but limited)');
         if (window.showUpgradePopup) {
           window.showUpgradePopup('feed_limit');
         } else {
           // Fallback: redirect to pricing
           window.location.href = '/pricing';
         }
+      } else {
+        console.log('✅ User has unlimited access - no modal shown');
       }
     }
 
@@ -960,13 +969,20 @@
       if (window.getCurrentUser) {
         currentUser = window.getCurrentUser();
         console.log('👤 Current user:', currentUser);
+        console.log('📧 User email:', currentUser?.email);
+        console.log('💎 User plan:', currentUser?.plan);
+        console.log('🎨 Image credits:', currentUser?.image_credits);
+      } else {
+        console.log('⚠️ getCurrentUser function not available');
       }
 
       // Show profile nav items for logged in users
-      if (currentUser) {
+      if (currentUser && currentUser.email) {
+        console.log('✅ User is logged in - showing profile nav');
         document.getElementById('profileNavItem')?.setAttribute('style', 'display: flex');
         document.getElementById('mobileProfileNav')?.setAttribute('style', 'display: flex');
       } else {
+        console.log('❌ User not logged in - showing auth buttons');
         document.getElementById('sidebarAuthButtons')?.setAttribute('style', 'display: flex; flex-direction: column;');
       }
 
@@ -974,10 +990,14 @@
       await loadFeed();
 
       // Setup image view tracking (only if not unlimited)
-      if (!canViewUnlimitedFeed()) {
+      const hasUnlimitedAccess = canViewUnlimitedFeed();
+      console.log('🔍 Unlimited access check:', hasUnlimitedAccess);
+
+      if (!hasUnlimitedAccess) {
+        console.log('⏱️ Setting up view tracking (limited access)');
         imageObserver = setupImageViewTracking();
       } else {
-        console.log('✨ Unlimited feed access enabled');
+        console.log('✨ Unlimited feed access enabled - no tracking');
       }
 
       // Setup infinite scroll
@@ -1170,10 +1190,15 @@
 
     // Toggle like on image
     async function toggleLike(imageId, buttonEl) {
+      // Re-check current user status (in case it changed)
+      if (window.getCurrentUser) {
+        currentUser = window.getCurrentUser();
+      }
+
       // Check if user is logged in
       if (!currentUser || !currentUser.email) {
         // Not logged in - show signup modal
-        console.log('🔒 User not logged in - showing signup modal');
+        console.log('🔒 User not logged in - showing signup modal for like');
         if (window.openLoginModal) {
           window.openLoginModal('signup');
         } else {
@@ -1183,7 +1208,7 @@
       }
 
       // User is logged in - proceed with like toggle
-      console.log('❤️ User logged in, toggling like for image:', imageId);
+      console.log('❤️ User logged in, toggling like for image:', imageId, 'User:', currentUser.email);
 
       try {
         const response = await fetch('/.netlify/functions/selira-like-image', {
