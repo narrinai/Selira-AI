@@ -804,26 +804,34 @@
 
     .scenario-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 16px;
-      margin-bottom: 24px;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
     }
 
     .scenario-option {
       background: var(--bg-tertiary);
       border: 2px solid var(--border);
-      border-radius: 16px;
-      padding: 24px;
+      border-radius: 12px;
+      padding: 16px;
       cursor: pointer;
       transition: all 0.3s ease;
       text-align: left;
+      position: relative;
+    }
+
+    .scenario-icon {
+      width: 24px;
+      height: 24px;
+      margin-bottom: 8px;
+      opacity: 0.9;
     }
 
     .scenario-option:hover {
       border-color: var(--accent);
       background: rgba(206, 147, 216, 0.05);
-      transform: translateY(-4px);
-      box-shadow: 0 8px 24px rgba(206, 147, 216, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(206, 147, 216, 0.3);
     }
 
     .scenario-option.selected {
@@ -833,24 +841,24 @@
     }
 
     .scenario-option h3 {
-      font-size: 18px;
+      font-size: 15px;
       color: var(--text-primary);
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       font-weight: 600;
     }
 
     .scenario-option p {
-      font-size: 14px;
+      font-size: 12px;
       color: var(--text-secondary);
-      line-height: 1.5;
+      line-height: 1.4;
     }
 
     .scenario-no-option {
       grid-column: 1 / -1;
       background: var(--bg-tertiary);
       border: 2px dashed var(--border);
-      border-radius: 16px;
-      padding: 20px;
+      border-radius: 12px;
+      padding: 14px;
       cursor: pointer;
       transition: all 0.3s ease;
       text-align: center;
@@ -859,42 +867,18 @@
     .scenario-no-option:hover {
       border-color: var(--accent);
       background: rgba(206, 147, 216, 0.05);
+      transform: translateY(-2px);
     }
 
     .scenario-no-option h3 {
-      font-size: 16px;
+      font-size: 14px;
       color: var(--text-primary);
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
 
     .scenario-no-option p {
-      font-size: 13px;
+      font-size: 11px;
       color: var(--text-secondary);
-    }
-
-    .scenario-confirm-btn {
-      width: 100%;
-      background: linear-gradient(135deg, var(--accent), #9333ea);
-      color: white;
-      border: none;
-      border-radius: 12px;
-      padding: 16px 32px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 16px rgba(206, 147, 216, 0.3);
-    }
-
-    .scenario-confirm-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 24px rgba(206, 147, 216, 0.4);
-    }
-
-    .scenario-confirm-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
     }
 
     @keyframes slideUp {
@@ -2390,36 +2374,54 @@
             <p>Set the scene for your conversation - all images will match your chosen setting</p>
           </div>
           <div class="scenario-grid">
-            <div class="scenario-option" data-scenario="beach-sunset" onclick="selectScenarioOption('beach-sunset')">
+            <div class="scenario-option" data-scenario="beach-sunset" onclick="confirmScenario('beach-sunset')">
+              <svg class="scenario-icon" viewBox="0 0 24 24" fill="none" stroke="url(#flameGradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <defs><linearGradient id="flameGradient" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:#ec4899;stop-opacity:1" /><stop offset="100%" style="stop-color:#ce93d8;stop-opacity:1" /></linearGradient></defs>
+                <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+              </svg>
               <h3>Beach at Sunset</h3>
-              <p>A secluded beach during golden hour with warm orange light and gentle waves</p>
+              <p>Secluded shore, golden light, perfect for getting wet together</p>
             </div>
-            <div class="scenario-option" data-scenario="cozy-cabin" onclick="selectScenarioOption('cozy-cabin')">
+            <div class="scenario-option" data-scenario="cozy-cabin" onclick="confirmScenario('cozy-cabin')">
+              <svg class="scenario-icon" viewBox="0 0 24 24" fill="none" stroke="url(#flameGradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+              </svg>
               <h3>Cozy Mountain Cabin</h3>
-              <p>Snowed in at a rustic cabin with a crackling fireplace and soft blankets</p>
+              <p>Snowed in, fireplace crackling, time to warm each other up</p>
             </div>
-            <div class="scenario-option" data-scenario="luxury-penthouse" onclick="selectScenarioOption('luxury-penthouse')">
+            <div class="scenario-option" data-scenario="luxury-penthouse" onclick="confirmScenario('luxury-penthouse')">
+              <svg class="scenario-icon" viewBox="0 0 24 24" fill="none" stroke="url(#flameGradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+              </svg>
               <h3>Luxury Penthouse</h3>
-              <p>An elegant city penthouse with floor-to-ceiling windows and stunning views</p>
+              <p>City views, expensive drinks, and naughty intentions</p>
             </div>
-            <div class="scenario-option" data-scenario="tropical-resort" onclick="selectScenarioOption('tropical-resort')">
+            <div class="scenario-option" data-scenario="tropical-resort" onclick="confirmScenario('tropical-resort')">
+              <svg class="scenario-icon" viewBox="0 0 24 24" fill="none" stroke="url(#flameGradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+              </svg>
               <h3>Tropical Resort</h3>
-              <p>A private villa surrounded by palm trees and crystal-clear waters</p>
+              <p>Private villa, infinity pool, no tan lines allowed</p>
             </div>
-            <div class="scenario-option" data-scenario="secret-library" onclick="selectScenarioOption('secret-library')">
+            <div class="scenario-option" data-scenario="secret-library" onclick="confirmScenario('secret-library')">
+              <svg class="scenario-icon" viewBox="0 0 24 24" fill="none" stroke="url(#flameGradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+              </svg>
               <h3>Secret Library</h3>
-              <p>A mysterious library filled with ancient books and soft candlelight</p>
+              <p>After hours, moonlight filtering in, forbidden desires</p>
             </div>
-            <div class="scenario-option" data-scenario="art-studio" onclick="selectScenarioOption('art-studio')">
+            <div class="scenario-option" data-scenario="art-studio" onclick="confirmScenario('art-studio')">
+              <svg class="scenario-icon" viewBox="0 0 24 24" fill="none" stroke="url(#flameGradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+              </svg>
               <h3>Art Studio</h3>
-              <p>A creative space with large windows, canvases, and natural light</p>
+              <p>Natural light, creative vibes, painting each other nude</p>
             </div>
-            <div class="scenario-no-option" onclick="selectScenarioOption(null)">
+            <div class="scenario-no-option" onclick="confirmScenario(null)">
               <h3>Just Start Chatting</h3>
-              <p>Skip the scenario and begin your conversation naturally</p>
+              <p>Skip the scenario</p>
             </div>
           </div>
-          <button class="scenario-confirm-btn" id="confirmScenarioBtn" onclick="confirmScenario()" disabled>Start Chat</button>
         </div>
       </div>
 
@@ -2659,44 +2661,44 @@
       'beach-sunset': {
         name: 'Beach at Sunset',
         title: 'Beach at Sunset',
-        description: 'A secluded beach during golden hour with warm orange light and gentle waves',
+        description: 'Secluded shore, golden light, perfect for getting wet together',
         context: 'at a secluded beach during golden hour sunset, warm orange light, gentle ocean waves, sandy shore',
-        greeting: "The sunset here is incredible... I love how the light catches the water. Want to take a walk along the shore with me?"
+        greeting: "Mmm, the sunset here is gorgeous... but not as gorgeous as you. Want to go skinny dipping? No one can see us here. *bites lip playfully*"
       },
       'cozy-cabin': {
         name: 'Cozy Mountain Cabin',
         title: 'Cozy Mountain Cabin',
-        description: 'Snowed in at a rustic cabin with a crackling fireplace and soft blankets',
+        description: 'Snowed in, fireplace crackling, time to warm each other up',
         context: 'in a cozy mountain cabin with snow falling outside, warm fireplace crackling, soft blankets, intimate rustic atmosphere',
-        greeting: "Come in from the cold! I just got the fire going. Looks like we're snowed in for the evening... not that I'm complaining."
+        greeting: "Come here... it's freezing outside. We're completely snowed in for the night. *pulls you close* Good thing I know how to keep warm. Should I get the wine?"
       },
       'luxury-penthouse': {
         name: 'Luxury Penthouse',
         title: 'Luxury Penthouse',
-        description: 'An elegant city penthouse with floor-to-ceiling windows and stunning views',
+        description: 'City views, expensive drinks, and naughty intentions',
         context: 'in a luxury penthouse suite with floor-to-ceiling windows overlooking the city skyline at night, modern elegant interior, ambient lighting',
-        greeting: "Welcome to my place. Pretty nice view, right? The city lights are always breathtaking at night. Can I get you a drink?"
+        greeting: "Welcome to my penthouse. *traces finger along your arm* Pretty impressive view, right? Though I'd rather be looking at you... Let me pour you something strong."
       },
       'tropical-resort': {
         name: 'Tropical Resort',
         title: 'Tropical Resort',
-        description: 'A private villa surrounded by palm trees and crystal-clear waters',
+        description: 'Private villa, infinity pool, no tan lines allowed',
         context: 'at an exclusive tropical island resort, infinity pool overlooking turquoise ocean, palm trees, private cabana, paradise setting',
-        greeting: "Paradise, isn't it? We have the whole villa to ourselves. Want to check out the infinity pool? The water's perfect."
+        greeting: "Paradise... just you, me, and this private villa. *slips off cover-up* The pool's perfect. Want to help me apply sunscreen? I don't want any tan lines."
       },
       'secret-library': {
         name: 'Secret Library',
         title: 'Secret Library',
-        description: 'A mysterious library filled with ancient books and soft candlelight',
+        description: 'After hours, moonlight filtering in, forbidden desires',
         context: 'in a grand historic library after hours, moonlight streaming through tall windows, rows of ancient books, quiet romantic atmosphere',
-        greeting: "Shhh... we're not supposed to be here after hours, but I couldn't resist showing you this place. The moonlight through those windows is magical."
+        greeting: "Shhh... *presses finger to your lips* We're not supposed to be here. But there's something so thrilling about breaking the rules, don't you think? *leads you deeper into the shadows*"
       },
       'art-studio': {
         name: 'Art Studio',
         title: 'Art Studio',
-        description: 'A creative space with large windows, canvases, and natural light',
+        description: 'Natural light, creative vibes, painting each other nude',
         context: 'in an artist\'s loft studio with natural skylight, canvases and art supplies, creative bohemian atmosphere, draped fabrics',
-        greeting: "You found my studio! I've been working on something new... want to be my muse for a while? The light in here is perfect right now."
+        greeting: "You found my studio! *smiles mischievously* I need a model for my next piece... interested? Fair warning - it's a nude study. The light on your body would be absolutely perfect."
       }
     };
 
@@ -3115,49 +3117,41 @@
       console.log('🎬 Showing scenario overlay');
     }
 
-    // Select a scenario option in overlay
-    function selectScenarioOption(scenarioId) {
-      // Remove selected state from all options
-      document.querySelectorAll('.scenario-option').forEach(opt => {
-        opt.classList.remove('selected');
-      });
-      document.querySelector('.scenario-no-option')?.classList.remove('selected');
-
+    // Confirm scenario selection and close overlay (directly from click)
+    function confirmScenario(scenarioId) {
+      // Set selected scenario
       if (scenarioId === null) {
-        // "Just start chatting" option
         selectedScenario = null;
-        document.querySelector('.scenario-no-option')?.classList.add('selected');
         console.log('🎬 No scenario selected - just chatting');
       } else {
-        // Specific scenario selected
         const scenario = SCENARIOS[scenarioId];
         if (!scenario) return;
 
         selectedScenario = scenario;
-        document.querySelector(`[data-scenario="${scenarioId}"]`)?.classList.add('selected');
         console.log('🎬 Scenario selected:', scenario.name);
         console.log('📝 Scenario context:', scenario.context);
       }
 
-      // Enable confirm button
-      document.getElementById('confirmScenarioBtn').disabled = false;
-    }
-
-    // Confirm scenario selection and close overlay
-    function confirmScenario() {
+      // Close overlay
       const overlay = document.getElementById('scenarioOverlay');
       if (overlay) {
         overlay.classList.remove('active');
       }
 
-      // If a scenario was selected, send greeting message
+      // Replace original greeting with scenario greeting
       if (selectedScenario && selectedScenario.greeting) {
-        console.log('🎬 Starting with scenario greeting:', selectedScenario.greeting);
+        console.log('🎬 Replacing original greeting with scenario greeting');
 
-        // Add AI greeting message to chat
+        // Clear existing messages
+        const chatMessages = document.getElementById('chatMessages');
+        if (chatMessages) {
+          chatMessages.innerHTML = '';
+        }
+
+        // Add scenario greeting message
         setTimeout(() => {
           addMessage(selectedScenario.greeting, 'ai');
-        }, 500);
+        }, 300);
       }
 
       console.log('✅ Scenario confirmed, overlay closed');
