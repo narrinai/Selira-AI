@@ -146,6 +146,16 @@ exports.handler = async (event, context) => {
       }
 
       // Get user who generated the image (from Generated_Images table)
+      // Debug: Log all available fields to see what we have
+      console.log('🔍 Generated_Images fields for record:', record.id, {
+        user_display_name: fields.user_display_name,
+        display_name: fields.display_name,
+        Display_Name: fields.Display_Name,
+        user_email: fields.user_email,
+        user_id: fields.user_id,
+        allFieldNames: Object.keys(fields)
+      });
+
       const imageCreator = fields.user_display_name ||
                           fields.display_name ||
                           fields.Display_Name ||
