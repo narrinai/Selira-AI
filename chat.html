@@ -645,6 +645,22 @@
       }
     }
 
+    /* Fade-in animation for AI messages */
+    @keyframes fadeInMessage {
+      0% {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .message.ai.fade-in {
+      animation: fadeInMessage 0.6s ease-out;
+    }
+
     .message-content {
       background: var(--bg-secondary);
       padding: 12px 16px;
@@ -4159,6 +4175,11 @@
       const isLoadingMessage = content.includes('Sending your image');
 
       if (sender === 'ai') {
+        // Add fade-in effect for non-loading AI messages
+        if (!isLoadingMessage) {
+          messageDiv.classList.add('fade-in');
+        }
+
         messageDiv.innerHTML = `
           <div class="message-avatar">
             <img src="${fixAvatarUrl(currentCharacter.avatar)}" alt="${currentCharacter.name}" onerror="this.style.display='none'">
