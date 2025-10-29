@@ -56,8 +56,8 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Check request status using Queue API - must use POST
-    const statusResponse = await fetch(`https://queue.fal.run/fal-ai/kling-video/v2.1/master/text-to-video/requests/${requestId}/status`, {
+    // Check request status using Queue API - must use POST, v1/standard version
+    const statusResponse = await fetch(`https://queue.fal.run/fal-ai/kling-video/v1/standard/text-to-video/requests/${requestId}/status`, {
       method: 'POST',
       headers: {
         'Authorization': `Key ${FAL_API_KEY}`,
@@ -86,8 +86,8 @@ exports.handler = async (event, context) => {
     if (statusData.status === 'COMPLETED' || statusData.status === 'completed') {
       console.log('✅ Video generation completed!');
 
-      // Get the video URL from the completed request using Queue API - must use POST
-      const resultResponse = await fetch(`https://queue.fal.run/fal-ai/kling-video/v2.1/master/text-to-video/requests/${requestId}`, {
+      // Get the video URL from the completed request using Queue API - must use POST, v1/standard version
+      const resultResponse = await fetch(`https://queue.fal.run/fal-ai/kling-video/v1/standard/text-to-video/requests/${requestId}`, {
         method: 'POST',
         headers: {
           'Authorization': `Key ${FAL_API_KEY}`,
@@ -119,8 +119,8 @@ exports.handler = async (event, context) => {
           success: true,
           status: 'completed',
           video: videoUrl,
-          provider: 'Fal.ai (Kling AI v2.1 Master)',
-          cost: '$0.50',
+          provider: 'Fal.ai (Kling AI v1 Standard)',
+          cost: '$0.225 per 5s',
           requestId: requestId
         })
       };

@@ -1336,7 +1336,7 @@
 
                     // Poll for completion
                     const pollInterval = 3000;
-                    const maxWaitTime = isReplicate ? 600000 : isFal ? 300000 : 300000; // 10 min Replicate, 5 min Fal/RunPod
+                    const maxWaitTime = isReplicate ? 600000 : isFal ? 600000 : 600000; // 10 min for all providers
 
                     const pollStatus = async () => {
                         const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);

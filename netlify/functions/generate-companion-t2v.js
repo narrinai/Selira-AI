@@ -177,8 +177,8 @@ async function generateWithFal(prompt, requestData) {
 
   console.log('🎬 Starting Fal.ai Kling video generation...');
 
-  // Submit the job to QUEUE endpoint (async)
-  const response = await fetch('https://queue.fal.run/fal-ai/kling-video/v2.1/master/text-to-video', {
+  // Submit the job to QUEUE endpoint (async) - using v1/standard as it's more stable
+  const response = await fetch('https://queue.fal.run/fal-ai/kling-video/v1/standard/text-to-video', {
     method: 'POST',
     headers: {
       'Authorization': `Key ${FAL_API_KEY}`,
@@ -216,12 +216,12 @@ async function generateWithFal(prompt, requestData) {
 
   // Return job ID immediately for async polling
   return {
-    provider: 'Fal.ai (Kling AI v2.1 Master)',
+    provider: 'Fal.ai (Kling AI v1 Standard)',
     status: 'processing',
     jobId: requestId,
     message: 'Video generation started. Poll for status with job ID.',
     estimatedTime: '1-3 minutes',
-    cost: '$0.50'
+    cost: '$0.225 per 5s'
   };
 }
 
