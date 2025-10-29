@@ -2852,19 +2852,6 @@
     document.addEventListener('DOMContentLoaded', function() {
       console.log('🚀 Selira AI Chat interface loading...');
 
-      // Show scenario overlay immediately for new chats
-      const chatMessages = document.getElementById('chatMessages');
-      if (chatMessages && chatMessages.children.length === 0) {
-        // New chat - show scenario overlay right away
-        setTimeout(() => {
-          const overlay = document.getElementById('scenarioOverlay');
-          if (overlay) {
-            overlay.classList.add('active');
-            console.log('🎬 Scenario overlay shown immediately on page load');
-          }
-        }, 100);
-      }
-
       // OPTIMIZATION: Load specific character FIRST (fast), then all characters in background (slow)
       loadCharacterFromURL();  // Load specific character immediately
 
@@ -3118,6 +3105,8 @@
 
     // Show scenario selection
     function showScenarioSelection() {
+      // Check if this is called from init (chatHistory might not be loaded yet)
+      // If chatHistory is empty array or not yet loaded, show overlay
       if (chatHistory.length > 0) {
         console.log('💬 Chat has history, not showing scenarios');
         return;
@@ -3126,9 +3115,9 @@
       const overlay = document.getElementById('scenarioOverlay');
       if (!overlay) return;
 
-      // Show overlay with active class
+      // Show overlay with active class immediately (no setTimeout)
       overlay.classList.add('active');
-      console.log('🎬 Showing scenario overlay');
+      console.log('🎬 Showing scenario overlay immediately');
     }
 
     // Confirm scenario selection and close overlay (directly from click)
