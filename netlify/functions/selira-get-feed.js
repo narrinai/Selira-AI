@@ -145,12 +145,27 @@ exports.handler = async (event, context) => {
         continue;
       }
 
-      // Get user who generated the image (from Generated_Images table)
-      const imageCreator = fields.user_display_name ||
-                          fields.display_name ||
-                          fields.Display_Name ||
-                          fields.user_email?.split('@')[0] ||
-                          'Anonymous';
+      // Get user who generated the image
+      // display_name is a linked field from Users table in Generated_Images
+      let imageCreator = 'Anonymous';
+
+      // First try the linked display_name field (array from linked record)
+      if (fields.display_name && Array.isArray(fields.display_name) && fields.display_name.length > 0) {
+        imageCreator = fields.display_name[0];
+        console.log('✅ Found user display name from linked field:', imageCreator);
+      }
+      // Fallback to other possible field names
+      else if (fields.Display_Name && Array.isArray(fields.Display_Name) && fields.Display_Name.length > 0) {
+        imageCreator = fields.Display_Name[0];
+      }
+      // Check if it's stored as a string (not array)
+      else if (fields.user_display_name) {
+        imageCreator = fields.user_display_name;
+      }
+      // Last resort: use email prefix
+      else if (fields.user_email) {
+        imageCreator = fields.user_email.split('@')[0];
+      }
 
       // Build feed item
       feedItems.push({
