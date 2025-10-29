@@ -1315,24 +1315,28 @@
                     throw new Error(data.error || data.message || 'Failed to generate video');
                 }
 
-                // If provider returns jobId, poll for completion (RunPod or Replicate)
+                // If provider returns jobId, poll for completion (RunPod, Replicate, or Fal.ai)
                 if (data.jobId) {
                     const isReplicate = formData.provider === 'replicate';
-                    const providerName = isReplicate ? 'Replicate (Hunyuan)' : 'RunPod';
+                    const isFal = formData.provider === 'fal';
+                    const isRunpod = formData.provider === 'runpod';
+
+                    const providerName = isReplicate ? 'Replicate (Hunyuan)' : isFal ? 'Fal.ai (Kling)' : 'RunPod';
+                    const estimatedTime = isReplicate ? '2-5 minutes' : isFal ? '1-3 minutes' : '60-120s';
 
                     resultContent.innerHTML = `
                         <div class="loading">
                             <div class="spinner"></div>
-                            ${isReplicate ? 'Generating video with ' + providerName + '...' : 'Step 2: Converting to video with ' + providerName + '...'}
-                            <br><small>Elapsed: 0s | Est: ${isReplicate ? '2-5 minutes' : '60-120s'}</small>
+                            ${isRunpod ? 'Step 2: Converting to video with ' + providerName + '...' : 'Generating video with ' + providerName + '...'}
+                            <br><small>Elapsed: 0s | Est: ${estimatedTime}</small>
                             ${data.sourceImage ? `<br><small>Source image: <a href="${data.sourceImage}" target="_blank">View</a></small>` : ''}
                         </div>
                     `;
-                    generateBtn.textContent = isReplicate ? 'Generating video...' : 'Converting to video...';
+                    generateBtn.textContent = isRunpod ? 'Converting to video...' : 'Generating video...';
 
                     // Poll for completion
                     const pollInterval = 3000;
-                    const maxWaitTime = isReplicate ? 600000 : 300000; // 10 minutes for Replicate, 5 for RunPod
+                    const maxWaitTime = isReplicate ? 600000 : isFal ? 300000 : 300000; // 10 min Replicate, 5 min Fal/RunPod
 
                     const pollStatus = async () => {
                         const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
@@ -1342,9 +1346,14 @@
                         }
 
                         // Use appropriate status endpoint based on provider
-                        const statusEndpoint = isReplicate
-                            ? `/.netlify/functions/replicate-check-status?predictionId=${data.jobId}`
-                            : `/.netlify/functions/runpod-check-status?jobId=${data.jobId}`;
+                        let statusEndpoint;
+                        if (isReplicate) {
+                            statusEndpoint = `/.netlify/functions/replicate-check-status?predictionId=${data.jobId}`;
+                        } else if (isFal) {
+                            statusEndpoint = `/.netlify/functions/fal-check-status?requestId=${data.jobId}`;
+                        } else {
+                            statusEndpoint = `/.netlify/functions/runpod-check-status?jobId=${data.jobId}`;
+                        }
 
                         const statusResponse = await fetch(statusEndpoint);
                         const statusData = await statusResponse.json();
@@ -1379,16 +1388,25 @@
                             throw new Error(statusData.details || statusData.error || 'Video generation failed');
                         } else {
                             // Still processing
-                            const expectedTime = isReplicate ? 300 : 120; // 5 min for Replicate, 2 min for RunPod
+                            const expectedTime = isReplicate ? 300 : isFal ? 180 : 120; // 5 min Replicate, 3 min Fal, 2 min RunPod
                             const progress = Math.min(Math.floor((elapsedSeconds / expectedTime) * 100), 95);
                             const elapsedMinutes = Math.floor(elapsedSeconds / 60);
                             const remainingSeconds = elapsedSeconds % 60;
                             const timeDisplay = elapsedMinutes > 0 ? `${elapsedMinutes}m ${remainingSeconds}s` : `${elapsedSeconds}s`;
 
+                            let statusText;
+                            if (isReplicate) {
+                                statusText = 'Generating video with Hunyuan...';
+                            } else if (isFal) {
+                                statusText = 'Generating video with Kling AI...';
+                            } else {
+                                statusText = 'Step 2: Converting to video...';
+                            }
+
                             resultContent.innerHTML = `
                                 <div class="loading">
                                     <div class="spinner"></div>
-                                    ${isReplicate ? 'Generating video with Hunyuan...' : 'Step 2: Converting to video...'}
+                                    ${statusText}
                                     <br><small>Elapsed: ${timeDisplay} | Progress: ~${progress}%</small>
                                     ${data.sourceImage ? `<br><small>Source: <a href="${data.sourceImage}" target="_blank">View image</a></small>` : ''}
                                 </div>

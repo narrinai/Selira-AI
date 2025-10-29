@@ -164,7 +164,7 @@ cinematic camera movement, explicit NSFW content, uncensored.
   return fullPrompt;
 }
 
-// Generate with fal.ai
+// Generate with fal.ai - Async with job polling
 async function generateWithFal(prompt, requestData) {
   const FAL_API_KEY = process.env.FAL_API_KEY_SELIRA || process.env.FAL_API_KEY;
 
@@ -172,6 +172,9 @@ async function generateWithFal(prompt, requestData) {
     throw new Error('Fal.ai API key not configured. Set FAL_API_KEY_SELIRA in environment variables');
   }
 
+  console.log('🎬 Starting Fal.ai Kling video generation...');
+
+  // Submit the job
   const response = await fetch('https://fal.run/fal-ai/kling-video/v1/standard/text-to-video', {
     method: 'POST',
     headers: {
@@ -187,14 +190,29 @@ async function generateWithFal(prompt, requestData) {
   });
 
   if (!response.ok) {
-    throw new Error(`fal.ai API error: ${response.status}`);
+    const errorText = await response.text();
+    console.error('❌ Fal.ai API error:', errorText);
+    throw new Error(`fal.ai API error: ${response.status} - ${errorText}`);
   }
 
   const data = await response.json();
+  console.log('✅ Fal.ai job started:', data);
+
+  // Fal.ai returns request_id for async polling
+  const requestId = data.request_id;
+
+  if (!requestId) {
+    throw new Error('No request_id returned from Fal.ai');
+  }
+
+  // Return job ID immediately for async polling
   return {
-    provider: 'fal.ai (Kling AI)',
-    video: data.video?.url,
-    jobId: data.request_id
+    provider: 'Fal.ai (Kling AI)',
+    status: 'processing',
+    jobId: requestId,
+    message: 'Video generation started. Poll for status with job ID.',
+    estimatedTime: '1-3 minutes',
+    cost: '$0.50'
   };
 }
 
