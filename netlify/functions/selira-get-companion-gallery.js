@@ -52,6 +52,13 @@ exports.handler = async (event, context) => {
 
     console.log('📸 Fetching gallery for:', { companionSlug, userEmail });
 
+    // Log all available environment variables (without exposing sensitive tokens)
+    console.log('🔧 Environment check:', {
+      hasBaseId: !!AIRTABLE_BASE_ID,
+      hasToken: !!AIRTABLE_TOKEN,
+      baseIdPrefix: AIRTABLE_BASE_ID ? AIRTABLE_BASE_ID.substring(0, 8) + '...' : 'missing'
+    });
+
     // First, get character ID from slug
     const characterSearchUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Characters?` +
       `filterByFormula={Slug}='${companionSlug}'&maxRecords=1`;
@@ -140,6 +147,23 @@ exports.handler = async (event, context) => {
     }
 
     const imagesData = await imagesResponse.json();
+
+    console.log(`📊 Raw Airtable response:`, {
+      recordCount: imagesData.records?.length || 0,
+      hasOffset: !!imagesData.offset
+    });
+
+    // Log first record's fields for debugging
+    if (imagesData.records && imagesData.records.length > 0) {
+      console.log('📋 First record fields:', Object.keys(imagesData.records[0].fields));
+      console.log('📋 First record data sample:', {
+        id: imagesData.records[0].id,
+        has_image_url: !!imagesData.records[0].fields.image_url,
+        has_generation_date: !!imagesData.records[0].fields.generation_date,
+        has_prompt: !!imagesData.records[0].fields.prompt
+      });
+    }
+
     const images = (imagesData.records || []).map(record => ({
       id: record.id,
       image_url: record.fields.image_url,
