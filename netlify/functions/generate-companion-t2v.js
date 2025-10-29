@@ -179,6 +179,11 @@ async function generateWithReplicate(prompt, requestData) {
   }
 
   console.log('🎬 Starting Replicate Hunyuan video generation...');
+  console.log('📊 Parameters:', {
+    video_length: requestData.video_length || 129,
+    infer_steps: requestData.infer_steps || 50,
+    guidance_scale: requestData.guidance_scale || 6
+  });
 
   const response = await fetch('https://api.replicate.com/v1/predictions', {
     method: 'POST',
@@ -192,9 +197,9 @@ async function generateWithReplicate(prompt, requestData) {
         prompt: prompt,
         width: requestData.width || 864,
         height: requestData.height || 480,
-        video_length: requestData.video_length || 129,
-        infer_steps: requestData.infer_steps || 50,
-        embedded_guidance_scale: requestData.guidance_scale || 6,
+        video_length: requestData.video_length || 129, // Now controllable from UI
+        infer_steps: requestData.infer_steps || 50, // Now controllable from UI
+        embedded_guidance_scale: requestData.guidance_scale || 6, // Now controllable from UI
         fps: requestData.fps || 24,
         seed: requestData.seed || Math.floor(Math.random() * 1000000)
       }
