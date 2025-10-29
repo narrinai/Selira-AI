@@ -928,6 +928,75 @@
 
     let imageObserver = null;
 
+    // Block further scrolling
+    function blockFeedScroll() {
+      const feedContainer = document.getElementById('feedContainer');
+      if (feedContainer) {
+        feedContainer.style.overflow = 'hidden';
+        console.log('🚫 Feed scrolling blocked');
+      }
+
+      // Create overlay to prevent interaction
+      const overlay = document.createElement('div');
+      overlay.id = 'feedBlockOverlay';
+      overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(5px);
+      `;
+
+      const message = document.createElement('div');
+      message.style.cssText = `
+        background: var(--bg-secondary);
+        padding: 32px;
+        border-radius: 16px;
+        text-align: center;
+        max-width: 400px;
+        margin: 0 16px;
+        border: 1px solid var(--border);
+      `;
+      message.innerHTML = `
+        <h3 style="color: var(--text-primary); margin-bottom: 16px; font-size: 24px;">🔒 Sign up to continue</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 24px; line-height: 1.6;">
+          You've reached the free viewing limit. Create an account to see more amazing content!
+        </p>
+        <button onclick="window.openLoginModal('signup')" style="
+          background: var(--accent);
+          color: white;
+          border: none;
+          padding: 12px 24px;
+          border-radius: 8px;
+          font-size: 16px;
+          font-weight: 600;
+          cursor: pointer;
+          width: 100%;
+          margin-bottom: 12px;
+        ">Sign Up Free</button>
+        <button onclick="window.openLoginModal('login')" style="
+          background: transparent;
+          color: var(--text-secondary);
+          border: 1px solid var(--border);
+          padding: 12px 24px;
+          border-radius: 8px;
+          font-size: 16px;
+          font-weight: 600;
+          cursor: pointer;
+          width: 100%;
+        ">Already have an account?</button>
+      `;
+
+      overlay.appendChild(message);
+      document.body.appendChild(overlay);
+    }
+
     // Show appropriate modal based on user status
     function checkAndShowLimitModal() {
       if (hasShownLimitModal) return;
@@ -942,8 +1011,14 @@
       console.log('🔍 Checking limit modal - User:', currentUser);
 
       if (!currentUser || !currentUser.email) {
-        // Not logged in - show signup modal
+        // Not logged in - show signup modal and block scroll
         console.log('🔒 Free view limit reached - showing signup modal (not logged in)');
+
+        // Block scrolling after a short delay to allow modal to be dismissed once
+        setTimeout(() => {
+          blockFeedScroll();
+        }, 1000);
+
         if (window.openLoginModal) {
           window.openLoginModal('signup');
         }
