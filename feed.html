@@ -928,12 +928,12 @@
 
     let imageObserver = null;
 
-    // Block further scrolling
-    function blockFeedScroll() {
+    // Block further scrolling for non-authenticated users
+    function blockFeedScrollForSignup() {
       const feedContainer = document.getElementById('feedContainer');
       if (feedContainer) {
         feedContainer.style.overflow = 'hidden';
-        console.log('🚫 Feed scrolling blocked');
+        console.log('🚫 Feed scrolling blocked - signup required');
       }
 
       // Create overlay to prevent interaction
@@ -997,6 +997,75 @@
       document.body.appendChild(overlay);
     }
 
+    // Block further scrolling for logged-in free users
+    function blockFeedScrollForUpgrade() {
+      const feedContainer = document.getElementById('feedContainer');
+      if (feedContainer) {
+        feedContainer.style.overflow = 'hidden';
+        console.log('🚫 Feed scrolling blocked - upgrade required');
+      }
+
+      // Create overlay to prevent interaction
+      const overlay = document.createElement('div');
+      overlay.id = 'feedBlockOverlay';
+      overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(5px);
+      `;
+
+      const message = document.createElement('div');
+      message.style.cssText = `
+        background: var(--bg-secondary);
+        padding: 32px;
+        border-radius: 16px;
+        text-align: center;
+        max-width: 400px;
+        margin: 0 16px;
+        border: 1px solid var(--border);
+      `;
+      message.innerHTML = `
+        <h3 style="color: var(--text-primary); margin-bottom: 16px; font-size: 24px;">💎 Upgrade to continue</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 24px; line-height: 1.6;">
+          You've reached the free viewing limit. Upgrade to a paid plan or purchase image credits to keep exploring!
+        </p>
+        <button onclick="window.location.href='/pricing'" style="
+          background: var(--accent);
+          color: white;
+          border: none;
+          padding: 12px 24px;
+          border-radius: 8px;
+          font-size: 16px;
+          font-weight: 600;
+          cursor: pointer;
+          width: 100%;
+          margin-bottom: 12px;
+        ">View Plans & Credits</button>
+        <button onclick="window.location.href='/pricing#credits'" style="
+          background: transparent;
+          color: var(--text-secondary);
+          border: 1px solid var(--border);
+          padding: 12px 24px;
+          border-radius: 8px;
+          font-size: 16px;
+          font-weight: 600;
+          cursor: pointer;
+          width: 100%;
+        ">Buy Image Credits Only</button>
+      `;
+
+      overlay.appendChild(message);
+      document.body.appendChild(overlay);
+    }
+
     // Show appropriate modal based on user status
     function checkAndShowLimitModal() {
       if (hasShownLimitModal) return;
@@ -1016,20 +1085,26 @@
 
         // Block scrolling after a short delay to allow modal to be dismissed once
         setTimeout(() => {
-          blockFeedScroll();
+          blockFeedScrollForSignup();
         }, 1000);
 
         if (window.openLoginModal) {
           window.openLoginModal('signup');
         }
       } else if (!canViewUnlimitedFeed()) {
-        // Logged in but free user without credits - show upgrade popup
+        // Logged in but free user without credits - show upgrade popup and block scroll
         console.log('🔒 Free view limit reached - showing upgrade popup (logged in but limited)');
+
+        // Block scrolling after a short delay to allow popup to be dismissed once
+        setTimeout(() => {
+          blockFeedScrollForUpgrade();
+        }, 1000);
+
         if (window.showUpgradePopup) {
           window.showUpgradePopup('feed_limit');
         } else {
-          // Fallback: redirect to pricing
-          window.location.href = '/pricing';
+          // Fallback: show block overlay directly
+          blockFeedScrollForUpgrade();
         }
       } else {
         console.log('✅ User has unlimited access - no modal shown');
