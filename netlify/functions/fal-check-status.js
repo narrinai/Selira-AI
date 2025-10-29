@@ -5,7 +5,7 @@ exports.handler = async (event, context) => {
   const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS'
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS'
   };
 
   // Handle preflight OPTIONS request
@@ -17,26 +17,31 @@ exports.handler = async (event, context) => {
     };
   }
 
-  if (event.httpMethod !== 'POST') {
+  if (event.httpMethod !== 'POST' && event.httpMethod !== 'GET') {
     return {
       statusCode: 405,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ error: 'Method not allowed - use POST' })
+      body: JSON.stringify({ error: 'Method not allowed - use GET or POST' })
     };
   }
 
   try {
-    // Get request ID from POST body
-    const requestData = JSON.parse(event.body || '{}');
-    const requestId = requestData.requestId || requestData.jobId;
+    // Get request ID from POST body or query params
+    let requestId;
+    if (event.httpMethod === 'POST') {
+      const requestData = JSON.parse(event.body || '{}');
+      requestId = requestData.requestId || requestData.jobId;
+    } else {
+      requestId = event.queryStringParameters?.requestId || event.queryStringParameters?.jobId;
+    }
 
     if (!requestId) {
       return {
         statusCode: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          error: 'Missing requestId or jobId in request body',
-          usage: 'POST /.netlify/functions/fal-check-status with body: {"requestId": "xxx"}'
+          error: 'Missing requestId or jobId',
+          usage: 'GET /.netlify/functions/fal-check-status?requestId=xxx OR POST with body: {"requestId": "xxx"}'
         })
       };
     }
@@ -56,9 +61,10 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Check request status using Queue API - must use POST, v1/standard version
-    const statusResponse = await fetch(`https://queue.fal.run/fal-ai/kling-video/v1/standard/text-to-video/requests/${requestId}/status`, {
-      method: 'POST',
+    // Try to get result directly (response_url) instead of status endpoint
+    // The status endpoint returns 404, so we fetch the result directly
+    const statusResponse = await fetch(`https://queue.fal.run/fal-ai/kling-video/v1/standard/text-to-video/requests/${requestId}`, {
+      method: 'GET',
       headers: {
         'Authorization': `Key ${FAL_API_KEY}`,
         'Content-Type': 'application/json'
@@ -66,6 +72,21 @@ exports.handler = async (event, context) => {
     });
 
     if (!statusResponse.ok) {
+      // 404 or other errors - job might still be in queue
+      if (statusResponse.status === 404) {
+        console.log('⏳ Job not ready yet (404) - still in queue');
+        return {
+          statusCode: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            success: true,
+            status: 'processing',
+            message: 'Job in queue...',
+            requestId: requestId
+          })
+        };
+      }
+
       console.error('❌ Status check failed:', statusResponse.status);
       const errorText = await statusResponse.text();
       return {
@@ -79,30 +100,16 @@ exports.handler = async (event, context) => {
       };
     }
 
-    const statusData = await statusResponse.json();
-    console.log('📊 Request status:', statusData.status);
+    const resultData = await statusResponse.json();
+    console.log('📊 Full result data:', JSON.stringify(resultData, null, 2));
+
+    // Check if there's a status field
+    const status = resultData.status || resultData.state;
+    console.log('📊 Request status:', status);
 
     // Handle different status states
-    if (statusData.status === 'COMPLETED' || statusData.status === 'completed') {
+    if (status === 'COMPLETED' || status === 'completed' || resultData.data?.video) {
       console.log('✅ Video generation completed!');
-
-      // Get the video URL from the completed request using Queue API - must use POST, v1/standard version
-      const resultResponse = await fetch(`https://queue.fal.run/fal-ai/kling-video/v1/standard/text-to-video/requests/${requestId}`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Key ${FAL_API_KEY}`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (!resultResponse.ok) {
-        console.error('❌ Failed to fetch result:', resultResponse.status);
-        const errorText = await resultResponse.text();
-        throw new Error(`Failed to fetch result: ${errorText}`);
-      }
-
-      const resultData = await resultResponse.json();
-      console.log('📊 Result data:', JSON.stringify(resultData, null, 2));
 
       // Extract video URL from result
       const videoUrl = resultData.data?.video?.url || resultData.video?.url || resultData.output?.video?.url;
@@ -124,8 +131,8 @@ exports.handler = async (event, context) => {
           requestId: requestId
         })
       };
-    } else if (statusData.status === 'FAILED' || statusData.status === 'failed') {
-      console.error('❌ Request failed:', statusData.error);
+    } else if (status === 'FAILED' || status === 'failed') {
+      console.error('❌ Request failed:', resultData.error);
       return {
         statusCode: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -133,11 +140,11 @@ exports.handler = async (event, context) => {
           success: false,
           status: 'failed',
           error: 'Video generation failed on Fal.ai',
-          details: statusData.error,
+          details: resultData.error,
           requestId: requestId
         })
       };
-    } else if (statusData.status === 'IN_PROGRESS' || statusData.status === 'in_progress' || statusData.status === 'IN_QUEUE' || statusData.status === 'in_queue') {
+    } else if (status === 'IN_PROGRESS' || status === 'in_progress' || status === 'IN_QUEUE' || status === 'in_queue') {
       // Still processing
       return {
         statusCode: 200,
@@ -145,21 +152,21 @@ exports.handler = async (event, context) => {
         body: JSON.stringify({
           success: true,
           status: 'processing',
-          message: statusData.status === 'IN_QUEUE' || statusData.status === 'in_queue' ? 'Job in queue...' : 'Generating video...',
+          message: status === 'IN_QUEUE' || status === 'in_queue' ? 'Job in queue...' : 'Generating video...',
           requestId: requestId
         })
       };
     } else {
-      // Unknown status
+      // Unknown status or still processing
       return {
         statusCode: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         body: JSON.stringify({
           success: true,
-          status: (statusData.status || 'unknown').toLowerCase(),
-          message: `Request status: ${statusData.status}`,
+          status: (status || 'processing').toLowerCase(),
+          message: status ? `Request status: ${status}` : 'Processing...',
           requestId: requestId,
-          rawStatus: statusData
+          rawStatus: resultData
         })
       };
     }

@@ -1345,15 +1345,10 @@
                             throw new Error(`Video generation timed out after ${maxWaitTime / 60000} minutes`);
                         }
 
-                        // Fal.ai requires POST, others use GET
+                        // All providers now use GET with query params
                         let statusResponse;
                         if (isFal) {
-                            // Fal.ai requires POST with body
-                            statusResponse = await fetch('/.netlify/functions/fal-check-status', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ requestId: data.jobId })
-                            });
+                            statusResponse = await fetch(`/.netlify/functions/fal-check-status?requestId=${data.jobId}`);
                         } else if (isReplicate) {
                             statusResponse = await fetch(`/.netlify/functions/replicate-check-status?predictionId=${data.jobId}`);
                         } else {

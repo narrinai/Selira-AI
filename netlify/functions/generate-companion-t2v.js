@@ -204,15 +204,14 @@ async function generateWithFal(prompt, requestData) {
 
   // Queue API returns: request_id, status_url, response_url, cancel_url
   const requestId = data.request_id;
-  const statusUrl = data.status_url;
 
-  if (!requestId || !statusUrl) {
-    console.error('❌ Missing request_id or status_url:', data);
+  if (!requestId) {
+    console.error('❌ Missing request_id:', data);
     throw new Error('No request_id returned from Fal.ai queue API');
   }
 
   console.log('📊 Job submitted - request_id:', requestId);
-  console.log('📊 Status URL:', statusUrl);
+  console.log('📊 Full queue response:', JSON.stringify(data, null, 2));
 
   // Return job ID immediately for async polling
   return {
