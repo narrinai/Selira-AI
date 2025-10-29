@@ -1134,18 +1134,18 @@
                 if (data.status === 'processing' && data.jobId) {
                     // Job started successfully, now poll for completion
                     const startTime = Date.now();
-                    resultContent.innerHTML = '<div class="loading"><div class="spinner"></div>Generating video...<br><small>Elapsed: 0s | Est: 60-120s</small></div>';
+                    resultContent.innerHTML = '<div class="loading"><div class="spinner"></div>Generating video...<br><small>Elapsed: 0s | Est: 2-8 minutes (varies by frames/steps)</small></div>';
                     generateBtn.textContent = 'Generating...';
 
                     // Poll every 3 seconds
                     const pollInterval = 3000;
-                    const maxWaitTime = 300000; // 5 minutes max
+                    const maxWaitTime = 600000; // 10 minutes max (video generation can take longer)
 
                     const pollStatus = async () => {
                         const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
 
                         if (Date.now() - startTime > maxWaitTime) {
-                            throw new Error('Video generation timed out after 5 minutes. Check RunPod dashboard.');
+                            throw new Error('Video generation timed out after 10 minutes. Check RunPod dashboard or try with fewer frames/steps.');
                         }
 
                         const statusResponse = await fetch(`/.netlify/functions/runpod-check-status?jobId=${data.jobId}`);
@@ -1174,13 +1174,16 @@
                             throw new Error(statusData.details || 'Video generation failed');
                         } else {
                             // Still processing, poll again
-                            const progress = Math.min(Math.floor((elapsedSeconds / 120) * 100), 95); // Cap at 95% until complete
+                            const progress = Math.min(Math.floor((elapsedSeconds / 300) * 100), 95); // Cap at 95% until complete (based on 5min avg)
                             const statusText = statusData.status === 'IN_QUEUE' ? 'In queue...' : 'Generating video...';
+                            const elapsedMinutes = Math.floor(elapsedSeconds / 60);
+                            const remainingSeconds = elapsedSeconds % 60;
+                            const timeDisplay = elapsedMinutes > 0 ? `${elapsedMinutes}m ${remainingSeconds}s` : `${elapsedSeconds}s`;
                             resultContent.innerHTML = `
                                 <div class="loading">
                                     <div class="spinner"></div>
                                     ${statusText}
-                                    <br><small>Elapsed: ${elapsedSeconds}s | Progress: ~${progress}%</small>
+                                    <br><small>Elapsed: ${timeDisplay} | Progress: ~${progress}% | This can take 2-8 minutes</small>
                                 </div>
                             `;
                             setTimeout(pollStatus, pollInterval);
