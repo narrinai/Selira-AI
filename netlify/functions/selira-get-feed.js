@@ -146,25 +146,44 @@ exports.handler = async (event, context) => {
       }
 
       // Get user who generated the image
-      // display_name is a linked field from Users table in Generated_Images
+      // display_name is a lookup field from Users table in Generated_Images
       let imageCreator = 'Anonymous';
 
-      // First try the linked display_name field (array from linked record)
-      if (fields.display_name && Array.isArray(fields.display_name) && fields.display_name.length > 0) {
-        imageCreator = fields.display_name[0];
-        console.log('✅ Found user display name from linked field:', imageCreator);
+      // Try all possible display_name field variations (Airtable may add numbers for duplicates)
+      const displayNameFields = [
+        'display_name (from user_id) 2',
+        'display_name (from user_id)',
+        'display_name',
+        'Display_Name',
+        'Display_Name (from user_id)',
+        'Display_Name (from user_id) 2'
+      ];
+
+      // Check each possible field name
+      for (const fieldName of displayNameFields) {
+        if (fields[fieldName]) {
+          // Lookup fields return arrays
+          if (Array.isArray(fields[fieldName]) && fields[fieldName].length > 0) {
+            imageCreator = fields[fieldName][0];
+            console.log(`✅ Found user display name from field "${fieldName}":`, imageCreator);
+            break;
+          }
+          // Or it might be a string
+          else if (typeof fields[fieldName] === 'string') {
+            imageCreator = fields[fieldName];
+            console.log(`✅ Found user display name from field "${fieldName}":`, imageCreator);
+            break;
+          }
+        }
       }
-      // Fallback to other possible field names
-      else if (fields.Display_Name && Array.isArray(fields.Display_Name) && fields.Display_Name.length > 0) {
-        imageCreator = fields.Display_Name[0];
-      }
-      // Check if it's stored as a string (not array)
-      else if (fields.user_display_name) {
-        imageCreator = fields.user_display_name;
-      }
-      // Last resort: use email prefix
-      else if (fields.user_email) {
-        imageCreator = fields.user_email.split('@')[0];
+
+      // Fallback to user_display_name or email
+      if (imageCreator === 'Anonymous') {
+        if (fields.user_display_name) {
+          imageCreator = fields.user_display_name;
+        } else if (fields.user_email) {
+          imageCreator = fields.user_email.split('@')[0];
+        }
       }
 
       // Build feed item
