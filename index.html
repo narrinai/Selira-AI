@@ -2489,10 +2489,8 @@
     };
 
     // Featured companions for different style combinations (female uncensored)
-    // Toggle between random and featured companions
-    const USE_RANDOM_COMPANIONS = true; // Set to false to use featured companions list
-
-    // Featured companions list (used when USE_RANDOM_COMPANIONS = false)
+    // DISABLED: Now using random companions by default
+    // To re-enable featured companions, uncomment the featuredList logic in renderCharacters()
     const featuredCompanions = {
       realistic: [
         'seductive-secretary-stone-1760212642419',
@@ -2894,15 +2892,13 @@
       // Initial render with shuffled characters (if random mode is enabled)
       applyFilters();
 
-      // Shuffle filtered characters if in random mode
-      if (USE_RANDOM_COMPANIONS) {
-        // Fisher-Yates shuffle algorithm
-        for (let i = filteredCharacters.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [filteredCharacters[i], filteredCharacters[j]] = [filteredCharacters[j], filteredCharacters[i]];
-        }
-        console.log('🎲 Shuffled', filteredCharacters.length, 'companions for random display');
+      // Shuffle filtered characters for random display
+      // Fisher-Yates shuffle algorithm
+      for (let i = filteredCharacters.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [filteredCharacters[i], filteredCharacters[j]] = [filteredCharacters[j], filteredCharacters[i]];
       }
+      console.log('🎲 Shuffled', filteredCharacters.length, 'companions for random display');
 
       renderCharacters();
 
@@ -3061,17 +3057,19 @@
       // Determine which featured list to use based on style filter
       let featuredList = null;
 
-      // Only use featured companions if toggle is enabled AND conditions are met
-      if (!USE_RANDOM_COMPANIONS && isFemaleUncensored) {
+      // DISABLED: Featured companions functionality
+      // To re-enable, uncomment the code below:
+      /*
+      if (isFemaleUncensored) {
         if (currentFilters.style === 'anime') {
           featuredList = featuredCompanions.anime;
         } else if (currentFilters.style === 'realistic') {
           featuredList = featuredCompanions.realistic;
         } else if (currentFilters.style === 'all' || !currentFilters.style) {
-          // Show all featured companions (realistic + anime mixed) when style is 'all' or not set
           featuredList = featuredCompanions.all;
         }
       }
+      */
 
       let initialCharacters;
 
