@@ -1148,32 +1148,17 @@
       console.log('🔍 Checking limit modal - User:', currentUser);
 
       if (!currentUser || !currentUser.email) {
-        // Not logged in - show signup modal and block scroll
-        console.log('🔒 Free view limit reached - showing signup modal (not logged in)');
+        // Not logged in - show signup overlay (no global modal)
+        console.log('🔒 Free view limit reached - showing signup overlay (not logged in)');
 
-        // Block scrolling after a short delay to allow modal to be dismissed once
-        setTimeout(() => {
-          blockFeedScrollForSignup();
-        }, 1000);
-
-        if (window.openLoginModal) {
-          window.openLoginModal('signup');
-        }
+        // Show only the local signup overlay
+        blockFeedScrollForSignup();
       } else if (!canViewUnlimitedFeed()) {
         // Logged in but free user without credits - show upgrade popup and block scroll
         console.log('🔒 Free view limit reached - showing upgrade popup (logged in but limited)');
 
-        // Block scrolling after a short delay to allow popup to be dismissed once
-        setTimeout(() => {
-          blockFeedScrollForUpgrade();
-        }, 1000);
-
-        if (window.showUpgradePopup) {
-          window.showUpgradePopup('feed_limit');
-        } else {
-          // Fallback: show block overlay directly
-          blockFeedScrollForUpgrade();
-        }
+        // Show only the local upgrade overlay (no global popup)
+        blockFeedScrollForUpgrade();
       } else {
         console.log('✅ User has unlimited access - no modal shown');
       }
