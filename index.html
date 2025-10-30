@@ -3491,6 +3491,12 @@
         first100: first100.length
       });
 
+      // Debug: Log first 5 companions to verify they all have avatar_url_2
+      console.log('🔍 First 5 companions check:');
+      filteredCharacters.slice(0, 5).forEach((char, idx) => {
+        console.log(`  ${idx + 1}. ${char.name} (@${char.creator}) - avatar_url_2: ${char.avatar_url_2 ? '✅' : '❌'}`);
+      });
+
       renderCharacters();
       // Filtering complete (logging disabled for performance)
 
