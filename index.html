@@ -3199,7 +3199,7 @@
       addHoverImageListeners();
     }
 
-    // Add automatic avatar alternating every 2 seconds
+    // Add automatic avatar alternating every 2 seconds with smooth fade
     function addHoverImageListeners() {
       const images = document.querySelectorAll('.character-image[data-hover-image]:not([data-alternating])');
 
@@ -3219,6 +3219,18 @@
         // Check if there's a third avatar
         const hasThirdAvatar = avatar3 && avatar3.trim() !== '';
 
+        // Function to smoothly switch images with fade effect
+        const switchImage = (newSrc) => {
+          // Fade out
+          img.style.opacity = '0';
+
+          // Wait for fade out, then change image and fade in
+          setTimeout(() => {
+            img.src = newSrc;
+            img.style.opacity = '1';
+          }, 300); // Match CSS transition duration
+        };
+
         if (hasThirdAvatar) {
           // 3-image alternating setup (logging disabled for performance)
 
@@ -3231,7 +3243,7 @@
 
           setInterval(() => {
             currentIndex = (currentIndex + 1) % 3;
-            img.src = avatars[currentIndex];
+            switchImage(avatars[currentIndex]);
           }, 1500);
         } else {
           console.log('✅ Setting up 2-image alternating for:', {
@@ -3247,9 +3259,9 @@
 
           setInterval(() => {
             if (showingAvatar1) {
-              img.src = avatar2;
+              switchImage(avatar2);
             } else {
-              img.src = avatar1;
+              switchImage(avatar1);
             }
             showingAvatar1 = !showingAvatar1;
           }, 1500);
