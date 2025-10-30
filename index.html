@@ -3452,11 +3452,35 @@
         return true;
       });
 
-      // Shuffle the filtered characters using Fisher-Yates algorithm
-      for (let i = filteredCharacters.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [filteredCharacters[i], filteredCharacters[j]] = [filteredCharacters[j], filteredCharacters[i]];
+      // Separate companions with and without avatar_url_2 (Selira official companions)
+      const withAvatarUrl2 = filteredCharacters.filter(char => char.avatar_url_2 && char.avatar_url_2.trim() !== '');
+      const withoutAvatarUrl2 = filteredCharacters.filter(char => !char.avatar_url_2 || char.avatar_url_2.trim() === '');
+
+      // Shuffle both groups separately using Fisher-Yates algorithm
+      function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
       }
+
+      shuffleArray(withAvatarUrl2);
+      shuffleArray(withoutAvatarUrl2);
+
+      // First 100 companions: only those with avatar_url_2, then the rest
+      const first100 = withAvatarUrl2.slice(0, 100);
+      const remainingWithAvatarUrl2 = withAvatarUrl2.slice(100);
+
+      // Combine: first 100 with avatar_url_2, then remaining with avatar_url_2, then all without avatar_url_2
+      filteredCharacters = [...first100, ...remainingWithAvatarUrl2, ...withoutAvatarUrl2];
+
+      console.log('🎨 Filtered companions:', {
+        total: filteredCharacters.length,
+        withAvatarUrl2: withAvatarUrl2.length,
+        withoutAvatarUrl2: withoutAvatarUrl2.length,
+        first100: first100.length
+      });
 
       renderCharacters();
       // Filtering complete (logging disabled for performance)
