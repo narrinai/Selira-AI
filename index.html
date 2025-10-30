@@ -2496,7 +2496,7 @@
   <script>
     // ===== DEVELOPMENT MODE DETECTION =====
     const isDev = window.location.hostname === 'localhost' || window.location.hostname.includes('127.0.0.1') || window.location.hostname.includes('netlify.app');
-    const log = isDev ? console.log.bind(console) : () => {};
+    const log = isDev ? log.bind(console) : () => {};
 
     // ===== CHARACTER.AI STYLE FUNCTIONALITY =====
     let allCharacters = [];
@@ -2720,7 +2720,7 @@
 
     // Initialize page
     document.addEventListener('DOMContentLoaded', async function() {
-      console.log('🚀 Selira AI Category page loading...');
+      log('🚀 Selira AI Category page loading...');
 
       // Handle URL parameters FIRST before loading characters
       handleInitialURL();
@@ -3142,11 +3142,11 @@
         const orderedCharacters = [...featured, ...remaining];
         initialCharacters = orderedCharacters.slice(0, charactersPerPage);
 
-        console.log('✨ Featured mode active:', currentFilters.style, '-', featured.length, 'featured companions');
+        log('✨ Featured mode active:', currentFilters.style, '-', featured.length, 'featured companions');
       } else {
         // Random mode: shuffle and show characters
         initialCharacters = filteredCharacters.slice(0, charactersPerPage);
-        console.log('🎲 Random mode: showing', initialCharacters.length, 'shuffled companions');
+        log('🎲 Random mode: showing', initialCharacters.length, 'shuffled companions');
       }
 
       // Insert deal card at position 5, then every 12 companions after that
@@ -3178,7 +3178,7 @@
             `<img src="${character.avatar}" alt="${character.name}" class="character-image" loading="lazy"
                   ${character.avatar_url_2 ? `data-hover-image="${character.avatar_url_2}"` : ''}
                   ${character.avatar_url_3 ? `data-hover-image-3="${character.avatar_url_3}"` : ''}
-                  onerror="this.onerror=null; this.src='https://selira.ai/avatars/${getWorkingAvatar(character.name, character.sex)}'; console.log('🔧 Fixed broken avatar for ${character.name}');">` :
+                  onerror="this.onerror=null; this.src='https://selira.ai/avatars/${getWorkingAvatar(character.name, character.sex)}'; log('🔧 Fixed broken avatar for ${character.name}');">` :
             `<div class="character-image-placeholder">${character.name.charAt(0)}</div>`
           }
 
@@ -3238,7 +3238,7 @@
         const avatar3 = img.getAttribute('data-hover-image-3');
 
         if (!avatar2 || !avatar1) {
-          console.log('⚠️ Skipping image - missing avatar:', { avatar1, avatar2 });
+          log('⚠️ Skipping image - missing avatar:', { avatar1, avatar2 });
           return;
         }
 
@@ -3275,7 +3275,7 @@
             switchImage(avatars[currentIndex]);
           }, 1800); // 1.8 seconds for smoother, less distracting cycling
         } else {
-          console.log('✅ Setting up 2-image alternating for:', {
+          log('✅ Setting up 2-image alternating for:', {
             avatar1: avatar1.substring(0, 50),
             avatar2: avatar2.substring(0, 50)
           });
@@ -3432,7 +3432,7 @@
 
           // Debug logging for first 5 characters when filter is active
           if (allCharacters.indexOf(character) < 5) {
-            console.log('🔍 Community filter:', character.Name,
+            log('🔍 Community filter:', character.Name,
               '| Created_by:', character.Created_by,
               '| isOfficial:', isOfficialCreator,
               '| filterMode:', currentFilters.community);
@@ -3463,7 +3463,7 @@
 
           // Debug logging for elf tag
           if (currentFilters.tags.some(t => t.toLowerCase().includes('elf'))) {
-            console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> DEBUG - Character:', character.name,
+            log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> DEBUG - Character:', character.name,
                        '| Character tags:', JSON.stringify(character.tags),
                        '| Filter tags:', JSON.stringify(currentFilters.tags),
                        '| Match:', hasMatchingTag);
@@ -3504,7 +3504,7 @@
       // Combine: first 100 with avatar_url_2, then mixed remaining companions
       filteredCharacters = [...first100, ...after100];
 
-      console.log('🎨 Filtered companions:', {
+      log('🎨 Filtered companions:', {
         total: filteredCharacters.length,
         withAvatarUrl2: withAvatarUrl2.length,
         withoutAvatarUrl2: withoutAvatarUrl2.length,
@@ -3514,9 +3514,9 @@
       });
 
       // Debug: Log first 10 companions to verify they all have avatar_url_2
-      console.log('🔍 First 10 companions check:');
+      log('🔍 First 10 companions check:');
       filteredCharacters.slice(0, 10).forEach((char, idx) => {
-        console.log(`  ${idx + 1}. ${char.name} (@${char.creator}) - avatar_url_2: ${char.avatar_url_2 ? '✅ YES' : '❌ NO'}`);
+        log(`  ${idx + 1}. ${char.name} (@${char.creator}) - avatar_url_2: ${char.avatar_url_2 ? '✅ YES' : '❌ NO'}`);
       });
 
       renderCharacters();
@@ -3560,7 +3560,7 @@
       // Hide dropdown
       document.getElementById('contentDropdown').style.display = 'none';
 
-      console.log('Content filter changed to:', currentFilters.content);
+      log('Content filter changed to:', currentFilters.content);
       applyFilters();
     }
 
@@ -3581,7 +3581,7 @@
       // Hide dropdown
       document.getElementById('sexDropdown').style.display = 'none';
 
-      console.log('Sex filter changed to:', currentFilters.sex);
+      log('Sex filter changed to:', currentFilters.sex);
 
       // Refresh tag filters to show only tags with 5+ companions for selected sex
       if (createAvailableTags && createAvailableTags.length > 0) {
@@ -3608,7 +3608,7 @@
       // Hide dropdown
       document.getElementById('styleDropdown').style.display = 'none';
 
-      console.log('Style filter changed to:', currentFilters.style);
+      log('Style filter changed to:', currentFilters.style);
       applyFilters();
     }
 
@@ -3636,7 +3636,7 @@
       // Hide dropdown
       document.getElementById('communityDropdown').style.display = 'none';
 
-      console.log('Community filter changed to:', currentFilters.community);
+      log('Community filter changed to:', currentFilters.community);
       applyFilters();
     }
 
@@ -3767,7 +3767,7 @@
           currentFilters[type] = toggle.classList.contains('active');
         }
         
-        console.log('Toggle', type, ':', currentFilters[type]);
+        log('Toggle', type, ':', currentFilters[type]);
         applyFilters();
       }
     }
@@ -3778,7 +3778,7 @@
     }
 
     function openCharacter(slug) {
-      console.log('Opening character:', slug);
+      log('Opening character:', slug);
       
       // Find character to get the correct URL
       const character = allCharacters.find(c => c.slug === slug);
@@ -3790,7 +3790,7 @@
     }
 
     function toggleFavorite(characterId) {
-      console.log('Toggle favorite:', characterId);
+      log('Toggle favorite:', characterId);
       // Implementation for favorites system
     }
 
@@ -4049,7 +4049,7 @@
         // Force onclick to open signup modal
         mobileBtn.onclick = function(e) {
           e.preventDefault();
-          console.log('🔧 Mobile Register button clicked - opening signup modal');
+          log('🔧 Mobile Register button clicked - opening signup modal');
           if (window.openLoginModal) {
             window.openLoginModal('signup');
           } else if (window.seliraAuth) {
@@ -4057,7 +4057,7 @@
           }
           return false;
         };
-        console.log('🔧 Force-set mobile button to Register with signup modal, onclick handler:', mobileBtn.onclick !== null);
+        log('🔧 Force-set mobile button to Register with signup modal, onclick handler:', mobileBtn.onclick !== null);
       }
     }
 
@@ -4068,7 +4068,7 @@
 
     // Run again after auth state changes (auth0-login.js dispatches this event)
     window.addEventListener('auth-state-changed', function(event) {
-      console.log('🔧 Auth state changed, re-applying mobile button fix');
+      log('🔧 Auth state changed, re-applying mobile button fix');
       setTimeout(forceMobileButtonToRegister, 50);
     });
 
@@ -4083,7 +4083,7 @@
         if (mobileHeaderBtn) {
           mobileHeaderBtn.addEventListener('click', function() {
             clickFromMobileHeaderButton = true;
-            console.log('🔧 Click detected from mobile header button');
+            log('🔧 Click detected from mobile header button');
             setTimeout(function() {
               clickFromMobileHeaderButton = false;
             }, 100);
@@ -4095,13 +4095,13 @@
           window.openLoginModal = function(mode) {
             // Only force signup if click came from mobile header button
             if (clickFromMobileHeaderButton) {
-              console.log('🔧 Intercepted openLoginModal call from mobile header button - forcing signup mode');
+              log('🔧 Intercepted openLoginModal call from mobile header button - forcing signup mode');
               mode = 'signup';
             }
 
             return originalOpenLoginModal.call(this, mode);
           };
-          console.log('🔧 Wrapped openLoginModal with mobile header detection');
+          log('🔧 Wrapped openLoginModal with mobile header detection');
         }
       }, 50);
     });
@@ -4115,11 +4115,11 @@
         if (mobileBtn && !window.isUserAuthenticated?.()) {
           // Store our correct onclick handler
           const correctOnClick = function(e) {
-            console.log('🔧🔧🔧 OUR HANDLER CALLED - Mobile Register button clicked');
+            log('🔧🔧🔧 OUR HANDLER CALLED - Mobile Register button clicked');
             e.preventDefault();
             e.stopPropagation();
             e.stopImmediatePropagation(); // Stop ALL other handlers
-            console.log('🔧 Opening signup modal');
+            log('🔧 Opening signup modal');
             if (window.openLoginModal) {
               window.openLoginModal('signup');
             } else if (window.seliraAuth) {
@@ -4134,7 +4134,7 @@
               return null; // Always return null so auth0 thinks there's no onclick
             },
             set: function(newHandler) {
-              console.log('🔧 Blocked attempt to change mobile button onclick via property setter');
+              log('🔧 Blocked attempt to change mobile button onclick via property setter');
               // Completely ignore any attempts to set onclick
               // Our addEventListener will handle the click
             },
@@ -4145,7 +4145,7 @@
           const originalSetAttribute = mobileBtn.setAttribute;
           mobileBtn.setAttribute = function(name, value) {
             if (name === 'onclick') {
-              console.log('🔧 Blocked attempt to change mobile button onclick via setAttribute');
+              log('🔧 Blocked attempt to change mobile button onclick via setAttribute');
               return;
             }
             return originalSetAttribute.call(this, name, value);
@@ -4168,23 +4168,23 @@
           if (parentDiv) {
             parentDiv.addEventListener('click', function(e) {
               if (e.target === mobileBtn) {
-                console.log('🔧 Parent caught click on button');
+                log('🔧 Parent caught click on button');
                 correctOnClick(e);
               }
             }, true);
           }
 
           // Log the current onclick state
-          console.log('🔧 Button onclick property after setup:', mobileBtn.onclick);
-          console.log('🔧 Button onclick attribute after setup:', mobileBtn.getAttribute('onclick'));
-          console.log('🔧 Event listeners added to button');
+          log('🔧 Button onclick property after setup:', mobileBtn.onclick);
+          log('🔧 Button onclick attribute after setup:', mobileBtn.getAttribute('onclick'));
+          log('🔧 Event listeners added to button');
 
           const observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
               if (mutation.type === 'childList' || mutation.type === 'characterData') {
                 const currentText = mobileBtn.textContent.trim();
                 if (currentText !== 'Register' && !window.isUserAuthenticated?.()) {
-                  console.log('🔧 MutationObserver detected button text change from "' + currentText + '" - forcing back to Register');
+                  log('🔧 MutationObserver detected button text change from "' + currentText + '" - forcing back to Register');
                   mobileBtn.textContent = 'Register';
                 }
               }
@@ -4198,17 +4198,17 @@
             if (btn && !window.isUserAuthenticated?.()) {
               const currentText = btn.textContent.trim();
               if (currentText !== 'Register') {
-                console.log('🔧 Interval check detected wrong text "' + currentText + '" - forcing to Register');
+                log('🔧 Interval check detected wrong text "' + currentText + '" - forcing to Register');
                 btn.textContent = 'Register';
               }
             } else if (!btn) {
-              console.log('🔧 Interval check: button not found with selector');
+              log('🔧 Interval check: button not found with selector');
             }
           }, 500);
 
           // Debug: log what we found initially
-          console.log('🔧 Initial button found:', mobileBtn ? 'YES' : 'NO');
-          console.log('🔧 Initial button text:', mobileBtn ? mobileBtn.textContent.trim() : 'N/A');
+          log('🔧 Initial button found:', mobileBtn ? 'YES' : 'NO');
+          log('🔧 Initial button text:', mobileBtn ? mobileBtn.textContent.trim() : 'N/A');
 
           observer.observe(mobileBtn, {
             childList: true,
@@ -4224,7 +4224,7 @@
               if (mutation.type === 'attributes' && mutation.attributeName === 'onclick') {
                 const onclickAttr = mobileBtn.getAttribute('onclick');
                 if (onclickAttr && !onclickAttr.includes("'signup'")) {
-                  console.log('🔧 Detected onclick attribute change to login - reverting to signup');
+                  log('🔧 Detected onclick attribute change to login - reverting to signup');
                   mobileBtn.setAttribute('onclick', "openLoginModal('signup'); return false;");
                 }
               }
@@ -4236,7 +4236,7 @@
             attributeFilter: ['onclick']
           });
 
-          console.log('🔧 MutationObserver watching mobile button + onclick protection enabled');
+          log('🔧 MutationObserver watching mobile button + onclick protection enabled');
         }
       }, 200);
     });
@@ -4245,7 +4245,7 @@
     document.addEventListener('click', function(e) {
       const isHomepage = window.location.pathname === '/' || window.location.pathname === '/index.html';
       if (isHomepage && e.target.closest('.mobile-header .mobile-auth-btn, .mobile-header .login-btn, .mobile-header .user-btn')) {
-        console.log('🔧 Global click interceptor: Mobile button clicked on homepage - forcing signup');
+        log('🔧 Global click interceptor: Mobile button clicked on homepage - forcing signup');
         e.preventDefault();
         e.stopPropagation();
         e.stopImmediatePropagation();
@@ -4276,7 +4276,7 @@
 
     // ===== BROWSER NAVIGATION HANDLING =====
     window.addEventListener('popstate', function(e) {
-      console.log('🔙 Browser navigation:', e.state);
+      log('🔙 Browser navigation:', e.state);
       
       if (e.state) {
         if (e.state.section === 'category') {
@@ -4389,7 +4389,7 @@
 
       // Prevent multiple simultaneous calls
       if (window.loadingCompanions) {
-        console.log('🔄 Already loading companions, skipping...');
+        log('🔄 Already loading companions, skipping...');
         return;
       }
       window.loadingCompanions = true;
@@ -4422,7 +4422,7 @@
           return;
         }
 
-        console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Loading companions for user:', userEmail);
+        log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Loading companions for user:', userEmail);
 
         // Call the working API
         const response = await fetch('/.netlify/functions/selira-get-my-companions', {
@@ -4446,7 +4446,7 @@
         }
 
         const userCompanions = data.companions || [];
-        console.log('✅ Loaded companions:', userCompanions.length);
+        log('✅ Loaded companions:', userCompanions.length);
 
         if (userCompanions.length === 0) {
           grid.innerHTML = `
@@ -4472,7 +4472,7 @@
               `<img src="${character.avatar}" alt="${character.name}" class="character-image" loading="lazy"
                     ${character.avatar_url_2 ? `data-hover-image="${character.avatar_url_2}"` : ''}
                     ${character.avatar_url_3 ? `data-hover-image-3="${character.avatar_url_3}"` : ''}
-                    onerror="this.onerror=null; this.src='https://selira.ai/avatars/${getWorkingAvatar(character.name, 'female')}'; console.log('🔧 Fixed broken avatar for ${character.name}');">` :
+                    onerror="this.onerror=null; this.src='https://selira.ai/avatars/${getWorkingAvatar(character.name, 'female')}'; log('🔧 Fixed broken avatar for ${character.name}');">` :
               `<div class="character-image-placeholder">${character.name.charAt(0)}</div>`
             }
 
@@ -5241,7 +5241,7 @@
     // ===== INFINITE SCROLL =====
     function setupInfiniteScroll() {
       // Try different scroll containers - window is most reliable
-      console.log('🔄 Setting up infinite scroll on window');
+      log('🔄 Setting up infinite scroll on window');
 
       window.addEventListener('scroll', function() {
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
@@ -5249,10 +5249,10 @@
         const scrollHeight = document.documentElement.scrollHeight;
         const threshold = scrollHeight - 200; // Increased threshold
 
-        console.log('📏 Window scroll event - scrollTop:', scrollTop, 'clientHeight:', clientHeight, 'scrollHeight:', scrollHeight, 'threshold:', threshold);
+        log('📏 Window scroll event - scrollTop:', scrollTop, 'clientHeight:', clientHeight, 'scrollHeight:', scrollHeight, 'threshold:', threshold);
 
         if (scrollTop + clientHeight >= threshold) {
-          console.log('🔄 Scroll threshold reached, calling loadMoreCharacters()');
+          log('🔄 Scroll threshold reached, calling loadMoreCharacters()');
           loadMoreCharacters();
         }
       });
@@ -5260,17 +5260,17 @@
 
     function loadMoreCharacters() {
       if (isLoading) {
-        console.log('🔄 Already loading, skipping...');
+        log('🔄 Already loading, skipping...');
         return;
       }
 
       isLoading = true;
       currentPage++;
 
-      console.log('📄 Loading page:', currentPage);
-      console.log('📊 Total characters:', filteredCharacters.length);
-      console.log('📊 Characters per page:', charactersPerPage);
-      console.log('📊 Expected start index:', (currentPage - 1) * charactersPerPage);
+      log('📄 Loading page:', currentPage);
+      log('📊 Total characters:', filteredCharacters.length);
+      log('📊 Characters per page:', charactersPerPage);
+      log('📊 Expected start index:', (currentPage - 1) * charactersPerPage);
 
       // Simulate API call delay
       setTimeout(() => {
@@ -5278,14 +5278,14 @@
         const endIndex = startIndex + charactersPerPage;
         const pageCharacters = filteredCharacters.slice(startIndex, endIndex);
 
-        console.log('📊 Page characters length:', pageCharacters.length);
-        console.log('📊 Page characters:', pageCharacters.map(c => c.name).slice(0, 3));
+        log('📊 Page characters length:', pageCharacters.length);
+        log('📊 Page characters:', pageCharacters.map(c => c.name).slice(0, 3));
 
         if (pageCharacters.length > 0) {
           appendCharacters(pageCharacters);
-          console.log('✅ Appended characters for page:', currentPage);
+          log('✅ Appended characters for page:', currentPage);
         } else {
-          console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> No more characters to load');
+          log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> No more characters to load');
         }
 
         isLoading = false;
@@ -5336,7 +5336,7 @@
             `<img src="${character.avatar}" alt="${character.name}" class="character-image" loading="lazy"
                   ${character.avatar_url_2 ? `data-hover-image="${character.avatar_url_2}"` : ''}
                   ${character.avatar_url_3 ? `data-hover-image-3="${character.avatar_url_3}"` : ''}
-                  onerror="this.onerror=null; this.src='https://selira.ai/avatars/${getWorkingAvatar(character.name, character.sex)}'; console.log('🔧 Fixed broken avatar for ${character.name}');">` :
+                  onerror="this.onerror=null; this.src='https://selira.ai/avatars/${getWorkingAvatar(character.name, character.sex)}'; log('🔧 Fixed broken avatar for ${character.name}');">` :
             `<div class="character-image-placeholder">${character.name.charAt(0)}</div>`
           }
 
@@ -5395,7 +5395,7 @@
       reader.onload = function(e) {
         try {
           const data = JSON.parse(e.target.result);
-          console.log('📥 ChatGPT file imported:', data);
+          log('📥 ChatGPT file imported:', data);
           
           // Process the ChatGPT export data here
           const importHistory = document.getElementById('importHistory');
@@ -5426,7 +5426,7 @@
       const reader = new FileReader();
       reader.onload = function(e) {
         const content = e.target.result;
-        console.log('📄 Text file imported:', file.name);
+        log('📄 Text file imported:', file.name);
         
         const importHistory = document.getElementById('importHistory');
         if (importHistory) {
@@ -5497,7 +5497,7 @@
         return;
       }
       
-      console.log('💾 Saving manual memory:', { title, content, importance });
+      log('💾 Saving manual memory:', { title, content, importance });
       
       // Here you would typically save to your backend
       // For now, just show success and go back
@@ -5557,7 +5557,7 @@ Please be thorough and include important details from our conversations.`;
       
       try {
         const data = JSON.parse(jsonText);
-        console.log('📥 Processing memory data:', data);
+        log('📥 Processing memory data:', data);
         
         // Show success and update import history
         const importHistory = document.getElementById('importHistory');
@@ -5655,7 +5655,7 @@ Please be thorough and include important details from our conversations.`;
         // Add event listeners for username/display name changes
         setupProfileEditListeners();
         
-        console.log('✅ User profile loaded');
+        log('✅ User profile loaded');
       } catch (error) {
         console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Error loading user profile:', error);
       }
@@ -5698,7 +5698,7 @@ Please be thorough and include important details from our conversations.`;
           display_name: displayName
         };
 
-        console.log('💾 Saving display name to Airtable:', updateData);
+        log('💾 Saving display name to Airtable:', updateData);
 
         const response = await fetch('/.netlify/functions/user-management', {
           method: 'POST',
@@ -5711,7 +5711,7 @@ Please be thorough and include important details from our conversations.`;
         });
 
         if (response.ok) {
-          console.log('✅ Display name saved to Airtable');
+          log('✅ Display name saved to Airtable');
         } else {
           console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Failed to save display name');
         }
@@ -6086,7 +6086,7 @@ Please be thorough and include important details from our conversations.`;
       });
       document.querySelector(`[data-style="${style}"]`).style.border = '2px solid var(--accent)';
       
-      console.log('Selected style:', style);
+      log('Selected style:', style);
     }
 
     function selectEthnicityStep(ethnicity) {
@@ -6098,7 +6098,7 @@ Please be thorough and include important details from our conversations.`;
       });
       document.querySelector(`[data-ethnicity="${ethnicity}"]`).style.border = '2px solid var(--accent)';
       
-      console.log('Selected ethnicity:', ethnicity);
+      log('Selected ethnicity:', ethnicity);
     }
 
     function selectHairStep(hairStyle) {
@@ -6113,7 +6113,7 @@ Please be thorough and include important details from our conversations.`;
       // Update final preview
       updateFinalPreview();
       
-      console.log('Selected hair style:', hairStyle);
+      log('Selected hair style:', hairStyle);
     }
 
     function updateFinalPreview() {
@@ -6135,7 +6135,7 @@ Please be thorough and include important details from our conversations.`;
         return;
       }
       
-      console.log('🎭 Creating character:', {
+      log('🎭 Creating character:', {
         name,
         description,
         category,
@@ -6161,7 +6161,7 @@ Please be thorough and include important details from our conversations.`;
     }
 
     function toggleSetting(settingType) {
-      console.log('⚙️ Toggle setting:', settingType);
+      log('⚙️ Toggle setting:', settingType);
       // Implement setting toggle logic here
     }
 
@@ -6230,7 +6230,7 @@ Please be thorough and include important details from our conversations.`;
 
       menu.classList.remove('show');
       applyFilters();
-      console.log('🔒 Mobile content filter:', content);
+      log('🔒 Mobile content filter:', content);
     }
 
     function selectMobileStyle(style) {
@@ -6253,7 +6253,7 @@ Please be thorough and include important details from our conversations.`;
 
       menu.classList.remove('show');
       applyFilters();
-      console.log('🎨 Mobile style filter:', style);
+      log('🎨 Mobile style filter:', style);
     }
 
     function selectMobileSex(sex) {
@@ -6282,7 +6282,7 @@ Please be thorough and include important details from our conversations.`;
       }
 
       applyFilters();
-      console.log('⚧️ Mobile sex filter:', sex);
+      log('⚧️ Mobile sex filter:', sex);
     }
 
     function selectMobileTag(tag) {
@@ -6305,7 +6305,7 @@ Please be thorough and include important details from our conversations.`;
 
       menu.classList.remove('show');
       applyFilters();
-      console.log('🏷️ Mobile tag filter:', tag);
+      log('🏷️ Mobile tag filter:', tag);
     }
 
     // Close dropdowns when clicking outside
@@ -6369,7 +6369,7 @@ Please be thorough and include important details from our conversations.`;
     // Load tags from Airtable
     async function loadCreateTagsFromAirtable() {
       try {
-        console.log('🔄 Loading tags from Airtable...');
+        log('🔄 Loading tags from Airtable...');
         const response = await fetch('/.netlify/functions/selira-tags');
 
         if (!response.ok) {
@@ -6381,7 +6381,7 @@ Please be thorough and include important details from our conversations.`;
         const data = await response.json();
         if (data.success && data.tags && data.tags.length > 0) {
           createAvailableTags = data.tags;
-          console.log('✅ Loaded tags from Airtable:', {
+          log('✅ Loaded tags from Airtable:', {
             total: data.tags.length,
             source: data.source,
             sample: data.tags.slice(0, 10)
@@ -6393,7 +6393,7 @@ Please be thorough and include important details from our conversations.`;
         }
       } catch (error) {
         console.warn('⚠️ Error loading tags from API:', error.message);
-        console.log('📝 Using fallback tags instead');
+        log('📝 Using fallback tags instead');
         // Don't populate filters yet - wait for characters to load
       }
     }
@@ -6468,7 +6468,7 @@ Please be thorough and include important details from our conversations.`;
 
     // Filter characters by tag
     function filterByTag(tag) {
-      console.log('🏷️ Filtering by tag:', tag);
+      log('🏷️ Filtering by tag:', tag);
 
       // Strip emoji prefix from tag (Airtable tags don't have emojis)
       // This regex handles complex multi-codepoint emojis like 🧝‍♀️
@@ -6486,12 +6486,12 @@ Please be thorough and include important details from our conversations.`;
     }
 
     function initializeCreateTags() {
-      console.log('🏷️ Initializing create tags system...');
+      log('🏷️ Initializing create tags system...');
       
       const tagSearchInput = document.getElementById('createTagSearchInput');
       const popularTagsContainer = document.querySelector('.create-popular-tags');
       
-      console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Elements found:', {
+      log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Elements found:', {
         tagSearchInput: !!tagSearchInput,
         popularTagsContainer: !!popularTagsContainer,
         availableTags: createAvailableTags.length
@@ -6505,14 +6505,14 @@ Please be thorough and include important details from our conversations.`;
             if (results) results.style.display = 'none';
           }, 200);
         });
-        console.log('✅ Tag search input initialized');
+        log('✅ Tag search input initialized');
       } else {
         console.warn('⚠️ Tag search input not found');
       }
 
       if (popularTagsContainer) {
         popularTagsContainer.addEventListener('click', handleCreatePopularTagClick);
-        console.log('✅ Popular tags container initialized');
+        log('✅ Popular tags container initialized');
       } else {
         console.warn('⚠️ Popular tags container not found');
       }
@@ -6522,7 +6522,7 @@ Please be thorough and include important details from our conversations.`;
       const searchTerm = event.target.value.toLowerCase();
       const resultsContainer = document.getElementById('createTagSearchResults');
       
-      console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Tag search:', {
+      log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Tag search:', {
         searchTerm,
         hasResultsContainer: !!resultsContainer,
         selectedTags: createSelectedTags.length
@@ -6537,17 +6537,17 @@ Please be thorough and include important details from our conversations.`;
         tag.toLowerCase().includes(searchTerm) && !createSelectedTags.includes(tag)
       ).slice(0, 5);
       
-      console.log('📋 Matching tags found:', matchingTags);
+      log('📋 Matching tags found:', matchingTags);
       
       if (matchingTags.length > 0 && resultsContainer) {
         resultsContainer.innerHTML = matchingTags.map(tag => 
           `<div class="tag-search-result" onclick="addCreateTag('${tag}')" style="padding: 12px; cursor: pointer; border-bottom: 1px solid var(--border); color: var(--text-primary);">${tag}</div>`
         ).join('');
         resultsContainer.style.display = 'block';
-        console.log('✅ Search results displayed');
+        log('✅ Search results displayed');
       } else {
         if (resultsContainer) resultsContainer.style.display = 'none';
-        console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> No results or container not found');
+        log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> No results or container not found');
       }
     }
 
@@ -6563,10 +6563,10 @@ Please be thorough and include important details from our conversations.`;
     }
 
     function addCreateTag(tag) {
-      console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> Adding tag:', tag);
+      log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> Adding tag:', tag);
       
       if (createSelectedTags.includes(tag)) {
-        console.log('⚠️ Tag already selected');
+        log('⚠️ Tag already selected');
         return;
       }
       
@@ -6576,7 +6576,7 @@ Please be thorough and include important details from our conversations.`;
       }
       
       createSelectedTags.push(tag);
-      console.log('✅ Tag added. Selected tags:', createSelectedTags);
+      log('✅ Tag added. Selected tags:', createSelectedTags);
       updateCreateTagsDisplay();
       
       // Clear search input
@@ -6644,7 +6644,7 @@ Please be thorough and include important details from our conversations.`;
       }, 100);
     }
 
-    console.log('✅ Selira Category page initialized with Character.AI style design');
+    log('✅ Selira Category page initialized with Character.AI style design');
 
     // Show Profile/Register nav items based on login status
     function updateProfileNavVisibility() {
@@ -6758,16 +6758,16 @@ Please be thorough and include important details from our conversations.`;
           document.dispatchEvent(languageChangeEvent);
 
           // Log for debugging
-          console.log('Language changed to:', selectedLanguage);
-          console.log('✅ Google Analytics event sent');
-          console.log('✅ Meta Pixel event sent');
+          log('Language changed to:', selectedLanguage);
+          log('✅ Google Analytics event sent');
+          log('✅ Meta Pixel event sent');
         });
       }
     });
 
     // Example listener for the custom event (for demonstration)
     document.addEventListener('languageChanged', function(event) {
-      console.log('Custom languageChanged event received:', event.detail);
+      log('Custom languageChanged event received:', event.detail);
       // You can add custom logic here to handle language changes
       // For example: update UI, fetch translations, etc.
     });

@@ -17,14 +17,14 @@
   
   <!-- Auth0 Authentication System -->
   <!-- Supabase Authentication System -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="/js/supabase-auth.js"></script>
-  
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="/js/supabase-auth.js" defer></script>
+
   <!-- Mobile Navigation System -->
-  <script src="/js/mobile-nav.js"></script>
-  
+  <script src="/js/mobile-nav.js" defer></script>
+
   <!-- Age Verification System -->
-  <script src="/js/age-verification.js"></script>
+  <script src="/js/age-verification.js" defer></script>
   
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -2081,8 +2081,8 @@
   <!-- End Meta Pixel Code -->
 
   <!-- Facebook Pixel Event Tracking -->
-  <script src="/js/facebook-pixel-events.js"></script>
-  <script src="/js/google-analytics-events.js"></script>
+  <script src="/js/facebook-pixel-events.js" defer></script>
+  <script src="/js/google-analytics-events.js" defer></script>
 
   <!-- FirstPromoter Tracking Script -->
   <script>(function(w){w.fpr=w.fpr||function(){w.fpr.q = w.fpr.q||[];w.fpr.q[arguments[0]=='set'?'unshift':'push'](arguments);};})(window);
@@ -7614,11 +7614,23 @@
   </script>
 
   <!-- Email Verification Handler -->
-  <script src="js/email-verification-handler.js"></script>
-  <script src="js/unverified-email-banner.js"></script>
+  <script src="js/email-verification-handler.js" defer></script>
+  <script src="js/unverified-email-banner.js" defer></script>
 
-  <!-- JSZip for downloading images as zip -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <!-- JSZip for downloading images as zip - Lazy loaded only when needed -->
+  <script>
+    // Lazy load JSZip only when download is clicked
+    async function loadJSZip() {
+      if (window.JSZip) return; // Already loaded
+      return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+    }
+  </script>
 
   <!-- View Generated Images in Carousel Function -->
   <script>
@@ -8035,6 +8047,9 @@
 
         loadingDiv.querySelector('div:last-child').textContent = `Processing ${data.images.length} images...`;
 
+        // Load JSZip library if not already loaded
+        await loadJSZip();
+
         // Create ZIP file
         const zip = new JSZip();
         const imagePromises = [];
@@ -8146,6 +8161,6 @@
       }
     }
   </script>
-  <script src="/js/support-widget.js"></script>
+  <script src="/js/support-widget.js" defer></script>
 </body>
 </html>
