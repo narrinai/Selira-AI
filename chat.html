@@ -2193,6 +2193,11 @@
             </button>
             <div class="action-menu" id="actionMenu" style="display: none;">
               <div class="action-menu-item" onclick="toggleCharacterInfo(); closeActionMenu();">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="16" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
                 <span>Companion Information</span>
               </div>
               <div class="action-menu-item" onclick="viewGeneratedImages(); closeActionMenu();">
@@ -2211,9 +2216,12 @@
                 </svg>
                 <span>Download Generated Images</span>
               </div>
-              <a href="mailto:support@selira.ai" class="action-menu-item" onclick="closeActionMenu();" style="text-decoration: none; color: inherit; display: block;">
+              <div class="action-menu-item" onclick="openSupportWidget(); closeActionMenu();">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
                 <span>Support</span>
-              </a>
+              </div>
             </div>
           </div>
         </div>
@@ -6691,7 +6699,13 @@
       menu.style.display = 'none';
     }
 
-    // Support link now uses mailto: - no widget needed
+    // Open support widget
+    function openSupportWidget() {
+      const supportBtn = document.getElementById('supportWidgetBtn');
+      if (supportBtn) {
+        supportBtn.click();
+      }
+    }
 
     // Close action menu when clicking outside
     document.addEventListener('click', function(e) {
@@ -7958,5 +7972,6 @@
       }
     }
   </script>
+  <script src="/js/support-widget.js"></script>
 </body>
 </html>
