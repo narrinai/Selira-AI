@@ -3129,12 +3129,17 @@
         console.log('🎲 Random mode: showing', initialCharacters.length, 'shuffled companions');
       }
 
-      // Insert deal card every 12 companions
+      // Insert deal card at position 5, then every 12 companions after that
       const charactersWithDeal = [];
       initialCharacters.forEach((character, index) => {
+        // Insert deal card at position 5 (index 4)
+        if (index === 4) {
+          charactersWithDeal.push('DEAL_CARD');
+        }
         charactersWithDeal.push(character);
-        // Insert deal card after every 12th companion (positions 12, 24, 36, etc.)
-        if ((index + 1) % 12 === 0) {
+        // Insert deal card every 12 companions after position 5 (positions 17, 29, 41, etc.)
+        // Position 5 + 12 = 17 (index 16), 17 + 12 = 29 (index 28), etc.
+        if (index > 4 && (index - 4) % 12 === 0) {
           charactersWithDeal.push('DEAL_CARD');
         }
       });
@@ -5271,14 +5276,20 @@
       // Calculate how many actual companion cards are already loaded (excluding deal cards)
       const existingCards = grid.querySelectorAll('.character-card:not(.deal-card)').length;
 
-      // Insert deal cards every 12 companions
+      // Insert deal cards at position 5, then every 12 companions
       const charactersWithDeal = [];
       characters.forEach((character, index) => {
-        charactersWithDeal.push(character);
-        // Calculate global position (existing cards + current index + 1)
         const globalPosition = existingCards + index + 1;
-        // Insert deal card after every 12th companion (positions 12, 24, 36, etc.)
-        if (globalPosition % 12 === 0) {
+
+        // Insert deal card at position 5 (if not already inserted)
+        if (globalPosition === 5) {
+          charactersWithDeal.push('DEAL_CARD');
+        }
+
+        charactersWithDeal.push(character);
+
+        // Insert deal card every 12 companions after position 5 (positions 17, 29, 41, etc.)
+        if (globalPosition > 5 && (globalPosition - 5) % 12 === 0) {
           charactersWithDeal.push('DEAL_CARD');
         }
       });
