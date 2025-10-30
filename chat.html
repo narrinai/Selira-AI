@@ -7628,7 +7628,12 @@
       // Get current user
       const user = window.getCurrentUser ? window.getCurrentUser() : null;
       if (!user || !user.email) {
-        alert('Please log in to view your generated images');
+        console.log('🔒 User not logged in - opening signup modal');
+        if (window.openLoginModal) {
+          window.openLoginModal('signup');
+        } else {
+          alert('Please log in to view your generated images');
+        }
         return;
       }
 

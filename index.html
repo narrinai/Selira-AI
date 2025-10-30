@@ -2494,6 +2494,10 @@
   </div>
 
   <script>
+    // ===== DEVELOPMENT MODE DETECTION =====
+    const isDev = window.location.hostname === 'localhost' || window.location.hostname.includes('127.0.0.1') || window.location.hostname.includes('netlify.app');
+    const log = isDev ? console.log.bind(console) : () => {};
+
     // ===== CHARACTER.AI STYLE FUNCTIONALITY =====
     let allCharacters = [];
     let filteredCharacters = [];
@@ -2798,8 +2802,8 @@
     // ===== CHARACTER LOADING =====
     async function loadCharacters() {
       try {
-        console.log('📡 Loading characters from API...');
-        const response = await fetch('/.netlify/functions/selira-characters-fetch');
+        log('📡 Loading characters from API...');
+        const response = await fetch('/.netlify/functions/selira-characters-fetch?limit=100');
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -2808,8 +2812,8 @@
         const data = await response.json();
 
         if (data.success && data.characters) {
-          console.log('📡 Raw API response:', data.characters.length, 'characters');
-          console.log('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Sample raw characters:', data.characters.slice(-3).map(c => ({name: c.Name, category: c.Category, visibility: c.Visibility})));
+          log('📡 Raw API response:', data.characters.length, 'characters');
+          log('🔍 Sample raw characters:', data.characters.slice(-3).map(c => ({name: c.Name, category: c.Category, visibility: c.Visibility})));
 
           allCharacters = data.characters.map(char => ({
             id: char.Character_ID || char.Name,
@@ -2838,10 +2842,10 @@
           // Debug: Check how many characters have avatar_url_2 and avatar_url_3
           const withAvatar2 = allCharacters.filter(c => c.avatar_url_2);
           const withAvatar3 = allCharacters.filter(c => c.avatar_url_3);
-          console.log('🖼️ Characters with avatar_url_2:', withAvatar2.length, '/', allCharacters.length);
-          console.log('🖼️ Characters with avatar_url_3:', withAvatar3.length, '/', allCharacters.length);
+          log('🖼️ Characters with avatar_url_2:', withAvatar2.length, '/', allCharacters.length);
+          log('🖼️ Characters with avatar_url_3:', withAvatar3.length, '/', allCharacters.length);
           if (withAvatar2.length > 0) {
-            console.log('📸 Sample character with avatar_url_2:', {
+            log('📸 Sample character with avatar_url_2:', {
               name: withAvatar2[0].name,
               avatar: withAvatar2[0].avatar?.substring(0, 50),
               avatar_url_2: withAvatar2[0].avatar_url_2?.substring(0, 50),
@@ -2890,16 +2894,16 @@
           }
 
           if (activeFilters.length > 0) {
-            console.log('🔍 URL parameters set currentFilters:', activeFilters.join(', '), '→', currentFilters);
-            console.log('📋 All possible URL patterns:');
-            console.log('   Content: ?uncensored, ?censored, ?content=all');
-            console.log('   Sex: ?male, ?female, ?sex=all');
-            console.log('   Style: ?anime, ?realistic, ?style=all');
-            console.log('   Combine: ?censored&male&anime, ?uncensored&female&realistic, etc.');
+            log('🔍 URL parameters set currentFilters:', activeFilters.join(', '), '→', currentFilters);
+            log('📋 All possible URL patterns:');
+            log('   Content: ?uncensored, ?censored, ?content=all');
+            log('   Sex: ?male, ?female, ?sex=all');
+            log('   Style: ?anime, ?realistic, ?style=all');
+            log('   Combine: ?censored&male&anime, ?uncensored&female&realistic, etc.');
             // Note: UI will be updated after DOM is fully loaded (see setTimeout at end of loadCharacters)
           }
 
-          console.log('✅ Loaded characters:', allCharacters.length);
+          log('✅ Loaded characters:', allCharacters.length);
         } else {
           throw new Error('Invalid API response');
         }
