@@ -3031,6 +3031,32 @@
       return [...fantasyCharacters, ...animeCharacters, ...historicalCharacters];
     }
 
+    // ===== HELPER FUNCTION FOR WINTER DEAL CARD =====
+    function getWinterDealCardHTML() {
+      return `
+        <a href="/pricing" class="character-card deal-card" style="text-decoration: none;">
+          <div class="deal-card-content">
+            <div class="deal-badge">LIMITED TIME</div>
+            <div class="deal-title">Winter Deal</div>
+            <div class="deal-percentage">40% OFF</div>
+            <div class="deal-description">Unlimited Image Gen</div>
+            <div class="deal-cta">
+              <span>View Deals</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </div>
+            <div class="deal-payment-icons">
+              <span class="payment-method">💳 Card</span>
+              <img src="/images/paypay-white.png" alt="PayPal" class="payment-icon-img">
+              <span class="payment-method">₿ Crypto</span>
+            </div>
+          </div>
+        </a>
+      `;
+    }
+
     // ===== CHARACTER RENDERING =====
     function renderCharacters() {
       const grid = document.getElementById('charactersGrid');
@@ -3103,42 +3129,20 @@
         console.log('🎲 Random mode: showing', initialCharacters.length, 'shuffled companions');
       }
 
-      // Deal card always at position 5 (index 4)
-      const dealCardPosition = 4;
+      // Insert deal card every 12 companions
       const charactersWithDeal = [];
       initialCharacters.forEach((character, index) => {
-        if (index === dealCardPosition) {
-          // Insert deal card at the specified position
+        charactersWithDeal.push(character);
+        // Insert deal card after every 12th companion (positions 12, 24, 36, etc.)
+        if ((index + 1) % 12 === 0) {
           charactersWithDeal.push('DEAL_CARD');
         }
-        charactersWithDeal.push(character);
       });
 
       grid.innerHTML = charactersWithDeal.map(item => {
         // Render deal card
         if (item === 'DEAL_CARD') {
-          return `
-            <a href="/pricing" class="character-card deal-card" style="text-decoration: none;">
-              <div class="deal-card-content">
-                <div class="deal-badge">LIMITED TIME</div>
-                <div class="deal-title">Winter Deal</div>
-                <div class="deal-percentage">40% OFF</div>
-                <div class="deal-description">Unlimited Image Gen</div>
-                <div class="deal-cta">
-                  <span>View Deals</span>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                    <polyline points="12 5 19 12 12 19"></polyline>
-                  </svg>
-                </div>
-                <div class="deal-payment-icons">
-                  <span class="payment-method">💳 Card</span>
-                  <img src="/images/paypay-white.png" alt="PayPal" class="payment-icon-img">
-                  <span class="payment-method">₿ Crypto</span>
-                </div>
-              </div>
-            </a>
-          `;
+          return getWinterDealCardHTML();
         }
 
         // Render regular character card
@@ -5236,7 +5240,30 @@
         existingLoader.remove();
       }
 
-      const newCharactersHTML = characters.map(character => `
+      // Calculate how many actual companion cards are already loaded (excluding deal cards)
+      const existingCards = grid.querySelectorAll('.character-card:not(.deal-card)').length;
+
+      // Insert deal cards every 12 companions
+      const charactersWithDeal = [];
+      characters.forEach((character, index) => {
+        charactersWithDeal.push(character);
+        // Calculate global position (existing cards + current index + 1)
+        const globalPosition = existingCards + index + 1;
+        // Insert deal card after every 12th companion (positions 12, 24, 36, etc.)
+        if (globalPosition % 12 === 0) {
+          charactersWithDeal.push('DEAL_CARD');
+        }
+      });
+
+      const newCharactersHTML = charactersWithDeal.map(item => {
+        // Render deal card
+        if (item === 'DEAL_CARD') {
+          return getWinterDealCardHTML();
+        }
+
+        // Render regular character card
+        const character = item;
+        return `
         <a href="/chat?char=${character.slug}" class="character-card" style="text-decoration: none; color: inherit;">
           ${character.avatar ?
             `<img src="${character.avatar}" alt="${character.name}" class="character-image" loading="lazy"
@@ -5272,7 +5299,8 @@
             </div>
           </div>
         </a>
-      `).join('');
+      `;
+      }).join('');
 
       grid.insertAdjacentHTML('beforeend', newCharactersHTML);
 
