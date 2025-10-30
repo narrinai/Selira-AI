@@ -1125,6 +1125,44 @@
       return null;
     }
 
+    // Fetch Airtable user data to get image_credits and plan info
+    async function fetchUserAirtableData(user) {
+      if (!user || !user.email) return user;
+
+      try {
+        console.log('📊 Fetching Airtable user data for:', user.email);
+
+        // Try to get from image permissions endpoint (already has this data)
+        const response = await fetch('/.netlify/functions/selira-image-permissions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: user.email,
+            supabase_id: user.id
+          })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log('✅ Got Airtable data:', {
+            imageCredits: data.imageCreditsRemaining,
+            plan: data.plan
+          });
+
+          // Merge Airtable data into user object
+          user.image_credits = data.imageCreditsRemaining || 0;
+          user.plan = data.plan || 'free';
+          user.airtable_id = data.user_id || null;
+        } else {
+          console.log('⚠️ Failed to fetch Airtable data');
+        }
+      } catch (error) {
+        console.error('❌ Error fetching Airtable data:', error);
+      }
+
+      return user;
+    }
+
     // Initialize feed
     document.addEventListener('DOMContentLoaded', async () => {
       console.log('🎨 Feed page loaded');
@@ -1136,6 +1174,12 @@
       // Get current user (final check)
       if (window.getCurrentUser) {
         currentUser = window.getCurrentUser();
+
+        // Fetch Airtable data to get image_credits and plan
+        if (currentUser && currentUser.email) {
+          currentUser = await fetchUserAirtableData(currentUser);
+        }
+
         console.log('👤 Current user:', currentUser);
         console.log('📧 User email:', currentUser?.email);
         console.log('💎 User plan:', currentUser?.plan);
@@ -1171,6 +1215,28 @@
       // Setup infinite scroll
       const feedContainer = document.getElementById('feedContainer');
       feedContainer.addEventListener('scroll', handleScroll);
+
+      // Listen for auth state changes (login/logout)
+      window.addEventListener('authStateChanged', async (event) => {
+        console.log('🔄 Auth state changed on feed page:', event.detail);
+
+        if (window.getCurrentUser) {
+          currentUser = window.getCurrentUser();
+
+          // Fetch Airtable data after login
+          if (currentUser && currentUser.email) {
+            currentUser = await fetchUserAirtableData(currentUser);
+            console.log('✅ User data updated after login:', {
+              email: currentUser.email,
+              plan: currentUser.plan,
+              imageCredits: currentUser.image_credits
+            });
+
+            // Reload page to refresh feed with unlimited access
+            window.location.reload();
+          }
+        }
+      });
 
       // Setup hamburger menu
       const hamburger = document.getElementById('hamburgerMenu');
