@@ -44,8 +44,8 @@ exports.handler = async (event, context) => {
       };
     }
 
-    const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
-    const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN || process.env.AIRTABLE_API_KEY;
+    const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA;
+    const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA;
 
     if (!AIRTABLE_BASE_ID || !AIRTABLE_TOKEN) {
       console.error('❌ Airtable credentials not configured');
@@ -91,7 +91,7 @@ exports.handler = async (event, context) => {
 
     // Check if user already liked this image
     const likesSearchUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Image_Likes?` +
-      `filterByFormula=AND({Image_ID}='${image_id}',{User_ID}='${userRecordId}')&maxRecords=1`;
+      `filterByFormula=AND({image_id}='${image_id}',{user_id}='${userRecordId}')&maxRecords=1`;
 
     console.log('🔍 Checking existing like:', likesSearchUrl);
 
@@ -153,7 +153,7 @@ exports.handler = async (event, context) => {
 
       if (imageResponse.ok) {
         const imageData = await imageResponse.json();
-        const currentCount = imageData.fields.Like_Count || 0;
+        const currentCount = imageData.fields.like_count || 0;
         newLikeCount = Math.max(0, currentCount - 1);
 
         await fetch(imageUrl, {
@@ -164,7 +164,7 @@ exports.handler = async (event, context) => {
           },
           body: JSON.stringify({
             fields: {
-              Like_Count: newLikeCount
+              like_count: newLikeCount
             }
           })
         });
@@ -185,9 +185,9 @@ exports.handler = async (event, context) => {
         },
         body: JSON.stringify({
           fields: {
-            Image_ID: [image_id], // Linked record array
-            User_ID: [userRecordId], // Linked record array
-            Liked_At: new Date().toISOString()
+            image_id: [image_id], // Linked record array
+            user_id: [userRecordId], // Linked record array
+            liked_at: new Date().toISOString()
           }
         })
       });
@@ -215,7 +215,7 @@ exports.handler = async (event, context) => {
 
       if (imageResponse.ok) {
         const imageData = await imageResponse.json();
-        const currentCount = imageData.fields.Like_Count || 0;
+        const currentCount = imageData.fields.like_count || 0;
         newLikeCount = currentCount + 1;
 
         await fetch(imageUrl, {
@@ -226,7 +226,7 @@ exports.handler = async (event, context) => {
           },
           body: JSON.stringify({
             fields: {
-              Like_Count: newLikeCount
+              like_count: newLikeCount
             }
           })
         });

@@ -2211,9 +2211,9 @@
                 </svg>
                 <span>Download Generated Images</span>
               </div>
-              <div class="action-menu-item" onclick="openSupportWidget(); closeActionMenu();">
+              <a href="mailto:support@selira.ai" class="action-menu-item" onclick="closeActionMenu();" style="text-decoration: none; color: inherit; display: block;">
                 <span>Support</span>
-              </div>
+              </a>
             </div>
           </div>
         </div>
@@ -6691,13 +6691,7 @@
       menu.style.display = 'none';
     }
 
-    // Open support widget
-    function openSupportWidget() {
-      const supportBtn = document.getElementById('supportWidgetBtn');
-      if (supportBtn) {
-        supportBtn.click();
-      }
-    }
+    // Support link now uses mailto: - no widget needed
 
     // Close action menu when clicking outside
     document.addEventListener('click', function(e) {
