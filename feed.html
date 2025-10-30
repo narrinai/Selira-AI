@@ -1425,7 +1425,22 @@
       const scrollTop = feedContainer.scrollTop;
       const clientHeight = feedContainer.clientHeight;
 
-      // Load more when scrolled to 80% of content
+      // If user is not logged in and has reached limit, show modal again when trying to scroll
+      if (!currentUser || !currentUser.email) {
+        // Check if user is trying to scroll near bottom (80%+)
+        if (scrollTop + clientHeight >= scrollHeight * 0.8) {
+          // If they've already seen the limit modal, show it again as reminder
+          if (hasShownLimitModal) {
+            console.log('🔒 User trying to scroll past limit - reopening signup modal');
+            if (window.openLoginModal) {
+              window.openLoginModal('signup');
+            }
+            return; // Don't try to load more
+          }
+        }
+      }
+
+      // Load more when scrolled to 80% of content (only if allowed)
       if (scrollTop + clientHeight >= scrollHeight * 0.8) {
         loadFeed();
       }
