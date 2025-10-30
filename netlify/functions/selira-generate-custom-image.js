@@ -38,9 +38,36 @@ async function saveFeedImage(requestId, source, imageUrl, characterName, customP
             const visibility = characterRecord.fields.Visibility || characterRecord.fields.visibility || 'public';
             console.log(`🔍 [${requestId}] Character: ${characterName} (${characterId}), visibility: ${visibility}`);
 
-            // Find user record by email (don't create if not found)
+            // Find user record by supabase_id OR email (don't create if not found)
             let userRecordId = null;
-            if (email) {
+
+            // Try supabase_id first (more reliable for Supabase auth users)
+            if (supabase_id) {
+              const userSearchUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?` +
+                `filterByFormula={SupabaseID}='${supabase_id.replace(/'/g, "\\\'")}'&maxRecords=1`;
+
+              const userResponse = await fetch(userSearchUrl, {
+                headers: {
+                  'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+                  'Content-Type': 'application/json'
+                }
+              });
+
+              if (userResponse.ok) {
+                const userData = await userResponse.json();
+                if (userData.records && userData.records.length > 0) {
+                  userRecordId = userData.records[0].id;
+                  console.log(`✅ [${requestId}] Found user record by supabase_id:`, userRecordId);
+                } else {
+                  console.log(`⚠️ [${requestId}] No user record found for supabase_id:`, supabase_id);
+                }
+              } else {
+                console.log(`⚠️ [${requestId}] User search by supabase_id failed:`, userResponse.status);
+              }
+            }
+
+            // Fallback to email if supabase_id didn't find a user
+            if (!userRecordId && email) {
               const userSearchUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?` +
                 `filterByFormula={Email}='${email.replace(/'/g, "\\\'")}'&maxRecords=1`;
 
@@ -55,19 +82,21 @@ async function saveFeedImage(requestId, source, imageUrl, characterName, customP
                 const userData = await userResponse.json();
                 if (userData.records && userData.records.length > 0) {
                   userRecordId = userData.records[0].id;
-                  console.log(`✅ [${requestId}] Found user record:`, userRecordId, `for email:`, email);
+                  console.log(`✅ [${requestId}] Found user record by email:`, userRecordId);
                 } else {
                   console.log(`⚠️ [${requestId}] No user record found for email:`, email);
                 }
               } else {
-                console.log(`⚠️ [${requestId}] User search failed with status:`, userResponse.status);
+                console.log(`⚠️ [${requestId}] User search by email failed:`, userResponse.status);
               }
-            } else {
-              console.log(`⚠️ [${requestId}] No email provided`);
+            }
+
+            if (!userRecordId) {
+              console.log(`⚠️ [${requestId}] No user found via supabase_id or email`);
             }
 
             // Create Generated_Images record (ALWAYS save, regardless of visibility or user_id)
-            // Private companion images are saved but filtered out in feed API
+            // Private companion images are saved but filtered out in feed API (via companion visibility)
             const createUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Generated_Images`;
             const feedFields = {
               image_url: imageUrl,
@@ -76,7 +105,7 @@ async function saveFeedImage(requestId, source, imageUrl, characterName, customP
               generation_date: new Date().toISOString(),
               like_count: Math.floor(Math.random() * 14) + 2, // Random 2-15
               view_count: 0,
-              status: visibility === 'private' ? 'private' : 'approved' // Mark private companion images
+              status: 'approved' // Always approved - filter private images via companion visibility field
             };
 
             // Only add user_id if we found one
@@ -1543,9 +1572,36 @@ exports.handler = async (event, context) => {
               const visibility = characterRecord.fields.Visibility || characterRecord.fields.visibility || 'public';
               console.log(`🔍 [${requestId}] Character: ${characterName} (${characterId}), visibility: ${visibility}`);
 
-              // Find user record by email (don't create if not found)
+              // Find user record by supabase_id OR email (don't create if not found)
               let userRecordId = null;
-              if (email) {
+
+              // Try supabase_id first (more reliable for Supabase auth users)
+              if (supabase_id) {
+                const userSearchUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?` +
+                  `filterByFormula={SupabaseID}='${supabase_id.replace(/'/g, "\\\'")}'&maxRecords=1`;
+
+                const userResponse = await fetch(userSearchUrl, {
+                  headers: {
+                    'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+                    'Content-Type': 'application/json'
+                  }
+                });
+
+                if (userResponse.ok) {
+                  const userData = await userResponse.json();
+                  if (userData.records && userData.records.length > 0) {
+                    userRecordId = userData.records[0].id;
+                    console.log(`✅ [${requestId}] Found user record by supabase_id:`, userRecordId);
+                  } else {
+                    console.log(`⚠️ [${requestId}] No user record found for supabase_id:`, supabase_id);
+                  }
+                } else {
+                  console.log(`⚠️ [${requestId}] User search by supabase_id failed:`, userResponse.status);
+                }
+              }
+
+              // Fallback to email if supabase_id didn't find a user
+              if (!userRecordId && email) {
                 const userSearchUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Users?` +
                   `filterByFormula={Email}='${email.replace(/'/g, "\\\'")}'&maxRecords=1`;
 
@@ -1560,19 +1616,21 @@ exports.handler = async (event, context) => {
                   const userData = await userResponse.json();
                   if (userData.records && userData.records.length > 0) {
                     userRecordId = userData.records[0].id;
-                    console.log(`✅ [${requestId}] Found user record:`, userRecordId, `for email:`, email);
+                    console.log(`✅ [${requestId}] Found user record by email:`, userRecordId);
                   } else {
                     console.log(`⚠️ [${requestId}] No user record found for email:`, email);
                   }
                 } else {
-                  console.log(`⚠️ [${requestId}] User search failed with status:`, userResponse.status);
+                  console.log(`⚠️ [${requestId}] User search by email failed:`, userResponse.status);
                 }
-              } else {
-                console.log(`⚠️ [${requestId}] No email provided`);
+              }
+
+              if (!userRecordId) {
+                console.log(`⚠️ [${requestId}] No user found via supabase_id or email`);
               }
 
               // Create Generated_Images record (ALWAYS save, regardless of visibility or user_id)
-              // Private companion images are saved but filtered out in feed API
+              // Private companion images are saved but filtered out in feed API (via companion visibility)
               const createUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Generated_Images`;
               const feedFields = {
                 image_url: imageUrl,
@@ -1581,7 +1639,7 @@ exports.handler = async (event, context) => {
                 generation_date: new Date().toISOString(),
                 like_count: Math.floor(Math.random() * 14) + 2, // Random 2-15
                 view_count: 0,
-                status: visibility === 'private' ? 'private' : 'approved' // Mark private companion images
+                status: 'approved' // Always approved - filter private images via companion visibility field
               };
 
               // Only add user_id if we found one
