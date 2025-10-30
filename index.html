@@ -3468,12 +3468,16 @@
       shuffleArray(withAvatarUrl2);
       shuffleArray(withoutAvatarUrl2);
 
-      // First 100 companions: only those with avatar_url_2, then the rest
+      // First 100 companions: only those with avatar_url_2
       const first100 = withAvatarUrl2.slice(0, 100);
       const remainingWithAvatarUrl2 = withAvatarUrl2.slice(100);
 
-      // Combine: first 100 with avatar_url_2, then remaining with avatar_url_2, then all without avatar_url_2
-      filteredCharacters = [...first100, ...remainingWithAvatarUrl2, ...withoutAvatarUrl2];
+      // After position 100: mix remaining Selira companions with community companions
+      const after100 = [...remainingWithAvatarUrl2, ...withoutAvatarUrl2];
+      shuffleArray(after100);
+
+      // Combine: first 100 with avatar_url_2, then mixed remaining companions
+      filteredCharacters = [...first100, ...after100];
 
       console.log('🎨 Filtered companions:', {
         total: filteredCharacters.length,
