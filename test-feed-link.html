@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Feed Link</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+  <h1>Test Mobile Nav - Feed Link</h1>
+  <p>Open DevTools (F12), switch to mobile view, and click hamburger menu</p>
+  
+  <script src="/js/mobile-nav.js"></script>
+  
+  <script>
+    // Log to console when mobile nav is created
+    setTimeout(() => {
+      const feedLink = document.querySelector('a[href="/feed"]');
+      if (feedLink) {
+        console.log('✅ Feed link gevonden!', feedLink);
+        document.body.innerHTML += '<div style="background: green; color: white; padding: 20px; margin: 20px;">✅ Feed link is aanwezig in mobile nav!</div>';
+      } else {
+        console.log('❌ Feed link NIET gevonden');
+        document.body.innerHTML += '<div style="background: red; color: white; padding: 20px; margin: 20px;">❌ Feed link NIET gevonden in mobile nav</div>';
+      }
+    }, 2000);
+  </script>
+</body>
+</html>

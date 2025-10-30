@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Scenario Chat Test - Selira AI</title>
+  <style>
+    :root {
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #13131a;
+      --bg-tertiary: #1a1a24;
+      --accent: #a855f7;
+      --accent-hover: #9333ea;
+      --text-primary: #e5e5e7;
+      --text-secondary: #a0a0ab;
+      --border: #2a2a35;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .header h1 {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      color: var(--text-secondary);
+      font-size: 16px;
+    }
+
+    /* Scenario Selection */
+    .scenario-selection {
+      display: block;
+      margin-bottom: 40px;
+    }
+
+    .scenario-selection h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .scenario-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .scenario-card {
+      background: var(--bg-secondary);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .scenario-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(168, 85, 247, 0.15);
+    }
+
+    .scenario-card.selected {
+      border-color: var(--accent);
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(168, 85, 247, 0.05));
+    }
+
+    .scenario-card.selected::after {
+      content: '✓';
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: var(--accent);
+      color: white;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    .scenario-card h3 {
+      font-size: 20px;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+
+    .scenario-card p {
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .scenario-card .emoji {
+      font-size: 32px;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    /* Chat Interface */
+    .chat-container {
+      display: none;
+      background: var(--bg-secondary);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .chat-container.active {
+      display: block;
+    }
+
+    .chat-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chat-header h3 {
+      font-size: 18px;
+    }
+
+    .scenario-badge {
+      background: var(--accent);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .chat-messages {
+      padding: 20px;
+      min-height: 400px;
+      max-height: 600px;
+      overflow-y: auto;
+    }
+
+    .message {
+      margin-bottom: 16px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      max-width: 80%;
+    }
+
+    .message.user {
+      background: var(--accent);
+      color: white;
+      margin-left: auto;
+    }
+
+    .message.ai {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .message.system {
+      background: rgba(168, 85, 247, 0.1);
+      border: 1px solid var(--accent);
+      color: var(--text-secondary);
+      max-width: 100%;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .chat-input-container {
+      padding: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .chat-input-wrapper {
+      display: flex;
+      gap: 12px;
+    }
+
+    .chat-input {
+      flex: 1;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      color: var(--text-primary);
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+
+    .chat-input:focus {
+      border-color: var(--accent);
+    }
+
+    .send-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 14px 24px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .send-btn:hover {
+      background: var(--accent-hover);
+    }
+
+    .image-gen-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .image-gen-btn {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      color: var(--text-primary);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: left;
+    }
+
+    .image-gen-btn:hover {
+      border-color: var(--accent);
+      background: rgba(168, 85, 247, 0.1);
+    }
+
+    .image-gen-btn strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--accent);
+    }
+
+    .reset-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 16px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .reset-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .generated-image {
+      margin-top: 16px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .generated-image img {
+      width: 100%;
+      display: block;
+    }
+
+    .prompt-display {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 12px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .prompt-display strong {
+      color: var(--accent);
+      display: block;
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🎬 Scenario-Based Chat Test</h1>
+      <p>Select a scenario to start your roleplay adventure</p>
+    </div>
+
+    <!-- Scenario Selection -->
+    <div class="scenario-selection" id="scenarioSelection">
+      <h2>Choose Your Scenario</h2>
+      <div class="scenario-grid">
+        <div class="scenario-card" data-scenario="beach-sunset">
+          <span class="emoji">🏖️</span>
+          <h3>Beach at Sunset</h3>
+          <p>A romantic evening walk along the beach as the sun sets over the ocean. Warm golden light, gentle waves.</p>
+        </div>
+
+        <div class="scenario-card" data-scenario="luxury-penthouse">
+          <span class="emoji">🏙️</span>
+          <h3>Luxury Penthouse</h3>
+          <p>High above the city in a modern penthouse suite. Floor-to-ceiling windows, stunning city views, elegant interior.</p>
+        </div>
+
+        <div class="scenario-card" data-scenario="cozy-cabin">
+          <span class="emoji">🏔️</span>
+          <h3>Cozy Mountain Cabin</h3>
+          <p>Snowed in at a rustic cabin in the mountains. Fireplace crackling, warm blankets, intimate atmosphere.</p>
+        </div>
+
+        <div class="scenario-card" data-scenario="tropical-resort">
+          <span class="emoji">🌴</span>
+          <h3>Tropical Resort</h3>
+          <p>Exclusive island resort with pristine pools and private bungalows. Paradise setting with lush greenery.</p>
+        </div>
+
+        <div class="scenario-card" data-scenario="secret-library">
+          <span class="emoji">📚</span>
+          <h3>Secret Library</h3>
+          <p>After hours in a grand historic library. Moonlight through tall windows, quiet corridors, hidden romance.</p>
+        </div>
+
+        <div class="scenario-card" data-scenario="art-studio">
+          <span class="emoji">🎨</span>
+          <h3>Artist's Studio</h3>
+          <p>Private session in an artist's loft studio. Natural light, creative energy, intimate posing.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat Interface -->
+    <div class="chat-container" id="chatContainer">
+      <div class="chat-header">
+        <h3>Chat with Sarah</h3>
+        <div>
+          <span class="scenario-badge" id="scenarioBadge"></span>
+          <button class="reset-btn" onclick="resetScenario()">Change Scenario</button>
+        </div>
+      </div>
+
+      <div class="chat-messages" id="chatMessages">
+        <!-- Messages will be inserted here -->
+      </div>
+
+      <div class="chat-input-container">
+        <div class="image-gen-buttons">
+          <button class="image-gen-btn" onclick="generateImage('portrait')">
+            <strong>📸 Portrait</strong>
+            <span>Generate a portrait in this scenario</span>
+          </button>
+          <button class="image-gen-btn" onclick="generateImage('full-body')">
+            <strong>👤 Full Body</strong>
+            <span>Full body shot in scenario</span>
+          </button>
+          <button class="image-gen-btn" onclick="generateImage('action')">
+            <strong>🎬 Action Shot</strong>
+            <span>Dynamic moment in scenario</span>
+          </button>
+          <button class="image-gen-btn" onclick="generateImage('intimate')">
+            <strong>💕 Intimate</strong>
+            <span>Close intimate moment</span>
+          </button>
+        </div>
+
+        <div class="chat-input-wrapper" style="margin-top: 16px;">
+          <input type="text" class="chat-input" id="chatInput" placeholder="Type your message..." onkeypress="handleKeyPress(event)">
+          <button class="send-btn" onclick="sendMessage()">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Scenario definitions
+    const scenarios = {
+      'beach-sunset': {
+        name: 'Beach at Sunset',
+        emoji: '🏖️',
+        context: 'at a secluded beach during golden hour sunset, warm orange light, gentle ocean waves, sandy shore',
+        greeting: "Hey! Perfect timing - I was just watching the sunset. The view is incredible tonight. Want to walk along the shore with me?"
+      },
+      'luxury-penthouse': {
+        name: 'Luxury Penthouse',
+        emoji: '🏙️',
+        context: 'in a luxury penthouse suite with floor-to-ceiling windows overlooking the city skyline at night, modern elegant interior, ambient lighting',
+        greeting: "Welcome to my penthouse! The city lights are beautiful tonight. Make yourself comfortable - can I get you anything?"
+      },
+      'cozy-cabin': {
+        name: 'Cozy Mountain Cabin',
+        emoji: '🏔️',
+        context: 'in a cozy mountain cabin with snow falling outside, warm fireplace crackling, soft blankets, intimate rustic atmosphere',
+        greeting: "Come in from the cold! I just got the fire going. Looks like we're snowed in for the evening... not that I'm complaining."
+      },
+      'tropical-resort': {
+        name: 'Tropical Resort',
+        emoji: '🌴',
+        context: 'at an exclusive tropical island resort, infinity pool overlooking turquoise ocean, palm trees, private cabana, paradise setting',
+        greeting: "This resort is paradise! I'm by the infinity pool - the view is unreal. Join me for a swim?"
+      },
+      'secret-library': {
+        name: 'Secret Library',
+        emoji: '📚',
+        context: 'in a grand historic library after hours, moonlight streaming through tall windows, rows of ancient books, quiet romantic atmosphere',
+        greeting: "Shhh... we have the whole library to ourselves. There's something magical about this place at night, don't you think?"
+      },
+      'art-studio': {
+        name: 'Artist\'s Studio',
+        emoji: '🎨',
+        context: 'in an artist\'s loft studio with natural skylight, canvases and art supplies, creative bohemian atmosphere, draped fabrics',
+        greeting: "You made it to my studio! I've been working on something special. Would you mind being my muse for a bit?"
+      }
+    };
+
+    let currentScenario = null;
+    let messageHistory = [];
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      // Add click handlers to scenario cards
+      document.querySelectorAll('.scenario-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const scenarioId = card.dataset.scenario;
+          selectScenario(scenarioId);
+        });
+      });
+    });
+
+    function selectScenario(scenarioId) {
+      currentScenario = scenarios[scenarioId];
+
+      // Update UI
+      document.querySelectorAll('.scenario-card').forEach(card => {
+        card.classList.remove('selected');
+      });
+      document.querySelector(`[data-scenario="${scenarioId}"]`).classList.add('selected');
+
+      // Show chat interface
+      document.getElementById('scenarioSelection').style.display = 'none';
+      document.getElementById('chatContainer').classList.add('active');
+      document.getElementById('scenarioBadge').textContent = currentScenario.emoji + ' ' + currentScenario.name;
+
+      // Add greeting message
+      addMessage('system', `Scenario set: ${currentScenario.name}`);
+      addMessage('ai', currentScenario.greeting);
+
+      console.log('🎬 Scenario selected:', currentScenario.name);
+      console.log('📝 Scenario context:', currentScenario.context);
+    }
+
+    function resetScenario() {
+      currentScenario = null;
+      messageHistory = [];
+      document.getElementById('scenarioSelection').style.display = 'block';
+      document.getElementById('chatContainer').classList.remove('active');
+      document.getElementById('chatMessages').innerHTML = '';
+    }
+
+    function addMessage(type, content) {
+      const messagesContainer = document.getElementById('chatMessages');
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${type}`;
+      messageDiv.textContent = content;
+      messagesContainer.appendChild(messageDiv);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function sendMessage() {
+      const input = document.getElementById('chatInput');
+      const message = input.value.trim();
+
+      if (!message) return;
+
+      addMessage('user', message);
+      input.value = '';
+
+      // Simulate AI response (in real implementation, this would call your chat API)
+      setTimeout(() => {
+        const responses = [
+          "I love how you think...",
+          "That sounds amazing. Tell me more?",
+          "You're making me blush... but I like it.",
+          "Mmm, I'm intrigued. What else?",
+          "I've been thinking the same thing..."
+        ];
+        const response = responses[Math.floor(Math.random() * responses.length)];
+        addMessage('ai', response);
+      }, 1000);
+    }
+
+    function handleKeyPress(event) {
+      if (event.key === 'Enter') {
+        sendMessage();
+      }
+    }
+
+    function generateImage(type) {
+      if (!currentScenario) {
+        alert('Please select a scenario first!');
+        return;
+      }
+
+      // Build prompt based on type and scenario context
+      let prompt = '';
+      const characterBase = 'beautiful woman with long dark hair, photorealistic';
+
+      switch(type) {
+        case 'portrait':
+          prompt = `${characterBase}, close-up portrait, ${currentScenario.context}, looking at camera, professional photography`;
+          break;
+        case 'full-body':
+          prompt = `${characterBase}, full body shot, ${currentScenario.context}, elegant pose, cinematic lighting`;
+          break;
+        case 'action':
+          prompt = `${characterBase}, dynamic action shot, ${currentScenario.context}, natural movement, candid moment`;
+          break;
+        case 'intimate':
+          prompt = `${characterBase}, intimate moment, ${currentScenario.context}, soft lighting, romantic atmosphere, suggestive`;
+          break;
+      }
+
+      // Show prompt and simulated image generation
+      addMessage('system', `🎨 Generating ${type} image...`);
+
+      const messagesContainer = document.getElementById('chatMessages');
+      const promptDisplay = document.createElement('div');
+      promptDisplay.className = 'prompt-display';
+      promptDisplay.innerHTML = `
+        <strong>📝 Generated Prompt:</strong>
+        ${prompt}
+      `;
+      messagesContainer.appendChild(promptDisplay);
+
+      console.log('🎨 Image Generation Request:');
+      console.log('Type:', type);
+      console.log('Scenario:', currentScenario.name);
+      console.log('Full Prompt:', prompt);
+      console.log('---');
+
+      // Simulate loading
+      setTimeout(() => {
+        addMessage('ai', `Your ${type} image has been generated! In a real implementation, this would call your image generation API with the scenario context automatically included.`);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }, 2000);
+    }
+  </script>
+</body>
+</html>
