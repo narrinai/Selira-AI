@@ -655,7 +655,7 @@
     .character-stats-overlay {
       position: absolute;
       bottom: 8px;
-      left: 8px;
+      right: 8px;
       display: flex;
       gap: 8px;
     }
@@ -2803,7 +2803,7 @@
             creator: char.Created_by || 'Selira',
             Created_by: char.Created_by || '',  // Keep original field for filtering
             tags: Array.isArray(char.Tags) ? char.Tags : (char.Tags || '').toString().split(',').filter(Boolean),
-            chats: (Math.floor(Math.random() * 14) + 1) + '.' + Math.floor(Math.random() * 10) + 'k',
+            chats: (Math.floor(Math.random() * 7) + 2) + '.' + Math.floor(Math.random() * 10) + 'k',
             character_url: char.Character_URL || `https://selira.ai/chat.html?char=${char.Slug || (char.Name ? char.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'unknown')}`,
             // Add filter fields from Airtable
             companion_type: char.companion_type || 'realistic',
