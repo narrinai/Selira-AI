@@ -2893,16 +2893,11 @@
         allCharacters = getDemoCharacters();
       }
 
-      // Initial render with shuffled characters (if random mode is enabled)
+      // Initial render - applyFilters already does proper sorting (avatar_url_2 first) AND shuffling
       applyFilters();
 
-      // Shuffle filtered characters for random display
-      // Fisher-Yates shuffle algorithm
-      for (let i = filteredCharacters.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [filteredCharacters[i], filteredCharacters[j]] = [filteredCharacters[j], filteredCharacters[i]];
-      }
-      console.log('🎲 Shuffled', filteredCharacters.length, 'companions for random display');
+      // NOTE: Removed redundant shuffle here - applyFilters() already does intelligent shuffling
+      // that preserves the "first 100 with avatar_url_2" requirement while randomizing within groups
 
       renderCharacters();
 
@@ -3257,7 +3252,7 @@
           setInterval(() => {
             currentIndex = (currentIndex + 1) % 3;
             switchImage(avatars[currentIndex]);
-          }, 1500);
+          }, 1800); // 1.8 seconds for smoother, less distracting cycling
         } else {
           console.log('✅ Setting up 2-image alternating for:', {
             avatar1: avatar1.substring(0, 50),
@@ -3277,7 +3272,7 @@
               switchImage(avatar1);
             }
             showingAvatar1 = !showingAvatar1;
-          }, 1500);
+          }, 1800); // 1.8 seconds for smoother, less distracting cycling
         }
       });
     }
