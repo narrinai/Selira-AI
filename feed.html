@@ -950,98 +950,6 @@
 
     let imageObserver = null;
 
-    // Block further scrolling for non-authenticated users
-    function blockFeedScrollForSignup() {
-      const feedContainer = document.getElementById('feedContainer');
-      if (feedContainer) {
-        feedContainer.style.overflow = 'hidden';
-        console.log('🚫 Feed scrolling blocked - signup required');
-      }
-
-      // Create overlay to prevent interaction
-      const overlay = document.createElement('div');
-      overlay.id = 'feedBlockOverlay';
-      overlay.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.7);
-        z-index: 9999;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        backdrop-filter: blur(5px);
-      `;
-
-      const message = document.createElement('div');
-      message.style.cssText = `
-        background: var(--bg-secondary);
-        border-radius: 20px;
-        text-align: center;
-        max-width: 500px;
-        margin: 0 16px;
-        border: 1px solid var(--border);
-        overflow: hidden;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-      `;
-      message.innerHTML = `
-        <div style="
-          height: 200px;
-          background: linear-gradient(135deg, rgba(168, 85, 247, 0.3), rgba(168, 85, 247, 0.1)),
-                      url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&h=400&fit=crop') center/cover;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          position: relative;
-        ">
-          <div style="font-size: 80px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));">🔒</div>
-        </div>
-        <div style="padding: 32px;">
-          <h3 style="color: var(--text-primary); margin-bottom: 12px; font-size: 26px; font-weight: 700;">Sign up to continue</h3>
-          <p style="color: var(--text-secondary); margin-bottom: 28px; line-height: 1.6; font-size: 15px;">
-            You've reached the free viewing limit. Create an account to unlock unlimited access to amazing AI-generated content!
-          </p>
-          <button onclick="window.openLoginModal('signup')" style="
-            background: linear-gradient(135deg, #a855f7, #9333ea);
-            color: white;
-            border: none;
-            padding: 14px 28px;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            margin-bottom: 12px;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
-          " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(168, 85, 247, 0.4)';"
-             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(168, 85, 247, 0.3)';">
-            Sign Up Free 🚀
-          </button>
-          <button onclick="window.openLoginModal('login')" style="
-            background: transparent;
-            color: var(--text-secondary);
-            border: 1px solid var(--border);
-            padding: 14px 28px;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            transition: all 0.2s;
-          " onmouseover="this.style.borderColor='var(--accent)'; this.style.color='var(--accent)';"
-             onmouseout="this.style.borderColor='var(--border)'; this.style.color='var(--text-secondary)';">
-            Already have an account?
-          </button>
-        </div>
-      `;
-
-      overlay.appendChild(message);
-      document.body.appendChild(overlay);
-    }
-
     // Block further scrolling for logged-in free users
     function blockFeedScrollForUpgrade() {
       const feedContainer = document.getElementById('feedContainer');
@@ -1059,7 +967,7 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: rgba(0, 0, 0, 0.7);
+        background: rgba(0, 0, 0, 0.8);
         z-index: 9999;
         display: flex;
         align-items: center;
@@ -1069,64 +977,97 @@
 
       const message = document.createElement('div');
       message.style.cssText = `
-        background: var(--bg-secondary);
-        border-radius: 20px;
-        text-align: center;
-        max-width: 500px;
-        margin: 0 16px;
+        background: var(--bg-primary);
+        border-radius: 16px;
+        padding: 24px;
+        max-width: 480px;
+        width: 90vw;
+        max-height: 85vh;
+        overflow-y: auto;
+        box-shadow: 0 16px 64px rgba(0, 0, 0, 0.4);
         border: 1px solid var(--border);
-        overflow: hidden;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        position: relative;
       `;
       message.innerHTML = `
-        <div style="
-          height: 200px;
-          background: linear-gradient(135deg, rgba(168, 85, 247, 0.3), rgba(168, 85, 247, 0.1)),
-                      url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&h=400&fit=crop') center/cover;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          position: relative;
-        ">
-          <div style="font-size: 80px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));">💎</div>
+        <div style="text-align: center; margin-bottom: 14px;">
+          <img src="https://i.ibb.co/sJp85K0J/aurora-shadow-avatar-2-1760702600650-webp.jpg" alt="AI Generated Image Example" style="width: 100%; max-width: 240px; max-height: 140px; object-fit: cover; border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); margin-bottom: 12px;">
+          <div style="background: linear-gradient(135deg, #ce93d8 0%, #ec4899 100%); color: white; padding: 4px 12px; border-radius: 20px; display: inline-block; font-size: 12px; font-weight: 600; margin-top: 12px;">LIMITED TIME: 40% OFF</div>
+          <div style="font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--text-primary); margin-top: 12px;">Continue Scrolling</div>
+          <p style="color: var(--text-secondary); font-size: 13px; margin-top: 8px;">Unlock unlimited access to amazing AI-generated content</p>
         </div>
-        <div style="padding: 32px;">
-          <h3 style="color: var(--text-primary); margin-bottom: 12px; font-size: 26px; font-weight: 700;">Upgrade to continue</h3>
-          <p style="color: var(--text-secondary); margin-bottom: 28px; line-height: 1.6; font-size: 15px;">
-            You've reached the free viewing limit. Upgrade to a paid plan or purchase image credits to keep exploring unlimited content!
-          </p>
-          <button onclick="window.location.href='/pricing'" style="
-            background: linear-gradient(135deg, #a855f7, #9333ea);
-            color: white;
-            border: none;
-            padding: 14px 28px;
-            border-radius: 12px;
-            font-size: 16px;
+
+        <div style="margin: 10px 0;">
+          <div style="display: flex; align-items: center; margin-bottom: 6px; color: var(--text-primary); font-size: 13px;">
+            <div style="margin-right: 8px; font-size: 16px; color: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </div>
+            <div><strong>No subscription needed</strong></div>
+          </div>
+          <div style="display: flex; align-items: center; margin-bottom: 6px; color: var(--text-primary); font-size: 13px;">
+            <div style="margin-right: 8px; font-size: 16px; color: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"></path></svg>
+            </div>
+            <div>Credits never expire</div>
+          </div>
+          <div style="display: flex; align-items: center; margin-bottom: 6px; color: var(--text-primary); font-size: 13px;">
+            <div style="margin-right: 8px; font-size: 16px; color: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+            </div>
+            <div>Browse all image packs & companions</div>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 16px;">
+          <button onclick="document.getElementById('feedBlockOverlay').remove()" style="
+            flex: 1;
+            padding: 10px 16px;
+            border-radius: 8px;
             font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            margin-bottom: 12px;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
-          " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(168, 85, 247, 0.4)';"
-             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(168, 85, 247, 0.3)';">
-            View Plans & Credits 💳
-          </button>
-          <button onclick="window.location.href='/pricing#credits'" style="
+            font-size: 14px;
             background: transparent;
             color: var(--text-secondary);
             border: 1px solid var(--border);
-            padding: 14px 28px;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
             cursor: pointer;
-            width: 100%;
             transition: all 0.2s;
           " onmouseover="this.style.borderColor='var(--accent)'; this.style.color='var(--accent)';"
              onmouseout="this.style.borderColor='var(--border)'; this.style.color='var(--text-secondary)';">
-            Buy Image Credits Only
+            Maybe Later
           </button>
+          <a href="/pricing?tab=credits" style="
+            flex: 1;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            text-decoration: none;
+            text-align: center;
+            background: linear-gradient(135deg, #a855f7, #9333ea);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          " onmouseover="this.style.opacity='0.9';"
+             onmouseout="this.style.opacity='1';">
+            Get Credits (40% OFF)
+          </a>
+        </div>
+
+        <div style="text-align: center; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border);">
+          <p style="color: var(--text-muted); font-size: 11px; margin-bottom: 4px;">Want unlimited images instead?</p>
+          <a href="/pricing" style="color: var(--text-secondary); font-size: 12px; text-decoration: none;">View Subscription Plans →</a>
+
+          <div style="display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 8px; opacity: 0.6;">
+            <svg style="height: 16px; width: auto;" viewBox="0 0 48 30" xmlns="http://www.w3.org/2000/svg">
+              <rect width="48" height="30" rx="3" fill="#333"/>
+              <circle cx="18" cy="15" r="10" fill="#EB001B"/>
+              <circle cx="30" cy="15" r="10" fill="#F79E1B"/>
+              <path fill="#FF5F00" d="M24 7.5c-2.088 1.623-3.43 4.149-3.43 7s1.342 5.377 3.43 7c2.088-1.623 3.43-4.149 3.43-7s-1.342-5.377-3.43-7z"/>
+            </svg>
+            <img src="/images/bitcoin-selira-ai.webp" alt="Crypto" style="height: 16px; width: auto;">
+          </div>
         </div>
       `;
 
@@ -1148,11 +1089,13 @@
       console.log('🔍 Checking limit modal - User:', currentUser);
 
       if (!currentUser || !currentUser.email) {
-        // Not logged in - show signup overlay (no global modal)
-        console.log('🔒 Free view limit reached - showing signup overlay (not logged in)');
+        // Not logged in - open Supabase login modal
+        console.log('🔒 Free view limit reached - opening login modal (not logged in)');
 
-        // Show only the local signup overlay
-        blockFeedScrollForSignup();
+        // Open Supabase login modal
+        if (window.openLoginModal) {
+          window.openLoginModal('signup');
+        }
       } else if (!canViewUnlimitedFeed()) {
         // Logged in but free user without credits - show upgrade popup and block scroll
         console.log('🔒 Free view limit reached - showing upgrade popup (logged in but limited)');
