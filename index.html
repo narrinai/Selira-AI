@@ -379,6 +379,23 @@
       color: var(--text-primary);
     }
 
+    /* Hide language selector on desktop (only 1 language available) */
+    #languageSelector {
+      display: none;
+    }
+
+    .login-btn {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+    }
+
+    .login-btn:hover {
+      background: rgba(206, 147, 216, 0.1);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(206, 147, 216, 0.2);
+    }
+
     .signup-btn {
       background: var(--accent);
       color: white;
