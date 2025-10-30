@@ -3488,13 +3488,15 @@
         total: filteredCharacters.length,
         withAvatarUrl2: withAvatarUrl2.length,
         withoutAvatarUrl2: withoutAvatarUrl2.length,
-        first100: first100.length
+        first100: first100.length,
+        searchActive: !!currentFilters.search,
+        searchTerm: currentFilters.search || 'none'
       });
 
-      // Debug: Log first 5 companions to verify they all have avatar_url_2
-      console.log('🔍 First 5 companions check:');
-      filteredCharacters.slice(0, 5).forEach((char, idx) => {
-        console.log(`  ${idx + 1}. ${char.name} (@${char.creator}) - avatar_url_2: ${char.avatar_url_2 ? '✅' : '❌'}`);
+      // Debug: Log first 10 companions to verify they all have avatar_url_2
+      console.log('🔍 First 10 companions check:');
+      filteredCharacters.slice(0, 10).forEach((char, idx) => {
+        console.log(`  ${idx + 1}. ${char.name} (@${char.creator}) - avatar_url_2: ${char.avatar_url_2 ? '✅ YES' : '❌ NO'}`);
       });
 
       renderCharacters();
