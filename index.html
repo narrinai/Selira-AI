@@ -44,8 +44,8 @@
 
   <!-- Auth0 Authentication System -->
   <!-- Supabase Authentication System -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="/js/supabase-auth.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="/js/supabase-auth.js" defer></script>
 
   <!-- Mobile Navigation System -->
   <script src="/js/mobile-nav.js" defer></script>
@@ -2313,10 +2313,10 @@
           </svg>
 
           <!-- Apple Pay -->
-          <img src="/images/apple-pay-selira-ai.svg" alt="Apple Pay" class="payment-icon">
+          <img src="/images/apple-pay-selira-ai.svg" alt="Apple Pay" class="payment-icon" loading="lazy">
 
           <!-- Bitcoin -->
-          <img src="/images/bitcoin-selira-ai.webp" alt="Bitcoin" class="payment-icon">
+          <img src="/images/bitcoin-selira-ai.webp" alt="Bitcoin" class="payment-icon" loading="lazy">
         </div>
       </div>
     </aside>
@@ -3069,7 +3069,7 @@
             </div>
             <div class="deal-payment-icons">
               <span class="payment-method">💳 Card</span>
-              <img src="/images/paypay-white.png" alt="PayPal" class="payment-icon-img">
+              <img src="/images/paypay-white.png" alt="PayPal" class="payment-icon-img" loading="lazy">
               <span class="payment-method">₿ Crypto</span>
             </div>
           </div>
@@ -6672,8 +6672,8 @@ Please be thorough and include important details from our conversations.`;
   </script>
 
   <!-- Email Verification Handler -->
-  <script src="js/email-verification-handler.js" defer></script>
-  <script src="js/unverified-email-banner.js" defer></script>
+  <script src="/js/email-verification-handler.js" defer></script>
+  <script src="/js/unverified-email-banner.js" defer></script>
 
   <!-- Support Widget -->
   <script src="/js/support-widget.js" defer></script>
