@@ -620,7 +620,7 @@ class SupabaseAuthModal {
     if (isAuthenticated) {
       if (loginBtn) {
         loginBtn.href = '/pricing';
-        loginBtn.textContent = 'Image Gen Deals -40%';
+        loginBtn.textContent = 'Image Gen Deals -70%';
         loginBtn.className = 'user-btn signup-btn';
         loginBtn.onclick = null;
         loginBtn.style.background = 'linear-gradient(135deg, #ec4899 0%, #a855f7 100%)';
