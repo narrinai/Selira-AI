@@ -2051,18 +2051,23 @@
       if (tagParam) {
         // If specific tag is in URL, set it as active
         activeTags = [tagParam];
-        const capitalizedTag = tagParam.charAt(0).toUpperCase() + tagParam.slice(1);
+        const capitalizedTag = tagParam.charAt(0).toUpperCase() + tagParam.slice(1).replace(/-/g, ' ');
         document.getElementById('breadcrumb-tag').textContent = `Tag: ${capitalizedTag}`;
-        document.getElementById('tag-title').textContent = capitalizedTag;
-        document.getElementById('tag-description').textContent = getTagDescription(tagParam);
+
+        // Dynamic header format: "{Tag} AI Characters - Free Chat"
+        document.getElementById('tag-title').textContent = `${capitalizedTag} AI Characters - Free Chat`;
+
+        // Dynamic subtitle: "Explore {Tag} AI companions and start chatting now"
+        document.getElementById('tag-description').textContent = `Explore ${capitalizedTag} AI companions and start chatting now`;
         updateTagIcon(tagParam);
 
         // Update SEO meta tags dynamically
         updateSEOTags(tagParam);
       } else {
         document.getElementById('breadcrumb-tag').textContent = 'All Tags';
-        document.getElementById('tag-title').textContent = 'Character Tags';
-        document.getElementById('tag-description').textContent = 'Find characters by their unique tags and traits';
+        // Default header when no tag is selected
+        document.getElementById('tag-title').textContent = 'Browse AI Characters by Tags';
+        document.getElementById('tag-description').textContent = 'Explore thousands of AI companions sorted by personality, role, and fantasy tags';
         updateTagIcon();
       }
     }
