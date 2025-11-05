@@ -6435,33 +6435,17 @@ Please be thorough and include important details from our conversations.`;
 
       // Tags filtered (logging disabled for performance)
 
-      // Create tag pills with "All Tags" button first - use inline filtering for better UX
-      const allButton = '<a href="#" class="tag-pill active" data-tag="all">All Tags</a>';
+      // Create tag pills with "All Tags" button first - link to tags.html with tag parameter
+      const allButton = '<a href="tags.html" class="tag-pill active" data-tag="all">All Tags</a>';
       const tagPills = filteredTags.map(tag => {
-        return `<a href="#" class="tag-pill" data-tag="${tag}">${tag}</a>`;
+        const tagSlug = tag.toLowerCase().replace(/\s+/g, '-');
+        return `<a href="tags.html?tag=${tagSlug}" class="tag-pill" data-tag="${tag}">${tag}</a>`;
       }).join('');
 
       dynamicFilters.innerHTML = allButton + tagPills;
 
-      // Add click handlers for new tag pills
-      dynamicFilters.querySelectorAll('.tag-pill').forEach(pill => {
-        pill.addEventListener('click', function(e) {
-          e.preventDefault();
-          const tag = this.getAttribute('data-tag');
-
-          if (tag === 'all') {
-            // Clear all filters and show all characters
-            currentFilters.tags = [];
-            applyFilters();
-          } else {
-            filterByTag(tag);
-          }
-
-          // Update active state
-          document.querySelectorAll('.tag-pill').forEach(p => p.classList.remove('active'));
-          this.classList.add('active');
-        });
-      });
+      // Tag pills now navigate to tags.html with tag parameter for better SEO and dynamic headers
+      // Click handlers removed to allow normal link navigation
 
       // Tag filters populated (logging disabled for performance)
     }
