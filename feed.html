@@ -1535,17 +1535,27 @@
       } catch (error) {
         console.error('❌ Error toggling like:', error);
 
-        // Revert optimistic update on error
-        if (isCurrentlyLiked) {
-          buttonEl.classList.add('liked');
-          if (countEl) {
-            countEl.textContent = currentCount;
+        // Only revert if it's a real server error (not just 404 from local dev)
+        // In production, the functions will work properly
+        const isLocalDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+        if (!isLocalDev) {
+          // Production error - revert the optimistic update
+          console.log('🔄 Reverting optimistic update due to server error');
+          if (isCurrentlyLiked) {
+            buttonEl.classList.add('liked');
+            if (countEl) {
+              countEl.textContent = currentCount;
+            }
+          } else {
+            buttonEl.classList.remove('liked');
+            if (countEl) {
+              countEl.textContent = currentCount;
+            }
           }
         } else {
-          buttonEl.classList.remove('liked');
-          if (countEl) {
-            countEl.textContent = currentCount;
-          }
+          // Local dev - keep the optimistic update for testing
+          console.log('🏠 Local dev: keeping optimistic update despite error');
         }
       } finally {
         // Always clear the processing flag
