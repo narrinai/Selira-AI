@@ -2412,8 +2412,8 @@
 
       <!-- Hero Header -->
       <div class="hero-header">
-        <h1>Unlimited Free <span class="accent-text">NSFW AI Chat</span></h1>
-        <p>Discover Uncensored Companions or <a href="/create">Create Your Own</a></p>
+        <h1 id="hero-title">Unlimited Free <span class="accent-text">NSFW AI Chat</span></h1>
+        <p id="hero-subtitle">Discover Uncensored Companions or <a href="/create">Create Your Own</a></p>
       </div>
 
       <!-- Filter Section -->
@@ -2496,7 +2496,7 @@
   <script>
     // ===== DEVELOPMENT MODE DETECTION =====
     const isDev = window.location.hostname === 'localhost' || window.location.hostname.includes('127.0.0.1') || window.location.hostname.includes('netlify.app');
-    const log = isDev ? log.bind(console) : () => {};
+    const log = isDev ? console.log.bind(console) : () => {};
 
     // ===== CHARACTER.AI STYLE FUNCTIONALITY =====
     let allCharacters = [];
@@ -4332,6 +4332,23 @@
           const tagText = tagSlug.split('-').map(word =>
             word.charAt(0).toUpperCase() + word.slice(1)
           ).join(' ');
+
+          // Update dynamic header for tag page
+          console.log('🏷️ Tag detected in URL:', tagText);
+          const heroTitle = document.getElementById('hero-title');
+          const heroSubtitle = document.getElementById('hero-subtitle');
+          console.log('📝 Hero elements found:', { heroTitle: !!heroTitle, heroSubtitle: !!heroSubtitle });
+
+          if (heroTitle) {
+            // Format: "{Tag} AI Companions - Free NSFW Chat"
+            heroTitle.innerHTML = `${tagText} AI Companions - <span class="accent-text">Free NSFW Chat</span>`;
+            console.log('✅ Title updated to:', heroTitle.innerHTML);
+          }
+          if (heroSubtitle) {
+            // Format: "Explore {Tag} AI characters and start chatting now"
+            heroSubtitle.innerHTML = `Explore ${tagText} AI characters and start chatting now`;
+            console.log('✅ Subtitle updated to:', heroSubtitle.innerHTML);
+          }
 
           // Apply tag filter inline
           currentFilters.style = undefined;
@@ -6435,11 +6452,11 @@ Please be thorough and include important details from our conversations.`;
 
       // Tags filtered (logging disabled for performance)
 
-      // Create tag pills with "All Tags" button first - link to tags.html with tag parameter
-      const allButton = '<a href="tags.html" class="tag-pill active" data-tag="all">All Tags</a>';
+      // Create tag pills with "All Tags" button first - link to /tags/:tag for clean URLs
+      const allButton = '<a href="/tags" class="tag-pill active" data-tag="all">All Tags</a>';
       const tagPills = filteredTags.map(tag => {
         const tagSlug = tag.toLowerCase().replace(/\s+/g, '-');
-        return `<a href="tags.html?tag=${tagSlug}" class="tag-pill" data-tag="${tag}">${tag}</a>`;
+        return `<a href="/tags/${tagSlug}" class="tag-pill" data-tag="${tag}">${tag}</a>`;
       }).join('');
 
       dynamicFilters.innerHTML = allButton + tagPills;
