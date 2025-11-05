@@ -6452,8 +6452,8 @@ Please be thorough and include important details from our conversations.`;
 
       // Tags filtered (logging disabled for performance)
 
-      // Create tag pills with "All Tags" button first - link to /tags/:tag for clean URLs
-      const allButton = '<a href="/tags" class="tag-pill active" data-tag="all">All Tags</a>';
+      // Create tag pills with "All Tags" button first - link to homepage to show all companions
+      const allButton = '<a href="/" class="tag-pill active" data-tag="all">All Tags</a>';
       const tagPills = filteredTags.map(tag => {
         const tagSlug = tag.toLowerCase().replace(/\s+/g, '-');
         return `<a href="/tags/${tagSlug}" class="tag-pill" data-tag="${tag}">${tag}</a>`;
