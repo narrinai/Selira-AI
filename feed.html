@@ -930,8 +930,8 @@
             viewedImagesCount++;
             console.log(`📊 Viewed images: ${viewedImagesCount}/${FREE_VIEW_LIMIT}`);
 
-            // Check if limit reached
-            if (viewedImagesCount >= FREE_VIEW_LIMIT && !hasShownLimitModal) {
+            // Check if limit reached AND user doesn't have paid access
+            if (viewedImagesCount >= FREE_VIEW_LIMIT && !hasShownLimitModal && !canViewUnlimitedFeed()) {
               checkAndShowLimitModal();
             }
           }
@@ -982,16 +982,39 @@
         padding: 24px;
         max-width: 480px;
         width: 90vw;
-        max-height: 85vh;
+        max-height: 70vh;
         overflow-y: auto;
         box-shadow: 0 16px 64px rgba(0, 0, 0, 0.4);
         border: 1px solid var(--border);
         position: relative;
       `;
       message.innerHTML = `
+        <button onclick="document.getElementById('feedBlockOverlay').remove()" style="
+          position: absolute;
+          top: 12px;
+          right: 12px;
+          background: rgba(255, 255, 255, 0.1);
+          border: none;
+          border-radius: 50%;
+          width: 32px;
+          height: 32px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          color: var(--text-secondary);
+          transition: all 0.2s;
+          z-index: 10;
+        " onmouseover="this.style.background='rgba(255, 255, 255, 0.2)'; this.style.color='var(--text-primary)';"
+           onmouseout="this.style.background='rgba(255, 255, 255, 0.1)'; this.style.color='var(--text-secondary)';">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
         <div style="text-align: center; margin-bottom: 14px;">
           <img src="https://i.ibb.co/sJp85K0J/aurora-shadow-avatar-2-1760702600650-webp.jpg" alt="AI Generated Image Example" style="width: 100%; max-width: 240px; max-height: 140px; object-fit: cover; border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); margin-bottom: 12px;">
-          <div style="background: linear-gradient(135deg, #ce93d8 0%, #ec4899 100%); color: white; padding: 4px 12px; border-radius: 20px; display: inline-block; font-size: 12px; font-weight: 600; margin-top: 12px;">LIMITED TIME: 40% OFF</div>
+          <div style="background: linear-gradient(135deg, #ce93d8 0%, #ec4899 100%); color: white; padding: 4px 12px; border-radius: 20px; display: inline-block; font-size: 12px; font-weight: 600; margin-top: 12px;">LIMITED TIME: 70% OFF</div>
           <div style="font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--text-primary); margin-top: 12px;">Continue Scrolling</div>
           <p style="color: var(--text-secondary); font-size: 13px; margin-top: 8px;">Unlock unlimited access to amazing AI-generated content</p>
         </div>
@@ -1051,7 +1074,7 @@
             justify-content: center;
           " onmouseover="this.style.opacity='0.9';"
              onmouseout="this.style.opacity='1';">
-            Get Credits (40% OFF)
+            Get Credits (70% OFF)
           </a>
         </div>
 
