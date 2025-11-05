@@ -1447,6 +1447,12 @@
 
     // Toggle like on image
     async function toggleLike(imageId, buttonEl) {
+      // Prevent multiple clicks while request is in progress
+      if (buttonEl.dataset.isLiking === 'true') {
+        console.log('⏳ Already processing like...');
+        return;
+      }
+
       // Re-check current user status (in case it changed)
       if (window.getCurrentUser) {
         currentUser = window.getCurrentUser();
@@ -1464,8 +1470,37 @@
         return;
       }
 
+      // Mark as processing
+      buttonEl.dataset.isLiking = 'true';
+
       // User is logged in - proceed with like toggle
       console.log('❤️ User logged in, toggling like for image:', imageId, 'User:', currentUser.email);
+
+      // Get current state
+      const countEl = buttonEl.querySelector('.action-count');
+      const currentCount = parseInt(countEl.textContent) || 0;
+      const isCurrentlyLiked = buttonEl.classList.contains('liked');
+
+      // Optimistic UI update - update immediately for instant feedback
+      if (isCurrentlyLiked) {
+        // Unlike
+        buttonEl.classList.remove('liked');
+        if (countEl) {
+          countEl.textContent = Math.max(0, currentCount - 1);
+        }
+      } else {
+        // Like
+        buttonEl.classList.add('liked');
+        if (countEl) {
+          countEl.textContent = currentCount + 1;
+        }
+      }
+
+      // Animate
+      buttonEl.style.transform = 'scale(1.2)';
+      setTimeout(() => {
+        buttonEl.style.transform = '';
+      }, 200);
 
       try {
         const response = await fetch('/.netlify/functions/selira-like-image', {
@@ -1482,29 +1517,39 @@
         }
 
         const data = await response.json();
-        console.log('❤️ Like toggled:', data);
+        console.log('❤️ Like toggled successfully:', data);
 
-        // Update UI
-        if (data.liked) {
-          buttonEl.classList.add('liked');
-        } else {
-          buttonEl.classList.remove('liked');
+        // Update with server response (in case it differs)
+        if (data.liked !== undefined) {
+          if (data.liked) {
+            buttonEl.classList.add('liked');
+          } else {
+            buttonEl.classList.remove('liked');
+          }
         }
 
-        // Update count
-        const countEl = buttonEl.querySelector('.action-count');
-        if (countEl) {
-          countEl.textContent = data.like_count || 0;
+        if (data.like_count !== undefined && countEl) {
+          countEl.textContent = data.like_count;
         }
-
-        // Animate
-        buttonEl.style.transform = 'scale(1.2)';
-        setTimeout(() => {
-          buttonEl.style.transform = '';
-        }, 200);
 
       } catch (error) {
         console.error('❌ Error toggling like:', error);
+
+        // Revert optimistic update on error
+        if (isCurrentlyLiked) {
+          buttonEl.classList.add('liked');
+          if (countEl) {
+            countEl.textContent = currentCount;
+          }
+        } else {
+          buttonEl.classList.remove('liked');
+          if (countEl) {
+            countEl.textContent = currentCount;
+          }
+        }
+      } finally {
+        // Always clear the processing flag
+        buttonEl.dataset.isLiking = 'false';
       }
     }
 
