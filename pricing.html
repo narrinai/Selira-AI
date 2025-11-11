@@ -1231,6 +1231,9 @@
             </ul>
 
             <a href="#" class="plan-button" onclick="handlePlanClick('light'); return false;">Choose Light</a>
+            <a href="#" class="plan-button secondary" onclick="handleCryptoSubscription('light'); return false;" style="margin-top: 12px;">
+              ₿ Subscribe with Crypto
+            </a>
           </div>
 
           <!-- Basic Plan -->
@@ -1284,6 +1287,9 @@
             </ul>
 
             <a href="#" class="plan-button" onclick="handlePlanClick('basic'); return false;">Choose Basic</a>
+            <a href="#" class="plan-button secondary" onclick="handleCryptoSubscription('basic'); return false;" style="margin-top: 12px;">
+              ₿ Subscribe with Crypto
+            </a>
           </div>
 
           <!-- Premium Plan -->
@@ -1337,6 +1343,9 @@
             </ul>
 
             <a href="#" class="plan-button" onclick="handlePlanClick('premium'); return false;">Choose Premium</a>
+            <a href="#" class="plan-button secondary" onclick="handleCryptoSubscription('premium'); return false;" style="margin-top: 12px;">
+              ₿ Subscribe with Crypto
+            </a>
           </div>
         </div>
         </div>
@@ -2537,6 +2546,70 @@
 
       } catch (error) {
         console.error('Error initiating crypto purchase:', error);
+        alert('An error occurred. Please try again later.');
+      }
+    }
+
+    async function handleCryptoSubscription(planType) {
+      console.log('💰 Crypto subscription initiated:', planType);
+
+      // Check if user is logged in
+      const isLoggedIn = window.isUserAuthenticated ? window.isUserAuthenticated() : false;
+
+      if (!isLoggedIn) {
+        // User is not logged in - show registration popup
+        if (typeof openLoginModal === 'function') {
+          openLoginModal('signup');
+        } else {
+          alert('Please sign up to subscribe');
+        }
+        return;
+      }
+
+      try {
+        // Get user info
+        const userEmail = localStorage.getItem('user_email');
+        const userId = localStorage.getItem('user_uid');
+
+        if (!userEmail || !userId) {
+          console.error('Missing user information');
+          alert('Please log in again to continue');
+          window.location.href = '/';
+          return;
+        }
+
+        console.log('👤 Creating crypto subscription for:', { planType, userEmail, userId });
+
+        // Call Netlify Function to create NOWPayments subscription invoice
+        const response = await fetch('/.netlify/functions/create-nowpayments-subscription', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            planType: planType,
+            userEmail: userEmail,
+            userId: userId
+          })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          console.error('Error creating crypto subscription:', result);
+          alert(`Error: ${result.details || result.error || 'Failed to create subscription'}\n\nPlease try again or contact support.`);
+          return;
+        }
+
+        if (result.invoice_url) {
+          console.log('✅ Redirecting to crypto subscription checkout:', result.invoice_url);
+          // Redirect to NOWPayments checkout
+          window.location.href = result.invoice_url;
+        } else {
+          console.error('No invoice URL received');
+          alert('Unable to start crypto checkout. Please try again.');
+        }
+
+      } catch (error) {
+        console.error('Error initiating crypto subscription:', error);
         alert('An error occurred. Please try again later.');
       }
     }
