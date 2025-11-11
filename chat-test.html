@@ -2532,6 +2532,7 @@
     let selectedPose = null;
     let selectedOutfit = null;
     let selectedPoseCredits = 1; // Track credits for selected pose
+    let isCustomPromptMode = false; // Track if user is using custom prompt (costs 2 credits)
 
     // Global variables - current character will be loaded from URL
     let currentCharacter = {
@@ -3546,17 +3547,28 @@
     async function handleCustomPrompt() {
       console.log('✏️ Custom prompt clicked');
 
-      // Close the image suggestions panel
-      hideImagePromptSuggestions();
-
       // Check if this is the first time using custom prompt
       const hasUsedCustomPrompt = localStorage.getItem('hasUsedCustomPrompt') === 'true';
 
       if (!hasUsedCustomPrompt) {
-        // First time - show tutorial banner and specific text
+        // First time - show tutorial banner (FREE, no credit check)
+        // Close the image suggestions panel
+        hideImagePromptSuggestions();
         showCustomPromptTutorial();
       } else {
-        // Not first time - just insert the base text
+        // Not first time - check credits (costs 2 credits)
+        const permissions = await checkUserImagePermissions(true);
+        console.log('💳 Checking permissions for custom prompt (2 credits):', permissions);
+
+        // Show upgrade modal if user can't generate OR doesn't have enough remaining
+        if (!permissions.canGenerate || (permissions.remaining !== undefined && permissions.remaining < 2)) {
+          console.log('🔒 User cannot afford custom prompt (2 credits), showing upgrade modal');
+          showImageUpgradeModal(permissions);
+          return; // Don't proceed
+        }
+
+        // Permission check passed - close panel and insert text
+        hideImagePromptSuggestions();
         insertCustomPromptText('Send me a picture ');
       }
     }
@@ -3598,7 +3610,9 @@
       }
 
       // Insert the full text into input field
+      // For first-time tutorial, set credits to 0 (FREE)
       insertCustomPromptText(fullText, true);
+      selectedPoseCredits = 0; // Override to make first tutorial FREE
 
       // Scroll to banner
       setTimeout(() => {
@@ -3617,6 +3631,10 @@
       // Set the text
       messageInput.value = text;
 
+      // Enable custom prompt mode (costs 2 credits when sent)
+      isCustomPromptMode = true;
+      selectedPoseCredits = 2; // Custom prompts cost 2 credits
+
       // Focus on the input
       messageInput.focus();
 
@@ -3628,7 +3646,7 @@
         enableTypingValidation(text);
       }
 
-      console.log('✅ Custom prompt text inserted:', text);
+      console.log('✅ Custom prompt text inserted:', text, '(2 credits will be charged on send)');
     }
 
     // Enable typing validation for first-time tutorial
@@ -4080,6 +4098,11 @@
           messageInput.value = '';
           autoResizeTextarea();
           await handleImageRequest(message);
+
+          // Reset custom prompt mode after sending
+          isCustomPromptMode = false;
+          selectedPoseCredits = 1; // Reset to default
+
           return;
         }
 
