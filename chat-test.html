@@ -2548,25 +2548,47 @@
     let chatHistory = [];
     let loadedCharacters = [];
 
-    // TEST MODE: Hardcoded test character for local development
-    const TEST_CHARACTER = {
-      name: 'Emma',
-      slug: 'emma-test',
-      title: 'Test Character',
-      description: 'A test character for development',
-      category: 'Romance',
-      avatar_url: '/avatars/placeholder.webp',
-      Sex: 'Female',
-      personality: 'friendly and playful'
-    };
-
-    // Auto-load test character
+    // TEST MODE: Load real character from Airtable for local development
     if (window.location.pathname.includes('chat-test.html')) {
-      console.log('🧪 TEST MODE: Loading hardcoded test character');
-      loadedCharacters = [TEST_CHARACTER];
-      setTimeout(() => {
-        selectCharacter(TEST_CHARACTER.slug);
-      }, 500);
+      console.log('🧪 TEST MODE: Loading character from Airtable');
+
+      // Load a specific character from database
+      fetch('/.netlify/functions/selira-characters-fetch?limit=1')
+        .then(response => response.json())
+        .then(data => {
+          if (data.success && data.characters && data.characters.length > 0) {
+            const char = data.characters[0];
+            const testCharacter = {
+              id: char.Character_ID || char.Name,
+              name: char.Name,
+              slug: char.Slug,
+              title: char.Title || char.Name,
+              description: char.Description || char.Short_Description || '',
+              category: char.Category || 'General',
+              avatar_url: char.Avatar_URL?.[0]?.url || '/avatars/placeholder.webp',
+              avatar_url_2: char.Avatar_URL_2?.[0]?.url,
+              personality: char.Personality || '',
+              scenario: char.Scenario || '',
+              first_message: char.First_Message || '',
+              Sex: char.Sex || char.Gender || 'Female',
+              age: char.Age,
+              tags: char.Tags || []
+            };
+
+            loadedCharacters = [testCharacter];
+            console.log('✅ TEST MODE: Loaded character:', testCharacter.name, testCharacter.slug);
+
+            // Auto-select the character
+            setTimeout(() => {
+              selectCharacter(testCharacter.slug);
+            }, 500);
+          } else {
+            console.error('❌ TEST MODE: Failed to load character from database');
+          }
+        })
+        .catch(error => {
+          console.error('❌ TEST MODE: Error loading character:', error);
+        });
     }
 
     // Avatar URL correction function
