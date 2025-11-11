@@ -631,7 +631,13 @@
     .plan-button.secondary:hover {
       background: var(--bg-tertiary);
     }
-    
+
+    /* TEMPORARY: Hide main payment buttons while updating payment provider */
+    /* TO RESTORE: Remove this CSS block when payment provider is ready */
+    .plan-button:not(.secondary) {
+      display: none !important;
+    }
+
     /* Responsive Design */
     @media (max-width: 1024px) {
       .pricing-cards {
