@@ -2802,8 +2802,8 @@
     // ===== CHARACTER LOADING =====
     async function loadCharacters() {
       try {
-        log('📡 Loading characters from API...');
-        const response = await fetch('/.netlify/functions/selira-characters-fetch?limit=100');
+        log('📡 Loading initial 20 characters from API for fast page load...');
+        const response = await fetch('/.netlify/functions/selira-characters-fetch?limit=20');
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -2903,13 +2903,16 @@
             // Note: UI will be updated after DOM is fully loaded (see setTimeout at end of loadCharacters)
           }
 
-          log('✅ Loaded characters:', allCharacters.length);
+          log('✅ Loaded initial characters:', allCharacters.length);
+
+          // OPTIMIZATION: Load remaining characters in background after initial render
+          setTimeout(() => loadRemainingCharacters(), 1000);
         } else {
           throw new Error('Invalid API response');
         }
-        
+
       } catch (error) {
-        console.error('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Error loading characters:', error);
+        console.error('❌ Error loading characters:', error);
         // Use demo characters as fallback
         allCharacters = getDemoCharacters();
       }
@@ -2934,6 +2937,55 @@
       setTimeout(() => {
         updateFilterUI();
       }, 250);
+    }
+
+    // Load remaining characters in background (after initial 20 are loaded)
+    async function loadRemainingCharacters() {
+      try {
+        log('📡 Loading remaining characters in background...');
+        const response = await fetch('/.netlify/functions/selira-characters-fetch?limit=3000');
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (data.success && data.characters) {
+          // Replace allCharacters with full list
+          const initialCount = allCharacters.length;
+
+          allCharacters = data.characters.map(char => ({
+            id: char.Character_ID || char.Name,
+            name: char.Name || 'Unknown',
+            title: char.Character_Title || '',
+            description: cleanDescription(char.Character_Description || ''),
+            avatar: char.Avatar_URL || null,
+            avatar_url_2: char.avatar_url_2 || char.Avatar_URL_2 || null,
+            avatar_url_3: char.avatar_url_3 || char.Avatar_URL_3 || null,
+            category: char.Category || 'Other',
+            slug: char.Slug || (char.Name ? char.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'unknown'),
+            creator: char.Created_by || 'Selira',
+            Created_by: char.Created_by || '',
+            tags: Array.isArray(char.Tags) ? char.Tags : (char.Tags || '').toString().split(',').filter(Boolean),
+            chats: (Math.floor(Math.random() * 7) + 2) + '.' + Math.floor(Math.random() * 10) + 'k',
+            character_url: char.Character_URL || `https://selira.ai/chat.html?char=${char.Slug || (char.Name ? char.Name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'unknown')}`,
+            companion_type: char.companion_type || 'realistic',
+            sex: char.sex || 'female',
+            ethnicity: char.ethnicity || 'white',
+            hair_length: char.hair_length || 'medium',
+            content_filter: char.content_filter || 'Censored',
+            created: char.Created || new Date().toISOString()
+          }));
+
+          log(`✅ Loaded ${allCharacters.length} total characters (was ${initialCount})`);
+
+          // Re-apply filters and update display (without resetting page)
+          applyFilters();
+        }
+      } catch (error) {
+        console.error('❌ Error loading remaining characters:', error);
+      }
     }
 
     function getDemoCharacters() {
