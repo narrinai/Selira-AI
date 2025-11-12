@@ -2532,6 +2532,7 @@
     let selectedPose = null;
     let selectedOutfit = null;
     let selectedPoseCredits = 1; // Track credits for selected pose
+    let isCustomPromptMode = false; // Track if user is using custom prompt (costs 2 credits)
 
     // Global variables - current character will be loaded from URL
     let currentCharacter = {
@@ -3419,6 +3420,16 @@
           poseButtonsContainer.appendChild(btn);
         });
 
+        // Add Custom Prompt button
+        const customPromptBtn = document.createElement('button');
+        customPromptBtn.className = 'selector-btn custom-prompt-btn';
+        customPromptBtn.dataset.poseId = 'custom';
+        customPromptBtn.style.cssText = 'border: 2px solid #667eea !important; box-shadow: 0 0 10px rgba(102, 126, 234, 0.3) !important;';
+        const coinIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-left: 3px; opacity: 0.8;"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle></svg>`;
+        customPromptBtn.innerHTML = `Custom Prompt <span style="white-space: nowrap;">${coinIcon}${coinIcon}</span>`;
+        customPromptBtn.onclick = () => handleCustomPrompt();
+        poseButtonsContainer.appendChild(customPromptBtn);
+
         // Outfits removed - fully nude by default
 
       } else {
@@ -3519,6 +3530,169 @@
 
       // Reset selection
       selectedPose = null;
+    }
+
+    // Handle custom prompt button click
+    async function handleCustomPrompt() {
+      console.log('✏️ Custom prompt clicked');
+
+      // Check if this is the first time using custom prompt
+      const hasUsedCustomPrompt = localStorage.getItem('hasUsedCustomPrompt') === 'true';
+
+      if (!hasUsedCustomPrompt) {
+        // First time - show tutorial banner (FREE, no credit check)
+        // Close the image suggestions panel
+        hideImagePromptSuggestions();
+        showCustomPromptTutorial();
+      } else {
+        // Not first time - check credits (costs 2 credits)
+        const permissions = await checkUserImagePermissions(true);
+        console.log('💳 Checking permissions for custom prompt (2 credits):', permissions);
+
+        // Show upgrade modal if user can't generate OR doesn't have enough remaining
+        if (!permissions.canGenerate || (permissions.remaining !== undefined && permissions.remaining < 2)) {
+          console.log('🔒 User cannot afford custom prompt (2 credits), showing upgrade modal');
+          showImageUpgradeModal(permissions);
+          return; // Don't proceed
+        }
+
+        // Permission check passed - close panel and insert text
+        hideImagePromptSuggestions();
+        insertCustomPromptText('Send me a picture ');
+      }
+    }
+
+    // Show tutorial banner for first-time custom prompt users
+    function showCustomPromptTutorial() {
+      console.log('📚 Showing custom prompt tutorial');
+
+      const tutorialText = 'of reverse cowgirl, cock visible penetrating, riding backwards, naked, fully nude';
+      const fullText = 'Send me a picture ' + tutorialText;
+
+      // Create banner
+      const banner = document.createElement('div');
+      banner.id = 'customPromptTutorialBanner';
+      banner.style.cssText = `
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 16px 20px;
+        margin: 12px 16px;
+        border-radius: 12px;
+        font-size: 14px;
+        line-height: 1.6;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+      `;
+      banner.innerHTML = `
+        <div style="font-weight: 600; margin-bottom: 8px; font-size: 15px;">
+          🎨 Let's generate your first AI image, for FREE
+        </div>
+        <div style="opacity: 0.95;">
+          Type the exact message below to see how our AI creates images from detailed descriptions.
+          Copy-paste is disabled to help you learn the prompt structure.
+        </div>
+      `;
+
+      // Insert banner above chat messages
+      const chatMessages = document.getElementById('chatMessages');
+      if (chatMessages && chatMessages.firstChild) {
+        chatMessages.insertBefore(banner, chatMessages.firstChild);
+      }
+
+      // Insert the full text into input field
+      // For first-time tutorial, set credits to 0 (FREE)
+      insertCustomPromptText(fullText, true);
+      selectedPoseCredits = 0; // Override to make first tutorial FREE
+
+      // Scroll to banner
+      setTimeout(() => {
+        banner.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+
+    // Insert custom prompt text into chat input
+    function insertCustomPromptText(text, isFirstTime = false) {
+      const messageInput = document.getElementById('messageInput');
+      if (!messageInput) {
+        console.error('❌ Message input not found');
+        return;
+      }
+
+      // Set the text
+      messageInput.value = text;
+
+      // Enable custom prompt mode (costs 2 credits when sent)
+      isCustomPromptMode = true;
+      selectedPoseCredits = 2; // Custom prompts cost 2 credits
+
+      // Focus on the input
+      messageInput.focus();
+
+      // Move cursor to the end
+      messageInput.setSelectionRange(text.length, text.length);
+
+      // If first time, disable copy-paste and monitor typing
+      if (isFirstTime) {
+        enableTypingValidation(text);
+      }
+
+      console.log('✅ Custom prompt text inserted:', text, '(2 credits will be charged on send)');
+    }
+
+    // Enable typing validation for first-time tutorial
+    function enableTypingValidation(requiredText) {
+      const messageInput = document.getElementById('messageInput');
+      const sendBtn = document.getElementById('sendBtn');
+
+      if (!messageInput || !sendBtn) return;
+
+      // Disable send button initially
+      sendBtn.disabled = true;
+      sendBtn.style.opacity = '0.5';
+      sendBtn.style.cursor = 'not-allowed';
+
+      // Disable copy-paste
+      const preventCopyPaste = (e) => {
+        e.preventDefault();
+        return false;
+      };
+
+      messageInput.addEventListener('paste', preventCopyPaste);
+      messageInput.addEventListener('cut', preventCopyPaste);
+      messageInput.addEventListener('copy', preventCopyPaste);
+
+      // Monitor typing
+      const validateTyping = () => {
+        const currentText = messageInput.value;
+
+        // Check if user has typed the exact text
+        if (currentText === requiredText) {
+          // Enable send button
+          sendBtn.disabled = false;
+          sendBtn.style.opacity = '1';
+          sendBtn.style.cursor = 'pointer';
+
+          // Mark as completed
+          localStorage.setItem('hasUsedCustomPrompt', 'true');
+
+          // Remove tutorial banner
+          const banner = document.getElementById('customPromptTutorialBanner');
+          if (banner) {
+            banner.style.transition = 'opacity 0.3s ease';
+            banner.style.opacity = '0';
+            setTimeout(() => banner.remove(), 300);
+          }
+
+          // Remove event listeners
+          messageInput.removeEventListener('input', validateTyping);
+          messageInput.removeEventListener('paste', preventCopyPaste);
+          messageInput.removeEventListener('cut', preventCopyPaste);
+          messageInput.removeEventListener('copy', preventCopyPaste);
+
+          console.log('✅ Tutorial completed - text matches exactly');
+        }
+      };
+
+      messageInput.addEventListener('input', validateTyping);
     }
 
     // Hide image prompt suggestions

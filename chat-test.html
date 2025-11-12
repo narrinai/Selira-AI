@@ -2555,7 +2555,7 @@
       if (!urlParams.get('char')) {
         // Redirect to same page with test character parameter
         console.log('🧪 TEST MODE: Redirecting to test character...');
-        window.location.href = window.location.pathname + '?char=mariana-1761155278326';
+        window.location.href = window.location.pathname + '?char=tempting-teacher-savage-1760211726718';
       } else {
         console.log('🧪 TEST MODE: Loading character from URL:', urlParams.get('char'));
         // Normal flow will handle loading the character
@@ -3437,6 +3437,7 @@
         const customPromptBtn = document.createElement('button');
         customPromptBtn.className = 'selector-btn custom-prompt-btn';
         customPromptBtn.dataset.poseId = 'custom';
+        customPromptBtn.style.cssText = 'border: 2px solid #667eea !important; box-shadow: 0 0 10px rgba(102, 126, 234, 0.3) !important;';
         const coinIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-left: 3px; opacity: 0.8;"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle></svg>`;
         customPromptBtn.innerHTML = `Custom Prompt <span style="white-space: nowrap;">${coinIcon}${coinIcon}</span>`;
         customPromptBtn.onclick = () => handleCustomPrompt();
