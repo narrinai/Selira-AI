@@ -5892,6 +5892,18 @@
     // The selira-generate-custom-image function now handles usage tracking
 
     async function checkUserImagePermissions(useCache = true) {
+      // TEST MODE: Return mock permissions for local testing
+      if (window.location.pathname.includes('chat-test.html')) {
+        console.log('🧪 TEST MODE: Returning mock image permissions (unlimited)');
+        return {
+          canGenerate: true,
+          plan: 'Pro',
+          remaining: 999,
+          limit: 999,
+          reason: 'Test mode - unlimited credits'
+        };
+      }
+
       const user = window.getCurrentUser ? window.getCurrentUser() : null;
       if (!user?.email && !user?.sub) {
         return { canGenerate: false, plan: 'Guest', reason: 'Please log in to generate images' };
@@ -7828,8 +7840,14 @@
     async function viewGeneratedImages() {
       console.log('🖼️ Opening generated images carousel...');
 
+      // TEST MODE: Skip auth check for local testing
+      let user = window.getCurrentUser ? window.getCurrentUser() : null;
+      if (window.location.pathname.includes('chat-test.html')) {
+        console.log('🧪 TEST MODE: Bypassing auth check with mock user');
+        user = { email: 'test@selira.ai', id: 'test-user-id' };
+      }
+
       // Get current user
-      const user = window.getCurrentUser ? window.getCurrentUser() : null;
       if (!user || !user.email) {
         console.log('🔒 User not logged in - opening signup modal');
         if (window.openLoginModal) {
