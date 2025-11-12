@@ -160,6 +160,10 @@ let activeReplicateRequests = 0; // Track concurrent Replicate API calls
 async function generateWithPromptchan(body, requestId, corsHeaders, email, supabase_id) {
   const { customPrompt, characterName, sex, ethnicity, hairLength, hairColor, age, breastSize, assSize, style, shotType, source, uncensored, credits } = body;
 
+  // CRITICAL FIX: Reset skipSecondPromptchan flag for each new request
+  // This variable was leaking state between requests, causing second attempts to be skipped incorrectly
+  let skipSecondPromptchan = false;
+
   console.log(`🎨 [${requestId}] Generating with Promptchan API`);
   console.log(`🎨 [${requestId}] Style parameter received:`, style);
   console.log(`🎨 [${requestId}] Shot type parameter received:`, shotType);
@@ -278,8 +282,8 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, supab
     console.log(`🎯 [${requestId}] Companion creation: Using NSFW pose as main prompt:`, randomPose);
   }
 
-  // Flag to track if first Promptchan attempt failed (to skip second attempt)
-  let skipSecondPromptchan = false;
+  // NOTE: skipSecondPromptchan is now initialized at the start of the function (line 165)
+  // This prevents state leaking between requests
 
   // REMOVED: Pre-enhanced check was dead code - chat buttons never matched those keywords
   // All chat/NSFW page requests now go through the explicit sex prompt path below

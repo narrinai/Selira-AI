@@ -6566,7 +6566,10 @@
         // Always reset the generation flag and timestamp
         isGeneratingImage = false;
         imageGenerationStartTime = 0;
-        console.log('🏁 Image generation completed, flag reset');
+        // Reset credits to default 1 credit after generation completes
+        selectedPoseCredits = 1;
+        isCustomPromptMode = false;
+        console.log('🏁 Image generation completed, flag reset, credits reset to 1');
       }
     }
 
