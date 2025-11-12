@@ -2549,48 +2549,33 @@
     let chatHistory = [];
     let loadedCharacters = [];
 
-    // TEST MODE: Load real character from Airtable for local development
+    // TEST MODE: Hardcoded test character for local development
     if (window.location.pathname.includes('chat-test.html')) {
-      console.log('🧪 TEST MODE: Loading Violet Johansson from Airtable');
+      console.log('🧪 TEST MODE: Loading hardcoded test character');
 
-      // Load Violet Johansson specifically using slug parameter
-      fetch('/.netlify/functions/selira-characters-fetch?slug=violet-johansson')
-        .then(response => response.json())
-        .then(data => {
-          console.log('🧪 TEST MODE: Response:', data);
-          if (data.success && data.characters && data.characters.length > 0) {
-            const char = data.characters[0];
-            const testCharacter = {
-              id: char.Character_ID || char.Name,
-              name: char.Name,
-              slug: char.Slug,
-              title: char.Title || char.Name,
-              description: char.Description || char.Short_Description || '',
-              category: char.Category || 'General',
-              avatar_url: char.Avatar_URL?.[0]?.url || '/avatars/placeholder.webp',
-              avatar_url_2: char.Avatar_URL_2?.[0]?.url,
-              personality: char.Personality || '',
-              scenario: char.Scenario || '',
-              first_message: char.First_Message || char.Greeting || '',
-              Sex: char.Sex || char.Gender || 'Female',
-              age: char.Age,
-              tags: char.Tags || []
-            };
+      const testCharacter = {
+        id: 'violet-johansson-test',
+        name: 'Violet Johansson',
+        slug: 'violet-johansson-test',
+        title: 'CEO & Fashion Icon',
+        description: 'A confident CEO and fashion icon',
+        category: 'Romance',
+        avatar_url: '/avatars/violet-johansson-avatar-1759340111942.webp',
+        personality: 'Confident, seductive, and playful',
+        scenario: 'You meet Violet at a high-end fashion event',
+        first_message: 'Well hello there... I noticed you from across the room. Care to join me for a drink?',
+        Sex: 'Female',
+        age: 28,
+        tags: ['CEO', 'Fashion', 'Confident', 'Seductive']
+      };
 
-            loadedCharacters = [testCharacter];
-            console.log('✅ TEST MODE: Loaded character:', testCharacter.name, testCharacter.slug);
+      loadedCharacters = [testCharacter];
+      console.log('✅ TEST MODE: Loaded hardcoded character:', testCharacter.name, testCharacter.slug);
 
-            // Auto-select the character
-            setTimeout(() => {
-              selectCharacter(testCharacter.slug);
-            }, 1000);
-          } else {
-            console.error('❌ TEST MODE: Failed to load Violet Johansson from database', data);
-          }
-        })
-        .catch(error => {
-          console.error('❌ TEST MODE: Error loading character:', error);
-        });
+      // Auto-select the character
+      setTimeout(() => {
+        selectCharacter(testCharacter.slug);
+      }, 500);
     }
 
     // Avatar URL correction function
