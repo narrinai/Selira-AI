@@ -2549,65 +2549,17 @@
     let chatHistory = [];
     let loadedCharacters = [];
 
-    // TEST MODE: Hardcoded test character for local development
+    // TEST MODE: Auto-redirect to test with real character via URL parameter
     if (window.location.pathname.includes('chat-test.html')) {
-      console.log('🧪 TEST MODE: Loading hardcoded test character');
-
-      const testCharacter = {
-        id: 'violet-johansson-test',
-        name: 'Violet Johansson',
-        slug: 'violet-johansson-test',
-        title: 'CEO & Fashion Icon',
-        description: 'A confident CEO and fashion icon',
-        category: 'Romance',
-        avatar_url: '/avatars/violet-johansson-avatar-1759340111942.webp',
-        avatar: '/avatars/violet-johansson-avatar-1759340111942.webp',
-        personality: 'Confident, seductive, and playful',
-        scenario: 'You meet Violet at a high-end fashion event',
-        first_message: 'Well hello there... I noticed you from across the room. Care to join me for a drink?',
-        Sex: 'Female',
-        sex: 'Female',
-        age: 28,
-        tags: ['CEO', 'Fashion', 'Confident', 'Seductive'],
-        creator: 'Selira'
-      };
-
-      loadedCharacters = [testCharacter];
-
-      // Set as current character directly
-      currentCharacter = {
-        name: testCharacter.name,
-        slug: testCharacter.slug,
-        avatar: testCharacter.avatar_url,
-        creator: '@Selira',
-        description: testCharacter.description,
-        chats: '10K',
-        rating: '4.5',
-        tags: testCharacter.tags,
-        category: testCharacter.category,
-        sex: testCharacter.Sex,
-        age: testCharacter.age,
-        personality: testCharacter.personality,
-        scenario: testCharacter.scenario,
-        first_message: testCharacter.first_message
-      };
-
-      console.log('✅ TEST MODE: Loaded and activated character:', currentCharacter);
-
-      // Update display
-      setTimeout(() => {
-        updateCharacterDisplay();
-        clearChat();
-        initializeImageGenBadge();
-
-        // Also initialize carousel and clickable avatars
-        if (typeof initializeImageCarousel === 'function') {
-          initializeImageCarousel();
-        }
-        if (typeof makeAvatarsClickable === 'function') {
-          makeAvatarsClickable();
-        }
-      }, 500);
+      const urlParams = new URLSearchParams(window.location.search);
+      if (!urlParams.get('char')) {
+        // Redirect to same page with test character parameter
+        console.log('🧪 TEST MODE: Redirecting to test character...');
+        window.location.href = window.location.pathname + '?char=mariana-1761155278326';
+      } else {
+        console.log('🧪 TEST MODE: Loading character from URL:', urlParams.get('char'));
+        // Normal flow will handle loading the character
+      }
     }
 
     // Avatar URL correction function
