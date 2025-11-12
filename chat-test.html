@@ -2553,12 +2553,13 @@
     if (window.location.pathname.includes('chat-test.html')) {
       console.log('🧪 TEST MODE: Loading Violet Johansson from Airtable');
 
-      // Load Violet Johansson specifically
-      fetch('/.netlify/functions/selira-characters?slug=violet-johansson')
+      // Load Violet Johansson specifically using slug parameter
+      fetch('/.netlify/functions/selira-characters-fetch?slug=violet-johansson')
         .then(response => response.json())
         .then(data => {
-          if (data.success && data.character) {
-            const char = data.character;
+          console.log('🧪 TEST MODE: Response:', data);
+          if (data.success && data.characters && data.characters.length > 0) {
+            const char = data.characters[0];
             const testCharacter = {
               id: char.Character_ID || char.Name,
               name: char.Name,
@@ -2582,9 +2583,9 @@
             // Auto-select the character
             setTimeout(() => {
               selectCharacter(testCharacter.slug);
-            }, 500);
+            }, 1000);
           } else {
-            console.error('❌ TEST MODE: Failed to load Violet Johansson from database');
+            console.error('❌ TEST MODE: Failed to load Violet Johansson from database', data);
           }
         })
         .catch(error => {
