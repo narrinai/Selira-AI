@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
   <title>AI NSFW Chat - Free Adult AI Companion | Selira AI</title>
   <meta name="description" content="Free AI NSFW chat & AI sex chat with adult companions. Unlimited adult conversations, AI NSFW image generation. Private, uncensored AI chat experience.">
   
@@ -3518,28 +3519,28 @@
     async function handleCustomPrompt() {
       console.log('✏️ Custom prompt clicked');
 
+      // Always check credits first (costs 2 credits)
+      const permissions = await checkUserImagePermissions(true);
+      console.log('💳 Checking permissions for custom prompt (2 credits):', permissions);
+
+      // Show upgrade modal if user can't generate OR doesn't have enough remaining
+      if (!permissions.canGenerate || (permissions.remaining !== undefined && permissions.remaining < 2)) {
+        console.log('🔒 User cannot afford custom prompt (2 credits), showing upgrade modal');
+        showImageUpgradeModal(permissions);
+        return; // Don't proceed
+      }
+
       // Check if this is the first time using custom prompt
       const hasUsedCustomPrompt = localStorage.getItem('hasUsedCustomPrompt') === 'true';
 
+      // Close the image suggestions panel
+      hideImagePromptSuggestions();
+
       if (!hasUsedCustomPrompt) {
-        // First time - show tutorial banner (FREE, no credit check)
-        // Close the image suggestions panel
-        hideImagePromptSuggestions();
+        // First time - show tutorial banner
         showCustomPromptTutorial();
       } else {
-        // Not first time - check credits (costs 2 credits)
-        const permissions = await checkUserImagePermissions(true);
-        console.log('💳 Checking permissions for custom prompt (2 credits):', permissions);
-
-        // Show upgrade modal if user can't generate OR doesn't have enough remaining
-        if (!permissions.canGenerate || (permissions.remaining !== undefined && permissions.remaining < 2)) {
-          console.log('🔒 User cannot afford custom prompt (2 credits), showing upgrade modal');
-          showImageUpgradeModal(permissions);
-          return; // Don't proceed
-        }
-
-        // Permission check passed - close panel and insert text
-        hideImagePromptSuggestions();
+        // Not first time - just insert starter text
         insertCustomPromptText('Send me a picture ');
       }
     }
@@ -3548,29 +3549,29 @@
     function showCustomPromptTutorial() {
       console.log('📚 Showing custom prompt tutorial');
 
-      const tutorialText = 'of reverse cowgirl, cock visible penetrating, riding backwards, naked, fully nude';
-      const fullText = 'Send me a picture ' + tutorialText;
+      const exampleText = 'of reverse cowgirl, cock visible penetrating, riding backwards, naked, fully nude';
+      const fullText = 'Send me a picture ' + exampleText;
 
       // Create banner
       const banner = document.createElement('div');
       banner.id = 'customPromptTutorialBanner';
       banner.style.cssText = `
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
+        background: linear-gradient(135deg, rgba(206, 147, 216, 0.15) 0%, rgba(236, 72, 153, 0.15) 100%);
+        border: 1px solid rgba(206, 147, 216, 0.3);
+        color: #ffffff;
         padding: 16px 20px;
         margin: 12px 16px;
         border-radius: 12px;
         font-size: 14px;
         line-height: 1.6;
-        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        box-shadow: 0 4px 12px rgba(206, 147, 216, 0.1);
       `;
       banner.innerHTML = `
-        <div style="font-weight: 600; margin-bottom: 8px; font-size: 15px;">
-          🎨 Let's generate your first AI image, for FREE
+        <div style="font-weight: 600; margin-bottom: 8px; font-size: 15px; color: #ce93d8;">
+          Custom Prompt Tutorial
         </div>
-        <div style="opacity: 0.95;">
-          Type the exact message below to see how our AI creates images from detailed descriptions.
-          Copy-paste is disabled to help you learn the prompt structure.
+        <div style="opacity: 0.9; color: #e0e0e0;">
+          Below is an example prompt structure that works well. You can customize it to your liking, but this structure gives good results.
         </div>
       `;
 
@@ -3580,10 +3581,8 @@
         chatMessages.insertBefore(banner, chatMessages.firstChild);
       }
 
-      // Insert the full text into input field
-      // For first-time tutorial, set credits to 0 (FREE)
+      // Insert the example text into input field
       insertCustomPromptText(fullText, true);
-      selectedPoseCredits = 0; // Override to make first tutorial FREE
 
       // Scroll to banner
       setTimeout(() => {
@@ -3612,69 +3611,24 @@
       // Move cursor to the end
       messageInput.setSelectionRange(text.length, text.length);
 
-      // If first time, disable copy-paste and monitor typing
+      // If first time, mark as used and remove banner after a delay
       if (isFirstTime) {
-        enableTypingValidation(text);
-      }
+        localStorage.setItem('hasUsedCustomPrompt', 'true');
 
-      console.log('✅ Custom prompt text inserted:', text, '(2 credits will be charged on send)');
-    }
-
-    // Enable typing validation for first-time tutorial
-    function enableTypingValidation(requiredText) {
-      const messageInput = document.getElementById('messageInput');
-      const sendBtn = document.getElementById('sendBtn');
-
-      if (!messageInput || !sendBtn) return;
-
-      // Disable send button initially
-      sendBtn.disabled = true;
-      sendBtn.style.opacity = '0.5';
-      sendBtn.style.cursor = 'not-allowed';
-
-      // Disable copy-paste
-      const preventCopyPaste = (e) => {
-        e.preventDefault();
-        return false;
-      };
-
-      messageInput.addEventListener('paste', preventCopyPaste);
-      messageInput.addEventListener('cut', preventCopyPaste);
-      messageInput.addEventListener('copy', preventCopyPaste);
-
-      // Monitor typing
-      const validateTyping = () => {
-        const currentText = messageInput.value;
-
-        // Check if user has typed the exact text
-        if (currentText === requiredText) {
-          // Enable send button
-          sendBtn.disabled = false;
-          sendBtn.style.opacity = '1';
-          sendBtn.style.cursor = 'pointer';
-
-          // Mark as completed
-          localStorage.setItem('hasUsedCustomPrompt', 'true');
-
-          // Remove tutorial banner
+        // Remove tutorial banner after user starts typing
+        const removeBanner = () => {
           const banner = document.getElementById('customPromptTutorialBanner');
           if (banner) {
             banner.style.transition = 'opacity 0.3s ease';
             banner.style.opacity = '0';
             setTimeout(() => banner.remove(), 300);
           }
+          messageInput.removeEventListener('input', removeBanner);
+        };
+        messageInput.addEventListener('input', removeBanner, { once: true });
+      }
 
-          // Remove event listeners
-          messageInput.removeEventListener('input', validateTyping);
-          messageInput.removeEventListener('paste', preventCopyPaste);
-          messageInput.removeEventListener('cut', preventCopyPaste);
-          messageInput.removeEventListener('copy', preventCopyPaste);
-
-          console.log('✅ Tutorial completed - text matches exactly');
-        }
-      };
-
-      messageInput.addEventListener('input', validateTyping);
+      console.log('✅ Custom prompt text inserted:', text, '(2 credits will be charged on send)');
     }
 
     // Generate image from selected pose (fully nude by default)
