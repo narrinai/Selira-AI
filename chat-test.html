@@ -2598,6 +2598,15 @@
       setTimeout(() => {
         updateCharacterDisplay();
         clearChat();
+        initializeImageGenBadge();
+
+        // Also initialize carousel and clickable avatars
+        if (typeof initializeImageCarousel === 'function') {
+          initializeImageCarousel();
+        }
+        if (typeof makeAvatarsClickable === 'function') {
+          makeAvatarsClickable();
+        }
       }, 500);
     }
 
