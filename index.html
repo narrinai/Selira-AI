@@ -52,20 +52,9 @@
     }
   </script>
 
-  <!-- Supabase Authentication System - Loaded async to not block page -->
-  <script>
-    // Load Supabase scripts after page is interactive
-    setTimeout(function() {
-      var supabaseScript = document.createElement('script');
-      supabaseScript.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
-      supabaseScript.onload = function() {
-        var authScript = document.createElement('script');
-        authScript.src = '/js/supabase-auth.js';
-        document.head.appendChild(authScript);
-      };
-      document.head.appendChild(supabaseScript);
-    }, 500);
-  </script>
+  <!-- Supabase Authentication System - Load synchronously for immediate availability -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/supabase-auth.js"></script>
 
   <!-- Mobile Navigation System -->
   <script src="/js/mobile-nav.js" defer></script>

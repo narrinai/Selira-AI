@@ -1247,6 +1247,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // Initialize auth modal
     seliraAuth = new SupabaseAuthModal();
+    window.seliraAuth = seliraAuth; // Make it globally accessible
 
     // Add proper click handlers to sidebar auth buttons
     setTimeout(() => {
@@ -1343,10 +1344,13 @@ window.openLoginModal = function(mode = 'login', event = null) {
     console.log('⚠️ Overlay found but not open/show');
   }
 
-  if (seliraAuth) {
-    seliraAuth.openModal(mode);
+  if (window.seliraAuth || seliraAuth) {
+    (window.seliraAuth || seliraAuth).openModal(mode);
   } else {
-    console.error('❌ seliraAuth not initialized yet');
+    console.warn('⏳ seliraAuth not initialized yet, opening fallback modal...');
+    // If Supabase auth isn't loaded yet, just reload the page to production
+    // This ensures auth works properly
+    window.location.href = `https://selira.ai${window.location.pathname}${window.location.search}`;
   }
 };
 
