@@ -6057,10 +6057,17 @@
 
     // Request image function - shows image generation suggestions
     async function requestImage() {
-      // Check authentication first
+      // TEST MODE: Skip auth check for local testing
       let isAuthenticated = window.isUserAuthenticated ? window.isUserAuthenticated() : false;
       let user = window.getCurrentUser ? window.getCurrentUser() : null;
 
+      if (window.location.pathname.includes('chat-test.html')) {
+        console.log('🧪 TEST MODE: Bypassing auth check in requestImage()');
+        isAuthenticated = true;
+        user = { email: 'test@selira.ai', id: 'test-user-id' };
+      }
+
+      // Check authentication first
       if (!isAuthenticated || !user) {
         // Show signup modal for unauthenticated users
         console.log('🔒 User not authenticated, showing signup modal');
