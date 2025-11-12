@@ -52,10 +52,20 @@
     }
   </script>
 
-  <!-- Auth0 Authentication System -->
-  <!-- Supabase Authentication System -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-  <script src="/js/supabase-auth.js" defer></script>
+  <!-- Supabase Authentication System - Loaded async to not block page -->
+  <script>
+    // Load Supabase scripts after page is interactive
+    setTimeout(function() {
+      var supabaseScript = document.createElement('script');
+      supabaseScript.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+      supabaseScript.onload = function() {
+        var authScript = document.createElement('script');
+        authScript.src = '/js/supabase-auth.js';
+        document.head.appendChild(authScript);
+      };
+      document.head.appendChild(supabaseScript);
+    }, 500);
+  </script>
 
   <!-- Mobile Navigation System -->
   <script src="/js/mobile-nav.js" defer></script>
@@ -70,14 +80,15 @@
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
   
-  <!-- Fonts -->
+  <!-- Fonts - Async loaded for faster page render -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"></noscript>
   
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
-    
+    /* Fonts loaded via link tag above for better performance */
+
     :root {
       /* Selira dark theme - matching index.html */
       --bg-primary: #0a0a0a;
