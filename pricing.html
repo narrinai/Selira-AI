@@ -845,6 +845,11 @@
         display: none;
       }
 
+      /* Hide credit purchase buttons on mobile, only show crypto buttons */
+      .plan-button.hide-mobile {
+        display: none !important;
+      }
+
       /* Remove flex: 1 from sidebar-nav on mobile so footer links are visible */
       .sidebar-nav {
         flex: none;
@@ -1390,7 +1395,7 @@
                 </li>
               </ul>
 
-              <a href="#" class="plan-button" onclick="handleCreditPurchase('light'); return false;">Buy 50 Credits</a>
+              <a href="#" class="plan-button hide-mobile" onclick="handleCreditPurchase('light'); return false;">Buy 50 Credits</a>
               <a href="#" class="plan-button secondary" onclick="handleCryptoPurchase('light'); return false;" style="margin-top: 12px;">
                 ₿ Buy with Crypto
               </a>
@@ -1433,7 +1438,7 @@
                 </li>
               </ul>
 
-              <a href="#" class="plan-button" onclick="handleCreditPurchase('basic'); return false;">Buy 100 Credits</a>
+              <a href="#" class="plan-button hide-mobile" onclick="handleCreditPurchase('basic'); return false;">Buy 100 Credits</a>
               <a href="#" class="plan-button secondary" onclick="handleCryptoPurchase('basic'); return false;" style="margin-top: 12px;">
                 ₿ Buy with Crypto
               </a>
@@ -1476,7 +1481,7 @@
                 </li>
               </ul>
 
-              <a href="#" class="plan-button" onclick="handleCreditPurchase('premium'); return false;">Buy 250 Credits</a>
+              <a href="#" class="plan-button hide-mobile" onclick="handleCreditPurchase('premium'); return false;">Buy 250 Credits</a>
               <a href="#" class="plan-button secondary" onclick="handleCryptoPurchase('premium'); return false;" style="margin-top: 12px;">
                 ₿ Buy with Crypto
               </a>
