@@ -2561,20 +2561,43 @@
         description: 'A confident CEO and fashion icon',
         category: 'Romance',
         avatar_url: '/avatars/violet-johansson-avatar-1759340111942.webp',
+        avatar: '/avatars/violet-johansson-avatar-1759340111942.webp',
         personality: 'Confident, seductive, and playful',
         scenario: 'You meet Violet at a high-end fashion event',
         first_message: 'Well hello there... I noticed you from across the room. Care to join me for a drink?',
         Sex: 'Female',
+        sex: 'Female',
         age: 28,
-        tags: ['CEO', 'Fashion', 'Confident', 'Seductive']
+        tags: ['CEO', 'Fashion', 'Confident', 'Seductive'],
+        creator: 'Selira'
       };
 
       loadedCharacters = [testCharacter];
-      console.log('✅ TEST MODE: Loaded hardcoded character:', testCharacter.name, testCharacter.slug);
 
-      // Auto-select the character
+      // Set as current character directly
+      currentCharacter = {
+        name: testCharacter.name,
+        slug: testCharacter.slug,
+        avatar: testCharacter.avatar_url,
+        creator: '@Selira',
+        description: testCharacter.description,
+        chats: '10K',
+        rating: '4.5',
+        tags: testCharacter.tags,
+        category: testCharacter.category,
+        sex: testCharacter.Sex,
+        age: testCharacter.age,
+        personality: testCharacter.personality,
+        scenario: testCharacter.scenario,
+        first_message: testCharacter.first_message
+      };
+
+      console.log('✅ TEST MODE: Loaded and activated character:', currentCharacter);
+
+      // Update display
       setTimeout(() => {
-        selectCharacter(testCharacter.slug);
+        updateCharacterDisplay();
+        clearChat();
       }, 500);
     }
 
