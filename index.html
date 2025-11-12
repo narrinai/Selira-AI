@@ -2773,8 +2773,8 @@
         }
       });
 
-      // Load tags for filter pills
-      await loadCreateTagsFromAirtable();
+      // Load tags for filter pills (non-blocking)
+      loadCreateTagsFromAirtable();
 
     });
 
