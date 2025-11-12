@@ -23,13 +23,23 @@
   <meta property="twitter:description" content="Browse thousands of AI characters by category on Selira AI.">
   <meta property="twitter:image" content="https://selira.ai/og-image.jpg">
   
-  <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XZXX201WKD"></script>
+  <!-- Google Analytics - Deferred for faster page load -->
   <script>
+    // Defer Google Analytics to after page is interactive
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', 'G-XZXX201WKD');
+
+    // Load GA script after a short delay to prioritize content
+    setTimeout(function() {
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=G-XZXX201WKD';
+      document.head.appendChild(script);
+      script.onload = function() {
+        gtag('config', 'G-XZXX201WKD');
+      };
+    }, 1000);
   </script>
   
   <!-- Force cache clear for Safari -->
@@ -2718,6 +2728,14 @@
       }
     }
 
+    // OPTIMIZATION: Start loading characters IMMEDIATELY (before DOM is ready)
+    // This allows the API call to run in parallel with DOM parsing
+    let charactersPromise = null;
+    if (document.readyState === 'loading') {
+      log('⚡ Pre-loading characters before DOM ready...');
+      charactersPromise = loadCharacters();
+    }
+
     // Initialize page
     document.addEventListener('DOMContentLoaded', async function() {
       log('🚀 Selira AI Category page loading...');
@@ -2725,7 +2743,13 @@
       // Handle URL parameters FIRST before loading characters
       handleInitialURL();
 
-      loadCharacters();
+      // If characters weren't pre-loaded, load them now
+      if (!charactersPromise) {
+        loadCharacters();
+      } else {
+        log('✅ Characters already loading in background');
+      }
+
       initializeFilters();
       setupInfiniteScroll();
 
