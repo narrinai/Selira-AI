@@ -4310,7 +4310,11 @@
           showConversationStarters();
 
           // Add automatic greeting message for new chats (only once per session)
-          let character = allCharacters.find(c => c.slug === characterSlug);
+          // Try allCharacters first (if loaded), otherwise use currentCharacter
+          let character = null;
+          if (typeof allCharacters !== 'undefined' && allCharacters) {
+            character = allCharacters.find(c => c.slug === characterSlug);
+          }
 
           // If not in allCharacters, use currentCharacter if it matches the slug
           if (!character && currentCharacter?.slug === characterSlug) {
@@ -4936,7 +4940,8 @@
                 hair_length: airtableChar.hair_length,
                 hair_color: airtableChar.hair_color,
                 personality: airtableChar.personality,
-                prompt: airtableChar.prompt
+                prompt: airtableChar.prompt,
+                visibility: airtableChar.Visibility || airtableChar.visibility || 'public'
               };
             }
           }
@@ -4967,7 +4972,8 @@
           hair_length: character.hair_length || character.Hair_Length,
           hair_color: character.hair_color || character.Hair_Color,
           personality: character.personality || character.Personality,
-          prompt: character.prompt || character.Prompt
+          prompt: character.prompt || character.Prompt,
+          visibility: character.visibility || character.Visibility || 'public'
         };
 
         // Cache character info for sidebar
