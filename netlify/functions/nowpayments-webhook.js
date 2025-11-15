@@ -92,10 +92,12 @@ exports.handler = async (event, context) => {
 
     // Initialize Airtable
     const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA || process.env.AIRTABLE_TOKEN || process.env.AIRTABLE_API_KEY;
+    const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID_SELIRA || process.env.AIRTABLE_BASE_ID;
     const base = new Airtable({ apiKey: AIRTABLE_TOKEN })
-      .base(process.env.AIRTABLE_BASE_ID);
+      .base(AIRTABLE_BASE_ID);
 
     // Find user in Airtable
+    console.log(`🔍 Searching for user in Airtable: ${userId}`);
     const userRecords = await base('Users')
       .select({
         filterByFormula: `{user_uid} = '${userId}'`,
@@ -104,10 +106,19 @@ exports.handler = async (event, context) => {
       .firstPage();
 
     if (userRecords.length === 0) {
-      console.error('❌ User not found:', userId);
+      console.error('❌ User not found in Airtable:', {
+        userId,
+        userEmail,
+        baseId: AIRTABLE_BASE_ID,
+        searchFormula: `{user_uid} = '${userId}'`
+      });
       return {
         statusCode: 404,
-        body: JSON.stringify({ error: 'User not found' })
+        body: JSON.stringify({
+          error: 'User not found',
+          userId: userId,
+          details: 'User does not exist in Airtable Users table'
+        })
       };
     }
 
