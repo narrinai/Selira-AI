@@ -124,14 +124,18 @@ exports.handler = async (event, context) => {
     }
 
     const userRecord = userRecords[0];
-    const currentCredits = parseInt(userRecord.fields.image_credits) || 0;
-    const newCredits = currentCredits + parseInt(credits);
+    const currentPurchased = parseInt(userRecord.fields.image_credits_purchased) || 0;
+    const currentRemaining = parseInt(userRecord.fields.image_credits_remaining) || 0;
+    const creditsToAdd = parseInt(credits);
 
-    console.log(`💰 Adding ${credits} credits to user ${userId} (${currentCredits} → ${newCredits})`);
+    console.log(`💰 Adding ${creditsToAdd} credits to user ${userId}`);
+    console.log(`   Purchased: ${currentPurchased} → ${currentPurchased + creditsToAdd}`);
+    console.log(`   Remaining: ${currentRemaining} → ${currentRemaining + creditsToAdd}`);
 
-    // Update user credits in Airtable
+    // Update user credits in Airtable (same fields as Stripe webhook)
     await base('Users').update(userRecord.id, {
-      image_credits: newCredits
+      image_credits_purchased: currentPurchased + creditsToAdd,
+      image_credits_remaining: currentRemaining + creditsToAdd
     });
 
     console.log('✅ Credits added successfully');
