@@ -91,7 +91,8 @@ exports.handler = async (event, context) => {
     });
 
     // Initialize Airtable
-    const base = new Airtable({ apiKey: process.env.AIRTABLE_TOKEN })
+    const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN_SELIRA || process.env.AIRTABLE_TOKEN || process.env.AIRTABLE_API_KEY;
+    const base = new Airtable({ apiKey: AIRTABLE_TOKEN })
       .base(process.env.AIRTABLE_BASE_ID);
 
     // Find user in Airtable
