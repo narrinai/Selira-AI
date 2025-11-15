@@ -1,4 +1,5 @@
 // NOWPayments IPN (Instant Payment Notification) webhook handler
+// Updated: 2025-11-15 - Fixed field name to SupabaseID
 const crypto = require('crypto');
 const Airtable = require('airtable');
 
