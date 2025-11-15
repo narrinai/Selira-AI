@@ -100,7 +100,7 @@ exports.handler = async (event, context) => {
     console.log(`🔍 Searching for user in Airtable: ${userId}`);
     const userRecords = await base('Users')
       .select({
-        filterByFormula: `{user_uid} = '${userId}'`,
+        filterByFormula: `{SupabaseID} = '${userId}'`,
         maxRecords: 1
       })
       .firstPage();
@@ -110,7 +110,7 @@ exports.handler = async (event, context) => {
         userId,
         userEmail,
         baseId: AIRTABLE_BASE_ID,
-        searchFormula: `{user_uid} = '${userId}'`
+        searchFormula: `{SupabaseID} = '${userId}'`
       });
       return {
         statusCode: 404,
