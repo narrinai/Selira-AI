@@ -2356,12 +2356,12 @@
         <div class="mobile-filter-bar">
         <div class="mobile-filter-dropdown">
           <button class="mobile-dropdown-btn" id="mobileContentFilter" onclick="toggleMobileContentDropdown()">
-            <span id="mobileContentText">Uncensored ▼</span>
+            <span id="mobileContentText">Censored ▼</span>
           </button>
           <div class="mobile-dropdown-menu" id="mobileContentMenu">
             <div class="mobile-dropdown-item" onclick="selectMobileContent('all')">All</div>
-            <div class="mobile-dropdown-item" onclick="selectMobileContent('censored')">Censored</div>
-            <div class="mobile-dropdown-item selected" onclick="selectMobileContent('uncensored')">Uncensored</div>
+            <div class="mobile-dropdown-item selected" onclick="selectMobileContent('censored')">Censored</div>
+            <div class="mobile-dropdown-item" onclick="selectMobileContent('uncensored')">Uncensored</div>
           </div>
         </div>
         <div class="mobile-filter-dropdown">
@@ -2423,7 +2423,7 @@
       <!-- Hero Header -->
       <div class="hero-header">
         <h1 id="hero-title">Unlimited Free <span class="accent-text">NSFW AI Chat</span></h1>
-        <p id="hero-subtitle">Discover Uncensored Companions or <a href="/create">Create Your Own</a></p>
+        <p id="hero-subtitle">Discover AI Companions or <a href="/create">Create Your Own</a></p>
       </div>
 
       <!-- Filter Section -->
@@ -2433,7 +2433,7 @@
           <!-- Content Filter FIRST -->
           <div class="filter-dropdown">
             <button class="dropdown-btn content-filter-btn active" id="contentDropdownBtn" onclick="toggleDropdown('content')">
-              <span>Uncensored</span>
+              <span>Censored</span>
               <span class="dropdown-arrow">▼</span>
             </button>
             <div class="dropdown-menu" id="contentDropdown">
@@ -2515,11 +2515,11 @@
       search: '',
       category: 'all',
       tags: [],
-      content: 'uncensored', // Default to uncensored (can be overridden by URL params)
+      content: 'censored', // Default to censored (can be overridden by URL params)
       sex: 'female', // Default to female (can be overridden by URL params)
       style: 'all', // Default to all styles (anime + realistic) (can be overridden by URL params)
       animated: undefined, // undefined = show all, true = only animated, false = only realistic
-      unfiltered: true, // Legacy field
+      unfiltered: false, // Legacy field
       community: 'all' // 'all', 'community' (user-made), or 'official' (Selira-made)
     };
 
