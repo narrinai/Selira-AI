@@ -418,28 +418,42 @@ async function moderateWithMistralViaOpenRouter(message, apiKey) {
       messages: [
         {
           role: 'system',
-          content: `You are a content moderation AI. Analyze the following message and determine if it contains:
-- CSAM or child sexual content
-- Human trafficking
-- Terrorism or extreme violence
-- Illegal drug manufacturing
-- Self-harm content
+          content: `You are a content moderation AI for an ADULT NSFW chat platform. Only flag ILLEGAL content, NOT adult content between consenting adults.
 
-Respond ONLY with valid JSON in this format:
+IMPORTANT CONTEXT:
+- This is an 18+ adult platform - explicit sexual content between adults is ALLOWED
+- Words like "baby", "girl", "boy" are often terms of endearment between adults - NOT indicators of minors
+- "shy girl/boy" refers to adult personality traits, NOT age
+- ONLY flag if there are EXPLICIT references to: actual children, minors, ages under 18, "child", "kid", "underage", "teen", "preteen"
+
+ONLY block if you detect:
+1. CSAM - EXPLICIT references to children/minors in sexual contexts (ages, "child", "kid", "minor", "underage")
+2. Human trafficking - buying/selling people
+3. Terrorism - planning attacks, making weapons
+4. Illegal drug manufacturing - making meth, heroin, etc
+5. Self-harm - suicide plans, self-injury
+
+DO NOT block:
+- Adult roleplay with terms like "baby", "daddy", "mommy" (common adult terms)
+- Adult sexual content (this is an NSFW platform)
+- "Girl" or "boy" when referring to adults
+
+Respond ONLY with valid JSON:
 {
   "blocked": true/false,
-  "categories": ["category1", "category2"],
-  "severity": "CRITICAL/HIGH/MEDIUM/LOW"
+  "categories": ["category1"],
+  "severity": "CRITICAL/HIGH/MEDIUM/LOW",
+  "confidence": 0-100
 }
 
-If the content is safe, respond with: {"blocked": false, "categories": [], "severity": "NONE"}`
+ONLY set blocked=true if you are 90%+ confident it's ILLEGAL content, not just adult content.`
         },
         {
           role: 'user',
           content: `Moderate this message:\n\n"${message}"`
         }
       ],
-      max_tokens: 100,
+      max_tokens: 150,
       temperature: 0.1
     })
   });
