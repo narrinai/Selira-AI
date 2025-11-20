@@ -105,8 +105,12 @@ Het systeem detecteert en blokkeert de volgende content:
    - 3-strikes regel
 
 5. **Self-harm**
-   - Content wordt geblokt maar user krijgt hulp resources
+   - Content wordt geblokt en user krijgt onmiddellijk crisis resources
+   - Modal toont 113 Zelfmoordpreventie (NL) en internationale hulplijnen
+   - Duidelijke boodschap: "Dit platform kan geen professionele hulp bieden"
    - Geen automatische ban (user heeft mogelijk hulp nodig)
+   - Bevat directe links naar 113.nl chat en telefoon (0800-0113)
+   - Emergency instructie: Bel 112 in noodgevallen
 
 ## Optionele: Mistral API Key
 

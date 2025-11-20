@@ -2179,6 +2179,82 @@
     </div>
   </div>
 
+  <!-- Crisis Resources Modal -->
+  <div class="image-upgrade-modal" id="crisisResourcesModal" style="z-index: 10001;">
+    <div class="image-upgrade-content" style="max-width: 600px;">
+      <button class="image-upgrade-close" onclick="closeCrisisResourcesModal()">&times;</button>
+
+      <div class="image-upgrade-header">
+        <div style="font-size: 48px; margin-bottom: 12px;">🆘</div>
+        <div class="image-upgrade-title" style="color: #e74c3c;">We zijn bezorgd om je welzijn</div>
+        <p style="color: var(--text-primary); font-size: 15px; margin-top: 12px; font-weight: 500;">
+          Dit platform kan geen professionele hulp bieden. Een AI-chatbot kan geen vervanging zijn voor professionele geestelijke gezondheidszorg.
+        </p>
+      </div>
+
+      <div style="background: var(--hover); border-radius: 12px; padding: 20px; margin: 20px 0;">
+        <p style="color: var(--text-primary); font-size: 14px; margin-bottom: 16px; font-weight: 600;">
+          Als je met zelfmoordgedachten of zelfbeschadiging kampt, zoek dan onmiddellijk professionele hulp:
+        </p>
+
+        <!-- Netherlands Crisis Line -->
+        <div style="background: var(--bg-secondary); border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <span style="font-size: 24px;">🇳🇱</span>
+            <strong style="color: var(--text-primary); font-size: 16px;">Nederland</strong>
+          </div>
+          <div style="color: var(--text-primary); margin-bottom: 8px;">
+            <strong>113 Zelfmoordpreventie</strong>
+          </div>
+          <div style="color: var(--text-secondary); font-size: 14px; margin-bottom: 4px;">
+            📞 <strong style="color: var(--text-primary);">0800-0113</strong> (24/7, gratis)
+          </div>
+          <a href="https://www.113.nl" target="_blank" rel="noopener" style="color: var(--primary); font-size: 13px; text-decoration: none;">
+            🌐 www.113.nl →
+          </a>
+          <div style="margin-top: 8px;">
+            <a href="https://www.113.nl/chat" target="_blank" rel="noopener" style="display: inline-block; background: var(--primary); color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: 600;">
+              💬 Start Chat met 113
+            </a>
+          </div>
+        </div>
+
+        <!-- International Crisis Line -->
+        <div style="background: var(--bg-secondary); border-radius: 8px; padding: 16px;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <span style="font-size: 24px;">🌍</span>
+            <strong style="color: var(--text-primary); font-size: 16px;">International</strong>
+          </div>
+          <div style="color: var(--text-primary); margin-bottom: 8px;">
+            <strong>Suicide Prevention Hotline</strong>
+          </div>
+          <div style="color: var(--text-secondary); font-size: 14px; margin-bottom: 4px;">
+            📞 <strong style="color: var(--text-primary);">988</strong> (US/Canada, 24/7)
+          </div>
+          <a href="https://988lifeline.org" target="_blank" rel="noopener" style="color: var(--primary); font-size: 13px; text-decoration: none;">
+            🌐 988lifeline.org →
+          </a>
+        </div>
+      </div>
+
+      <div style="background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+        <p style="color: #856404; font-size: 13px; margin: 0;">
+          ⚠️ <strong>In noodgevallen:</strong> Bel 112 (Nederland) of ga naar de spoedeisende hulp van het dichtstbijzijnde ziekenhuis.
+        </p>
+      </div>
+
+      <div class="image-upgrade-buttons">
+        <button class="image-upgrade-btn primary" onclick="closeCrisisResourcesModal()" style="width: 100%;">Sluiten</button>
+      </div>
+
+      <div style="text-align: center; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border);">
+        <p style="color: var(--text-muted); font-size: 12px; font-style: italic;">
+          Je bent niet alleen. Er zijn mensen die willen helpen.
+        </p>
+      </div>
+    </div>
+  </div>
+
   <div class="app-container">
     <!-- Left Sidebar with Character List -->
     <aside class="sidebar" id="sidebar">
@@ -4070,11 +4146,28 @@
             unfiltered: localStorage.getItem('unfilteredMode') === 'true' // Send unfiltered mode state
           })
         });
-        
+
         if (!response.ok) {
+          // Check if this is a blocked message (403) with crisis resources
+          if (response.status === 403) {
+            const errorData = await response.json();
+
+            // Check if self-harm detected - show crisis resources
+            if (errorData.self_harm_detected && errorData.crisis_resources) {
+              typingIndicator.remove();
+              showCrisisResourcesModal(errorData);
+              return;
+            }
+
+            // Other content violations
+            if (errorData.blocked) {
+              throw new Error(errorData.message || 'Message blocked due to content policy violation');
+            }
+          }
+
           throw new Error(`API Error: ${response.status}`);
         }
-        
+
         const data = await response.json();
         console.log('✅ Received AI response:', data.response?.substring(0, 100) + '...');
         console.log('🤖 Model used:', data.model_used);
@@ -7730,6 +7823,58 @@
     function closeImageUpgradeModal() {
       const modal = document.getElementById('imageUpgradeModal');
       modal.classList.remove('show');
+    }
+
+    // Crisis Resources Modal Functions
+    function showCrisisResourcesModal(errorData) {
+      console.log('🆘 Showing crisis resources modal');
+
+      const modal = document.getElementById('crisisResourcesModal');
+      if (!modal) {
+        console.error('❌ Crisis resources modal not found!');
+        // Fallback: show alert with crisis info
+        alert(
+          '🆘 We zijn bezorgd om je welzijn.\n\n' +
+          'Dit platform kan geen professionele hulp bieden.\n\n' +
+          'Zoek onmiddellijk hulp:\n' +
+          '🇳🇱 Nederland: 0800-0113 (24/7, gratis)\n' +
+          '🌍 International: 988 (US/Canada)\n' +
+          'www.113.nl | 988lifeline.org\n\n' +
+          'In noodgevallen: Bel 112'
+        );
+        return;
+      }
+
+      modal.classList.add('show');
+
+      // Close modal when clicking outside
+      modal.onclick = function(event) {
+        if (event.target === modal) {
+          closeCrisisResourcesModal();
+        }
+      };
+
+      // Close modal with Escape key
+      const escapeHandler = function(event) {
+        if (event.key === 'Escape') {
+          closeCrisisResourcesModal();
+          document.removeEventListener('keydown', escapeHandler);
+        }
+      };
+      document.addEventListener('keydown', escapeHandler);
+
+      // Log this event for safety monitoring
+      console.log('🆘 Crisis resources shown to user:', {
+        timestamp: new Date().toISOString(),
+        user_email: errorData?.user_email || 'unknown'
+      });
+    }
+
+    function closeCrisisResourcesModal() {
+      const modal = document.getElementById('crisisResourcesModal');
+      if (modal) {
+        modal.classList.remove('show');
+      }
     }
 
     console.log('✅ Selira AI Chat interface initialized with modern design');

@@ -80,7 +80,46 @@ exports.handler = async (event, context) => {
       if (moderationResult.blocked) {
         console.log('🚫 MESSAGE BLOCKED by moderation:', moderationResult.category || moderationResult.categories);
 
-        // Return error to user
+        // Check if this is a self-harm case requiring crisis resources
+        const isSelfHarm = moderationResult.provide_resources ||
+                          moderationResult.category === 'Self-harm' ||
+                          (moderationResult.categories && moderationResult.categories.includes('self_harm'));
+
+        if (isSelfHarm) {
+          console.log('🆘 Self-harm detected - providing crisis resources');
+          return {
+            statusCode: 403,
+            headers,
+            body: JSON.stringify({
+              error: 'Crisis resources provided',
+              blocked: true,
+              banned: false,
+              self_harm_detected: true,
+              crisis_message: 'We zijn bezorgd om je welzijn. Dit platform kan geen professionele hulp bieden.',
+              crisis_resources: {
+                nl: {
+                  name: '113 Zelfmoordpreventie',
+                  phone: '0800-0113',
+                  available: '24/7',
+                  website: 'https://www.113.nl'
+                },
+                international: {
+                  name: 'Suicide Prevention Hotline',
+                  phone: '988',
+                  available: '24/7 (US/Canada)',
+                  website: 'https://988lifeline.org'
+                },
+                chat: {
+                  name: '113 Chat',
+                  website: 'https://www.113.nl/chat'
+                }
+              },
+              message: 'Als je met zelfmoordgedachten of zelfbeschadiging kampt, zoek dan onmiddellijk professionele hulp. Een AI-chatbot kan geen vervanging zijn voor professionele geestelijke gezondheidszorg.'
+            })
+          };
+        }
+
+        // Other content violations (not self-harm)
         return {
           statusCode: 403,
           headers,
