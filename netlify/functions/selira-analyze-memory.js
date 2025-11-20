@@ -69,10 +69,12 @@ exports.handler = async (event, context) => {
   }
 
   const OPENAI_API_KEY = process.env.OPENAI_API_KEY_SELIRA;
-  
+  const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
+
   console.log('🔑 Environment check:', {
     hasOpenAI: !!OPENAI_API_KEY,
-    openAILength: OPENAI_API_KEY ? OPENAI_API_KEY.length : 0
+    hasOpenRouter: !!OPENROUTER_API_KEY,
+    preferredAPI: OPENROUTER_API_KEY ? 'OpenRouter (Mistral)' : (OPENAI_API_KEY ? 'OpenAI (legacy)' : 'None')
   });
 
   try {
@@ -100,12 +102,12 @@ exports.handler = async (event, context) => {
       };
     }
     
-    // Fallback analysis als OpenAI niet beschikbaar is
-    if (!OPENAI_API_KEY) {
-      console.log('⚠️ No OpenAI API key, using rule-based analysis');
-      
+    // Fallback analysis if no AI API available
+    if (!OPENAI_API_KEY && !OPENROUTER_API_KEY) {
+      console.log('⚠️ No AI API key available, using rule-based analysis');
+
       const analysis = analyzeMessageRuleBased(message, context);
-      
+
       return {
         statusCode: 200,
         headers: { 'Content-Type': 'application/json' },
@@ -117,10 +119,12 @@ exports.handler = async (event, context) => {
         })
       };
     }
-    
-    // AI-based analysis met OpenAI
-    console.log('🤖 Performing AI analysis with OpenAI...');
-    console.log('🔑 Using OpenAI API key:', OPENAI_API_KEY.substring(0, 10) + '...');
+
+    // AI-based analysis - prefer Mistral via OpenRouter, fallback to OpenAI
+    const useOpenRouter = !!OPENROUTER_API_KEY;
+    const apiName = useOpenRouter ? 'Mistral (via OpenRouter)' : 'OpenAI (legacy)';
+
+    console.log(`🤖 Performing AI analysis with ${apiName}...`);
     
     const systemPrompt = `You are a memory analysis AI that evaluates chat messages for their importance and emotional content. 
 
@@ -169,45 +173,64 @@ Message to analyze: "${message}"
 
 Respond only with valid JSON.`;
 
-    const openAIResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
-        messages: [
-          {
+    let aiAPIResponse;
+
+    if (useOpenRouter) {
+      // Use Mistral via OpenRouter (preferred - cheaper and better)
+      aiAPIResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+          'Content-Type': 'application/json',
+          'HTTP-Referer': 'https://selira.ai',
+          'X-Title': 'Selira AI Memory Analysis'
+        },
+        body: JSON.stringify({
+          model: 'mistralai/mistral-nemo',
+          messages: [{
             role: 'system',
             content: systemPrompt
-          }
-        ],
-        max_tokens: 200,
-        temperature: 0.3
-      })
-    }).catch(fetchError => {
-      console.error('❌ Fetch to OpenAI failed:', fetchError.message);
-      console.error('❌ Stack trace:', fetchError.stack);
-      throw fetchError;
-    });
-    
-    console.log('📨 OpenAI response status:', openAIResponse.status);
-    console.log('📨 OpenAI response headers:', Object.fromEntries(openAIResponse.headers.entries()));
-    
-    if (!openAIResponse.ok) {
-      const errorText = await openAIResponse.text();
-      console.error('❌ OpenAI API error:', errorText);
-      console.error('❌ Full error details:', {
-        status: openAIResponse.status,
-        statusText: openAIResponse.statusText,
-        headers: Object.fromEntries(openAIResponse.headers.entries())
+          }],
+          max_tokens: 200,
+          temperature: 0.3
+        })
+      }).catch(fetchError => {
+        console.error('❌ Fetch to OpenRouter failed:', fetchError.message);
+        throw fetchError;
       });
-      
+    } else {
+      // Fallback to OpenAI (legacy)
+      aiAPIResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${OPENAI_API_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: 'gpt-3.5-turbo',
+          messages: [{
+            role: 'system',
+            content: systemPrompt
+          }],
+          max_tokens: 200,
+          temperature: 0.3
+        })
+      }).catch(fetchError => {
+        console.error('❌ Fetch to OpenAI failed:', fetchError.message);
+        throw fetchError;
+      });
+    }
+
+    console.log(`📨 ${apiName} response status:`, aiAPIResponse.status);
+
+    if (!aiAPIResponse.ok) {
+      const errorText = await aiAPIResponse.text();
+      console.error(`❌ ${apiName} API error:`, errorText);
+
       // Always fallback to rule-based analysis on API errors
-      console.log('🔄 Using rule-based fallback due to OpenAI API error');
+      console.log('🔄 Using rule-based fallback due to API error');
       const analysis = analyzeMessageRuleBased(message, context);
-      
+
       return {
         statusCode: 200,
         headers: { 'Content-Type': 'application/json' },
@@ -219,14 +242,14 @@ Respond only with valid JSON.`;
         })
       };
     }
-    
-    const openAIData = await openAIResponse.json();
-    console.log('📊 OpenAI response:', openAIData);
-    
-    const aiResponse = openAIData.choices[0]?.message?.content;
+
+    const aiAPIData = await aiAPIResponse.json();
+    console.log(`📊 ${apiName} response received`);
+
+    const aiResponse = aiAPIData.choices[0]?.message?.content;
     
     if (!aiResponse) {
-      throw new Error('No response from OpenAI');
+      throw new Error(`No response from ${apiName}`);
     }
     
     console.log('🤖 AI response content:', aiResponse);

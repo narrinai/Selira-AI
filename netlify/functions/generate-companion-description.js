@@ -1,7 +1,8 @@
-// Generate rich storytelling descriptions for companions using OpenAI
+// Generate rich storytelling descriptions for companions using AI (Mistral preferred, OpenAI fallback)
 const fetch = require('node-fetch');
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN;
 const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
 
@@ -91,32 +92,60 @@ Style: ${companionType}
 
 Make it engaging, mysterious, and make readers want to chat with ${name}. Focus on personality, background, and what makes them unique.`;
 
-    // Generate description with OpenAI
-    const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt }
-        ],
-        temperature: 0.8,
-        max_tokens: 250
-      })
-    });
+    // Generate description with AI - prefer Mistral via OpenRouter, fallback to OpenAI
+    const useOpenRouter = !!OPENROUTER_API_KEY;
+    const apiName = useOpenRouter ? 'Mistral (via OpenRouter)' : 'OpenAI (legacy)';
 
-    if (!openaiResponse.ok) {
-      const error = await openaiResponse.text();
-      console.error('❌ OpenAI error:', error);
+    console.log(`🤖 Generating with ${apiName}...`);
+
+    let aiResponse;
+
+    if (useOpenRouter) {
+      aiResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+          'Content-Type': 'application/json',
+          'HTTP-Referer': 'https://selira.ai',
+          'X-Title': 'Selira AI Description Generator'
+        },
+        body: JSON.stringify({
+          model: 'mistralai/mistral-medium',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userPrompt }
+          ],
+          temperature: 0.8,
+          max_tokens: 250
+        })
+      });
+    } else {
+      aiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${OPENAI_API_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userPrompt }
+          ],
+          temperature: 0.8,
+          max_tokens: 250
+        })
+      });
+    }
+
+    if (!aiResponse.ok) {
+      const error = await aiResponse.text();
+      console.error(`❌ ${apiName} error:`, error);
       throw new Error('Failed to generate description');
     }
 
-    const openaiData = await openaiResponse.json();
-    const generatedDescription = openaiData.choices[0].message.content.trim();
+    const aiData = await aiResponse.json();
+    const generatedDescription = aiData.choices[0].message.content.trim();
 
     console.log('✅ Generated description:', generatedDescription);
 

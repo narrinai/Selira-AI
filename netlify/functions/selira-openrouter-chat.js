@@ -57,6 +57,48 @@ exports.handler = async (event, context) => {
       unfilteredMode: unfiltered || false
     });
 
+    // 🚨 CRITICAL: Content moderation check BEFORE processing
+    console.log('🔍 Running content moderation check...');
+
+    const moderationResponse = await fetch('https://selira.ai/.netlify/functions/content-moderation', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message: message,
+        user_email: user_email || 'anonymous',
+        user_id: user_id || auth0_id
+      })
+    });
+
+    if (!moderationResponse.ok) {
+      console.error('⚠️ Moderation check failed - allowing message (fail open)');
+    } else {
+      const moderationResult = await moderationResponse.json();
+
+      if (moderationResult.blocked) {
+        console.log('🚫 MESSAGE BLOCKED by moderation:', moderationResult.category || moderationResult.categories);
+
+        // Return error to user
+        return {
+          statusCode: 403,
+          headers,
+          body: JSON.stringify({
+            error: 'Message blocked due to content policy violation',
+            blocked: true,
+            banned: moderationResult.banned || false,
+            reason: moderationResult.reason,
+            message: moderationResult.banned
+              ? 'Your account has been restricted due to repeated content policy violations.'
+              : 'This message violates our content policy and cannot be sent. Repeated violations may result in account restrictions.'
+          })
+        };
+      }
+
+      console.log('✅ Message passed moderation');
+    }
+
     let aiResponse;
     let modelUsed = 'test-fallback';
     let tokensUsed = 50;
