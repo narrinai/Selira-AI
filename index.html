@@ -3397,6 +3397,47 @@
         }
       }
 
+      // Sync UI with default currentFilters
+      // Set Content Filter UI to match default (censored)
+      const contentBtn = document.getElementById('contentDropdownBtn');
+      if (contentBtn && currentFilters.content) {
+        const contentLabels = {
+          'censored': 'Censored',
+          'uncensored': 'Uncensored'
+        };
+        contentBtn.querySelector('span:first-child').textContent = contentLabels[currentFilters.content] || 'Censored';
+      }
+
+      // Set Sex Filter UI to match default (female)
+      const sexBtn = document.getElementById('sexDropdownBtn');
+      if (sexBtn && currentFilters.sex) {
+        const sexLabels = {
+          'female': 'Female',
+          'male': 'Male'
+        };
+        sexBtn.querySelector('span:first-child').textContent = sexLabels[currentFilters.sex] || 'Female';
+      }
+
+      // Set Mobile Content Filter UI
+      const mobileContentText = document.getElementById('mobileContentText');
+      if (mobileContentText && currentFilters.content) {
+        const contentLabels = {
+          'censored': 'Censored',
+          'uncensored': 'Uncensored'
+        };
+        mobileContentText.textContent = (contentLabels[currentFilters.content] || 'Censored') + ' ▼';
+      }
+
+      // Set Mobile Sex Filter UI
+      const mobileSexText = document.getElementById('mobileSexText');
+      if (mobileSexText && currentFilters.sex) {
+        const sexLabels = {
+          'female': 'Female',
+          'male': 'Male'
+        };
+        mobileSexText.textContent = (sexLabels[currentFilters.sex] || 'Female') + ' ▼';
+      }
+
       // Initialize toggles
       updateToggleStates();
     }
