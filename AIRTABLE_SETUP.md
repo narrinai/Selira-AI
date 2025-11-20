@@ -106,11 +106,20 @@ Het systeem detecteert en blokkeert de volgende content:
 
 5. **Self-harm**
    - Content wordt geblokt en user krijgt onmiddellijk crisis resources
-   - Modal toont 113 Zelfmoordpreventie (NL) en internationale hulplijnen
-   - Duidelijke boodschap: "Dit platform kan geen professionele hulp bieden"
+   - **Internationale ondersteuning** - Modal toont hulplijnen voor 8+ landen:
+     - 🇺🇸 United States: 988 Suicide & Crisis Lifeline
+     - 🇬🇧 United Kingdom: Samaritans (116 123)
+     - 🇳🇱 Netherlands: 113 Suicide Prevention (0800-0113)
+     - 🇩🇪 Germany: Telefonseelsorge (0800-1110111)
+     - 🇫🇷 France: SOS Amitié (09 72 39 40 50)
+     - 🇨🇦 Canada: Crisis Services Canada (988)
+     - 🇦🇺 Australia: Lifeline (13 11 14)
+     - 🌍 International: Befrienders Worldwide (30+ landen)
+   - **Alle teksten in het Engels** (default internationale taal)
+   - Duidelijke boodschap: "This platform cannot provide professional help. An AI chatbot is not a substitute for professional mental health care."
    - Geen automatische ban (user heeft mogelijk hulp nodig)
-   - Bevat directe links naar 113.nl chat en telefoon (0800-0113)
-   - Emergency instructie: Bel 112 in noodgevallen
+   - Bevat directe links naar websites en chat services
+   - Emergency instructie: "Call your local emergency number (911 in US/CA, 112 in EU, 999 in UK)"
 
 ## Optionele: Mistral API Key
 

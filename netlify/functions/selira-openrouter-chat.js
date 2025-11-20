@@ -95,26 +95,75 @@ exports.handler = async (event, context) => {
               blocked: true,
               banned: false,
               self_harm_detected: true,
-              crisis_message: 'We zijn bezorgd om je welzijn. Dit platform kan geen professionele hulp bieden.',
+              crisis_message: 'We are concerned about your well-being. This platform cannot provide professional help.',
               crisis_resources: {
-                nl: {
-                  name: '113 Zelfmoordpreventie',
-                  phone: '0800-0113',
-                  available: '24/7',
-                  website: 'https://www.113.nl'
-                },
-                international: {
-                  name: 'Suicide Prevention Hotline',
+                us: {
+                  country: 'United States',
+                  flag: '🇺🇸',
+                  name: '988 Suicide & Crisis Lifeline',
                   phone: '988',
-                  available: '24/7 (US/Canada)',
+                  available: '24/7',
                   website: 'https://988lifeline.org'
                 },
-                chat: {
-                  name: '113 Chat',
-                  website: 'https://www.113.nl/chat'
+                uk: {
+                  country: 'United Kingdom',
+                  flag: '🇬🇧',
+                  name: 'Samaritans',
+                  phone: '116 123',
+                  available: '24/7',
+                  website: 'https://www.samaritans.org'
+                },
+                nl: {
+                  country: 'Netherlands',
+                  flag: '🇳🇱',
+                  name: '113 Suicide Prevention',
+                  phone: '0800-0113',
+                  available: '24/7',
+                  website: 'https://www.113.nl',
+                  chat: 'https://www.113.nl/chat'
+                },
+                de: {
+                  country: 'Germany',
+                  flag: '🇩🇪',
+                  name: 'Telefonseelsorge',
+                  phone: '0800-1110111',
+                  available: '24/7',
+                  website: 'https://www.telefonseelsorge.de'
+                },
+                fr: {
+                  country: 'France',
+                  flag: '🇫🇷',
+                  name: 'SOS Amitié',
+                  phone: '09 72 39 40 50',
+                  available: '24/7',
+                  website: 'https://www.sos-amitie.com'
+                },
+                ca: {
+                  country: 'Canada',
+                  flag: '🇨🇦',
+                  name: 'Crisis Services Canada',
+                  phone: '988',
+                  available: '24/7',
+                  website: 'https://www.crisisservicescanada.ca'
+                },
+                au: {
+                  country: 'Australia',
+                  flag: '🇦🇺',
+                  name: 'Lifeline',
+                  phone: '13 11 14',
+                  available: '24/7',
+                  website: 'https://www.lifeline.org.au'
+                },
+                international: {
+                  country: 'International',
+                  flag: '🌍',
+                  name: 'Befrienders Worldwide',
+                  website: 'https://www.befrienders.org',
+                  note: 'Find helplines in 30+ countries'
                 }
               },
-              message: 'Als je met zelfmoordgedachten of zelfbeschadiging kampt, zoek dan onmiddellijk professionele hulp. Een AI-chatbot kan geen vervanging zijn voor professionele geestelijke gezondheidszorg.'
+              message: 'If you are experiencing thoughts of suicide or self-harm, please seek immediate professional help. An AI chatbot is not a substitute for professional mental health care.',
+              emergency: 'In immediate danger: Call your local emergency number (911 in US/CA, 112 in EU, 999 in UK)'
             })
           };
         }
