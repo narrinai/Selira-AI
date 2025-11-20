@@ -416,6 +416,7 @@ async function saveChatMessages(user_email, character_slug, user_message, ai_res
         'Message': user_message.trim(),
         'User': [userRecordId],
         'User_ID': userRecordId, // Add text field for filtering (linked records can't be filtered)
+        'User_Email': userEmail, // Add email directly for easy searching
         'Character': [characterRecordId]
       }
     });
@@ -429,6 +430,7 @@ async function saveChatMessages(user_email, character_slug, user_message, ai_res
         'Message': ai_response.trim(),
         'User': [userRecordId],
         'User_ID': userRecordId, // Add text field for filtering (linked records can't be filtered)
+        'User_Email': userEmail, // Add email directly for easy searching
         'Character': [characterRecordId]
       }
     });
