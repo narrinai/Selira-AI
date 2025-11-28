@@ -138,14 +138,26 @@ exports.handler = async (event, context) => {
     const base = new Airtable({ apiKey: AIRTABLE_TOKEN })
       .base(AIRTABLE_BASE_ID);
 
-    // Find user in Airtable
-    console.log(`🔍 Searching for user in Airtable: ${userId}`);
-    const userRecords = await base('Users')
+    // Find user in Airtable - try SupabaseID first, then email
+    console.log(`🔍 Searching for user in Airtable: ${userId} / ${userEmail}`);
+
+    let userRecords = await base('Users')
       .select({
         filterByFormula: `{SupabaseID} = '${userId}'`,
         maxRecords: 1
       })
       .firstPage();
+
+    // Fallback: search by email if not found by SupabaseID
+    if (userRecords.length === 0 && userEmail && userEmail !== 'unknown') {
+      console.log(`🔍 User not found by SupabaseID, trying email: ${userEmail}`);
+      userRecords = await base('Users')
+        .select({
+          filterByFormula: `{Email} = '${userEmail}'`,
+          maxRecords: 1
+        })
+        .firstPage();
+    }
 
     if (userRecords.length === 0) {
       console.error('❌ User not found in Airtable:', {
@@ -157,7 +169,8 @@ exports.handler = async (event, context) => {
         statusCode: 404,
         body: JSON.stringify({
           error: 'User not found',
-          userId: userId
+          userId: userId,
+          userEmail: userEmail
         })
       };
     }

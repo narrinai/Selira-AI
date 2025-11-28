@@ -78,6 +78,8 @@ exports.handler = async (event, context) => {
     };
 
     console.log('📤 Sending invoice request to Cryptomus:', invoiceData);
+    console.log('🔑 Merchant ID:', MERCHANT_ID);
+    console.log('🔑 API Key (first 10 chars):', API_KEY ? API_KEY.substring(0, 10) + '...' : 'NOT SET');
 
     // Generate signature: MD5(base64(json_body) + api_key)
     const dataString = JSON.stringify(invoiceData);
@@ -86,6 +88,9 @@ exports.handler = async (event, context) => {
       .createHash('md5')
       .update(base64Data + API_KEY)
       .digest('hex');
+
+    console.log('🔐 Generated signature:', sign);
+    console.log('📝 Base64 data (first 50 chars):', base64Data.substring(0, 50) + '...');
 
     const response = await fetch('https://api.cryptomus.com/v1/payment', {
       method: 'POST',
