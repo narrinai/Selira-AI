@@ -224,7 +224,7 @@
       <a href="/" class="login-btn">Go to Homepage</a>
     </div>
 
-    <div id="mainContent" style="display: none;">
+    <div id="mainContent">
       <div class="user-info">
         <h3>Logged in as:</h3>
         <p><strong>Email:</strong> <span id="userEmail">-</span></p>
@@ -283,29 +283,37 @@
 
     // Check authentication on load
     window.addEventListener('load', async () => {
-      // Wait a moment for Supabase to initialize
-      await new Promise(resolve => setTimeout(resolve, 500));
+      console.log('🔍 Checking authentication...');
 
-      // Try to get session
+      // First check localStorage (Selira stores user data here)
+      const userId = localStorage.getItem('user_uid');
+      const userEmail = localStorage.getItem('user_email');
+
+      console.log('📦 localStorage:', { userId, userEmail });
+
+      if (userId && userEmail) {
+        currentUser = { id: userId, email: userEmail };
+        showMainContent();
+        return;
+      }
+
+      // Fallback: try Supabase session
       if (window.supabase) {
-        const { data: { session } } = await window.supabase.auth.getSession();
-        if (session?.user) {
-          currentUser = session.user;
-          showMainContent();
-        } else {
-          showLoginPrompt();
-        }
-      } else {
-        // Fallback: check localStorage
-        const userId = localStorage.getItem('user_uid');
-        const userEmail = localStorage.getItem('user_email');
-        if (userId && userEmail) {
-          currentUser = { id: userId, email: userEmail };
-          showMainContent();
-        } else {
-          showLoginPrompt();
+        try {
+          const { data: { session } } = await window.supabase.auth.getSession();
+          console.log('🔐 Supabase session:', session?.user?.email);
+          if (session?.user) {
+            currentUser = session.user;
+            showMainContent();
+            return;
+          }
+        } catch (e) {
+          console.warn('⚠️ Supabase error:', e);
         }
       }
+
+      // Not logged in
+      showLoginPrompt();
     });
 
     function showLoginPrompt() {
