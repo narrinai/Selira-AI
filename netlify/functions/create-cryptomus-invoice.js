@@ -43,7 +43,7 @@ exports.handler = async (event, context) => {
 
     // Get Cryptomus credentials from environment
     const MERCHANT_ID = process.env.CRYPTOMUS_MERCHANT_ID_SELIRA;
-    const API_KEY = process.env.CRYPTOMUS_PAYOUT_API_KEY_SELIRA;
+    const API_KEY = process.env.CRYPTOMUS_PAYMENT_API_KEY_SELIRA;
 
     if (!MERCHANT_ID || !API_KEY) {
       console.error('❌ Cryptomus credentials not configured');

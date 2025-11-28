@@ -35,7 +35,7 @@ exports.handler = async (event, context) => {
     });
 
     // Verify webhook signature
-    const API_KEY = process.env.CRYPTOMUS_PAYOUT_API_KEY_SELIRA;
+    const API_KEY = process.env.CRYPTOMUS_PAYMENT_API_KEY_SELIRA;
 
     if (API_KEY && payload.sign) {
       // Remove sign from payload for verification
