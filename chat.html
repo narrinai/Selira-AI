@@ -706,6 +706,215 @@
       color: white;
     }
 
+    /* Message Feedback Icons */
+    .message-feedback {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+      opacity: 0.5;
+      transition: opacity 0.2s ease;
+    }
+
+    .message.ai:hover .message-feedback,
+    .message-feedback.has-feedback {
+      opacity: 1;
+    }
+
+    /* Always visible on mobile (no hover) */
+    @media (max-width: 768px) {
+      .message-feedback {
+        opacity: 0.7;
+      }
+    }
+
+    .feedback-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .feedback-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .feedback-btn svg {
+      width: 12px;
+      height: 12px;
+      stroke: var(--accent);
+      stroke-width: 2;
+      fill: none;
+      transition: all 0.2s ease;
+    }
+
+    .feedback-btn:hover svg {
+      stroke: var(--text-primary);
+    }
+
+    .feedback-btn.active svg {
+      fill: currentColor;
+      stroke: currentColor;
+    }
+
+    .feedback-btn.thumbs-up:hover svg,
+    .feedback-btn.thumbs-up.active svg {
+      stroke: #10b981;
+      fill: #10b981;
+    }
+
+    .feedback-btn.thumbs-down:hover svg,
+    .feedback-btn.thumbs-down.active svg {
+      stroke: #ef4444;
+      fill: #ef4444;
+    }
+
+    .feedback-btn.report:hover svg,
+    .feedback-btn.report.active svg {
+      stroke: #f59e0b;
+      fill: #f59e0b;
+    }
+
+    /* Report Modal */
+    .report-modal {
+      display: none;
+      position: fixed;
+      z-index: 10002;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
+      animation: fadeIn 0.3s ease;
+    }
+
+    .report-modal.show {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .report-modal-content {
+      background: var(--bg-primary);
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 420px;
+      width: 90vw;
+      box-shadow: 0 16px 64px rgba(0, 0, 0, 0.4);
+      animation: zoomIn 0.3s ease;
+      border: 1px solid var(--border);
+    }
+
+    .report-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .report-modal-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .report-modal-close {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 28px;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+    }
+
+    .report-modal-close:hover {
+      color: var(--text-primary);
+    }
+
+    .report-modal-body p {
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+
+    .report-select {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 16px;
+      margin-bottom: 16px;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+    }
+
+    .report-select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .report-select option {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    .report-modal-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .report-btn-cancel {
+      flex: 1;
+      padding: 12px 20px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .report-btn-cancel:hover {
+      background: var(--bg-tertiary);
+    }
+
+    .report-btn-submit {
+      flex: 1;
+      padding: 12px 20px;
+      background: var(--accent);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .report-btn-submit:hover {
+      background: var(--accent-hover, #ba68c8);
+    }
+
+    .report-btn-submit:disabled {
+      background: var(--text-secondary);
+      cursor: not-allowed;
+    }
+
     /* Chat Input */
     .chat-input-container {
       padding: 20px;
@@ -2525,6 +2734,33 @@
               <p>Remove this companion and clear all chat history</p>
               <small style="color: var(--text-secondary);">This action will clear your chat but the companion remains available</small>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Report Content Modal -->
+    <div class="report-modal" id="reportModal">
+      <div class="report-modal-content">
+        <div class="report-modal-header">
+          <h2 class="report-modal-title">Report Content</h2>
+          <button class="report-modal-close" onclick="closeReportModal()">&times;</button>
+        </div>
+        <div class="report-modal-body">
+          <p>Help us keep Selira safe. Please select a reason for reporting this message.</p>
+          <select class="report-select" id="reportReasonSelect">
+            <option value="">Select a reason...</option>
+            <option value="Illegal content">Illegal content</option>
+            <option value="Harassment or threats">Harassment or threats</option>
+            <option value="Violence or gore">Violence or gore</option>
+            <option value="Impersonation">Impersonation</option>
+            <option value="Self-harm content">Self-harm content</option>
+            <option value="Spam">Spam</option>
+            <option value="Other">Other</option>
+          </select>
+          <div class="report-modal-actions">
+            <button class="report-btn-cancel" onclick="closeReportModal()">Cancel</button>
+            <button class="report-btn-submit" id="reportSubmitBtn" onclick="submitReport()" disabled>Submit Report</button>
           </div>
         </div>
       </div>
@@ -4492,27 +4728,45 @@
           messageDiv.classList.add('fade-in');
         }
 
+        // Generate unique message ID for feedback tracking
+        const feedbackId = isLoadingId ? autoScrollOrId : `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
         messageDiv.innerHTML = `
           <div class="message-avatar">
             <img src="${fixAvatarUrl(currentCharacter.avatar)}" alt="${currentCharacter.name}" onerror="this.style.display='none'">
           </div>
-          <div class="message-content">
-            ${isLoadingMessage ? `
-              <div style="display: flex; align-items: center; gap: 12px;">
-                <div class="spinner" style="
-                  width: 20px;
-                  height: 20px;
-                  min-width: 20px;
-                  min-height: 20px;
-                  flex-shrink: 0;
-                  border: 3px solid rgba(206, 147, 216, 0.3);
-                  border-top-color: var(--accent);
-                  border-radius: 50%;
-                  animation: spin 0.8s linear infinite;
-                "></div>
-                <span>${content}</span>
-              </div>
-            ` : content}
+          <div class="message-wrapper">
+            <div class="message-content">
+              ${isLoadingMessage ? `
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <div class="spinner" style="
+                    width: 20px;
+                    height: 20px;
+                    min-width: 20px;
+                    min-height: 20px;
+                    flex-shrink: 0;
+                    border: 3px solid rgba(206, 147, 216, 0.3);
+                    border-top-color: var(--accent);
+                    border-radius: 50%;
+                    animation: spin 0.8s linear infinite;
+                  "></div>
+                  <span>${content}</span>
+                </div>
+              ` : content}
+            </div>
+            ${!isLoadingMessage ? `
+            <div class="message-feedback" data-message-id="${feedbackId}">
+              <button class="feedback-btn thumbs-up" onclick="handleFeedback(this, 'thumbs_up')" title="Good response">
+                <svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
+              </button>
+              <button class="feedback-btn thumbs-down" onclick="handleFeedback(this, 'thumbs_down')" title="Poor response">
+                <svg viewBox="0 0 24 24"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"></path></svg>
+              </button>
+              <button class="feedback-btn report" onclick="handleReport(this)" title="Report this message">
+                <svg viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+              </button>
+            </div>
+            ` : ''}
           </div>
         `;
       } else {
@@ -4526,6 +4780,173 @@
       if (autoScroll) {
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
       }
+    }
+
+    // Handle thumbs up/down feedback
+    async function handleFeedback(button, feedbackType) {
+      const feedbackContainer = button.closest('.message-feedback');
+      const messageId = feedbackContainer.dataset.messageId;
+
+      // Get sibling buttons
+      const thumbsUp = feedbackContainer.querySelector('.thumbs-up');
+      const thumbsDown = feedbackContainer.querySelector('.thumbs-down');
+
+      // Check if already active
+      const isActive = button.classList.contains('active');
+
+      // Remove active from both
+      thumbsUp.classList.remove('active');
+      thumbsDown.classList.remove('active');
+
+      // Toggle the clicked one (if it wasn't active, make it active)
+      if (!isActive) {
+        button.classList.add('active');
+        feedbackContainer.classList.add('has-feedback');
+      } else {
+        // Check if any feedback remains
+        if (!feedbackContainer.querySelector('.feedback-btn.active')) {
+          feedbackContainer.classList.remove('has-feedback');
+        }
+      }
+
+      // Save feedback to backend
+      try {
+        // Get user info from localStorage
+        const userUid = localStorage.getItem('user_uid');
+        const userEmail = localStorage.getItem('user_email');
+
+        const response = await fetch('/.netlify/functions/save-message-feedback', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            messageId: messageId,
+            feedbackType: isActive ? null : feedbackType, // null to remove feedback
+            characterSlug: currentCharacter.slug,
+            userId: userUid,
+            userEmail: userEmail
+          })
+        });
+
+        if (!response.ok) {
+          console.error('Failed to save feedback');
+        }
+      } catch (error) {
+        console.error('Error saving feedback:', error);
+      }
+    }
+
+    // Report modal state
+    let currentReportButton = null;
+    let currentReportMessageId = null;
+    let currentReportMessageContent = null;
+
+    // Handle report button - opens modal
+    function handleReport(button) {
+      const feedbackContainer = button.closest('.message-feedback');
+      const messageId = feedbackContainer.dataset.messageId;
+      const messageContent = button.closest('.message').querySelector('.message-content').textContent;
+
+      // Check if already reported
+      if (button.classList.contains('active')) {
+        return; // Already reported, can't un-report
+      }
+
+      // Store current report context
+      currentReportButton = button;
+      currentReportMessageId = messageId;
+      currentReportMessageContent = messageContent;
+
+      // Reset and show modal
+      document.getElementById('reportReasonSelect').value = '';
+      document.getElementById('reportSubmitBtn').disabled = true;
+      document.getElementById('reportModal').classList.add('show');
+    }
+
+    // Close report modal
+    function closeReportModal() {
+      document.getElementById('reportModal').classList.remove('show');
+      currentReportButton = null;
+      currentReportMessageId = null;
+      currentReportMessageContent = null;
+    }
+
+    // Enable/disable submit button based on selection
+    document.addEventListener('DOMContentLoaded', function() {
+      const reportSelect = document.getElementById('reportReasonSelect');
+      if (reportSelect) {
+        reportSelect.addEventListener('change', function() {
+          document.getElementById('reportSubmitBtn').disabled = !this.value;
+        });
+      }
+    });
+
+    // Submit report
+    async function submitReport() {
+      const reason = document.getElementById('reportReasonSelect').value;
+
+      if (!reason || !currentReportButton) {
+        return;
+      }
+
+      // Mark as reported
+      const feedbackContainer = currentReportButton.closest('.message-feedback');
+      currentReportButton.classList.add('active');
+      feedbackContainer.classList.add('has-feedback');
+
+      // Close modal immediately for better UX
+      closeReportModal();
+
+      // Save report to backend
+      try {
+        const response = await fetch('/.netlify/functions/save-message-feedback', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            messageId: currentReportMessageId,
+            feedbackType: 'report',
+            reportReason: reason,
+            messageContent: currentReportMessageContent ? currentReportMessageContent.substring(0, 500) : '',
+            characterSlug: currentCharacter.slug,
+            characterName: currentCharacter.name,
+            userId: localStorage.getItem('user_uid'),
+            userEmail: localStorage.getItem('user_email')
+          })
+        });
+
+        if (response.ok) {
+          // Show success message
+          showToast('Report submitted. Thank you for helping keep Selira safe.');
+        } else {
+          console.error('Failed to save report');
+          showToast('Failed to submit report. Please try again.');
+        }
+      } catch (error) {
+        console.error('Error saving report:', error);
+        showToast('Failed to submit report. Please try again.');
+      }
+    }
+
+    // Simple toast notification
+    function showToast(message) {
+      // Check if toast container exists, if not create it
+      let toastContainer = document.getElementById('toastContainer');
+      if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toastContainer';
+        toastContainer.style.cssText = 'position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); z-index: 10003;';
+        document.body.appendChild(toastContainer);
+      }
+
+      const toast = document.createElement('div');
+      toast.style.cssText = 'background: var(--bg-secondary); color: var(--text-primary); padding: 12px 24px; border-radius: 8px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.3); margin-top: 8px; animation: fadeIn 0.3s ease;';
+      toast.textContent = message;
+      toastContainer.appendChild(toast);
+
+      // Remove after 3 seconds
+      setTimeout(() => {
+        toast.style.animation = 'fadeOut 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
     }
 
     function clearChat() {
@@ -5613,7 +6034,7 @@
     // Load character from URL parameter on page load
     function loadCharacterFromURL() {
       const urlParams = new URLSearchParams(window.location.search);
-      const characterSlug = urlParams.get('char');
+      const characterSlug = urlParams.get('char') || urlParams.get('slug');
 
       console.log('🔍 Checking URL for character:', characterSlug);
 

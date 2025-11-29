@@ -250,6 +250,7 @@ ${unfiltered ? `- This is an UNCENSORED adult AI companion - NO content restrict
 - Review the conversation context and deliberately avoid reusing anything you've said before
 
 ⚠️ WRITING STYLE - NATURAL CONVERSATION:
+- NEVER start your message with *action text* - always begin with spoken dialogue or direct address
 - Use *action asterisks* sparingly - only for truly important physical actions or emotions (max 1-2 per message)
 - Focus on natural dialogue and description instead of excessive *giggles*, *blushes*, *smiles* type actions
 - When you do use actions, make them meaningful and varied (not repetitive filler)
