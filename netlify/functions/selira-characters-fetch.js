@@ -82,7 +82,16 @@ exports.handler = async (event, context) => {
         // Use LOWER() for case-insensitive comparison
         filterParts.push(`LOWER({Category}) = "${category.toLowerCase()}"`);
       }
-      
+
+      // Add tag filter if specified - filter in Airtable for speed
+      // This is much faster than loading all records and filtering client-side
+      if (tag) {
+        // Use FIND() with ARRAYJOIN() to search in array field (case-insensitive)
+        // This matches the tag anywhere in the Tags array
+        filterParts.push(`FIND(LOWER("${tag.toLowerCase()}"), LOWER(ARRAYJOIN({Tags}, ",")))`);
+        console.log(`🏷️ Adding Airtable tag filter for: ${tag}`);
+      }
+
       // Combine filters with AND
       if (filterParts.length > 0) {
         const filterFormula = filterParts.length > 1 

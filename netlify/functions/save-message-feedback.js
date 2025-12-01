@@ -34,6 +34,8 @@ exports.handler = async (event, context) => {
     } = JSON.parse(event.body);
 
     console.log('📝 Message feedback received:', { messageId, feedbackType, characterSlug, userId, userEmail });
+    console.log('📝 userId type:', typeof userId, '| value:', userId);
+    console.log('📝 userEmail type:', typeof userEmail, '| value:', userEmail);
 
     // All feedback types need userId or userEmail to find the ChatHistory record
     if (!userId && !userEmail) {
@@ -68,9 +70,10 @@ exports.handler = async (event, context) => {
 
     // For all feedback types (thumbs and reports), we need to find the ChatHistory record
     // First, we need to get the User_ID (Airtable record ID)
-    let userRecordId = userId;
+    // Only use userId if it's a valid Airtable record ID (starts with 'rec')
+    let userRecordId = (userId && typeof userId === 'string' && userId.startsWith('rec')) ? userId : null;
 
-    // If no userId but we have email, look up the user by email
+    // If no valid userId but we have email, look up the user by email
     if (!userRecordId && userEmail) {
       console.log('🔍 Looking up user by email:', userEmail);
       const userLookupUrl = `https://api.airtable.com/v0/${airtableBaseId}/Users?filterByFormula=${encodeURIComponent(
@@ -107,11 +110,15 @@ exports.handler = async (event, context) => {
     }
 
     // Search for recent assistant messages from this user
+    // Note: Role can be 'assistant' (new) or 'ai assistant' (legacy)
+    const filterFormula = `AND({User_ID} = '${userRecordId}', OR({Role} = 'assistant', {Role} = 'ai assistant'))`;
     const searchUrl = `https://api.airtable.com/v0/${airtableBaseId}/ChatHistory?filterByFormula=${encodeURIComponent(
-      `AND({User_ID} = '${userRecordId}', {Role} = 'assistant')`
+      filterFormula
     )}&sort[0][field]=CreatedTime&sort[0][direction]=desc&maxRecords=10`;
 
     console.log('🔍 Searching ChatHistory for user:', userRecordId);
+    console.log('🔍 Filter formula:', filterFormula);
+    console.log('🔍 Search URL:', searchUrl);
 
     const searchResponse = await fetch(searchUrl, {
       headers: {
@@ -133,6 +140,34 @@ exports.handler = async (event, context) => {
 
     const searchData = await searchResponse.json();
     console.log('📊 Found', searchData.records?.length || 0, 'assistant messages');
+    if (searchData.records && searchData.records.length > 0) {
+      console.log('📊 First record User_ID:', searchData.records[0].fields?.User_ID);
+      console.log('📊 First record Role:', searchData.records[0].fields?.Role);
+      console.log('📊 First record ID:', searchData.records[0].id);
+    } else {
+      console.log('⚠️ No records found. Trying search without Role filter...');
+      // Debug: Try searching just by User_ID to see if ANY records exist
+      const debugUrl = `https://api.airtable.com/v0/${airtableBaseId}/ChatHistory?filterByFormula=${encodeURIComponent(
+        `{User_ID} = '${userRecordId}'`
+      )}&maxRecords=5`;
+      const debugResponse = await fetch(debugUrl, {
+        headers: {
+          'Authorization': `Bearer ${airtableApiKey}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (debugResponse.ok) {
+        const debugData = await debugResponse.json();
+        console.log('🔍 Debug: Found', debugData.records?.length || 0, 'total records for this user');
+        if (debugData.records && debugData.records.length > 0) {
+          debugData.records.forEach((r, i) => {
+            console.log(`   Record ${i}: Role="${r.fields?.Role}", User_ID="${r.fields?.User_ID}", Message="${(r.fields?.Message || '').substring(0, 50)}..."`);
+          });
+          // Show all available fields in first record
+          console.log('   Available fields:', Object.keys(debugData.records[0].fields || {}));
+        }
+      }
+    }
 
     // Try to find the most recent AI message
     if (searchData.records && searchData.records.length > 0) {

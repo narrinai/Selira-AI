@@ -147,12 +147,19 @@ async function extractTagsFromCharacters(baseId, token, headers) {
       }
     });
 
-    const tagsArray = Array.from(allTags).filter(tag => tag && tag.length > 0).sort();
+    // Filter tags with at least 5 companions and sort by count (descending)
+    const tagsWithCounts = Array.from(tagCounts.entries())
+      .filter(([tag, count]) => tag && tag.length > 0 && count >= 5)
+      .sort((a, b) => b[1] - a[1]) // Sort by count descending
+      .slice(0, 30); // Top 30 tags
+
+    const tagsArray = tagsWithCounts.map(([tag]) => tag);
+    const countsObject = Object.fromEntries(tagsWithCounts);
 
     console.log('✅ Extracted tags from characters:', {
       totalRecords: recordCount,
       uniqueTags: tagsArray.length,
-      tagCounts: Object.fromEntries(Array.from(tagCounts.entries()).slice(0, 20)),
+      topTags: tagsWithCounts.slice(0, 10),
       sampleTags: tagsArray.slice(0, 10)
     });
 
@@ -162,6 +169,7 @@ async function extractTagsFromCharacters(baseId, token, headers) {
       body: JSON.stringify({
         success: true,
         tags: tagsArray,
+        tagCounts: countsObject, // Include counts for frontend use
         total: tagsArray.length,
         source: 'characters_table',
         recordsProcessed: recordCount

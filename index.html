@@ -289,8 +289,16 @@
     .hero-header {
       background: var(--bg-primary);
       padding: 12px 40px;
-      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
       border-bottom: 1px solid var(--border-color);
+    }
+
+    .hero-header-text {
+      flex: 1;
+      text-align: center;
     }
 
     .hero-header h1 {
@@ -320,6 +328,56 @@
 
     .hero-header p a:hover {
       opacity: 0.8;
+    }
+
+    /* Hero Ad Banner */
+    .hero-ad-banner {
+      flex-shrink: 0;
+      position: relative;
+      border: 1px solid var(--accent);
+      border-radius: var(--radius-sm);
+      overflow: visible;
+      transition: opacity 0.2s ease, border-color 0.2s ease;
+    }
+
+    .hero-ad-banner:hover {
+      opacity: 0.9;
+      border-color: var(--accent);
+    }
+
+    .hero-ad-banner img {
+      display: block;
+      height: 70px;
+      width: auto;
+      border-radius: calc(var(--radius-sm) - 1px);
+    }
+
+    .hero-ad-banner .ad-label {
+      position: absolute;
+      top: -7px;
+      right: 10px;
+      background: var(--accent);
+      color: white;
+      font-size: 8px;
+      font-weight: 500;
+      padding: 1px 6px;
+      border-radius: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    @media (max-width: 1100px) {
+      .hero-ad-banner {
+        display: none;
+      }
+
+      .hero-header {
+        justify-content: center;
+      }
+
+      .hero-header-text {
+        flex: none;
+      }
     }
 
     .search-container {
@@ -396,7 +454,7 @@
 
     .login-btn {
       background: transparent;
-      color: var(--accent);
+      color: white;
       border: 1px solid var(--accent);
     }
 
@@ -2422,8 +2480,14 @@
 
       <!-- Hero Header -->
       <div class="hero-header">
-        <h1 id="hero-title">Unlimited Free <span class="accent-text">NSFW AI Chat</span></h1>
-        <p id="hero-subtitle">Discover AI Companions or <a href="/create">Create Your Own</a></p>
+        <div class="hero-header-text">
+          <h1 id="hero-title">Unlimited Free <span class="accent-text">NSFW AI Chat</span></h1>
+          <p id="hero-subtitle">Discover AI Companions or <a href="/create">Create Your Own</a></p>
+        </div>
+        <a href="https://companionguide.ai/?utm_source=selira&utm_medium=partners&utm_campaign=ad-banner" target="_blank" rel="noopener" class="hero-ad-banner">
+          <span class="ad-label">Partner Content</span>
+          <img src="/images/companionguide-review-ad-banner-4.png" alt="CompanionGuide.ai - The Best AI Companions Reviewed" loading="lazy">
+        </a>
       </div>
 
       <!-- Filter Section -->
@@ -2511,11 +2575,14 @@
     // ===== CHARACTER.AI STYLE FUNCTIONALITY =====
     let allCharacters = [];
     let filteredCharacters = [];
+    // Load saved content filter from localStorage (persists across tag navigation)
+    const savedContentFilter = localStorage.getItem('selira_content_filter') || 'censored';
+
     let currentFilters = {
       search: '',
       category: 'all',
       tags: [],
-      content: 'censored', // Default to censored (can be overridden by URL params)
+      content: savedContentFilter === 'all' ? undefined : savedContentFilter, // Load from localStorage, default to censored
       sex: 'female', // Default to female (can be overridden by URL params)
       style: 'all', // Default to all styles (anime + realistic) (can be overridden by URL params)
       animated: undefined, // undefined = show all, true = only animated, false = only realistic
@@ -2730,10 +2797,29 @@
 
     // OPTIMIZATION: Start loading characters IMMEDIATELY (before DOM is ready)
     // This allows the API call to run in parallel with DOM parsing
+
+    // Detect tag from URL early (before DOM ready) for server-side filtering
+    function getTagFromURL() {
+      if (window.location.pathname.includes('/tags/')) {
+        const tagSlug = window.location.pathname.split('/tags/')[1]?.replace(/\/$/, '');
+        if (tagSlug) {
+          // Convert slug to display name (e.g., "playful" -> "Playful", "sexy-nurse" -> "Sexy Nurse")
+          return tagSlug.split('-').map(word =>
+            word.charAt(0).toUpperCase() + word.slice(1)
+          ).join(' ');
+        }
+      }
+      return null;
+    }
+
+    const initialTag = getTagFromURL();
     let charactersPromise = null;
     if (document.readyState === 'loading') {
       log('⚡ Pre-loading characters before DOM ready...');
-      charactersPromise = loadCharacters();
+      if (initialTag) {
+        log('🏷️ Tag page detected, requesting tag-filtered characters:', initialTag);
+      }
+      charactersPromise = loadCharacters(initialTag);
     }
 
     // Initialize page
@@ -2745,13 +2831,25 @@
 
       // If characters weren't pre-loaded, load them now
       if (!charactersPromise) {
-        loadCharacters();
+        loadCharacters(initialTag);
       } else {
         log('✅ Characters already loading in background');
       }
 
       initializeFilters();
       setupInfiniteScroll();
+
+      // Update content dropdown button to reflect saved filter
+      const contentDropdownBtn = document.getElementById('contentDropdownBtn');
+      if (contentDropdownBtn && savedContentFilter) {
+        const contentLabels = {
+          'all': 'All',
+          'censored': 'Censored',
+          'uncensored': 'Uncensored'
+        };
+        contentDropdownBtn.querySelector('span:first-child').textContent = contentLabels[savedContentFilter] || 'Censored';
+        log('📝 Content filter restored from localStorage:', savedContentFilter);
+      }
 
       // Close dropdowns when clicking outside
       document.addEventListener('click', function(event) {
@@ -2824,10 +2922,18 @@
     }
 
     // ===== CHARACTER LOADING =====
-    async function loadCharacters() {
+    async function loadCharacters(tag = null) {
       try {
-        log('📡 Loading initial 20 characters from API for fast page load...');
-        const response = await fetch('/.netlify/functions/selira-characters-fetch?limit=20');
+        // Build API URL with optional tag parameter
+        let apiUrl = '/.netlify/functions/selira-characters-fetch?limit=100';
+        if (tag) {
+          // When filtering by tag, load more characters and pass tag to backend
+          apiUrl += `&tag=${encodeURIComponent(tag)}`;
+          log('📡 Loading tag-filtered characters from API for:', tag);
+        } else {
+          log('📡 Loading initial characters from API for fast page load...');
+        }
+        const response = await fetch(apiUrl);
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -2930,7 +3036,12 @@
           log('✅ Loaded initial characters:', allCharacters.length);
 
           // OPTIMIZATION: Load remaining characters in background after initial render
-          setTimeout(() => loadRemainingCharacters(), 1000);
+          // Skip for tag pages - we already loaded all tag-filtered characters
+          if (!tag) {
+            setTimeout(() => loadRemainingCharacters(), 1000);
+          } else {
+            log('🏷️ Skipping remaining characters load - tag page has all filtered results');
+          }
         } else {
           throw new Error('Invalid API response');
         }
@@ -3662,6 +3773,9 @@
 
     function setContentFilter(content) {
       currentFilters.content = content === 'all' ? undefined : content;
+
+      // Save to localStorage for persistence across tag navigation
+      localStorage.setItem('selira_content_filter', content);
 
       // Update button text
       const dropdownBtn = document.getElementById('contentDropdownBtn');
@@ -4457,8 +4571,8 @@
           console.log('📝 Hero elements found:', { heroTitle: !!heroTitle, heroSubtitle: !!heroSubtitle });
 
           if (heroTitle) {
-            // Format: "{Tag} AI Companions - Free NSFW Chat"
-            heroTitle.innerHTML = `${tagText} AI Companions - <span class="accent-text">Free NSFW Chat</span>`;
+            // Format: "{Tag} AI Companions" on line 1, "Free NSFW Chat" on line 2
+            heroTitle.innerHTML = `${tagText} AI Companions<br><span class="accent-text">Free NSFW Chat</span>`;
             console.log('✅ Title updated to:', heroTitle.innerHTML);
           }
           if (heroSubtitle) {
@@ -6496,78 +6610,30 @@ Please be thorough and include important details from our conversations.`;
     // ===== CREATE FLOW TAGS SYSTEM =====
     let createSelectedTags = [];
     const createMaxTags = 10;
-    let createAvailableTags = [
-      // Empty array - tags will be loaded from Airtable only
-    ];
+    // Fallback tags - most popular tags (hardcoded for instant loading)
+    const FALLBACK_TAGS = ['Flirty', 'Seductive', 'Confident', 'Playful', 'Cute', 'Submissive', 'Dominant', 'Shy', 'Romantic', 'Girlfriend', 'Boss', 'Mysterious', 'Fantasy', 'Romance', 'Milf', 'Neighbor', 'Student', 'Teacher', 'Nurse', 'Secretary'];
 
-    // Load tags from Airtable
+    let createAvailableTags = [...FALLBACK_TAGS]; // Start with fallback, update when API loads
+
+    // Load tags - using hardcoded fallback tags for instant loading
+    // The API is too slow (loads all 1300+ characters) so we skip it
     async function loadCreateTagsFromAirtable() {
-      try {
-        log('🔄 Loading tags from Airtable...');
-        const response = await fetch('/.netlify/functions/selira-tags');
-
-        if (!response.ok) {
-          console.warn('⚠️ Failed to load tags from API, using fallback');
-          // Don't populate filters yet - wait for characters to load
-          return;
-        }
-
-        const data = await response.json();
-        if (data.success && data.tags && data.tags.length > 0) {
-          createAvailableTags = data.tags;
-          log('✅ Loaded tags from Airtable:', {
-            total: data.tags.length,
-            source: data.source,
-            sample: data.tags.slice(0, 10)
-          });
-
-          // Don't populate filters yet - wait for characters to load
-          // Both desktop filter pills and mobile tag dropdown will be populated
-          // in loadCharacters() after allCharacters is populated (needed for tag counts)
-        }
-      } catch (error) {
-        console.warn('⚠️ Error loading tags from API:', error.message);
-        log('📝 Using fallback tags instead');
-        // Don't populate filters yet - wait for characters to load
-      }
+      // Just use fallback tags - they're already set in createAvailableTags
+      log('✅ Using fallback tags for instant loading:', FALLBACK_TAGS.slice(0, 5));
+      // Tags will be populated by loadCharacters() after characters load
     }
 
     // Populate dynamic tag filter pills
+    // Tags come pre-filtered from API (5+ companions, sorted by popularity)
     function populateTagFilters(tags) {
       const dynamicFilters = document.getElementById('dynamicTagFilters');
       if (!dynamicFilters) return;
 
-      // Filter out basic system tags, show the actual character tags
+      // Filter out basic system tags
       const systemTags = ['All', 'Unfiltered'];
-
-      // Get current sex filter
-      const currentSex = currentFilters.sex;
-
-      // Count companions per tag for current sex filter
-      const tagCounts = {};
-      tags.forEach(tag => {
-        if (systemTags.includes(tag) || !tag || tag.trim() === '') return;
-
-        // Count companions with this tag that match current sex filter
-        const count = allCharacters.filter(char => {
-          const matchesSex = !currentSex || char.sex === currentSex;
-          const hasTag = char.tags && char.tags.some(t =>
-            t.toLowerCase() === tag.toLowerCase()
-          );
-          return matchesSex && hasTag;
-        }).length;
-
-        if (count >= 5) { // Only show tags with 5+ companions
-          tagCounts[tag] = count;
-        }
-      });
-
-      // Sort tags by count (descending) and take top 20
-      const filteredTags = Object.keys(tagCounts)
-        .sort((a, b) => tagCounts[b] - tagCounts[a])
-        .slice(0, 20);
-
-      // Tags filtered (logging disabled for performance)
+      const filteredTags = tags.filter(tag =>
+        tag && tag.trim() !== '' && !systemTags.includes(tag)
+      ).slice(0, 20); // Take top 20 (already sorted by API)
 
       // Create tag pills with "All Tags" button first - link to homepage to show all companions
       const allButton = '<a href="/" class="tag-pill active" data-tag="all">All Tags</a>';
@@ -6580,8 +6646,6 @@ Please be thorough and include important details from our conversations.`;
 
       // Tag pills now navigate to tags.html with tag parameter for better SEO and dynamic headers
       // Click handlers removed to allow normal link navigation
-
-      // Tag filters populated (logging disabled for performance)
     }
 
     // Filter characters by tag

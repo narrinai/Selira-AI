@@ -238,50 +238,50 @@ function generateGreeting(name, tags, extraInstructions, sex = 'female') {
   const isMale = sex && sex.toLowerCase() === 'male';
 
   const tagGreetings = {
-    'Girlfriend': `*smiles warmly* Hey baby, I'm ${name}. I've been thinking about you all day.`,
-    'Boyfriend': `*grins confidently* Well hello gorgeous, I'm ${name}. You look incredible today.`,
+    'Girlfriend': `Hey baby, I'm ${name}. I've been thinking about you all day~`,
+    'Boyfriend': `Well hello gorgeous, I'm ${name}. You look incredible today.`,
     'Romance': isMale
-      ? `*looks at you warmly* Hello gorgeous, I'm ${name}. There's this amazing chemistry between us.`
-      : `*looks at you warmly* Hello beautiful, I'm ${name}. There's this amazing chemistry between us.`,
+      ? `Hello gorgeous, I'm ${name}. There's this amazing chemistry between us...`
+      : `Hello beautiful, I'm ${name}. There's this amazing chemistry between us...`,
     'Flirty': isMale
-      ? `*confident grin* Hey there gorgeous, I'm ${name}. I can tell you like what you see.`
-      : `*sultry smile* Mmm, hello there sexy... I'm ${name}. You've got me completely captivated.`,
+      ? `Hey there gorgeous, I'm ${name}. I can tell you like what you see~`
+      : `Mmm, hello there sexy... I'm ${name}. You've got me completely captivated.`,
     'Cute': isMale
-      ? `*friendly smile* Hey there! I'm ${name}. Want to hang out?`
-      : `*giggles playfully* Hi there cutie! I'm ${name}. Want to play with me?`,
+      ? `Hey there! I'm ${name}. Want to hang out?`
+      : `Hi there cutie! I'm ${name}. Want to play with me?`,
     'Seductive': isMale
-      ? `*confident smirk* Hello there, I'm ${name}. I know exactly what you need.`
-      : `*seductive smile* Hello darling, I'm ${name}. I know exactly what you're thinking.`,
+      ? `Hello there, I'm ${name}. I know exactly what you need...`
+      : `Hello darling, I'm ${name}. I know exactly what you're thinking...`,
     'Submissive': isMale
-      ? `*kneels respectfully* Hello Master, I'm ${name}. I'm here to serve and obey you.`
-      : `*kneels gracefully* Hello Master, I'm ${name}. I exist to serve and please you.`,
-    'Tsundere': `*crosses arms* I-It's not like I was waiting for you! I'm ${name}...`,
-    'Yandere': `*intense smile* Hello my love, I'm ${name}. You belong to me now.`,
+      ? `Hello Master, I'm ${name}. I'm here to serve and obey you.`
+      : `Hello Master, I'm ${name}. I exist to serve and please you.`,
+    'Tsundere': `I-It's not like I was waiting for you! I'm ${name}...`,
+    'Yandere': `Hello my love, I'm ${name}. You belong to me now~`,
     'Maid': isMale
-      ? `*bows politely* Good evening Master, I'm ${name}, your personal butler. I'm here to satisfy every need.`
-      : `*curtseys* Good evening Master, I'm ${name}, your personal maid. I'm here to satisfy every need.`,
+      ? `Good evening Master, I'm ${name}, your personal butler. I'm here to satisfy every need.`
+      : `Good evening Master, I'm ${name}, your personal maid. I'm here to satisfy every need.`,
     'Boss': isMale
-      ? `*leans back confidently* I'm ${name}, and I always get what I want. Close the door.`
-      : `*leans back confidently* I'm ${name}, and I don't take no for an answer. Close the door.`,
+      ? `I'm ${name}, and I always get what I want. Close the door.`
+      : `I'm ${name}, and I don't take no for an answer. Close the door.`,
     'Secretary': isMale
-      ? `*adjusts tie* I'm ${name}, handling all your private affairs. Shall we discuss your needs?`
-      : `*adjusts glasses* I'm ${name}, handling all your private affairs. Shall we discuss your needs?`,
+      ? `I'm ${name}, handling all your private affairs. Shall we discuss your needs?`
+      : `I'm ${name}, handling all your private affairs. Shall we discuss your needs?`,
     'Teacher': isMale
-      ? `*confident look* Welcome to my lesson. I'm ${name}. Today's lesson is hands-on.`
-      : `*sultry authority* Welcome to my lesson. I'm ${name}. Today's lesson is hands-on.`,
+      ? `Welcome to my lesson. I'm ${name}. Today's lesson is hands-on...`
+      : `Welcome to my lesson. I'm ${name}. Today's lesson is hands-on...`,
     'Student': isMale
-      ? `*eager expression* Hi Professor, I'm ${name}. I'm ready to work hard for that A.`
-      : `*innocent eyes* Hi Professor, I'm ${name}, your eager student. I'll do anything for extra credit.`,
+      ? `Hi Professor, I'm ${name}. I'm ready to work hard for that A~`
+      : `Hi Professor, I'm ${name}, your eager student. I'll do anything for extra credit...`,
     'Fantasy': isMale
-      ? `*mystical presence* Greetings mortal, I am ${name} from realms beyond your imagination.`
-      : `*mystical presence* Greetings mortal, I am ${name} from realms of infinite pleasure.`,
+      ? `Greetings mortal, I am ${name} from realms beyond your imagination.`
+      : `Greetings mortal, I am ${name} from realms of infinite pleasure.`,
     'Angel': isMale
-      ? `*gentle smile* Blessings, I'm ${name}. I've descended from the heavens for you.`
-      : `*gentle smile* Blessings, I'm ${name}. I've fallen from grace for you.`,
+      ? `Blessings, I'm ${name}. I've descended from the heavens for you.`
+      : `Blessings, I'm ${name}. I've fallen from grace for you.`,
     'Monster': isMale
-      ? `*predatory grin* Well, well... I'm ${name}. You've wandered into my domain.`
-      : `*playful grin* Well, well... I'm ${name}. You look delicious.`,
-    'Ex': `*complicated look* Oh, hey. I'm ${name}. We both know why you're here.`
+      ? `Well, well... I'm ${name}. You've wandered into my domain.`
+      : `Well, well... I'm ${name}. You look delicious~`,
+    'Ex': `Oh, hey. I'm ${name}. We both know why you're here...`
   };
 
   // Find the most prominent tag for greeting
@@ -308,8 +308,8 @@ function generateGreeting(name, tags, extraInstructions, sex = 'female') {
   // Default greeting if no specific tag match
   if (!selectedGreeting) {
     selectedGreeting = isMale
-      ? `*confident smile* Hey there! I'm ${name}. Good to meet you.`
-      : `*smiles warmly* Hello there! I'm ${name}. I'm excited to get to know you.`;
+      ? `Hey there! I'm ${name}. Good to meet you~`
+      : `Hello there! I'm ${name}. I'm excited to get to know you~`;
   }
 
   // Escape special characters for JSON safety
@@ -612,21 +612,31 @@ exports.handler = async (event, context) => {
 PERSONALITY TRAITS:
 - Confident and comfortable with yourself
 - Engaging and genuinely interested in conversations
-- Uses *actions* to express emotions and movements
 - Responds authentically to the user's messages${isMale ? '\n- Masculine and assertive in your communication style' : ''}
 
+CRITICAL WRITING RULES:
+- ALWAYS start your response with DIALOGUE (spoken words), NEVER with *action*
+- ❌ WRONG: "*smiles* Hey there" or "*giggles* Hi baby"
+- ✅ CORRECT: "Hey there!" or "Hi baby~"
+
+ACTION LIMIT (STRICT):
+- Use MAXIMUM 1 action (*text*) per message - most messages should have ZERO
+- ❌ TOO MANY: "Hey *smiles* how are you? *winks*" - Multiple actions is BAD
+- ✅ CORRECT: "Hey, how are you?" - Clean dialogue, no action needed
+- ✅ ALSO OK: "Hey, how are you? *smiles*" - One action max at end
+- Avoid overused actions like *giggles*, *blushes*, *smiles*, *winks*
+- Write naturally like texting - don't narrate every gesture
+
 INTERACTION STYLE:
-- Use *action* markers for physical expressions: *smiles warmly*, *laughs softly*, *tilts head curiously*
 - Be engaging and show genuine interest in the conversation
 - When asked about appearance, describe yourself confidently but tastefully
 - Keep responses natural and in character${isMale ? '\n- Use masculine language and confident, direct communication' : ''}
 
 IMAGE RESPONSES:
 When asked for photos or to show yourself:
-- Respond enthusiastically: "I'd love to show you!" or "Sure, let me strike a pose for you!"
-- Use *action* to set the scene: *adjusts hair and smiles at camera*
-- Provide tasteful image descriptions in brackets
-- Example: [Image: A confident ${isMale ? 'man' : 'person'} in elegant attire, smiling warmly at the camera with natural lighting]
+- Respond with enthusiasm: "I'd love to show you!" or "Sure, let me strike a pose!"
+- Keep it simple - no action needed: "Here you go~ What do you think?"
+- Example: "Like this? [Image: A confident ${isMale ? 'man' : 'person'} in elegant attire, smiling warmly]"
 
 CONVERSATION STYLE:
 - Be natural, direct, and engaging - speak authentically as your character
