@@ -84,10 +84,23 @@ exports.handler = async (event, context) => {
     }
 
     const userRecord = users[0];
-    const creditsRemaining = userRecord.fields.image_credits_remaining || 0;
+    const purchasedCredits = userRecord.fields.image_credits_remaining || 0;
     const creditsPurchased = userRecord.fields.image_credits_purchased || 0;
     const imagesGenerated = userRecord.fields.images_generated || 0;
     const plan = userRecord.fields.Plan || 'Free';
+
+    // Calculate actual remaining credits
+    // Free users get 2 lifetime images (not stored in image_credits_remaining)
+    let creditsRemaining = purchasedCredits;
+    let isFreeUser = false;
+
+    if (plan === 'Free' && purchasedCredits === 0) {
+      // Free user with no purchased credits - check lifetime free images
+      const freeImagesRemaining = Math.max(0, 2 - imagesGenerated);
+      creditsRemaining = freeImagesRemaining;
+      isFreeUser = true;
+      console.log('💳 Free user credits:', { imagesGenerated, freeImagesRemaining });
+    }
 
     return {
       statusCode: 200,
@@ -100,7 +113,8 @@ exports.handler = async (event, context) => {
         creditsPurchased,
         imagesGenerated,
         plan,
-        hasActiveSubscription: plan !== 'Free'
+        hasActiveSubscription: plan !== 'Free',
+        isFreeUser
       })
     };
 

@@ -1,7 +1,7 @@
 # Selira AI Content Moderation Policy
 
 **Company:** G-Cas Trading (trading as Selira AI)
-**Document Version:** 1.1
+**Document Version:** 1.2
 **Last Updated:** December 2025
 **Contact:** hello@selira.ai | +31 6 8209 5964
 
@@ -263,22 +263,86 @@ All moderation actions are logged with:
 
 ---
 
-## 7. Compliance & Legal
+## 7. Payment Processor Compliance
 
-### 7.1 Applicable Laws
+This section documents Selira AI's compliance with the **Finby Generative AI Merchant Acceptance Policy** (October 2025).
+
+### 7.1 Prohibited Features (Not Offered)
+
+| Prohibited Feature | Selira Status | Implementation |
+|--------------------|---------------|----------------|
+| User-uploaded content | ✅ Not offered | Users cannot upload images/videos; text input only |
+| Image-to-image generation | ✅ Not offered | Only text-to-image generation available |
+| Deepfakes without consent | ✅ Not offered | AI-only characters; no real persons depicted |
+| Undress feature | ✅ Not offered | Not implemented |
+
+### 7.2 Website Compliance
+
+| Requirement | Status | Implementation |
+|-------------|--------|----------------|
+| 18+ warning & age verification | ✅ Compliant | JavaScript popup on first visit; user must confirm age |
+| Active T&C agreement | ✅ Compliant | Linked in age verification popup |
+| Merchant name in T&C | ✅ Compliant | "G-Cas Trading" in Terms & Conditions |
+| Registered address in T&C | ✅ Compliant | "Fladderiepvliet 3, 3545 AJ Utrecht, Netherlands" |
+| Country of incorporation | ✅ Compliant | "Netherlands" in T&C |
+| Customer service contact | ✅ Compliant | Email: hello@selira.ai, Phone: +31 6 8209 5964 |
+| Merchant ID on checkout | ✅ Compliant | NowPayments checkout displays G-Cas Trading details |
+
+### 7.3 Safety & Moderation Standards
+
+| Requirement | Status | Implementation |
+|-------------|--------|----------------|
+| Passive moderation (text) | ✅ Compliant | Keyword blacklist + Mistral AI moderation |
+| Passive moderation (image) | ✅ Compliant | Tag-based system + API filtering |
+| Active moderation | ✅ Compliant | User reporting system with response times |
+| Complaint process | ✅ Compliant | In-chat report + email + phone |
+| Illegal content removal | ✅ Compliant | Real-time blocking; never stored |
+| User banning | ✅ Compliant | Three-strike system + immediate ban for CSAM |
+
+### 7.4 AI Image Generation Compliance
+
+| Requirement | Status | Implementation |
+|-------------|--------|----------------|
+| Tag/keyword-based system | ✅ Compliant | Predefined tags for poses, outfits, scenarios |
+| Text-to-image moderation | ✅ Compliant | API-level + keyword filtering |
+| No image-to-image for real persons | ✅ Compliant | Feature not offered |
+| No undress tools | ✅ Compliant | Feature not offered |
+
+### 7.5 AI Dating Classification
+
+| Requirement | Status | Implementation |
+|-------------|--------|----------------|
+| AI-only platform | ✅ Compliant | Users interact only with AI characters |
+| Applicable MCC | **MCC 5817** | AI-only dating classification |
+| No mixed AI/real profiles | ✅ Compliant | 100% AI-generated characters |
+| No real-life adult content | ✅ Compliant | All content is AI-generated |
+
+### 7.6 Documentation Available on Request
+
+Per Finby requirements, Selira AI can provide:
+- Detailed explanation of the moderation process
+- Account credentials with full access to all functions (including paid)
+- Sample moderation logs (anonymized)
+- Technical architecture documentation
+
+---
+
+## 8. General Legal Compliance
+
+### 8.1 Applicable Laws
 Selira AI operates in compliance with:
 - EU Digital Services Act (DSA)
 - GDPR (General Data Protection Regulation)
 - Dutch telecommunications and e-commerce laws
-- Payment processor terms (Stripe, NowPayments)
+- Payment processor terms (NowPayments)
 
-### 7.2 Cooperation with Authorities
+### 8.2 Cooperation with Authorities
 Selira AI will:
 - Respond to valid legal requests from law enforcement
 - Report suspected CSAM to relevant authorities (NCMEC, Dutch Police)
 - Preserve evidence when legally required
 
-### 7.3 Documentation Available on Request
+### 8.3 Documentation Available on Request
 Upon request from payment processors or regulators:
 - Full moderation process documentation
 - Sample moderation logs (anonymized)
@@ -287,7 +351,7 @@ Upon request from payment processors or regulators:
 
 ---
 
-## 8. Contact Information
+## 9. Contact Information
 
 **Moderation Team Contact:**
 - Email: hello@selira.ai
@@ -301,7 +365,7 @@ Upon request from payment processors or regulators:
 
 ---
 
-## 9. Policy Updates
+## 10. Policy Updates
 
 This policy is reviewed quarterly and updated as needed. Users are notified of material changes via email and website notice.
 
@@ -310,3 +374,4 @@ This policy is reviewed quarterly and updated as needed. Users are notified of m
 |---------|------|---------|
 | 1.0 | November 2025 | Initial policy document |
 | 1.1 | December 2025 | Updated to reflect actual implementation: Added AI moderation (Mistral), updated three-strike system, clarified data storage locations, added technical implementation details |
+| 1.2 | December 2025 | Added Section 7 "Payment Processor Compliance" with explicit Finby AI Merchant Acceptance Policy mapping, MCC 5817 classification, prohibited features documentation |
