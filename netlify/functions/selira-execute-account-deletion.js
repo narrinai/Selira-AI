@@ -99,7 +99,12 @@ exports.handler = async (event, context) => {
     let offset = null;
 
     do {
-      const chatUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/ChatHistory?filterByFormula={User_ID}='${airtableUserId}'&sort[0][field]=Created&sort[0][direction]=desc${offset ? `&offset=${offset}` : ''}`;
+      // Use FIND with ARRAYJOIN on linked User field since User_ID can be inconsistent
+      const filterFormula = encodeURIComponent(`OR({User_ID}='${airtableUserId}',FIND('${airtableUserId}',ARRAYJOIN({User}))>0)`);
+      const chatUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/ChatHistory?filterByFormula=${filterFormula}&sort[0][field]=Created&sort[0][direction]=desc${offset ? `&offset=${offset}` : ''}`;
+
+      console.log('🔍 ChatHistory filter formula:', decodeURIComponent(filterFormula));
+      console.log('🔍 ChatHistory URL:', chatUrl);
 
       const chatResponse = await fetch(chatUrl, {
         headers: {
@@ -108,12 +113,19 @@ exports.handler = async (event, context) => {
         }
       });
 
+      console.log('🔍 ChatHistory response status:', chatResponse.status);
+
       if (chatResponse.ok) {
         const chatData = await chatResponse.json();
+        console.log('🔍 ChatHistory records found this batch:', chatData.records?.length || 0);
+        if (chatData.records?.length > 0) {
+          console.log('🔍 First record sample:', JSON.stringify(chatData.records[0].fields, null, 2));
+        }
         allMessages = allMessages.concat(chatData.records);
         offset = chatData.offset;
       } else {
-        console.log('⚠️ Could not fetch chat history');
+        const errorText = await chatResponse.text();
+        console.log('⚠️ Could not fetch chat history:', chatResponse.status, errorText);
         break;
       }
     } while (offset && allMessages.length < 1000); // Limit to 1000 for safety
@@ -248,8 +260,9 @@ exports.handler = async (event, context) => {
     // Step 5: Delete memories
     console.log('🗑️ Deleting memories...');
 
+    const memoriesFilterFormula = encodeURIComponent(`OR({User_ID}='${airtableUserId}',FIND('${airtableUserId}',ARRAYJOIN({User}))>0)`);
     const memoriesResponse = await fetch(
-      `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Memories?filterByFormula={User_ID}='${airtableUserId}'`,
+      `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Memories?filterByFormula=${memoriesFilterFormula}`,
       {
         headers: {
           'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
@@ -283,8 +296,9 @@ exports.handler = async (event, context) => {
     // Step 6: Delete custom companions
     console.log('🗑️ Deleting custom companions...');
 
+    const companionsFilterFormula = encodeURIComponent(`OR({Creator_ID}='${airtableUserId}',FIND('${airtableUserId}',ARRAYJOIN({Creator}))>0)`);
     const companionsResponse = await fetch(
-      `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Custom_Companions?filterByFormula={Creator_ID}='${airtableUserId}'`,
+      `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Custom_Companions?filterByFormula=${companionsFilterFormula}`,
       {
         headers: {
           'Authorization': `Bearer ${AIRTABLE_TOKEN}`,

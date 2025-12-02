@@ -830,9 +830,17 @@ async function generateWithPromptchan(body, requestId, corsHeaders, email, supab
   console.log(`📤 [${requestId}] Promptchan request (Ultra quality):`, promptchanRequest);
 
   // Skip second Promptchan attempt if first attempt failed (GPU error)
+  // Return 500 to trigger fallback to Replicate in main handler
   if (skipSecondPromptchan) {
-    console.log(`⏭️ [${requestId}] Skipping second Promptchan attempt (first failed) - going straight to Replicate`);
-    throw new Error('Skipping Promptchan - first attempt failed');
+    console.log(`⏭️ [${requestId}] Skipping second Promptchan attempt (first failed) - returning 500 to trigger Replicate fallback`);
+    return {
+      statusCode: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        error: 'Promptchan failed, falling back to Replicate',
+        fallbackToReplicate: true
+      })
+    };
   }
 
   try {
