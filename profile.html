@@ -2022,43 +2022,258 @@
 
   </script>
 
-  <!-- Delete Account Info Modal -->
+  <!-- Delete Account Modal - Step 1: Reason Selection -->
   <div id="deleteAccountModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+    <div style="background: var(--background-secondary); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 40px; max-width: 480px; width: 90%; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);">
+      <div style="text-align: center; margin-bottom: 24px;">
+        <div style="display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background: rgba(239, 68, 68, 0.15); border-radius: 50%; margin-bottom: 16px;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 6h18"></path>
+            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+            <line x1="10" y1="11" x2="10" y2="17"></line>
+            <line x1="14" y1="11" x2="14" y2="17"></line>
+          </svg>
+        </div>
+        <h2 style="color: var(--text-primary); margin: 0 0 8px 0; font-size: 24px; font-weight: 600;">Delete Your Account</h2>
+        <p style="color: var(--text-secondary); margin: 0; font-size: 14px;">We're sorry to see you go. Please tell us why you're leaving.</p>
+      </div>
+
+      <div style="margin-bottom: 24px;">
+        <label style="display: block; color: var(--text-secondary); font-size: 13px; margin-bottom: 8px;">Reason for leaving</label>
+        <select id="deletionReason" style="width: 100%; padding: 12px 16px; background: var(--background-primary); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-primary); font-size: 14px; cursor: pointer;">
+          <option value="">Select a reason...</option>
+          <option value="Not using it anymore">Not using it anymore</option>
+          <option value="Found a better alternative">Found a better alternative</option>
+          <option value="Too expensive">Too expensive</option>
+          <option value="Privacy concerns">Privacy concerns</option>
+          <option value="Technical issues">Technical issues</option>
+          <option value="Content quality issues">Content quality issues</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <div id="otherReasonContainer" style="display: none; margin-bottom: 24px;">
+        <label style="display: block; color: var(--text-secondary); font-size: 13px; margin-bottom: 8px;">Please tell us more</label>
+        <textarea id="otherReasonText" placeholder="Help us improve by sharing your feedback..." style="width: 100%; padding: 12px 16px; background: var(--background-primary); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-primary); font-size: 14px; min-height: 80px; resize: vertical; box-sizing: border-box;"></textarea>
+      </div>
+
+      <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 10px; padding: 16px; margin-bottom: 24px;">
+        <p style="color: #fca5a5; margin: 0; font-size: 13px; line-height: 1.5;">
+          <strong>Warning:</strong> This action is permanent and cannot be undone. All your data including chat history, memories, and custom companions will be permanently deleted.
+        </p>
+      </div>
+
+      <div style="display: flex; gap: 12px;">
+        <button onclick="closeDeleteAccountModal()" style="flex: 1; padding: 12px 20px; background: transparent; border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-primary); font-size: 14px; font-weight: 500; cursor: pointer;">
+          Cancel
+        </button>
+        <button onclick="proceedToDeleteConfirmation()" id="proceedDeleteBtn" style="flex: 1; padding: 12px 20px; background: #ef4444; border: none; border-radius: 10px; color: white; font-size: 14px; font-weight: 600; cursor: pointer; opacity: 0.5;" disabled>
+          Continue
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Account Modal - Step 2: Confirmation -->
+  <div id="deleteConfirmModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 10001; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+    <div style="background: var(--background-secondary); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 40px; max-width: 480px; width: 90%; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);">
+      <div style="text-align: center; margin-bottom: 24px;">
+        <div style="display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background: rgba(239, 68, 68, 0.15); border-radius: 50%; margin-bottom: 16px;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+        </div>
+        <h2 style="color: var(--text-primary); margin: 0 0 8px 0; font-size: 24px; font-weight: 600;">Final Confirmation</h2>
+        <p style="color: var(--text-secondary); margin: 0; font-size: 14px;">Type <strong style="color: #ef4444;">DELETE</strong> to confirm account deletion.</p>
+      </div>
+
+      <div style="margin-bottom: 24px;">
+        <input type="text" id="deleteConfirmInput" placeholder="Type DELETE to confirm" style="width: 100%; padding: 14px 16px; background: var(--background-primary); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-primary); font-size: 16px; text-align: center; text-transform: uppercase; letter-spacing: 2px; box-sizing: border-box;" autocomplete="off">
+      </div>
+
+      <div id="deleteErrorMessage" style="display: none; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 10px; padding: 12px; margin-bottom: 16px; text-align: center;">
+        <p style="color: #fca5a5; margin: 0; font-size: 13px;"></p>
+      </div>
+
+      <div style="display: flex; gap: 12px;">
+        <button onclick="backToReasonModal()" style="flex: 1; padding: 12px 20px; background: transparent; border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-primary); font-size: 14px; font-weight: 500; cursor: pointer;">
+          Back
+        </button>
+        <button onclick="executeAccountDeletion()" id="finalDeleteBtn" style="flex: 1; padding: 12px 20px; background: #ef4444; border: none; border-radius: 10px; color: white; font-size: 14px; font-weight: 600; cursor: pointer; opacity: 0.5;" disabled>
+          Delete Forever
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Account Modal - Step 3: Success -->
+  <div id="deleteSuccessModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 10002; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
     <div style="background: var(--background-secondary); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 40px; max-width: 480px; width: 90%; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5); text-align: center;">
-      <div style="display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background: rgba(59, 130, 246, 0.15); border-radius: 50%; margin-bottom: 20px;">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"></circle>
-          <line x1="12" y1="16" x2="12" y2="12"></line>
-          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+      <div style="display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background: rgba(16, 185, 129, 0.15); border-radius: 50%; margin-bottom: 16px;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
         </svg>
       </div>
-      <h2 style="color: var(--text-primary); margin: 0 0 12px 0; font-size: 26px; font-weight: 600;">Delete Your Account</h2>
-      <p style="color: var(--text-secondary); margin: 0 0 32px 0; line-height: 1.6; font-size: 15px;">
-        Send an email to <strong style="color: var(--text-primary);">hello@selira.ai</strong> and we will delete your account within <strong style="color: var(--text-primary);">48h</strong>.
-        <br><br>
-        We will confirm this by email to you.
+      <h2 style="color: var(--text-primary); margin: 0 0 12px 0; font-size: 24px; font-weight: 600;">Account Deleted</h2>
+      <p style="color: var(--text-secondary); margin: 0 0 24px 0; font-size: 14px; line-height: 1.6;">
+        Your account and all associated data have been permanently deleted. We're sorry to see you go.
       </p>
-      <button onclick="closeDeleteAccountModal()" class="btn" style="width: 100%; background: var(--primary-color); border: 1px solid var(--primary-color); color: white;">
-        Close
+      <button onclick="window.location.href='/'" style="width: 100%; padding: 14px 20px; background: var(--primary-color); border: none; border-radius: 10px; color: white; font-size: 14px; font-weight: 600; cursor: pointer;">
+        Return to Home
       </button>
     </div>
   </div>
 
   <script>
+    // Delete account flow state
+    let selectedDeletionReason = '';
+    let deletionReasonDetails = '';
+
     function showDeleteAccountModal() {
+      // Reset state
+      selectedDeletionReason = '';
+      deletionReasonDetails = '';
+      document.getElementById('deletionReason').value = '';
+      document.getElementById('otherReasonText').value = '';
+      document.getElementById('otherReasonContainer').style.display = 'none';
+      document.getElementById('proceedDeleteBtn').disabled = true;
+      document.getElementById('proceedDeleteBtn').style.opacity = '0.5';
+
       const modal = document.getElementById('deleteAccountModal');
       modal.style.display = 'flex';
     }
 
     function closeDeleteAccountModal() {
-      const modal = document.getElementById('deleteAccountModal');
-      modal.style.display = 'none';
+      document.getElementById('deleteAccountModal').style.display = 'none';
+      document.getElementById('deleteConfirmModal').style.display = 'none';
+      document.getElementById('deleteSuccessModal').style.display = 'none';
     }
 
-    // Close modal when clicking outside
-    document.getElementById('deleteAccountModal')?.addEventListener('click', function(e) {
-      if (e.target === this) closeDeleteAccountModal();
+    // Handle reason selection
+    document.getElementById('deletionReason')?.addEventListener('change', function(e) {
+      selectedDeletionReason = e.target.value;
+      const otherContainer = document.getElementById('otherReasonContainer');
+      const proceedBtn = document.getElementById('proceedDeleteBtn');
+
+      if (e.target.value === 'Other') {
+        otherContainer.style.display = 'block';
+      } else {
+        otherContainer.style.display = 'none';
+      }
+
+      if (e.target.value) {
+        proceedBtn.disabled = false;
+        proceedBtn.style.opacity = '1';
+      } else {
+        proceedBtn.disabled = true;
+        proceedBtn.style.opacity = '0.5';
+      }
     });
+
+    function proceedToDeleteConfirmation() {
+      if (!selectedDeletionReason) return;
+
+      deletionReasonDetails = document.getElementById('otherReasonText')?.value || '';
+
+      document.getElementById('deleteAccountModal').style.display = 'none';
+      document.getElementById('deleteConfirmModal').style.display = 'flex';
+      document.getElementById('deleteConfirmInput').value = '';
+      document.getElementById('finalDeleteBtn').disabled = true;
+      document.getElementById('finalDeleteBtn').style.opacity = '0.5';
+      document.getElementById('deleteErrorMessage').style.display = 'none';
+
+      // Focus on input
+      setTimeout(() => {
+        document.getElementById('deleteConfirmInput')?.focus();
+      }, 100);
+    }
+
+    function backToReasonModal() {
+      document.getElementById('deleteConfirmModal').style.display = 'none';
+      document.getElementById('deleteAccountModal').style.display = 'flex';
+    }
+
+    // Handle confirmation input
+    document.getElementById('deleteConfirmInput')?.addEventListener('input', function(e) {
+      const finalBtn = document.getElementById('finalDeleteBtn');
+      if (e.target.value.toUpperCase() === 'DELETE') {
+        finalBtn.disabled = false;
+        finalBtn.style.opacity = '1';
+      } else {
+        finalBtn.disabled = true;
+        finalBtn.style.opacity = '0.5';
+      }
+    });
+
+    async function executeAccountDeletion() {
+      const confirmInput = document.getElementById('deleteConfirmInput');
+      if (confirmInput.value.toUpperCase() !== 'DELETE') return;
+
+      const finalBtn = document.getElementById('finalDeleteBtn');
+      const errorDiv = document.getElementById('deleteErrorMessage');
+
+      // Show loading state
+      finalBtn.disabled = true;
+      finalBtn.innerHTML = '<span style="display: inline-flex; align-items: center; gap: 8px;"><svg width="16" height="16" viewBox="0 0 24 24" style="animation: spin 1s linear infinite;"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" fill="none" stroke-dasharray="30 70"/></svg> Deleting...</span>';
+      errorDiv.style.display = 'none';
+
+      try {
+        // Get user data from localStorage
+        const userEmail = localStorage.getItem('user_email');
+        const userId = localStorage.getItem('user_uid');
+
+        if (!userEmail || !userId) {
+          throw new Error('User not authenticated. Please log in and try again.');
+        }
+
+        const response = await fetch('/.netlify/functions/selira-execute-account-deletion', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: userEmail,
+            supabase_id: userId,
+            deletion_reason: selectedDeletionReason,
+            reason_details: deletionReasonDetails
+          })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.error || 'Failed to delete account');
+        }
+
+        // Clear local storage
+        localStorage.clear();
+
+        // Show success modal
+        document.getElementById('deleteConfirmModal').style.display = 'none';
+        document.getElementById('deleteSuccessModal').style.display = 'flex';
+
+      } catch (error) {
+        console.error('Account deletion error:', error);
+        errorDiv.querySelector('p').textContent = error.message || 'An error occurred. Please try again or contact support.';
+        errorDiv.style.display = 'block';
+        finalBtn.disabled = false;
+        finalBtn.style.opacity = '1';
+        finalBtn.innerHTML = 'Delete Forever';
+      }
+    }
+
+    // Close modals when clicking outside
+    ['deleteAccountModal', 'deleteConfirmModal'].forEach(modalId => {
+      document.getElementById(modalId)?.addEventListener('click', function(e) {
+        if (e.target === this) closeDeleteAccountModal();
+      });
+    });
+
+    // Add spin animation for loading
+    const style = document.createElement('style');
+    style.textContent = '@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }';
+    document.head.appendChild(style);
   </script>
 
   <!-- Email Verification Handler -->
