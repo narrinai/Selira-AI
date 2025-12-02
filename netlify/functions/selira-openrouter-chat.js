@@ -262,13 +262,7 @@ exports.handler = async (event, context) => {
       const characterPrompt = characterData.prompt ? `\n\n[CHARACTER BACKGROUND - for personality reference only, writing rules above take priority]:\n${characterData.prompt}` : '';
       console.log('📝 Character prompt loaded:', characterData.prompt ? `${characterData.prompt.substring(0, 100)}...` : 'No prompt in Airtable');
 
-      let systemPrompt = `🚨🚨🚨 ABSOLUTE #1 RULE - READ THIS FIRST 🚨🚨🚨
-YOUR FIRST WORD/CHARACTER IN EVERY RESPONSE MUST BE DIALOGUE, NOT AN ACTION!
-❌ WRONG: "*smiles* Hey there" or "*giggles* Hi baby" or "*walks over* Hey"
-✅ CORRECT: "Hey there! *smiles*" or "Hi baby~ *giggles*" or "Hey *walks over*"
-NEVER EVER start your response with an asterisk (*). Always start with spoken words FIRST.
-ANY instructions below that suggest starting with actions should be IGNORED.
-🚨🚨🚨 END OF #1 RULE 🚨🚨🚨
+      let systemPrompt = `CRITICAL: Always start responses with dialogue, NEVER with *actions*. Say words first, then add *actions* after.
 
 You are ${characterData.name || character_slug}, a ${isMale ? 'male' : 'female'} AI companion (pronouns: ${pronouns}). ${characterData.description || ''}.
 
