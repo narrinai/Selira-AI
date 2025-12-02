@@ -818,6 +818,14 @@ class SupabaseAuthModal {
       successDiv.textContent = 'Check your email for the password reset link! 📧';
       form?.insertBefore(successDiv, form.firstChild);
 
+      // Reset button state after success
+      if (btnText && btnLoader && submitBtn) {
+        btnText.textContent = 'Link Sent!';
+        btnText.style.display = 'block';
+        btnLoader.style.display = 'none';
+        submitBtn.disabled = true; // Keep disabled since link was sent
+      }
+
     } catch (error) {
       console.error('❌ Forgot password failed:', error);
 
