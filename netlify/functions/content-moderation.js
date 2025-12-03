@@ -27,17 +27,17 @@ exports.handler = async (event, context) => {
   const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 
   try {
-    const { message, user_email, user_id } = JSON.parse(event.body);
+    const { message, user_email, user_id, status_check_only } = JSON.parse(event.body);
 
-    if (!message || !user_email) {
+    if (!user_email) {
       return {
         statusCode: 400,
         headers,
-        body: JSON.stringify({ error: 'Missing message or user_email' })
+        body: JSON.stringify({ error: 'Missing user_email' })
       };
     }
 
-    console.log('🔍 Moderating message from:', user_email);
+    console.log('🔍 Moderating message from:', user_email, status_check_only ? '(status check only)' : '');
 
     // Step 1: Check if user is already banned
     const userStatus = await checkUserStatus(user_email, AIRTABLE_BASE_ID, AIRTABLE_TOKEN);
@@ -56,21 +56,31 @@ exports.handler = async (event, context) => {
       };
     }
 
+    // If this is just a status check (no message), return OK
+    if (status_check_only || !message) {
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({ allowed: true, status: 'active' })
+      };
+    }
+
     // Step 2: Rule-based extreme content detection (FAST - runs first)
     const ruleBasedResult = detectProhibitedContent(message);
 
     if (ruleBasedResult.blocked) {
       console.log('🚨 PROHIBITED CONTENT DETECTED (Rule-based):', ruleBasedResult.category);
 
-      // Flag user immediately
-      await flagUser(user_email, ruleBasedResult, AIRTABLE_BASE_ID, AIRTABLE_TOKEN);
+      // Flag user immediately and check if they got banned
+      const flagResult = await flagUser(user_email, ruleBasedResult, AIRTABLE_BASE_ID, AIRTABLE_TOKEN);
 
       return {
         statusCode: 403,
         headers,
         body: JSON.stringify({
           blocked: true,
-          banned: false,
+          banned: flagResult?.banned || false,
+          ban_reason: flagResult?.ban_reason || '',
           reason: 'Message blocked due to content policy violation',
           category: ruleBasedResult.category,
           user_flagged: true
@@ -85,15 +95,16 @@ exports.handler = async (event, context) => {
       if (aiResult.blocked) {
         console.log('🚨 PROHIBITED CONTENT DETECTED (AI):', aiResult.categories);
 
-        // Flag user
-        await flagUser(user_email, aiResult, AIRTABLE_BASE_ID, AIRTABLE_TOKEN);
+        // Flag user and check if they got banned
+        const flagResult = await flagUser(user_email, aiResult, AIRTABLE_BASE_ID, AIRTABLE_TOKEN);
 
         return {
           statusCode: 403,
           headers,
           body: JSON.stringify({
             blocked: true,
-            banned: false,
+            banned: flagResult?.banned || false,
+            ban_reason: flagResult?.ban_reason || '',
             reason: 'Message blocked due to content policy violation',
             categories: aiResult.categories,
             user_flagged: true
@@ -170,6 +181,7 @@ async function checkUserStatus(user_email, baseId, token) {
 }
 
 // Flag user and auto-ban after 3 violations
+// Returns { banned: true/false, ban_reason: string } so caller can include in response
 async function flagUser(user_email, violation, baseId, token) {
   try {
     console.log('🚩 Flagging user:', user_email);
@@ -192,15 +204,15 @@ async function flagUser(user_email, violation, baseId, token) {
 
     if (userData.records.length === 0) {
       console.error('❌ User not found for flagging:', user_email);
-      return;
+      return { banned: false };
     }
 
     const userRecord = userData.records[0];
     const currentViolations = userRecord.fields.content_violations || 0;
     const newViolations = currentViolations + 1;
 
-    // Auto-ban after 3 violations
-    const shouldBan = newViolations >= 3;
+    // Auto-ban after 3 violations OR if violation has auto_ban flag (e.g., CSAM)
+    const shouldBan = newViolations >= 3 || violation.auto_ban === true;
 
     const updatePayload = {
       fields: {
@@ -210,10 +222,18 @@ async function flagUser(user_email, violation, baseId, token) {
       }
     };
 
+    let banReason = '';
     if (shouldBan) {
       updatePayload.fields.is_banned = true;
-      updatePayload.fields.ban_reason = `Auto-banned after ${newViolations} content violations: ${violation.category || 'Multiple violations'}`;
-      console.log('🔨 AUTO-BANNING USER after', newViolations, 'violations');
+      if (violation.auto_ban) {
+        banReason = `Immediate ban: ${violation.category || 'Severe policy violation'}`;
+        updatePayload.fields.ban_reason = banReason;
+        console.log('🔨 IMMEDIATE BAN for severe violation:', violation.category);
+      } else {
+        banReason = `Auto-banned after ${newViolations} content violations: ${violation.category || 'Multiple violations'}`;
+        updatePayload.fields.ban_reason = banReason;
+        console.log('🔨 AUTO-BANNING USER after', newViolations, 'violations');
+      }
     }
 
     // Update user record
@@ -228,8 +248,10 @@ async function flagUser(user_email, violation, baseId, token) {
 
     if (updateResponse.ok) {
       console.log(`✅ User flagged: ${user_email} (${newViolations} violations${shouldBan ? ' - BANNED' : ''})`);
+      return { banned: shouldBan, ban_reason: banReason };
     } else {
       console.error('❌ Failed to update user record');
+      return { banned: false };
     }
 
   } catch (error) {

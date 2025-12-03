@@ -4179,6 +4179,33 @@
       closeCharacterSearch();
     }
 
+    // Check if user is banned - called before sending messages
+    async function checkUserBanStatus(userEmail) {
+      try {
+        // Quick check via content-moderation endpoint with empty message (just status check)
+        const response = await fetch('/.netlify/functions/content-moderation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: '', // Empty message = just check status
+            user_email: userEmail,
+            status_check_only: true
+          })
+        });
+
+        if (response.status === 403) {
+          const data = await response.json();
+          if (data.banned) {
+            return { banned: true, reason: data.ban_reason || 'Content policy violations' };
+          }
+        }
+        return { banned: false };
+      } catch (error) {
+        console.error('❌ Error checking ban status:', error);
+        return { banned: false }; // Fail open
+      }
+    }
+
     async function sendMessage() {
       const messageInput = document.getElementById('messageInput');
       const message = messageInput.value.trim();
@@ -4228,6 +4255,16 @@
         }
 
         // Clear the input
+        messageInput.value = '';
+        autoResizeTextarea();
+        return;
+      }
+
+      // Check if user is banned BEFORE sending message
+      const banStatus = await checkUserBanStatus(user.email);
+      if (banStatus.banned) {
+        console.log('🚫 User is banned, showing restriction modal');
+        showContentViolationModal({ banned: true, reason: banStatus.reason });
         messageInput.value = '';
         autoResizeTextarea();
         return;
