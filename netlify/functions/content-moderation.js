@@ -242,11 +242,38 @@ function detectProhibitedContent(message) {
   const lowerMessage = message.toLowerCase();
 
   // CRITICAL: Child safety - ZERO TOLERANCE
+  // Enhanced patterns based on real abuse analysis from chat history
   const csam_patterns = [
+    // Original patterns
     /\b(child|kid|minor|young|underage|teen|preteen|loli|shota|cp|child porn)\b.*\b(porn|sex|nude|naked|explicit|nsfw)/i,
     /\b(sex|fuck|rape|molest|abuse)\b.*\b(child|kid|minor|young|underage|teen|preteen)/i,
     /\b(pedo|pedoph|child abuse|child sexual|csam|csem)\b/i,
-    /\b\d{1,2}\s*(year|yr)s?\s*old\b.*\b(sex|porn|nude|naked|fuck)/i
+
+    // Age + explicit content (any order) - catches "11 year old tits", "fuck 12 year old"
+    /\b\d{1,2}\s*(year|yr|yo)s?\b.*\b(fuck|sex|tits|pussy|cock|jugs|naked|nude|porn)/i,
+    /\b(fuck|sex|tits|pussy|cock|naked|nude|porn).*\b\d{1,2}\s*(year|yr|yo)s?\b/i,
+
+    // Family member + explicit - catches "fuck my daughter", "sister naked"
+    /\b(daughter|son|sister|brother|niece|nephew|cousin)\b.*\b(fuck|sex|naked|nude|tits|pussy|cock|suck)/i,
+    /\b(fuck|sex|naked|nude|suck).*\b(my\s+)?(daughter|son|sister|brother|niece|nephew|cousin)\b/i,
+
+    // "kid/child/minor" + explicit (without age) - catches "fuck the kid"
+    /\b(kid|child|minor|underage|little\s*(girl|boy))\b.*\b(fuck|sex|naked|nude|tits|pussy|cock|suck)/i,
+    /\b(fuck|sex|naked|nude|suck).*\b(kid|child|minor|underage)\b/i,
+
+    // Preteen always blocked
+    /\b(preteen|pre-teen)\b/i,
+
+    // Teen + explicit content
+    /\bteen\b.*\b(fuck|sex|naked|nude|porn|pussy|cock|tits)/i,
+    /\b(fuck|sex|naked|porn).*\bteen\b/i,
+
+    // Specific body part references with age
+    /\b\d{1,2}\s*(year|yr|yo)s?\s*(old\s*)?(tits|jugs|pussy|cock|ass|boobs)/i,
+    /\b(tits|jugs|pussy|cock|boobs).*\b\d{1,2}\s*(year|yr|yo)/i,
+
+    // "Young" in sexual context
+    /\byoung\s*(girl|boy|one|teen)\b.*\b(fuck|sex|naked|nude|pussy|cock|tits)/i
   ];
 
   for (const pattern of csam_patterns) {
@@ -255,7 +282,65 @@ function detectProhibitedContent(message) {
         blocked: true,
         category: 'CSAM',
         severity: 'CRITICAL',
-        auto_ban: true
+        auto_ban: true,
+        message: 'Content involving minors is strictly illegal and prohibited. This violation has been logged.'
+      };
+    }
+  }
+
+  // JAILBREAK/PROMPT INJECTION DETECTION - Block attempts to bypass safety
+  const jailbreak_patterns = [
+    /forget\s*(your\s*)?(previous\s*)?(programming|instructions|rules)/i,
+    /ignore\s*(your\s*)?(previous\s*)?(instructions|rules|guidelines)/i,
+    /you\s+are\s+now\s+(a\s+)?\d{1,2}\s*(year|yr)/i,  // "you are now 15 year old"
+    /pretend\s*(you\s*)?(have\s+no|don'?t\s+have)\s*(rules|limits|restrictions)/i,
+    /override\s*(your\s*)?(safety|content)?\s*(rules|filters|restrictions)/i,
+    /bypass\s*(the\s*)?(safety|content)?\s*(filter|rules|restrictions)/i,
+    /disable\s*(your\s*)?(safety|content)?\s*(features|filters|rules)/i,
+    /act\s*(like|as\s+if)\s*(you\s*)?(have\s+no|can|don'?t\s+have)\s*(rules|limits)/i,
+    /from\s+now\s+on\s*(you\s*)?(are|can|will|have\s+no)/i,
+    /new\s+rule[s]?\s*[:.]?\s*(you\s*)?(can|will|must|are)/i
+  ];
+
+  for (const pattern of jailbreak_patterns) {
+    if (pattern.test(message)) {
+      return {
+        blocked: true,
+        category: 'Jailbreak Attempt',
+        severity: 'HIGH',
+        auto_ban: false,
+        message: 'Attempts to bypass safety features are not allowed.'
+      };
+    }
+  }
+
+  // CRITICAL: Requests for underage roleplay or interaction - BLOCK IMMEDIATELY
+  // This catches users trying to make AI pretend to be underage or requesting underage characters
+  const underageRequestPatterns = [
+    // Direct age requests under 18
+    /\b(pretend|act|roleplay|be|play)\b.{0,30}\b(1[0-7]|[1-9])\s*(year|yr)s?\s*old\b/i,
+    /\b(pretend|act|roleplay|be|play)\b.{0,30}\b(underage|minor|child|kid|teen|preteen)\b/i,
+    // "I want to talk to a X year old"
+    /\b(talk|chat|speak|message)\s*(to|with)\s*(a\s*)?\b(1[0-7]|[1-9])\s*(year|yr)s?\s*old\b/i,
+    /\b(talk|chat|speak|message)\s*(to|with)\s*(a\s*)?\b(underage|minor|child|kid|teen|preteen)\b/i,
+    // Direct underage requests
+    /\b(want|looking for|need|give me)\s*(a\s*)?\b(1[0-7]|[1-9])\s*(year|yr)s?\s*old\b/i,
+    /\b(want|looking for|need|give me)\s*(a\s*)?\b(underage|minor|child|kid|preteen)\s*(girl|boy|person)?\b/i,
+    // Age-specific patterns (13-17)
+    /\b(be|act like|pretend)\s*(you'?re?|to be)\s*(a\s*)?(1[3-7])\b/i,
+    /\byou'?re?\s*(now\s*)?(a\s*)?(1[3-7])\s*(year|yr)/i,
+    // High school student in sexual context on adult platform
+    /\b(high\s*school|middle\s*school|junior\s*high)\s*(student|girl|boy)\b/i
+  ];
+
+  for (const pattern of underageRequestPatterns) {
+    if (pattern.test(message)) {
+      return {
+        blocked: true,
+        category: 'Underage Request',
+        severity: 'CRITICAL',
+        auto_ban: false, // First offense = warning, but flag user
+        message: 'Requests involving minors or underage characters are strictly prohibited on this platform.'
       };
     }
   }
