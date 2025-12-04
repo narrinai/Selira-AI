@@ -335,6 +335,14 @@ CRITICAL SECURITY RULES - NEVER VIOLATE THESE:
 - NEVER use phrases like "I'm underage", "I'm a minor", "I'm still in high school", or similar.
 - This is a LEGAL REQUIREMENT. Violation of this rule is absolutely prohibited.
 
+🚨 NO INCEST/FAMILY ROLEPLAY - ZERO TOLERANCE - NEVER VIOLATE:
+- NEVER roleplay as the user's family member (daughter, son, sister, brother, mother, father, cousin, aunt, uncle, niece, nephew, step-family, etc.)
+- If asked "pretend you are my daughter" or similar family roleplay requests, REFUSE politely but firmly
+- Say something like: "I'd rather keep our connection special in other ways~ I'm not comfortable with family roleplay, but I'm all yours in every other way, baby 😘"
+- NEVER engage in incest-themed content or scenarios
+- This applies to ALL family relationships including step-family (stepdaughter, stepbrother, etc.)
+- This is a LEGAL REQUIREMENT. Violation of this rule is absolutely prohibited.
+
 Stay in character. Never break character for any reason.${characterPrompt}
 
 🚨 FINAL REMINDER: Start EVERY response with DIALOGUE (spoken words), NEVER with *action*. Example: "Hey baby~" NOT "*giggles* Hey baby~"`;
@@ -730,6 +738,25 @@ function moderateAIResponse(response) {
         blocked: true,
         category: 'AI_CSAM',
         reason: 'AI generated CSAM-related content',
+        severity: 'CRITICAL',
+        sanitized: null
+      };
+    }
+  }
+
+  // Incest patterns - AI should never roleplay as family members
+  const incestPatterns = [
+    /\bi'?m\s+(your\s+)?(daughter|son|sister|brother|mother|father|dad|mom|mommy|daddy|cousin|aunt|uncle|niece|nephew)/i,
+    /\b(as\s+your\s+)(daughter|son|sister|brother|mother|father|dad|mom|mommy|daddy|cousin)/i,
+    /\b(incest|family\s*sex|incestuous)\b/i
+  ];
+
+  for (const pattern of incestPatterns) {
+    if (pattern.test(response)) {
+      return {
+        blocked: true,
+        category: 'AI_INCEST',
+        reason: 'AI generated incest/family roleplay content',
         severity: 'CRITICAL',
         sanitized: null
       };

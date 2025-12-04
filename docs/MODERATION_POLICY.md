@@ -1,6 +1,6 @@
 Selira AI Content Moderation Policy
 
-Version: 1.2
+Version: 1.3
 Last Updated: December 2025
 Contact: hello@selira.ai | +31 6 8209 5964
 
@@ -46,6 +46,7 @@ CSAM - Content depicting or sexualizing minors in any form - Immediate ban
 Child Exploitation - Any sexual content involving characters under 18 - Immediate ban
 Human Trafficking - Content promoting or depicting trafficking - Immediate ban
 Terrorism - Terrorism promotion or mass violence planning - Immediate ban
+Incest - Requests for family roleplay or incest content - Immediate ban
 
 3.2 Severe Violations (Immediate Ban)
 
@@ -191,6 +192,7 @@ Patterns are defined in content-moderation.js and include:
 - Trafficking-related patterns
 - Violence and self-harm patterns
 - Jailbreak attempt patterns
+- Incest/family roleplay patterns
 
 10.3 API Endpoints
 
@@ -216,6 +218,7 @@ Response for blocked content includes:
 Version 1.0 - Nov 2025 - Initial policy
 Version 1.1 - Dec 2025 - Added multi-layer detection, AI output moderation
 Version 1.2 - Dec 2025 - Added pre-send ban check, updated violation system
+Version 1.3 - Dec 2025 - Added incest/family roleplay detection with immediate ban
 
 
 12. Contact Information

@@ -437,6 +437,34 @@ function detectProhibitedContent(message) {
     }
   }
 
+  // INCEST - Zero Tolerance (immediate ban)
+  // Blocks requests to roleplay as family members or incest content
+  const incest_patterns = [
+    // Roleplay requests: "pretend you are my daughter/sister/mom"
+    /\b(pretend|act|roleplay|be|play)\b.{0,30}\b(my\s+)?(daughter|son|sister|brother|mother|father|mom|dad|mommy|daddy|cousin|aunt|uncle|niece|nephew|stepdaughter|stepson|stepsister|stepbrother|stepmother|stepfather|stepmom|stepdad)\b/i,
+    // "You are my daughter/sister" type requests
+    /\byou\s+(are|will\s+be|be)\s+(my\s+)?(daughter|son|sister|brother|mother|father|mom|dad|mommy|daddy|cousin|aunt|uncle|niece|nephew|stepdaughter|stepson|stepsister|stepbrother|stepmother|stepfather|stepmom|stepdad)\b/i,
+    // Explicit + family member (any order)
+    /\b(fuck|sex|naked|nude|suck|lick|finger|penetrate)\b.{0,30}\b(my\s+)?(daughter|son|sister|brother|mother|father|mom|dad|mommy|daddy|cousin|aunt|uncle|niece|nephew)\b/i,
+    /\b(my\s+)?(daughter|son|sister|brother|mother|father|mom|dad|mommy|daddy|cousin|aunt|uncle|niece|nephew)\b.{0,30}\b(fuck|sex|naked|nude|suck|lick|finger|penetrate)\b/i,
+    // Direct incest keywords
+    /\b(incest|family\s*sex|incestuous)\b/i,
+    // "I'm your father/brother and I want to..."
+    /\bi'?m\s+(your\s+)?(daughter|son|sister|brother|father|mother|dad|mom|daddy|mommy|cousin)\b/i
+  ];
+
+  for (const pattern of incest_patterns) {
+    if (pattern.test(message)) {
+      return {
+        blocked: true,
+        category: 'Incest',
+        severity: 'CRITICAL',
+        auto_ban: true,
+        message: 'Incest content and family roleplay requests are strictly prohibited.'
+      };
+    }
+  }
+
   // Content is safe (from rule-based perspective)
   return {
     blocked: false,
