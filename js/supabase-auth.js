@@ -338,7 +338,10 @@ class SupabaseAuthModal {
         // Sign up
         result = await this.supabase.auth.signUp({
           email: email,
-          password: password
+          password: password,
+          options: {
+            emailRedirectTo: 'https://selira.ai'
+          }
         });
       } else {
         // Log in
