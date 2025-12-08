@@ -807,7 +807,7 @@ class SupabaseAuthModal {
       console.log('🔄 Requesting password reset for:', email);
 
       const { error } = await this.supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: window.location.origin + '/profile'
+        redirectTo: 'https://selira.ai/profile'
       });
 
       if (error) throw error;
