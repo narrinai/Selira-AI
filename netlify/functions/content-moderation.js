@@ -465,6 +465,41 @@ function detectProhibitedContent(message) {
     }
   }
 
+  // BESTIALITY/ZOOPHILIA - Zero Tolerance (immediate ban)
+  // Per payment processor policy: bestiality is strictly forbidden
+  const bestiality_patterns = [
+    // Animal + explicit content (any order)
+    /\b(horse|dog|canine|k9|wolf|pig|goat|sheep|cow|bull|donkey|animal|beast)\s*(cock|penis|dick|cum|sex|fuck|penetrat|mount|breed)/i,
+    /\b(fuck|sex|penetrat|suck|lick|ride|mount|breed)\s*(a\s+|the\s+|my\s+)?(horse|dog|canine|k9|wolf|pig|goat|sheep|cow|bull|donkey|animal|beast)/i,
+    // Explicit acts with animals
+    /\b(horse|dog|canine|k9|wolf|animal|beast)\b.{0,30}\b(inside|enter|thrust|deep|hard|cum|orgasm|climax)\b/i,
+    /\b(pussy|ass|mouth|throat)\b.{0,30}\b(horse|dog|canine|k9|wolf|animal|beast)\b/i,
+    // Direct bestiality/zoophilia keywords
+    /\b(bestiality|zoophilia|zoophile|zoosexual|animal\s*sex|animal\s*fuck)\b/i,
+    // Knotting (canine sexual term)
+    /\b(knot|knotting|knotted)\b.{0,30}\b(dog|canine|wolf|k9|inside|deep|stuck)\b/i,
+    /\b(dog|canine|wolf|k9)\b.{0,30}\b(knot|knotting|knotted)\b/i,
+    // Mare/stallion in sexual context
+    /\b(mare|stallion|filly|colt)\b.{0,30}\b(fuck|sex|breed|mount|penetrat|cock|pussy)\b/i,
+    /\b(fuck|sex|breed|mount|penetrat)\b.{0,30}\b(mare|stallion|filly|colt)\b/i,
+    // Bitch (dog) in sexual context
+    /\bmy\s+bitch\b.{0,30}\b(dog|canine|k9|breed|mount|knot)\b/i,
+    // "Pet play" that escalates to actual animal sex
+    /\b(actual|real)\s*(animal|dog|horse|beast)\b.{0,30}\b(sex|fuck|penetrat)\b/i
+  ];
+
+  for (const pattern of bestiality_patterns) {
+    if (pattern.test(message)) {
+      return {
+        blocked: true,
+        category: 'Bestiality',
+        severity: 'CRITICAL',
+        auto_ban: true,
+        message: 'Bestiality and zoophilia content is strictly prohibited.'
+      };
+    }
+  }
+
   // Content is safe (from rule-based perspective)
   return {
     blocked: false,
