@@ -84,6 +84,13 @@ class SupabaseAuthModal {
           return;
         }
 
+        // Handle password recovery - show password reset modal
+        if (event === 'PASSWORD_RECOVERY') {
+          console.log('🔑 Password recovery event detected - showing reset modal');
+          this.showPasswordResetModal();
+          return;
+        }
+
         // Only sync on actual sign-in events, not on initial session or token refresh
         if (session && (event === 'SIGNED_IN' || event === 'USER_UPDATED')) {
           this.user = session.user;
@@ -842,6 +849,164 @@ class SupabaseAuthModal {
       const errorDiv = document.createElement('div');
       errorDiv.className = 'auth0-error';
       errorDiv.textContent = error.message || 'Failed to send reset link. Please try again.';
+      form?.insertBefore(errorDiv, form.firstChild);
+
+      setTimeout(() => {
+        errorDiv.remove();
+      }, 5000);
+    }
+  }
+
+  showPasswordResetModal() {
+    // Remove any existing modals
+    const existingModal = document.getElementById('auth0-reset-password-modal');
+    if (existingModal) existingModal.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'auth0-reset-password-modal';
+    modal.className = 'auth0-modal-overlay';
+
+    modal.innerHTML = `
+      <div class="auth0-modal-content">
+        <div class="auth0-modal-header">
+          <div class="auth0-logo">
+            <span class="logo-icon">🔑</span>
+            <h2>Set New Password</h2>
+          </div>
+          <p class="auth0-subtitle">Enter your new password below</p>
+        </div>
+
+        <div class="auth0-modal-body">
+          <form class="auth0-form" id="auth0-reset-password-form">
+            <div class="auth0-input-group">
+              <input
+                type="password"
+                id="auth0-new-password"
+                class="auth0-input"
+                placeholder="New password"
+                minlength="6"
+                required
+              >
+            </div>
+
+            <div class="auth0-input-group">
+              <input
+                type="password"
+                id="auth0-confirm-password"
+                class="auth0-input"
+                placeholder="Confirm new password"
+                minlength="6"
+                required
+              >
+            </div>
+
+            <button type="submit" class="auth0-submit-btn">
+              <span class="btn-text">Update Password</span>
+              <div class="btn-loader" style="display: none;">
+                <div class="spinner"></div>
+              </div>
+            </button>
+          </form>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    const form = modal.querySelector('#auth0-reset-password-form');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      await this.handlePasswordUpdate();
+    });
+
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+
+    setTimeout(() => {
+      document.getElementById('auth0-new-password')?.focus();
+    }, 100);
+  }
+
+  async handlePasswordUpdate() {
+    const newPassword = document.getElementById('auth0-new-password').value;
+    const confirmPassword = document.getElementById('auth0-confirm-password').value;
+    const submitBtn = document.querySelector('#auth0-reset-password-form .auth0-submit-btn');
+    const btnText = submitBtn?.querySelector('.btn-text');
+    const btnLoader = submitBtn?.querySelector('.btn-loader');
+    const form = document.querySelector('#auth0-reset-password-form');
+
+    // Remove existing error messages
+    form?.querySelectorAll('.auth0-error').forEach(el => el.remove());
+
+    // Validate passwords match
+    if (newPassword !== confirmPassword) {
+      const errorDiv = document.createElement('div');
+      errorDiv.className = 'auth0-error';
+      errorDiv.textContent = 'Passwords do not match';
+      form?.insertBefore(errorDiv, form.firstChild);
+      return;
+    }
+
+    // Validate password length
+    if (newPassword.length < 6) {
+      const errorDiv = document.createElement('div');
+      errorDiv.className = 'auth0-error';
+      errorDiv.textContent = 'Password must be at least 6 characters';
+      form?.insertBefore(errorDiv, form.firstChild);
+      return;
+    }
+
+    if (btnText && btnLoader && submitBtn) {
+      btnText.style.display = 'none';
+      btnLoader.style.display = 'flex';
+      submitBtn.disabled = true;
+    }
+
+    try {
+      console.log('🔄 Updating password...');
+
+      const { error } = await this.supabase.auth.updateUser({
+        password: newPassword
+      });
+
+      if (error) throw error;
+
+      console.log('✅ Password updated successfully');
+
+      // Show success message
+      const successDiv = document.createElement('div');
+      successDiv.className = 'auth0-success';
+      successDiv.textContent = 'Password updated successfully!';
+      form?.insertBefore(successDiv, form.firstChild);
+
+      // Update button text
+      if (btnText && btnLoader && submitBtn) {
+        btnText.textContent = 'Success!';
+        btnText.style.display = 'block';
+        btnLoader.style.display = 'none';
+      }
+
+      // Close modal and redirect after delay
+      setTimeout(() => {
+        const modal = document.getElementById('auth0-reset-password-modal');
+        if (modal) modal.remove();
+        document.body.style.overflow = '';
+        window.location.href = '/profile';
+      }, 2000);
+
+    } catch (error) {
+      console.error('❌ Password update failed:', error);
+
+      if (btnText && btnLoader && submitBtn) {
+        btnText.style.display = 'block';
+        btnLoader.style.display = 'none';
+        submitBtn.disabled = false;
+      }
+
+      const errorDiv = document.createElement('div');
+      errorDiv.className = 'auth0-error';
+      errorDiv.textContent = error.message || 'Failed to update password. Please try again.';
       form?.insertBefore(errorDiv, form.firstChild);
 
       setTimeout(() => {
