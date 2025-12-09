@@ -45,6 +45,16 @@ class SupabaseAuthModal {
         }
       });
 
+      // Listen for auth state changes - this catches PASSWORD_RECOVERY event
+      this.supabase.auth.onAuthStateChange((event, session) => {
+        console.log('🔔 Auth state change:', event);
+        if (event === 'PASSWORD_RECOVERY') {
+          console.log('🔑 PASSWORD_RECOVERY event detected!');
+          this.user = session?.user;
+          this.showPasswordResetModal();
+        }
+      });
+
       // Check if user is already authenticated
       await this.checkAuth();
 
