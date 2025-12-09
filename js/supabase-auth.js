@@ -1,11 +1,20 @@
 // ===== SUPABASE AUTHENTICATION SYSTEM FOR SELIRA AI =====
 // Modern login modal for Selira AI platform using Supabase
 
+// IMPORTANT: Capture hash params BEFORE Supabase processes them
+// Supabase auto-clears the hash after processing
+const _initialHashParams = new URLSearchParams(window.location.hash.substring(1));
+const _isPasswordRecoveryFromHash = _initialHashParams.get('type') === 'recovery';
+if (_isPasswordRecoveryFromHash) {
+  console.log('🔑 Password recovery detected from URL hash (pre-init)');
+}
+
 class SupabaseAuthModal {
   constructor() {
     this.isOpen = false;
     this.supabase = null;
     this.user = null;
+    this.isPasswordRecovery = _isPasswordRecoveryFromHash;
 
     this.init();
   }
@@ -49,16 +58,13 @@ class SupabaseAuthModal {
     try {
       console.log('🔍 Checking authentication state...');
 
-      // Check if this is a password recovery flow from URL hash
-      const hashParams = new URLSearchParams(window.location.hash.substring(1));
-      const isPasswordRecovery = hashParams.get('type') === 'recovery';
-
-      if (isPasswordRecovery) {
-        console.log('🔑 Password recovery detected from URL hash');
+      // Check if this is a password recovery flow (captured before Supabase init)
+      if (this.isPasswordRecovery) {
+        console.log('🔑 Password recovery flow detected, waiting for session...');
 
         // Wait for Supabase to process the recovery token and establish session
         let attempts = 0;
-        const maxAttempts = 10;
+        const maxAttempts = 5;
 
         while (attempts < maxAttempts) {
           const { data: { session } } = await this.supabase.auth.getSession();
@@ -66,6 +72,8 @@ class SupabaseAuthModal {
             console.log('✅ Session established for password recovery, showing reset modal');
             this.user = session.user;
             this.showPasswordResetModal();
+            // Clear the hash from URL to prevent re-triggering
+            window.history.replaceState(null, '', window.location.pathname);
             return;
           }
           await new Promise(resolve => setTimeout(resolve, 300));
