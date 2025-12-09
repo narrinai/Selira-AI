@@ -49,6 +49,35 @@ class SupabaseAuthModal {
     try {
       console.log('🔍 Checking authentication state...');
 
+      // Check if this is a password recovery flow from URL hash
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const isPasswordRecovery = hashParams.get('type') === 'recovery';
+
+      if (isPasswordRecovery) {
+        console.log('🔑 Password recovery detected from URL hash');
+
+        // Wait for Supabase to process the recovery token and establish session
+        let attempts = 0;
+        const maxAttempts = 10;
+
+        while (attempts < maxAttempts) {
+          const { data: { session } } = await this.supabase.auth.getSession();
+          if (session) {
+            console.log('✅ Session established for password recovery, showing reset modal');
+            this.user = session.user;
+            this.showPasswordResetModal();
+            return;
+          }
+          await new Promise(resolve => setTimeout(resolve, 300));
+          attempts++;
+        }
+
+        console.error('❌ Failed to establish session for password recovery');
+        // Fallback - show modal anyway
+        this.showPasswordResetModal();
+        return;
+      }
+
       const { data: { session } } = await this.supabase.auth.getSession();
 
       if (session) {
@@ -225,6 +254,8 @@ class SupabaseAuthModal {
 
             ${!isSignup ? `
               <div class="auth0-forgot-password">
+                <a href="#" class="auth0-forgot-link" onclick="openMagicLinkModal(event)">Sign in with Magic Link</a>
+                <span class="auth0-link-separator">•</span>
                 <a href="#" class="auth0-forgot-link" onclick="openForgotPasswordModal(event)">Forgot password?</a>
               </div>
             ` : ''}
@@ -1014,6 +1045,145 @@ class SupabaseAuthModal {
       }, 5000);
     }
   }
+
+  openMagicLinkModal() {
+    this.closeModal();
+
+    const modal = document.createElement('div');
+    modal.id = 'auth0-magic-link-modal';
+    modal.className = 'auth0-modal-overlay';
+
+    modal.innerHTML = `
+      <div class="auth0-modal-content">
+        <button class="auth0-modal-close" aria-label="Close">&times;</button>
+
+        <div class="auth0-modal-header">
+          <div class="auth0-logo">
+            <span class="logo-icon">✨</span>
+            <h2>Magic Link</h2>
+          </div>
+          <p class="auth0-subtitle">Enter your email to receive a sign-in link</p>
+        </div>
+
+        <div class="auth0-modal-body">
+          <form class="auth0-form" id="auth0-magic-link-form">
+            <div class="auth0-input-group">
+              <input
+                type="email"
+                id="auth0-magic-email"
+                class="auth0-input"
+                placeholder="Email address"
+                required
+              >
+            </div>
+
+            <button type="submit" class="auth0-submit-btn">
+              <span class="btn-text">Send Magic Link</span>
+              <div class="btn-loader" style="display: none;">
+                <div class="spinner"></div>
+              </div>
+            </button>
+          </form>
+
+          <div class="auth0-switch-mode" style="display: block !important; visibility: visible !important;">
+            Remember your password?
+            <a href="#" class="auth0-switch-link" onclick="switchToLogin(event)">Login here</a>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    const closeBtn = modal.querySelector('.auth0-modal-close');
+    const form = modal.querySelector('#auth0-magic-link-form');
+
+    closeBtn.addEventListener('click', () => {
+      modal.remove();
+      document.body.style.overflow = '';
+    });
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.remove();
+        document.body.style.overflow = '';
+      }
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      await this.handleMagicLink();
+    });
+
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+
+    setTimeout(() => {
+      document.getElementById('auth0-magic-email')?.focus();
+    }, 100);
+  }
+
+  async handleMagicLink() {
+    const email = document.getElementById('auth0-magic-email').value;
+    const submitBtn = document.querySelector('#auth0-magic-link-form .auth0-submit-btn');
+    const btnText = submitBtn?.querySelector('.btn-text');
+    const btnLoader = submitBtn?.querySelector('.btn-loader');
+
+    if (btnText && btnLoader && submitBtn) {
+      btnText.style.display = 'none';
+      btnLoader.style.display = 'flex';
+      submitBtn.disabled = true;
+    }
+
+    try {
+      console.log('🔄 Sending magic link to:', email);
+
+      const { error } = await this.supabase.auth.signInWithOtp({
+        email: email,
+        options: {
+          emailRedirectTo: 'https://selira.ai'
+        }
+      });
+
+      if (error) throw error;
+
+      console.log('✅ Magic link sent successfully');
+
+      // Show success message
+      const form = document.querySelector('#auth0-magic-link-form');
+      const successDiv = document.createElement('div');
+      successDiv.className = 'auth0-success';
+      successDiv.textContent = 'Check your email for the magic link! ✨';
+      form?.insertBefore(successDiv, form.firstChild);
+
+      // Reset button state after success
+      if (btnText && btnLoader && submitBtn) {
+        btnText.textContent = 'Link Sent!';
+        btnText.style.display = 'block';
+        btnLoader.style.display = 'none';
+        submitBtn.disabled = true;
+      }
+
+    } catch (error) {
+      console.error('❌ Magic link failed:', error);
+
+      if (btnText && btnLoader && submitBtn) {
+        btnText.style.display = 'block';
+        btnLoader.style.display = 'none';
+        submitBtn.disabled = false;
+      }
+
+      const form = document.querySelector('#auth0-magic-link-form');
+      const errorDiv = document.createElement('div');
+      errorDiv.className = 'auth0-error';
+      errorDiv.textContent = error.message || 'Failed to send magic link. Please try again.';
+      form?.insertBefore(errorDiv, form.firstChild);
+
+      setTimeout(() => {
+        errorDiv.remove();
+      }, 5000);
+    }
+  }
 }
 
 // ===== SUPABASE MODAL STYLES (SELIRA THEME) =====
@@ -1318,6 +1488,12 @@ const SUPABASE_STYLES = `
   color: #ba68c8;
 }
 
+.auth0-link-separator {
+  color: #666666;
+  margin: 0 8px;
+  font-size: 12px;
+}
+
 .auth0-error {
   background: rgba(239, 68, 68, 0.1);
   border: 1px solid rgba(239, 68, 68, 0.3);
@@ -1523,10 +1699,15 @@ window.openLoginModal = function(mode = 'login', event = null) {
   if (window.seliraAuth || seliraAuth) {
     (window.seliraAuth || seliraAuth).openModal(mode);
   } else {
-    console.warn('⏳ seliraAuth not initialized yet, opening fallback modal...');
-    // If Supabase auth isn't loaded yet, just reload the page to production
-    // This ensures auth works properly
-    window.location.href = `https://selira.ai${window.location.pathname}${window.location.search}`;
+    console.warn('⏳ seliraAuth not initialized yet, waiting and retrying...');
+    // Wait a moment and retry - the auth should initialize shortly
+    setTimeout(() => {
+      if (window.seliraAuth || seliraAuth) {
+        (window.seliraAuth || seliraAuth).openModal(mode);
+      } else {
+        console.error('❌ seliraAuth still not available after retry');
+      }
+    }, 500);
   }
 };
 
@@ -1582,5 +1763,12 @@ window.openForgotPasswordModal = function(event) {
   event.preventDefault();
   if (seliraAuth) {
     seliraAuth.openForgotPasswordModal();
+  }
+};
+
+window.openMagicLinkModal = function(event) {
+  event.preventDefault();
+  if (seliraAuth) {
+    seliraAuth.openMagicLinkModal();
   }
 };
