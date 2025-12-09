@@ -1,6 +1,6 @@
 Selira AI Content Moderation Policy
 
-Version: 1.4
+Version: 2.3
 Last Updated: December 2025
 Contact: hello@selira.ai | +31 6 8209 5964
 
@@ -46,8 +46,8 @@ CSAM - Content depicting or sexualizing minors in any form - Immediate ban
 Child Exploitation - Any sexual content involving characters under 18 - Immediate ban
 Human Trafficking - Content promoting or depicting trafficking - Immediate ban
 Terrorism - Terrorism promotion or mass violence planning - Immediate ban
-Incest - Requests for family roleplay or incest content - Immediate ban
-Bestiality/Zoophilia - Sexual content involving animals - Immediate ban
+Incest - Sexual content involving family members or family roleplay requests - Immediate ban
+Bestiality - Sexual content involving animals (zoophilia) - Immediate ban
 
 3.2 Severe Violations (Immediate Ban)
 
@@ -85,6 +85,8 @@ Content with auto_ban bypasses the strike system:
 - CSAM/child exploitation
 - Human trafficking
 - Terrorism content
+- Incest/family roleplay
+- Bestiality/zoophilia
 
 4.3 Technical Implementation
 
@@ -193,8 +195,8 @@ Patterns are defined in content-moderation.js and include:
 - Trafficking-related patterns
 - Violence and self-harm patterns
 - Jailbreak attempt patterns
-- Incest/family roleplay patterns
-- Bestiality/zoophilia patterns
+- Incest/family roleplay patterns (e.g., "pretend you are my daughter", explicit + family member combinations)
+- Bestiality/zoophilia patterns (e.g., animal + explicit combinations, knotting terminology, direct zoophilia keywords)
 
 10.3 API Endpoints
 
@@ -222,6 +224,7 @@ Version 1.1 - Dec 2025 - Added multi-layer detection, AI output moderation
 Version 1.2 - Dec 2025 - Added pre-send ban check, updated violation system
 Version 1.3 - Dec 2025 - Added incest/family roleplay detection with immediate ban
 Version 1.4 - Dec 2025 - Added bestiality/zoophilia detection with immediate ban (payment processor compliance)
+Version 2.3 - Dec 2025 - Updated documentation with detailed pattern examples for incest and bestiality detection
 
 
 12. Contact Information
