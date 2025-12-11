@@ -53,11 +53,30 @@ class SupabaseAuthModal {
       // Listen for auth state changes - this catches PASSWORD_RECOVERY event
       this.supabase.auth.onAuthStateChange((event, session) => {
         console.log('🔔 Auth state change:', event);
+
+        // PASSWORD_RECOVERY event - show reset modal
         if (event === 'PASSWORD_RECOVERY') {
           console.log('🔑 PASSWORD_RECOVERY event detected!');
           this.user = session?.user;
           this.showPasswordResetModal();
+          return; // Don't process further
         }
+
+        // Also check for recovery via session AMR (Authentication Methods Reference)
+        // Some Supabase versions send SIGNED_IN instead of PASSWORD_RECOVERY
+        if (event === 'SIGNED_IN' && session?.user) {
+          const amr = session.user.amr;
+          const isRecovery = amr?.some(method => method.method === 'recovery');
+
+          if (isRecovery && !this._recoveryModalShown) {
+            console.log('🔑 Recovery detected via AMR, showing reset modal');
+            this._recoveryModalShown = true;
+            this.user = session.user;
+            this.showPasswordResetModal();
+            return; // Don't process further
+          }
+        }
+
         // Clean up URL hash after successful auth (email verification, login, etc.)
         if (event === 'SIGNED_IN' && window.location.hash) {
           // Check if this was an email verification (type=signup in hash)
