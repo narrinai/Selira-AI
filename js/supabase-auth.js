@@ -920,7 +920,7 @@ class SupabaseAuthModal {
       const form = document.querySelector('#auth0-forgot-password-form');
       const successDiv = document.createElement('div');
       successDiv.className = 'auth0-success';
-      successDiv.textContent = 'Check your email for the password reset link! 📧';
+      successDiv.textContent = 'Check your email for the password reset link!';
       form?.insertBefore(successDiv, form.firstChild);
 
       // Reset button state after success
