@@ -458,7 +458,7 @@
       padding: 32px 24px;
       position: relative;
       transition: all 0.3s ease;
-      min-height: 500px;
+      min-height: 560px;
       display: flex;
       flex-direction: column;
     }
@@ -582,8 +582,7 @@
     
     .plan-features {
       list-style: none;
-      margin-bottom: 32px;
-      flex-grow: 1;
+      margin-bottom: 24px;
     }
     
     .feature-item {
@@ -632,9 +631,302 @@
       background: var(--bg-tertiary);
     }
 
+    .plan-button.tertiary {
+      background: var(--accent);
+      color: #ffffff;
+      border: none;
+      font-size: 0.9rem;
+      padding: 12px 20px;
+      font-weight: 600;
+    }
+
+    .plan-button.tertiary:hover {
+      background: var(--accent-hover);
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    /* Bank Transfer Modal Styles */
+    .bank-transfer-modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 10000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .bank-transfer-modal-overlay.active {
+      display: flex;
+    }
+
+    .bank-transfer-modal-content {
+      background: var(--bg-secondary);
+      border-radius: 16px;
+      max-width: 560px;
+      width: 100%;
+      padding: 24px 32px;
+      position: relative;
+      border: 1px solid var(--border);
+    }
+
+    .bank-transfer-modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 28px;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+    }
+
+    .bank-transfer-modal-close:hover {
+      color: var(--text-primary);
+    }
+
+    .bank-transfer-modal-header {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .bank-transfer-modal-header h2 {
+      color: var(--text-primary);
+      font-size: 1.5rem;
+      margin: 0 0 8px 0;
+    }
+
+    .bank-transfer-modal-header p {
+      color: var(--text-secondary);
+      margin: 0;
+      font-size: 0.95rem;
+    }
+
+    .bank-transfer-plan-info {
+      background: var(--bg-tertiary);
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .bank-transfer-plan-info .plan-name {
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .bank-transfer-plan-info .plan-price {
+      color: var(--text-primary);
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-top: 4px;
+      display: block;
+      text-align: center;
+    }
+
+    .bank-details-section {
+      background: var(--bg-primary);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .bank-details-section h3 {
+      color: var(--text-primary);
+      font-size: 1rem;
+      margin: 0 0 12px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .bank-detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .bank-detail-row:last-child {
+      border-bottom: none;
+    }
+
+    .bank-detail-label {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .bank-detail-value-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .bank-detail-value {
+      color: var(--text-primary);
+      font-weight: 500;
+      font-family: monospace;
+      font-size: 0.95rem;
+    }
+
+    .copy-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 4px 6px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .copy-btn:hover {
+      background: var(--bg-tertiary);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .copy-btn.copied {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+
+    .bank-transfer-instructions {
+      background: rgba(236, 72, 153, 0.1);
+      border: 1px solid rgba(236, 72, 153, 0.3);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 0;
+    }
+
+    .bank-transfer-instructions h4 {
+      color: var(--accent);
+      font-size: 0.95rem;
+      margin: 0 0 8px 0;
+    }
+
+    .bank-transfer-steps {
+      list-style: decimal;
+      margin: 0;
+      padding: 0 0 0 20px;
+    }
+
+    .bank-transfer-steps li {
+      margin-bottom: 6px;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      padding-left: 4px;
+    }
+
+    .bank-transfer-steps li::marker {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .bank-transfer-steps li:last-child {
+      margin-bottom: 0;
+    }
+
+    .bank-transfer-contact {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      margin-top: 10px;
+      margin-bottom: 0;
+    }
+
+    /* Mobile styles for bank transfer modal */
+    @media (max-width: 768px) {
+      .bank-transfer-modal-content {
+        padding: 16px;
+        margin: 10px;
+        max-width: calc(100% - 20px);
+      }
+
+      .bank-transfer-modal-header {
+        margin-bottom: 10px;
+      }
+
+      .bank-transfer-modal-header h2 {
+        font-size: 1.25rem;
+      }
+
+      .bank-transfer-modal-header p {
+        font-size: 0.85rem;
+      }
+
+      .bank-transfer-plan-info {
+        padding: 10px 12px;
+        margin-bottom: 12px;
+      }
+
+      .bank-transfer-plan-info .plan-name {
+        font-size: 0.95rem;
+      }
+
+      .bank-transfer-plan-info .plan-price {
+        font-size: 1.25rem;
+      }
+
+      .bank-details-section {
+        padding: 12px;
+        margin-bottom: 12px;
+      }
+
+      .bank-details-section h3 {
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+      }
+
+      .bank-detail-row {
+        padding: 6px 0;
+      }
+
+      .bank-detail-label {
+        font-size: 0.8rem;
+      }
+
+      .bank-detail-value {
+        font-size: 0.8rem;
+      }
+
+      .bank-transfer-instructions {
+        padding: 10px 12px;
+      }
+
+      .bank-transfer-instructions h4 {
+        font-size: 0.85rem;
+        margin-bottom: 6px;
+      }
+
+      .bank-transfer-steps li {
+        font-size: 0.8rem;
+        margin-bottom: 4px;
+      }
+
+      .bank-transfer-contact {
+        font-size: 0.75rem;
+        margin-top: 8px;
+      }
+    }
+
     /* TEMPORARY: Hide main payment buttons while updating payment provider */
     /* TO RESTORE: Remove this CSS block when payment provider is ready */
-    .plan-button:not(.secondary) {
+    .plan-button:not(.secondary):not(.tertiary) {
       display: none !important;
     }
 
@@ -1397,7 +1689,10 @@
               </ul>
 
               <a href="#" class="plan-button hide-mobile" onclick="handleCreditPurchase('light'); return false;">Buy 50 Credits</a>
-              <a href="#" class="plan-button secondary" onclick="handleCryptoPurchase('light'); return false;" style="margin-top: 12px;">
+              <a href="#" class="plan-button tertiary" onclick="handleBankTransfer('light_pack'); return false;" style="margin-top: 12px;">
+                Bank Transfer
+              </a>
+              <a href="#" class="plan-button secondary" onclick="handleCryptoPurchase('light'); return false;" style="margin-top: 8px;">
                 ₿ Buy with Crypto
               </a>
             </div>
@@ -1440,7 +1735,10 @@
               </ul>
 
               <a href="#" class="plan-button hide-mobile" onclick="handleCreditPurchase('basic'); return false;">Buy 100 Credits</a>
-              <a href="#" class="plan-button secondary" onclick="handleCryptoPurchase('basic'); return false;" style="margin-top: 12px;">
+              <a href="#" class="plan-button tertiary" onclick="handleBankTransfer('basic_pack'); return false;" style="margin-top: 12px;">
+                Bank Transfer
+              </a>
+              <a href="#" class="plan-button secondary" onclick="handleCryptoPurchase('basic'); return false;" style="margin-top: 8px;">
                 ₿ Buy with Crypto
               </a>
             </div>
@@ -1483,7 +1781,10 @@
               </ul>
 
               <a href="#" class="plan-button hide-mobile" onclick="handleCreditPurchase('premium'); return false;">Buy 250 Credits</a>
-              <a href="#" class="plan-button secondary" onclick="handleCryptoPurchase('premium'); return false;" style="margin-top: 12px;">
+              <a href="#" class="plan-button tertiary" onclick="handleBankTransfer('premium_pack'); return false;" style="margin-top: 12px;">
+                Bank Transfer
+              </a>
+              <a href="#" class="plan-button secondary" onclick="handleCryptoPurchase('premium'); return false;" style="margin-top: 8px;">
                 ₿ Buy with Crypto
               </a>
             </div>
@@ -1491,6 +1792,68 @@
         </div>
       </section>
     </main>
+  </div>
+
+  <!-- Bank Transfer Modal -->
+  <div id="bank-transfer-modal" class="bank-transfer-modal-overlay">
+    <div class="bank-transfer-modal-content">
+      <button class="bank-transfer-modal-close" onclick="closeBankTransferModal()">&times;</button>
+
+      <div class="bank-transfer-modal-header">
+        <h2>Bank Transfer Payment</h2>
+        <p>Transfer the amount to our bank account</p>
+      </div>
+
+      <div class="bank-transfer-plan-info">
+        <div class="plan-name" id="bank-transfer-plan-name">Light Pack</div>
+        <div class="plan-price" id="bank-transfer-plan-price">$5.99</div>
+      </div>
+
+      <div class="bank-details-section">
+        <h3>Bank Details</h3>
+        <div class="bank-detail-row">
+          <span class="bank-detail-label">Account Name</span>
+          <div class="bank-detail-value-wrapper">
+            <span class="bank-detail-value" data-copy="G-Cas Trading">G-Cas Trading</span>
+            <button class="copy-btn" onclick="copyToClipboard('G-Cas Trading', this)" title="Copy">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+          </div>
+        </div>
+        <div class="bank-detail-row">
+          <span class="bank-detail-label">IBAN</span>
+          <div class="bank-detail-value-wrapper">
+            <span class="bank-detail-value" data-copy="NL17ABNA0547990987">NL17ABNA0547990987</span>
+            <button class="copy-btn" onclick="copyToClipboard('NL17ABNA0547990987', this)" title="Copy">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+          </div>
+        </div>
+        <div class="bank-detail-row">
+          <span class="bank-detail-label">SWIFT/BIC</span>
+          <div class="bank-detail-value-wrapper">
+            <span class="bank-detail-value" data-copy="ABNANL2A">ABNANL2A</span>
+            <button class="copy-btn" onclick="copyToClipboard('ABNANL2A', this)" title="Copy">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+          </div>
+        </div>
+        <div class="bank-detail-row">
+          <span class="bank-detail-label">Amount</span>
+          <span class="bank-detail-value" id="bank-transfer-amount">$5.99</span>
+        </div>
+      </div>
+
+      <div class="bank-transfer-instructions">
+        <h4>How it works</h4>
+        <ol class="bank-transfer-steps">
+          <li>Transfer the exact amount to the bank account above</li>
+          <li>Add your <strong>Selira.ai email address</strong> in the payment description</li>
+          <li>Your credits will be added within 24 hours</li>
+        </ol>
+        <p class="bank-transfer-contact">Questions? Contact us at hello@selira.ai</p>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -2554,6 +2917,114 @@
         console.error('Error initiating crypto purchase:', error);
         alert('An error occurred. Please try again later.');
       }
+    }
+
+    // Log bank transfer interest to Airtable
+    async function logBankTransferInterest(packageType, action) {
+      try {
+        const recordId = localStorage.getItem('airtable_record_id');
+        const userEmail = localStorage.getItem('user_email');
+
+        // Debug: log what we found
+        console.log('🏦 Bank transfer debug:', { recordId, userEmail, packageType, action });
+
+        if (!recordId && !userEmail) {
+          console.log('🏦 Bank transfer interest (not logged in):', packageType, action);
+          return;
+        }
+
+        const response = await fetch('/.netlify/functions/log-bank-transfer-interest', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ recordId, userEmail, packageType, action })
+        });
+
+        if (response.ok) {
+          console.log('✅ Bank transfer interest logged:', packageType, action);
+        }
+      } catch (error) {
+        console.error('Failed to log bank transfer interest:', error);
+      }
+    }
+
+    // Store current package for tracking copy actions
+    let currentBankTransferPackage = null;
+
+    // Handle bank transfer modal
+    function handleBankTransfer(packageType) {
+      console.log('🏦 Bank transfer initiated:', packageType);
+
+      // Store package for copy tracking
+      currentBankTransferPackage = packageType;
+
+      // Log interest to Airtable
+      logBankTransferInterest(packageType, 'modal_opened');
+
+      // Package info mapping (primary USD, secondary EUR)
+      const packages = {
+        'light_pack': { name: 'Light Pack (50 Credits)', priceUsd: '$5.99', priceEur: '€5.49' },
+        'basic_pack': { name: 'Basic Pack (100 Credits)', priceUsd: '$8.99', priceEur: '€8.29' },
+        'premium_pack': { name: 'Premium Pack (250 Credits)', priceUsd: '$19.99', priceEur: '€18.49' }
+      };
+
+      const pkg = packages[packageType];
+      if (!pkg) {
+        console.error('Unknown package type:', packageType);
+        return;
+      }
+
+      // Update modal content - show both USD and EUR
+      document.getElementById('bank-transfer-plan-name').textContent = pkg.name;
+      document.getElementById('bank-transfer-plan-price').textContent = `${pkg.priceUsd} (${pkg.priceEur})`;
+      document.getElementById('bank-transfer-amount').textContent = `${pkg.priceUsd} (${pkg.priceEur})`;
+
+      // Show modal
+      document.getElementById('bank-transfer-modal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeBankTransferModal() {
+      document.getElementById('bank-transfer-modal').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // Close modal on overlay click
+    document.getElementById('bank-transfer-modal')?.addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeBankTransferModal();
+      }
+    });
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeBankTransferModal();
+      }
+    });
+
+    // Copy to clipboard function
+    function copyToClipboard(text, button) {
+      navigator.clipboard.writeText(text).then(() => {
+        // Log IBAN copy to Airtable (only for IBAN, not other fields)
+        if (text === 'NL17ABNA0547990987' && currentBankTransferPackage) {
+          logBankTransferInterest(currentBankTransferPackage, 'iban_copied');
+        }
+
+        // Add copied class for visual feedback
+        button.classList.add('copied');
+
+        // Change icon to checkmark temporarily
+        const originalHTML = button.innerHTML;
+        button.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+
+        // Reset after 1.5 seconds
+        setTimeout(() => {
+          button.classList.remove('copied');
+          button.innerHTML = originalHTML;
+        }, 1500);
+      }).catch(err => {
+        console.error('Failed to copy:', err);
+      });
     }
 
     async function handleCryptoSubscription(planType) {
