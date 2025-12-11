@@ -5,8 +5,12 @@
 // Supabase auto-clears the hash after processing
 const _initialHashParams = new URLSearchParams(window.location.hash.substring(1));
 const _isPasswordRecoveryFromHash = _initialHashParams.get('type') === 'recovery';
+const _isEmailVerificationFromHash = _initialHashParams.get('type') === 'signup';
 if (_isPasswordRecoveryFromHash) {
   console.log('🔑 Password recovery detected from URL hash (pre-init)');
+}
+if (_isEmailVerificationFromHash) {
+  console.log('✉️ Email verification detected from URL hash (pre-init)');
 }
 
 class SupabaseAuthModal {
@@ -15,6 +19,7 @@ class SupabaseAuthModal {
     this.supabase = null;
     this.user = null;
     this.isPasswordRecovery = _isPasswordRecoveryFromHash;
+    this.isEmailVerification = _isEmailVerificationFromHash;
 
     this.init();
   }
@@ -52,6 +57,19 @@ class SupabaseAuthModal {
           console.log('🔑 PASSWORD_RECOVERY event detected!');
           this.user = session?.user;
           this.showPasswordResetModal();
+        }
+        // Clean up URL hash after successful auth (email verification, login, etc.)
+        if (event === 'SIGNED_IN' && window.location.hash) {
+          // Check if this was an email verification (type=signup in hash)
+          const hashParams = new URLSearchParams(window.location.hash.substring(1));
+          const isEmailVerification = hashParams.get('type') === 'signup';
+
+          window.history.replaceState(null, '', window.location.pathname + window.location.search);
+
+          // Show email verified banner if this was a verification
+          if (isEmailVerification) {
+            this.showEmailVerifiedBanner();
+          }
         }
       });
 
@@ -94,6 +112,15 @@ class SupabaseAuthModal {
         // Fallback - show modal anyway
         this.showPasswordResetModal();
         return;
+      }
+
+      // Check if this is an email verification flow (captured before Supabase init)
+      if (this.isEmailVerification) {
+        console.log('✉️ Email verification flow detected, showing banner...');
+        // Clear the hash from URL
+        window.history.replaceState(null, '', window.location.pathname + window.location.search);
+        // Show success banner
+        this.showEmailVerifiedBanner();
       }
 
       const { data: { session } } = await this.supabase.auth.getSession();
@@ -904,6 +931,80 @@ class SupabaseAuthModal {
         errorDiv.remove();
       }, 5000);
     }
+  }
+
+  showEmailVerifiedBanner() {
+    // Remove any existing banner
+    const existingBanner = document.getElementById('email-verified-banner');
+    if (existingBanner) existingBanner.remove();
+
+    const banner = document.createElement('div');
+    banner.id = 'email-verified-banner';
+    banner.innerHTML = `
+      <div class="email-verified-content">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Email verified successfully! Welcome to Selira.</span>
+      </div>
+    `;
+
+    // Add styles
+    const style = document.createElement('style');
+    style.textContent = `
+      #email-verified-banner {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 10000;
+        animation: slideDown 0.3s ease-out, fadeOut 0.3s ease-in 4.7s forwards;
+      }
+      .email-verified-content {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border: 1px solid #c9a0dc;
+        border-radius: 12px;
+        padding: 16px 24px;
+        color: #fff;
+        font-family: 'Inter', sans-serif;
+        font-size: 15px;
+        font-weight: 500;
+        box-shadow: 0 4px 20px rgba(201, 160, 220, 0.3);
+      }
+      .email-verified-content svg {
+        color: #c9a0dc;
+        flex-shrink: 0;
+      }
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateX(-50%) translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(-50%) translateY(0);
+        }
+      }
+      @keyframes fadeOut {
+        from {
+          opacity: 1;
+        }
+        to {
+          opacity: 0;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+    document.body.appendChild(banner);
+
+    // Remove banner after 5 seconds
+    setTimeout(() => {
+      banner.remove();
+      style.remove();
+    }, 5000);
   }
 
   showPasswordResetModal() {
