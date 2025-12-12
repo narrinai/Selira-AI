@@ -478,6 +478,10 @@ class SupabaseAuthModal {
 
       this.user = data.user;
 
+      // Sync user to Airtable FIRST (even before email verification)
+      // This ensures the user exists in Airtable immediately after signup
+      await this.syncUserToAirtable(this.user);
+
       // For signup: Check if email verification is required
       if (isSignupMode && !data.user.email_confirmed_at) {
         this.setLoading(false);
@@ -488,9 +492,6 @@ class SupabaseAuthModal {
         console.log('📧 Email verification required - user needs to check inbox');
         return;
       }
-
-      // Sync user to Airtable
-      await this.syncUserToAirtable(this.user);
 
       // Track registration event for Facebook Pixel
       if (isSignupMode) {
