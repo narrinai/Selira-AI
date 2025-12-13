@@ -571,9 +571,10 @@ class SupabaseAuthModal {
         <span style="font-size: 32px;">📧</span>
       </div>
       <strong style="display: block; margin-bottom: 8px; text-align: center;">Check Your Email</strong>
-      <p style="margin: 0 0 12px 0; font-size: 13px;">We sent a verification link to:</p>
-      <p style="margin: 0 0 12px 0; font-weight: 600; color: #ce93d8;">${email}</p>
-      <p style="margin: 0; font-size: 12px; color: #b3b3b3;">Click the link in the email to verify your account, then come back to login.</p>
+      <p style="margin: 0 0 12px 0; font-size: 13px; text-align: center;">We sent a verification link to:</p>
+      <p style="margin: 0 0 12px 0; font-weight: 600; color: #ce93d8; text-align: center;">${email}</p>
+      <p style="margin: 0 0 8px 0; font-size: 12px; color: #b3b3b3; text-align: center;">Click the link in the email to verify your account, then come back to login.</p>
+      <p style="margin: 0; font-size: 11px; color: #888; text-align: center;">Can't find it? Check your spam or junk folder.</p>
     `;
 
     const form = document.querySelector('.auth0-form');

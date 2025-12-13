@@ -47,10 +47,16 @@ Child Exploitation - Any sexual content involving characters under 18 - Immediat
 Human Trafficking - Content promoting or depicting trafficking - Immediate ban
 Terrorism - Terrorism promotion or mass violence planning - Immediate ban
 Incest - Sexual content involving family members or family roleplay requests - Immediate ban
-Bestiality - Sexual content involving animals (zoophilia) - Immediate ban
+Bestiality - Sexual content involving animals (zoophilia, farm sex) - Immediate ban
+Rape/Non-consensual - Forced sex, sexual assault, drugged assault - Immediate ban
+Scat/Defecation - Any defecation or feces-related sexual content - Immediate ban
+Vomiting - Any vomiting fetish content (emetophilia) - Immediate ban
+Necrophilia - Sexual content involving corpses or deceased - Immediate ban
 
-3.2 Severe Violations (Immediate Ban)
+3.2 Severe Violations (Warning + Strike System)
 
+Gore/Mutilation - Mutilation, dismemberment, decapitation content - Warning + violation count
+Celebrity Content - Sexual content involving celebrities, deepfakes - Warning + violation count
 Realistic violence involving minors - Gore/violence with underage victims - Immediate ban
 Non-consensual imagery of real persons - Deepfakes, revenge porn of real people - Immediate ban
 Real person exploitation - Sexual content depicting identifiable real people - Immediate ban
@@ -87,6 +93,10 @@ Content with auto_ban bypasses the strike system:
 - Terrorism content
 - Incest/family roleplay
 - Bestiality/zoophilia
+- Rape/non-consensual content
+- Scat/defecation content
+- Vomiting fetish content
+- Necrophilia
 
 4.3 Technical Implementation
 
@@ -225,6 +235,7 @@ Version 1.2 - Dec 2025 - Added pre-send ban check, updated violation system
 Version 1.3 - Dec 2025 - Added incest/family roleplay detection with immediate ban
 Version 1.4 - Dec 2025 - Added bestiality/zoophilia detection with immediate ban (payment processor compliance)
 Version 2.3 - Dec 2025 - Updated documentation with detailed pattern examples for incest and bestiality detection
+Version 3.0 - Dec 2025 - Added Epoch payment processor compliance: rape/non-consent, scat, vomit, necrophilia, gore/mutilation, celebrity content patterns
 
 
 12. Contact Information

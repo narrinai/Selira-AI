@@ -269,7 +269,7 @@ function detectProhibitedContent(message) {
     // Original patterns
     /\b(child|kid|minor|young|underage|teen|preteen|loli|shota|cp|child porn)\b.*\b(porn|sex|nude|naked|explicit|nsfw)/i,
     /\b(sex|fuck|rape|molest|abuse)\b.*\b(child|kid|minor|young|underage|teen|preteen)/i,
-    /\b(pedo|pedoph|child abuse|child sexual|csam|csem)\b/i,
+    /\b(pedo|pedoph|child abuse|child sexual|csam|csem|lolita|loli)\b/i,
 
     // Age + explicit content (any order) - catches "11 year old tits", "fuck 12 year old"
     /\b\d{1,2}\s*(year|yr|yo)s?\b.*\b(fuck|sex|tits|pussy|cock|jugs|naked|nude|porn)/i,
@@ -437,6 +437,142 @@ function detectProhibitedContent(message) {
     }
   }
 
+  // RAPE/NON-CONSENSUAL - Zero Tolerance (immediate ban)
+  // Per Epoch policy: rape or any other non-consensual sexual behavior
+  const rape_patterns = [
+    // Direct rape keywords
+    /\b(rape|raping|raped|rapist)\b/i,
+    // Forced sex patterns
+    /\b(forced?\s*sex|force\s*(her|him|them)\s*to|forcing\s*(her|him|them))\b/i,
+    /\b(non-?consensual|without\s*consent)\b/i,
+    // Drugged/unconscious assault
+    /\b(drug|roofie|sedat|knock\s*out|unconscious|passed\s*out|sleeping)\b.{0,30}\b(sex|fuck|penetrat|touch|grope)\b/i,
+    /\b(sex|fuck|penetrat|touch|grope)\b.{0,30}\b(while\s*)?(asleep|unconscious|passed\s*out|drugged)\b/i,
+    // "Against her/his will"
+    /\bagainst\s*(her|his|their)\s*will\b/i,
+    // "Make her/him" in sexual context
+    /\b(make|force)\s*(her|him|them)\s*(take|suck|swallow|spread|bend)\b/i
+  ];
+
+  for (const pattern of rape_patterns) {
+    if (pattern.test(message)) {
+      return {
+        blocked: true,
+        category: 'Rape/Non-consensual',
+        severity: 'CRITICAL',
+        auto_ban: true,
+        message: 'Non-consensual sexual content is strictly prohibited.'
+      };
+    }
+  }
+
+  // SCAT/DEFECATION - Zero Tolerance (immediate ban)
+  // Per Epoch policy: defecation content is explicitly forbidden
+  const scat_patterns = [
+    /\b(scat|scatplay|scat\s*play)\b/i,
+    /\b(shit|poop|feces|faeces|excrement|dung)\b.{0,30}\b(eat|lick|smear|cover|play|sex|fuck|fetish)\b/i,
+    /\b(eat|lick|smear|cover|play)\b.{0,30}\b(shit|poop|feces|faeces|excrement)\b/i,
+    /\b(defecate|defecation|defecating)\b.{0,30}\b(on|in|face|mouth|body)\b/i,
+    /\b(shit|poop)\s*(on|in)\s*(my|her|his|your|the)\s*(face|mouth|body|chest)\b/i,
+    /\bcoprophilia\b/i
+  ];
+
+  for (const pattern of scat_patterns) {
+    if (pattern.test(message)) {
+      return {
+        blocked: true,
+        category: 'Scat/Defecation',
+        severity: 'CRITICAL',
+        auto_ban: true,
+        message: 'Scat and defecation content is strictly prohibited.'
+      };
+    }
+  }
+
+  // VOMITING - Zero Tolerance (immediate ban)
+  // Per Epoch policy: vomiting content is explicitly forbidden
+  const vomit_patterns = [
+    /\b(vomit|puke|barf|retch|throw\s*up)\b.{0,30}\b(eat|lick|swallow|drink|fetish|sex|fuck|play)\b/i,
+    /\b(eat|lick|swallow|drink)\b.{0,30}\b(vomit|puke|barf)\b/i,
+    /\b(vomit|puke)\s*(on|in)\s*(my|her|his|your|the)\s*(face|mouth|body)\b/i,
+    /\bemetophilia\b/i
+  ];
+
+  for (const pattern of vomit_patterns) {
+    if (pattern.test(message)) {
+      return {
+        blocked: true,
+        category: 'Vomiting',
+        severity: 'CRITICAL',
+        auto_ban: true,
+        message: 'Vomiting fetish content is strictly prohibited.'
+      };
+    }
+  }
+
+  // NECROPHILIA - Zero Tolerance (immediate ban)
+  // Sexual acts with dead bodies
+  const necrophilia_patterns = [
+    /\b(necrophilia|necrophiliac|necro)\b/i,
+    /\b(dead\s*body|corpse|deceased)\b.{0,30}\b(sex|fuck|penetrat|touch|fondle|grope)\b/i,
+    /\b(sex|fuck|penetrat)\b.{0,30}\b(dead\s*body|corpse|deceased)\b/i,
+    /\b(fuck|sex\s*with)\s*(a\s*)?(dead|corpse|body)\b/i
+  ];
+
+  for (const pattern of necrophilia_patterns) {
+    if (pattern.test(message)) {
+      return {
+        blocked: true,
+        category: 'Necrophilia',
+        severity: 'CRITICAL',
+        auto_ban: true,
+        message: 'Necrophilia content is strictly prohibited.'
+      };
+    }
+  }
+
+  // GORE/MUTILATION - Severe violation (warning system, not immediate ban)
+  // Per Epoch policy: mutilation, dismemberment
+  const gore_patterns = [
+    /\b(mutilat|dismember|decapitat|eviscerat|disembowel)\b/i,
+    /\b(cut\s*off|chop\s*off|sever)\b.{0,30}\b(head|limb|arm|leg|finger|hand|penis|breast)\b/i,
+    /\b(gore|gory|snuff)\b.{0,30}\b(sex|fuck|porn|video|fetish)\b/i,
+    /\b(torture|tortur)\b.{0,30}\b(death|kill|murder|sex)\b/i
+  ];
+
+  for (const pattern of gore_patterns) {
+    if (pattern.test(message)) {
+      return {
+        blocked: true,
+        category: 'Gore/Mutilation',
+        severity: 'HIGH',
+        auto_ban: false,
+        message: 'Extreme gore and mutilation content is not allowed.'
+      };
+    }
+  }
+
+  // CELEBRITY CONTENT - Moderate violation (warning system)
+  // Per Epoch policy: no celebrity sexual content
+  const celebrity_patterns = [
+    /\b(celebrity|celebrities|celebs?)\b.{0,30}\b(nude|naked|sex|fuck|porn)\b/i,
+    /\b(nude|naked|sex|fuck|porn)\b.{0,30}\b(celebrity|celebrities|celebs?)\b/i,
+    /\b(deepfake|deep\s*fake)\b/i,
+    /\bfake\s*(nude|porn|sex)\b/i
+  ];
+
+  for (const pattern of celebrity_patterns) {
+    if (pattern.test(message)) {
+      return {
+        blocked: true,
+        category: 'Celebrity Content',
+        severity: 'HIGH',
+        auto_ban: false,
+        message: 'Celebrity sexual content and deepfakes are not allowed.'
+      };
+    }
+  }
+
   // INCEST - Zero Tolerance (immediate ban)
   // Blocks requests to roleplay as family members or incest content
   const incest_patterns = [
@@ -475,7 +611,7 @@ function detectProhibitedContent(message) {
     /\b(horse|dog|canine|k9|wolf|animal|beast)\b.{0,30}\b(inside|enter|thrust|deep|hard|cum|orgasm|climax)\b/i,
     /\b(pussy|ass|mouth|throat)\b.{0,30}\b(horse|dog|canine|k9|wolf|animal|beast)\b/i,
     // Direct bestiality/zoophilia keywords
-    /\b(bestiality|zoophilia|zoophile|zoosexual|animal\s*sex|animal\s*fuck)\b/i,
+    /\b(bestiality|beastiality|zoophilia|zoophile|zoosexual|animal\s*sex|animal\s*fuck|farm\s*sex)\b/i,
     // Knotting (canine sexual term)
     /\b(knot|knotting|knotted)\b.{0,30}\b(dog|canine|wolf|k9|inside|deep|stuck)\b/i,
     /\b(dog|canine|wolf|k9)\b.{0,30}\b(knot|knotting|knotted)\b/i,
