@@ -648,7 +648,14 @@
 
     @media (max-width: 768px) {
       .payment-icons {
-        display: none;
+        display: flex;
+        justify-content: center;
+        margin-top: 8px;
+        padding: 0;
+      }
+
+      .payment-icon {
+        height: 16px;
       }
 
       /* Remove flex: 1 from sidebar-nav on mobile so footer links are visible */

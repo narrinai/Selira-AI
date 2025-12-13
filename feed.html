@@ -299,9 +299,23 @@
         display: flex;
       }
 
-      .sidebar-footer-links,
+      .sidebar-footer-links {
+        display: flex !important;
+        flex-direction: column !important;
+        padding-top: 10px;
+        margin-top: 10px;
+        gap: 6px;
+      }
+
       .payment-icons {
-        display: none;
+        display: flex;
+        justify-content: center;
+        margin-top: 8px;
+        padding: 0;
+      }
+
+      .payment-icon {
+        height: 16px;
       }
     }
 
